@@ -1,0 +1,7 @@
+<div [ngClass]="fielddisplayclass">
+    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
+    <ng-template #displaycontent>
+        <system-icon [module]="value" size="xx-small"></system-icon>
+    </ng-template>
+</div>
+

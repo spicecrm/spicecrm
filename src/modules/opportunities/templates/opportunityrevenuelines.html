@@ -1,0 +1,42 @@
+<div *ngIf="hasActiveLines; else initialize">
+    <div class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <field-container field="opportunityrevenuesplit" [fieldconfig]="{readonly: true}"></field-container>
+        <field-container field="amount" [fieldconfig]="{readonly: true}"></field-container>
+        <field-container field="date_closed" [fieldconfig]="{readonly: true}"></field-container>
+    </div>
+    <table *ngIf="hasActiveLines"
+           class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label-fieldname module="OpportunityRevenueLines" field="revenue_date"></system-label-fieldname></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label-fieldname module="OpportunityRevenueLines" field="amount"></system-label-fieldname></div>
+                </th>
+                <th class="slds-cell-shrink" scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="slds-hint-parent" opportunity-revenue-line-item *ngFor="let revenueLine of revenueLines|opportunityrevenuelinesactivelinespipe"
+                [revenueLine]="revenueLine" [closeDate]="closeDate" [totalAmount]="totalAmount" (update)="revalidate()"
+                (delete)="deleteLine(revenueLine.id)"></tr>
+        </tbody>
+    </table>
+    <div *ngIf="isEditing"
+         class="slds-p-around--small slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-wrap">
+        <div class="slds-size--1-of-1 slds-large-size--1-of-2">
+            <field-messages fieldname="opportunityrevenuelines"></field-messages>
+        </div>
+        <div class="slds-size--1-of-1 slds-large-size--1-of-2 slds-text-align--right">
+            <button class="slds-button slds-button_icon slds-button_icon slds-button--icon-border" (click)="addLine()">
+                <system-button-icon [icon]="'add'"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+<ng-template #initialize>
+    <div class="slds-p-around--small slds-align--absolute-center">
+        <button class="slds-button slds-button--neutral" [disabled]="!view.isEditMode()" (click)="initalizeLines()">initialize</button>
+    </div>
+</ng-template>

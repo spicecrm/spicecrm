@@ -1,0 +1,143 @@
+<div class="slds-p-top--x-small slds-p-horizontal--x-small" system-to-bottom>
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+        <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_INDEX_PARAMETERS"></system-label></legend>
+        <div class="slds-form-element__control">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_INDEX_PRIORITY"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="ftsconfiguration.moduleFtsSettings.index_priority"/>
+                </div>
+            </div>
+            <!--div class="slds-form-element">
+                <label class="slds-form-element__label">fuzziness</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="ftsconfiguration.moduleFtsSettings.fuzziness"/>
+                </div>
+            </div-->
+
+            <!--div class="slds-form-element">
+                <label class="slds-form-element__label">Minimum Should Match</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input"
+                           [(ngModel)]="ftsconfiguration.moduleFtsSettings.minimum_should_match"/>
+                </div>
+            </div-->
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_FTS_MULTIMATCH_TYPE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.multimatch_type">
+                            <option value=''>default</option>
+                            <option value='best_fields'>Best Fields</option>
+                            <option value='most_fields'>Most Fields</option>
+                            <option value='phrase'>Phrase</option>
+                            <option value='phrase_prefix'>Phrase Prefix</option>
+                            <option value='cross_fields'>Cross Fields</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-vertical--x-small">
+                <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.waitfor"><system-label label="LBL_SYNCRONOUS"></system-label></system-checkbox>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+        <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_SEARCH_PARAMETERS"></system-label></legend>
+        <div class="slds-form-element__control">
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_OPERATOR"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.operator">
+                                <option value='and'><system-label label="LBL_AND"></system-label></option>
+                                <option value='or'><system-label label="LBL_OR"></system-label></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_SEARCH_ANALYZER"></system-label></label>
+                    <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_SEARCHANALYZER') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
+                    </system-icon-help-text>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.search_analyzer">
+                                <option value=''>standard</option>
+                                <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-p-vertical--x-small">
+                <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.globalsearch"><system-label label="LBL_GLOBAL_SEARCH"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.emailsearch"><system-label label="LBL_EMAIL_SEARCH"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.phonesearch"><system-label label="LBL_PHONE_SEARCH"></system-label></system-checkbox>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+        <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_GEO_SEARCH_PARAMETERS"></system-label></legend>
+        <div class="slds-form-element__control">
+            <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.geosearch"><system-label label="LBL_GEO_SEARCH"></system-label></system-checkbox>
+        </div>
+        <div class="slds-form-element__control slds-grid">
+            <div class="slds-form-element slds-size--1-of-2">
+                <label class="slds-form-element__label"><system-label label="LBL_LATITUDE"></system-label></label>
+                <system-input-module-field [disabled]="!ftsconfiguration.moduleFtsSettings.geosearch" [(ngModel)]="ftsconfiguration.moduleFtsSettings.geolat" [module]="ftsconfiguration.module"></system-input-module-field>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2">
+                <label class="slds-form-element__label"><system-label label="LBL_LONGITUDE"></system-label></label>
+                <system-input-module-field [disabled]="!ftsconfiguration.moduleFtsSettings.geosearch" [(ngModel)]="ftsconfiguration.moduleFtsSettings.geolng" [module]="ftsconfiguration.module"></system-input-module-field>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+        <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_FTS_ACTIVITY_PARAMS"></system-label></legend>
+        <div class="slds-form-element__control">
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
+                <div class="slds-form-element__control slds-col slds-size--1-of-3">
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.activitiessearch"><system-label label="LBL_FTS_IN_ACTIVITIES"></system-label></system-checkbox>
+                </div>
+                <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
+                    <label class="slds-form-element__label"><system-label label="LBL_FILTER"></system-label></label>
+                    <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.activitiesfilter"></system-input-module-filter>
+                </div>
+            </div>
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
+                <div class="slds-form-element__control slds-col slds-size--1-of-3">
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.historysearch"><system-label label="LBL_FTS_IN_HISTORY"></system-label></system-checkbox>
+                </div>
+                <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
+                    <label class="slds-form-element__label"><system-label label="LBL_FILTER"></system-label></label>
+                    <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.historyfilter"></system-input-module-filter>
+                </div>
+            </div>
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
+                <div class="slds-form-element__control slds-col slds-size--1-of-3">
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.assistantsearch"><system-label label="LBL_FTS_IN_ASSISTANT"></system-label></system-checkbox>
+                </div>
+                <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
+                    <label class="slds-form-element__label"><system-label label="LBL_FILTER"></system-label></label>
+                    <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.assistantfilter"></system-input-module-filter>
+                </div>
+            </div>
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
+                <div class="slds-form-element__control slds-col slds-size--1-of-3">
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.calendarsearch"><system-label label="LBL_FTS_IN_CALENDAR"></system-label></system-checkbox>
+                </div>
+                <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
+                    <label class="slds-form-element__label"><system-label label="LBL_FILTER"></system-label></label>
+                    <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.calendarfilter"></system-input-module-filter>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

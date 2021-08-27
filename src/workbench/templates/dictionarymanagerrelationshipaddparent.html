@@ -1,0 +1,10 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_PARENT"></system-label></system-modal-header>
+    <system-modal-content>
+        <dictionary-manager-relationship-container-parent [relationship]="relationship"></dictionary-manager-relationship-container-parent>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+    </system-modal-footer>
+</system-modal>

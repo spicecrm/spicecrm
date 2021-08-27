@@ -1,0 +1,38 @@
+<section role="alertdialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_prompt">
+    <div class="slds-modal__container">
+        <header class="slds-modal__header slds-theme_{{theme}}" [style.height]="headertext ? 'auto':'1rem'">
+            <h2 *ngIf="headertext" class="slds-text-heading_medium slds-hyphenate"><system-label [label]="headertext"></system-label></h2>
+        </header>
+        <div *ngIf="text || type === 'input'" class="slds-modal__content slds-text-align_center ">
+            <div *ngIf="text" class="slds-m-vertical_medium">
+                <div *ngFor="let line of splitText">{{line}}</div>
+            </div>
+            <div *ngIf="type === 'input'" class="slds-form-element slds-m-vertical_medium">
+                <div #inputField class="slds-form-element__control">
+                    <input *ngIf="!options" class="slds-input" type="text" [(ngModel)]="value" />
+                    <ng-container *ngIf="options">
+                        <div *ngIf="!optionsAsRadio; else radioGroupContainer" class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="value">
+                                <option *ngFor="let option of options" [value]="option.value">
+                                    {{option.display}}
+                                </option>
+                            </select>
+                        </div>
+                        <ng-template #radioGroupContainer>
+                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" style="display: block">
+                                {{option.display}}
+                            </system-input-radio>
+                        </ng-template>
+                    </ng-container>
+
+                </div>
+            </div>
+        </div>
+        <footer class="slds-modal__footer">
+            <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button #okButton class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
+        </footer>
+    </div>
+</section>
+
+

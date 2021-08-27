@@ -1,0 +1,12 @@
+<ul class="slds-lookup__list" role="listbox">
+    <li role="presentation">
+        <div class="slds-p-horizontal--small slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center" role="option" (mousedown)="searchWithModal.emit()">
+              <system-icon [icon]="'search'" [sprite]="'utility'" [size]="'x-small'" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
+              <div class="slds-media__body">
+                  <div class="slds-lookup__result-text"><system-label-modulename [module]="module"></system-label-modulename> <span class="slds-p-horizontal--xx-small" *ngIf="relatefilter?.active"> <system-label label="LBL_RELATED_TO"></system-label> {{relatefilter.display}}</span></div>
+              </div>
+        </div>
+    </li>
+    <li field-lookup-search-item *ngFor="let searchItem of modellist.listData.list" [module]="module" [item]="searchItem" (mousedown)="setItem(searchItem)"></li>
+    <li *ngIf="canAdd" field-lookup-search-add role="presentation" [module]="module" [parent]="model" (added)="recordAdded($event)"></li>
+</ul>

@@ -1,0 +1,15 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div *ngIf="!truncated; else truncatedDisplay" style="white-space: pre-line;">
+        {{displayValue}}
+    </div>
+    <ng-template #truncatedDisplay>
+        <div [title]="displayValue" style="max-width: 200px; text-overflow: ellipsis" class="slds-truncate">
+            {{displayValue}}
+        </div>
+    </ng-template>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()" style="position:relative;">
+    <system-input-base64 [(ngModel)]="value" [minHeight]="minHeight" [maxHeight]="maxHeight"></system-input-base64>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

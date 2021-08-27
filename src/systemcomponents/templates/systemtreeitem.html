@@ -1,0 +1,29 @@
+<div class="slds-p-left--x-small" (mouseleave)="setPosition(null)">
+    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="isDragging && dragPosition == 'before' ? '0 -2px' : 'none'"
+         (mouseenter)="setPosition('before')"></div>
+    <article (mouseenter)="setPosition('item')" [style.box-shadow]="isDragging && dragPosition == 'item' ? '0 0 0 2.5px' : 'none'"
+             class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
+            <div style="min-width: 16px">
+                <button *ngIf="config.collapsible && item.systemTreeDefs.hasChildren" [disabled]="config.expandall"
+                        class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
+                        (click)="expand(item, $event)">
+                    <system-button-icon [icon]="item.systemTreeDefs.expanded ? 'chevrondown' : 'chevronright'" size="xx-small"></system-button-icon>
+                </button>
+                <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
+                                     [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
+            </div>
+            <div class="slds-truncate">
+                <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>
+            </div>
+        </div>
+        <div *ngIf="config.canadd && item.systemTreeDefs.isSelected" class="slds-m-right--xx-small">
+            <button class="slds-button slds-button_icon slds-m-top--none" (click)="addItem(item.id, item.name)">
+                <system-button-icon icon="add" size="xx-small"></system-button-icon>
+            </button>
+        </div>
+    </article>
+    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="isDragging && dragPosition == 'after' ? '0 2px' : 'none'"
+         (mouseenter)="setPosition('after')"></div>
+
+</div>

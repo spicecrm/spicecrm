@@ -1,0 +1,73 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">
+        {{labelData.name}}
+    </system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div [system-overlay-loading-spinner]="isLoading" class="slds-size--1-of-1 slds-p-around--small slds-height_full">
+            <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--small">
+                <h2 class="slds-p-vertical--small slds-text-heading--small">
+                    <system-label label="LBL_TRANSLATIONS"></system-label>:
+                </h2>
+                <div *ngIf="!isLoading" class="slds-grid slds-col--bump-left">
+                    <system-input-radio *ngFor="let scope of scopes" [(ngModel)]="currentScope" (ngModelChange)="setUntranslatedLanguages()" [value]="scope" [disabled]="scope == 'global' && labelData.scope == 'custom'" name="label-editor-modal-translation-scope">
+                        {{scope}}
+                    </system-input-radio>
+                </div>
+            </div>
+            <ng-container *ngIf="translations">
+                <article *ngFor="let translation of translations; trackBy: trackByFn">
+                    <div class="slds-card slds-m-bottom--small">
+                        <div class="slds-card__header">
+                            <h2>{{languagesNames[translation.syslanguage]}}</h2>
+                        </div>
+                        <div class="slds-card__body slds-p-around--small">
+                            <div class="slds-form-element">
+                                <label>
+                                    <system-label label="LBL_TEXT_SHORT"></system-label>:
+                                </label>
+                                <input type="text" class="slds-input" [(ngModel)]="translation.translation_short">
+                            </div>
+                            <div class="slds-form-element">
+                                <label>
+                                    <abbr class="slds-required">*</abbr>
+                                    <system-label label="LBL_DEFAULT"></system-label>:
+                                </label>
+                                <input type="text" class="slds-input" required="required" [(ngModel)]="translation.translation_default">
+                            </div>
+                            <div class="slds-form-element">
+                                <label>
+                                    <system-label label="LBL_TEXT_LONG"></system-label>:
+                                </label>
+                                <textarea class="slds-textarea" [(ngModel)]="translation.translation_long"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </ng-container>
+            <div *ngIf="!isLoading && availableLanguages?.length > translations?.length" class="slds-grid">
+                <div class="slds-grid">
+                    <div class="slds-form-element__control slds-p-right--x-small">
+                        <div class="slds-select_container">
+                            <select class="slds-select" #add_translation_language>
+                                <option *ngFor="let lang of untranslatedLanguages" value="{{lang.language}}">
+                                    {{lang.text}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="slds-button slds-button--neutral" system-title="LBL_ADD_TRANSLATION" (click)="addTranslation(add_translation_language.value)">
+                        <system-label label="LBL_ADD"></system-label>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="save()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

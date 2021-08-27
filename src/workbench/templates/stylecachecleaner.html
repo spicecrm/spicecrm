@@ -1,0 +1,8 @@
+<div class="slds-p-around--medium">
+    <div class="slds-m-around--medium">
+        <button class="slds-button slds-button--brand" (click)="cleanCache()"><system-label label="LBL_CLEAN_STYLE_CACHE"></system-label></button>
+    </div>
+    <div *ngIf="is_loading">
+        <system-spinner></system-spinner>
+    </div>
+</div>

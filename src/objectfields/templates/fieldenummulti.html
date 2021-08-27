@@ -1,0 +1,40 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <span>{{getValue()}}</span>
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-form-element__control">
+        <div class="slds-combobox_container">
+            <div tabindex="-1"  class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none" >
+                    <input type="text" class="slds-input slds-combobox__input-value" role="textbox" placeholder="Select an Option" [value]="getValue()" />
+                    <system-icon icon="down" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
+                </div>
+                <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                        <li *ngFor="let val of getValues()" (click)="clickedItem(val, $event)" role="presentation" class="slds-listbox__item">
+                            <div id="option1" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small slds-is-selected" role="option">
+                                <span *ngIf="val.selected" class="slds-media__figure slds-listbox__option-icon">
+                                  <span class="slds-icon_container slds-icon-utility-check slds-current-color">
+                                      <system-icon icon="check" size="xx-small" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
+                                  </span>
+                                </span>
+                                <span class="slds-media__body">
+                                    <span class="slds-truncate" title="Accounts">
+                                        <span class="slds-assistive-text"></span> {{val.display}}
+                                    </span>
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+

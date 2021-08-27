@@ -1,0 +1,45 @@
+<system-modal>
+    <system-modal-header (close)="closePopup()">
+        <h2 class="slds-text-heading--medium">Newsletter Subscriptions for {{model.data.name}}</h2>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-picklist--draggable slds-grid slds-grid--align-center">
+            <div class="slds-grid slds-grid--align-center">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label" aria-label="select-1">Available Newsletters</span>
+                    <div class="slds-picklist">
+                        <ul class="slds-picklist__options slds-picklist__options--multi">
+                            <li *ngFor="let newsletter of availableNewsLetters" draggable="false" class="slds-picklist__item" [attr.aria-selected]="isSelected('available', newsletter.id)" role="option" (click)="selectNewsletter('available', newsletter.id)">
+                                <span class="slds-truncate">{{newsletter.summary_text}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid--vertical">
+                    <button class="slds-button slds-button--icon-container" [disabled]="selectedSubscribed.length === 0" (click)="unsubscribe()">
+                        <system-button-icon [icon]="'left'"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon-container" [disabled]="selectedAvailable.length === 0" (click)="subscribe()">
+                        <system-button-icon [icon]="'right'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="slds-grid slds-grid--align-center">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label" aria-label="select-1">Subscribed Newsletters</span>
+                    <div class="slds-picklist">
+                        <ul class="slds-picklist__options slds-picklist__options--multi">
+                            <li *ngFor="let newsletter of subscribedNewsLetters" draggable="false" class="slds-picklist__item" [attr.aria-selected]="isSelected('subscribed', newsletter.id)" role="option" (click)="selectNewsletter('subscribed', newsletter.id)">
+                                <span class="slds-truncate">{{newsletter.summary_text}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closePopup()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

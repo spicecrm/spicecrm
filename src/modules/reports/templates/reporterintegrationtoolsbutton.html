@@ -1,0 +1,11 @@
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger-simple>
+    <button class="slds-button slds-button--neutral" aria-haspopup="true" [disabled]="isDisabled" style="border-radius: 0;border-left: 0;border-right: 0;">
+        <span><span><system-label label="LBL_TOOLS"></system-label></span></span>
+        <system-button-icon [icon]="'down'"></system-button-icon>
+    </button>
+    <div class="slds-dropdown slds-dropdown_right">
+        <ul class="slds-dropdown__list" role="menu">
+            <div #actionItemsContainer></div>
+        </ul>
+    </div>
+</div>

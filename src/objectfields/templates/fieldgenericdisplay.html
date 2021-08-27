@@ -1,0 +1,17 @@
+<div [ngClass]="fielddisplayclass" (dblclick)="setEditMode()">
+    <system-stencil *ngIf="model.isLoading || view.isLoading; else displaycontent"></system-stencil>
+    <ng-template #displaycontent>
+        <div class="slds-size--1-of-1 slds-grid slds-grid--vertical-align-center slds-grid--align-spread" style="min-height: 19px;">
+            <div class="slds-grow" [ngClass]="{'slds-truncate': _truncate}" [ngStyle]="fieldMaxWidth" >
+                <span *ngIf="link;else nolink" system-model-popover><ng-container *ngTemplateOutlet="content"></ng-container></span>
+                <ng-template #nolink>
+                    <ng-container *ngTemplateOutlet="content"></ng-container>
+                </ng-template>
+            </div>
+            <button *ngIf="editable" class="slds-button slds-button--icon spice-button-icon-light slds-m-left--xx-small" (click)="setEditMode()">
+                <system-button-icon [icon]="'edit'"></system-button-icon>
+            </button>
+        </div>
+    </ng-template>
+    <ng-template #content><ng-content></ng-content></ng-template>
+</div>

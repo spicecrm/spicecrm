@@ -1,0 +1,24 @@
+<system-collapsable-tab [title]="componentconfig.name" [expanded]="expanded">
+    <div *ngIf="territorymanaged" class="slds-grid slds-wrap">
+        <div class="slds-size--1-of-1 slds-medium-size--1-of-2">
+            <object-record-fieldset-field [fieldsetitem]="fields.spiceacl_primary_territory"></object-record-fieldset-field>
+        </div>
+        <div *ngIf="multipleterritories" class="slds-size--1-of-1 slds-medium-size--1-of-2">
+            <object-record-fieldset-field [fieldsetitem]="fields.spiceacl_territories_hash"></object-record-fieldset-field>
+        </div>
+    </div>
+    <div *ngIf="multipleusers">
+        <object-record-fieldset-field [fieldsetitem]="fields.spiceacl_users_hash"></object-record-fieldset-field>
+    </div>
+    <div class="slds-grid slds-wrap">
+        <div *ngIf="hasFieldAssignedUser" class="slds-size--1-of-1 slds-medium-size--1-of-3">
+            <object-record-fieldset-field [fieldsetitem]="fields.assigned_user_name"></object-record-fieldset-field>
+        </div>
+        <div class="slds-size--1-of-1 slds-small-size--1-of-2" [ngClass]="{'slds-medium-size--1-of-3':hasFieldAssignedUser,'slds-medium-size--1-of-2':!hasFieldAssignedUser}">
+            <object-record-fieldset-field [fieldsetitem]="fields.created_by_name"></object-record-fieldset-field>
+        </div>
+        <div class="slds-size--1-of-1 slds-small-size--1-of-2" [ngClass]="{'slds-medium-size--1-of-3':hasFieldAssignedUser,'slds-medium-size--1-of-2':!hasFieldAssignedUser}">
+            <object-record-fieldset-field [fieldsetitem]="fields.modified_by_name"></object-record-fieldset-field>
+        </div>
+    </div>
+</system-collapsable-tab>

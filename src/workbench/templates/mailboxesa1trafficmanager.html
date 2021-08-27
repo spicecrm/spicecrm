@@ -1,0 +1,26 @@
+<div class="slds-p-horizontal--medium slds-p-vertical--small">
+    <h1><system-label label="LBL_SMS_GATEWAY"></system-label></h1>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-3 slds-p-right--xx-small">
+            <label class="slds-truncate slds-form-element__label"><system-label label="LBL_CONSUMER_KEY"></system-label></label>
+            <input type="text" [disabled]="!view.isEditMode()"
+                   [(ngModel)]="model.data.settings.consumer_key"
+                   class="slds-input ng-pristine ng-valid"/>
+        </div>
+        <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
+            <label class="slds-truncate slds-form-element__label"><system-label label="LBL_CONSUMER_SECRET"></system-label></label>
+            <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.consumer_secret"
+                   class="slds-input ng-pristine ng-valid"/>
+        </div>
+        <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
+            <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PHONE_NUMBER_FROM"></system-label></label>
+            <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.phone_number_from"
+                   class="slds-input ng-pristine ng-valid"/>
+        </div>
+    </div>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="valid_connection">
+            <system-label label="LBL_SEND_TEST_EMAIL"></system-label>
+        </button>
+    </div>
+</div>

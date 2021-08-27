@@ -1,0 +1,41 @@
+<div class="slds-theme--default slds-border--top slds-grid slds-grid--vertical-align-center">
+    <div class="slds-p-left--small slds-show--medium">
+        <system-icon [module]="module" divClass=""></system-icon>
+    </div>
+    <div class="slds-p-around--small">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <h1 class="slds-page-header__title slds-truncate"><system-label-modulename [module]="module"></system-label-modulename></h1>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-align-bottom">
+                <ul class="slds-list--horizontal slds-has-dividers--left">
+                    <li class="slds-item"><span>{{getCount().hits}} <system-label label="LBL_OF"></system-label> {{getCount().total}} <system-label label="LBL_ITEMS"></system-label></span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <table class="slds-show--medium slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+        <thead>
+        <tr class="slds-text-title--caps">
+            <th *ngFor="let item of listfields" scope="col">
+                <div class="slds-truncate slds-p-around--x-small"><system-label-fieldname [module]="module" [field]="item.field"></system-label-fieldname></div>
+            </th>
+        </tr>
+        </thead>
+    </table>
+    <div system-to-bottom (scroll)="onScroll($event)">
+        <table #tablecontent class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
+            <tbody>
+                <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+            </tbody>
+            <tbody system-table-stencils [columns]="listfields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="fts.runningmodulesearch"></tbody>
+        </table>
+        <div *ngIf="!fts.runningmodulesearch && getCount().total == 0" class="slds-align--absolute-center slds-height_full">
+            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+        </div>
+    </div>
+</div>

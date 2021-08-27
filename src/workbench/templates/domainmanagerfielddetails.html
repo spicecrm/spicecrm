@@ -1,0 +1,89 @@
+<div class="slds-p-around--x-small">
+    <div class="slds-grid">
+        <div class="slds-size--3-of-4 slds-form-element slds-m-vertical--xxx-small">
+            <div class="slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                <input type="text" disabled class="slds-input" [(ngModel)]="field.name"/>
+            </div>
+        </div>
+        <div class="slds-size--1-of-4 slds-form-element__control slds-size--1-of-4 slds-m-vertical--xxx-small slds-p-left--x-small">
+            <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
+            <div class="slds-select_container">
+                <select disabled class="slds-select" [(ngModel)]="field.scope">
+                    <option value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                    <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-vertical--xxx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_DBTYPE"></system-label>
+        </label>
+            <div class="slds-select_container">
+                <select disabled class="slds-select" [(ngModel)]="field.dbtype">
+                    <option *ngFor="let dbtype of domainmanager.dbtypes" [value]="dbtype">{{dbtype}}</option>
+                </select>
+            </div>
+    </div>
+    <div class="slds-form-element slds-m-vertical--xxx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_TYPE"></system-label>
+        </label>
+        <div class="slds-select_container">
+            <select class="slds-select" [(ngModel)]="field.fieldtype">
+                <option *ngFor="let fieldtype of domainmanager.fieldtypes" [value]="fieldtype">{{fieldtype}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-vertical--xxx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_LABEL"></system-label>
+        </label>
+        <div class="slds-select_container">
+            <system-input-label [(ngModel)]="field.label"></system-input-label>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-vertical--xxx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_LENGTH"></system-label>
+        </label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.len"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-vertical--xxx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_REQUIRED"></system-label>
+        </label>
+        <div class="slds-form-element__control">
+            <system-checkbox [asinteger]="true" [(ngModel)]="required">required</system-checkbox>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-vertical--xxx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_COMMENT"></system-label>
+        </label>
+        <div class="slds-form-element__control">
+            <textarea class="slds-textarea" [(ngModel)]="field.description"></textarea>
+        </div>
+    </div>
+    <div class="slds-grid slds-m-vertical--xxx-small slds-gutters_direct-xx-small">
+        <div class="slds-col slds-size--1-of-2 slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_VERSION"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="field.version"/>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-2 slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_PACKAGE"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="field.package"/>
+            </div>
+        </div>
+    </div>
+</div>

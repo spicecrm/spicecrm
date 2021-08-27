@@ -1,0 +1,57 @@
+<system-section titlelabel="LBL_METHOD">
+    <div *ngIf="!view.isEditMode()" class="slds-p-around--xx-small">
+        <div>
+            <system-stencil *ngIf="model.isLoading"></system-stencil>
+            <div *ngIf="!model.isLoading" class="slds-has-divider--bottom slds-p-vertical--x-small">
+                <div class="slds-form-element__label slds-truncate">
+                    <system-label label="LBL_METHOD"></system-label>
+                </div>
+                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+                    <div class="slds-truncate slds-grow">
+                        {{model.data.method}}
+                    </div>
+                    <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                        <system-button-icon [icon]="'edit'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div>
+            <system-stencil *ngIf="model.isLoading"></system-stencil>
+            <div *ngIf="!model.isLoading" class="slds-has-divider--bottom slds-p-vertical--x-small">
+                <div class="slds-form-element__label slds-truncate">
+                    <system-label label="LBL_PARAMS"></system-label>
+                </div>
+                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+                    <div class="slds-truncate slds-grow">
+                        {{model.data.method_params}}
+                    </div>
+                    <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                        <system-button-icon [icon]="'edit'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="view.isEditMode()">
+        <div class="slds-grid slds-p-around--xx-small">
+            <div class="slds-form-element slds-p-horizontal--xx-small slds-size--1-of-1">
+                <label class="slds-form-element__label">
+                    <abbr class="slds-required ng-star-inserted">*</abbr>
+                    <system-label label="LBL_METHOD"></system-label>
+                </label>
+                <system-input-backend-method [(ngModel)]="model.data.method" class="slds-p-left--xx-small spice-display-block"></system-input-backend-method>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-around--xx-small">
+            <div class="slds-form-element slds-p-horizontal--xx-small slds-size--1-of-1">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_PARAMS"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <textarea [(ngModel)]="model.data.method_params" class="slds-textarea"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</system-section>

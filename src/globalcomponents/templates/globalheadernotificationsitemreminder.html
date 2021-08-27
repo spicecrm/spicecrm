@@ -1,0 +1,23 @@
+<section class="slds-notification slds-m-vertical--xxx-small" role="dialog">
+    <div class="slds-notification__body">
+        <a class="slds-notification__target slds-media">
+            <system-icon *ngIf="notification.bean_module" [module]="notification.bean_module"></system-icon>
+            <div class="slds-media__body">
+                <div class="slds-text-color_weak slds-text-body_small">
+                    <system-icon icon="custom25" sprite="custom"></system-icon>
+                </div>
+                <h3 class="slds-truncate">
+                <span system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
+                    {{notification.bean_name}}
+                </span>
+                </h3>
+                <p class="slds-text-color_weak slds-text-body_small">
+                    <system-display-datetime [date]="notification.notification_date"></system-display-datetime>
+                </p>
+            </div>
+        </a>
+        <button (click)="notificationService.clearTempNotification(notification)" class="slds-button slds-button_icon slds-button_icon-container slds-notification__close" system-title="LBL_CLOSE">
+            <system-button-icon icon="close"></system-button-icon>
+        </button>
+    </div>
+</section>

@@ -1,0 +1,10 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <div *ngIf="!displayLink()" class="slds-truncate">
+        <span class="slds-p-left--x-small" style="font-style: italic">{{displayTime}}</span>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="getFieldClass()">
+    <system-input-time [(ngModel)]="value"></system-input-time>
+    <field-messages fieldname="{{fieldname}}"></field-messages>
+</div>

@@ -1,0 +1,43 @@
+<div class="slds-filters__item slds-m-vertical--xx-small slds-grid slds-grid--vertical-align-center">
+    <a href="javascript:void(0);" class="slds-grow slds-has-blur-focus" (click)="onClick()" (focus)="onFocus($event)">
+        <p class="slds-text-body--small">{{getDisplayName()}} <system-label [label]="operatorLabel"></system-label> {{interpretvalue(filterexpression.filtervalue)}} <span *ngIf="filterexpression.filtervalueto"><system-label label="LBL_AND"></system-label> {{interpretvalue(filterexpression.filtervalueto)}}</span></p>
+    </a>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <span class="slds-checkbox">
+              <input type="checkbox" name="options" checked=""/>
+            </span>
+        </div>
+    </div>
+    <button class="slds-button slds-button--icon slds-button--icon-small" (click)="deleteFilter()">
+        <system-button-icon [icon]="'close'"></system-button-icon>
+        <span class="slds-assistive-text"><system-label label="LBL_REMOVE"></system-label></span>
+    </button>
+</div>
+<div #popover [ngStyle]="getPopoverStyle()">
+    <div *ngIf="showPopover" @animatepopover class="slds-popover slds-nubbin--right" role="dialog">
+        <div class="slds-popover__body">
+            <fieldset class="slds-form--stacked">
+                <system-filter-builder-expression-fields [module]="module" [(ngModel)]="field"></system-filter-builder-expression-fields>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_OPERATOR"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select [disabled]="!filterexpression.field" class="slds-select" [(ngModel)]="operator">
+                                <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator"><system-label [label]="operator.name"></system-label></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <system-filter-builder-expression-values [operators]="operators[operatortype]" [operator]="filterexpression.operator" [filterexpression]="filterexpression" [module]="module" [field]="field"></system-filter-builder-expression-values>
+            </fieldset>
+            <div class="slds-text-align--right slds-p-top--x-small slds-has-divider--top">
+                <button type="button" class="slds-button slds-button--brand slds-button-space-left"
+                        (click)="closePopover()"><system-label label="LBL_OK"></system-label>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

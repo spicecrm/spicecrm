@@ -1,0 +1,6 @@
+<system-section titlelabel="LBL_TRANSPORT">
+    <div class="slds-p-around--x-small">
+        <field-container field="transport"></field-container>
+        <system-dynamic-component *ngIf="transportcomponent" [component]="transportcomponent"></system-dynamic-component>
+    </div>
+</system-section>

@@ -1,0 +1,6 @@
+<div class="slds-p-around--medium slds-theme--shade slds-scrollable--y" style="height: 100vh;">
+    <div *ngIf="isLoading" class="slds-align--absolute-center slds-height_full">
+        <system-spinner></system-spinner>
+    </div>
+    <global-newsfeed-item *ngFor="let newsitem of news" [item]="newsitem"></global-newsfeed-item>
+</div>

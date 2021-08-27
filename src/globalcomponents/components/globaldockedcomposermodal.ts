@@ -1,0 +1,127 @@
+/**
+ * @module GlobalComponents
+ */
+import {
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    Input,
+    NgModule,
+    ViewChild,
+    ViewContainerRef,
+    OnInit
+} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {dockedComposer} from '../../services/dockedcomposer.service';
+import {language} from '../../services/language.service';
+import {model} from '../../services/model.service';
+import {modal} from '../../services/modal.service';
+import {view} from '../../services/view.service';
+import {metadata} from '../../services/metadata.service';
+
+@Component({
+    selector: 'global-docked-composer-modal',
+    templateUrl: './src/globalcomponents/templates/globaldockedcomposermodal.html'
+})
+export class GlobalDockedComposerModal implements OnInit {
+
+    /**
+     * reference to the modal itself to close it
+     *
+     * @private
+     */
+    private self: any = {};
+
+
+    /**
+     * the componentconfig
+     *
+     * @private
+     */
+    private componentconfig: any;
+
+    constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, public modal: modal, public model: model, private view: view) {
+        this.view.isEditable = true;
+        this.view.setEditMode();
+    }
+
+    public ngOnInit() {
+        // get the config
+        this.loadConfig();
+    }
+
+    /**
+     * loads the config
+     *
+     * @private
+     */
+    private loadConfig(){
+        this.componentconfig = this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module);
+    }
+
+    /**
+     * returns the display label
+     */
+    get displayLabel() {
+        return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
+    }
+
+    /**
+     * closes the modal and resturns back to the composer view
+     * if the composer is not yet created .. create one in the process of minimizing
+     * this happens when the composer window is created from another source and needs to be considered
+     *
+     * @private
+     */
+    private minimize() {
+        // if we do not yet have a composer .. create one
+        if(!this.dockedComposer.composers.find(c => c.id == this.model.id)){
+            this.dockedComposer.addComposer(this.model.module, this.model);
+        }
+        // destroy the modal
+        this.self.destroy();
+    }
+
+    /**
+     * closes the composer and the modal
+     *
+     * @private
+     */
+    private promptClose() {
+        this.modal.prompt('confirm', this.language.getLabel('MSG_CANCEL', '', 'long'), this.language.getLabel('MSG_CANCEL')).subscribe(answer => {
+            if (answer) {
+                this.closeComposer();
+            }
+        });
+    }
+
+    /**
+     * closes the composer and the modal window
+     * @private
+     */
+    private closeComposer() {
+        for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
+            if (this.dockedComposer.composers[i].id === this.model.id) {
+                this.dockedComposer.composers.splice(i, 1);
+            }
+        }
+        this.self.destroy();
+    }
+
+    /**
+     * handle the action from the actionset that is returned
+     *
+     * @param action
+     * @private
+     */
+    private handleaction(action) {
+        switch (action) {
+            case 'savegodetail':
+                this.model.goDetail();
+                this.closeComposer();
+                break;
+            default:
+                this.closeComposer();
+        }
+    }
+}

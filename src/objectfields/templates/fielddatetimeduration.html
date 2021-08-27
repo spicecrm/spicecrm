@@ -1,0 +1,25 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <system-display-datetime [date]="value"></system-display-datetime><span *ngIf="dateEnd">&nbsp;-&nbsp;<system-display-datetime [date]="dateEnd" [displayDate]="false"></system-display-datetime></span>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
+    <div class="slds-grid">
+        <system-input-date [(ngModel)]="value"></system-input-date>
+        <system-input-time class="slds-p-left--x-small" [(ngModel)]="value"></system-input-time>
+        <div class="slds-form-element__control slds-p-left--x-small slds-size--1-of-6">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="editDurationHours">
+                    <option *ngFor="let duration of durationHours">{{duration}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-form-element__control slds-p-left--x-small slds-size--1-of-6">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="editDurationMinutes">
+                    <option *ngFor="let duration of durationMinutes">{{duration}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

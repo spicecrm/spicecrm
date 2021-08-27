@@ -1,0 +1,39 @@
+<system-modal size="large">
+    <system-modal-header (close)="buttonCancel()">
+        <system-label label="LBL_SPEECH_RECOGNITION"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div style="min-height: 300px;">
+            <div *ngIf="!dirty" class="slds-text-align_center slds-m-vertical--x-large" style="margin-bottom:3rem" [style.visibility]="pausing ? 'hidden':'visible'"><system-label label="LBL_WAITING_START_SPEAKING"></system-label></div>
+            <div *ngIf="dirty" [innerHTML]="theTextHtml" class="slds-text-longform"></div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid_align-spread">
+            <div class="slds-col">
+                <div class="slds-select_container">
+                    <select class="slds-select" (change)="changeLang($event)">
+                        <option *ngFor="let lang of languages; index as i" [value]="lang.id" [selected]="i == selectedLanguage">{{lang.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-col">
+                <button class="slds-button slds-button--neutral" (click)="buttonCancel()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-button slds-button--neutral" (click)="buttonPause()" [disabled]="cancelling">
+                    <ng-container *ngIf="!pausing">
+                        <system-button-icon [icon]="'pause'" [position]="'left'"></system-button-icon>
+                        <system-label label="LBL_PAUSE"></system-label>
+                    </ng-container>
+                    <ng-container *ngIf="pausing">
+                        <system-button-icon [icon]="'record'" [position]="'left'"></system-button-icon>
+                        <system-label label="LBL_CONTINUE"></system-label>
+                    </ng-container>
+                </button>
+                <button class="slds-button slds-button--brand" (click)="buttonAcceptClose($event)" [disabled]="!dirty || cancelling">
+                    <system-button-icon [icon]="'stop'" [position]="'left'"></system-button-icon>
+                    <system-label label="LBL_ACCEPT"></system-label>&nbsp;&amp;&nbsp;<system-label label="LBL_CLOSE"></system-label>
+                </button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>

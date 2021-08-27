@@ -1,0 +1,52 @@
+/**
+ * @module AdminComponentsModule
+ */
+import {Component, OnInit} from '@angular/core';
+import {metadata} from '../../services/metadata.service';
+import {language} from '../../services/language.service';
+import {backend} from '../../services/backend.service';
+import {modal} from '../../services/modal.service';
+import {toast} from "../../services/toast.service";
+
+@Component({
+    selector: 'administration-languages',
+    templateUrl: './src/admincomponents/templates/administrationlanguages.html',
+})
+
+export class AdministrationLanguages implements OnInit {
+    /**
+     * array to catch the languages
+     */
+    private languages: any = [];
+
+    private loading: boolean = true;
+
+    constructor(
+        private metadata: metadata,
+        private language: language,
+        private backend: backend,
+        private modal: modal,
+        private toast: toast,
+    ) {
+
+    }
+
+    /**
+     * loads the languages
+     */
+    ngOnInit() {
+        this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
+            this.backend.getRequest('packages').subscribe(data => {
+                if (data.versions) {
+                    this.languages = data.languages;
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                }
+                this.loading = false;
+                modalRef.instance.self.destroy();
+            });
+        });
+    }
+
+
+}

@@ -1,0 +1,62 @@
+<div class="slds-page-header">
+    <div class="slds-media">
+        <div class="slds-p-horizontal--x-small">
+            <system-action-icon icon="recall"></system-action-icon>
+        </div>
+        <div class="slds-media__body">
+            <h1 class="slds-page-header__title slds-truncate slds-align-middle">Record Recovery</h1>
+            <div class="slds-text-body_small slds-line-height_reset slds-p-vertical--xx-small" (click)="reload()">
+                {{loadDate}}
+            </div>
+        </div>
+    </div>
+</div>
+<div system-to-bottom>
+    <table class="slds-table slds-table_bordered slds-table--header-fixed slds-table_cell-buffer">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col" colspan="2">
+                    <div class="slds-truncate"><system-label label="LBL_OBJECT"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_DATE_DELETED"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_DELETED_BY"></system-label></div>
+                </th>
+                <th scope="col" class="slds-cell-shrink"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let record of records">
+                <td role="gridcell" class="slds-cell-shrink">
+                    <system-icon [module]="getModule(record.recordmodule)" size="small"></system-icon>
+                </td>
+                <td scope="row">
+                    <div class="slds-truncate">{{record.recordmodule}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate">{{record.recordname}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate">{{getUserDate(record.date_deleted)}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate">{{record.user_name}}</div>
+                </td>
+                <td role="gridcell">
+                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small"  (click)="recoverRecord(record)">
+                        <system-button-icon [icon]="'undelete'"></system-button-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        <tbody system-table-stencils [columns]="5" [select]="false" [tools]="true" [rows]="5" *ngIf="loading"></tbody>
+    </table>
+    <div *ngIf="!loading && records.length == 0" class="slds-p-around--medium slds-align--absolute-center">
+        <h2 class="slds-text-heading--small"><system-label label="LBL_NO_RECORDS_FOUND"></system-label></h2>
+    </div>
+</div>

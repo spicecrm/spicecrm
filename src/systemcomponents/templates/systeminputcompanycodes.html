@@ -1,0 +1,7 @@
+<div class="slds-form-element__control">
+    <div class="slds-select_container">
+        <select [disabled]="disabled"  class="slds-select" [(ngModel)]="companycode">
+            <option *ngFor="let thisCompanycode of _companycodes" [value]="thisCompanycode.id">{{thisCompanycode.name}}</option>
+        </select>
+    </div>
+</div>

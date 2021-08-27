@@ -1,0 +1,51 @@
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+        <tr class="slds-text-title--caps">
+            <th scope="col" style="width:2rem;">Fieldname</th>
+            <th scope="col" style="width:1rem;">Comparator</th>
+            <th scope="col" style="width:4rem;">Valutations</th>
+            <th scope="col" style="width:2rem;">OnChange</th>
+            <th scope="col" style="width:1rem;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let c of conditions" class="slds-theme--shade">
+            <td>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="c.fieldname">
+                        <option *ngFor="let opt of fieldname_options" value="{{opt}}">{{opt}}</option>
+                    </select>
+                </div>
+            </td>
+            <td>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="c.comparator">
+                        <option *ngFor="let opt of comparator_options" value="{{opt.value}}">{{opt.display}}</option>
+                    </select>
+                </div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <textarea class="slds-textarea" [ngModel]="c.valuations | maybejson" (ngModelChange)="c.valuations=$event"></textarea>
+                </div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <span class="slds-checkbox">
+                      <input type="checkbox" name="options" [id]="c.id +'onchange'" [(ngModel)]="c.onchange" />
+                      <label class="slds-checkbox__label" [attr.for]="c.id +'onchange'">
+                        <span class="slds-checkbox_faux"></span>
+                      </label>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <button class="slds-button slds-button--negative" (click)="removeCondition(c.id)"><system-button-icon [icon]="'delete'" [size]="'small'"></system-button-icon></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+    <button class="slds-button slds-button--neutral" (click)="addCondition()"><system-label label="LBL_ADD"></system-label></button>
+</div>

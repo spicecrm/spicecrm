@@ -1,0 +1,12 @@
+<div role="listbox">
+    <ul class="slds-listbox slds-dropdown_fluid" role="presentation">
+        <li *ngFor="let cat of results" class="slds-listbox__item" role="presentation">
+            <span class="slds-listbox__option slds-listbox__option_entity" role="option" (click)="choose(cat)">
+                <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity">{{language.getLabel(cat.display_name)}}</span>
+            </span>
+        </li>
+        <li *ngIf="results.length == 0" class="slds-listbox__item">
+            <span class="slds-p-left--medium">No Matches found.</span>
+        </li>
+    </ul>
+</div>

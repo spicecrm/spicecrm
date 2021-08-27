@@ -1,0 +1,28 @@
+<div class="slds-grid slds-gutters_xx-small slds-grid--vertical-align-start">
+    <system-filter-builder-expression-fields class="slds-col slds-size--1-of-4" [module]="module" [(ngModel)]="field"></system-filter-builder-expression-fields>
+    <div class="slds-col slds-size--1-of-4">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_OPERATOR"></system-label></label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [disabled]="!filterexpression.field" class="slds-select" [(ngModel)]="operator">
+                        <option></option>
+                        <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator"><system-label [label]="operator.name"></system-label></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <system-filter-builder-expression-values class="slds-col" [operators]="operators[operatortype]" [operator]="filterexpression.operator" [filterexpression]="filterexpression" [module]="module" [field]="field"></system-filter-builder-expression-values>
+    <div class="slds-col slds-grow-none">
+        <div class="slds-form-element">
+            <!-- keep label for proper alignment-->
+            <span class="slds-form-element__label slds-hidden" aria-hidden="true">delete</span>
+            <div class="slds-form-element__control">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="delete()">
+                    <system-button-icon icon="delete"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

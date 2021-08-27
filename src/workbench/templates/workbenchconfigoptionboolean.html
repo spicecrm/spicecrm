@@ -1,0 +1,11 @@
+<div class="slds-form-element slds-p-vertical--x-small">
+    <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center">
+        <div class="slds-checkbox">
+          <input [disabled]="!view.isEditMode()" class="slds-float_left" type="checkbox" name="options" [id]="option.option" [(ngModel)]="configValues[option.option]">
+          <label class="slds-checkbox__label" [attr.for]="option.option">
+            <span class="slds-checkbox_faux"></span>
+          </label>
+        </div>
+        <workbench-config-label [option]="option.option" [description]="option.description"></workbench-config-label>
+    </div>
+</div>

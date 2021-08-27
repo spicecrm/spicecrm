@@ -1,0 +1,30 @@
+<div class="slds-p-around--xx-small" [system-overlay-loading-spinner]="model.isSaving">
+    <div class="slds-form-element slds-p-horizontal--xx-small" (click)="onFocus()">
+        <field-container field="name"></field-container>
+    </div>
+    <ng-container *ngIf="isExpanded">
+        <object-record-fieldset [fieldset]="formFieldSet" [direction]="'vertical'"></object-record-fieldset>
+        <!--object-relatedlist-files></object-relatedlist-files-->
+        <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component>
+        <div class="slds-p-vertical--x-small slds-grid">
+            <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button--neutral" (click)="cancel()" [title]="language.getLabel('LBL_CANCEL')">
+                    <system-button-icon icon="close"></system-button-icon>
+                    <span class="slds-assistive-text"><system-label label="LBL_CANCEL"></system-label></span>
+                </button>
+                <button class="slds-button slds-button--neutral" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
+                    <system-button-icon icon="expand"></system-button-icon>
+                    <span class="slds-assistive-text"><system-label label="LBL_EXPAND"></system-label></span>
+                </button>
+                <button class="slds-button slds-button--neutral" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+                    <system-button-icon icon="dock_panel"></system-button-icon>
+                    <span class="slds-assistive-text"><system-label label="LBL_DOCK"></system-label></span>
+                </button>
+            </div>
+            <div class="slds-col--bump-left slds-grid slds-grid--vertical-align-center">
+                <object-record-messages-badge side="right"></object-record-messages-badge>
+                <button class="slds-button slds-button--brand .slds-button-space-left slds-float--right" [disabled]="!canSend" (click)="send()"><system-label label="LBL_SEND"></system-label></button>
+            </div>
+        </div>
+    </ng-container>
+</div>

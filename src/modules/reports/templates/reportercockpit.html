@@ -1,0 +1,30 @@
+<div class="slds-scrollable" style="height: 100%;" [system-overlay-loading-spinner]="modellist.isLoading">
+    <ng-container *ngFor="let category of modellist.buckets?.bucketitems">
+        <article *ngIf="category?.items > 0" class="slds-card slds-m-around--medium" >
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2>
+                            <span class="slds-text-heading--medium">{{category.bucket}} ({{category.items}})</span>
+                        </h2>
+                    </div>
+                </header>
+            </div>
+            <div class="slds-card__body">
+                <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
+                    <reporter-cockpit-tile *ngFor="let report of getCategoryReports(category.bucket)" [report]="report"></reporter-cockpit-tile>
+                </div>
+            </div>
+            <div *ngIf="category.items < category.total" class="slds-card__footer slds-grid">
+                <div>
+                    {{category.items}} <system-label label="LBL_OF"></system-label> {{category.total}}
+                </div>
+                <div class="slds-grow">
+                    <a href="javascript:void(0);" (click)="loadMore(category.bucket)">
+                        <system-label label="LBL_MORE"></system-label>
+                    </a>
+                </div>
+            </div>
+        </article>
+    </ng-container>
+</div>

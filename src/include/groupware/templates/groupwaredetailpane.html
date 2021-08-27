@@ -1,0 +1,26 @@
+<div class="slds-page-header">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon icon="dynamic_record_choice"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_RECORDS"></system-label></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <p class="slds-page-header__name-meta"><system-label [label]="loading ? 'LBL_SEARCHING' : 'LBL_SELECT'"></system-label></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="!loading" class="slds-p-around--x-small">
+    <groupware-detail-pane-bean *ngFor="let bean of groupware.relatedBeans" [bean]="bean" (selected)="selectBean($event)"></groupware-detail-pane-bean>
+</div>
+<groupware-pane-no-beans-found *ngIf="groupware.relatedBeans.length == 0 && !loading" class="slds-align--absolute-center" system-to-bottom-noscroll></groupware-pane-no-beans-found>
+<div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
+    <system-spinner></system-spinner>
+</div>

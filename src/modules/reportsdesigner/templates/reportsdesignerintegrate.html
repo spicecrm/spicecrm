@@ -1,0 +1,28 @@
+<div class="slds-grid" style="height: 100%">
+    <div class="slds-size--1-of-3 slds-border--right slds-scrollable--y" style="height: 100%">
+        <div *ngFor="let plugin of plugins" (click)="setSelectedItemId(plugin.id)" [class.slds-theme--shade]="plugin.id == selectedItemId" class="slds-grid slds-p-around--x-small slds-size--1-of-1 slds-border--bottom" style="cursor: pointer">
+            <div class="slds-truncate slds-grow slds-align-middle">
+                <system-label [label]="plugin.name"></system-label>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-checkbox_toggle slds-grid">
+                    <span class="slds-form-element__label slds-m-bottom_none"></span>
+                    <input type="checkbox" [ngModel]="activePlugins[plugin.id]" (ngModelChange)="setActivePlugins(plugin.id, $event)">
+                    <span class="slds-checkbox_faux_container" aria-live="assertive">
+                        <span class="slds-checkbox_faux" style="cursor: initial"></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="slds-size--2-of-3 slds-scrollable--y" style="height: 100%">
+        <ng-container *ngFor="let item of plugins; trackBy: trackByFn">
+            <reports-designer-integrate-item *ngIf="selectedItemId == item.id && !!item.component" [component]="item.component"></reports-designer-integrate-item>
+            <div *ngIf="selectedItemId == item.id && !item.component" class="slds-grid slds-grid--vertical-align-center slds-grid--align-center" style="height: 100%">
+                <system-illustration-no-data>
+                    <system-label label="LBL_NO_CONFIGURATION_NEEDED"></system-label>
+                </system-illustration-no-data>
+            </div>
+        </ng-container>
+    </div>
+</div>

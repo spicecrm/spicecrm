@@ -1,0 +1,10 @@
+<div class="slds-grid slds-p-around--small">
+    <div class="slds-col slds-has-flexi-truncate">
+        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate"><system-stencil *ngIf="!dashboardname"></system-stencil>{{dashboardname}}</h1>
+    </div>
+    <div  class="slds-col slds-no-flex slds-grid slds-align-top">
+        <button class="slds-button slds-button--neutral" (click)="goDashboards()">
+            <system-label-modulename module="Dashboards"></system-label-modulename>
+        </button>
+    </div>
+</div>

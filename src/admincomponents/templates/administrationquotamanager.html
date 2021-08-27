@@ -1,0 +1,37 @@
+<div class="slds-page-header">
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
+        <div class="slds-media">
+            <div class="slds-media__body">
+                <h1 class="slds-page-header__title slds-truncate slds-align-middle">Quota Manager</h1>
+            </div>
+        </div>
+        <div class="slds-p-top--small">
+            <label for="year-select">Year</label>
+            <select id="year-select" [(ngModel)]="year" (change)="getQuotas()">
+                <option *ngFor="let aYear of yearsList">{{aYear}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="slds-scrollable--x">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">Name</th>
+            <th scope="col">Total</th>
+            <th scope="col" *ngFor="let monthName of monthNamesList">{{monthName}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let quotaUser of users" class="slds-text-title_caps">
+            <td>{{quotaUser.data.last_name}} {{quotaUser.data.first_name}} ({{quotaUser.data.user_name}})</td>
+            <td>{{yearlyQuotas[quotaUser.data.id]}}</td>
+            <td *ngFor="let quota of monthlyQuotas[quotaUser.data.id]; let monthIndex = index">
+                <administration-quotamanager-field [userid]="quotaUser.data.id" [data]="quotas"
+                                                   [monthindex]="monthIndex"
+                                                   [year]="year"></administration-quotamanager-field>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.subscribeToArray=function(o){return function(e){for(var r=0,t=o.length;r<t&&!e.closed;r++)e.next(o[r]);e.complete()}};

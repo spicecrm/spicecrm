@@ -1,0 +1,80 @@
+<div class="slds-p-around--medium slds-theme--shade">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon icon="custom19" sprite="custom"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_PACKAGE_LOADER"></system-label></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="slds-page-header__name-meta slds-grid">
+                        <div *ngIf="opencrs" class="slds-grid slds-grid_vertical-align-center slds-p-right--small">
+                            <system-icon addclasses="slds-icon slds-icon-text-warning" divClass="" icon="warning" sprite="utility" size="xx-small"></system-icon>
+                            <span class="slds-p-left--xx-small"><system-label label="LBL_OPEN_CHANGEREQUESTS"></system-label></span>
+                        </div>
+                        <div *ngIf="errorpackages.length > 0" class="slds-grid slds-grid_vertical-align-center">
+                            <system-icon addclasses="slds-icon slds-icon-text-warning" divClass="" icon="warning" sprite="utility" size="xx-small"></system-icon>
+                            <span class="slds-p-left--xx-small"><system-label label="LBL_ERRONEUOS_PACKAGES"></system-label>: {{errorpackagesdisplay}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="repositories.length > 0" class="slds-page-header__col-actions">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [system-dropdown-trigger]="repositories.length <= 1" role="combobox">
+                            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                <input type="text" class="slds-input slds-combobox__input" autoComplete="off" role="textbox" [(ngModel)]="repositoryname" [disabled]="repositories.length <= 1"/>
+                                <system-icon icon="down" sprite="utility" size="x-small" addclasses="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right"></system-icon>
+                            </div>
+                            <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown--x-small" role="listbox">
+                                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                    <li *ngFor="let listrepostiory of repositories" (click)="selectRepository(listrepostiory)" role="presentation" class="slds-listbox__item">
+                                        <div class="slds-listbox__option slds-listbox__option_plain" role="option">
+                                            <div class="slds-truncate" title="Express Logistics and Transport">{{listrepostiory.name}}</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="!loading && repository" class="slds-theme--default">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'essentials'}" [title]="language.getLabel('LBL_ESSENTIALS')" role="presentation">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='essentials'"><system-label label="LBL_ESSENTIALS"></system-label></a>
+        </li>
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'packages'}" [title]="language.getLabel('LBL_PACKAGES')" role="presentation">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='packages'"><system-label label="LBL_PACKAGES"></system-label></a>
+        </li>
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'languages'}" title="language.getLabel('LBL_LANGUAGES')" role="presentation">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='languages'"><system-label label="LBL_LANGUAGES"></system-label></a>
+        </li>
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'content'}" [title]="language.getLabel('LBL_CONTENT')" role="presentation">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='content'"><system-label label="LBL_CONTENT"></system-label></a>
+        </li>
+    </ul>
+    <package-loader-packages [ngClass]="{'slds-show': scope == 'essentials', 'slds-hide': scope != 'essentials'}" [packages]="packages" packagescope="essentials" [repository]="repository"></package-loader-packages>
+    <package-loader-packages [ngClass]="{'slds-show': scope == 'packages', 'slds-hide': scope != 'packages'}" [packages]="packages" packagescope="config" [repository]="repository"></package-loader-packages>
+    <package-loader-languages [ngClass]="{'slds-show': scope == 'languages', 'slds-hide': scope != 'languages'}" [languages]="languages"  [repository]="repository"></package-loader-languages>
+    <package-loader-packages [ngClass]="{'slds-show': scope == 'content', 'slds-hide': scope != 'content'}" [packages]="packages" packagescope="content" [repository]="repository"></package-loader-packages>
+</div>
+<div *ngIf="!loading && !repository" system-to-bottom class="slds-theme--default slds-align--absolute-center">
+    <h2 class="slds-text-heading--medium slds-p-vertical--small">Please select a Repository</h2>
+</div>
+<div system-to-bottom class="slds-align_absolute-center" *ngIf="loading">
+    <div class="slds-grid slds-grid_vertical-align-center">
+        <system-spinner size="16"></system-spinner>
+        <div class="slds-p-horizontal--small"><system-label label="LBL_RETRIEVING_PACKAGES"></system-label></div>
+    </div>
+</div>

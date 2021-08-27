@@ -1,0 +1,9 @@
+<div *ngIf="hasGeoData" class="slds-button-group">
+    <button (click)="emitBroadcastMessage()" system-title="LBL_GEO_DATA" class="slds-button slds-button--icon-border-filled slds-button-group-item" style="height: 24px; width:24px;">
+        <system-button-icon icon="world" size="medium"></system-button-icon>
+    </button>
+    <button (click)="openDirectionModal()" system-title="LBL_ROUTE_PLANNER" class="slds-button slds-button--icon-border-filled slds-button-group-item" style="height: 24px; width:24px;">
+        <system-button-icon icon="travel_and_places" size="medium"></system-button-icon>
+    </button>
+</div>
+

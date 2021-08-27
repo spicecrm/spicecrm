@@ -1,0 +1,60 @@
+<div system-to-bottom-noscroll>
+    <div style="height: calc(100% - 450px)">
+        <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+            <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th style="width:2.5rem" scope="col"></th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_LEFT"></system-label></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_RIGHT"></system-label></div>
+                        </th>
+                        <th style="width:2rem" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionaryrelationships" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
+                        <td>
+                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryrelationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                            <dictionary-manager-item-status [(ngModel)]="dictionaryrelationship.status"></dictionary-manager-item-status>
+                        </td>
+                        <td data-label="NAME">
+                            <div class="slds-truncate">{{dictionaryrelationship.name}} / {{dictionaryrelationship.relationship_name}}</div>
+                        </td>
+                        <td data-label="Type">
+                            <div class="slds-truncate">
+                                <span class="slds-p-horizontal--x-small">{{dictionaryrelationship.relationship_type}}</span>
+                            </div>
+                        </td>
+                        <td data-label="Left">
+                            <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryrelationship.lhs_sysdictionarydefinition_id)}}&nbsp;/&nbsp;{{dictionarymanager.getDictionaryItemName(dictionaryrelationship.lhs_sysdictionaryitem_id)}}</div>
+                        </td>
+                        <td data-label="Right">
+                            <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryrelationship.rhs_sysdictionarydefinition_id)}}&nbsp;/&nbsp;{{dictionarymanager.getDictionaryItemName(dictionaryrelationship.rhs_sysdictionaryitem_id)}}</div>
+                        </td>
+                        <td class="slds-align--absolute-center" style="width: 2rem;">
+                            <system-utility-icon *ngIf="dictionarymanager.canChange(dictionaryrelationship.scope)" size="xx-small" icon="delete" (click)="deleteDictionaryRelationship($event, dictionaryrelationship.id)"></system-utility-icon>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
+                <system-utility-icon icon="new" size="x-small" (click)="addDictionaryRelationship($event)" ></system-utility-icon>
+            </div>
+        </ng-container>
+        <ng-template #selectdefinition>
+            <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"></system-label>
+            </div>
+        </ng-template>
+    </div>
+    <dictionary-manager-relationships-details [dictionaryRelationship]="currentRelationship"></dictionary-manager-relationships-details>
+</div>

@@ -1,0 +1,76 @@
+/**
+ * @module ModuleSpicePageBuilder
+ */
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
+import {SectionI} from "../interfaces/spicepagebuilder.interfaces";
+
+/**
+ * Parse and renders renderer container
+ */
+@Component({
+    selector: 'spice-page-builder-element-section',
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementsection.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class SpicePageBuilderElementSection implements OnInit {
+
+    /**
+     * containers to be rendered
+     */
+    @Input() protected readonly section: SectionI;
+    /**
+     * emit when delete button clicked
+     */
+    @Output() private delete$: EventEmitter<void> = new EventEmitter();
+    /**
+     * hold the style object for the element
+     */
+    private style = {};
+
+    constructor(private spicePageBuilderService: SpicePageBuilderService) {
+    }
+
+    /**
+     * call to generate body style from attributes
+     */
+    public ngOnInit() {
+        this.generateStyle();
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    protected trackByFn(index, item) {
+        return index;
+    }
+
+    /**
+     * generate body style object
+     */
+    private generateStyle() {
+        this.style = {
+            'background-color': this.section.attributes['background-color'],
+            'border': this.section.attributes.border,
+            'border-top': this.section.attributes['border-top'],
+            'border-right': this.section.attributes['border-right'],
+            'border-bottom': this.section.attributes['border-bottom'],
+            'border-left': this.section.attributes['border-left'],
+            'border-radius': this.section.attributes['border-radius'],
+            'padding': this.section.attributes.padding,
+            'text-align': this.section.attributes['text-align']
+        };
+    }
+
+    /**
+     * set the hovered element level
+     * @param value
+     */
+    private setIsMouseIn(value) {
+        this.spicePageBuilderService.isMouseIn = value ? 'section' : undefined;
+    }
+}

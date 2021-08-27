@@ -1,0 +1,20 @@
+<div *ngFor="let apimethod of apiinspector.apiMethods" class="slds-m-around--x-small slds-p-around--none slds-box" >
+    <div class="slds-p-around--small slds-grid slds-grid--vertical-align-center slds-p-bottom--small slds-border--bottom">
+        <div class="slds-badge slds-m-right--x-small" [ngStyle]="apiinspector.getMethodStyle(apimethod.method)">
+            <div class="slds-size--1-of-1 slds-text-align--center">{{apimethod.method}}</div>
+        </div>
+        <div class="slds-truncate slds-text-heading--small slds-grow">{{apimethod.route}}</div>
+        <system-utility-icon class="slds-p-left--xx-small" icon="ribbon" size="x-small" [colorclass]="apimethod.options.validate ? 'slds-icon-text-success' : 'slds-icon-text-light'"></system-utility-icon>
+        <system-utility-icon class="slds-p-left--xx-small" icon="unlock" size="x-small" [colorclass]="apimethod.options.noAuth ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
+        <system-utility-icon class="slds-p-left--xx-small" icon="user_role" size="x-small" [colorclass]="apimethod.options.adminOnly ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
+        <system-utility-icon class="slds-p-left--xx-small slds-text-link--reset" (click)="test(apimethod, $event)" icon="play" size="x-small"></system-utility-icon>
+    </div>
+    <div class="slds-p-around--small">
+        <div class="slds-p-bottom--small slds-text-heading--small"><system-label label="LBL_SUMMARY"></system-label></div>
+        <div>{{apimethod.description}}</div>
+    </div>
+    <administration-api-inspector-method-parameters [apimethod]="apimethod" in="path"></administration-api-inspector-method-parameters>
+    <administration-api-inspector-method-parameters [apimethod]="apimethod" in="query"></administration-api-inspector-method-parameters>
+    <administration-api-inspector-method-parameters [apimethod]="apimethod" in="body"></administration-api-inspector-method-parameters>
+    <administration-api-inspector-method-responses  [apimethod]="apimethod"></administration-api-inspector-method-responses>
+</div>

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var defer_1=require("./defer"),empty_1=require("./empty");function iif(e,r,i){return void 0===r&&(r=empty_1.EMPTY),void 0===i&&(i=empty_1.EMPTY),defer_1.defer(function(){return e()?r:i})}exports.iif=iif;

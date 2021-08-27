@@ -1,0 +1,23 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()"><system-label label="LBL_SELECT_RANGE"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
+            <div class="slds-col slds-size--1-of-2 slds-grid slds-grid--vertical-align-center">
+                <div class="slds-size--1-of-3 slds-text-align--center">
+                    <system-label label="LBL_FROM"></system-label>
+                </div>
+                <input type="number" class="slds-input slds-size--2-of-3" [(ngModel)]="from"/>
+            </div>
+            <div class="slds-col slds-size--1-of-2 slds-grid slds-grid--vertical-align-center">
+                <div class="slds-size--1-of-3 slds-text-align--center">
+                    <system-label label="LBL_TO"></system-label>
+                </div>
+                <input type="number" class="slds-input slds-size--2-of-3" [(ngModel)]="to"/>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!canSelect" (click)="select()"><system-label label="LBL_SELECT"></system-label></button>
+    </system-modal-footer>
+</system-modal>

@@ -1,0 +1,22 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()"></system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <div #headerinput class="slds-grid slds-grid_vertical-align-center slds-p-around--x-small">
+            <system-googleplaces-search class="slds-size--2-of-3" [(ngModel)]="searchterm" (details)="setDetails($event)"></system-googleplaces-search>
+            <div class="slds-grid slds-grid_vertical-align-center slds-size--1-of-3 slds-p-left--x-small">
+                <div class="slds-slider slds-p-horizontal--x-small slds-grow">
+                    <input type="range" min="0" max="100" class="slds-slider__range" [(ngModel)]="radius" />
+                </div>
+                <input style="width: 60px;" type="number" class="slds-input" [(ngModel)]="radius" >
+                <span class="slds-p-horizontal--x-small">km</span>
+            </div>
+        </div>
+        <div #mapelement [ngStyle]="mapStyle"></div>
+    </system-modal-content>
+    <system-modal-footer>
+        {{address}}
+        <button class="slds-button slds-button--neutral" (click)="clear()"><system-label label="LBL_CLEAR"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="set()"><system-label label="LBL_SET"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

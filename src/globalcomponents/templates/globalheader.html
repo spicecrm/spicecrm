@@ -1,0 +1,11 @@
+<header #header  class="slds-global-header_container">
+    <div *ngIf="session.authData.sessionId && session.authData.loaded === true">
+        <global-header-trial-bar *ngIf="isTenant"></global-header-trial-bar>
+        <!--system-dynamic-component *ngIf="isTenant" component="SystemTenantHeaderBar"></system-dynamic-component-->
+        <global-header-top></global-header-top>
+        <global-navigation-tabbed *ngIf="!issmall && tabbed"></global-navigation-tabbed>
+        <global-navigation *ngIf="!issmall && !tabbed"></global-navigation>
+        <!-- for the mobile view a border bar-->
+        <div class="slds-hide--medium slds-context-bar" style="height: 0px;"></div>
+    </div>
+</header>

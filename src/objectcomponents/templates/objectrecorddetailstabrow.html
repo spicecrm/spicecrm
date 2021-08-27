@@ -1,0 +1,5 @@
+<!--object-record-details-tab-row-field-- *ngFor="let field of rowFields" [field]="field" [ngStyle]="getFieldWidth()"></object-record-details-tab-row-field-->
+<div class="slds-p-around--x-small" *ngFor="let field of rowFields" [ngClass]="getFieldSizeClass()">
+    <field-label *ngIf="showLabel(field.fieldconfig) && field.field !== 'blank'" [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+    <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight'"></field-container>
+</div>

@@ -1,0 +1,1 @@
+"use strict";function isDate(e){return e instanceof Date&&!isNaN(+e)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isDate=isDate;

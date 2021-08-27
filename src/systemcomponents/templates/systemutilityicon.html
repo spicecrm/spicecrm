@@ -1,0 +1,5 @@
+<div class="slds-icon_container slds-icon-text-error" [system-title]="title" (click)="click.emit($event)">
+    <svg aria-hidden="true" [ngClass]="getIconClass()">
+        <use [attr.xlink:href]="getSvgHRef()"></use>
+    </svg>
+</div>
