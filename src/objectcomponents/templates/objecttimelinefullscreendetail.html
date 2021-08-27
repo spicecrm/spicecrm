@@ -1,0 +1,20 @@
+<div class="slds-border_bottom slds-p-around--medium slds-theme--shade">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="model.module"></system-icon>
+                <div class="slds-media__body">
+                    <p class="slds-text-title--caps slds-line-height--reset">
+                        <system-label-modulename [module]="model.module"></system-label-modulename></p>
+                    <div>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                            {{model.data.name}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-p-around--xx-small">
+    <div #detailContainer></div>
+</div>
