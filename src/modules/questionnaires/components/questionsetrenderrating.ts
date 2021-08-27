@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 
@@ -18,6 +18,7 @@ import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 })
 export class QuestionsetRenderRating extends QuestionsetRenderBasic implements OnInit {
 
+    @Input() public hideFinishedQuestions = false;
     private ratingValuesHaveAlsoText = false;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {

@@ -1,6 +1,6 @@
 <ng-container *ngIf="qp.isLoaded">
 
-    <ng-container *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
+    <ng-container *ngIf="!hideFinishedQuestions || !questionMeta.finished">
 
         <div *ngIf="questionMeta.parameter && !questionMeta.parameter.sequenced" class="slds-box question-render-question">
             <div *ngIf="question.questiontext || question.image_id" class="slds-m-bottom_x-small">

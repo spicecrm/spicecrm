@@ -1,6 +1,6 @@
 <ng-container *ngIf="qp.isLoaded">
 
-    <ng-container *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
+    <ng-container *ngIf="!hideFinishedQuestions || !questionMeta.finished">
 
         <div class="slds-box slds-m-bottom_medium question-render-question" style="padding:0.5rem" [ngStyle]="styleQuestionMerging()">
             <div class="slds-grid slds-grid_vertical-align-center">

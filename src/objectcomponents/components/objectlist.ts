@@ -1,7 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Injector,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -11,6 +19,7 @@ import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
 import {modal} from "../../services/modal.service";
 import {skip} from "rxjs/operators";
+import {CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 
 /**
  * renders the modellist
@@ -18,33 +27,42 @@ import {skip} from "rxjs/operators";
 @Component({
     selector: 'object-list',
     templateUrl: './src/objectcomponents/templates/objectlist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class ObjectList implements OnDestroy, OnInit {
-
     /**
      * the subscription to the modellist
      */
     public subscriptions: Subscription = new Subscription();
-
+    public virtualScrolling: boolean = true;
+    /**
+     * true if the scrollbar in the table is visible
+     */
+    public scrollbarVisible: boolean = false;
     /**
      * the componentconfig
      */
     public componentconfig: any = {};
+    /**
+     * holds the item height
+     */
+    public itemHeight: number = 33;
+    /**
+     * holds the scroll timeout
+     */
+    public scrollTimeout: number;
+    /**
+     * holds page's current position
+     */
+    public currentPosition = window.pageYOffset;
+
 
     /**
-     * returns the actionset from the config
+     * holds a reference to the virtual scroll viewport component
+     * @private
      */
-    get actionset() {
-        return this.componentconfig.actionset;
-    }
-
-    /**
-     * returns if the listservic eis loading
-     */
-    get isloading() {
-        return this.modellist.isLoading;
-    }
+    @ViewChild(CdkVirtualScrollViewport) private scrollViewport: CdkVirtualScrollViewport;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -57,10 +75,130 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
+     * returns the actionset from the config
+     */
+    get actionset() {
+        return this.componentconfig.actionset;
+    }
+
+    /**
+     * returns if the list service is loading
+     */
+    get isloading() {
+        return this.modellist.isLoading;
+    }
+
+    /**
+     * getter if the list config allows inline editing
+     */
+    get inlineedit() {
+        return this.componentconfig.inlineedit;
+    }
+
+    /**
+     * a getter if the view is considered small
+     * to render the view properly
+     */
+    get issmall() {
+        return this.layout.screenwidth == 'small';
+    }
+
+    /**
+     * returns the sortfield from the config
+     */
+    get sortfield() {
+        return this.componentconfig.sortfield;
+    }
+
+    /**
+     * returns the sortdirection from the componentconfig
+     */
+    get sortdirection() {
+        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
+    }
+
+    /**
+     * displays rownumbers if set in the config
+     */
+    get rowNumbers() {
+        return this.componentconfig.rownumbers === true;
+    }
+
+    /**
+     * gets if the config has no autoload set
+     */
+    get noAutoLoad() {
+        return this.componentconfig.noautoload === true;
+    }
+
+    /**
+     * returns if the list can load more records
+     */
+    get canLoadMore() {
+        return this.modellist.canLoadMore();
+    }
+
+    /**
      * call to initialize the component
      */
     public ngOnInit() {
         this.initialize();
+    }
+
+    /**
+     * unsubscribe from the model list subscription
+     * reset the use cache value in case other component does not use cache
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+        this.modellist.useCache = false;
+    }
+
+    /**
+     * handle viewport scroll to load more entries
+     */
+    public onViewportScroll(index: number) {
+
+        // tracking the scrolling direction
+        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
+
+        if (index === 0) {
+            return;
+        }
+
+        if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
+
+        this.scrollTimeout = window.setTimeout(() => {
+
+                if (this.modellist.listData.list.length <= this.scrollViewport.getRenderedRange().end) {
+
+                    if (scroll >= this.currentPosition) {
+
+                        this.modellist.offset = this.modellist.listData.list.length;
+
+                        // logic for loadlimit -- loading either 50 items, or when end is hit load the rest
+                        this.modellist.loadlimit = this.modellist.listData.totalcount - this.modellist.offset < this.modellist.loadlimit ? this.modellist.listData.totalcount - this.modellist.offset : 50;
+
+                        this.modellist.loadMoreList();
+                    }
+
+                    // save the new scroll position
+                    this.currentPosition = scroll;
+
+                }
+            }
+            , 500);
+    }
+
+
+    /**
+     * trackby function to optimize performance onm the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
     }
 
     /**
@@ -90,6 +228,8 @@ export class ObjectList implements OnDestroy, OnInit {
 
         this.subscriptions.add(
             this.modellist.listDataChanged$.subscribe(() => {
+
+                this.scrollbarVisible = (this.modellist.listData.list.length * this.itemHeight) > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
                 this.cdRef.detectChanges();
             })
         );
@@ -132,65 +272,6 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * getter if the list config allows inline editing
-     */
-    get inlineedit() {
-        return this.componentconfig.inlineedit;
-    }
-
-    /**
-     * a getter if the view is considered small
-     * to render the view properly
-     */
-    get issmall() {
-        return this.layout.screenwidth == 'small';
-    }
-
-    /**
-     * returns the sortfield from the config
-     */
-    get sortfield() {
-        return this.componentconfig.sortfield;
-    }
-
-    /**
-     * returns the sortdirection from the componentconfig
-     */
-    get sortdirection() {
-        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
-    }
-
-    /**
-     * unsubscribe from the model list subscription
-     * reset the use cache value in case other component does not use cache
-     */
-    public ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-        this.modellist.useCache = false;
-    }
-
-    /**
-     * displays rownumbers if set in the config
-     */
-    get rowNumbers() {
-        return this.componentconfig.rownumbers === true;
-    }
-
-    /**
-     * gets if the config has no autoload set
-     */
-    get noAutoLoad() {
-        return this.componentconfig.noautoload === true;
-    }
-
-    /**
-     * returns if the list can load more records
-     */
-    get canLoadMore() {
-        return this.modellist.canLoadMore();
-    }
-
-    /**
      * load more items from teh manual pushed button
      *
      * @private
@@ -209,16 +290,6 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * trackby function to optimize performance onm the for loop
-     *
-     * @param index
-     * @param item
-     */
-    protected trackbyfn(index, item) {
-        return item.id;
-    }
-
-    /**
      * opens the modal allowing the user to choose and select the display fields when no field defs are defined and no current list fields are defined
      */
     private chooseFields() {
@@ -226,4 +297,5 @@ export class ObjectList implements OnDestroy, OnInit {
             this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
         }
     }
+
 }

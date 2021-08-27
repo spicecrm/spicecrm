@@ -51,7 +51,7 @@
                 <p *ngIf="hideFinishedQuestions && allQuestionsFinished" class="slds-text-align_center">Alle Fragen sind beantwortet – und ausgeblendet.</p>
 
                 <ng-container *ngIf="questionset.questiontype === 'ratinggroup'">
-                    <questionset-render-rating [questionsetId]="questionset.id"></questionset-render-rating>
+                    <questionset-render-rating [questionsetId]="questionset.id" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-rating>
                 </ng-container>
 
                 <ng-container *ngIf="questionset.questiontype !== 'ratinggroup'">

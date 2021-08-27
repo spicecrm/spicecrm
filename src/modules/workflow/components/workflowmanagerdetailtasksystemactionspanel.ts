@@ -16,7 +16,7 @@ import {language} from '../../../services/language.service';
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksystemactionspanel.html'
 })
 export class WorkflowManagerDetailTaskSystemactionspanel {
-    @Input() module : string = '';
+    @Input() public module: string = '';
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
 

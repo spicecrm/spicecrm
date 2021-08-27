@@ -20,6 +20,7 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 })
 export class QuestionRenderRating extends QuestionRenderBasic implements OnInit {
 
+    @Input() private hideFinishedQuestions = false;
     private ratingValuesHaveAlsoText = false;
     private altTexts = {};
 

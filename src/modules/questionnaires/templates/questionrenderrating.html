@@ -1,6 +1,6 @@
 <ng-container *ngIf="qp.isLoaded">
 
-    <table *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
+    <table *ngIf="!hideFinishedQuestions || !questionMeta.finished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
         <thead >
         <tr class="slds-text-title_caps">
             <th style="background-color:inherit;width:100%"></th>
@@ -14,20 +14,20 @@
         </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    <ng-container *ngIf="question.image_id">
-                        <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
-                    </ng-container>
-                    <div *ngIf="!question.image_id || question.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
-                </td>
-                <td class="slds-text-align_center question-hover"
-                    *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;" (click)="qp.clickAnswerOption(option.id,$event)"><input
-                        title="{ {altTexts[option.id]} }" type="radio"
-                        [checked]="isChecked(option.id)"
-                        (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()"
-                        ></td>
-            </tr>
+        <tr>
+            <td>
+                <ng-container *ngIf="question.image_id">
+                    <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
+                </ng-container>
+                <div *ngIf="!question.image_id || question.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
+            </td>
+            <td class="slds-text-align_center question-hover"
+                *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;" (click)="qp.clickAnswerOption(option.id,$event)"><input
+                    title="{ {altTexts[option.id]} }" type="radio"
+                    [checked]="isChecked(option.id)"
+                    (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()"
+            ></td>
+        </tr>
         </tbody>
     </table>
 

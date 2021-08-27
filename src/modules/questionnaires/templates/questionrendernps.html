@@ -1,6 +1,6 @@
 <ng-container *ngIf="qp.isLoaded">
 
-    <table *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top" [ngClass]="{'with-text-for-score':questionMeta.parameter.textForScore0 || questionMeta.parameter.textForScore10}">
+    <table *ngIf="!hideFinishedQuestions || !questionMeta.finished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top" [ngClass]="{'with-text-for-score':questionMeta.parameter.textForScore0 || questionMeta.parameter.textForScore10}">
         <thead >
         <tr class="slds-text-title_caps" >
             <th style="background-color:inherit;width:100%" class="th1"></th>
@@ -13,16 +13,16 @@
         </tr>
         </thead>
         <tbody>
-                <tr *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
-                    <td>
-                        <ng-container *ngIf="question.image_id">
-                            <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
-                        </ng-container>
-                        <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
-                    </td>
-                    <td class="slds-text-align_center question-hover" *ngFor="let score of [0,1,2,3,4,5,6,7,8,9,10]" (click)="onClick(score,$event)"><input
-                            title="{{score}}" type="radio" [checked]="isChecked(question.id,score)" name="{{question.id}}" (click)="onClick(score,$event)" [disabled]="isDisabled()"></td>
-                </tr>
+        <tr *ngIf="!hideFinishedQuestions || !questionMeta.finished">
+            <td>
+                <ng-container *ngIf="question.image_id">
+                    <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
+                </ng-container>
+                <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
+            </td>
+            <td class="slds-text-align_center question-hover" *ngFor="let score of [0,1,2,3,4,5,6,7,8,9,10]" (click)="onClick(score,$event)"><input
+                    title="{{score}}" type="radio" [checked]="isChecked(question.id,score)" name="{{question.id}}" (click)="onClick(score,$event)" [disabled]="isDisabled()"></td>
+        </tr>
         </tbody>
     </table>
 
