@@ -1,0 +1,76 @@
+<div class="slds-page-header slds-grid slds-grid--align-spread">
+    <div class="slds-col">
+        <nav role="navigation" aria-label="Breadcrumbs">
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                <li class="slds-breadcrumb__item slds-text-title_caps">
+                    <a href="javascript:void(0);" (click)="goModule()"><system-label-modulename [module]="parent.module"></system-label-modulename></a>
+                </li>
+                <li class="slds-breadcrumb__item slds-text-title_caps">
+                    <a href="javascript:void(0);" (click)="goModel()">{{parent.data.summary_text}}</a>
+                </li>
+                <li class="slds-breadcrumb__item slds-text-title_caps">
+                    <span class="slds-p-horizontal--x-small"><system-label label="LBL_TIMELINE"></system-label></span>
+                </li>
+            </ol>
+        </nav>
+        <div class="slds-p-vertical--xx-small slds-text-heading--x-small">
+            <span>{{timeline.totalRecords}}</span>
+            <span class="slds-p-horizontal--xx-small">records found
+        </span>
+        </div>
+    </div>
+    <div class="slds-page-header__col-actions slds-grid">
+        <system-input-delayed *ngIf="!timeline.onlyAudits" [placeholder]="language.getLabel('LBL_SEARCH')" delay="1000" [(ngModel)]="ftsSearchTerm"></system-input-delayed>
+        <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+            </div>
+        </div>
+        <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+                <system-input-date [disabled]="timeline.loading" [(ngModel)]="date"></system-input-date>
+            </div>
+        </div>
+        <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+                <object-timeline-filter class="slds-align--absolute-center slds-button slds-button--icon slds-button--icon-border-filled"></object-timeline-filter>
+            </div>
+        </div>
+        <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+                <button class="slds-button slds-button--icon slds-button--icon-border-filled">
+                    <system-button-icon icon="refresh" (click)="reload()"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-grid">
+    <div #listContainer system-to-bottom class="slds-size--1-of-1 slds-medium-size--5-of-12 slds-border--right slds-scrollable" [ngClass]="{'slds-p-horizontal--small': !timeline.smartView, 'slds-p-left--small': timeline.smartView}" (scroll)="onScroll($event)">
+        <div *ngIf="!timeline.loading else currentlyloading" class="slds-height_full">
+            <ul *ngIf="timeline.records.length !== 0 else nocontent">
+                <li *ngFor="let record of timeline.records; let i = index;  trackBy: trackByFunction">
+                    <object-timeline-item-line [Record]="record" [index]="i"></object-timeline-item-line>
+                </li>
+                <li *ngIf="timeline.loadingMore" class="slds-p-top--large">
+                    <system-spinner></system-spinner>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div *ngIf="displayDetailsPanel && !!timeline.recordModule" class="slds-size--7-of-12" system-to-bottom>
+        <object-timeline-full-screen-detail *ngIf="timeline.recordModule !== 'Audit' else auditpanel" [module]="timeline.recordModule" [id]="timeline.recordId" [data]="timeline.recordData"></object-timeline-full-screen-detail>
+    </div>
+</div>
+<ng-template #auditpanel>
+    <object-timeline-audit-detail [auditLog]="timeline.recordData"></object-timeline-audit-detail>
+</ng-template>
+<!-- displays if records are loading-->
+<ng-template #currentlyloading>
+    <object-timeline-stencil></object-timeline-stencil>
+</ng-template>
+<ng-template #nocontent>
+    <div class="slds-p-top_large">
+        <system-illustration-no-records class="slds-m-top_large"></system-illustration-no-records>
+    </div>
+</ng-template>
