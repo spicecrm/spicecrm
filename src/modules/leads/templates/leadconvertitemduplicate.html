@@ -1,0 +1,30 @@
+<div class="slds-tile slds-box--border slds-theme--default slds-m-bottom--x-small">
+    <div class="slds-media slds-card__tile slds-p-horizontal--small slds-hint-parent">
+        <system-icon [module]="model.module" [size]="'small'"></system-icon>
+        <div class="slds-media__body">
+            <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
+                <h3 class="slds-truncate slds-text-heading--small slds-m-bottom--small" >
+                    <span>{{model.data.summary_text}}</span>
+                </h3>
+            </div>
+            <div class="slds-tile__detail slds-text-body--small">
+                <dl class="slds-dl--horizontal">
+                    <ng-container *ngFor="let field of getFields()">
+                        <dt class="slds-dl--horizontal__label slds-truncate">
+                            <span class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="field.field"></system-label-fieldname></span>
+                        </dt>
+                        <dd class="slds-dl--horizontal__detail slds-tile__meta">
+                            <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+                        </dd>
+                    </ng-container>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small slds-text-align--right">
+        <button (click)="useaccount()" class="slds-button slds-button--neutral">
+            <system-button-icon icon="check"></system-button-icon>
+            <system-label class="slds-p-left--xx-small" label="LBL_USE"></system-label>
+        </button>
+    </div>
+</div>

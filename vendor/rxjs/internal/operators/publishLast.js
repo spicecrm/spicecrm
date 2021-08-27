@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var AsyncSubject_1=require("../AsyncSubject"),multicast_1=require("./multicast");function publishLast(){return function(t){return multicast_1.multicast(new AsyncSubject_1.AsyncSubject)(t)}}exports.publishLast=publishLast;

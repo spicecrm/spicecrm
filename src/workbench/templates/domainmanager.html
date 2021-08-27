@@ -1,0 +1,19 @@
+<workbench-header titlelabel="LBL_DOMAIN_MANAGER">
+    <workbench-header-controls>
+        <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="domainmanager.generateENUMSFromModules()"><system-label label="LBL_GENERATE"></system-label></button>
+    </workbench-header-controls>
+</workbench-header>
+<div class="slds-grid">
+    <div class="slds-size--1-of-3">
+        <domain-manager-definitions></domain-manager-definitions>
+    </div>
+    <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
+        <div style="height: 50%" class="slds-scrollable--y">
+            <domain-manager-fields></domain-manager-fields>
+        </div>
+        <div style="height: 50%" class="slds-p-around--xx-small slds-scrollable--y">
+            <domain-manager-field-tabs></domain-manager-field-tabs>
+        </div>
+    </div>
+</div>

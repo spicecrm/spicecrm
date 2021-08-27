@@ -1,0 +1,18 @@
+<div style="height: 100%; overflow: hidden;">
+    <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
+        <system-icon [icon]="'clock'" [sprite]="'utility'" [size]="'small'"></system-icon>
+        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}})</h2>
+    </div>
+    <div *ngFor="let reminder of reminders; trackBy: trackByFn" class="slds-p-around--x-small slds-grid">
+        <div class="slds-media">
+            <div class="slds-media__figure ">
+                <system-icon [module]="reminder.module_name" [size]="'small'"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <div class="slds-text-title_caps slds-text-link_reset" (click)="goRecord(reminder.module_name, reminder.item_id)">{{reminder.item_summary}}</div>
+                <div class="slds-text-body_small slds-line-height_reset" [ngClass]="{'slds-text-color_error': isOverdue(reminder.reminder_date)}">{{getReminderDate(reminder.reminder_date)}}</div>
+            </div>
+        </div>
+        <system-utility-icon class="slds-col_bump-left" [icon]="'delete'" [size]="'x-small'" style="cursor: pointer" (click)="deleteRecord(reminder.module_name, reminder.item_id)"></system-utility-icon>
+    </div>
+</div>

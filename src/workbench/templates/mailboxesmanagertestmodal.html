@@ -1,0 +1,23 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_TEST"></system-label> {{testtypelabel}}</system-modal-header>
+    <system-modal-content>
+        <div class="slds-form-element slds-size--1-of-1">
+            <label class="slds-truncate slds-form-element__label"><system-label label="LBL_DESTINATION_ADDRESS"></system-label></label>
+            <input type="text" [disabled]="testing" [(ngModel)]="testemailaddress" class="slds-input" />
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="testing" class="slds-grid slds-grid--vertical-align-center">
+                <system-spinner size="10"></system-spinner>
+                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_TESTING"></system-label></span>
+            </div>
+            <div *ngIf="!testing && validConnection" class="slds-grid slds-grid--vertical-align-center">
+                <system-utility-icon icon="check" size="x-small"></system-utility-icon>
+                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_OK"></system-label></span>
+            </div>
+            <button [disabled]="!validConnection" class="slds-button slds-col--bump-left slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+            <button [disabled]="testemailaddress.trim().length === 0" class="slds-button slds-button--brand" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

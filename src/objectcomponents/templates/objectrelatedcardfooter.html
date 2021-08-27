@@ -1,0 +1,34 @@
+<footer class="slds-card__footer">
+    <div class="slds-grid slds-grid_vertical-align-center">
+        <div class="slds-size--1-of-3 slds-text-align--left">
+            <div *ngIf="relatedmodels.count > relatedmodels.loaditems && canViewAll" class="slds-grid slds-grid--vertical-align-center">
+                <button [disabled]="previousDisabled || paginating" class="slds-button slds-button_icon" (click)="firstPage()">
+                    <system-button-icon icon="jump_to_left"></system-button-icon>
+                </button>
+                <button [disabled]="previousDisabled || paginating" class="slds-button slds-button_icon" (click)="previousPage()">
+                    <system-button-icon icon="chevronleft"></system-button-icon>
+                </button>
+                <div class="slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-gutters_direct-xxx-small">
+                    <system-label class="slds-col" label="LBL_PAGE"></system-label>
+                    <div class="slds-col">{{page}}</div>
+                    <system-label class="slds-col" label="LBL_OF"></system-label>
+                    <div class="slds-col">{{pages}}</div>
+                </div>
+                <button [disabled]="nextDisabled || paginating" class="slds-button slds-button_icon" (click)="nextPage()">
+                    <system-button-icon icon="chevronright"></system-button-icon>
+                </button>
+                <button [disabled]="nextDisabled || paginating" class="slds-button slds-button_icon" (click)="lastPage()">
+                    <system-button-icon icon="jump_to_right"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-size--1-of-3 slds-text-align_center">
+            <a *ngIf="canViewAll" href="javascript:void(0);" (click)="showAll()"><system-label label="LBL_VIEWALL"></system-label></a>
+        </div>
+        <div class="slds-size--1-of-3 slds-text-align--right">
+            <button [disabled]="paginating" class="slds-button slds-button_icon" (click)="reload()">
+                <system-button-icon icon="refresh"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,29 @@
+<h2 class="slds-text-heading_medium slds-p-around--small">FTS Stats</h2>
+<table class="slds-table slds-table_bordered slds-table_cell-buffer">
+    <thead>
+    <tr class="slds-text-title_caps">
+        <th scope="col">
+            <div class="slds-truncate">Name</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">Size</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">Documents</div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let index of indices">
+        <td>
+            <div class="slds-truncate" >{{index.name}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate" >{{index.size}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate" >{{index.documents}}</div>
+        </td>
+    </tr>
+    </tbody>
+</table>

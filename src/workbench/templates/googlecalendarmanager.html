@@ -1,0 +1,52 @@
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-form-element slds-col--bump-left">
+        <div class="slds-button-group" role="group">
+            <button type="button" class="slds-button slds-button--neutral"
+                    (click)="startSync()"><system-label label="LBL_START_SYNC"></system-label>
+            </button>
+            <button type="button" class="slds-button slds-button--neutral"
+                    (click)="addMapping()"><system-label label="LBL_ADD"></system-label>
+            </button>
+            <button type="button" class="slds-button slds-button--brand"
+                    (click)="saveBeanMappings()"><system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </div>
+</div>
+
+<table class="slds-table slds-table_bordered slds-table_cell-buffer">
+    <thead>
+    <tr class="slds-text-title">
+        <th scope="col">
+            <div class="slds-truncate" title="Bean">Bean</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate" title="Calendar">Calendar</div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container
+            *ngFor="let beanMapping of beanMappings">
+        <tr *ngIf="!beanMapping.deleted">
+            <td scope="row" data-label="Class">
+                <select [disabled]="beans.length == 0" [(ngModel)]="beanMapping.bean"
+                        type="text" class="slds-select ng-pristine ng-valid">
+                    <option *ngFor="let bean of beans" value="{{ bean.class }}">{{ bean.class }}</option>
+                </select>
+            </td>
+            <td scope="row" data-label="Method">
+                <select [disabled]="calendars.length == 0" [(ngModel)]="beanMapping.calendar"
+                        type="text" class="slds-select ng-pristine ng-valid">
+                    <option *ngFor="let calendar of calendars" value="{{ calendar.id }}">{{ calendar.name }}</option>
+                </select>
+            </td>
+            <td scope="row">
+                <button class="slds-button slds-button_destructive"
+                        (click)="removeMapping(beanMapping.id)">X
+                </button>
+            </td>
+        </tr>
+    </ng-container>
+    </tbody>
+</table>

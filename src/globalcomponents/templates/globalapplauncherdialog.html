@@ -1,0 +1,43 @@
+<section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large slds-app-launcher__content" aria-modal="true">
+    <div class="slds-modal__container">
+        <header class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" style="color: #fff" (click)="close()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+                <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
+            </button>
+            <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+                <h2 class="slds-text-heading--medium slds-show--medium"><system-label label="LBL_APP_LAUNCHER"></system-label></h2>
+                <div class="slds-app-launcher__header-search">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                            <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
+                            <input system-autofocus type="search" class="slds-input" [(ngModel)]="searchTerm" [placeholder]="language.getLabel('LBL_FIND_CONFMODULE')">
+                        </div>
+                    </div>
+                </div>
+                <button class="slds-button slds-button--neutral slds-show--medium" disabled>App Store</button>
+            </div>
+        </header>
+        <system-modal-content margin="small" [grow]="true">
+            <system-section titlelabel="LBL_ROLES" *ngIf="showRoles">
+                <ul class="slds-grid slds-grid--pull-padded slds-wrap">
+                    <li *ngFor="let role of getRoles()" class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3" (click)="setRole(role.id)">
+                        <global-app-launcher-dialog-role-tile [role]="role"></global-app-launcher-dialog-role-tile>
+                    </li>
+                </ul>
+            </system-section>
+            <system-section titlelabel="LBL_MODULES">
+                <ul class="slds-grid slds-grid--pull-padded slds-wrap">
+                    <li *ngFor="let module of getModules()" class="slds-p-around--small slds-size--xx-small" (click)="gotoModule(module)" [title]="language.getModuleName(module, false, 'long')">
+                        <div class="slds-app-launcher__tile-figure slds-app-launcher__tile-figure--small slds-text-link_reset">
+                            <system-icon [module]="module" [size]="'large'"></system-icon>
+                        </div>
+                        <div class="slds-align_absolute-center slds-p-top--xx-small">
+                            <p class="slds-truncate slds-text-link_reset" [title]="language.getModuleName(module)"><system-label-modulename [module]="module"></system-label-modulename></p>
+                        </div>
+                    </li>
+                </ul>
+            </system-section>
+        </system-modal-content>
+    </div>
+</section>

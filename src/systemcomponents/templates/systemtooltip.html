@@ -1,0 +1,13 @@
+<div class="slds-is-relative">
+    <div class="slds-form-element">
+        <div class="slds-form-element__icon slds-align-middle">
+            <button class="slds-button slds-button_icon slds-button slds-button_icon" (mouseover)="openHelp()" (mouseout)="closeHelp()">
+                <system-button-icon [icon]="'info'"></system-button-icon>
+                <span class="slds-assistive-text">Help</span>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="displayHelp" class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left slds-is-absolute" role="tooltip" style="word-wrap: break-word;white-space: normal;width: 300px;bottom: 30px;left: -15px;">
+        <div class="slds-popover__body">{{tooltiptext}}</div>
+    </div>
+</div>

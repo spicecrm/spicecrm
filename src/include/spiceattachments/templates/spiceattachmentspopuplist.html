@@ -1,0 +1,5 @@
+<div class="slds-p-around--x-small">
+    <div *ngFor="let file of modelattachments.files" class="slds-p-vertical--x-small">
+        <spice-attachment-file  [file]="file" [modelattachments]="modelattachments" [editmode]="false" class="slds-media slds-size--1-of-1"></spice-attachment-file>
+    </div>
+</div>

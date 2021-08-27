@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var BehaviorSubject_1=require("../BehaviorSubject"),multicast_1=require("./multicast");function publishBehavior(t){return function(e){return multicast_1.multicast(new BehaviorSubject_1.BehaviorSubject(t))(e)}}exports.publishBehavior=publishBehavior;

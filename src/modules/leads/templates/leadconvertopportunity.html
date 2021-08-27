@@ -1,0 +1,18 @@
+<div>
+    <div class="slds-theme--shade slds-p-around--small slds-border--bottom">
+        <div class="slds-form--inline">
+            <div class="slds-form-element__control">
+                <span class="slds-checkbox">
+                  <input type="checkbox" name="options" id="createopportunity" [(ngModel)]="create"/>
+                  <label class="slds-checkbox__label" for="createopportunity">
+                    <span class="slds-checkbox--faux"></span>
+                    <span class="slds-form-element__label"><system-label label="LBL_LEADCONVERT_CREATEOPPORTUNITY"></system-label></span>
+                  </label>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div [hidden]="!createOpportunity">
+        <div #detailcontainer></div>
+    </div>
+</div>

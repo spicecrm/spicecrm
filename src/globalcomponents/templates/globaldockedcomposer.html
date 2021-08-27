@@ -1,0 +1,36 @@
+<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small" style="transition: .5s" [ngClass]="{'slds-is-closed': isClosed, 'slds-is-open': !isClosed}" role="dialog">
+    <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
+        <div class="slds-media slds-media_center slds-no-space">
+            <div class="slds-media__figure slds-m-right_x-small">
+          <span class="slds-icon_container">
+            <system-icon [module]="model.module" [size]="'small'"></system-icon>
+          </span>
+            </div>
+            <div class="slds-media__body">
+                <div class="slds-truncate">{{displayLabel}}</div>
+            </div>
+        </div>
+        <div class="slds-col_bump-left slds-shrink-none">
+            <button class="slds-button slds-button_icon slds-button_icon" (click)="toggleClosed()">
+                <system-button-icon [icon]="toggleIcon"></system-button-icon>
+            </button>
+            <button *ngIf="canExpand" class="slds-button slds-button_icon slds-button_icon" (click)="expand()">
+                <system-button-icon [icon]="'expand_alt'"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button_icon slds-button_icon" (click)="promptClose()">
+                <system-button-icon [icon]="'close'"></system-button-icon>
+            </button>
+        </div>
+    </header>
+    <div class="slds-docked-composer__body slds-theme--default slds-scrollable" style="height: 380px;">
+        <div #containercontent></div>
+    </div>
+    <footer class="slds-docked-composer__footer slds-shrink-none slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-col">
+            <global-docked-composer-messages-badge></global-docked-composer-messages-badge>
+        </div>
+        <div class="slds-col_bump-left">
+            <object-action-container [actionset]="actionset" (actionemitter)="handleaction($event)" ></object-action-container>
+        </div>
+    </footer>
+</section>

@@ -1,0 +1,42 @@
+<div class="slds-p-around--x-small">
+    <fieldset class="slds-form-element slds-form-element_compound slds-m-bottom--medium">
+        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps"><system-label label="LBL_UPDATE_TARGET_LIST"></system-label></legend>
+        <div class="slds-form-element__control slds-p-left--small slds-p-top--small">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_PROSPECTLIST"></system-label>
+                    </label>
+                    <system-input-relate module="ProspectLists" [(ngModel)]="targetList" class="slds-grow" style="display: block; margin: 0 -5px;"></system-input-relate>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_ACTION"></system-label>
+                    </label>
+                    <div class="slds-select_container slds-grow">
+                        <select class="slds-select" [(ngModel)]="properties.targetlist_update_action">
+                            <option></option>
+                            <option value="rep"><system-label label="LBL_UPDATE"></system-label></option>
+                            <option value="add"><system-label label="LBL_ADD"></system-label></option>
+                            <option value="sub"><system-label label="LBL_SUBTRACT"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="slds-form-element slds-form-element_compound slds-m-top--small slds-has-divider--top-space">
+        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps"><system-label label="LBL_PERFORMANCE_SETTINGS"></system-label></legend>
+        <div class="slds-form-element__control slds-p-left--small slds-p-top--small">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element">
+                    <system-checkbox [(ngModel)]="properties.targetlist_create_direct">
+                        <system-label label="LBL_CREATE_DIRECT"></system-label>
+                    </system-checkbox>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

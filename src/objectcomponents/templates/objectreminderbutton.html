@@ -1,0 +1,16 @@
+<div class="slds-form-element slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': showDialog}">
+    <a class="slds-button slds-button_stateful slds-button--neutral slds-m-horizontal--xxx-small" [ngClass]="{'slds-not-selected': !hasReminder, 'slds-is-selected': hasReminder }"><!-- [disabled]="isEditing"-->
+        <span class="slds-text-not-selected" (click)="toggleDatePicker()">
+            <system-button-icon class="slds-p-right--xx-small" icon="add"></system-button-icon><system-label label="LBL_REMINDER"></system-label>
+        </span>
+        <span class="slds-text-selected">
+            <system-button-icon class="slds-p-right--xx-small" icon="check"></system-button-icon>{{getReminderDate()}}
+        </span>
+        <span class="slds-text-selected-focus">
+            <system-button-icon class="slds-p-right--xx-small" icon="close" (click)="clearReminder()"></system-button-icon> <span (click)="toggleDatePicker()">{{getReminderDate()}}</span>
+        </span>
+    </a>
+    <div class="slds-datepicker slds-dropdown slds-dropdown_right" role="dialog">
+        <system-input-date-picker *ngIf="showDialog" [setDate]="reminderDate" (datePicked)="setReminder($event)"></system-input-date-picker>
+    </div>
+</div>

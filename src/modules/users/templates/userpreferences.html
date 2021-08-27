@@ -1,0 +1,65 @@
+<div *ngIf="!canEdit; else preferencesContainer" class="slds-text-align--center slds-m-top--x-large">
+    The preferences of the user are only viewable/editable by himself.
+</div>
+
+<ng-template #preferencesContainer>
+    <div [system-overlay-loading-spinner]="isLoading">
+
+        <system-preferences-panel [preferences]="preferences"></system-preferences-panel>
+
+        <system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
+            <div class="slds-grid">
+                <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
+                    <field-container *ngIf="!preferences.home_dashboard" [system-model-provider]="{module: 'Dashboards', id: preferences.home_dashboard, data: homeDashboardData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                    <system-preferences-panel-item-edit>
+                        <div class="slds-select_container">
+                            <select class="slds-select" [ngModel]="preferences.home_dashboard" (ngModelChange)="setHomeDashboardData($event)">
+                                <option value="">-- Default Dashboard --</option>
+                                <option *ngFor="let dashboard of dashboards" [value]="dashboard.id">{{dashboard.name}}</option>
+                            </select>
+                        </div>
+                    </system-preferences-panel-item-edit>
+                </system-preferences-panel-item>
+                <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
+                    <field-container *ngIf="!!preferences.home_dashboardset" [system-model-provider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: dashboardSetData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                    <system-preferences-panel-item-edit>
+                        <div class="slds-select_container">
+                            <select class="slds-select" [ngModel]="preferences.home_dashboardset" (ngModelChange)="setDashboardSetData($event)">
+                                <option></option>
+                                <option *ngFor="let option of dashboardSets" [value]="option.id">
+                                    {{option.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </system-preferences-panel-item-edit>
+                </system-preferences-panel-item>
+                <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
+                    <system-preferences-panel-item-display>
+                        {{preferences.home_assistant}}
+                    </system-preferences-panel-item-display>
+                    <system-preferences-panel-item-edit>
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="preferences.home_assistant">
+                                <option></option>
+                                <option value="visible">
+                                    <system-label label="LBL_VISIBLE"></system-label>
+                                </option>
+                                <option value="hidden">
+                                    <system-label label="LBL_HIDDEN"></system-label>
+                                </option>
+                            </select>
+                        </div>
+                    </system-preferences-panel-item-edit>
+                </system-preferences-panel-item>
+            </div>
+        </system-collapsable-tab>
+        <div *ngIf="view.isEditMode()" class="slds-p-around--small slds-align--absolute-center">
+            <button class="slds-button slds-button--neutral" (click)="cancel()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </div>
+</ng-template>

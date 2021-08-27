@@ -1,0 +1,27 @@
+<system-modal size="prompt">
+    <system-modal-header [hiddenCloseButton]="true">
+        <system-label label="MSG_CONNECTION_LOST"></system-label>
+    </system-modal-header>
+    <system-modal-content margin="large">
+        <div class="slds-grid slds-grid_vertical slds-size--1-of-1 slds-align_absolute-center">
+            <system-label label="MSG_CONNECTION_LOST" length="long"></system-label>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid_vertical-align-center">
+            <div class="slds-grow slds-p-right--small">
+                <div *ngIf="timeToNextCheck < 0" class="slds-grid slds-grid_vertical-align-center">
+                    <system-spinner size="16"></system-spinner>
+                    <system-label class="slds-p-left--small" label="LBL_RECONNECTING"></system-label>
+                </div>
+                <system-progress-bar *ngIf="timeToNextCheck > 0" [progress]="progress" [hideText]="true"></system-progress-bar>
+            </div>
+            <button class="slds-button slds-button--neutral" (click)="logout()">
+                <system-label label="LBL_LOGOUT"></system-label>
+            </button>
+            <button class="slds-button slds-button--brand" (click)="reconnect()">
+                <system-label label="LBL_RECONNECT_NOW"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

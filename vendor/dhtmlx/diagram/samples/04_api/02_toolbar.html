@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Per-shape Toolbar</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+	<style type="text/css">
+		.zmdi{ font-size: 24px; color: #888; }
+	</style>
+</head>
+
+<body>
+    <div id="diagram_container" class="dhx_inline_cont" style="width:800px;height:500px;"></div>
+	<script>
+		var diagram = new dhx.Diagram("diagram_container", { 
+			type: "org",
+			select:true,
+			margin:{
+				y:65
+			},
+			toolbar: [{
+				id:"download",
+				content:"<i class='zmdi zmdi-download'></i>"
+			},
+			{
+				id:"info",
+				content:"<i class='zmdi zmdi-info-outline'></i>"
+			}]
+		});
+		diagram.events.on("ShapeIconClick", function(icon){
+			var id = diagram.selection.getId();
+			alert(icon + " was clicked for id = " + id);
+		});
+		diagram.data.parse(orgChartData);
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Data Planning Model</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/diagram.js"></script>
+	<style>
+		html,body,.cont{
+			background: #FFF;
+		}
+		.dhx_diagram{
+			background: #FFF;
+		}
+		.dhx_free_diagram .dhx_item_shape{
+			fill: #A4E5D9;
+			stroke:none;
+		}
+		.dhx_free_diagram .dhx_diagram_flow_item text{
+			font-size: 16px;
+		}
+		.dhx_free_diagram .dhx_item_text{
+			font-size: 16px;
+		}
+		#dhx_text_background feFlood{
+			flood-color: #FFF;
+		}
+		.dhx_free_diagram .dhx_item_text{
+			filter:url(#dhx_text_background);
+			fill:#000;
+		}
+		.dhx_free_diagram .dhx_diagram_line{
+			stroke: #7FBBB0;
+		}
+		.dhx_free_diagram .dhx_diagram_arrow{
+			stroke:#7FBBB0;
+			fill:#7FBBB0;
+		}
+		.titles .dhx_item_shape{
+			fill:#FFF;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+
+	<script>
+		var diagram = new dhx.Diagram("diagram_container");
+		diagram.config.lineGap = 30;
+		diagram.data.parse(dataPlanning);
+	</script>
+
+</body>
+
+</html>

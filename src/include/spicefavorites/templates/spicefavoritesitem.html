@@ -1,0 +1,23 @@
+<div class="slds-lookup__item-action slds-media slds-media--center" role="option" >
+   <system-icon [module]="model.module" size="small"></system-icon>
+   <div class="slds-media__body" >
+        <div class="slds-lookup__result-text">
+            <span *ngIf="!mainfieldset">{{model.data.summary_text}}</span>
+            <object-record-fieldset-horizontal-list [fieldset]="mainfieldset"></object-record-fieldset-horizontal-list>
+
+        </div>
+        <span class="slds-lookup__result-meta slds-text-body--small">
+            <ul class="slds-list_horizontal slds-has-dividers_right slds-truncate">
+              <li class="slds-item"><system-label-modulename [module]="model.module" [singular]="true"></system-label-modulename></li>
+                <ng-container *ngFor="let fieldsetitem of subfieldsetfields">
+                   <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
+                       <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+                  </li>
+                </ng-container>
+            </ul>
+        </span>
+   </div>
+    <button class="slds-button slds-button--icon slds-button--icon-border" (click)="deleteFavorite()">
+        <system-button-icon icon="delete"></system-button-icon>
+    </button>
+</div>

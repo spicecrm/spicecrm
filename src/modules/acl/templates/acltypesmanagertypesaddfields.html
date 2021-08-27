@@ -1,0 +1,38 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ADD_FIELD"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+
+
+        <fieldset class="slds-form-element">
+            <div class="slds-form-element__control">
+                <div class="slds-checkbox" (click)="toggleSelectAll($event)">
+                    <input type="checkbox" [id]="'select_all'" [checked]="selectAllChecked"/>
+                    <label class="slds-checkbox__label" [attr.for]="'select_all'">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label"><system-label label="LBL_SELECT_ALL"></system-label></span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+        <fieldset class="slds-form-element">
+            <div *ngFor="let thisfield of fields" class="slds-form-element__control">
+                <div *ngIf="!getFieldDisplay(thisfield)" class="slds-checkbox" (click)="setFieldValue(thisfield, $event)">
+                    <input type="checkbox" [id]="'id'+thisfield" [checked]="getFieldValue(thisfield)" />
+                    <label class="slds-checkbox__label" [attr.for]="'id'+thisfield">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{getFieldDisplayName(thisfield)}}&nbsp;/&nbsp;{{thisfield}}</span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button [disabled]="selectedfields.length < 1" class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+    </system-modal-footer>
+</system-modal>

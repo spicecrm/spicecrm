@@ -1,0 +1,38 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <ul class="slds-list_horizontal slds-has-dividers_left">
+        <li *ngFor="let user of users" class="slds-item">
+            <a href="javascript:void(0);" class="slds-text-link_reset" system-model-popover module="Users" [id]="user.id">{{user.summary_text}}</a>
+        </li>
+    </ul>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <div class="slds-form-element__control slds-box--border">
+        <div class="slds-combobox_container">
+            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookupSearchOpen}"  role="combobox">
+                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                    <input type="text" class="slds-input slds-combobox__input"  aria-autocomplete="list" (focus)="onFocus()" (click)="onFieldClick()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', 'Users')"/>
+                    <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
+                </div>
+                <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                    <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''" module="Users" (selectedObject)="addItem($event)"></field-lookup-recent>
+                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" module="Users" (selectedObject)="addItem($event)" (searchWithModal)="searchWithModal()" [searchterm]="lookupSearchTerm" [disableadd]="true"></field-lookup-search>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul *ngIf="users.length > 0" class="slds-listbox slds-listbox_horizontal" role="group">
+        <li *ngFor="let user of users" role="presentation" class="slds-listbox__item slds-p-top_xxx-small">
+            <div class="slds-pill">
+                <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                  <system-icon module="Users" size="small"></system-icon>
+                </span>
+                <span class="slds-pill__label" system-model-popover module="Users" [id]="user.id">{{user.summary_text}}</span>
+                <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeItem(user.id)">
+                  <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
+            </div>
+        </li>
+    </ul>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

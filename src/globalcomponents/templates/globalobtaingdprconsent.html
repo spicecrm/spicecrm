@@ -1,0 +1,3 @@
+<div [system-overlay-loading-spinner]="!consentText" style="min-height:80px">
+    <div *ngIf="consentText" [innerHTML]="sanitizer.bypassSecurityTrustHtml(consentText)"></div>
+</div>

@@ -1,0 +1,38 @@
+<div [ngClass]="{'slds-hide': hidepanel}">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-p-left--small slds-show--medium">
+            <system-icon [module]="module" divClass=""></system-icon>
+        </div>
+        <div class="slds-p-around--small slds-theme--default slds-border--top slds-grow">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <h1 class="slds-page-header__title slds-truncate"><system-label-modulename [module]="module"></system-label-modulename></h1>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-align-bottom">
+                    <!--p class="slds-text-body--small">{{getCount()}} items</p-->
+                    <ul class="slds-list--horizontal slds-has-dividers--left">
+                        <li class="slds-item"><span>{{getCount().hits}} <system-label label="LBL_OF"></system-label> {{getCount().total}} <system-label label="LBL_ITEMS"></system-label></span></li>
+                        <li *ngIf="canViewMore()" class="slds-item slds-text-link--reset" (click)="setSearchScope()"><system-label label="LBL_VIEWALL"></system-label></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
+            <thead class="slds-show--medium">
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let item of listfields" scope="col">
+                        <div class="slds-truncate slds-p-around--x-small"><system-label-fieldname [module]="module" [field]="item.field"></system-label-fieldname></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+            </tbody>
+        </table>
+        <system-spinner *ngIf="fts.runningmodulesearch"></system-spinner>
+    </div>
+</div>

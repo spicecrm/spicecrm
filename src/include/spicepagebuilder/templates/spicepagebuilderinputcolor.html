@@ -1,0 +1,7 @@
+<div class="slds-form-element">
+    <label class="slds-form-element__label">{{label}}</label>
+    <div class="slds-form-element__control slds-input-has-fixed-addon">
+        <input type="color" [(ngModel)]="value" (ngModelChange)="emitValue()" class="slds-input">
+        <input type="text" [(ngModel)]="value" (ngModelChange)="emitValue()" maxlength="8" size="8" class="slds-input slds-m-left--x-small">
+    </div>
+</div>

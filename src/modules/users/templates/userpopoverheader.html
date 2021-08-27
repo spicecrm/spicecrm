@@ -1,0 +1,15 @@
+<header class="slds-media slds-media_center slds-m-bottom_small slds-p-vertical--x-small">
+    <div class="slds-p-right--medium">
+        <span *ngIf="!userimage"  class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle" style="width:40px;height:40px;">
+            <system-utility-icon  icon="user" size="small" addclasses="slds-icon" colorclass=""></system-utility-icon>
+        </span>
+        <img style="height: 40px; width: 40px" *ngIf="userimage" [src]="userimage"/>
+    </div>
+    <div class="slds-media__body">
+        <h2 class="slds-text-heading_small slds-hyphenate" ><field-container field="full_name" [fieldconfig]="{fieldtype: 'fullname'}" fielddisplayclass="slds-truncate"></field-container></h2>
+        <ul class="slds-list_horizontal slds-has-dividers_right">
+            <li class="slds-item"><field-container field="title" fielddisplayclass="slds-truncate"></field-container></li>
+            <li class="slds-item"><field-container field="department" fielddisplayclass="slds-truncate"></field-container></li>
+        </ul>
+    </div>
+</header>

@@ -1,0 +1,6 @@
+<div [ngClass]="getFormClass()">
+    <ng-container *ngFor="let item of fieldsetItems">
+        <field *ngIf="item.field" [field]="item"></field>
+        <field-set *ngIf="!item.field" [fieldset]="item.fieldset" [fieldsetconfig]="item.fieldconfig"></field-set>
+    </ng-container>
+</div>

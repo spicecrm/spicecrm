@@ -1,0 +1,57 @@
+<div system-to-bottom>
+    <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+        <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_DOMAIN"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_TEMPLATE"></system-label></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let dictionaryitem of dictionaryitems">
+                    <tr class="slds-hint-parent" >
+                        <td data-label="Name">
+                            <div class="slds-truncate">{{dictionaryitem.name}}</div>
+                        </td>
+                        <td data-label="Domain">
+                            <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
+                        </td>
+                        <td data-label="Field">
+                            <div class="slds-truncate">{{translateDomainField(getDomainFields(dictionaryitem.sysdomaindefinition_id)[0].name, dictionaryitem)}}</div>
+                        </td>
+                        <td data-label="Template">
+                            <div class="slds-truncate">{{getRefDefinitionName(dictionaryitem.sysdictionarydefinition_id)}}</div>
+                        </td>
+                    </tr>
+                    <tr class="slds-hint-parent" *ngFor="let field of getDomainFields(dictionaryitem.sysdomaindefinition_id, false)">
+                        <td data-label="Name">
+                        </td>
+                        <td data-label="Domain">
+                        </td>
+                        <td data-label="Field">
+                            <div class="slds-truncate">{{translateDomainField(field.name, dictionaryitem)}}</div>
+                        </td>
+                        <td data-label="Template">
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </ng-container>
+    <ng-template #selectdefinition>
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"></system-label>
+        </div>
+    </ng-template>
+</div>
+

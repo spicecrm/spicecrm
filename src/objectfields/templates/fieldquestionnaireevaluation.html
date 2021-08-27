@@ -1,0 +1,9 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <span *ngIf="isEvaluationAvailable">
+        <span *ngFor="let category of categories; let last=last">{{category.name}}: {{category.value}}<span *ngIf="!last"> • </span></span>
+    </span>
+    <span *ngIf="!isEvaluationAvailable">
+        <i><system-label label="LBL_NO_EVALUATION_AVAILABLE"></system-label></i>
+    </span>
+</field-generic-display>

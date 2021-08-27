@@ -1,0 +1,79 @@
+<system-modal size="large">
+    <system-modal-header [hiddenCloseButton]="true"><system-label label="LBL_OPTIMISTICLOCKING_CONFLICT"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-p-around--small">
+            <div class="slds-text-heading--label"><system-label label="MSG_OPTIMISTIC_LOCKING"></system-label></div>
+            <div class="slds-p-vertical--xx-small"><system-label label="MSG_OPTIMISTIC_LOCKING" length="long"></system-label></div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="slds-text-title_caps" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+                    </th>
+                    <th class="slds-text-title_caps" style="width:33%" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_CURRENT_VALUE"></system-label></div>
+                    </th>
+                    <th class="slds-text-title_caps" scope="col" style="width: 3.25rem;">
+                    </th>
+                    <th class="slds-text-title_caps" style="width:33%" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_NEW_VALUE"></system-label></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let _conflict of _conflicts; let i=index">
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+                                <field-label [fieldname]="_conflict.field" style="margin-right: 0"></field-label>
+                                <div (click)="toggleChangeDetails(_conflict.field)">
+                                    <system-utility-icon icon="clock" size="x-small" ></system-utility-icon>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <div class="slds-radio slds-p-right--x-small">
+                                    <input type="radio" id="radio{{i}}1" name="{{i}}" checked (click)="unselect(_conflict.field)"/>
+                                    <label class="slds-radio__label" for="radio{{i}}1">
+                                        <span class="slds-radio_faux"></span>
+                                    </label>
+                                </div>
+                                <div class="slds-box slds-box--xx-small slds-p-vertical--x-small" style="width:100%">
+                                    <object-optimisitclocking-modal-data-field [fieldmodule]="model.module" [fieldname]="_conflict.field" [fieldvalue]="_conflict.value"></object-optimisitclocking-modal-data-field>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="slds-text-align--center">
+                            <system-utility-icon icon="forward" size="x-small"></system-utility-icon>
+                        </td>
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <div class="slds-radio slds-p-right--x-small">
+                                    <input type="radio" id="radio{{i}}2" name="{{i}}" (click)="select(_conflict.field)"/>
+                                    <label class="slds-radio__label" for="radio{{i}}2">
+                                        <span class="slds-radio_faux"></span>
+                                    </label>
+                                </div>
+                                <div class="slds-box slds-box--xx-small slds-p-vertical--x-small" style="width:100%">
+                                    <field-container [fieldname]="_conflict.field" [fielddisplayclass]="'slds-truncate'"></field-container>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="channgeOpen(_conflict.field)">
+                        <td style="border-top:none" colspan="4">
+                            <object-optimisitclocking-modal-change *ngFor="let change of _conflict.changes" [change]="change"></object-optimisitclocking-modal-change>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <!--button class="slds-button slds-button--neutral" (click)="edit()">öffnen zum weiteren Bearbeiten</button-->
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

@@ -1,0 +1,26 @@
+<div #bodycontainer system-to-bottom class="slds-is-relative spice-scrollbar" [ngStyle]="bodyContainerStyle">
+    <ng-container *ngIf="isEditMode">
+        <ng-container *ngFor="let row of dashboardGrid; trackBy: trackByGridFn">
+            <ng-container *ngFor="let column of row">
+                <div [ngStyle]="dashboardlayout.prepareStyle(column)" style="padding:10px;border: 1px solid #ddd;position: absolute;">
+                    <button class="slds-button slds-button--icon slds-align--absolute-center"  style="height: 100%; width: 100%" (click)="addDashlet(column)">
+                        <system-button-icon [icon]="'add'" [size]="'medium'"  style="height: 100%; width: 100%"></system-button-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <dashboard-container-element *ngFor="let item of dashboardElements; trackBy: trackByItemFn" [item]="item"></dashboard-container-element>
+    <div *ngIf="isLoading" class="slds-align--absolute-center slds-grid slds-grid--vertical" system-to-bottom>
+        <system-spinner></system-spinner>
+        <div class="slds-m-around--medium slds-text-heading--small">
+            <system-label label="MSG_LOADING_DASHBOARDS"></system-label>
+        </div>
+    </div>
+    <div *ngIf="!isLoading && dashboardlayout.dashboardNotFound" class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
+        <system-illustration-no-access></system-illustration-no-access>
+    </div>
+    <div *ngIf="!isLoading && dashboardElements.length == 0 && !dashboardlayout.dashboardNotFound && !isEditMode" class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
+        <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<div system-dropdown-trigger-simple class="slds-dropdown-trigger slds-dropdown-trigger--click">
+    <button class="slds-button  slds-button--icon" system-title="LBL_SETTINGS">
+        <system-button-icon [icon]="'down'"></system-button-icon>
+    </button>
+    <div class="slds-dropdown slds-dropdown--left slds-m-top--x-small">
+        <ul class="slds-dropdown__list" role="menu">
+            <ng-container *ngIf="actionitems.length > 0">
+                <!--li class="slds-has-divider--top-space" role="separator"></li-->
+                <li *ngFor="let actionitem of actionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <object-action-container-item class="slds-truncate" [displayasicon]="displayasicon" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                    </a>
+                </li>
+                <li class="slds-has-divider--bottom-space"></li>
+            </ng-container>
+            <li class="slds-dropdown__item" role="presentation" (click)="chooseFields()">
+                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                    <span [ngClass]="{'slds-disabled-text': !canChooseFields}"><system-label label="LBL_SETFIELDS"></system-label></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

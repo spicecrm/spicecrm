@@ -1,0 +1,6 @@
+<div *ngIf="aclAccess; else noaccess" class="slds-scrollable">
+    <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset" [hideActions]="hideactions"></object-relatedlist-table>
+</div>
+<ng-template #noaccess>
+    <system-illustration-no-access></system-illustration-no-access>
+</ng-template>

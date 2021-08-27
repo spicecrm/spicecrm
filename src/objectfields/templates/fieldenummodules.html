@@ -1,0 +1,10 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    {{getValue()}}
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-form-element__control" [ngClass]="getFieldClass()">
+        <system-input-module [(ngModel)]="value" [displaytechnicalname]="false" [displayAsterisk]="displayAsterisk"></system-input-module>
+        <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+</div>

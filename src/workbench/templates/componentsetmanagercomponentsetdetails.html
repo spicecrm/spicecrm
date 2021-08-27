@@ -1,0 +1,16 @@
+<div class="slds-grid">
+    <div class="slds-form-element slds-size_2-of-3">
+        <label class="slds-form-element__label"><system-label label="LBL_COMPONENT"></system-label></label>
+        <div class="slds-form-element__control">
+            <input disabled type="text" class="slds-input" [ngModel]="component.component"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-size_1-of-3 slds-p-left_x-small">
+        <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+        <div class="slds-form-element__control">
+            <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="component.package"/>
+        </div>
+    </div>
+</div>
+
+<workbench-config [component]="configcomponent" [configValues]="configValues"></workbench-config>

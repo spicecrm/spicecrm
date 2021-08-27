@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SpiceCRM Link Opener</title>
+</head>
+<body>
+
+    <p>This is a helper page for opening SpiceCRM links.</p>
+    <p id="urlMissing" style="display:none">&hellip; but no URL is given. Close this window/tab.</p>
+    <p id="notice" style="display:none">Now it´s not needed anymore and <b>you can close this window/tab</b>.</p>
+
+    <script>
+
+        function loadLink(url) {
+            window.location = url;
+        }
+
+        let destinationUrl = decodeURIComponent( window.location.search.substr( 1 ) );
+
+        if ( !destinationUrl.length ) {
+            document.getElementById( 'urlMissing' ).style.display = 'block';
+        } else {
+
+            if ( window.BroadcastChannel ) {
+                let bc = new BroadcastChannel( 'spiceCRM_channel' );
+                let urlReceived = false;
+                bc.onmessage = function( e ) {
+                    if ( e.data.urlReceived ) document.getElementById( 'notice' ).style.display = 'block';
+                    window.clearTimeout(timer);
+                };
+                var timer = window.setTimeout( function() { if ( !urlReceived ) loadLink( destinationUrl ); }, 2000 );
+                bc.postMessage( { 'url': destinationUrl } );
+
+            } else loadLink( destinationUrl );
+
+        }
+    </script>
+</body>
+</html>

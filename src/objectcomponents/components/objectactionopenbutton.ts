@@ -1,0 +1,44 @@
+/**
+ * @module ObjectComponents
+ */
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {metadata} from '../../services/metadata.service';
+import {model} from '../../services/model.service';
+import {helper} from '../../services/helper.service';
+import {language} from '../../services/language.service';
+import {view} from "../../services/view.service";
+
+/**
+ * a standard actionset item to open a model
+ */
+@Component({
+    selector: 'object-action-open-button',
+    templateUrl: './src/objectcomponents/templates/objectactionopenbutton.html',
+    providers: [helper]
+})
+export class ObjectActionOpenButton {
+
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
+    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view) {
+    }
+
+    /**
+     * checks if the user is allowed to access the bean
+     */
+    get disabled() {
+        return !this.model.checkAccess('detail') ? true : this.view.isEditMode();
+    }
+
+    /**
+     * opens the modal with the record
+     */
+    public execute() {
+        this.model.goDetail();
+    }
+
+}

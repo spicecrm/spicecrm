@@ -1,0 +1,5 @@
+<acl-manager-header displaylabel="LBL_SPICEACLPROFILES"></acl-manager-header>
+<div class="slds-grid">
+    <aclprofiles-manager-profiles class="slds-size--1-of-2 slds-border--right" (profileselected)="setProfile($event)"></aclprofiles-manager-profiles>
+    <aclprofiles-manager-profile [profileid]="activeprofileid" [profile]="activeprofile" class="slds-size--1-of-2" style="height: 100%;"></aclprofiles-manager-profile>
+</div>

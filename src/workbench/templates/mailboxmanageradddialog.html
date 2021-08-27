@@ -1,0 +1,23 @@
+<div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="closeDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 id="header43" class="slds-text-heading--medium"><system-label label="LBL_ADD"></system-label> <system-label label="LBL_MAILBOX"></system-label></h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_MAILBOX"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" placeholder="name" [(ngModel)]="mailbox_name" [disabled]="saving" />
+                </div>
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()" [disabled]="saving"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="add()" [disabled]="saving"><system-label label="LBL_ADD"></system-label></button>
+        </div>
+    </div>
+</div>
+<div class="slds-backdrop slds-backdrop--open"></div>

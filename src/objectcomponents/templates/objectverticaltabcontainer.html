@@ -1,0 +1,15 @@
+<div class="slds-vertical-tabs" style="border: none;">
+    <ul #tabscontainer class="slds-vertical-tabs__nav slds-scrollable--y" [ngStyle]="getTabsStyle()" role="tablist" aria-orientation="vertical">
+        <li *ngFor="let tab of getTabs(); let tabindex = index" (click)="setActiveTab(tabindex)" [ngClass]="{'slds-is-active': tabindex === activeTab}" class="slds-vertical-tabs__nav-item slds-text-title--caps" role="presentation">
+            <a class="slds-vertical-tabs__link" href="javascript:void(0)" role="tab" tabindex="-1" aria-selected="false"><span class="slds-badge" *ngIf="tab.hasErrors" title="Invalid fields!">{{tab.hasErrors}}</span>
+                <object-vertical-tab-container-item-header [tab]="tab"></object-vertical-tab-container-item-header>
+            </a>
+        </li>
+    </ul>
+    <ng-container *ngFor="let tab of getTabs(); let tabindex = index">
+        <div *ngIf="checkRenderTab(tabindex)" [ngStyle]="getDisplay(tabindex)" class="slds-vertical-tabs__content slds-scrollable--y slds-p-around--xx-small slds-show" role="tabpanel">
+            <object-vertical-tab-container-item *ngIf="tab.componentset" [componentset]="tab.componentset" (taberrors)="showErrorsOnTab(tabindex,$event)">
+            </object-vertical-tab-container-item>
+        </div>
+    </ng-container>
+</div>

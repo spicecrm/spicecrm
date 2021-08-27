@@ -1,0 +1,66 @@
+/**
+ * @module ModuleCalendar
+ */
+import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {language} from '../../../services/language.service';
+import {navigation} from '../../../services/navigation.service';
+import {calendar} from '../services/calendar.service';
+
+/**
+ * @ignore
+ */
+declare var moment: any;
+
+/**
+ * Display a schedule view to be rendered in a dashboard as dashlet
+ */
+@Component({
+    selector: 'calendar-schedule-dashlet',
+    templateUrl: './src/modules/calendar/templates/calendarscheduledashlet.html',
+    providers: [calendar]
+})
+
+export class CalendarScheduleDashlet {
+    /**
+     * holds the schedule until date
+     */
+    public scheduleUntilDate: any = {};
+    /**
+     * dom reference for the header container
+     */
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
+
+    constructor(private language: language,
+                private navigation: navigation,
+                private elementRef: ElementRef,
+                private renderer: Renderer2,
+                private calendar: calendar) {
+        this.calendar.isDashlet = true;
+        this.calendar.sheetType = 'Schedule';
+        this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
+    }
+
+    /**
+     * @return calendarDate: moment
+     */
+    get calendarDate() {
+        return this.calendar.calendarDate;
+    }
+
+    /**
+     * @return style: object height and width of the calendar content
+     */
+    get contentStyle() {
+        return {
+            height: this.headerContainer ? `calc(100% - ${this.headerContainer.element.nativeElement.offsetHeight}px)` : '100px',
+            width: '100%'
+        };
+    }
+
+    /**
+     * @return title: string
+     */
+    get title() {
+        return new moment(this.calendarDate).format("MMM D, YYYY") + ' - ' + this.scheduleUntilDate.format("MMM D, YYYY");
+    }
+}

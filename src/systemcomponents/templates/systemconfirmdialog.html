@@ -1,0 +1,15 @@
+<div class="slds-backdrop slds-backdrop--open"></div>
+<div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header">
+            <h2 class="slds-text-heading--medium">{{title}}</h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium">
+            {{message}}
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="ok()"><system-label label="LBL_OK"></system-label></button>
+        </div>
+    </div>
+</div>

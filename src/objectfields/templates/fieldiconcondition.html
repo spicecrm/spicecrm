@@ -1,0 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig">
+    <system-utility-icon *ngIf="!!icon" [size]="fieldconfig.size" [icon]="icon" [title]="label" [colorclass]="colorClass"></system-utility-icon>
+</field-generic-display>

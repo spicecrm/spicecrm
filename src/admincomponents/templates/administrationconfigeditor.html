@@ -1,0 +1,29 @@
+<div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+    <h2 class="slds-text-heading--medium ">editor</h2>
+    <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+</div>
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+    <tr class="slds-text-title--caps">
+        <th scope="col">
+            <system-label label="LBL_NAME"></system-label>
+        </th>
+        <th scope="col">
+            <system-label label="LBL_VALUE"></system-label>
+        </th>
+    </tr>
+    </thead>
+        <tbody>
+            <tr style="vertical-align: middle" class="slds-align-top"  *ngFor="let item of items">
+                <td>{{item.name}}</td>
+                <td>
+                    <ng-container [ngSwitch]="item.type">
+                        <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="configvalues[item.name]"></system-checkbox>
+                        <div *ngSwitchDefault class="slds-form-element__control">
+                            <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
+                        </div>
+                    </ng-container>
+                </td>
+            </tr>
+        </tbody>
+</table>

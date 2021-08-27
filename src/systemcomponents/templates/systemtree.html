@@ -1,0 +1,34 @@
+<div role="tree" class="tree-list-drag-boundary">
+    <ul cdkDropList cdkDropListSortingDisabled [cdkDropListData]="tree" (cdkDropListDropped)="handleDrop($event)"
+        class="slds-tree slds-p-top--xxx-small" role="tree"
+        aria-labelledby="treeheading">
+        <li role="treeitem" *ngFor="let item of tree; trackBy: trackByFn"
+            cdkDrag cdkDragBoundary=".tree-list-drag-boundary"
+            [cdkDragData]="item"
+            (cdkDragStarted)="setIsDragging(true)"
+            (cdkDragEnded)="setIsDragging(false)"
+            [cdkDragDisabled]="!config.draggable || item.systemTreeDefs.hasChildren"
+            [attr.aria-level]="item.systemTreeDefs.level"
+            [attr.aria-selected]="item.systemTreeDefs.isSelected"
+            class="slds-grid slds-drag--preview">
+            <system-tree-item [item]="item"
+                              (click)="handleClick(item.id)"
+                              [config]="config"
+                              [isDragging]="isDragging"
+                              (toggleExpandedChange)="handleExpand($event)"
+                              (dragPositionChange)="handleDragPosition($event)"
+                              (onItemAdd)="onItemAdd.emit($event)"
+                              [title]="item.name"
+                              style="width: 100%"
+                              class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
+            </system-tree-item>
+        </li>
+    </ul>
+</div>
+<div *ngIf="config.canadd"
+     class="slds-grid slds-align-content-center slds-border--top slds-m-top--x-small slds-p-top--x-small">
+    <button class="slds-button slds-button--icon slds-button--icon-border slds-p-around--xx-small"
+            (click)="onItemAdd.emit(null)">
+        <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
+    </button>
+</div>

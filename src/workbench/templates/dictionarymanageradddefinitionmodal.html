@@ -1,0 +1,53 @@
+<system-modal>
+    <system-modal-header (close)="close()">Add Dictionary Definition</system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small" [ngClass]="{'slds-has-error': getMessages('name').length > 0}">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+                <system-input-text [(ngModel)]="dictionarydefinition.name"></system-input-text>
+                <div class="slds-form-element__help" *ngFor="let message of getMessages('name')">{{message.message}}</div>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small" [ngClass]="{'slds-has-error': getMessages('tablename').length > 0}">
+                <label class="slds-form-element__label"><system-label label="LBL_TABLE"></system-label></label>
+                <system-input-text [(ngModel)]="dictionarydefinition.tablename"></system-input-text>
+                <div class="slds-form-element__help" *ngFor="let message of getMessages('tablename')">{{message.message}}</div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="dictionarydefinition.scope">
+                        <option *ngIf="dictionarymanager.changescope == 'global'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_type">
+                        <option value="module">module</option>
+                        <option value="metadata">metadata</option>
+                        <option value="template">template</option>
+                        <option value="template">relationship</option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                <system-input-text [(ngModel)]="dictionarydefinition.package"></system-input-text>
+            </div>
+            <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                <system-input-text [(ngModel)]="dictionarydefinition.version"></system-input-text>
+            </div>
+        </div>
+        <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
+        <system-richtext-editor [(ngModel)]="dictionarydefinition.description"></system-richtext-editor>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label> </button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label> </button>
+    </system-modal-footer>
+</system-modal>

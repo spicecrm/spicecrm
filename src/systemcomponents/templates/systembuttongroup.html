@@ -1,0 +1,27 @@
+<div class="slds-button-group" role="group">
+    <button class="slds-button slds-button_neutral">Refresh</button>
+    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" [ngClass]="{'slds-is-open': isopen}">
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="toggleOpen()">
+            <system-button-icon icon="down"></system-button-icon>
+        </button>
+        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
+            <ul class="slds-dropdown__list" role="menu">
+                <li class="slds-dropdown__item" role="presentation">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                        <span class="slds-truncate" title="Overflow Item One">Overflow Item One</span>
+                    </a>
+                </li>
+                <li class="slds-dropdown__item" role="presentation">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <span class="slds-truncate" title="Overflow Item Two">Overflow Item Two</span>
+                    </a>
+                </li>
+                <li class="slds-dropdown__item" role="presentation">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <span class="slds-truncate" title="Overflow Item Three">Overflow Item Three</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

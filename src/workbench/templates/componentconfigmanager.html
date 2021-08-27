@@ -1,0 +1,46 @@
+<workbench-header titlelabel="LBL_COMPONENTCONFIG_MANAGER"></workbench-header>
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">Module</label>
+        <div class="slds-form-element__control">
+            <div class="slds-select_container" style="min-width:250px;">
+                <select class="slds-select" [(ngModel)]="currentModule" (change)="reset()">
+                    <option value="*">*</option>
+                    <option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">Component</label>
+        <div class="slds-form-element__control" style="min-width:250px;">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="currentComponent" (change)="buildTree()">
+                    <option value=""></option>
+                    <option *ngFor="let sysComponent of getComponents()" [value]="sysComponent.id">{{sysComponent.display}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element slds-col--bump-left">
+        <button type="button" class="slds-button slds-button--neutral" (click)="addComponentset()"><system-label label="LBL_ADD"></system-label></button>
+        <button type="button" class="slds-button slds-button--brand" disabled="disabled" (click)="saveChanges()"><system-label label="LBL_SAVE"></system-label></button>
+    </div>
+</div>
+<div class="slds-grid">
+    <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
+        <div class="slds-tree_container" role="application" style="max-width: none;">
+            <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
+                <li *ngFor="let currentComponentItem of componentTree" role="treeitem" [attr.aria-level]="currentComponentItem.level" (click)="selectComponent(currentComponentItem)" [ngClass]="{'slds-theme--shade' : isSelected(currentComponentItem.id)}">
+                    <div class="slds-tree__item slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+                        <a href="javascript:void(0);" role="presentation" class="slds-truncate">{{currentComponentItem.component}}</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small">
+        <componentconfigmanager-component-details *ngIf="selectedComponent.id" [component]="selectedComponent"></componentconfigmanager-component-details>
+    </div>
+</div>

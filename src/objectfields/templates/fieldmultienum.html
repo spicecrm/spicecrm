@@ -1,0 +1,17 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <span *ngIf="!displayCheckboxes">{{getValue()}}</span>
+    <div *ngIf="displayCheckboxes" class="slds-grid slds-grid--align-spread">
+        <div class="slds-form-element__control" *ngFor="let row of options" [ngClass]="getFieldClass()" >
+            <field-multienum-checkbox disabled="true" class="slds-checkbox" *ngFor="let option of row" [fieldname]="fieldname" [option]="option"></field-multienum-checkbox>
+        </div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-grid slds-grid--align-spread">
+        <div class="slds-form-element__control" *ngFor="let row of options" [ngClass]="getFieldClass()" >
+            <field-multienum-checkbox class="slds-checkbox" *ngFor="let option of row" [fieldname]="fieldname" [option]="option"></field-multienum-checkbox>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

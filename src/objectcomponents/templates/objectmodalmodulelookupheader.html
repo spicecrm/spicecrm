@@ -1,0 +1,15 @@
+<div class="slds-form-element slds-p-top--medium slds-p-horizontal--medium slds-m-bottom--small slds-grid slds-grid--vertical-align-center">
+    <object-list-types></object-list-types>
+    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-grow">
+        <system-utility-icon icon="search" size="x-small" addclasses="slds-input__icon"></system-utility-icon>
+        <input type="text" id="lookup" class="slds-input" [(ngModel)]="searchTerm" [autocomplete]="autoCompleteKiller" (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(modellist.module)">
+    </div>
+    <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" (click)="modellist.reLoadList()">
+        <system-button-icon [icon]="'refresh'"></system-button-icon>
+    </button>
+    <object-listview-aggregates-button></object-listview-aggregates-button>
+</div>
+<div class="slds-theme--shade slds-p-around--x-small slds-border--top slds-grid slds-grid--vertical-align-center slds slds-grid--align-spread">
+    <object-listview-header-details></object-listview-header-details>
+    <system-checkbox *ngIf="relatefilter && relatefilter.id" [disabled]="relatefilter.required" [(ngModel)]="relatefilterActive"><system-label label="LBL_RELATED_TO"></system-label> <system-label-modulename [module]="relatefilter.module" [singular]="true"></system-label-modulename> {{relatefilter.display}}</system-checkbox>
+</div>

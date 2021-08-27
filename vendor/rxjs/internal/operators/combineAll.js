@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var combineLatest_1=require("../observable/combineLatest");function combineAll(t){return function(e){return e.lift(new combineLatest_1.CombineLatestOperator(t))}}exports.combineAll=combineAll;

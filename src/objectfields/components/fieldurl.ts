@@ -1,0 +1,32 @@
+/**
+ * @module ObjectFields
+ */
+import {Component} from '@angular/core';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {language} from '../../services/language.service';
+import {metadata} from '../../services/metadata.service';
+import {fieldGeneric} from './fieldgeneric';
+import {Router}   from '@angular/router';
+
+@Component({
+    selector: 'field-url',
+    templateUrl: './src/objectfields/templates/fieldurl.html'
+})
+export class fieldUrl extends fieldGeneric {
+
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
+        super(model, view, language, metadata, router);
+    }
+
+    get url() {
+        return this.model.data[this.fieldname] ? this.model.data[this.fieldname].replace( /https?\:\/\//, '') : '';
+    }
+
+    private navigateTo() {
+        if (this.url != ''){
+            window.open('//' + this.url, '_blank');
+        }
+    }
+
+}

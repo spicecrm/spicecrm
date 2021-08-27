@@ -1,0 +1,18 @@
+<div class="slds-panel slds-size--medium slds-grid slds-grid--vertical slds-nowrap slds-panel--filters">
+    <div class="slds-form--stacked slds-grow slds-scrollable--y slds-grid slds-grid--vertical">
+        <div class="slds-filters">
+            <div class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom">
+                <h4 class="slds-align-middle slds-text-heading--small"><system-label label="LBL_AGGREGATES"></system-label></h4>
+                <button [disabled]="!modellist.hasAggregates" class="slds-button slds-button--brand" (click)="clearAggregates()"><system-label label="LBL_CLEARALL"></system-label></button>
+            </div>
+            <div class="slds-filters__body" system-to-bottom>
+                <div class="slds-grid_vertical">
+                    <object-listview-tags-aggregate *ngIf="hasTags"></object-listview-tags-aggregate>
+                    <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of aggregates">
+                        <object-listview-aggregate [aggregate]="aggregate" ></object-listview-aggregate>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="slds-grid slds-theme--default slds-grid--vertical slds-nowrap slds-border--left slds-border--right">
+    <div class="slds-p-around--small">
+        <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate slds-grid--vertical-align-center">
+            <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate"><system-label label="LBL_ASSISTANT"></system-label></h1>
+            <div class="slds-shrink-none">
+                <home-assistant-filter></home-assistant-filter>
+                <system-utility-icon [icon]="'refresh'" [size]="'xx-small'" (click)="reload($event)"  [title]="language.getLabel('LBL_REFRESH')"></system-utility-icon>
+            </div>
+        </div>
+    </div>
+    <div system-to-bottom>
+        <div *ngIf="noActivities" class="slds-align--absolute-center slds-height_full">
+            <system-illustration-no-task class="slds-p-around--medium"></system-illustration-no-task>
+        </div>
+        <ul class="slds-timeline">
+            <li *ngFor="let item of assistant.filteredItems" class="slds-p-around--xx-small">
+                <activitytimeline-item-container module="Activities" [activity]="item"></activitytimeline-item-container>
+            </li>
+        </ul>
+        <ul *ngIf="loading" class="slds-timeline">
+            <li class="slds-p-around--xx-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.8" class="slds-p-around--xx-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.6" class="slds-p-around--xx-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.4" class="slds-p-around--xx-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.2" class="slds-p-around--xx-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+        </ul>
+    </div>
+</div>

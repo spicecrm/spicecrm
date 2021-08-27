@@ -1,0 +1,16 @@
+<div class="slds-grid slds-path__scroller-container">
+    <div class="slds-path__scroller" role="application">
+        <div class="slds-path__scroller_inner">
+            <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                <li *ngFor="let stage of stages" class="slds-path__item" [ngClass]="stageClass(stage)" role="presentation">
+                    <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" role="option" (click)="setActiveStage(stage.stage)">
+                        <span class="slds-path__stage">
+                            <system-utility-icon icon="check" size="x-small"></system-utility-icon>
+                        </span>
+                        <span class="slds-path__title">{{getStageLabel(stage.stagedata)}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

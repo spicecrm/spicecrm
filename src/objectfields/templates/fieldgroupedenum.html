@@ -1,0 +1,37 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <span *ngIf="!fieldconfig.displayCheckboxes">{{localValue.valueDisplay}}</span>
+    <div *ngIf="!!fieldconfig.displayCheckboxes">
+        <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
+            <div class="slds-p-vertical--xx-small slds-text-title_bold">
+                <system-checkbox [ngModel]="group.value" [disabled]="true">{{group.display}}</system-checkbox>
+            </div>
+            <div class="slds-form-element__control" [ngClass]="css_classes" >
+                <system-checkbox-group [ngModel]="localValue.valueArray" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
+                    <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="columnsClass">
+                        <system-checkbox-group-checkbox [value]="option.value" [disabled]="true"> {{option.display}}</system-checkbox-group-checkbox>
+                    </div>
+                </system-checkbox-group>
+            </div>
+        </div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
+        <div class="slds-p-vertical--xx-small slds-text-title_bold">
+            <system-checkbox [ngModel]="this.localValue.valueGroups[group.value]" (ngModelChange)="setGroupValue($event, group)">
+                {{group.display}}
+            </system-checkbox>
+        </div>
+        <div class="slds-form-element__control" [ngClass]="css_classes" >
+            <system-checkbox-group [ngModel]="localValue.valueArray" (ngModelChange)="setItemValue($event)" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
+                <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="columnsClass">
+                    <system-checkbox-group-checkbox [value]="option.value">
+                        {{option.display}}
+                    </system-checkbox-group-checkbox>
+                </div>
+            </system-checkbox-group>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

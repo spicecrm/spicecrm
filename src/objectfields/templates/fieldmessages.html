@@ -1,0 +1,17 @@
+<div *ngIf="errors.length > 0" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help">
+    <div class="slds-media__figure">
+        <span class="slds-icon_container"><system-utility-icon [icon]="'error'" [size]="'x-small'" [colorclass]="'slds-icon-text-error'"></system-utility-icon></span></div>
+    <div class="slds-media__body" *ngFor="let m of errors"><system-label [label]="m.message"></system-label></div>
+</div>
+
+<div *ngIf="warnings.length > 0" class="slds-media slds-media-center slds-inline_icon_text slds-inline_icon_text--warning">
+    <div class="slds-media__figure">
+        <span class="slds-icon_container"><system-utility-icon [icon]="'warning'" [size]="'x-small'" [colorclass]="'slds-icon-text-warning'"></system-utility-icon></span></div>
+    <div class="slds-media__body" *ngFor="let m of warnings"><system-label [label]="m.message"></system-label></div>
+</div>
+
+<div *ngIf="notices.length > 0" class="slds-media slds-media-center slds-inline_icon_text">
+    <div class="slds-media__figure">
+        <span class="slds-icon_container"><system-utility-icon [icon]="'info'" [size]="'x-small'"></system-utility-icon></span></div>
+    <div class="slds-media__body" *ngFor="let m of notices"><system-label [label]="m.message"></system-label></div>
+</div>

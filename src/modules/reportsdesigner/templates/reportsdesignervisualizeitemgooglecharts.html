@@ -1,0 +1,76 @@
+<div class="slds-p-horizontal--xx-small slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <reports-designer-visualize-item-chart-type-panel [properties]="properties.googlecharts" [typeOptions]="typeOptions" [dimensionsOptions]="dimensionsOptions"></reports-designer-visualize-item-chart-type-panel>
+    <div class="slds-grow" style="min-height: 0">
+        <reports-designer-visualize-item-chart-data-panel [properties]="properties.googlecharts" style="display: block; height: 50%"></reports-designer-visualize-item-chart-data-panel>
+        <div class="slds-p-top--x-small" style="height: 50%">
+            <system-collapsable-tab [collapsible]="false" [title]="'LBL_CHART_OPTIONS'" class="spice-collapsible-tab-grow">
+                <div class="slds-p-around--x-small slds-height_full">
+                    <div class="slds-grid">
+                        <div class="slds-size--1-of-2 slds-form-element slds-grid slds-grid--vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_TITLE"></system-label>
+                            </label>
+                            <div class="slds-form-element__control slds-grow">
+                                <input type="text" size="5" [(ngModel)]="properties.googlecharts.title" class="slds-input">
+                            </div>
+                        </div>
+                        <div class="slds-size--1-of-2 slds-form-element slds-grid slds-grid--vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_CONTEXT"></system-label>
+                            </label>
+                            <div class="slds-form-element__control slds-grow">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="properties.googlecharts.context">
+                                        <option></option>
+                                        <option *ngFor="let contextOption of contextOptions" [value]="contextOption">
+                                            {{contextOption}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size--1-of-1 slds-p-top--x-small slds-m-top--x-small slds-has-divider--top slds-has-divider--bottom slds-grid slds-wrap">
+                        <system-checkbox [ngModel]="properties.googlecharts.options.legend == 'on'" (ngModelChange)="setPropertiesOption('legend', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_DISPLAY_LEGEND"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.emptyvalues == 'on'" (ngModelChange)="setPropertiesOption('emptyvalues', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_SHOW_EMPTY_VALUES"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.novlabels == 'on'" (ngModelChange)="setPropertiesOption('novlabels', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_HIDE_V_AXIS_LABELS"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.nohlabels == 'on'" (ngModelChange)="setPropertiesOption('nohlabels', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_HIDE_H_AXIS_LABELS"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.logv == 'on'" (ngModelChange)="setPropertiesOption('logv', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_LOGARITHMIC_V_SCALE"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.logh == 'on'" (ngModelChange)="setPropertiesOption('logh', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_LOGARITHMIC_H_SCALE"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.stacked == 'on'" (ngModelChange)="setPropertiesOption('stacked', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_STACKED_SERIES"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.is3D == 'on'" (ngModelChange)="setPropertiesOption('is3D', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            3 <system-label label="LBL_DIMENSIONAL"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.reverse == 'on'" (ngModelChange)="setPropertiesOption('reverse', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_REVERSE_SERIES"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.curvetypefunction == 'on'" (ngModelChange)="setPropertiesOption('curvetypefunction', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_SMOOTHED_LINE"></system-label>
+                        </system-checkbox>
+                        <!--suppress JSConstantReassignment -->
+                        <system-checkbox [ngModel]="properties.googlecharts.options.points == 'on'" (ngModelChange)="setPropertiesOption('points', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_SHOW_POINTS"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.material == 'on'" (ngModelChange)="setPropertiesOption('material', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_MATERIAL_DESIGN"></system-label>
+                        </system-checkbox>
+                    </div>
+                </div>
+            </system-collapsable-tab>
+        </div>
+    </div>
+</div>

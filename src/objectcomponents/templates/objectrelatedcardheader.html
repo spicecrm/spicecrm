@@ -1,0 +1,25 @@
+<div class="slds-card__header slds-grid slds-grid--vertical-align-center">
+    <header class="slds-media slds-media--center slds-has-flexi-truncate">
+        <system-icon [module]="module" [size]="'small'"></system-icon>
+        <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
+            <h2>
+                <a href="javascript:void(0);" class="slds-text-link--reset">
+                    <span class="slds-text-heading--small">
+                        {{panelTitle}}<ng-container *ngIf="!relatedmodels.isloading">&nbsp;({{relatedmodels.count}})</ng-container>
+                    </span>
+                </a>
+            </h2>
+            <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="relatedmodels.count > 0" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
+        </div>
+    </header>
+    <!-- additional header eleents go here-->
+    <div #ngContent class="slds-m-left--x-small">
+        <ng-content></ng-content>
+    </div>
+    <object-action-container *ngIf="actionset" [actionset]="actionset" class="slds-m-left--x-small"></object-action-container>
+    <div *ngIf="!relatedmodels.isloading && relatedmodels.count === 0" class="slds-m-left--x-small">
+        <button class="slds-button slds-button_icon x-slds-m-right--medium" (click)="reload()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+</div>

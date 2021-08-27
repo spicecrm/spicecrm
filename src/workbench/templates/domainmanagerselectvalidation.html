@@ -1,0 +1,32 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_SELECT_VALIDATION"></system-label></system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th scope="col" style="width: 3rem;"></th>
+                    <th scope="col">
+                        <span class="slds-th__action slds-truncate"><system-label label="LBL_NAME"></system-label></span>
+                    </th>
+                    <th scope="col">
+                        <span class="slds-th__action slds-truncate"><system-label label="LBL_TYPE"></system-label></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr  *ngFor="let validation of validations" (click)="selectValidation(validation.id)">
+                    <td>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="validation.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        <dictionary-manager-item-status [(ngModel)]="validation.status"></dictionary-manager-item-status>
+
+                    </td>
+                    <td>{{validation.name}}</td>
+                    <td>{{validation.validation_type}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+    </system-modal-footer>
+</system-modal>

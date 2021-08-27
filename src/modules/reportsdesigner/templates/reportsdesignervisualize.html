@@ -1,0 +1,63 @@
+<div style="height: 100%" class="slds-grid slds-grid--vertical">
+    <div class="slds-border--bottom slds-p-around--x-small slds-page-header slds-grid" style="border-radius: 0">
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_LAYOUT"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="selectedLayout">
+                        <option *ngFor="let layoutOption of layoutOptions" [ngValue]="layoutOption">
+                            {{layoutOption.value}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_HEIGHT"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input type="text" size="5" [(ngModel)]="chartHeight" class="slds-input">
+            </div>
+        </div>
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_ITEMS"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-radio_button-group">
+                    <span *ngFor="let radioButtonItem of radioButtonItems" class="slds-button slds-radio_button">
+                        <input type="radio" name="layoutActiveItem" [value]="radioButtonItem" [(ngModel)]="activeLayoutItem"
+                               [disabled]="selectedLayout.itemsCount == 0 || radioButtonItem > selectedLayout.itemsCount"
+                               [id]="'ReportsDesignerVisualizationlayoutActiveItem' + radioButtonItem">
+                        <label class="slds-radio_button__label" [for]="'ReportsDesignerVisualizationlayoutActiveItem' + radioButtonItem">
+                            <span class="slds-radio_faux">{{radioButtonItem}}</span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_PLUGIN"></system-label> ({{activeLayoutItem}})
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="selectedPluginId" [disabled]="selectedLayout.itemsCount == 0">
+                        <option *ngFor="let item of plugins" [value]="item.id">{{item.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-scrollable--y slds-grow" style="min-height: 0">
+        <div *ngFor="let item of plugins; trackBy: trackByFn">
+            <reports-designer-visualize-item *ngIf="selectedLayout.itemsCount > 0 && selectedPluginId == item.id && !!item.component" [component]="item.component"></reports-designer-visualize-item>
+        </div>
+        <div *ngIf="selectedLayout.itemsCount == 0 || !selectedPluginId" class="slds-align--absolute-center" style="height: 100%">
+            <system-label label="LBL_MAKE_SELECTION"></system-label>
+        </div>
+    </div>
+</div>
