@@ -3,7 +3,7 @@
  */
 
 // from https://github.com/kolkov/angular-editor
-import {Component, ElementRef, forwardRef, OnDestroy, Renderer2,} from '@angular/core';
+import {Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2,} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
@@ -43,6 +43,26 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
     // for the dropdown
     private isOpen: boolean = false;
     private clickListener: any;
+
+    /**
+     * holds if the component is disabled
+     *
+     * @private
+     */
+    private isDisabled: boolean = false;
+
+    /**
+     * an attribute that can be set and does not require the value true passed in
+     *
+     * @param value
+     */
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this.isDisabled = false;
+        } else {
+            this.isDisabled = true;
+        }
+    }
 
     constructor(private elementref: ElementRef,
                 private renderer: Renderer2,
