@@ -48,7 +48,7 @@ export interface auditRecord {
     created_by: string;
     user_name: string;
     record_Type: string;
-    data: object[];
+    data: any[];
 }
 
 @Injectable()
