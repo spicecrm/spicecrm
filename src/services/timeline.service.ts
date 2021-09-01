@@ -22,7 +22,7 @@ import {modelutilities} from "./modelutilities.service";
 
 declare var moment;
 
-interface response {
+export interface response {
     records: moduleRecord[] | auditRecord[];
     endDate: string;
     moduleEnd: string;
