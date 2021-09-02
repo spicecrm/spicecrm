@@ -39,7 +39,7 @@ export class WorkflowManager implements OnInit {
                 private utils: modelutilities,
                 private modal: modal,
                 private toast: toast,
-                private model: model,
+                public model: model,
                 private workflowManagerService: WorkflowManagerService) {
     }
 
@@ -139,8 +139,13 @@ export class WorkflowManager implements OnInit {
      */
     public save() {
 
-        this.saveRequest().subscribe(
+        const data = this.utils.spiceModel2backend('WorkflowDefinitions', this.model.data);
+        data.tasks = data.tasks.map(task => this.utils.spiceModel2backend('WorkflowTaskDefinitions', task));
+
+        this.backend.postRequest(`module/WorkflowDefinitions/${this.currentModule}/${this.currentWorkflowId}`, {}, data).subscribe(
             () => {
+                this.model.data.isNew = false;
+                this.currentWorkflow.data.isNew = false;
                 this.workflowManagerService.currentModule.workflowDefinitions = this.workflowManagerService.currentModule.workflowDefinitions.map(item => {
                     if (item.id != this.model.id) return item;
                     item = this.model.data;
@@ -163,26 +168,21 @@ export class WorkflowManager implements OnInit {
 
             if (!answer) return;
 
-            this.model.data.tasks.forEach(task => task.deleted = 1);
+            this.backend.deleteRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}`).subscribe(
+                (res: { success: boolean, message: string }) => {
 
-            this.saveRequest().toPromise().then(() => {
-
-                this.backend.deleteRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}`).subscribe(
-                    () => {
+                    if (res.success) {
                         this.toast.sendToast('Workflow deleted', 'success');
                         this.removeCurrentWorkflowFromList();
                         this.cancel();
-                    },
-                    (error) => {
-                        this.toast.sendToast('removing Workflow failed!', 'error');
+                    } else {
+                        this.toast.sendToast(res.message, 'error');
                     }
-                );
-
-            }).catch(error => {
-                this.toast.sendToast('removing Workflow failed!', 'error');
-            });
-
-
+                },
+                () => {
+                    this.toast.sendToast('deleting Workflow failed!', 'error');
+                }
+            );
         });
     }
 
@@ -192,18 +192,6 @@ export class WorkflowManager implements OnInit {
      */
     private removeCurrentWorkflowFromList() {
         this.workflowManagerService.currentModule.workflowDefinitions = this.workflowManagerService.currentModule.workflowDefinitions.filter(e => e.id != this.model.id);
-    }
-
-    /**
-     * send a save request to the backend
-     * @private
-     */
-    private saveRequest() {
-
-        const data = this.utils.spiceModel2backend('WorkflowDefinitions', this.model.data);
-        data.tasks = data.tasks.map(task => this.utils.spiceModel2backend('WorkflowTaskDefinitions', task));
-
-        return this.backend.postRequest(`module/WorkflowDefinitions/${this.currentModule}/${this.currentWorkflowId}`, {}, data);
     }
 
     /**
