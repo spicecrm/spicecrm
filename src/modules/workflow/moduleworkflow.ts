@@ -9,6 +9,7 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {ObjectFields} from '../../objectfields/objectfields';
 import {DirectivesModule} from '../../directives/directives';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 import /*embed*/ * as interfaces from "./interfaces/workflow.interfaces";
 import /*embed*/ {workflow} from "./services/workflow.service";
@@ -61,7 +62,8 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         SystemComponents,
         ObjectComponents,
         ObjectFields,
-        DirectivesModule
+        DirectivesModule,
+        DragDropModule
     ],
     declarations: [
         WorkflowManager,

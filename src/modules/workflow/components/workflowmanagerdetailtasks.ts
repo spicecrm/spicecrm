@@ -7,6 +7,8 @@ import {view} from '../../../services/view.service';
 import {modal} from "../../../services/modal.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {WorkflowTaskType} from "../interfaces/workflow.interfaces";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {PanelElementI} from "../../../include/spicepagebuilder/interfaces/spicepagebuilder.interfaces";
 
 /**
  * renders the task details view in the workflow manager
@@ -108,5 +110,17 @@ export class WorkflowManagerDetailTasks {
         }
 
         return highestSequence + (10 - highestSequence % 10);
+    }
+
+    /**
+     * rearrange the tasks by sequence
+     * @param event
+     */
+    public onDrop(event: CdkDragDrop<any>) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        this.tasks = event.container.data.map((task, index) => {
+           task.sequence = (index + 1) * 10;
+           return task;
+        });
     }
 }

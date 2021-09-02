@@ -2,6 +2,7 @@
     <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
         <thead>
             <tr class="slds-text-title_caps">
+                <th class="slds-cell-shrink" scope="col"></th>
                 <th scope="col">
                     <div class="slds-truncate"><system-label label="LBL_SEQUENCE"></system-label></div>
                 </th>
@@ -26,19 +27,20 @@
                 <th class="slds-cell-shrink"></th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td *ngIf="tasks.length == 0" colspan="8">
+        <tbody cdkDropList [cdkDropListData]="tasks|workflowmanagernotdeletedpipe" (cdkDropListDropped)="onDrop($event)">
+            <tr >
+                <td *ngIf="tasks.length == 0" colspan="9">
                     <div class="slds-align--absolute-center slds-p-around--small">
                         <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
                     </div>
                 </td>
             </tr>
-            <tr *ngFor="let task of tasks|workflowmanagernotdeletedpipe" workflow-manager-detail-tasks-line [task]="task" [ngClass]="{'slds-is-selected': task.id == selectedTask?.id}" (deleted$)="setSelectedTask(undefined)" (click)="setSelectedTask(task)" style="cursor: initial"></tr>
+            <tr *ngFor="let task of tasks|workflowmanagernotdeletedpipe" cdkDrag [cdkDragData]="task" cdkDragLockAxis="y" cdkDragBoundary=".slds-table" workflow-manager-detail-tasks-line [task]="task" [ngClass]="{'slds-is-selected': task.id == selectedTask?.id}" (deleted$)="setSelectedTask(undefined)" (click)="setSelectedTask(task)" class="slds-drag--preview" style="cursor: initial">
+            </tr>
         </tbody>
         <tfoot class="slds-border--top slds-theme--shade">
             <tr>
-                <td colspan="8">
+                <td colspan="9">
                     <div class="slds-align--absolute-center">
                         <button class="slds-button slds-button_icon slds-p-vertical--xx-small slds-p-horizontal--medium" (click)="addTask()">
                             <system-button-icon [icon]="'add'"></system-button-icon>
