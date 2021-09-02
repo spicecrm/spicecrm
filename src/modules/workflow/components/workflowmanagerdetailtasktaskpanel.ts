@@ -20,10 +20,6 @@ export class WorkflowManagerDetailTaskTaskpanel {
         return this.workflowManagerService.tasks;
     }
 
-    get nextTaskDisabled() {
-        return this.model.data && this.model.data.tasktype == 'decision' && this.model.data.closetask;
-    }
-
     get previousTaskDisabled() {
         return this.model.data && this.model.data.primarytask;
     }
