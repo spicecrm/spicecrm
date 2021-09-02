@@ -79,9 +79,9 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
 
         this.destroyRenderedComponent();
 
-        const component = this.workflowManagerService.types.find(type => type.name == this.task.tasktype)?.admin_component;
+        let component = this.workflowManagerService.types.find(type => type.name == this.task.tasktype)?.admin_component;
 
-        if (!component) return;
+        if (!component) component='WorkflowManagerTaskTypesStandard';
 
         this.metadata.addComponent(component, this.typeComponentContainer, this.injector).subscribe(componentRef => {
             this.typeComponentRef = componentRef;

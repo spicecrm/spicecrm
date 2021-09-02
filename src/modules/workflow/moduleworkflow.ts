@@ -20,6 +20,7 @@ import /*embed*/ {WorkflowOpenWorkflowsPipe} from "./pipes/workflowopenworkflows
 import /*embed*/ {WorkflowCompletedWorkflowsPipe} from "./pipes/workflowcompletedworkflowspipe";
 import /*embed*/ {WorkflowManagerNotDeletedPipe} from "./pipes/workflowmanagernotdeletedpipe";
 
+import /*embed*/ {WorkflowManagerTaskTypesStandard} from "./components/workflowmanagertasktypesstandard";
 import /*embed*/ {WorkflowManagerTaskTypesEmail} from "./components/workflowmanagertasktypesemail";
 import /*embed*/ {WorkflowManagerTaskTypesSystem} from "./components/workflowmanagertasktypessystem";
 import /*embed*/ {WorkflowManagerTaskTypesDecision} from "./components/workflowmanagertasktypesdecision";
@@ -102,6 +103,7 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowManagerTaskTypesDecision,
         WorkflowManagerTaskTypesSms,
         WorkflowManagerDetailTaskSmspanel,
+        WorkflowManagerTaskTypesStandard
     ]
 })
 export class ModuleWorkflow {
