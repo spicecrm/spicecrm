@@ -19,6 +19,8 @@ import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 export class QuestionsetRenderRating extends QuestionsetRenderBasic implements OnInit {
 
     @Input() public hideFinishedQuestions = false;
+    @Input() private imageWidthQuestion = 200;
+
     private ratingValuesHaveAlsoText = false;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {

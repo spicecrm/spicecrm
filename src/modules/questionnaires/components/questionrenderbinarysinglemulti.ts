@@ -18,6 +18,8 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 export class QuestionRenderBinarySingleMulti extends QuestionRenderBasic implements OnInit {
 
     @Input() private hideFinishedQuestions = false;
+    @Input() private imageWidthQuestion = 200;
+    @Input() private imageWidthOption = 200;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
