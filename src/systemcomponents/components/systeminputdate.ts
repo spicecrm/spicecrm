@@ -3,7 +3,7 @@
  */
 
 // from https://github.com/kolkov/angular-editor
-import {Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2,} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2,} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
@@ -19,6 +19,7 @@ declare var moment: any;
 @Component({
     selector: "system-input-date",
     templateUrl: "./src/systemcomponents/templates/systeminputdate.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
