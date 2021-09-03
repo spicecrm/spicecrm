@@ -226,7 +226,7 @@ $routes = [
         'route' => '/configuration/spiceui/core/roles/{roleid}/{userid}',
         'oldroute' => '/spiceui/core/roles/{roleid}/{userid}',
         'class' => SystemUIController::class,
-        'function' => 'SystemDeleteUserRole3',
+        'function' => 'SystemDeleteUserRole',
         'description' => 'deletes the roles of an user',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => [
