@@ -1416,7 +1416,9 @@ class MysqliManager extends DBManager
      */
     public function transactionStart()
     {
-        return $this->query('START TRANSACTION; SET innodb_lock_wait_timeout = 120;'); # temporary workaround
+        $ret = $this->query('START TRANSACTION');
+        $this->query('SET innodb_lock_wait_timeout = 120'); # temporary workaround
+        return $ret;
     }
 
     /**
