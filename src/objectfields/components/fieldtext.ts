@@ -31,7 +31,7 @@ export class fieldText extends fieldGeneric implements OnInit {
     /**
      * setthe fieldlength to 0
      */
-    public fieldlength = 0;
+    public fieldlength = 999;
 
     /**
      * reference to the text area
