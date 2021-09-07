@@ -2030,3 +2030,32 @@ $app_list_strings['payments_type_dom'] = [
     'ATM_card' => 'Karta płatnicza',
     'credit_card' => 'Karta kredytowa'
 ];
+
+$app_list_strings['joboffer_status_dom'] = [
+    'Draft' => 'Szkic',
+    'Open' => 'Otwarta',
+    'Closed' => 'Zamknięta',
+];
+
+$app_list_strings['joboffer_department_dom'] = [
+    '' => '',
+    'HR' => 'HR',
+    'IT' => 'IT',
+    'Sales' => 'Sprzedaż',
+    'Facility Management' => 'Zarządzanie obiektem',
+    'Accounting' => 'Księgowość'
+];
+
+$app_list_strings['joboffer_entry_level_dom'] = [
+    '' => '',
+    'Junior' => 'Junior',
+    'Normal' => 'Normalny',
+    'Senior' => 'Senior',
+];
+$app_list_strings['joboffer_contract_type_dom'] = [
+    '' => '',
+    'Internship' => 'Staż',
+    'Full-Time' => 'Pełen etat',
+    'Part-Time' => 'Niepełen etat',
+    'Self-Employed' => 'Działalność gospodarcza',
+];
