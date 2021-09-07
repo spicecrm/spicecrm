@@ -205,9 +205,9 @@ export class modelutilities {
                 // do something
                 break;
             case "empty":
-                return !(val1.length > 0);
+                return !val1;
             case "nempty":
-                return val1.length > 0;
+                return !!val1;
             case "notnull":
                 return val1 !== null;
             case "null":
