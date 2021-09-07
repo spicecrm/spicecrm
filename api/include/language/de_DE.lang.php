@@ -1775,3 +1775,26 @@ $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
 ];
+
+$app_list_strings['joboffer_department_dom'] = [
+    '' => '',
+    'HR' => 'HR',
+    'IT' => 'IT',
+    'Sales' => 'Verkauf',
+    'Facility Management' => 'Facility Management',
+    'Accounting' => 'Buchhaltung',
+];
+
+$app_list_strings['joboffer_entry_level_dom'] = [
+    '' => '',
+    'Junior' => 'Junior',
+    'Normal' => 'Normal',
+    'Senior' => 'Senior',
+];
+$app_list_strings['joboffer_contract_type_dom'] = [
+    '' => '',
+    'Internship' => 'Praktikum',
+    'Full-Time' => 'Vollzeit',
+    'Part-Time' => 'Teilzeit',
+    'Self-Employed' => 'Selbständig',
+];
