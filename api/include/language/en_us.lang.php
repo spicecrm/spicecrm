@@ -2075,3 +2075,24 @@ $app_list_strings['relationship_type_dom'] = [
     'partner' => 'partner',
     'colleague' => 'colleague'
 ];
+
+$app_list_strings['job_offer_application_status_dom'] = [
+    'new' => 'new',
+    'round1' => 'first round',
+    'round2' => 'second round'
+];
+
+$app_list_strings['job_offer_application_preferable_contract_dom'] = [
+    'temporary' => 'Temporary',
+    'internship' => 'Internship',
+    'full_time' => 'Full-Time',
+    'part_time' => 'Part-Time',
+    'self_employed' => 'Self-Employed'
+];
+
+$app_list_strings['job_offer_applications_skills_dom'] = [
+    'php' => 'PHP',
+    'html' => 'HTML',
+    'css' => 'CSS',
+    'javascript' => 'JavaScript',
+];
