@@ -2075,3 +2075,32 @@ $app_list_strings['relationship_type_dom'] = [
     'partner' => 'partner',
     'colleague' => 'colleague'
 ];
+
+$app_list_strings['joboffer_status_dom'] = [
+    'Draft' => 'Draft',
+    'Open' => 'Open',
+    'Closed' => 'Closed',
+];
+
+$app_list_strings['joboffer_department_dom'] = [
+    '' => '',
+    'HR' => 'HR',
+    'IT' => 'IT',
+    'Sales' => 'Sales',
+    'Facility Management' => 'Facility Management',
+    'Accounting' => 'Accounting'
+];
+
+$app_list_strings['joboffer_entry_level_dom'] = [
+    '' => '',
+    'Junior' => 'Junior',
+    'Normal' => 'Normal',
+    'Senior' => 'Senior',
+];
+$app_list_strings['joboffer_contract_type_dom'] = [
+    '' => '',
+    'Internship' => 'Internship',
+    'Full-Time' => 'Full-Time',
+    'Part-Time' => 'Part-Time',
+    'Self-Employed' => 'Self-Employed',
+];
