@@ -1776,6 +1776,22 @@ $app_list_strings['job_callback_on_dom'] = [
     'failure' => 'Fehlschlag',
 ];
 
+$app_list_strings['jobofferapplication_status_dom'] = [
+    'New' => 'New',
+    'Round 1' => 'Round 1',
+    'Round 2' => 'Round 2',
+    'Accepted' => 'Accepted',
+    'Declined' => 'Declined',
+];
+
+
+$app_list_strings['jobofferapplications_skills_dom'] = [
+    'PHP' => 'PHP',
+    'HTML' => 'HTML',
+    'CSS' => 'CSS',
+    'JavaScript' => 'JavaScript',
+];
+
 $app_list_strings['joboffer_department_dom'] = [
     '' => '',
     'HR' => 'HR',
