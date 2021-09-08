@@ -2036,6 +2036,20 @@ $app_list_strings['joboffer_status_dom'] = [
     'Open' => 'Otwarta',
     'Closed' => 'Zamknięta',
 ];
+$app_list_strings['jobofferapplication_status_dom'] = [
+    'New' => 'Nowy',
+    'Round 1' => 'Runda 1',
+    'Round 2' => 'Runda 2',
+    'Accepted' => 'Zaakceptowany',
+    'Declined' => 'Odrzucony',
+];
+
+$app_list_strings['jobofferapplications_skills_dom'] = [
+    'PHP' => 'PHP',
+    'HTML' => 'HTML',
+    'CSS' => 'CSS',
+    'JavaScript' => 'JavaScript',
+];
 
 $app_list_strings['joboffer_department_dom'] = [
     '' => '',
