@@ -394,7 +394,7 @@ class AuthenticationController
 
         // Is it a portal user? And the GDPR consent for portal users is configured?
         if ($currentUser->portal_only and @SpiceConfig::getInstance()->config['portal_gdpr']['obtain_consent']) {
-            $contactOfPortalUser = new Contact();
+            $contactOfPortalUser = BeanFactory::getBean('Contacts');
             $contactOfPortalUser->retrieve_by_string_fields(['portal_user_id' => $this->getCurrentUser()->id]);
             // gdpr_marketing_agreement not 'g' and not 'r' indicates that the user has not yet been asked for consent of GDPR in general (data AND marketing)
             if (($contactOfPortalUser->gdpr_marketing_agreement !== 'g' and $contactOfPortalUser->gdpr_marketing_agreement !== 'r')
