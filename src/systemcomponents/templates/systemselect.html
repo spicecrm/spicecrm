@@ -5,7 +5,7 @@
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
                  aria-expanded="true" aria-haspopup="listbox" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text" (click)="onFocus()" (blur)="onBlur($event)" [(ngModel)]="value" (keyup)="onKeyup($event)" [disabled]="disabled" system-placeholder="LBL_SEARCH" class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off" role="textbox">
+                    <input type="text" (focus)="onFocus()" (blur)="onBlur($event)" (click)="onInputClick($event)" [(ngModel)]="value" (keyup)="onKeyup($event)" [disabled]="disabled" system-placeholder="LBL_SEARCH" class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off" role="textbox">
                     <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
                 </div>
                 <div *ngIf="searchListVisible" [style.max-height]="dropdownLength" class="slds-dropdown slds-dropdown_fluid slds-scrollable--y" role="listbox">
@@ -18,7 +18,7 @@
                                   </span>
                                 </div>
                             </li>
-                            <li *ngIf="!item.isGroup" role="presentation" class="slds-listbox__item" (click)="itemClicked(item, $event)">
+                            <li *ngIf="!item.isGroup" role="presentation" class="slds-listbox__item" (mousedown)="$event.preventDefault()" (click)="itemClicked(item, $event)">
                                 <div [class.slds-has-focus]="item.id == focusedItemId" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                     <span class="slds-media__body">
                                       <span class="slds-truncate">
