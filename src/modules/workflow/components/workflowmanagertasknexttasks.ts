@@ -1,18 +1,20 @@
 /**
  * @module ModuleWorkflow
  */
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'workflow-manager-task-next-tasks',
-    templateUrl: 'src/modules/workflow/templates/workflowmanagertasknexttasks.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: 'src/modules/workflow/templates/workflowmanagertasknexttasks.html'
 })
 
 export class WorkflowManagerTaskNextTasks implements OnInit {
     constructor(public model: model,
+                private modal: modal,
+                private cdRef: ChangeDetectorRef,
                 public workflowManagerService: WorkflowManagerService
     ) {
     }
@@ -27,13 +29,6 @@ export class WorkflowManagerTaskNextTasks implements OnInit {
     }
 
     /**
-     * @return any[] workflow tasks
-     */
-    public getOptions(): any[] {
-        return this.workflowManagerService.tasks.filter(e => e.deleted != 1 && e.id != this.model.id && !this.model.data.type_config.next_tasks.some(nextTask => nextTask == e.id));
-    }
-
-    /**
      * remove the task from the next tasks array
      * @param id
      */
@@ -45,16 +40,17 @@ export class WorkflowManagerTaskNextTasks implements OnInit {
      * add new task
      */
     public addTask() {
-        this.model.data.type_config.next_tasks.push('');
-    }
 
-    /**
-     * set the next task value
-     * @param value
-     * @param index
-     */
-    public setNextTaskValue(value: string, index: number) {
-        this.model.data.type_config.next_tasks[index] = value;
+        const options = this.workflowManagerService.tasks
+            .filter(e => e.deleted != 1 && e.id != this.model.id && !this.model.data.type_config.next_tasks.some(nextTask => nextTask == e.id))
+            .map(e => ({value: e.id, display: e.name}));
+
+        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_ADD', 'shade', null, options, true)
+            .subscribe(id => {
+                if (!id) return;
+                this.model.data.type_config.next_tasks.push(id);
+                this.cdRef.detectChanges();
+            });
     }
 
     /**
