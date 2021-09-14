@@ -99,7 +99,7 @@ class PackageController {
         $this->checkAdmin();
         $confloader = new SpiceUIConfLoader($this->getRepoUrl($args['repository']));
         $result = ['response' => $confloader->loadPackage($args['package'], '*')];
-        if ($result['success']) {
+        if ($result['response']['success']) {
             SpiceModules::getInstance()->loadModules(true);
         }
         return $res->withJson($result);
