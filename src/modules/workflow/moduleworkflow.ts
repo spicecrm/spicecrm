@@ -25,6 +25,7 @@ import /*embed*/ {WorkflowManagerTaskTypesEmail} from "./components/workflowmana
 import /*embed*/ {WorkflowManagerTaskTypesSystem} from "./components/workflowmanagertasktypessystem";
 import /*embed*/ {WorkflowManagerTaskTypesDecision} from "./components/workflowmanagertasktypesdecision";
 import /*embed*/ {WorkflowManagerTaskTypesSms} from "./components/workflowmanagertasktypessms";
+import /*embed*/ {WorkflowManagerTaskNextTasks} from "./components/workflowmanagertasknexttasks";
 import /*embed*/ {WorkflowManager} from "./components/workflowmanager";
 import /*embed*/ {WorkflowManagerDetail} from "./components/workflowmanagerdetail";
 import /*embed*/ {WorkflowManagerTaskTypesModal} from "./components/workflowmanagertasktypesmodal";
@@ -103,7 +104,8 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowManagerTaskTypesDecision,
         WorkflowManagerTaskTypesSms,
         WorkflowManagerDetailTaskSmspanel,
-        WorkflowManagerTaskTypesStandard
+        WorkflowManagerTaskTypesStandard,
+        WorkflowManagerTaskNextTasks
     ]
 })
 export class ModuleWorkflow {
