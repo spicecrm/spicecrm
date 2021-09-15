@@ -2075,3 +2075,11 @@ $app_list_strings['relationship_type_dom'] = [
     'partner' => 'partner',
     'colleague' => 'colleague'
 ];
+
+$app_list_strings['systemdeploymentsystems_type_dom'] = [
+    'test' => 'test',
+    'stage' => 'stage',
+    'development' => 'development',
+    'productivity' => 'productivity'
+    
+];
