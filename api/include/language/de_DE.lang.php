@@ -1775,3 +1775,10 @@ $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
 ];
+
+$app_list_strings['systemdeploymentsystems_type_dom'] = [
+    'test' => 'test',
+    'stage' => 'Stufe',
+    'development' => 'entwicklung',
+    'productivity' => 'produktivität'
+];
