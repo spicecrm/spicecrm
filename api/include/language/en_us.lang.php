@@ -2081,5 +2081,4 @@ $app_list_strings['systemdeploymentsystems_type_dom'] = [
     'stage' => 'stage',
     'development' => 'development',
     'productivity' => 'productivity'
-    
 ];
