@@ -36,7 +36,7 @@
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\Accounts\Account;
+use SpiceCRM\data\BeanFactory;
 
 ///////////////////////////////////////////////////////////////////////////////
 ////	LOCAL UTILITY
@@ -198,7 +198,7 @@ if((count($drop_index) > 0 or count($add_index) > 0 or count($change_index) > 0)
 		echo ($_REQUEST['silent']) ? "" : "<a href='index.php?module=Administration&action=RepairIndex&mode=execute'>Execute Script</a>";
 	}
 
-	$focus = new Account();
+	$focus = BeanFactory::getBean('Accounts');
 	if(count($drop_index) > 0) {
 		if(isset($_REQUEST['mode']) and $_REQUEST['mode']=='execute') {
 			echo ($_REQUEST['silent']) ? "" : $mod_strings['LBL_REPAIR_INDEX_DROPPING'];

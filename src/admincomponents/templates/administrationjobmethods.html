@@ -40,7 +40,14 @@
                     <abbr class="slds-required ng-star-inserted">*</abbr>
                     <system-label label="LBL_METHOD"></system-label>
                 </label>
-                <system-input-backend-method [(ngModel)]="model.data.method" class="slds-p-left--xx-small spice-display-block"></system-input-backend-method>
+                <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+                    <system-select [selectList]="availableClasses" [(ngModel)]="className" (ngModelChange)="setClassname($event)" class="slds-grow"></system-select>
+                    <div class="slds-col slds-size--1-of-3 slds-select_container">
+                        <select class="slds-select" [disabled]="!classExists || _methods.length == 0" [(ngModel)]="methodName">
+                            <option *ngFor="let o of _methods" [value]="o">{{o}}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="slds-grid slds-p-around--xx-small">

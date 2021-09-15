@@ -1805,7 +1805,7 @@ $db = DBManagerFactory::getInstance();
 
         //get contacts list
         $callGetList = false;
-        $contact = new Contact();
+        $contact = BeanFactory::getBean('Contacts');
         $order_by = "contacts.last_name ASC";
         $where = "";
         if (!empty($params['contactids'])) {

@@ -29,9 +29,8 @@ class SpiceFTSManagerSchedulerJobTasks
 
         // determine package size
         $packagesize = SpiceConfig::getInstance()->config['fts']['schedulerpackagesize'] ?: 5000;
-
-//        require_once('include/SpiceFTSManager/SpiceFTSHandler.php');
         SpiceFTSHandler::getInstance()->bulkIndexBeans($packagesize, null, true );
+        ob_clean();
         return true;
     }
 }

@@ -21,7 +21,7 @@ $routes = [
         'class' => SearchController::class,
         'function' => 'search',
         'description' => 'process the search',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'valdiate' => true],
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
         'parameters' => [
             'searchterm' => [
                 'in' => 'body',
