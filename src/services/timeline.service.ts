@@ -22,7 +22,7 @@ import {modelutilities} from "./modelutilities.service";
 
 declare var moment;
 
-interface response {
+export interface response {
     records: moduleRecord[] | auditRecord[];
     endDate: string;
     moduleEnd: string;
@@ -48,7 +48,7 @@ export interface auditRecord {
     created_by: string;
     user_name: string;
     record_Type: string;
-    data: object[];
+    data: any[];
 }
 
 @Injectable()

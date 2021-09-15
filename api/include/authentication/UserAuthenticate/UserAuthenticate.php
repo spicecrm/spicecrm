@@ -36,7 +36,7 @@ class UserAuthenticate
      * @return User
      * @throws UnauthorizedException
      */
-    function authenticate($authUser, $password, $impersonatingUserName = null )
+    function authenticate($authUser, $password, $impersonatingUserName = null, $noException = false )
     {
         $db = DBManagerFactory::getInstance();
         $impersonatingUser = null;
@@ -60,8 +60,10 @@ class UserAuthenticate
             $userObj = BeanFactory::getBean("Users", $row['id']);
             if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
             return $userObj;
+        } else {
+            if ( $noException ) return false;
+            else throw new UnauthorizedException( "Invalid Username/Password combination".$authUser.$password, 1 );
         }
-        throw new UnauthorizedException("Invalid Username/Password combination", 1);
     }
 
     /**

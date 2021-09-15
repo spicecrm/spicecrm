@@ -207,7 +207,7 @@ class SchedulerJobTask extends Basic
      * set necessary fields before run
      * @param string $jobId
      */
-    private function beforeRun(string $jobId)
+    private function beforeRun(string $jobId = null)
     {
         $this->run_by_job_id = $jobId;
 
