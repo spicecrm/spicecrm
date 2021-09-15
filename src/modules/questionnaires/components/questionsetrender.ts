@@ -33,6 +33,8 @@ export class QuestionsetRender implements OnInit {
     @Input() public questionsetId: string;
     @Input() public showProgress = false;
     @Input() public hideFinishedQuestions = false;
+    @Input() imageWidthQuestion = 200;
+    @Input() imageWidthOption = 200;
 
     public questionset: any;
 

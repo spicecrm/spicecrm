@@ -21,6 +21,7 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
 
     @Input() private hideFinishedQuestions = false;
+    @Input() private imageWidthQuestion = 200;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );

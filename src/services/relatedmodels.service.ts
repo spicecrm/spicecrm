@@ -94,6 +94,11 @@ export class relatedmodels implements OnDestroy {
     public isonlyfiltered = false;
 
     /**
+     * prevent saving the relationship entry to the backend, instead save the data in the model link object
+     */
+    public saveToLinkOnly = true;
+
+    /**
      * sort parameters
      */
     public sort: any = {
@@ -458,6 +463,13 @@ export class relatedmodels implements OnDestroy {
      * @param items
      */
     public addItems(items) {
+
+        if (this.saveToLinkOnly) {
+            this.model.addRelatedRecords(this._linkName, items);
+            this.items = this.items.concat(items);
+            this.count = this.count + items.length;
+            return;
+        }
 
         if (!this.isonlyfiltered) {
             let relatedIds: any[] = [];

@@ -21,6 +21,8 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 export class QuestionRenderRating extends QuestionRenderBasic implements OnInit {
 
     @Input() private hideFinishedQuestions = false;
+    @Input() private imageWidthQuestion = 200;
+
     private ratingValuesHaveAlsoText = false;
     private altTexts = {};
 

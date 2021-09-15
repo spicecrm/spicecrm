@@ -19,6 +19,8 @@ import { userpreferences} from '../../../services/userpreferences.service';
 export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
 
     @Input() private hideFinishedQuestions = false;
+    @Input() private imageWidthQuestion = 200;
+
     private lengthLongestSequence = 0;
     private questionNameSplitted: any[] = [];
     private isInputInvalid = false;

@@ -738,7 +738,7 @@ export class model implements OnDestroy {
     public evaluateCondition(condition): boolean {
         let check: boolean = false;
 
-        if (typeof this.data[condition.fieldname] == "undefined") {
+        if (condition.comparator != 'empty' && typeof this.data[condition.fieldname] == undefined) {
             return false;
         }
 

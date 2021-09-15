@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
@@ -97,7 +98,11 @@ class PackageController {
     public function loadPackage(Request $req, Response $res, array $args): Response {
         $this->checkAdmin();
         $confloader = new SpiceUIConfLoader($this->getRepoUrl($args['repository']));
-        return $res->withJson(['response' => $confloader->loadPackage($args['package'], '*')]);
+        $result = ['response' => $confloader->loadPackage($args['package'], '*')];
+        if ($result['response']['success']) {
+            SpiceModules::getInstance()->loadModules(true);
+        }
+        return $res->withJson($result);
     }
 
     public function deletePackage(Request $req, Response $res, array $args): Response {

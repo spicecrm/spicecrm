@@ -1,7 +1,7 @@
 <?php
 
 use SpiceCRM\includes\SpiceCronJobs\SpiceCronJobs;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\UploadStream;

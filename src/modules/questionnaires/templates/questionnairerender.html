@@ -6,7 +6,7 @@
     <div *ngIf="qp.questionsetsArray.length; else noQuestionsetsTemplate">
         <div *ngFor="let questionset of qp.questionsetsArray; last as isLast">
             <div *ngIf="questionset.hidden_from_customer === false || qp.editMode === 'preview' || qp.editMode == 'postview'" class="slds-box" [ngClass]="{'slds-m-bottom_medium': !isLast}" style="border-width:3px" [ngStyle]="{'border-style': questionset.hidden_from_customer?'dotted':'solid'}">
-                <questionset-render [questionsetId]="questionset.id" [showProgress]="showProgress" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render>
+                <questionset-render [questionsetId]="questionset.id" [showProgress]="showProgress" [hideFinishedQuestions]="hideFinishedQuestions" [imageWidthOption]="imageWidthOption" [imageWidthQuestion]="imageWidthQuestion"></questionset-render>
             </div>
         </div>
     </div>

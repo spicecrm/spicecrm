@@ -18,7 +18,7 @@
                 <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished">
                     <td>
                         <ng-container *ngIf="question.image_id">
-                            <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
+                            <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image>
                         </ng-container>
                         <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
                     </td>
