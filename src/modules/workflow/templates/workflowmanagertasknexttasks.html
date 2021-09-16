@@ -35,9 +35,11 @@
                         </div>
                     </td>
                     <td>
-                        <div class="slds-truncate">
-                            {{task.tasktype}}
-                        </div>
+                        <ng-container *ngFor="let type of workflowManagerService.types">
+                            <div *ngIf="type.id == task.tasktype" class="slds-truncate">
+                                {{type.name}}
+                            </div>
+                        </ng-container>
                     </td>
                 </ng-container>
             </ng-container>

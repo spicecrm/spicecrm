@@ -85,7 +85,7 @@ export class WorkflowManagerDetailTasks {
                     deleted: 0,
                     sequence: this.getNextSequence(),
                     name: 'new Task',
-                    tasktype: type.name,
+                    tasktype: type.id,
                     decisions: [],
                     systemactions: [],
                     primarytask: this.tasks.length == 0

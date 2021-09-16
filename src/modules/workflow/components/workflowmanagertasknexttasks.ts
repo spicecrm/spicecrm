@@ -12,6 +12,7 @@ import {modal} from "../../../services/modal.service";
 })
 
 export class WorkflowManagerTaskNextTasks implements OnInit {
+
     constructor(public model: model,
                 private modal: modal,
                 private cdRef: ChangeDetectorRef,

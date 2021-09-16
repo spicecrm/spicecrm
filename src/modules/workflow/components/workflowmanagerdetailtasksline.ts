@@ -22,7 +22,7 @@ export class WorkflowManagerDetailTasksLine {
     @Input() public fields: any[] = [];
     @Output() public deleted$ = new EventEmitter<void>();
 
-    constructor(private workflowManagerService: WorkflowManagerService, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(public workflowManagerService: WorkflowManagerService, private metadata: metadata, public model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
         this.model.module = 'WorkflowTaskDefinitions';
 
         this.view.displayLabels = false;
@@ -44,11 +44,6 @@ export class WorkflowManagerDetailTasksLine {
                     return true;
                 }
             });
-        }
-
-        // render the multiple next indicator
-        if (renderMultiple && this.model.data.tasktype == 'decision' && this.model.data.decisions && this.model.data.decisions.length > 0) {
-            taskname = '[..]';
         }
 
         return taskname;

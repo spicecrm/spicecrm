@@ -34,9 +34,6 @@ import /*embed*/ {WorkflowManagerDetailTasksLine} from "./components/workflowman
 import /*embed*/ {WorkflowManagerDetailTask} from "./components/workflowmanagerdetailtask";
 import /*embed*/ {WorkflowManagerDetailTaskTaskpanel} from "./components/workflowmanagerdetailtasktaskpanel";
 import /*embed*/ {WorkflowManagerDetailTaskDescriptionpanel} from "./components/workflowmanagerdetailtaskdescriptionpanel";
-import /*embed*/ {WorkflowManagerTaskdropdown} from "./components/workflowmanagertaskdropdown";
-import /*embed*/ {WorkflowManagerDetailTaskDecisions} from "./components/workflowmanagerdetailtaskdecisions";
-import /*embed*/ {WorkflowManagerDetailTaskDecisionsLine} from "./components/workflowmanagerdetailtaskdecisionsline";
 import /*embed*/ {WorkflowManagerDetailTaskAssignmentpanel} from "./components/workflowmanagerdetailtaskassignmentpanel";
 import /*embed*/ {WorkflowManagerDetailTaskEmailpanel} from "./components/workflowmanagerdetailtaskemailpanel";
 import /*embed*/ {WorkflowManagerDetailTaskSmspanel} from "./components/workflowmanagerdetailtasksmspanel";
@@ -76,9 +73,6 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowManagerDetailTask,
         WorkflowManagerDetailTaskTaskpanel,
         WorkflowManagerDetailTaskDescriptionpanel,
-        WorkflowManagerTaskdropdown,
-        WorkflowManagerDetailTaskDecisions,
-        WorkflowManagerDetailTaskDecisionsLine,
         WorkflowManagerDetailTaskAssignmentpanel,
         WorkflowManagerDetailTaskEmailpanel,
         WorkflowManagerDetailTaskSystemactionsLine,

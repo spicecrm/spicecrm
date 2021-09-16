@@ -2,25 +2,20 @@
     <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
 </td>
 <td>
-    <field-container [fieldname]="'sequence'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
-</td>
-<td>
     <field-container [fieldname]="'name'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
 </td>
 <td>
-    <field-container [fieldname]="'tasktype'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+    <ng-container *ngFor="let type of workflowManagerService.types">
+        <div *ngIf="type.id == model.data.tasktype" class="slds-truncate">
+            {{type.name}}
+        </div>
+    </ng-container>
 </td>
 <td>
     <field-container [fieldname]="'primarytask'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
 </td>
 <td>
     <field-container [fieldname]="'closetask'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
-</td>
-<td>
-    <div class="slds-truncate slds-p-horizontal--x-small">{{getTaskName(model.data.previoustask)}}</div>
-</td>
-<td>
-    <div class="slds-truncate slds-p-horizontal--x-small">{{getTaskName(model.data.nexttask, true)}}</div>
 </td>
 <td role="gridcell" class="slds-cell-shrink">
     <button class="slds-button slds-button_icon" (click)="removeTask()">

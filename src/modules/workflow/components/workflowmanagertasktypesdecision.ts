@@ -1,9 +1,10 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component} from '@angular/core';
-import {modelutilities} from '../../../services/modelutilities.service';
+import {Component, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
+import {modal} from "../../../services/modal.service";
+import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: 'workflow-manager-task-types-decision',
@@ -12,30 +13,62 @@ import {model} from '../../../services/model.service';
 /**
  * handle managing the workflow task decision type
  */
-export class WorkflowManagerTaskTypesDecision {
+export class WorkflowManagerTaskTypesDecision implements OnInit {
 
-    constructor(private model: model, private modelutilities: modelutilities) {
+    constructor(public model: model,
+                public workflowManagerService: WorkflowManagerService,
+                private modal: modal) {
 
+    }
+
+    /**
+     * initialize the decision array
+     */
+    public ngOnInit() {
+        if (!Array.isArray(this.model.data.type_config.decisions)) {
+            this.model.data.type_config.decisions = [];
+        }
     }
 
     /**
      * adds a new decision
      */
-    private addDecision() {
+    public addDecision() {
 
-        if (!this.model.data.type_config.decisions) {
-            this.model.data.type_config.decisions = [];
-        }
+        const options = this.workflowManagerService.tasks
+            .filter(e => e.deleted != 1 && e.id != this.model.id && !this.model.data.type_config.decisions.some(decision => decision == e.id))
+            .map(e => ({value: e.id, display: e.name}));
 
-        this.model.data.type_config.decisions.push({
-            id: this.modelutilities.generateGuid(),
-            workflowtaskdefinition_id: this.model.id,
-            deleted: 0,
-            name: 'new Decision',
-            acl: {
-                create: true,
-                edit: true
-            }
+        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_ADD', 'shade', null, options, true)
+            .subscribe(id => {
+                if (!id) return;
+                this.model.data.type_config.decisions.push({
+                    id: this.model.generateGuid(),
+                    name: 'new Decision',
+                    task_id: id
+                });
+            });
+    }
+
+    /**
+     * remove the decision from the type_config decisions array
+     * @param id
+     */
+    public deleteDecision(id) {
+        this.modal.confirm('MSG_DELETE_RECORD', 'LBL_DELETE').subscribe(answer => {
+            if (!answer) return;
+            this.model.data.type_config.decisions = this.model.data.type_config.decisions.filter(d => id != d.id);
         });
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return item.id
+     */
+    public trackByFn(item, index) {
+        return item.id;
     }
 }
