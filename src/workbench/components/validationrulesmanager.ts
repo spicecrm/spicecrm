@@ -12,6 +12,7 @@ import {toast} from "../../services/toast.service";
 
 
 @Component({
+    selector: 'validation-rules-manager',
     templateUrl: './src/workbench/templates/validationrulesmanager.html',
 })
 export class ValidationRulesManager {
