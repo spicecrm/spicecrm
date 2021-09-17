@@ -17,7 +17,12 @@ import /*embed*/ {TelephonyCallSearching} from "./components/telephonycallsearch
 import /*embed*/ {TelephonyCallPanelRelated} from "./components/telephonycallpanelrelated";
 import /*embed*/ {TelephonyCallPanelRelatedCompact} from "./components/telephonycallpanelrelatedcompact";
 import /*embed*/ {TelephonyCallPanelSaveButton} from "./components/telephonycallpanelsavebutton";
+import /*embed*/ {TelephonyCallLogAttemptButton} from "./components/telephonycalllogattemptbutton";
+import /*embed*/ {TelephonyCallSearchContactButton} from "./components/telephonycallsearchcontactbutton";
+import /*embed*/ {TelephonyCallCreateContactButton} from "./components/telephonycallcreatecontactbutton";
 import /*embed*/ {TelephonyCallPanel} from "./components/telephonycallpanel";
+import /*embed*/ {TelephonyCallModelUpdate} from "./components/telephonycallmodelupdate";
+import /*embed*/ {TelephonyToolbarIndicator} from "./components/telephonytoolbarindicator";
 
 @NgModule({
     imports: [
@@ -36,7 +41,12 @@ import /*embed*/ {TelephonyCallPanel} from "./components/telephonycallpanel";
         TelephonyCallDuration,
         TelephonyCallPanelRelated,
         TelephonyCallPanelRelatedCompact,
-        TelephonyCallPanelSaveButton
+        TelephonyCallPanelSaveButton,
+        TelephonyCallLogAttemptButton,
+        TelephonyCallSearchContactButton,
+        TelephonyCallCreateContactButton,
+        TelephonyCallModelUpdate,
+        TelephonyToolbarIndicator
     ]
 })
 export class ModuleTelephony {
