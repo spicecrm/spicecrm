@@ -8,7 +8,6 @@ import {
     ElementRef,
     forwardRef,
     Input,
-    OnDestroy,
     Renderer2,
     SimpleChanges,
     ViewChild,
@@ -31,7 +30,7 @@ declare var _;
         multi: true
     }]
 })
-export class SystemSelect implements OnDestroy, ControlValueAccessor {
+export class SystemSelect implements ControlValueAccessor {
     /**
      * the input list to be displayed
      */
@@ -77,12 +76,7 @@ export class SystemSelect implements OnDestroy, ControlValueAccessor {
      * reference to the result list ul element
      * @private
      */
-    @ViewChild('resultList', {read: ViewContainerRef}) private resultList: ViewContainerRef;
-    /**
-     * holds a reference function to the click listener
-     * @private
-     */
-    private clickListener: any;
+    @ViewChild('resultList', {read: ViewContainerRef}) private resultListContainer: ViewContainerRef;
 
     constructor(private elementRef: ElementRef,
                 private cdRef: ChangeDetectorRef,
@@ -137,15 +131,6 @@ export class SystemSelect implements OnDestroy, ControlValueAccessor {
     }
 
     /**
-     * remove the click listener
-     */
-    public ngOnDestroy() {
-        if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
-    /**
      * handle the click outside the search box
      * @param event
      */
@@ -189,9 +174,28 @@ export class SystemSelect implements OnDestroy, ControlValueAccessor {
     public onFocus() {
 
         this.searchListVisible = true;
-        this.searchList = this.generateSearchList();
 
-        this.clickListener = this.renderer.listen("document", "click", (event) => this.outsideClickHandler(event));
+    }
+
+    /**
+     * handle input blur the hide the result list
+     */
+    public onBlur(event: FocusEvent) {
+        this.hideSearchList();
+    }
+
+    /**
+     * handle input click to open the list
+     * @param event
+     */
+    public onInputClick(event: MouseEvent) {
+
+        if (!this.searchListVisible) {
+            this.searchList = this.generateSearchList();
+        }
+
+        this.searchListVisible = true;
+        event.stopPropagation();
     }
 
     /**
@@ -207,23 +211,13 @@ export class SystemSelect implements OnDestroy, ControlValueAccessor {
         this.selectList.some((listItem) => {
             if (listItem.id == item.id) {
                 this.onChange(listItem);
+                this.value = listItem.name;
                 this.focusedItemId = listItem.id;
                 return true;
             }
         });
 
-        this.clickListener();
-
         if (event.stopPropagation) event.stopPropagation();
-    }
-
-    /**
-     * handle blur to hide the search list
-     * @param event
-     */
-    public onBlur(event: FocusEvent) {
-        if (!this.resultList || !event.relatedTarget || this.resultList.element.nativeElement.contains(event.relatedTarget)) return;
-        this.hideSearchList();
     }
 
     /**
@@ -231,7 +225,6 @@ export class SystemSelect implements OnDestroy, ControlValueAccessor {
      */
     public hideSearchList() {
         this.searchListVisible = false;
-        this.clickListener();
         this.cdRef.detectChanges();
     }
 
@@ -246,7 +239,7 @@ export class SystemSelect implements OnDestroy, ControlValueAccessor {
 
         this.searchList = this.generateSearchList();
 
-        if (this.value.length == 0 || this.searchList.length == 0) return;
+        if (!this.value || this.searchList.length == 0) return;
 
         this.searchList = this.searchList.filter(e => e.name.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
 
@@ -356,9 +349,9 @@ export class SystemSelect implements OnDestroy, ControlValueAccessor {
      */
     private scrollToFocusedSearchItem(direction: 'up' | 'down') {
 
-        if (!this.resultList) return;
+        if (!this.resultListContainer) return;
 
-        const listHTMLElements: HTMLElement[] = Array.from(this.resultList.element.nativeElement.children)
+        const listHTMLElements: HTMLElement[] = Array.from(this.resultListContainer.element.nativeElement.children)
             .filter((e: HTMLElement) => !e.hasAttribute('data-is-group')) as HTMLElement[];
 
         let focusedHTMLElementIndex = listHTMLElements.findIndex((e: HTMLElement) => e.firstElementChild.classList.contains('slds-has-focus'));
