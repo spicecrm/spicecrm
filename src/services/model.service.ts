@@ -496,7 +496,7 @@ export class model implements OnDestroy {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
-                this.evaluateValidationRules(null, "init");
+                this.evaluateValidationRules(null, 'initialize');
                 this.isLoading = false;
                 this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
@@ -690,11 +690,7 @@ export class model implements OnDestroy {
                 // check conditions...
                 for (let condition of validation.conditions) {
                     let result = false;
-                    if (condition.onchange == 1 && field && condition.fieldname != field) {
-                        result = false;
-                    } else {
-                        result = this.evaluateCondition(condition);
-                    }
+                    result = this.evaluateCondition(condition);
                     checksum += result ? 1 : 0;
                     if (
                         checksum > 0 &&
@@ -1247,7 +1243,7 @@ export class model implements OnDestroy {
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
-        this.evaluateValidationRules(null, "init");
+        this.evaluateValidationRules(null, 'initialize');
 
         // set the parent model from the intialized one in the call
         this.parentmodel = parent;
