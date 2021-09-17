@@ -31,6 +31,7 @@ interface authDataIf {
     tenant_name: string;
     obtainGDPRconsent: boolean;
     canchangepassword: boolean;
+    address_country?: string;
 }
 
 /**
