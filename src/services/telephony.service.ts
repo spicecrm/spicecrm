@@ -31,6 +31,14 @@ export class telephony {
      */
     public terminateCall$: EventEmitter<telephonyCallI> = new EventEmitter<telephonyCallI>();
 
+    /**
+     * actions that are possible. needs to be set by the call listener to enable thee actions
+     */
+    public actions: any = {
+        hangup: false,
+        transfer: false
+    };
+
     constructor(private broadcast: broadcast) {
 
         // subscribe to the logout so we can remove all open composers
