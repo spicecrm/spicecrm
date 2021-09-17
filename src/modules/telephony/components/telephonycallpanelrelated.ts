@@ -15,7 +15,7 @@ declare var libphonenumber: any;
     templateUrl: './src/modules/telephony/templates/telephonycallpanelrelated.html',
     providers: [view]
 })
-export class TelephonyCallPanelRelated implements OnInit{
+export class TelephonyCallPanelRelated implements OnInit {
 
     /**
      * the main Fieldset
@@ -40,8 +40,8 @@ export class TelephonyCallPanelRelated implements OnInit{
     /**
      * load the config and fieldsets
      */
-    private loadconfig(){
-        let config = this.metadata.getComponentConfig('TelephonyCallPanel', this.model.module);
+    private loadconfig() {
+        let config = this.metadata.getComponentConfig('TelephonyCallPanelRelated', this.model.module);
         this.mainfieldset = config.mainfieldset;
         this.subfieldset = config.subfieldset;
     }
