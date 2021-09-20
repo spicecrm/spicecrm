@@ -4151,4 +4151,11 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
      */
 	abstract public function getNowSQL();
 
+    /**
+     * Converts the database, all its tables and text/varchar fields to a different charset and collation.
+     *
+     * @return bool
+     */
+	abstract public function convertDBCharset(): bool;
+
 }

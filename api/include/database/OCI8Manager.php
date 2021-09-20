@@ -30,6 +30,7 @@ namespace SpiceCRM\includes\database;
 
 
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -1752,6 +1753,12 @@ class OCI8Manager extends DBManager
         return $this->query('ROLLBACK');
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function convertDBCharset(): bool {
+        throw new Exception('Database charset conversion not available for OCI8.');
+    }
 
 }
 
