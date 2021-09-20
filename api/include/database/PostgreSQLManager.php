@@ -29,6 +29,7 @@
 namespace SpiceCRM\includes\database;
 
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -1426,6 +1427,13 @@ class PostgreSQLManager extends DBManager
         }
 
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function convertDBCharset(): bool {
+        throw new Exception('Database charset conversion not available for PostgresSQL.');
     }
 
 }
