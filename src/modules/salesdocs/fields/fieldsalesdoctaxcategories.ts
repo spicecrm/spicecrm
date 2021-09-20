@@ -1,13 +1,14 @@
 /**
  * @module ModuleSalesDocs
  */
-import {Component} from '@angular/core';
+import {Component, Optional} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {configurationService} from '../../../services/configuration.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
+import {salesdocrecord} from "../services/salesdocrecord";
 
 import {Router} from '@angular/router';
 
@@ -19,7 +20,7 @@ export class fieldSalesdocTaxCategories extends fieldGeneric {
 
     public options: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService, @Optional() private salesdocrecord: salesdocrecord) {
         super(model, view, language, metadata, router);
     }
 
@@ -46,6 +47,10 @@ export class fieldSalesdocTaxCategories extends fieldGeneric {
     }
 
     public getOptions() {
-        this.options = this.configuration.getData('salesdoctaxcategories');
+        // get the companycode
+        let companycode = this.configuration.getData('companycodes').find(c => c.id == this.salesdocrecord.salesDoc.getField('companycode_id'));
+
+        // get all where the countery is int eh list of countries or the country is empty
+        this.options = this.configuration.getData('salesdoctaxcategories').filter(ct => !ct.country || ct.country.indexOf(companycode.country) >= 0);
     }
 }

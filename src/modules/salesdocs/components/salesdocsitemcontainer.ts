@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef, EventEmitter,
-    Input, OnInit, Output
+    Input, OnDestroy, OnInit, Output
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -13,13 +13,15 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {salesdocrecord} from '../services/salesdocrecord';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: '[salesdocs-item-container]',
     templateUrl: './src/modules/salesdocs/templates/salesdocsitemcontainer.html',
     providers: [model, view]
 })
-export class SalesDocsItemContainer implements OnInit {
+export class SalesDocsItemContainer implements OnInit, OnDestroy {
 
     /**
      * the item to be displayed
@@ -51,7 +53,24 @@ export class SalesDocsItemContainer implements OnInit {
      */
     private hasDetailsView: boolean = false;
 
-    constructor(private metadata: metadata, private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configuration: configurationService) {
+    /**
+     * holds the subscrptions
+     *
+     * @private
+     */
+    private subscriptions: Subscription = new Subscription();
+
+    constructor(
+        private metadata: metadata,
+        private language: language,
+        private backend: backend,
+        private elementRef: ElementRef,
+        private model: model,
+        private userpreferences: userpreferences,
+        private view: view,
+        private configuration: configurationService,
+        private salesdocrecord: salesdocrecord
+    ) {
         this.view.displayLabels = false;
 
         // check if the model has changed and recalculate
@@ -59,6 +78,11 @@ export class SalesDocsItemContainer implements OnInit {
             this.recalculate();
         });
 
+        this.subscriptions.add(
+            this.salesdocrecord.taxchange.subscribe(() => {
+                this.redetermineTax();
+            })
+        );
 
     }
 
@@ -108,7 +132,7 @@ export class SalesDocsItemContainer implements OnInit {
 
         // determine if we can open details
         let itemTypes = this.configuration.getData('salesdocitemtypes');
-        if(itemTypes){
+        if (itemTypes) {
             let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
             if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
 
@@ -125,6 +149,13 @@ export class SalesDocsItemContainer implements OnInit {
 
         // recalculate in any case
         this.recalculate();
+    }
+
+    /**
+     * unsubscribe from all subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     get editing() {
@@ -182,12 +213,21 @@ export class SalesDocsItemContainer implements OnInit {
      */
     private recalculate() {
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
-            this.item.amount_net = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
+            if (this.item.gross_priced) {
+                this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
 
-            let taxpercentage = this.getTaxPercentage(this.item.tax_category);
+                let taxpercentage = this.getTaxPercentage(this.item.tax_category);
 
-            this.item.amount_gross = this.item.amount_net * (100 + taxpercentage) / 100;
-            this.item.tax_amount = this.item.amount_net * taxpercentage / 100;
+                this.item.amount_net = this.item.amount_gross * 100 / (100 + taxpercentage);
+                this.item.tax_amount = this.item.amount_gross - this.item.amount_net;
+            } else {
+                this.item.amount_net = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
+
+                let taxpercentage = this.getTaxPercentage(this.item.tax_category);
+
+                this.item.amount_gross = this.item.amount_net * (100 + taxpercentage) / 100;
+                this.item.tax_amount = this.item.amount_net * taxpercentage / 100;
+            }
         } else {
             this.item.amount_net = 0;
             this.item.amount_gross = 0;
@@ -195,6 +235,15 @@ export class SalesDocsItemContainer implements OnInit {
         }
 
         this.recalculated.emit(true);
+    }
+
+    private redetermineTax() {
+        // get the tax category
+        let new_taxcategory = this.salesdocrecord.getTaxCategory(this.item.producttaxcategory);
+        if (new_taxcategory != this.item.tax_category) {
+            this.item.tax_category = new_taxcategory;
+            this.recalculate();
+        }
     }
 
     /**
