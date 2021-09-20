@@ -171,7 +171,16 @@ $routes = [
         'description' => 'repairs the database and loads the core package',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => []
-    ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/admin/convert/database',
+        'class'       => AdminController::class,
+        'function'    => 'convertDatabase',
+        'description' => 'converts the DB charset and collation',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters'  => [],
+    ],
 ];
 
 /**

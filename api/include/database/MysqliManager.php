@@ -1544,4 +1544,16 @@ class MysqliManager extends DBManager
         return (strtolower($dbtype) == strtolower($fieldtype));
 
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function convertDBCharset(): bool {
+        foreach ($this->getTablesArray() as $table) {
+            $sql = "ALTER TABLE {$table} CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
+            $this->query($sql);
+        }
+
+        return true;
+    }
 }
