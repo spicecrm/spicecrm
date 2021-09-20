@@ -827,4 +827,21 @@ class AdminController
         throw new UnauthorizedException();
 
     }
+
+    /**
+     * Converts the DB charset and collation
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function convertDatabase(Request $req, Response $res, array $args): Response {
+        $db = DBManagerFactory::getInstance();
+        $result = $db->convertDBCharset();
+
+        return $res->withJson($result);
+    }
+
 }
