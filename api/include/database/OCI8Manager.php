@@ -1756,10 +1756,23 @@ class OCI8Manager extends DBManager
     /**
      * @inheritDoc
      */
-    public function convertDBCharset(): bool {
+    public function convertDBCharset(string $charset, string $collation): bool {
         throw new Exception('Database charset conversion not available for OCI8.');
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function convertTableCharset(string $tableName, string $charset, string $collation): bool {
+        throw new Exception('Table charset conversion not available for OCI8.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDatabaseCharsetInfo(): array {
+        throw new Exception('Retrieving database charset not available for OCI8.');
+    }
 }
 
 ?>
