@@ -80,12 +80,15 @@ export class workflow {
      * handles an activity on the workflow task
      *
      * @param taskid
-     * @param actionvalue
+     * @param method
+     * @param methodParams
      * @param comment
      */
-    public doTaskAction(taskid, actionvalue, comment = '') {
+    public doTaskAction(taskid, method: string, methodParams: any, comment = '') {
         let retSubject = new Subject<any>();
-        this.backend.postRequest('module/Workflows/settaskstatus/' + taskid + '/' + actionvalue, {}, {comment: comment}).subscribe(workflow => {
+        const params = {comment, methodParams};
+
+        this.backend.postRequest(`module/WorkflowsTaskTypes/${method}/workflowtask/${taskid}`, {}, params).subscribe(workflow => {
 
             this.workflows.some(wf => {
                 if (wf.id == workflow.workflow.id) {
