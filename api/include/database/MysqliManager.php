@@ -1548,12 +1548,68 @@ class MysqliManager extends DBManager
     /**
      * @inheritDoc
      */
-    public function convertDBCharset(): bool {
-        foreach ($this->getTablesArray() as $table) {
-            $sql = "ALTER TABLE {$table} CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
-            $this->query($sql);
-        }
+    public function convertDBCharset($charset, $collation): bool {
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $sql = "ALTER DATABASE {$dbName} CHARACTER SET {$charset} COLLATE {$collation}";
+        $this->query($sql);
+
+       return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function convertTableCharset($tableName, $charset, $collation): bool {
+        $sql = "ALTER TABLE {$tableName} CONVERT TO CHARACTER SET {$charset} COLLATE {$collation}";
+        $this->query($sql);
 
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDatabaseCharsetInfo(): array {
+        return [
+            'tables'   => $this->getTablesCharsetInfo(),
+            'database' => $this->getDatabaseCharset(),
+        ];
+    }
+
+    /**
+     * Returns the charset and collation info for all tables
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getTablesCharsetInfo(): array {
+        $result = [];
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $sql = "SELECT table_name,CCSA.character_set_name, CCSA.collation_name FROM information_schema.TABLES T,
+                information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
+                WHERE CCSA.collation_name = T.table_collation
+                AND T.table_schema = '{$dbName}'";
+        $query = $this->query($sql);
+
+        while ($row = $this->fetchRow($query)) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns the charset and collation info for the database
+     *
+     * @return array|false
+     * @throws Exception
+     */
+    public function getDatabaseCharset(): array {
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $sql = "SELECT SCHEMA_NAME 'database', default_character_set_name 'charset', DEFAULT_COLLATION_NAME 'collation'
+                FROM information_schema.SCHEMATA WHERE schema_name='{$dbName}';";
+        $query = $this->query($sql);
+
+        return $this->fetchRow($query);
     }
 }

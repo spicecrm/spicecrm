@@ -839,9 +839,45 @@ class AdminController
      */
     public function convertDatabase(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
-        $result = $db->convertDBCharset();
+        $body = $req->getParsedBody();
+        $result = $db->convertDBCharset($body['charset'], $body['collation']);
 
         return $res->withJson($result);
     }
 
+    /**
+     * Convert the charset and collation of the given tables
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function convertTables(Request $req, Response $res, array $args): Response {
+        $body = $req->getParsedBody();
+        $db = DBManagerFactory::getInstance();
+
+        foreach ($body['tables'] as $table) {
+            $db->convertTableCharset($table, $body['charset'], $body['collation']);
+        }
+
+        return $res->withJson(true);
+    }
+
+    /**
+     * Returns the charset and collation info for the database and its tables
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function getDatabaseCharsetInfo(Request $req, Response $res, array $args): Response {
+        $db = DBManagerFactory::getInstance();
+        $result = $db->getDatabaseCharsetInfo();
+
+        return $res->withJson($result);
+    }
 }

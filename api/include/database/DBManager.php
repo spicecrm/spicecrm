@@ -4152,10 +4152,28 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	abstract public function getNowSQL();
 
     /**
-     * Converts the database, all its tables and text/varchar fields to a different charset and collation.
+     * Converts the database to a different charset and collation.
      *
+     * @param string $charset
+     * @param string $collation
      * @return bool
      */
-	abstract public function convertDBCharset(): bool;
+	abstract public function convertDBCharset(string $charset, string $collation): bool;
 
+    /**
+     * Converts a table to a different charset and collation.
+     *
+     * @param $tableName
+     * @param $charset
+     * @param $collation
+     * @return bool
+     */
+    abstract public function convertTableCharset(string $tableName, string $charset, string $collation): bool;
+
+    /**
+     * Returns the charset and collation info for the database and its tables.
+     *
+     * @return array
+     */
+    abstract public function getDatabaseCharsetInfo(): array;
 }
