@@ -1720,8 +1720,21 @@ EOSQL;
     /**
      * @inheritDoc
      */
-    public function convertDBCharset(): bool {
+    public function convertDBCharset(string $charset, string $collation): bool {
         throw new Exception('Database charset conversion not available for MS SQL.');
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function convertTableCharset(string $tableName, string $charset, string $collation): bool {
+        throw new Exception('Table charset conversion not available for MS SQL.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDatabaseCharsetInfo(): array {
+        throw new Exception('Retrieving database charset not available for MS SQL.');
+    }
 }
