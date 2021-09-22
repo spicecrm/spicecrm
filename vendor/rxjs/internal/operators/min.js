@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var reduce_1=require("./reduce");function min(n){var e="function"==typeof n?function(e,r){return n(e,r)<0?e:r}:function(e,r){return e<r?e:r};return reduce_1.reduce(e)}exports.min=min;
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var reduce_1=require("./reduce");function min(n){return reduce_1.reduce("function"==typeof n?function(e,r){return n(e,r)<0?e:r}:function(e,r){return e<r?e:r})}exports.min=min;

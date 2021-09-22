@@ -41,6 +41,13 @@ class SpiceUIModulesController
         return $modules;
     }
 
+    /**
+     * returns the complete list of modules
+     *
+     * @return array|mixed
+     * @throws \Exception
+     *
+     */
     function getModules()
     {
         global $moduleList, $modInvisList;
@@ -163,6 +170,11 @@ class SpiceUIModulesController
     }
 
 
+    /**
+     * loads and returns the field defs of the various modules
+     *
+     * @return array
+     */
     function getFieldDefs()
     {
         $retArray = [];
@@ -188,8 +200,14 @@ class SpiceUIModulesController
             $indexProperties = SpiceFTSUtils::getBeanIndexProperties($module);
             if ($indexProperties) {
                 foreach ($indexProperties as $indexProperty) {
+                    // set the info on the duplicate check
                     if ($indexProperty['duplicatecheck'] && isset($retArray[$module][$indexProperty['indexfieldname']])) {
                         $retArray[$module][$indexProperty['indexfieldname']]['duplicatecheck'] = true;
+                    }
+
+                    // set the info on the phone search
+                    if ($indexProperty['phonesearch'] && isset($retArray[$module][$indexProperty['indexfieldname']])) {
+                        $retArray[$module][$indexProperty['indexfieldname']]['phonesearch'] = true;
                     }
                 }
             }
@@ -198,12 +216,23 @@ class SpiceUIModulesController
         return $retArray;
     }
 
+    /**
+     * loads the fieldtype mappings
+     *
+     * @return array
+     * @throws \Exception
+     */
     static function getFieldDefMapping()
     {
         $db = DBManagerFactory::getInstance();
         $mappingArray = [];
 
-        $mappings = $db->query("SELECT * FROM sysuifieldtypemapping UNION SELECT * FROM sysuicustomfieldtypemapping");
+        $mappings = $db->query("SELECT * FROM sysuifieldtypemapping");
+        while ($mapping = $db->fetchByAssoc($mappings)) {
+            $mappingArray[$mapping['fieldtype']] = $mapping['component'];
+        }
+
+        $mappings = $db->query("SELECT * FROM sysuicustomfieldtypemapping");
         while ($mapping = $db->fetchByAssoc($mappings)) {
             $mappingArray[$mapping['fieldtype']] = $mapping['component'];
         }
@@ -211,6 +240,12 @@ class SpiceUIModulesController
         return $mappingArray;
     }
 
+    /**
+     * loads the defined status networks
+     *
+     * @return array
+     * @throws \Exception
+     */
     static function getModuleStatusNetworks()
     {
         $db = DBManagerFactory::getInstance();
@@ -224,6 +259,8 @@ class SpiceUIModulesController
 
 
     /**
+     * loadsand combines the sysui roles
+     *
      * @return array
      */
     static function getSysRoles()

@@ -379,6 +379,7 @@ class AuthenticationController
             'display_name' => $currentUser->get_summary_text(),
             'email' => $currentUser->email1,
             'first_name' => $currentUser->first_name,
+            'address_country' => $currentUser->address_country,
             'id' => session_id(),
             'last_name' => $currentUser->last_name,
             'portal_only' => $currentUser->portal_only == '1' ? true : false,

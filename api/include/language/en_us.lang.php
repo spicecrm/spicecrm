@@ -1883,6 +1883,12 @@ $app_list_strings['product_status_dom'] = [
     'inactive' => 'inactive',
 ];
 
+$app_list_strings['product_tax_categories_dom'] = [
+    '0' => 'tax free',
+    '1' => 'regular taxed',
+    '2' => 'reduced tax',
+];
+
 $app_list_strings['textmessage_direction'] = [
     'i' => 'Inbound',
     'o' => 'Outbound',
