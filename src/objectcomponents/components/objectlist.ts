@@ -35,7 +35,10 @@ export class ObjectList implements OnDestroy, OnInit {
      * the subscription to the modellist
      */
     public subscriptions: Subscription = new Subscription();
-    public virtualScrolling: boolean = true;
+    /**
+     * enable disable virtual scrolling
+     */
+    public virtualScrolling: boolean = false;
     /**
      * true if the scrollbar in the table is visible
      */
@@ -72,6 +75,10 @@ export class ObjectList implements OnDestroy, OnInit {
                 public injector: Injector,
                 public modal: modal,
                 public layout: layout) {
+    }
+
+    get listData() {
+        return this.modellist.listData?.list;
     }
 
     /**
@@ -229,7 +236,9 @@ export class ObjectList implements OnDestroy, OnInit {
         this.subscriptions.add(
             this.modellist.listDataChanged$.subscribe(() => {
 
-                this.scrollbarVisible = (this.modellist.listData.list.length * this.itemHeight) > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
+                if (this.virtualScrolling) {
+                    this.scrollbarVisible = (this.modellist.listData.list.length * this.itemHeight) > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
+                }
                 this.cdRef.detectChanges();
             })
         );
