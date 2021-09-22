@@ -269,6 +269,32 @@ class SpiceAttachments
         return $attachment->save();
     }
 
+    public static function saveMailgunAttachment(Email $email, $payload): bool
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
+        $guid = SpiceUtils::createGuid();
+
+        // if we have an image create a thumbnail
+        $thumbnail = self::createThumbnail($payload['md5'], $payload['content-type']);
+
+        $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type)
+                        VALUES ('{$guid}', 'Emails', '{$email->id}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "',
+                        '{$payload['name']}', '{$payload['size']}', '{$payload['md5']}', '', '{$thumbnail}', 0, '{$payload['content-type']}')");
+
+        return true;
+    }
+
+    public static function saveBase64File(string $fileContent): string {
+        $md5 = md5($fileContent);
+        $filepath = 'upload://' . $md5;
+        touch($filepath);
+
+        file_put_contents($filepath, $fileContent);
+
+        return $md5;
+    }
+
     /**
      * Deletes an attachment
      *
