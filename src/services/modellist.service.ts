@@ -1160,7 +1160,7 @@ export class modellist implements OnDestroy {
         this.backend.getList(this.module, this.sortArray, {
             modulefilter: this.modulefilter,
             filtercontextbeanid: this.filtercontextbeanid,
-            start: this.offset,
+            start: this.listData.list.length,
             limit: this.loadlimit,
             listid: this.currentList.id,
             searchterm: this.searchTerm,
@@ -1171,10 +1171,9 @@ export class modellist implements OnDestroy {
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
-                this.listDataChanged$.next(true);
                 this.lastLoad = new moment();
-
                 this.isLoading = false;
+                this.listDataChanged$.next(true);
             });
         // }
     }

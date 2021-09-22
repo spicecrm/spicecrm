@@ -29,7 +29,7 @@ export class SalesDocsItemFooter {
     /**
      * eventemitter when a new item shoudl be added
      */
-    @Output() addItem: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public addItem: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language) {
         // hide labels

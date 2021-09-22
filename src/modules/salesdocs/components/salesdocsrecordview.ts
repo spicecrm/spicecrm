@@ -9,6 +9,7 @@ import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 import {model} from "../../../services/model.service";
 import {configurationService} from "../../../services/configuration.service";
+import {salesdocrecord} from "../services/salesdocrecord";
 
 /**
  * a specific recordview for the SalesDocs
@@ -16,6 +17,7 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'salesdocs-record-view',
     templateUrl: './src/modules/salesdocs/templates/salesdocsrecordview.html',
+    providers: [salesdocrecord]
 })
 export class SalesDocsRecordView {
 
@@ -36,7 +38,7 @@ export class SalesDocsRecordView {
      */
     private footerComponentset: string = '';
 
-    constructor(private metadata: metadata, private language: language, private view: view, private model: model, private configuration: configurationService) {
+    constructor(private metadata: metadata, private language: language, private view: view, private model: model, private configuration: configurationService, private salesdocrecord: salesdocrecord) {
         this.model.data$.subscribe(recordData => {
             let docType = this.model.getField('salesdoctype');
             if (docType && docType != this._salesdoctype) {
@@ -45,6 +47,9 @@ export class SalesDocsRecordView {
                 this.renderDefaultView();
             }
         });
+
+        this.salesdocrecord.salesDoc = this.model;
+
     }
 
 

@@ -23,7 +23,7 @@ declare var moment: any;
     selector: 'salesdocs-items-container',
     templateUrl: './src/modules/salesdocs/templates/salesdocsitemscontainer.html'
 })
-export class SalesDocsItemsContainer implements OnInit{
+export class SalesDocsItemsContainer implements OnInit {
 
     /**
      * the items on the sales Document

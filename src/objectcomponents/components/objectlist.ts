@@ -1,15 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Injector,
-    OnDestroy,
-    OnInit,
-    ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -19,7 +11,6 @@ import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
 import {modal} from "../../services/modal.service";
 import {skip} from "rxjs/operators";
-import {CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 
 /**
  * renders the modellist
@@ -35,34 +26,10 @@ export class ObjectList implements OnDestroy, OnInit {
      * the subscription to the modellist
      */
     public subscriptions: Subscription = new Subscription();
-    public virtualScrolling: boolean = true;
-    /**
-     * true if the scrollbar in the table is visible
-     */
-    public scrollbarVisible: boolean = false;
     /**
      * the componentconfig
      */
     public componentconfig: any = {};
-    /**
-     * holds the item height
-     */
-    public itemHeight: number = 33;
-    /**
-     * holds the scroll timeout
-     */
-    public scrollTimeout: number;
-    /**
-     * holds page's current position
-     */
-    public currentPosition = window.pageYOffset;
-
-
-    /**
-     * holds a reference to the virtual scroll viewport component
-     * @private
-     */
-    @ViewChild(CdkVirtualScrollViewport) private scrollViewport: CdkVirtualScrollViewport;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -155,41 +122,22 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * handle viewport scroll to load more entries
+     * load more items from teh manual pushed button
+     *
+     * @private
      */
-    public onViewportScroll(index: number) {
-
-        // tracking the scrolling direction
-        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
-
-        if (index === 0) {
-            return;
-        }
-
-        if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
-
-        this.scrollTimeout = window.setTimeout(() => {
-
-                if (this.modellist.listData.list.length <= this.scrollViewport.getRenderedRange().end) {
-
-                    if (scroll >= this.currentPosition) {
-
-                        this.modellist.offset = this.modellist.listData.list.length;
-
-                        // logic for loadlimit -- loading either 50 items, or when end is hit load the rest
-                        this.modellist.loadlimit = this.modellist.listData.totalcount - this.modellist.offset < this.modellist.loadlimit ? this.modellist.listData.totalcount - this.modellist.offset : 50;
-
-                        this.modellist.loadMoreList();
-                    }
-
-                    // save the new scroll position
-                    this.currentPosition = scroll;
-
-                }
-            }
-            , 500);
+    public loadMore() {
+        this.modellist.loadMoreList();
     }
 
+    /**
+     * manages the scroll event for the infinite Scroll
+     */
+    public onScroll() {
+        if (!this.noAutoLoad) {
+            this.modellist.loadMoreList();
+        }
+    }
 
     /**
      * trackby function to optimize performance onm the for loop
@@ -228,8 +176,6 @@ export class ObjectList implements OnDestroy, OnInit {
 
         this.subscriptions.add(
             this.modellist.listDataChanged$.subscribe(() => {
-
-                this.scrollbarVisible = (this.modellist.listData.list.length * this.itemHeight) > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
                 this.cdRef.detectChanges();
             })
         );
@@ -272,24 +218,6 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * load more items from teh manual pushed button
-     *
-     * @private
-     */
-    private loadMore() {
-        this.modellist.loadMoreList();
-    }
-
-    /**
-     * manages the scroll event for the infinite Scroll
-     */
-    private onScroll() {
-        if (!this.noAutoLoad) {
-            this.modellist.loadMoreList();
-        }
-    }
-
-    /**
      * opens the modal allowing the user to choose and select the display fields when no field defs are defined and no current list fields are defined
      */
     private chooseFields() {
@@ -297,5 +225,4 @@ export class ObjectList implements OnDestroy, OnInit {
             this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
         }
     }
-
 }
