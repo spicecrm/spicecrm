@@ -1,0 +1,134 @@
+<system-modal>
+    <system-modal-header>
+        <system-label label="LBL_CONVERT_DATABASE_CHARSET"></system-label>
+    </system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <div class="slds-grid slds-grid--vertical slds-height_full">
+            <div class="slds-grid slds-p-around--x-small">
+                <div class="slds-grow">
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <system-label label="LBL_DATABASE" class="slds-m-right--x-small slds-text-title--caps"></system-label>
+                        <span>
+                            {{databaseData?.database}}
+                        </span>
+                    </div>
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <system-label label="LBL_CHARSET" class="slds-m-right--x-small slds-text-title--caps"></system-label>
+                        <span>
+                            {{databaseData?.charset}}
+                        </span>
+                    </div>
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <system-label label="LBL_COLLATION" class="slds-m-right--x-small slds-text-title--caps"></system-label>
+                        <span>
+                            {{databaseData?.collation}}
+                        </span>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid--vertical-align-end">
+                    <div class="slds-form-element slds-m-right--x-small">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_CONVERT_TO_CHARSET"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select [(ngModel)]="convertToCharset" class="slds-select">
+                                    <option value="utf8mb4">
+                                        UTF8 Multibyte 4
+                                    </option>
+                                    <option value="utf8">
+                                        utf8
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button (click)="convertDatabase()" [disabled]="!convertToCharset" class="slds-button slds-button--brand" style="margin-bottom: 1px;">
+                        <system-label label="LBL_CONVERT_DATABASE"></system-label>
+                    </button>
+                </div>
+            </div>
+            <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
+                <input type="text" [(ngModel)]="listFilterTerm" system-placeholder="LBL_SEARCH" class="slds-input slds-m-right--x-small">
+                <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
+            </div>
+            <div class="slds-scrollable--y slds-grow" style="min-height: 0">
+                <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table--header-fixed" role="grid">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="slds-cell-shrink">
+                                <system-checkbox [indeterminate]="selectedTables.length > 0 && selectedTables.length < filteredTables.length" [ngModel]="selectedTables.length == filteredTables.length" (ngModelChange)="toggleSelectAll($event)"></system-checkbox>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate">
+                                    <system-label label="LBL_NAME"></system-label>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate">
+                                    <system-label label="LBL_CHARSET"></system-label>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate">
+                                    <system-label label="LBL_COLLATION"></system-label>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let table of filteredTables" class="slds-hint-parent">
+                            <td class="slds-text-align_right" role="gridcell">
+                                <system-checkbox [(ngModel)]="table.selected" (ngModelChange)="selectTable($event, table.table_name)"></system-checkbox>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">
+                                    {{table.table_name}}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">
+                                    {{table.character_set_name}}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">
+                                    {{table.collation_name}}
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="tables.length === 0">
+                        <tr class="slds-hint-parent">
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                            <td><system-stencil></system-stencil></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="cancel()" class="slds-button slds-button--neutral">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button (click)="convertTables()" [disabled]="selectedTables.length == 0 || !convertToCharset" class="slds-button slds-button--brand">
+            <system-label label="LBL_CONVERT_TABLES"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>
