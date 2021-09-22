@@ -49,6 +49,7 @@ $dictionary['Task'] = ['table' => 'tasks',
             ],
             'enable_range_search' => true,
             'options'             => 'date_range_search_dom',
+            'required' => true
         ],
         'time_due' => [
             'name'       => 'time_due',
