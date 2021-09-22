@@ -1171,10 +1171,9 @@ export class modellist implements OnDestroy {
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
-                this.listDataChanged$.next(true);
                 this.lastLoad = new moment();
-
                 this.isLoading = false;
+                this.listDataChanged$.next(true);
             });
         // }
     }
