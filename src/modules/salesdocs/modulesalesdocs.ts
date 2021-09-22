@@ -12,6 +12,11 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
 /**
+ * services
+ */
+import /*embed*/ {salesdocrecord} from './services/salesdocrecord';
+
+/**
  * pipes
  */
 import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';

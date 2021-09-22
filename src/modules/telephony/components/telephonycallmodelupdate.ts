@@ -60,8 +60,12 @@ export class TelephonyCallModelUpdate implements OnInit {
         // get allfields of type phone
         this.getPhoneFields();
 
-        // initialize the model
-        this.initializeModel();
+        // initialize the model if we have any phone fields
+        if (this.phoneFields.length > 0) {
+            this.initializeModel();
+        } else {
+            this.close();
+        }
     }
 
     /**
@@ -72,7 +76,7 @@ export class TelephonyCallModelUpdate implements OnInit {
     private getPhoneFields() {
         let fields = this.metadata.getModuleFields(this.calldata.relatedmodule);
         for (let field in fields) {
-            if (fields[field].type == 'phone') {
+            if (fields[field].type == 'phone' && fields[field].phonesearch) {
                 this.phoneFields.push(fields[field]);
             }
         }
@@ -86,18 +90,7 @@ export class TelephonyCallModelUpdate implements OnInit {
         // let await = this.modal.await('LBL_LOADING_DATA');
         this.model.module = this.calldata.relatedmodule;
         this.model.id = this.calldata.relatedid;
-        /*
-        this.model.getData().subscribe(
-            loaded => {
-                this.model.startEdit();
-                this.loaded = true;
-                await.emit(true);
-            },
-            () => {
-                await.emit(true);
-                this.close();
-            });
-         */
+        this.model.startEdit();
     }
 
     /**
@@ -109,6 +102,17 @@ export class TelephonyCallModelUpdate implements OnInit {
 
     private copy2Field(field) {
         this.model.setField(field, this.calldata.msisdn);
+    }
+
+    /**
+     * update the model
+     *
+     * @private
+     */
+    private updateModel() {
+        this.model.save();
+        this.updated.emit(true);
+        this.self.destroy();
     }
 
     /**
