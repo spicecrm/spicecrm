@@ -1,4 +1,4 @@
-<ng-container *ngIf="!virtualScrolling; else cdkScrollingContainer">
+<ng-container>
     <div class="slds-theme--default" (system-to-bottom)="onScroll()" style="min-height: 100px">
         <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
             <thead>
@@ -20,38 +20,3 @@
         </div>
     </div>
 </ng-container>
-
-<ng-template #cdkScrollingContainer>
-    <div class="slds-theme--default slds-is-relative slds-visible" system-to-bottom style="min-height: 100px">
-        <div class="slds-is-absolute__top slds-grid slds-size--1-of-1" style="z-index: 1">
-            <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
-                <thead>
-                <tr class="slds-text-title--caps" object-list-header [actionset]="actionset" [showRowNumber]="rowNumbers"></tr>
-                </thead>
-            </table>
-            <div *ngIf="scrollbarVisible" class="slds-scrollable--y" style="flex: none; visibility: hidden; overflow-y: scroll"></div>
-        </div>
-        <cdk-virtual-scroll-viewport (scrolledIndexChange)="onViewportScroll($event)" [itemSize]="itemHeight" class="slds-size--1-of-1 slds-height_full slds-scrollable--y">
-            <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
-                <thead>
-                    <tr class="slds-text-title--caps" object-list-header [actionset]="actionset" [showRowNumber]="rowNumbers" (click)="$event.preventDefault()" style="user-select: none"></tr>
-                </thead>
-                <tbody>
-                    <tr object-list-item *cdkVirtualFor="let listItem of modellist.listData.list; let i = index" [rownumbers]="rowNumbers" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="true" class="slds-hint-paren"></tr>
-               </tbody>
-                <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="true" [rownumbers]="rowNumbers" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
-            </table>
-        </cdk-virtual-scroll-viewport>
-        <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center" *ngIf="noAutoLoad && canLoadMore">
-            <button class="slds-button slds-button--neutral" (click)="loadMore()">
-                <system-button-icon class="slds-p-right--x-small" icon="skip_forward"></system-button-icon>
-                <system-label label="LBL_LOAD_MORE"></system-label>
-            </button>
-        </div>
-        <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
-            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
-        </div>
-    </div>
-</ng-template>
-
-
