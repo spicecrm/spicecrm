@@ -1569,6 +1569,13 @@ $app_list_strings['product_status_dom'] = [
     'inactive' => 'Inaktiv',
 ];
 
+
+$app_list_strings['product_tax_categories_dom'] = [
+    '0' => 'steuerfrei',
+    '1' => 'normal Steuersatz',
+    '2' => 'reduzierter Steuersatz',
+];
+
 $app_list_strings['textmessage_direction'] = [
     'i' => 'Eingehend',
     'o' => 'Ausgehend',
