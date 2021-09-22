@@ -73,18 +73,28 @@
                         <input type="text" class="slds-input" [(ngModel)]="current_rule_data.name"/>
                     </div>
                 </div>
-                <div class="slds-form-element slds-m-vertical--xxx-small">
-                    <label class="slds-form-element__label" >
-                        <system-label label="LBL_ON_EVENTS"></system-label>
-                    </label>
-                    <system-checkbox-group [(ngModel)]="current_rule_data.onevents" class="spice-display-block">
-                        <system-checkbox-group-checkbox value="initialize">
-                            <system-label label="LBL_INITIALIZE"></system-label>
-                        </system-checkbox-group-checkbox>
-                        <system-checkbox-group-checkbox value="change">
-                            <system-label label="LBL_CHANGE"></system-label>
-                        </system-checkbox-group-checkbox>
-                    </system-checkbox-group>
+                <div class="slds-grid slds-m-vertical--small">
+                    <div class="slds-form-element slds-m-right_xx-large">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_ACTIVE"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <system-checkbox [(ngModel)]="current_rule_data.active"></system-checkbox>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" >
+                            <system-label label="LBL_ON_EVENTS"></system-label>
+                        </label>
+                        <system-checkbox-group [(ngModel)]="current_rule_data.onevents" class="spice-display-block">
+                            <system-checkbox-group-checkbox value="initialize">
+                                <system-label label="LBL_INITIALIZE"></system-label>
+                            </system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="change">
+                                <system-label label="LBL_CHANGE"></system-label>
+                            </system-checkbox-group-checkbox>
+                        </system-checkbox-group>
+                    </div>
                 </div>
                 <div class="slds-form-element slds-m-vertical--xxx-small">
                     <label class="slds-form-element__label" >
@@ -102,14 +112,6 @@
                     </label>
                     <div class="slds-form-element__control">
                         <input type="number" min="0" max="99" class="slds-input" [(ngModel)]="current_rule_data.priority"/>
-                    </div>
-                </div>
-                <div class="slds-form-element">
-                    <label class="slds-form-element__label">
-                        <system-label label="LBL_ACTIVE"></system-label>
-                    </label>
-                    <div class="slds-form-element__control">
-                        <system-checkbox [(ngModel)]="current_rule_data.active"></system-checkbox>
                     </div>
                 </div>
             </div>
