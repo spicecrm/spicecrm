@@ -70,7 +70,7 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
     /**
      * destroy the modal
      */
-    public cancel() {
+    public close() {
         this.self.destroy();
     }
 
@@ -79,7 +79,7 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
      */
     public convertTables() {
 
-        this.cancel();
+        this.close();
 
         const body = {
             tables: this.filteredTables.filter(table => !!table.selected).map(t => t.table_name),
@@ -99,7 +99,7 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
      */
     public convertDatabase() {
 
-        this.cancel();
+        this.close();
 
         const body = {
             charset: this.convertToCharset,
@@ -144,12 +144,6 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
             this.filteredTables = this.tables;
             this.databaseData = res.database;
         });
-    }
-    /**
-     * close the modal
-     */
-    private close() {
-        this.self.destroy();
     }
 }
 
