@@ -840,7 +840,7 @@ class AdminController
     public function convertDatabase(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $body = $req->getParsedBody();
-        $result = $db->convertDBCharset($body['charset'], $body['collation']);
+        $result = $db->convertDBCharset($body['charset'], $this->getCollation($body['charset']));
 
         return $res->withJson($result);
     }
@@ -859,7 +859,7 @@ class AdminController
         $db = DBManagerFactory::getInstance();
 
         foreach ($body['tables'] as $table) {
-            $db->convertTableCharset($table, $body['charset'], $body['collation']);
+            $db->convertTableCharset($table, $body['charset'], $this->getCollation($body['charset']));
         }
 
         return $res->withJson(true);
@@ -879,5 +879,15 @@ class AdminController
         $result = $db->getDatabaseCharsetInfo();
 
         return $res->withJson($result);
+    }
+
+    private function getCollation(string $charset): string {
+        switch ($charset) {
+            case 'utf8mb4':
+                return 'utf8mb4_general_ci';
+            case 'utf8':
+            default:
+                return 'utf8_general_ci';
+        }
     }
 }
