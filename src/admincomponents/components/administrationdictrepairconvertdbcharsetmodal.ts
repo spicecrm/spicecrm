@@ -145,5 +145,11 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
             this.databaseData = res.database;
         });
     }
+    /**
+     * close the modal
+     */
+    private close() {
+        this.self.destroy();
+    }
 }
 
