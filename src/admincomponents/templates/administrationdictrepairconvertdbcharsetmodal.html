@@ -124,7 +124,7 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button (click)="cancel()" class="slds-button slds-button--neutral">
+        <button (click)="close()" class="slds-button slds-button--neutral">
             <system-label label="LBL_CANCEL"></system-label>
         </button>
         <button (click)="convertTables()" [disabled]="selectedTables.length == 0 || !convertToCharset" class="slds-button slds-button--brand">
