@@ -1,0 +1,62 @@
+<div class="slds-grid slds-grid--vertical slds-p-around--medium" [system-overlay-loading-spinner]="isLoading" style="height:100%">
+    <div class="slds-grid slds-grid--align-spread slds-m-bottom--x-small">
+        <div class="slds-text-heading_small slds-col--bump-right">
+            <system-label *ngIf="color==='white'" label="LBL_WHITE_LISTED_IPADDRESSES"></system-label>
+            <system-label *ngIf="color==='black'" label="LBL_BLACK_LISTED_IPADDRESSES"></system-label>
+        </div>
+        <ng-container *ngIf="checkboxesUsed">
+            <button class="slds-button slds-button--neutral" (click)="moveIpAddresses()" [disabled]="isEditing" style="padding:0.25rem;line-height:0;font-weight:bold">&#10132;{{altColor.toUpperCase()}}</button>
+            <button class="slds-button slds-button--icon" system-title="LBL_DELETE" (click)="deleteIpAddresses()" [disabled]="isEditing"><system-button-icon icon="delete"></system-button-icon></button>
+        </ng-container>
+        <button class="slds-button slds-button--icon slds-m-left--xx-small" system-title="LBL_ADD" (click)="startAdding()" [disabled]="isEditing">
+            <system-button-icon icon="new"></system-button-icon>
+        </button>
+        <button (click)="loadIpAddresses()" system-title="LBL_RELOAD" class="slds-button slds-button--icon slds-m-left--xx-small" [disabled]="isEditing">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-scrollable--y" [ngClass]="{'slds-grow':ipAddresses.length!==0}">
+        <table #table class="slds-table slds-table_bordered slds-table--header-fixed" system-multi-select-checkboxes [ngStyle]="{borderBottom:ipAddresses.length===0?'none':'auto'}">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th></th>
+                    <th><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_ADDRESS"></system-label></div></th>
+                    <th style="width:100%"><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_DESCRIPTION"></system-label></div></th>
+                    <th><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_DATE_ENTERED"></system-label></div></th>
+                    <th><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_CREATED_BY"></system-label></div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="isAdding">
+                    <td colspan="2" style="vertical-align:top">
+                        <div class="slds-form-element slds-has-error">
+                            <div class="slds-form-element__control">
+                                <input #addressInput type="text" [(ngModel)]="newAddress" [placeholder]="language.getLabel('LBL_IPADDRESS')" class="slds-input" (change)="checkAddressInput()" style="min-width:8.8rem">
+                            </div>
+                            <div class="slds-form-element__help" id="error-message-unique-id">{{addressError}}</div>
+                        </div>
+                    </td>
+                    <td style="vertical-align:top">
+                        <input class="slds-input" [(ngModel)]="newDescription" [placeholder]="language.getLabel('LBL_DESCRIPTION')">
+                    </td>
+                    <td colspan="2" style="vertical-align:top">
+                        <button class="slds-button slds-button--icon-border" (click)="cancelNewAddress()">
+                            <system-button-icon [icon]="'close'" [size]="'small'" ></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon-border slds-button--brand" (click)="saveNewAddress()">
+                            <system-button-icon [icon]="'check'" [size]="'small'"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+                <tr login-restriction-ip-addresses-row *ngFor="let ipAddress of ipAddresses; let i=index" [ipAddress]="ipAddress" (editing)="isAltering=$event" [otherEditing]="isEditing">
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!isAdding && !isLoading && ipAddresses.length === 0" class="slds-grow slds-align--absolute-center">
+        <div class="slds-illustration slds-illustration_small">
+            <div class="slds-text-longform">
+                <h3 class="slds-text-heading_medium"><system-label label="MSG_NO_IP_ADDRESSES_LISTED"></system-label></h3>
+            </div>
+        </div>
+    </div>
+</div>
