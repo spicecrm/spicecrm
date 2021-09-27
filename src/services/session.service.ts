@@ -32,6 +32,7 @@ interface authDataIf {
     obtainGDPRconsent: boolean;
     canchangepassword: boolean;
     address_country?: string;
+    passwordExpiresInDays: boolean | number;
 }
 
 /**
@@ -59,7 +60,8 @@ export class session {
         tenant_id: '',
         tenant_name: '',
         obtainGDPRconsent: false,
-        canchangepassword: false
+        canchangepassword: false,
+        passwordExpiresInDays: false
     };
 
     /**
