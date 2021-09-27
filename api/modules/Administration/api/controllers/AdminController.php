@@ -397,32 +397,34 @@ class AdminController
     }
 
     /**
-     * rebuilds relationships
+     * rebuilds relationships from dictionary definitions
      *
      * ToDo: remove the need to have this
      */
     public function rebuildRelationships()
     {
-        global $dictionary;
+//        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
+        $this->rebuildDictionaryRelationships();
+
         // using sysdictionary
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            $this->rebuildDictionaryRelationships();
-        } else { // old fashioned way
-            foreach ($GLOBALS['moduleList'] as $module) {
-                $focus = BeanFactory::getBean($module);
-                if (!$focus) continue;
-                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => $dictionary[$focus->object_name]], $focus->module_dir);
-            }
-
-            // rebuild the metadata relationships as well
-            $this->rebuildMetadataRelationships();
-
-            // rebuild relationship cache
-            $rel = new Relationship();
-            $rel->build_relationship_cache();
-        }
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+//            $this->rebuildDictionaryRelationships();
+//        } else { // old fashioned way
+//            foreach ($GLOBALS['moduleList'] as $module) {
+//                $focus = BeanFactory::getBean($module);
+//                if (!$focus) continue;
+//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => $dictionary[$focus->object_name]], $focus->module_dir);
+//            }
+//
+//            // rebuild the metadata relationships as well
+//            $this->rebuildMetadataRelationships();
+//
+//            // rebuild relationship cache
+//            $rel = new Relationship();
+//            $rel->build_relationship_cache();
+//        }
     }
 
     /**
@@ -432,9 +434,10 @@ class AdminController
      */
     public function rebuildDictionaryRelationships()
     {
+        unset($_SESSION['relationships']);
         // rebuild relationship cache
         $rel = new Relationship();
-        $rel->build_dictionary_relationship_cache();
+        $rel->build_relationship_cache();
     }
 
     /**
@@ -685,11 +688,14 @@ class AdminController
      * @return Response
      */
     public function repairCache(Request $req, Response $res, array $args): Response {
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            return $this->repairCacheFromDb($req, $res, $args);
-        } else {
-            return $this->repairCacheFromFiles($req, $res, $args);
-        }
+
+        return $this->repairCacheFromDb($req, $res, $args);
+
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+//            return $this->repairCacheFromDb($req, $res, $args);
+//        } else {
+//            return $this->repairCacheFromFiles($req, $res, $args);
+//        }
     }
 
     /**
@@ -840,7 +846,7 @@ class AdminController
     public function convertDatabase(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $body = $req->getParsedBody();
-        $result = $db->convertDBCharset($body['charset'], $body['collation']);
+        $result = $db->convertDBCharset($body['charset'], $this->getCollation($body['charset']));
 
         return $res->withJson($result);
     }
@@ -859,7 +865,7 @@ class AdminController
         $db = DBManagerFactory::getInstance();
 
         foreach ($body['tables'] as $table) {
-            $db->convertTableCharset($table, $body['charset'], $body['collation']);
+            $db->convertTableCharset($table, $body['charset'], $this->getCollation($body['charset']));
         }
 
         return $res->withJson(true);
@@ -879,5 +885,15 @@ class AdminController
         $result = $db->getDatabaseCharsetInfo();
 
         return $res->withJson($result);
+    }
+
+    private function getCollation(string $charset): string {
+        switch ($charset) {
+            case 'utf8mb4':
+                return 'utf8mb4_general_ci';
+            case 'utf8':
+            default:
+                return 'utf8_general_ci';
+        }
     }
 }

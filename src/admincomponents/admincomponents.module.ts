@@ -63,6 +63,8 @@ import /*embed*/ {AdministrationDictRepairACLRoles} from "./components/administr
 import /*embed*/ {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
 import /*embed*/ {AdministrationDictRepairDbColumns} from "./components/administrationdictrepairdbcolumns";
 import /*embed*/ {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
+import /*embed*/ {AdministrationDictRepairConvertDBCharset} from "./components/administrationdictrepairconvertdbcharset";
+import /*embed*/ {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
 import /*embed*/ { AdministrationJobMethods } from './components/administrationjobmethods';
@@ -149,7 +151,9 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationGeneralSettings,
         AdministrationLanguages,
         AdministrationDefaultPreferences,
-        UserAccessLogViewer
+        UserAccessLogViewer,
+        AdministrationDictRepairConvertDBCharset,
+        AdministrationDictRepairConvertDBCharsetModal
     ],
     entryComponents: [
         AdministrationMain,

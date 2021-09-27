@@ -195,12 +195,6 @@ $routes = [
                 'required'    => true,
                 'description' => 'the target charset for the tables',
             ],
-            'collation' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
-                'description' => 'the target collation for the tables',
-            ],
         ],
         'example'     => '{
                             "charset": "utf8mb4",
@@ -227,12 +221,6 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'required'    => true,
                 'description' => 'the target charset for the tables',
-            ],
-            'collation' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
-                'description' => 'the target collation for the tables',
             ],
         ],
         'example'     => '{
