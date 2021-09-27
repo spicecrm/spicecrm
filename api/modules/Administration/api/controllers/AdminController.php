@@ -397,32 +397,34 @@ class AdminController
     }
 
     /**
-     * rebuilds relationships
+     * rebuilds relationships from dictionary definitions
      *
      * ToDo: remove the need to have this
      */
     public function rebuildRelationships()
     {
-        global $dictionary;
+//        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
+        $this->rebuildDictionaryRelationships();
+
         // using sysdictionary
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            $this->rebuildDictionaryRelationships();
-        } else { // old fashioned way
-            foreach ($GLOBALS['moduleList'] as $module) {
-                $focus = BeanFactory::getBean($module);
-                if (!$focus) continue;
-                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => $dictionary[$focus->object_name]], $focus->module_dir);
-            }
-
-            // rebuild the metadata relationships as well
-            $this->rebuildMetadataRelationships();
-
-            // rebuild relationship cache
-            $rel = new Relationship();
-            $rel->build_relationship_cache();
-        }
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+//            $this->rebuildDictionaryRelationships();
+//        } else { // old fashioned way
+//            foreach ($GLOBALS['moduleList'] as $module) {
+//                $focus = BeanFactory::getBean($module);
+//                if (!$focus) continue;
+//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => $dictionary[$focus->object_name]], $focus->module_dir);
+//            }
+//
+//            // rebuild the metadata relationships as well
+//            $this->rebuildMetadataRelationships();
+//
+//            // rebuild relationship cache
+//            $rel = new Relationship();
+//            $rel->build_relationship_cache();
+//        }
     }
 
     /**
@@ -432,9 +434,10 @@ class AdminController
      */
     public function rebuildDictionaryRelationships()
     {
+        unset($_SESSION['relationships']);
         // rebuild relationship cache
         $rel = new Relationship();
-        $rel->build_dictionary_relationship_cache();
+        $rel->build_relationship_cache();
     }
 
     /**
@@ -685,11 +688,14 @@ class AdminController
      * @return Response
      */
     public function repairCache(Request $req, Response $res, array $args): Response {
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            return $this->repairCacheFromDb($req, $res, $args);
-        } else {
-            return $this->repairCacheFromFiles($req, $res, $args);
-        }
+
+        return $this->repairCacheFromDb($req, $res, $args);
+
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+//            return $this->repairCacheFromDb($req, $res, $args);
+//        } else {
+//            return $this->repairCacheFromFiles($req, $res, $args);
+//        }
     }
 
     /**
