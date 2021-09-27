@@ -1,5 +1,5 @@
 /**
- * @module WorkbenchModule
+ * @module AdminComponentsModule
  */
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { backend } from '../../services/backend.service';
