@@ -3,11 +3,8 @@
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium">
             <!--div class="spiceLoginLogo"-->
-            <div *ngIf="displayimage"  class="slds-align--absolute-center slds-p-vertical--medium">
+            <div class="slds-align--absolute-center slds-p-vertical--medium">
                 <global-login-image></global-login-image>
-            </div>
-            <div *ngIf="!displayimage" class="slds-align--absolute-center slds-p-vertical--medium">
-                <global-header-image></global-header-image>
             </div>
             <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser" [system-overlay-loading-spinner]="loggingIn">
                 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
