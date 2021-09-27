@@ -83,8 +83,12 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
 import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
 
-
-
+import /*embed*/ {LoginRestriction} from './components/loginrestriction';
+import /*embed*/ {LoginRestrictionIpAddresses} from './components/loginrestrictionipaddresses';
+import /*embed*/ {LoginRestrictionIpAddressesRow} from './components/loginrestrictionipaddressesrow';
+import /*embed*/ {PasswordConfig} from './components/passwordconfig';
+import /*embed*/ {BlockedUsers} from './components/blockedusers';
+import /*embed*/ {LoginManagement} from './components/loginmanagement';
 
 @NgModule({
     imports: [
@@ -153,7 +157,13 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDefaultPreferences,
         UserAccessLogViewer,
         AdministrationDictRepairConvertDBCharset,
-        AdministrationDictRepairConvertDBCharsetModal
+        AdministrationDictRepairConvertDBCharsetModal,
+        LoginRestriction,
+        LoginRestrictionIpAddresses,
+        LoginRestrictionIpAddressesRow,
+        PasswordConfig,
+        BlockedUsers,
+        LoginManagement
     ],
     entryComponents: [
         AdministrationMain,
@@ -167,7 +177,13 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDictionaryManagerItemField,
         AdministrationDefaultPreferences,
         AdministrationJobRunningList,
-        AdministrationJobFailedList
+        AdministrationJobFailedList,
+        LoginRestriction,
+        LoginRestrictionIpAddresses,
+        LoginRestrictionIpAddressesRow,
+        PasswordConfig,
+        BlockedUsers,
+        LoginManagement
     ],
     exports: [],
 

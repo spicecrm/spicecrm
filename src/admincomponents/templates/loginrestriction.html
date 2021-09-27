@@ -1,0 +1,60 @@
+<div class="slds-grid" [system-overlay-loading-spinner]="isLoading">
+    <div class="slds-p-around--medium" style="width:100%">
+        <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-text-heading_small"><system-label label="LBL_USER_RESTRICTION"></system-label></div>
+            <system-checkbox-toggle [(ngModel)]="restrictions.user.enabled" label="LBL_ACTIVE" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="user-number-attempts">
+                    <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_MAX_LOGIN_ATTEMPTS"></system-label></label>
+                <div class="slds-form-element__control">
+                    <system-input-number [disabled]="!restrictions.user.enabled" [(ngModel)]="restrictions.user.number_attempts" [onlyField]="true" id="user-number-attempts" [precision]="0" [asNumber]="true"></system-input-number>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-left--medium">
+                <label class="slds-form-element__label" for="user-monitored-period">
+                    <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_MONITORED_PERIOD"></system-label> (<system-label label="LBL_MINUTES" length="short" style="display:inline-block"></system-label>)</label>
+                <div class="slds-form-element__control">
+                    <system-input-number [disabled]="!restrictions.user.enabled" [(ngModel)]="restrictions.user.monitored_period" [onlyField]="true" id="user-monitored-period" [precision]="0" [asNumber]="true"></system-input-number>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-left--medium">
+                <label class="slds-form-element__label" for="user-blocking-duration">
+                    <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_BLOCKING_DURATION"></system-label> (<system-label label="LBL_MINUTES" length="short" style="display:inline-block"></system-label>)</label>
+                <div class="slds-form-element__control">
+                    <system-input-number [disabled]="!restrictions.user.enabled" [(ngModel)]="restrictions.user.blocking_duration" [onlyField]="true" id="user-blocking-duration" [precision]="0" [asNumber]="true"></system-input-number>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-border--left slds-p-around--medium slds-border--right" style="width:100%">
+        <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-text-heading_small"><system-label label="LBL_IP_RESTRICTION"></system-label></div>
+            <system-checkbox-toggle [(ngModel)]="restrictions.ip.enabled" label="LBL_ACTIVE" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="ip-number-attempts">
+                    <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_MAX_LOGIN_ATTEMPTS"></system-label></label>
+                <div class="slds-form-element__control">
+                    <system-input-number [disabled]="!restrictions.ip.enabled" [(ngModel)]="restrictions.ip.number_attempts" [onlyField]="true" id="ip-number-attempts" [precision]="0" [asNumber]="true"></system-input-number>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-left--medium">
+                <label class="slds-form-element__label" for="ip-monitored-period">
+                    <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_MONITORED_PERIOD"></system-label> (<system-label label="LBL_MINUTES" length="short" style="display:inline-block"></system-label>)</label>
+                <div class="slds-form-element__control">
+                    <system-input-number [disabled]="!restrictions.ip.enabled" [(ngModel)]="restrictions.ip.monitored_period" [onlyField]="true" id="ip-monitored-period" [precision]="0" [asNumber]="true"></system-input-number>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-around--medium slds-align-bottom" style="white-space:nowrap">
+        <button class="slds-button slds-button--icon slds-button_neutral slds-button--icon-border" [disabled]="!isDirty()" (click)="cancelEditing()">
+            <system-button-icon icon="close"></system-button-icon>
+        </button><button class="slds-button slds-button--icon slds-button_brand slds-button--icon-border slds-m-left--small" [disabled]="!isDirty()" (click)="saveConfig()">
+            <system-button-icon icon="check"></system-button-icon>
+        </button>
+    </div>
+</div>
