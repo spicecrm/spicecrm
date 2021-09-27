@@ -441,8 +441,7 @@ class AuthenticationController
     {
         $this->getCurrentUser()->call_custom_logic('before_logout');
         $this->authController->logout();
-        LogicHook::initialize();
-        $GLOBALS['logic_hook']->call_custom_logic('Users', 'after_logout');
+        LogicHook::getInstance()->call_custom_logic('Users', 'after_logout');
     }
 
 }

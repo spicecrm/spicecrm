@@ -3,7 +3,7 @@
  */
 
 // from https://github.com/kolkov/angular-editor
-import {ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2,} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2, ChangeDetectorRef} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
@@ -69,7 +69,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
                 private renderer: Renderer2,
                 private userpreferences: userpreferences,
                 private modal: modal,
-                private language: language) {
+                private cdref: ChangeDetectorRef) {
     }
 
     get isValid() {
@@ -163,6 +163,8 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         } else {
             this.clear(false);
         }
+
+        this.cdref.detectChanges();
     }
 
     private clear(notify = true) {

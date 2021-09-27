@@ -26,7 +26,7 @@ class GuidValidator extends Validator
         if (isset(SpiceConfig::getInstance()->config['validation']['guid'])) {
             switch (SpiceConfig::getInstance()->config['validation']['guid']) {
                 case self::GUID_SHORT:
-                    $guidRegex = '/^\{?[A-Z0-9\-]+\}?$/';
+                    $guidRegex = '/^\{?[A-Z0-9\-_]+\}?$/';
                     break;
                 case self::GUID_STRICT:
                 default:
