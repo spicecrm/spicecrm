@@ -1,5 +1,5 @@
 /**
- * @module WorkbenchModule
+ * @module AdminComponentsModule
  */
 import { Component, OnInit, Input, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
 import { backend } from '../../services/backend.service';

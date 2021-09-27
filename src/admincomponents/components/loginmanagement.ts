@@ -1,22 +1,22 @@
 /**
- * @module WorkbenchModule
+ * @module AdminComponentsModule
  */
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { LoginRestrictionIpAddresses } from './loginrestrictionipaddresses';
-
-/**
- * @ignore
- */
-declare var _: any;
 
 @Component({
     templateUrl: './src/admincomponents/templates/loginmanagement.html'
 })
-export class LoginManagement {
+export class LoginManagement implements OnInit {
 
     @ViewChild('whiteList') public whiteListComponent: LoginRestrictionIpAddresses;
     @ViewChild('blackList') public blackListComponent: LoginRestrictionIpAddresses;
 
-    // constructor() { }
+    constructor( private cdref: ChangeDetectorRef ) { }
+
+    public ngOnInit() {
+        // An additional change detection cycle because of sibling components LoginRestrictionIpAddresses.
+        this.cdref.detectChanges();
+    }
 
 }
