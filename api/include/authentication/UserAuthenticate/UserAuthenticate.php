@@ -14,12 +14,13 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\modules\Users\User;
+use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 
 /**
  * This file is used to control the authentication process.
@@ -36,8 +37,12 @@ class UserAuthenticate
      * @return User
      * @throws UnauthorizedException
      */
-    function authenticate($authUser, $password, $impersonatingUserName = null, $noException = false )
+    function authenticate($authUser, $password, $impersonatingUserName = null )
     {
+        if ( !IpAddresses::checkIpAddress(SpiceUtils::getClientIP()) ) {
+            throw new UnauthorizedException('Access denied, IP Address not allowed.', 11);
+        }
+
         $db = DBManagerFactory::getInstance();
         $impersonatingUser = null;
         $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND deleted = 0 and external_auth_only = 0";
@@ -61,8 +66,7 @@ class UserAuthenticate
             if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
             return $userObj;
         } else {
-            if ( $noException ) return false;
-            else throw new UnauthorizedException( "Invalid Username/Password combination".$authUser.$password, 1 );
+            throw new UnauthorizedException("Invalid Username/Password combination", 1);
         }
     }
 
@@ -234,18 +238,18 @@ class UserAuthenticate
     }
 
     /**
-     * @param $user User | integer
+     * @param $user User | string
      * @param $type string
      * @return false|\SpiceCRM\data\SugarBean
      * @throws Exception
      */
-    public function getProperEmailTemplate($user, $type)
+    public function getProperEmailTemplate( $userIdOrBean, $type )
     {
 
-        if (!is_object($user)) {
-            $user = BeanFactory::getBean('Users', $user);
-            if (empty($user->id)) throw (new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $memmy . '"');
-        }
+        if ( !is_object( $userIdOrBean )) {
+            $user = BeanFactory::getBean('Users', $userIdOrBean );
+            if ( empty( $user->id )) throw ( new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
+        } else $user = $userIdOrBean;
 
         $destUserPrefs = new UserPreference($user);
         $destUserPrefs->reloadPreferences();
