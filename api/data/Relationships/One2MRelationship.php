@@ -54,7 +54,7 @@ class One2MRelationship extends M2MRelationship
         global $dictionary;
 
         $this->def = $def;
-        $this->name = $def['name'];
+        $this->name = (!empty($def['name']) ? $def['name'] : $def['relationship_name']); // BWC
 
         $this->selfReferencing = $def['lhs_module'] == $def['rhs_module'];
         $lhsModule = $def['lhs_module'];

@@ -67,31 +67,15 @@ class SugarRelationshipFactory {
         return self::$rfInstance;
     }
 
-    public static function rebuildCache()
-    {
-        self::getInstance()->buildRelationshipCache();
-    }
-
-    public static function deleteCache()
-    {
-        $file = self::getInstance()->getCacheFile();
-        if(sugar_is_file($file))
-        {
-            unlink($file);
-        }
-    }
 
     /**
      * @param  $relationshipName String name of relationship to load
-     * @return void
-     *
-     *
-     *
+     * @return false|EmailAddressRelationship|M2MRelationship|One2MBeanRelationship|One2MRelationship|One2OneBeanRelationship|One2OneRelationship
      */
     public function getRelationship($relationshipName)
     {
         if (empty($this->relationships[$relationshipName])) {
-            LoggerManager::getLogger()->error("Unable to find relationship $relationshipName");
+            LoggerManager::getLogger()->error("Unable to find relationship in ".__CLASS__." ".__FUNCTION__."() on line ".__LINE__." $relationshipName");
             return false;
         }
 
@@ -128,42 +112,36 @@ class SugarRelationshipFactory {
         return false;
     }
 
-    public function getRelationshipDef($relationshipName)
+
+    /**
+     * @param false $forceLoadFromDb
+     */
+    protected function loadRelationships($forceLoadFromDb = false)
     {
-        if (empty($this->relationships[$relationshipName])) {
-            LoggerManager::getLogger()->error("Unable to find relationship $relationshipName");
-            return false;
-        }
-
-        return $this->relationships[$relationshipName];
-    }
-
-
-    protected function loadRelationships()
-    {
-        if(isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
+        if(empty($_SESSION['relationships']) || $forceLoadFromDb) {
             $this->loadRelationshipsFromDb();
+        } else {
+            $this->loadRelationshipsFromSession();
         }
-        else{
-            $this->loadRelationshipsFromCache();
-        }
-    }
-
-    private function loadRelationshipsFromDb(){
-        $this->relationships = SpiceDictionaryVardefs::loadRelationships();
     }
 
     /**
-     * load relationships from cache
+     * fill relationships from database and set to session
      */
-    private function loadRelationshipsFromCache(){
-        
-        if(isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
-            $this->loadRelationshipsCacheFromDb();
-        } else {
-            $this->loadRelationshipsCacheFromFiles();
-        }
+    private function loadRelationshipsFromDb(){
+        $this->relationships = SpiceDictionaryVardefs::loadRelationships();
+        // reset session
+        $_SESSION['relationships'] = [];
+        $_SESSION['relationships'] = array_merge($_SESSION['relationships'], $this->relationships);
     }
+
+    /**
+     * fill relationships from session
+     */
+    private function loadRelationshipsFromSession(){
+        $this->relationships = $_SESSION['relationships'];
+    }
+
 
     /**
      * load relationships from cache table
@@ -174,83 +152,6 @@ class SugarRelationshipFactory {
         $relationships = SpiceDictionaryVardefs::getRelationshipsCacheFromDb($module);
         $this->relationships = $relationships;
     }
-
-    /**
-     * load relationships from cache file
-     */
-    private function loadRelationshipsCacheFromFiles(){
-        if(sugar_is_file($this->getCacheFile()))
-        {
-            include($this->getCacheFile());
-            $this->relationships = $relationships;
-        } else {
-            $this->buildRelationshipCache();
-        }
-    }
-
-
-    protected function buildRelationshipCache()
-    {
-        global $beanList, $dictionary, $buildingRelCache;
-        if ($buildingRelCache)
-            return;
-        $buildingRelCache = true;
-
-        //Reload ALL the module vardefs....
-        foreach($beanList as $moduleName => $beanName)
-        {
-            VardefManager::loadVardef($moduleName, BeanFactory::getObjectName($moduleName), false, [
-                //If relationships are not yet loaded, we can't figure out the rel_calc_fields.
-                "ignore_rel_calc_fields" => true,
-            ]);
-        }
-
-        $relationships = [];
-
-        //Grab all the relationships from the dictionary.
-        foreach ($dictionary as $key => $def)
-        {
-            // BEGIN CR1000108 vardefs to db. Try to grab directly from db
-//            if(isset(\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-//                $module = \SpiceCRM\modules\SystemVardefs\SystemVardefs::getModuleByDictionaryName($key);
-//                \SpiceCRM\modules\SystemVardefs\SystemVardefs::loadRelationships($def, $module);
-//            }
-            // END CR1000108
-
-            if (!empty($def['relationships']))
-            {
-                foreach($def['relationships'] as $relKey => $relDef)
-                {
-                    if ($key == $relKey) //Relationship only entry, we need to capture everything
-                        $relationships[$key] = array_merge(['name' => $key], $def, $relDef);
-                    else {
-                        $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
-                        if(!empty($relationships[$relKey]['join_table']) && empty($relationships[$relKey]['fields'])
-                            && isset($dictionary[$relationships[$relKey]['join_table']]['fields'])) {
-                            $relationships[$relKey]['fields'] = $dictionary[$relationships[$relKey]['join_table']]['fields'];
-                        }
-                    }
-                }
-            }
-        }
-        //Save it out
-        sugar_mkdir(dirname($this->getCacheFile()), null, true);
-        $out = "<?php \n \$relationships = " . var_export($relationships, true) . ";";
-        sugar_file_put_contents_atomic($this->getCacheFile(), $out);
-
-        $this->relationships = $relationships;
-
-        //Now load all vardefs a second time populating the rel_calc_fields
-        foreach ($beanList as $moduleName => $beanName) {
-            VardefManager::loadVardef($moduleName, BeanFactory::getObjectName($moduleName));
-        }
-
-        $buildingRelCache = false;
-    }
-
-	protected function getCacheFile() {
-		return sugar_cached("Relationships/relationships.cache.php");
-	}
 
 
 
