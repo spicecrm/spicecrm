@@ -60,15 +60,22 @@ export class UserChangePasswordModal {
     private repFieldVisited = false;
 
     /**
-     * reference toe hte modal itself
+     * reference to the modal itself
      */
     public self: any = undefined;
 
     /**
-     * indicates that the modalis posting
+     * indicates that the modal is posting
      * @private
      */
     private posting: boolean = false;
+
+    /**
+     * The number of remaining days, in case the modal has been opened to renew a expiring password.
+     * In case the modal has been opened by the user: false.
+     * @private
+     */
+    private passwordExpiresInDays = false;
 
     constructor(private http: HttpClient, private language: language, private session: session, private toast: toast, private configuration: configurationService) {
     }
