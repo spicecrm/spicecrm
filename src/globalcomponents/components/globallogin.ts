@@ -240,13 +240,6 @@ export class GlobalLogin {
     }
 
     /**
-     * only display the login image when the screenheight is large enough
-     */
-    get displayimage() {
-        return window.innerHeight > 800;
-    }
-
-    /**
      * returns thecurrent site id from the configuration service
      */
     get currentSiteId() {
