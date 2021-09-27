@@ -13,6 +13,7 @@ import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
+import {take} from 'rxjs/operators';
 
 interface loginAuthDataIf {
     userName: string;
@@ -129,6 +130,7 @@ export class loginService {
                     this.session.authData.googleToken = response.access_token;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     this.session.authData.canchangepassword = response.canchangepassword;
+                    this.session.authData.passwordExpiresInDays = response.passwordExpiresInDays;
 
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
 
@@ -249,7 +251,23 @@ export class loginService {
      * starts the loaded upon successful login
      */
     public load() {
-        this.loader.load().subscribe((val) => this.redirect(val));
+        this.loader.load().subscribe((val) => {
+            this.renewPasswordIfNeeded();
+            this.redirect(val);
+        });
+    }
+
+    /**
+     * Initiate password renewal, in case the password is expiring soon.
+     */
+    public renewPasswordIfNeeded() {
+        if ( this.session.authData.passwordExpiresInDays !== false ) {
+            this.modal.openModal('UserChangePasswordModal')
+                .pipe(take(1))
+                .subscribe( modal => {
+                    modal.instance.passwordExpiresInDays = this.session.authData.passwordExpiresInDays;
+                });
+        }
     }
 
     public redirect(val) {
