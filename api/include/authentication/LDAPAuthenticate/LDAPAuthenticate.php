@@ -464,7 +464,7 @@ class LDAPAuthenticate
         $rows = [];
         $db = DBManagerFactory::getInstance();
         try {
-            $query = $db->query("SELECT * from ldap_settings where is_active = 1 order by priority");
+            $query = $db->query("SELECT * from ldap_settings where is_active = 1 AND deleted = 0 order by priority");
             while ($row = $db->fetchByAssoc($query)) {
                 $rows[] = $row;
             }
