@@ -214,6 +214,7 @@ class LogicHook
         if (LoggerManager::getLogger()) {
             LoggerManager::getLogger()->debug("Hook called: $moduleDir::$event");
         }
+        $moduleHooks = [];
 		if (!empty($moduleDir)) {
 			// This will load an array of the hooks to process
 			$moduleHooks = $this->getHooks($moduleDir);
