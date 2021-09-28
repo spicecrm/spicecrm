@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\modules\Users;
 
+use Ramsey\Uuid\Type\Integer;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
@@ -936,35 +937,40 @@ class User extends Person
         return false;
     }
 
-    function hasUnexpiredPassword()
+    /**
+     * hasExpiredPassword
+     *
+     * Checks if the password of the user is expired (returns true) or will expire soon (returns the number of days of remaining validity).
+     *
+     * @return True If the password is expired.
+     * @return False If the password is not expired and will not expire soon.
+     * @return Integer Number of days of remaining validity, in case the password will expire soon.
+     */
+    function hasExpiredPassword()
     {
-
-        # In case the current password is system generated.
-        if ($this->system_generated_password === '1') return false;
-
         $config = SpiceConfig::getInstance()->config['passwordsetting'];
         $timedate = TimeDate::getInstance();
 
         # Password expiration is OFF or not configured.
-        if ( empty( $config['pwdexpirationdays'] )) return true;
+        if ( empty( $config['pwdvaliditydays'] )) return false;
 
         # In case password expiration is used, we make sure the date of last password change is set.
         # If not, we set it. Then a further expiration check for this time makes no sense, so return true.
         if ( empty( $this->pwd_last_changed )) {
             $this->pwd_last_changed = $timedate->nowDb();
             $this->save();
-            return true;
+            return false;
         }
 
         # Calculate the age of the password (in days).
-        $passwordAge = ( new \DateTime( $this->pwd_last_changed ))->diff( $timedate->getNow() )->format('%r%a')*1;
+        $passwordAge = ( new \DateTime( $this->pwd_last_changed ))->setTime(0,0,0)->diff( $timedate->getNow()->setTime(0,0,0))->format('%r%a')*1;
 
         # Calculate the remaining days until expiration.
-        $remainingDays = $config['pwdexpirationdays'] - $passwordAge;
+        $remainingDays = $config['pwdvaliditydays'] - $passwordAge;
 
-        if ( $remainingDays < 0 ) return false;
-        else return $remainingDays;
-
+        if ( $remainingDays < 1 ) return true;
+        if (( $remainingDays - $config['pwdvaliditywarningdays'] ) < 1 ) return $remainingDays;
+        return false;
     }
 
 }

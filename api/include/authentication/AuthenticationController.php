@@ -62,7 +62,7 @@ class AuthenticationController
     public $errorReason;
     public $errorCode;
 
-    public $passwordExpiresInDays = false;
+    public $expiringPasswordValidityDays = false;
 
     /**
      * The Singleton's constructor should always be private to prevent direct
@@ -309,11 +309,16 @@ class AuthenticationController
             $sugarAuthenticationController = new UserAuthenticate();
             $userObj = $sugarAuthenticationController->authenticate( $authUser, $authPass, $impersonationUser );
 
-            //check if password is expired
-            if (( $days = $userObj->hasUnexpiredPassword() ) === false ) {
+            // check if password is expired
+            if (( $days = $userObj->hasExpiredPassword() ) === true ) {
                 throw new UnauthorizedException('Password expired.', 2 );
-            } else if ( $days !== true ) {
-                $this->passwordExpiresInDays = $days;
+            } else if ( $days !== false ) {
+                $this->expiringPasswordValidityDays = $days;
+            }
+
+            // check if password is system generated
+            if ( $userObj->system_generated_password ) {
+                throw new UnauthorizedException('System generated Password used.', 12 );
             }
 
         } catch (UnauthorizedException $e) {
@@ -368,7 +373,7 @@ class AuthenticationController
             'tenant_name' => $this->systemtenantname,
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
-            'passwordExpiresInDays' => AuthenticationController::getInstance()->passwordExpiresInDays
+            'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays
         ];
 
         // Is it a portal user? And the GDPR consent for portal users is configured?

@@ -183,6 +183,9 @@ export class GlobalLogin {
                             break;
                         // password expired
                         case 2:
+                            this.messageId = this.toast.sendToast('Error logging on. Password expired.', 'error');
+                            break;
+                        case 12:
                             this.renewpassword = true;
                             break;
                         default:
