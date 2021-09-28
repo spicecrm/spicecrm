@@ -24,6 +24,7 @@ class UnauthorizedException extends Exception {
      * 9=required ldap group membership is missing
      * 10=invalid username/password combination on ldap bind
      * 11=client ip address not allowed (black listed)
+     * 12= password is system generated, has to get renewed
      */
     function __construct( $message = null, $errorCode = null ) {
         if ( !isset( $message )) $this->lbl = 'ERR_HTTP_NO_AUTHORIZATION';
