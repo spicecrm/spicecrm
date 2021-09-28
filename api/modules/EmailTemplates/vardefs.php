@@ -189,7 +189,7 @@ $dictionary['EmailTemplate'] = [
         'body_html' => [
             'name' => 'body_html',
             'vname' => 'LBL_EMAIL_BODY_HTML',
-            'type' => 'html',
+            'type' => 'longhtml',
             'comment' => 'HTML formatted email body to be used in resulting email',
             'stylesheet_id_field' => 'style',
         ],
