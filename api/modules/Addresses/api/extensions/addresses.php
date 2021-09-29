@@ -4,4 +4,4 @@
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
-RESTManager::getInstance()->registerExtension('address_format', '1.0', ['format' => SpiceConfig::getInstance()->config['xxx']['address_format'] ?? '']);
+RESTManager::getInstance()->registerExtension('address_format', '1.0', ['format' => SpiceConfig::getInstance()->config['xxx']['address_format'] ?? '{}']);
