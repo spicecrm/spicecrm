@@ -8,7 +8,7 @@ use SpiceCRM\includes\SugarObjects\api\controllers\GdprController;
 $routes = [
     [
         'method'      => 'get',
-        'route'       => '/common/gdpr/module/{module}/{id}',
+        'route'       => '/common/gdpr/{module}/{id}',
         'oldroute'    => '/gdpr/{module}/{id}',
         'class'       => GdprController::class,
         'function'    => 'getGdprReleases',
