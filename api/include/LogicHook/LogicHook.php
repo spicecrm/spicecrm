@@ -177,9 +177,15 @@ class LogicHook
         $rows = [];
         if ($res = $db->query($q)) {
             while ($row = $db->fetchByAssoc($res)) {
-                $hookHash = $row['event'].$row['hook_class'].$row['hook_method'];
+                if (!class_exists($row['hook_class'])) {
+                    LoggerManager::getLogger()->fatal("Hook class {$row['hook_class']} does not exist.");
+                } elseif (!method_exists($row['hook_class'], $row['hook_method'])) {
+                    LoggerManager::getLogger()->fatal("Hook method {$row['hook_method']} does not exist for class {$row['hook_class']}.");
+                } else {
+                    $hookHash = $row['event'].$row['hook_class'].$row['hook_method'];
 
-                $rows[$hookHash] = $row;
+                    $rows[$hookHash] = $row;
+                }
             }
         }
 
