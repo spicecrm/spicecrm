@@ -240,6 +240,14 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/OutputTemplates/templateFunctions',
+        'class'       => OutputTemplatesController::class,
+        'function'    => 'getTemplateFunctions',
+        'description' => 'Get the full list of system template functions.',
+        'options'     => ['noAuth' => false, 'adminOnly' => false]
+    ]
 ];
 
 $RESTManager->registerRoutes($routes);
