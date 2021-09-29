@@ -60,6 +60,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private useMedialFile: boolean = false;
 
+    @Input() private useTemplateDataAssistant: object;
+
     // for the value accessor
     private onChange: (value: string) => void;
     private onTouched: () => void;
@@ -167,6 +169,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 break;
             case 'insertImage':
                 this.insertImage();
+                break;
+            case 'openTemplateDataAssistant':
+                this.openTemplateDataAssistant();
                 break;
             default:
                 if (this.isActive && command != '') {
@@ -445,4 +450,23 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     private focusEditor() {
         this.htmlEditor.element.nativeElement.focus();
     }
+
+    private openTemplateDataAssistant() {
+        this.modal.openModal('OutputTemplatesDataAssistant')
+            .pipe(take(1))
+            .subscribe(modal => {
+                modal.instance.templateModel = this.useTemplateDataAssistant;
+                modal.instance.response
+                    .pipe(take(1))
+                    .subscribe( text => {
+                        console.log('text',text);
+                        this.focusEditor();
+                        // this.editorService.restoreSelection();
+                        let resp = this._document.execCommand('insertText', false, text );
+                        let resp2 = this._document.execCommand('insertHTML', false, '<p>Hello World</p>');
+                        console.log('insert responses',resp,resp2);
+                    });
+            });
+    }
+
 }

@@ -9,6 +9,7 @@ namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class OutputTemplatesController
@@ -85,5 +86,17 @@ class OutputTemplatesController
             ];
         };
         return $res->withJson($templates);
+    }
+
+    public function getTemplateFunctions( Request $req, Response $res, array $args ): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $functions = [ 'pipe' => [], 'noPipe' => [] ];
+        $dbResult = $db->query('SELECT name, no_pipe FROM systemplatefunctions UNION SELECT name, no_pipe FROM syscustomtemplatefunctions');
+        while ( $function = $db->fetchByAssoc( $dbResult )) {
+            if ( $function['no_pipe'] === '1' ) $functions['noPipe'][] = $function['name'];
+            else $functions['pipe'][] = $function['name'];
+        }
+        return $res->withJson( $functions );
     }
 }
