@@ -259,7 +259,7 @@ class SpiceFTSUtils
                         $valueBean = BeanFactory::getBean($valueBean->{$pathRecordDetails[2]}->getRelatedModuleName());
                     }
                     else {
-                        LoggerManager::getLogger()->fatal(__CLASS__. '::'.__FUNCTION__.'() Could not load '.$pathRecordDetails[2]. ' for '.get_class($valueBean));
+                        LoggerManager::getLogger()->fatal(__CLASS__. '::'.__FUNCTION__.'() Could not load '.$pathRecordDetails[2]. ' for '.print_r($valueBean, true));
                     }
                     break;
                 case 'field':

@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
+use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -560,7 +561,7 @@ class SpiceInstaller
 
 
         $rel = new Relationship();
-        Relationship::delete_cache();
+//        Relationship::delete_cache();
         $rel->build_relationship_cache();
 
     }

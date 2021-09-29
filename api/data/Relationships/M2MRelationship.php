@@ -55,7 +55,7 @@ class M2MRelationship extends SugarRelationship
     public function __construct($def)
     {
         $this->def = $def;
-        $this->name = $def['name'];
+        $this->name = (!empty($def['name']) ? $def['name'] : $def['relationship_name']); // BWC
 
         $lhsModule = $def['lhs_module'];
         $this->lhsLinkDef = $this->getLinkedDefForModuleByRelationship($lhsModule);

@@ -1433,6 +1433,7 @@ class SugarBean
         $notificationLoader->createChangeNotifications($this, $check_notify);
         $notificationLoader->createAssignNotification($this, $check_notify);
 
+        LoggerManager::getLogger()->fatal("email just before saving to the DB" );
         if ($isUpdate) {
             $this->db->update($this);
         } else {
@@ -1611,7 +1612,7 @@ class SugarBean
 
             //method defined in 'include/utils/LogicHook.php'
 
-            $logicHook = new LogicHook();
+            $logicHook = LogicHook::getInstance();
             $logicHook->setBean($this);
             $logicHook->call_custom_logic($this->module_dir, $event, $arguments);
             $this->logicHookDepth[$event]--;
