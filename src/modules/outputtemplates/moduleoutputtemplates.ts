@@ -18,8 +18,8 @@ import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactiono
 import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
-
-
+import /*embed*/ {OutputTemplatesDataAssistant} from './components/outputtemplatesdataassistant';
+import /*embed*/ {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
     imports: [
@@ -30,6 +30,7 @@ import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        DragDropModule,
     ],
     declarations: [
         OutputTemplatesEditor,
@@ -38,7 +39,8 @@ import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
         ObjectActionOutputBeanButton,
         ObjectActionOutputBeanModalEmailContent,
         ObjectActionOutputBeanModal,
-        fieldOutputTemplates
+        fieldOutputTemplates,
+        OutputTemplatesDataAssistant
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent
