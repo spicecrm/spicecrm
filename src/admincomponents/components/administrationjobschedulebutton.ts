@@ -34,6 +34,8 @@ export class AdministrationJobScheduleButton {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
             this.backend.postRequest('module/SchedulerJobs/'+ this.model.id +'/schedule').subscribe(res => {
                 modalRef.instance.self.destroy();
+                this.model.getData();
+
                 if (res) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                 } else {
