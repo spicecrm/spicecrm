@@ -1,5 +1,5 @@
 /**
- * @module ModuleHolidayCalendars
+ * @module ServiceCalendarManagerDays
  */
 import {Component, OnChanges, Input, SimpleChanges} from '@angular/core';
 import {language} from '../../../services/language.service';
@@ -8,11 +8,11 @@ import {metadata} from "../../../services/metadata.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
-    selector: 'system-calendar-list-days',
-    templateUrl: './src/modules/servicecalendars/templates/systemcalendarlistdays.html',
+    selector: 'service-calendar-manager-days',
+    templateUrl: './src/modules/servicecalendars/templates/servicecalendarmanagerdays.html',
     providers: [relatedmodels]
 })
-export class SystemCalendarListDays implements OnChanges {
+export class ServiceCalendarManagerDays implements OnChanges {
 
     @Input() private calendarid: string;
 

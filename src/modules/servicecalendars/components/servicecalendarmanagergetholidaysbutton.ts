@@ -1,5 +1,5 @@
 /**
- * @module ModuleHolidayCalendars
+ * @module ServiceCalendarManagerGetHolidaysButton
  */
 import {Component, Injector} from '@angular/core';
 
@@ -12,10 +12,10 @@ import {configurationService} from "../../../services/configuration.service";
  * thgis requires that the api key is set in teh cofnugration then the button will be enabled
  */
 @Component({
-    selector: 'system-calendar-list-get-holidays-button',
-    templateUrl: './src/modules/servicecalendars/templates/systemcalendarlistgetholidaysbutton.html',
+    selector: 'service-calendar-manager-get-holidays-button',
+    templateUrl: './src/modules/servicecalendars/templates/servicecalendarmanagergetholidaysbutton.html',
 })
-export class SystemCalendarListGetHolidaysButton {
+export class ServiceCalendarManagerGetHolidaysButton {
 
     /**
      * disablöes the button by default

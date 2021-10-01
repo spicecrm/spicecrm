@@ -1,5 +1,5 @@
 /**
- * @module ModuleHolidayCalendars
+ * @module ServiceCalendarManagerGetHolidaysModal
  */
 import {Component, Input} from '@angular/core';
 import {language} from '../../../services/language.service';
@@ -12,10 +12,10 @@ import {toast} from "../../../services/toast.service";
  * a modal that loads the holidays from teh calendarific service
  */
 @Component({
-    selector: 'system-calendar-list-get-holidays-modal',
-    templateUrl: './src/modules/servicecalendars/templates/systemcalendarlistgetholidaysmodal.html',
+    selector: 'service-calendar-manager-get-holidays-modal',
+    templateUrl: './src/modules/servicecalendars/templates/servicecalendarmanagergetholidaysmodal.html',
 })
-export class SystemCalendarListGetHolidaysModal {
+export class ServiceCalendarManagerGetHolidaysModal {
 
     /**
      * reference to the modal
