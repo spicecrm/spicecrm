@@ -19,7 +19,6 @@ import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/ob
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
 import /*embed*/ {OutputTemplatesDataAssistant} from './components/outputtemplatesdataassistant';
-import /*embed*/ {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
     imports: [
@@ -29,8 +28,7 @@ import /*embed*/ {DragDropModule} from '@angular/cdk/drag-drop';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule,
-        DragDropModule,
+        DirectivesModule
     ],
     declarations: [
         OutputTemplatesEditor,

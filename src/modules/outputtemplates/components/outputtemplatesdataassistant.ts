@@ -1,11 +1,11 @@
 /**
  * @module ObjectComponents
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {language} from '../../../services/language.service';
-import {metadata} from '../../../services/metadata.service';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { language } from '../../../services/language.service';
+import { metadata } from '../../../services/metadata.service';
 import { take } from 'rxjs/operators';
-import {backend} from '../../../services/backend.service';
+import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 
 @Component({
@@ -22,115 +22,169 @@ export class OutputTemplatesDataAssistant implements OnInit {
      * event emitter for the response
      */
     @Output() private response: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * The model of the template the whole thing belongs to (email template or output template or ...)
+     */
     @Input() private templateModel: model;
 
     /**
-     * the list of modules
+     * The list of the 3 on top offered modules (bean, template, current user).
      */
-    private offeredModules: any[] = [{ name: 'Users', templateObjectName: 'current_user' }];
-
-    private activeModule: string;
+    private offeredModules: any[] = [];
 
     /**
-     * the module selected
-     * @private
+     * The active (clicked) tab of the 3 on top offered modules.
      */
-    // private _selectedModule: string;
+    private activeModuleTab: 'bean'|'current_user'|'template';
 
-    private selectedFieldName: string;
-    private selectedTemplateFunction: string;
-
-    private insertType: string;
-
+    /**
+     * Holds all the fields of the modules.
+     */
     private moduleFields: any[] = [];
 
-    private functions: any;
+    /**
+     * List of all system template functions (pipe and non-pipe).
+     */
+    private allFunctions: any;
+
+    /**
+     * The System Template Functions offered for selection by user, either pipe or non-pipe.
+     */
     private offeredFunctions: any;
 
+    /**
+     * Filter value to narrow down the offered fields the user is looking for.
+     */
     private fieldFilter = '';
+
+    /**
+     * Are the fields of the just selected module currently loading?
+     */
     private isLoadingModuleFields = false;
+
+    /**
+     * Are the system template functions currently loading?
+     */
     private isLoadingFunctions = false;
 
-    private currentPath: any;
+    /**
+     * The path of modules the system tree delivered.
+     */
+    private modulePathFromTree = '';
 
-    private _resultString: string;
+    /**
+     * The result of the function selection.
+     */
+    private functionResult = '';
 
-    constructor( public language: language, public metadata: metadata, private backend: backend ) { }
+    /**
+     * The result of the module field selection.
+     */
+    private fieldResult = '';
 
-    public ngOnInit() {
+    /**
+     * Holds the history of selected system template functions. So the user can do a step-by-step recovery.
+     */
+    private functionHistory: string[] = [];
 
-        this.offeredModules.push({ name: this.templateModel.getFieldValue('module_name'), templateObjectName: 'bean' });
-        this.offeredModules.push({ name: this.templateModel.module, templateObjectName: 'template' });
+    constructor( public language: language, public metadata: metadata, private backend: backend, private cdr: ChangeDetectorRef ) { }
 
-        console.log(this.offeredModules);
+    public ngOnInit(): void {
 
-        // this.moduleFields = this.metadata.getModuleFields(this.modulename);
+        // Build the array of offered modules.
+        // Always 3 elements:
+        // •) The bean the template is about. •) The current user. •) The template itself.
+        this.offeredModules = [
+            {   name: this.templateModel.getFieldValue('module_name'),
+                templateObjectName: 'bean',
+                displayName: this.language.getModuleName( this.templateModel.getFieldValue('module_name'), true )
+            },
+            {   name: 'Users',
+                templateObjectName: 'current_user',
+                displayName: this.language.getLabel('LBL_CURRENT_USER')
+            },
+            {   name: this.templateModel.module,
+                templateObjectName: 'template',
+                displayName: this.language.getLabel('LBL_TEMPLATE')
+            }
+        ];
 
+        // Load the system template functions from the backend.
         this.loadFunctions();
     }
 
-    private loadFunctions() {
+    /**
+     * Loads all system template functions from the backend.
+     * Divides them into pipe and non-pipe functions.
+     */
+    private loadFunctions(): void {
         this.isLoadingFunctions = true;
         this.backend.getRequest('module/OutputTemplates/templateFunctions')
             .pipe(take(1))
             .subscribe(response => {
-                this.functions = response;
-                this.language.sortArray( this.functions.pipe );
-                this.language.sortArray( this.functions.noPipe );
+                this.allFunctions = response;
+                this.language.sortArray( this.allFunctions.pipe );
+                this.language.sortArray( this.allFunctions.noPipe );
                 this.isLoadingFunctions = false;
+                this.buildOfferedFunctions();
             });
     }
 
-/*
-    private set selectedModule( val: string ) {
-        this._selectedModule = val;
-        this.moduleFields = this.metadata.getModuleFields(this._selectedModule);
+    /**
+     * Either the pipe or the non-pipe functions have to be offered for selection,
+     * depends on whether a field or function has already been selected or nothing.
+     */
+    private buildOfferedFunctions(): void {
+        if ( this.fieldResult || this.functionResult ) this.offeredFunctions = this.allFunctions.pipe;
+        else this.offeredFunctions = this.allFunctions.noPipe;
     }
 
- */
-/*
-    private get selectedModule() {
-        return this._selectedModule;
-    }
-
- */
-/*
-    private getFields() {
-        let fields = [];
-        for ( let fieldname in this.moduleFields ) {
-            fields.push({ name: fieldname, nameTranslated: this.language.getFieldDisplayName(this.modulename,fieldname) });
-        }
-        this.language.sortObjects( fields, 'nameTranslated');
-        return fields;
-    }
-
-
- */
-    private cancel() {
+    /**
+     * Close the modal.
+     */
+    private close(): void {
         this.self.destroy();
     }
 
-    private onModalEscX() {
-        this.cancel();
+    /**
+     * Cancel button clicked.
+     */
+    private cancel(): void {
+        this.close();
     }
 
-    private ok() {
-        if ( this.insertType === 'bean ') this.response.emit('bean.'+this.selectedFieldName);
-        else this.response.emit('func.'+this.resultString );
+    /**
+     * Escape or X from the modal.
+     */
+    private onModalEscX(): void {
         this.cancel();
     }
 
     /**
-     * loads the fields for a given module
-     * @param forModule: string
-     * @param rootModule: object
-     * @set isLoadingModuleFields
-     * @set reportModuleFields[rootModule]
+     * OK button clicked:
+     * Submit (to the rich text editor) the field name (with its path) and the selected function names,
+     * joined by a pipe symbol. At last close the modal.
      */
-    private getModuleFields(forModule, rootModule) {
+    private submit(): void {
+        let back;
+        if ( !this.fieldResult && !this.functionResult ) back = '';
+        if ( !this.fieldResult && this.functionResult ) back = 'func.'+this.functionResult;
+        else {
+            back = this.fieldResult;
+            if ( this.functionResult ) back += '|' + this.functionResult;
+        }
+        this.response.emit( back );
+        this.close();
+    }
+
+    /**
+     * Loads the fields for a given module.
+     */
+    private getModuleFields( forModule, rootModule ) {
         this.moduleFields[rootModule] = [];
         this.isLoadingModuleFields = true;
-        // this.cdr.detectChanges();
+        this.cdr.detectChanges();
         this.backend.getRequest('dictionary/browser/' + forModule + '/fields')
             .pipe(take(1))
             .subscribe(items => {
@@ -140,9 +194,9 @@ export class OutputTemplatesDataAssistant implements OnInit {
     }
 
     /**
-     * @return filteredReportFields: object[]
+     * Narrow down the fields according the filter value.
      */
-    private getFilteredFields( fields ) {
+    private getFilteredFields( fields ): [] {
         return !this.fieldFilter ? fields : fields
             .filter(nodeFiled => {
                 return nodeFiled.name.toLowerCase().includes(this.fieldFilter.toLowerCase()) ||
@@ -151,47 +205,75 @@ export class OutputTemplatesDataAssistant implements OnInit {
     }
 
     /**
-     * A function that defines how to track changes for items in the iterable (ngForOf).
-     * https://angular.io/api/common/NgForOf#properties
-     * @param index
-     * @param item
-     * @return index
+     * Track changes for items in the iterable.
      */
     private trackByFn(index, item) {
         return index;
     }
 
     /**
-     * @set currentModule
+     * One of the 3 module tabs has beed clicked.
      */
-    private setActiveModule( moduleName ) {
-        this.activeModule = moduleName;
-        this.resultString = this.offeredModules[this.activeModule].templateObjectName;
+    private setActiveModuleTab( templateObjectName ): void {
+        this.activeModuleTab = templateObjectName;
     }
 
     /**
-     * @param data: object
-     * @param rootModule: string
-     * @set currentPath
-     * @getModuleFields
+     * An item of the module tree has been selected.
      */
-    private onItemSelection( data, rootModule) {
-        this.currentPath = data.path;
-        console.log('current path',this.currentPath);
+    private treeItemSelected( data, rootModule ): void {
+        this.modulePathFromTree = data.path;
         this.getModuleFields(data.module, rootModule);
     }
 
-    private set resultString( val: string ) {
-        this._resultString = val.trim();
-        if ( this._resultString ) {
-            this.offeredFunctions = this.functions.pipe;
-        } else {
-            this.offeredFunctions = this.functions.noPipe;
+    /**
+     * Undoes the last selection of a system template function.
+     */
+    private functionUndo(): void {
+        if ( this.functionHistory.length ) {
+            this.functionResult = this.functionHistory.pop();
+            this.buildOfferedFunctions();
         }
     }
 
-    private get resultString(): string {
-        return this._resultString;
+    /**
+     * Fills the field with the function result.
+     * And updates the offered functions (because now the pipe functions have to be displayed).
+     */
+    private functionSelected( functionName: string ): void {
+        this.functionHistory.push( this.functionResult );
+        if ( this.functionResult ) this.functionResult += '|';
+        this.functionResult = this.functionResult + functionName;
+        this.buildOfferedFunctions();
+    }
+
+    /**
+     * Fills the field with the field result.
+     * And updates the offered functions (because now the pipe functions have to be displayed).
+     */
+    private fieldSelected( field: string ): void {
+        let parts = this.modulePathFromTree.split(/::/);
+        let simplePath = []; // The elements for the path with the syntax the template compiler needs.
+        for ( let i = 1; i < parts.length; i++ ) {
+            simplePath.push( parts[i].split(':').pop() );
+        }
+        let joined = simplePath.join('.'); // The path with the syntax the template compiler needs.
+        if ( joined ) joined += '.';
+        switch( this.activeModuleTab ) {
+            case 'bean': this.fieldResult = 'bean.'+joined+field; break;
+            case 'current_user': this.fieldResult = 'current_user.'+joined+field; break;
+            case 'template': this.fieldResult = 'template.'+joined+field; break;
+        }
+        this.buildOfferedFunctions();
+    }
+
+    /**
+     * Clears the field with the field result.
+     * And updates the offered functions (because now the non-pipe functions have to be displayed).
+     */
+    private clearFieldResult() {
+        this.fieldResult = '';
+        this.buildOfferedFunctions();
     }
 
 }
