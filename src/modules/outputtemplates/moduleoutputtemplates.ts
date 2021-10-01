@@ -18,7 +18,7 @@ import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactiono
 import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
-import /*embed*/ {OutputTemplatesDataAssistant} from './components/outputtemplatesdataassistant';
+import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
 
 @NgModule({
     imports: [
@@ -38,7 +38,7 @@ import /*embed*/ {OutputTemplatesDataAssistant} from './components/outputtemplat
         ObjectActionOutputBeanModalEmailContent,
         ObjectActionOutputBeanModal,
         fieldOutputTemplates,
-        OutputTemplatesDataAssistant
+        OutputTemplatesVariableHelper
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent
