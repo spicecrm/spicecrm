@@ -12,10 +12,10 @@ import {toast} from "../../../services/toast.service";
  * a modal that loads the holidays from teh calendarific service
  */
 @Component({
-    selector: 'holiday-calendar-list-get-holidays-modal',
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlistgetholidaysmodal.html',
+    selector: 'system-calendar-list-get-holidays-modal',
+    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlistgetholidaysmodal.html',
 })
-export class HolidayCalendarListGetHolidaysModal {
+export class SystemCalendarListGetHolidaysModal {
 
     /**
      * reference to the modal
