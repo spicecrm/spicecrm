@@ -171,8 +171,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             case 'insertImage':
                 this.insertImage();
                 break;
-            case 'openTemplateDataAssistant':
-                this.openTemplateDataAssistant();
+            case 'openTemplateVariableHelper':
+                this.openTemplateVariableHelper();
                 break;
             default:
                 if (this.isActive && command != '') {
@@ -452,11 +452,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.htmlEditor.element.nativeElement.focus();
     }
 
-    private openTemplateDataAssistant() {
+    private openTemplateVariableHelper() {
         if (!this.isActive) {return;}
         this.editorService.saveSelection();
         this.modalOpen = true;
-        this.modal.openModal('OutputTemplatesDataAssistant')
+        this.modal.openModal('OutputTemplatesVariableHelper')
             .pipe(take(1))
             .subscribe(modal => {
                 modal.instance.templateModel = this.templateModelForVariableHelper;

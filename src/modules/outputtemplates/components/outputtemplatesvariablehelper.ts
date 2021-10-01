@@ -9,9 +9,9 @@ import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 
 @Component({
-    templateUrl: './src/modules/outputtemplates/templates/outputtemplatesdataassistant.html'
+    templateUrl: './src/modules/outputtemplates/templates/outputtemplatesvariablehelper.html'
 })
-export class OutputTemplatesDataAssistant implements OnInit {
+export class OutputTemplatesVariableHelper implements OnInit {
 
     /**
      * reference to the modal component
