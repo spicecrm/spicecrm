@@ -6,6 +6,7 @@ global $dictionary;
 $dictionary['Task'] = ['table' => 'tasks',
     'unified_search'   => true,
     'full_text_search' => true,
+    'audited' => true,
     'fields' => [
         'name' => [
             'name'             => 'name',
