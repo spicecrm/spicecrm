@@ -1,5 +1,5 @@
 /**
- * @module SystemHolidayCalendars
+ * @module ModuleServiceCalendars
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -12,7 +12,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {SystemCalendarList} from "./components/systemcalendarlist";
+import /*embed*/ {ServiceCalendarManager} from "./components/servicecalendarmanager";
 import /*embed*/ {SystemCalendarListDays} from "./components/systemcalendarlistdays";
 import /*embed*/ {SystemCalendarListGetHolidaysModal} from "./components/systemcalendarlistgetholidaysmodal";
 import /*embed*/ {SystemCalendarListGetHolidaysButton} from "./components/systemcalendarlistgetholidaysbutton";
@@ -28,12 +28,12 @@ import /*embed*/ {SystemCalendarListGetHolidaysButton} from "./components/system
         DirectivesModule,
     ],
     declarations: [
-        SystemCalendarList,
+        ServiceCalendarManager,
         SystemCalendarListDays,
         SystemCalendarListGetHolidaysModal,
         SystemCalendarListGetHolidaysButton
     ]
 })
-export class ModuleSystemCalendars {
+export class ModuleServiceCalendars {
 
 }

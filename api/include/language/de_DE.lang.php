@@ -1782,3 +1782,13 @@ $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
 ];
+
+$app_list_strings['dayofweek_dom'] = [
+    '1' => 'Monday',
+    '2' => 'Tuesday',
+    '3' => 'Wednesday',
+    '4' => 'Thursday',
+    '5' => 'Friday',
+    '6' => 'Saturday',
+    '7' => 'Sunday',
+];

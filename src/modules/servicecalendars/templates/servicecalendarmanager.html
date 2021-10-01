@@ -17,13 +17,13 @@
 <div class="slds-grid">
     <div class="slds-size--1-of-4 slds-theme--default" system-to-bottom-noscroll system-view-provider>
         <div class="slds-box--border slds-m-around--xx-small" *ngFor="let listItem of modellist.listData.list"  [ngClass]="{'slds-theme--inverse': listItem.id == activeCalendar}" (click)="activeCalendar = listItem.id">
-            <div class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread" [system-model-provider]="{module: 'SystemHolidayCalendars', data: listItem}">
+            <div class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread" [system-model-provider]="{module: 'ServiceCalendars', data: listItem}">
                 <span>{{listItem.name}}</span>
                 <object-action-menu [buttonsize]="'x-small'" [actionset]="actionset" ></object-action-menu>
             </div>
         </div>
     </div>
     <div class="slds-size--3-of-4 slds-border--left slds-theme--shade">
-        <holiday-calendar-list-days *ngIf="activeCalendar" [calendarid]="activeCalendar"></holiday-calendar-list-days>
+        <system-calendar-list-days *ngIf="activeCalendar" [calendarid]="activeCalendar"></system-calendar-list-days>
     </div>
 </div>

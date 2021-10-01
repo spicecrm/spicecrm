@@ -9,15 +9,15 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'system-calendar-list-days',
-    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlistdays.html',
-    providers: [relatedmodels, model]
+    templateUrl: './src/modules/servicecalendars/templates/systemcalendarlistdays.html',
+    providers: [relatedmodels]
 })
 export class SystemCalendarListDays implements OnChanges {
 
     @Input() private calendarid: string;
 
-    private componentconfig: any;
-    private listfields: any[];
+    public componentconfig: any;
+    public listfields: any[];
 
     constructor(
         private language: language,
@@ -25,12 +25,12 @@ export class SystemCalendarListDays implements OnChanges {
         private metadata: metadata,
         private relatedmodels: relatedmodels
     ) {
-        this.relatedmodels.module = 'SystemHolidayCalendars';
-        this.relatedmodels.relatedModule = 'SystemHolidayCalendarDays';
-        this.relatedmodels.linkName = 'systemholidaycalendardays';
+        this.relatedmodels.module = 'ServiceCalendars';
+        this.relatedmodels.relatedModule = 'ServiceCalendarTimes';
+        this.relatedmodels.linkName = 'servicecalendartimes';
         this.relatedmodels.loaditems = 1000;
 
-        this.componentconfig = this.metadata.getComponentConfig('HolidayCalendarListDays', 'SystemHolidayCalendarDays');
+        this.componentconfig = this.metadata.getComponentConfig('SystemCalendarListDays', 'ServiceCalendarTimes');
         this.listfields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
     }
 
