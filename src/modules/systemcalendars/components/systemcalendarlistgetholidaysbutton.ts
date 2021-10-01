@@ -12,10 +12,10 @@ import {configurationService} from "../../../services/configuration.service";
  * thgis requires that the api key is set in teh cofnugration then the button will be enabled
  */
 @Component({
-    selector: 'holiday-calendar-list-get-holidays-button',
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlistgetholidaysbutton.html',
+    selector: 'system-calendar-list-get-holidays-button',
+    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlistgetholidaysbutton.html',
 })
-export class HolidayCalendarListGetHolidaysButton {
+export class SystemCalendarListGetHolidaysButton {
 
     /**
      * disablöes the button by default
