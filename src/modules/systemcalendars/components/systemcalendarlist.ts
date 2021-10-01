@@ -8,11 +8,11 @@ import {metadata} from '../../../services/metadata.service';
 import {modellist} from "../../../services/modellist.service";
 
 @Component({
-    selector: 'holiday-calendar-list',
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlist.html',
+    selector: 'system-calendar-list',
+    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlist.html',
     providers: [modellist, model]
 })
-export class HolidayCalendarList implements OnInit {
+export class SystemCalendarList implements OnInit {
 
     /**
      * the active calendar id
