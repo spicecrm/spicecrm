@@ -24,6 +24,7 @@ import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileup
 import {language} from "../../services/language.service";
 import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
+import { model } from '../../services/model.service';
 
 @Component({
     selector: "system-richtext-editor",
@@ -60,7 +61,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private useMedialFile: boolean = false;
 
-    @Input() private useTemplateDataAssistant: object;
+    @Input() private templateModelForVariableHelper: model;
 
     // for the value accessor
     private onChange: (value: string) => void;
@@ -452,19 +453,20 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     private openTemplateDataAssistant() {
+        if (!this.isActive) {return;}
+        this.editorService.saveSelection();
+        this.modalOpen = true;
         this.modal.openModal('OutputTemplatesDataAssistant')
             .pipe(take(1))
             .subscribe(modal => {
-                modal.instance.templateModel = this.useTemplateDataAssistant;
+                modal.instance.templateModel = this.templateModelForVariableHelper;
                 modal.instance.response
                     .pipe(take(1))
                     .subscribe( text => {
-                        console.log('text',text);
                         this.focusEditor();
-                        // this.editorService.restoreSelection();
-                        let resp = this._document.execCommand('insertText', false, text );
-                        let resp2 = this._document.execCommand('insertHTML', false, '<p>Hello World</p>');
-                        console.log('insert responses',resp,resp2);
+                        this.editorService.restoreSelection();
+                        this._document.execCommand('insertText', false, '{'+text+'}' );
+                        this.modalOpen = false;
                     });
             });
     }
