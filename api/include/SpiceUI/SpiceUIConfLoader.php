@@ -247,17 +247,17 @@ class SpiceUIConfLoader
                                 LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
                             }
                             if(!$db->insertQuery('sysmodules', $decodeData, true)){
-                                die('Error inserting record into sysmodules '.$db->lastDbError());
+                                $errors[] = ('Error inserting record into sysmodules '.$db->lastDbError());
                             }
                         }
                     }
-                    die('Please log out, relogin, run repair/ rebuild, then reload this package');
+                    //die('Please log out, relogin, run repair/ rebuild, then reload this package');
                 }
             }
         }
 
         if (!empty($response['nodata'])) {
-            die($response['nodata']);
+            $errors[] = ($response['nodata']);
         }
 
         foreach ($response as $tb => $content) {
@@ -287,7 +287,7 @@ class SpiceUIConfLoader
             $tbColCheck = false;
             foreach ($content as $id => $encoded) {
                 if (!$decodeData = json_decode(base64_decode($encoded), true))
-                    die("Error decoding data: " . json_last_error_msg() .
+                    $errors[] = ("Error decoding data: " . json_last_error_msg() .
                         " Reference table = $tb" .
                         " Action aborted");
 
@@ -295,7 +295,7 @@ class SpiceUIConfLoader
                 if (!$tbColCheck) {
                     $referenceCols = array_keys($decodeData);
                     if (!empty(array_diff($referenceCols, $thisCols))) {
-                        die("Table structure for $tb is not up-to-date." .
+                        $errors[] = ("Table structure for $tb is not up-to-date or there is new module. In case of a new module, logout, login, repair, then load core package again." .
                             " Reference table = " . implode(", ", $referenceCols) .
                             " Client table = " . implode(", ", $thisCols) .
                             " Action aborted");
@@ -304,32 +304,33 @@ class SpiceUIConfLoader
                 }
 
                 //prepare values for DB query
-                foreach ($decodeData as $key => $value) {
-                    $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
-                }
-                //delete before insert
-                $delWhere = ['id' => $decodeData['id']];
-                if(!$db->deleteQuery($tb, $delWhere)){
-                    LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
-                }
-
-                //run insert
+                if(is_array($decodeData)){
+                    foreach ($decodeData as $key => $value) {
+                        $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
+                    }
+                    //delete before insert
+                    $delWhere = ['id' => $decodeData['id']];
+                    if(!$db->deleteQuery($tb, $delWhere)){
+                        LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
+                    }
+                    //run insert
 //                if($tb == 'email_templates'){
 //                    file_put_contents('spicecrm.log', 'dict email_templates '.print_r($dictionary['EmailTemplate'], true)."\n", FILE_APPEND);
 //                }
-                if($dbRes = $db->insertQuery($tb, $decodeData, true)){
-                    $tables[$tb]++;
-                    $inserts[] = $dbRes;
-                } else{
-                    $errors[] = $db->lastError();
+                    if($dbRes = $db->insertQuery($tb, $decodeData, true)){
+                        $tables[$tb]++;
+                        $inserts[] = $dbRes;
+                    } else{
+                        $errors[] = $db->lastError();
+                    }
                 }
             }
         }
 
         //if no inserts where created => abort
-        if (count($inserts) < 1) {
-            throw new Exception("No inserts or no inserts run successfully. Action aborted.");
-        }
+//        if (count($inserts) < 1) {
+//            throw new Exception("No inserts or no inserts run successfully. Action aborted.");
+//        }
 
         $success = true;
         if(count($errors) > 0){

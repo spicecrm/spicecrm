@@ -6,6 +6,8 @@ namespace SpiceCRM\includes\Logger;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Mailboxes\Mailbox;
+use Swift_Message;
 
 class APILogEntryHandler
 {
@@ -60,6 +62,36 @@ class APILogEntryHandler
     }
 
     /**
+     * Generates the log entry for an SMTP request.
+     *
+     * @param Swift_Message $message
+     * @param Mailbox $mailbox
+     * @param string $route
+     * @param string|null $transactionId
+     */
+    public function generateSmtpLogEntry(Swift_Message $message, Mailbox $mailbox, string $route, string $transactionId = null): void {
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $this->startingTime = microtime(true);
+
+        $this->logEntry = new \stdClass();
+        $this->logEntry->url = $mailbox->smtp_host . ':' . $mailbox->smtp_port;
+        $this->logEntry->method = 'smtp';
+        $this->logEntry->route = $route; // it is just an arbitrary string for the outgoing requests
+        $this->logEntry->ip = $_SERVER['SERVER_ADDR'];
+        $this->logEntry->request_headers = null;
+        $this->logEntry->request_body = $message->toString();
+        $this->logEntry->date_entered = gmdate('Y-m-d H:i:s');
+        $this->logEntry->date_timestamp   = self::getTimestamp();
+
+        $this->responseWithHeaders = false;
+
+        $this->logEntry->user_id = $currentUser->id;
+        $this->logEntry->session_id = session_id();
+        $this->logEntry->transaction_id = $transactionId ?: LoggerManager::getLogger()->getTransactionId();
+        $this->logEntry->direction = self::DIRECTION_OUTBOUND;
+    }
+
+    /**
      * converts a header array to JSON
      *
      * @param $header
@@ -82,7 +114,7 @@ class APILogEntryHandler
     public function writeOutogingLogEntry(bool $force = false): void {
         $this->logging = false;
         $logEntry = false;
-        if(!$force && DBManagerFactory::getInstance()->tableExists('sysapilogconfig')){
+        if (!$force && DBManagerFactory::getInstance()->tableExists('sysapilogconfig')) {
             // check if this request has to be logged by some rules...
             $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE
               (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND
@@ -105,6 +137,16 @@ class APILogEntryHandler
         }
 
         $this->logging = false;
+    }
+
+    /**
+     * An alias for uniformity reasons.
+     *
+     * @param bool $force
+     * @throws \Exception
+     */
+    public function writeSmtpLogEntry(bool $force = false): void {
+        $this->writeOutogingLogEntry($force);
     }
 
     /**
@@ -135,13 +177,35 @@ class APILogEntryHandler
 
         $this->logEntry->response_error = $error;
 
-        if($transactionId){
+        if ($transactionId) {
             $this->logEntry->transaction_id = $transactionId;
         }
 
 
         // update the log...
         // $result = DBManagerFactory::getInstance()->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array) $this->logEntry);
+    }
+
+    /**
+     * Updates the log entry after the SMTP response has been received.
+     *
+     * @param $response
+     * @param string|null $transactionId
+     */
+    public function updateSmtpLogEntry($response, string $transactionId = null): void {
+        $this->logEntry->runtime = (microtime(true) - $this->startingTime) * 1000;
+
+        if ($response instanceof \Exception) {
+            $this->logEntry->response_error   = $response->getMessage();
+            $this->logEntry->http_status_code = $response->getCode();
+        } else {
+            $this->logEntry->response_body    = json_encode($response);
+            $this->logEntry->http_status_code = null;
+        }
+
+        if ($transactionId) {
+            $this->logEntry->transaction_id = $transactionId;
+        }
     }
 
     static function responseHeaders2Json($headers){
