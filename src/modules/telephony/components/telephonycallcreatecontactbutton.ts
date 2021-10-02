@@ -53,7 +53,7 @@ export class TelephonyCallCreateContactButton {
     private setContact(contact) {
         this.calldata.relatedid = contact.id;
         this.calldata.relatedmodule = 'Contacts';
-        this.calldata.relateddata = contact[0];
+        this.calldata.relateddata = contact;
 
         this.actionemitter.emit(true);
     }

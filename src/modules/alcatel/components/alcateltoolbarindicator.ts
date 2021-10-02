@@ -188,7 +188,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     }
 
     get socketConnected() {
-        return this.socket.socketObject('alcatel').instance.connected;
+        return this.socket.socketObject('alcatel')?.instance?.connected;
     }
 
     /**

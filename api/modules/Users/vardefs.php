@@ -37,7 +37,6 @@ global $dictionary;
 $dictionary['User'] = [
     'table' => 'users',
     'fields' => [
-
         'id' => [
             'name' => 'id',
             'vname' => 'LBL_ID',
@@ -1179,4 +1178,16 @@ if (file_exists("extensions/modules/Shops")) {
     ];
 }
 
+if (file_exists("extensions/modules/DistributionLists")) {
+    $dictionary['User']['fields']['distributionlists'] = [
+        'name' => 'distributionlists',
+        'vname' => 'LBL_DISTRIBUTIONLISTS',
+        'type' => 'link',
+        'relationship' => 'distributionlists_users',
+        'module' => 'DistributionLists',
+        'bean_name' => 'DistributionList',
+        'source' => 'non-db',
+        'comment' => 'DistributionLists the user is allocated to'
+    ];
+}
 

@@ -64,6 +64,7 @@ $dictionary['SchedulerJob'] = [
 			'required' => false,
 			'reportable' => false,
 			'importable' => 'required',
+            'default' => 'Inactive'
         ],
 		'priority' => [
 			'name' => 'priority',
