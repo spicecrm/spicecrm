@@ -144,6 +144,11 @@ $routes = [
                 'in' => 'body',
                 'description' => 'the name of the list',
                 'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'global' => [
+                'in' => 'body',
+                'description' => 'if the list is global',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ],
