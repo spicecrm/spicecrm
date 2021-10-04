@@ -15,7 +15,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
