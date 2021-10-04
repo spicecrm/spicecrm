@@ -889,4 +889,85 @@ class User extends Person
     {
         return $this->retrieve_by_string_fields(['user_name' => $name]);
     }
+
+    /**
+     * blockUserByName
+     *
+     * Blocks a user (prevent from login) permanent or for a specific time.
+     *
+     * @param $username The name of the user.
+     * @param $blockingDuration The time in minutes that the user should be blocked from logging in. From now on.
+     * @return The user bean.
+     */
+    public static function blockUserByName( $username, $blockingDuration = null ) {
+        $user = BeanFactory::getBean('Users');
+        $user->findByUserName( $username );
+
+        if ( $blockingDuration ) {
+            $dtObj=new \DateTime();
+            $dtObj->setTimestamp(time()+$blockingDuration*60);
+            $user->login_blocked_until = Timedate::getInstance()->asDb($dtObj);
+        } else {
+            $user->login_blocked = true;
+        }
+
+        $user->save();
+        return $user;
+    }
+
+    /**
+     * isBlockedByName
+     *
+     * Checks if a user is blocked permanent or for a specific time.
+     *
+     * @param $username The name of the user.
+     * @return True if permanent or the amount of minutes in case the blocking is for a specific time.
+     */
+    public static function isBlockedByName( $username ) {
+        $db = DBManagerFactory::getInstance();
+
+        $dtObj=new \DateTime();
+        $dtObj->setTimestamp(time());
+        $now = Timedate::getInstance()->asDb($dtObj);
+
+        $row = $db->fetchOne( sprintf('SELECT login_blocked, TIMESTAMPDIFF( SECOND, "'.$now.'", login_blocked_until ) as blocked_seconds FROM users WHERE user_name = "%s"', $db->quote( $username )));
+        if ( $row['login_blocked'] ) return true;
+        if ( $row['blocked_seconds'] > 0 ) return ceil( $row['blocked_seconds']/60 );
+        return false;
+    }
+
+    /**
+     * hasExpiredPassword
+     *
+     * Checks if the password of the user is expired (returns true) or will expire soon (returns the number of days of remaining validity).
+     *
+     * @return True If the password is expired.
+     * @return False If the password is not expired and will not expire soon.
+     * @return Integer Number of days of remaining validity, in case the password will expire soon.
+     */
+    function hasExpiredPassword()
+    {
+        $config = SpiceConfig::getInstance()->config['passwordsetting'];
+        $timedate = TimeDate::getInstance();
+
+        # Password expiration is OFF or not configured.
+        if ( empty( $config['pwdvaliditydays'] )) return false;
+
+        # In case password expiration is used, we make sure the date of last password change is set.
+        # If not, we set it. Then a further expiration check for this time makes no sense, so return true.
+        if ( empty( $this->pwd_last_changed )) {
+            $this->pwd_last_changed = $timedate->nowDb();
+            $this->save();
+            return false;
+        }
+
+        # Calculate the age of the password (in days).
+        $passwordAge = ( new \DateTime( $this->pwd_last_changed ))->setTime(0,0,0)->diff( $timedate->getNow()->setTime(0,0,0))->format('%r%a')*1;
+
+        # Calculate the remaining days until expiration.
+        $remainingDays = $config['pwdvaliditydays'] - $passwordAge;
+
+        return $remainingDays < 1;
+    }
+
 }
