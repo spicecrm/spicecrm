@@ -13,10 +13,10 @@ import { language } from '../../services/language.service';
 declare var _: any;
 
 @Component({
-    selector: '[login-restriction-ip-addresses-row]',
-    templateUrl: './src/admincomponents/templates/loginrestrictionipaddressesrow.html'
+    selector: '[administration-login-restriction-ip-addresses-row]',
+    templateUrl: './src/admincomponents/templates/administrationloginrestrictionipaddressesrow.html'
 })
-export class LoginRestrictionIpAddressesRow {
+export class AdministrationLoginRestrictionIpAddressesRow {
 
     @Input() private ipAddress: any;
     @Output() private editing = new EventEmitter<boolean>();

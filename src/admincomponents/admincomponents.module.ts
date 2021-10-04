@@ -81,14 +81,14 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
-import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
+import /*embed*/ {Administrationuseraccesslogviewer} from './components/useraccesslogviewer';
 
-import /*embed*/ {LoginRestriction} from './components/loginrestriction';
-import /*embed*/ {LoginRestrictionIpAddresses} from './components/loginrestrictionipaddresses';
-import /*embed*/ {LoginRestrictionIpAddressesRow} from './components/loginrestrictionipaddressesrow';
-import /*embed*/ {PasswordConfig} from './components/passwordconfig';
-import /*embed*/ {BlockedUsers} from './components/blockedusers';
-import /*embed*/ {LoginManagement} from './components/loginmanagement';
+import /*embed*/ {AdministrationLoginRestriction} from './components/administrationloginrestriction';
+import /*embed*/ {AdministrationLoginRestrictionIpAddresses} from './components/administrationloginrestrictionipaddresses';
+import /*embed*/ {AdministrationLoginRestrictionIpAddressesRow} from './components/administrationloginrestrictionipaddressesrow';
+import /*embed*/ {AdministrationPasswordConfig} from './components/administrationpasswordconfig';
+import /*embed*/ {AdministrationBlockedUsers} from './components/administrationblockedusers';
+import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
 
 @NgModule({
     imports: [
@@ -155,15 +155,15 @@ import /*embed*/ {LoginManagement} from './components/loginmanagement';
         AdministrationGeneralSettings,
         AdministrationLanguages,
         AdministrationDefaultPreferences,
-        UserAccessLogViewer,
+        Administrationuseraccesslogviewer,
         AdministrationDictRepairConvertDBCharset,
         AdministrationDictRepairConvertDBCharsetModal,
-        LoginRestriction,
-        LoginRestrictionIpAddresses,
-        LoginRestrictionIpAddressesRow,
-        PasswordConfig,
-        BlockedUsers,
-        LoginManagement
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
     ],
     entryComponents: [
         AdministrationMain,
@@ -178,12 +178,12 @@ import /*embed*/ {LoginManagement} from './components/loginmanagement';
         AdministrationDefaultPreferences,
         AdministrationJobRunningList,
         AdministrationJobFailedList,
-        LoginRestriction,
-        LoginRestrictionIpAddresses,
-        LoginRestrictionIpAddressesRow,
-        PasswordConfig,
-        BlockedUsers,
-        LoginManagement
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
     ],
     exports: [],
 
