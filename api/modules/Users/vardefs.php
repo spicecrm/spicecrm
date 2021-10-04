@@ -36,6 +36,7 @@
 global $dictionary;
 $dictionary['User'] = [
     'table' => 'users',
+    'audited' => true,
     'fields' => [
         'id' => [
             'name' => 'id',
@@ -987,6 +988,17 @@ $dictionary['User'] = [
             'bean_name' => 'SpiceACLProfile',
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
+        ],
+        'login_blocked' => [
+            'name' => 'login_blocked',
+            'vname' => 'LBL_LOGIN_BLOCKED',
+            'type' => 'bool',
+            'default' => '0'
+        ],
+        'login_blocked_until' => [
+            'name' => 'login_blocked_until',
+            'vname' => 'LBL_BLOCKED_UNTIL',
+            'type' => 'datetime'
         ]
     ],
     'indices' => [

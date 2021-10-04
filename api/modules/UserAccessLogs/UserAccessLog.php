@@ -39,6 +39,7 @@ namespace SpiceCRM\modules\UserAccessLogs;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -62,7 +63,7 @@ class UserAccessLog extends SugarBean
      * @return integer
      * @throws \Exception
      */
-    public function getAmountFailedLoginsWithinByUsername($username, $seconds = 3600)
+    public static function getAmountFailedLoginsWithinByUsername( $username, $seconds = 3600 )
     {
         $db = DBManagerFactory::getInstance();
 
@@ -70,12 +71,7 @@ class UserAccessLog extends SugarBean
         $dtObj->setTimestamp(time()-$seconds);
         $timeLimit = Timedate::getInstance()->asDb($dtObj);
 
-
-        $sql="SELECT count(0) FROM useraccesslogs WHERE login_name = '" . $db->quote($username) . "' and date_entered >'".$timeLimit."' and action='loginfail'";
-        $count=$db->fetchOne($sql);
-        if(is_array($count)) {
-            return $count[0];
-        }
+        return (int)$db->getOne("SELECT count(0) FROM useraccesslogs WHERE deleted = 0 AND login_name = '" . $db->quote($username) . "' and date_entered >'".$timeLimit."' and action='loginfail'");
     }
 
     /**
@@ -99,4 +95,17 @@ class UserAccessLog extends SugarBean
         }
         return true;
     }
+
+    static function getNumberLoginAttemptsByIp( $ipAddress = null ) {
+        if ( $ipAddress === null ) $ipAddress = SpiceUtils::getClientIP();
+        $db = DBManagerFactory::getInstance();
+        $interval = SpiceConfig::getInstance()->config['login']['attempt_restriction']['ip']['monitored_interval']*1;
+        if ( $interval ) {
+            $dtObj = new \DateTime();
+            $dtObj->setTimestamp(time());
+            $now = Timedate::getInstance()->asDb($dtObj);
+            return $db->getOne('SELECT COUNT(0) FROM useraccesslogs WHERE date_entered > DATE_SUB( "'.$now.'", INTERVAL '.$interval.' MINUTE ) AND action="loginfail" AND ipaddress = "'.$db->quote($ipAddress).'"');
+        } else return 0;
+    }
+
 }
