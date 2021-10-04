@@ -62,8 +62,6 @@ class AuthenticationController
     public $errorReason;
     public $errorCode;
 
-    public $expiringPasswordValidityDays = false;
-
     /**
      * The Singleton's constructor should always be private to prevent direct
      * construction calls with the `new` operator.
@@ -310,15 +308,8 @@ class AuthenticationController
             $userObj = $sugarAuthenticationController->authenticate( $authUser, $authPass, $impersonationUser );
 
             // check if password is expired
-            if (( $days = $userObj->hasExpiredPassword() ) === true ) {
+            if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() )) {
                 throw new UnauthorizedException('Password expired.', 2 );
-            } else if ( $days !== false ) {
-                $this->expiringPasswordValidityDays = $days;
-            }
-
-            // check if password is system generated
-            if ( $userObj->system_generated_password ) {
-                throw new UnauthorizedException('System generated Password used.', 12 );
             }
 
         } catch (UnauthorizedException $e) {
