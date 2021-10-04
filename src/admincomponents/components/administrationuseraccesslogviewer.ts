@@ -14,7 +14,7 @@ declare var moment: any;
 @Component({
     templateUrl: './src/admincomponents/templates/administrationuseraccesslogviewer.html'
 })
-export class Administrationuseraccesslogviewer {
+export class AdministrationUserAccessLogViewer {
 
     /**
      * the limit of records to fetch in on go
