@@ -30,8 +30,7 @@ export class PasswordConfig implements OnInit {
         oneupper: true,
         onelower: true,
         onenumber: true,
-        pwdvaliditydays: 0,
-        pwdvaliditywarningdays: 0
+        pwdvaliditydays: 0
     };
 
     private configBackup: any;
@@ -52,8 +51,7 @@ export class PasswordConfig implements OnInit {
             oneupper: this.config.oneupper ? '1':'0',
             onelower: this.config.onelower ? '1':'0',
             onenumber: this.config.onenumber ? '1':'0',
-            pwdvaliditydays: this.config.pwdvaliditydays,
-            pwdvaliditywarningdays: this.config.pwdvaliditywarningdays
+            pwdvaliditydays: this.config.pwdvaliditydays
         };
         this.isLoading = true;
         this.backend.postRequest('configuration/configurator/editor/passwordsetting', null, { config: config })
@@ -79,7 +77,6 @@ export class PasswordConfig implements OnInit {
                 this.config.onenumber = response.onenumber === true || response.onenumber === 1 || response.onenumber === '1' || false;
                 this.config.minpwdlength = parseInt( response.minpwdlength, 10 ) || 0,
                 this.config.pwdvaliditydays = parseInt( response.pwdvaliditydays, 10 ) || 0,
-                this.config.pwdvaliditywarningdays = parseInt( response.pwdvaliditywarningdays, 10 ) || 0,
                 this.configBackup = JSON.parse( JSON.stringify( this.config ) );
                 this.isLoading = false;
             });

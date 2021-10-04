@@ -130,7 +130,6 @@ export class loginService {
                     this.session.authData.googleToken = response.access_token;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     this.session.authData.canchangepassword = response.canchangepassword;
-                    this.session.authData.expiringPasswordValidityDays = response.expiringPasswordValidityDays;
 
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
 
@@ -252,22 +251,8 @@ export class loginService {
      */
     public load() {
         this.loader.load().subscribe((val) => {
-            this.renewPasswordIfNeeded();
             this.redirect(val);
         });
-    }
-
-    /**
-     * Initiate password renewal, in case the password is expiring soon.
-     */
-    public renewPasswordIfNeeded() {
-        if ( this.session.authData.expiringPasswordValidityDays !== false ) {
-            this.modal.openModal('UserChangePasswordModal')
-                .pipe(take(1))
-                .subscribe( modal => {
-                    modal.instance.expiringPasswordValidityDays = this.session.authData.expiringPasswordValidityDays;
-                });
-        }
     }
 
     public redirect(val) {
