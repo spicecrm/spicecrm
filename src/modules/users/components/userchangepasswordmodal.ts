@@ -70,13 +70,6 @@ export class UserChangePasswordModal {
      */
     private posting: boolean = false;
 
-    /**
-     * The number of days the password is still valid, in case the modal has been opened to renew a expiring password.
-     * In case the modal has been opened by the user: false.
-     * @private
-     */
-    private expiringPasswordValidityDays = false;
-
     constructor(private http: HttpClient, private language: language, private session: session, private toast: toast, private configuration: configurationService) {
     }
 

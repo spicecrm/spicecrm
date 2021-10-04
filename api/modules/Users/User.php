@@ -36,7 +36,6 @@
 
 namespace SpiceCRM\modules\Users;
 
-use Ramsey\Uuid\Type\Integer;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
@@ -897,7 +896,7 @@ class User extends Person
      * Blocks a user (prevent from login) permanent or for a specific time.
      *
      * @param $username The name of the user.
-     * @param $blockingDuration The time in seconds that the user should be blocked from logging in. From now on.
+     * @param $blockingDuration The time in minutes that the user should be blocked from logging in. From now on.
      * @return The user bean.
      */
     public static function blockUserByName( $username, $blockingDuration = null ) {
@@ -906,7 +905,7 @@ class User extends Person
 
         if ( $blockingDuration ) {
             $dtObj=new \DateTime();
-            $dtObj->setTimestamp(time()+$blockingDuration);
+            $dtObj->setTimestamp(time()+$blockingDuration*60);
             $user->login_blocked_until = Timedate::getInstance()->asDb($dtObj);
         } else {
             $user->login_blocked = true;
@@ -968,9 +967,7 @@ class User extends Person
         # Calculate the remaining days until expiration.
         $remainingDays = $config['pwdvaliditydays'] - $passwordAge;
 
-        if ( $remainingDays < 1 ) return true;
-        if (( $remainingDays - $config['pwdvaliditywarningdays'] ) < 1 ) return $remainingDays;
-        return false;
+        return $remainingDays < 1;
     }
 
 }
