@@ -4,7 +4,7 @@
 </div>
 
 <div class="slds-box slds-m-horizontal--medium slds-m-bottom--medium slds-m-top--medium" style="padding:0">
-    <login-restriction></login-restriction>
+    <administration-login-restriction></administration-login-restriction>
 </div>
 
 <div system-to-bottom>
@@ -12,10 +12,10 @@
     <div style="height:50%" class="slds-p-bottom--medium slds-p-horizontal--medium">
         <div class="slds-box slds-grid" style="height:100%;padding:0">
             <div class="slds-size--1-of-2" style="height:100%">
-                <login-restriction-ip-addresses #whiteList color="white" [siblingComponent]="blackListComponent" style="display:block;height:100%"></login-restriction-ip-addresses>
+                <administration-login-restriction-ip-addresses #whiteList color="white" [siblingComponent]="blackListComponent" style="display:block;height:100%"></administration-login-restriction-ip-addresses>
             </div>
             <div class="slds-size--1-of-2 slds-border--left" style="height:100%">
-                <login-restriction-ip-addresses #blackList color="black" [siblingComponent]="whiteListComponent" style="display:block;height:100%"></login-restriction-ip-addresses>
+                <administration-login-restriction-ip-addresses #blackList color="black" [siblingComponent]="whiteListComponent" style="display:block;height:100%"></administration-login-restriction-ip-addresses>
             </div>
         </div>
     </div>
@@ -24,10 +24,10 @@
 
         <div class="slds-grid slds-m-horizontal--medium slds-grid--vertical-align-start" style="height:100%">
             <div class="slds-size--1-of-2">
-                <password-config class="slds-box slds-m-right--x-small" style="padding:0;display:block"></password-config>
+                <administration-password-config class="slds-box slds-m-right--x-small" style="padding:0;display:block"></administration-password-config>
             </div>
             <div class="slds-size--1-of-2" style="height:100%">
-                <blocked-users class="slds-box slds-m-left--x-small" style="padding:0;display:block;height:100%"></blocked-users>
+                <administration-blocked-users class="slds-box slds-m-left--x-small" style="padding:0;display:block;height:100%"></administration-blocked-users>
             </div>
         </div>
 

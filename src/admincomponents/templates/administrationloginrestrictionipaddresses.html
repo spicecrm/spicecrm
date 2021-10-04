@@ -48,7 +48,7 @@
                         </button>
                     </td>
                 </tr>
-                <tr login-restriction-ip-addresses-row *ngFor="let ipAddress of ipAddresses; let i=index" [ipAddress]="ipAddress" (editing)="isAltering=$event" [otherEditing]="isEditing">
+                <tr administration-login-restriction-ip-addresses-row *ngFor="let ipAddress of ipAddresses; let i=index" [ipAddress]="ipAddress" (editing)="isAltering=$event" [otherEditing]="isEditing">
             </tbody>
         </table>
     </div>

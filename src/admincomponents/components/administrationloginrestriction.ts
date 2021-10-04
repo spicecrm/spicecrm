@@ -15,10 +15,10 @@ declare var _: any;
  * the api log viwer rendered as part of the admin setion in the system
  */
 @Component({
-    selector: 'login-restriction',
-    templateUrl: './src/admincomponents/templates/loginrestriction.html'
+    selector: 'administration-login-restriction',
+    templateUrl: './src/admincomponents/templates/administrationloginrestriction.html'
 })
-export class LoginRestriction implements OnInit {
+export class AdministrationLoginRestriction implements OnInit {
 
     /**
      * inidcates that we are loading

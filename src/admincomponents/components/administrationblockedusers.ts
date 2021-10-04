@@ -14,10 +14,10 @@ import { metadata } from '../../services/metadata.service';
 declare var _: any;
 
 @Component({
-    selector: 'blocked-users',
-    templateUrl: './src/admincomponents/templates/blockedusers.html'
+    selector: 'administration-blocked-users',
+    templateUrl: './src/admincomponents/templates/administrationblockedusers.html'
 })
-export class BlockedUsers implements OnInit {
+export class AdministrationBlockedUsers implements OnInit {
 
     private blockedUsers = [];
 

@@ -15,13 +15,13 @@ import { language } from '../../services/language.service';
 declare var _: any;
 
 @Component({
-    selector: 'login-restriction-ip-addresses',
-    templateUrl: './src/admincomponents/templates/loginrestrictionipaddresses.html'
+    selector: 'administration-login-restriction-ip-addresses',
+    templateUrl: './src/admincomponents/templates/administrationloginrestrictionipaddresses.html'
 })
-export class LoginRestrictionIpAddresses implements OnInit {
+export class AdministrationLoginRestrictionIpAddresses implements OnInit {
 
     @Input() private color: string;
-    @Input() private siblingComponent: LoginRestrictionIpAddresses;
+    @Input() private siblingComponent: AdministrationLoginRestrictionIpAddresses;
 
     @ViewChild('addressInput', {read: ViewContainerRef, static: false}) private addressInput: ElementRef;
     @ViewChild('table', {static: true}) private table: ElementRef;
