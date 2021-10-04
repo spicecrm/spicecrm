@@ -1,0 +1,23 @@
+<td class="slds-p-right--none"><system-checkbox [(ngModel)]="ipAddress.selected" [disabled]="otherEditing"></system-checkbox></td>
+<td class="slds-p-right--x-small"><div class="slds-truncate">{{ipAddress.address}}</div></td>
+<td class="slds-p-right--x-small">
+
+  <div *ngIf="!isEditing" class="slds-grid">
+    <div class="slds-truncate slds-col--bump-right">{{ipAddress.description}}</div>
+    <button (click)="editDescription()" system-title="LBL_RELOAD" class="slds-button slds-button--icon slds-m-left--xx-small" [disabled]="otherEditing">
+      <system-button-icon icon="edit"></system-button-icon>
+    </button>
+  </div>
+  <div *ngIf="isEditing" class="slds-grid">
+    <div style="width:100%"><input class="slds-input" [(ngModel)]="ipAddress.description" [placeholder]="language.getLabel('LBL_DESCRIPTION')"></div>
+    <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="cancel()">
+      <system-button-icon [icon]="'close'" size="small" ></system-button-icon>
+    </button>
+    <button class="slds-button slds-button--icon-border slds-button--brand" (click)="save()">
+      <system-button-icon [icon]="'check'" size="small"></system-button-icon>
+    </button>
+  </div>
+
+</td>
+<td class="slds-p-right--x-small"><div class="slds-truncate"><system-display-datetime [date]="ipAddress.date_entered"></system-display-datetime></div></td>
+<td class="slds-p-right--x-small" style="width:100%"><div class="slds-truncate">{{ipAddress.created_by_name}}</div></td>

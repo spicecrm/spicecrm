@@ -12,9 +12,9 @@ import {toast} from '../../services/toast.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/admincomponents/templates/useraccesslogviewer.html'
+    templateUrl: './src/admincomponents/templates/administrationuseraccesslogviewer.html'
 })
-export class UserAccessLogViewer {
+export class Administrationuseraccesslogviewer {
 
     /**
      * the limit of records to fetch in on go

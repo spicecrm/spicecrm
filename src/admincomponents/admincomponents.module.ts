@@ -81,10 +81,14 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
-import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
+import /*embed*/ {Administrationuseraccesslogviewer} from './components/useraccesslogviewer';
 
-
-
+import /*embed*/ {AdministrationLoginRestriction} from './components/administrationloginrestriction';
+import /*embed*/ {AdministrationLoginRestrictionIpAddresses} from './components/administrationloginrestrictionipaddresses';
+import /*embed*/ {AdministrationLoginRestrictionIpAddressesRow} from './components/administrationloginrestrictionipaddressesrow';
+import /*embed*/ {AdministrationPasswordConfig} from './components/administrationpasswordconfig';
+import /*embed*/ {AdministrationBlockedUsers} from './components/administrationblockedusers';
+import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
 
 @NgModule({
     imports: [
@@ -151,9 +155,15 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationGeneralSettings,
         AdministrationLanguages,
         AdministrationDefaultPreferences,
-        UserAccessLogViewer,
+        Administrationuseraccesslogviewer,
         AdministrationDictRepairConvertDBCharset,
-        AdministrationDictRepairConvertDBCharsetModal
+        AdministrationDictRepairConvertDBCharsetModal,
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
     ],
     entryComponents: [
         AdministrationMain,
@@ -167,7 +177,13 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDictionaryManagerItemField,
         AdministrationDefaultPreferences,
         AdministrationJobRunningList,
-        AdministrationJobFailedList
+        AdministrationJobFailedList,
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
     ],
     exports: [],
 
