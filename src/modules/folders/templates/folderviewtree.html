@@ -1,0 +1,32 @@
+
+<div class="slds-grid slds-gutters">
+    <div class="slds-col">
+        <div role="tree" class="tree-list-drag-boundary ">
+            <ul cdkDropList cdkDropListSortingDisabled [cdkDropListData]="tree"
+                class="slds-tree slds-p-top--xxx-small " role="tree"
+                aria-labelledby="treeheading">
+                <li role="treeitem" *ngFor="let item of tree; trackBy: trackByFn"
+                    [attr.aria-level]="item.systemTreeDefs.level"
+                    [attr.aria-selected]="item.systemTreeDefs.isSelected"
+                    class="slds-grid slds-drag--preview slds-table_bordered">
+                    <folder-view-tree-item [item]="item"
+                                      (click)="handleClick(item.id)"
+                                      [config]="config"
+                                      (toggleExpandedChange)="handleExpand($event)"
+                                      (onItemAdd)="onItemAdd.emit($event)"
+                                      [title]="item.name"
+                                      style="width: 100%"
+                                      class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
+                    </folder-view-tree-item>
+                </li>
+            </ul>
+        </div>
+        <div
+             class="slds-grid slds-align-content-center slds-m-top--x-small slds-p-top--x-small">
+            <button class="slds-button slds-button--icon slds-button--icon-border slds-p-around--xx-small"
+                    (click)="addTreeItem()">
+                <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
+            </button>
+        </div>
+</div>
+
