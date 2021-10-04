@@ -1,5 +1,8 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import {moveItemInArray} from "@angular/cdk/drag-drop";
+import { take } from 'rxjs/operators';
+import { backend } from '../../../services/backend.service';
+import { modellist } from '../../../services/modellist.service';
 
 /* @ignore */
 declare var _: any;
@@ -9,7 +12,7 @@ declare var _: any;
     templateUrl: "./src/modules/folders/templates/folderviewtree.html"
 })
 
-export class FolderViewTree implements OnChanges {
+export class FolderViewTree implements OnChanges, OnInit {
     /*
     * @input sourceList: object[]
     * [
@@ -87,14 +90,16 @@ export class FolderViewTree implements OnChanges {
         this.treeConfig.collapsible = obj.collapsible || true;
     }
 
+    constructor( private backend: backend, private modellist: modellist ) {}
+
     /*
     * @param changes: SimpleChanges
     * @build tree from sourceList
     * @handle selectedItem
     */
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes.sourceList) this.buildTree();
-        if (changes.selectedItem) this.handleClick(this.selectedItem);
+        // if (changes.sourceList) this.buildTree();
+        // if (changes.selectedItem) this.handleClick(this.selectedItem);
     }
 
     /*
@@ -230,4 +235,26 @@ export class FolderViewTree implements OnChanges {
     private trackByFn(index, item) {
         return item.id;
     }
+
+    public ngOnInit() {
+        // this.modellist.module
+        let searchParams = {
+
+        };
+        let moduleName = 'Documents';
+        this.backend.getRequest('module/Folders/'+moduleName )
+            .pipe(take(1))
+            .subscribe( data => {
+                this.sourceList = data.list;
+                this.buildTree();
+            });
+    }
+
+    /*
+
+    deleteRequest()
+    module/Folders/2123-123-123-123-1223
+
+     */
+
 }
