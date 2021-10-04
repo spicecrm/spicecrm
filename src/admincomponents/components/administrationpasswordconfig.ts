@@ -14,10 +14,10 @@ import { language } from '../../services/language.service';
 declare var _: any;
 
 @Component({
-    selector: 'password-config',
-    templateUrl: './src/admincomponents/templates/passwordconfig.html'
+    selector: 'administration-password-config',
+    templateUrl: './src/admincomponents/templates/administrationpasswordconfig.html'
 })
-export class PasswordConfig implements OnInit {
+export class AdministrationPasswordConfig implements OnInit {
 
     /**
      * inidcates that we are loading
