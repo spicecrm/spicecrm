@@ -1,0 +1,134 @@
+<system-modal size="large">
+
+    <system-modal-header (close)="cancel()"><system-label label="LBL_TEMPLATE_VARIABLE_HELPER"></system-label></system-modal-header>
+
+    <system-modal-content margin="none" system-modal-content-grow>
+
+        <div class="slds-grid slds-grid--vertical" style="height:100%">
+            <div class="slds-grid slds-grow" style="height:0">
+
+                <div class="slds-size--2-of-3 slds-border--right slds-grid slds-grid--vertical" style="height: 100%;">
+
+                    <div class="slds-grid slds-grid--vertical slds-grow" style="height:0">
+
+                        <div class="slds-border--bottom" style="height:50%">
+                            <div class="slds-tabs--default slds-grid slds-grid--vertical" style="height: 100%">
+                                <div class="slds-grid">
+                                    <ul class="slds-tabs--default__nav slds-scrollable--x slds-grow" role="tablist">
+                                        <li *ngFor="let module of offeredModules; trackBy: trackByFn"
+                                            (click)="setActiveModuleTab(module.templateObjectName)" [class.slds-active]="module.templateObjectName == activeModuleTab"
+                                            class="slds-tabs--default__item slds-grid slds-grid_vertical-align-center" role="presentation">
+                                            <a class="slds-tabs--default__link slds-grid" href="javascript:void(0)">
+                                                <system-icon [module]="module.name" size="small" divClass="slds-m-right--x-small"></system-icon>
+                                                <span class="slds-truncate">{{module.displayName}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="slds-grow" style="height:0" *ngIf="!!activeModuleTab">
+                                    <div *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="activeModuleTab != module.templateObjectName" class="slds-scrollable--y" style="height: 100%">
+                                        <system-module-tree [module]="module.name" (itemSelected)="treeItemSelected( $event, module.name )"></system-module-tree>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-grid--vertical" style="height: 50%">
+                            <div class=" slds-input-has-icon slds-input-has-icon_left slds-m-around--x-small" role="none">
+                                <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                                <input class="slds-input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="fieldFilter"/>
+                            </div>
+                            <div class="slds-grow slds-scrollable--y slds-m-bottom--x-small">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="min-width:20rem">
+                                                <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+                                            </th>
+                                            <th scope="col" class="slds-p-horizontal--x-small" style="width:100%">
+                                                <div class="slds-truncate slds-p-left--x-small"><system-label label="LBL_NAME"></system-label></div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="isLoadingModuleFields || activeModuleTab != module.templateObjectName">
+                                        <tr  *ngFor="let field of getFilteredFields( moduleFields[module.name] ); trackBy: trackByFn">
+                                            <td>
+                                                <div class="slds-truncate"><a href="javascript:void(0)" (click)="fieldSelected(field.name)">{{field.name}}</a></div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate"><system-label [label]="field.label"></system-label></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody system-table-stencils *ngIf="isLoadingModuleFields" [columns]="2" [rows]="5"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="slds-p-horizontal--medium slds-p-bottom--medium slds-p-top--xx-small slds-border--top slds-grid slds-grid--vertical-align-end">
+                        <div class="slds-form-element slds-col--bump-right slds-grow slds-m-right--small">
+                            <label class="slds-form-element__label" for="TemplateVarHelperFieldResult"><system-label label="LBL_FIELD"></system-label></label>
+                            <div class="slds-form-element__control">
+                                <input type="text" id="TemplateVarHelperFieldResult" class="slds-input" [(ngModel)]="fieldResult" disabled/>
+                            </div>
+                        </div>
+                        <button class="slds-button slds-button--icon slds-button_icon-border" (click)="clearFieldResult()" [disabled]="!fieldResult.length">
+                            <system-button-icon icon="clear" size="medium"></system-button-icon>
+                            <span class="slds-assistive-text"><system-label label="LBL_UNDO"></system-label></span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="slds-size--1-of-3 slds-grid slds-grid--vertical slds-p-top--x-small" style="height: 100%">
+
+                    <div class="slds-grow slds-scrollable--y slds-m-bottom--x-small">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate"><system-label label="LBL_APPLICABLE_FUNCTIONS"></system-label></div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let function of offeredFunctions">
+                                    <td>
+                                        <div class="slds-truncate"><a href="javascript:void(0)" (click)="functionSelected(function)">{{function}}</a></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="slds-border--top slds-grid slds-grid--vertical-align-end slds-p-horizontal--medium slds-p-bottom--medium slds-p-top--xx-small">
+                        <div class="slds-form-element slds-col--bump-right slds-grow slds-m-right--small">
+                            <label class="slds-form-element__label" for="TemplateVarHelperFieldFunction"><system-label label="LBL_FUNCTION"></system-label></label>
+                            <div class="slds-form-element__control slds-grow">
+                                <input type="text" id="TemplateVarHelperFieldFunction" class="slds-input" [(ngModel)]="functionResult" disabled/>
+                            </div>
+                        </div>
+                        <button class="slds-button slds-button--icon slds-button_icon-border" (click)="functionUndo()" [disabled]="!functionHistory.length">
+                            <system-button-icon icon="undo" [size]="'xx-small'"></system-button-icon>
+                            <span class="slds-assistive-text"><system-label label="LBL_UNDO"></system-label></span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </system-modal-content>
+
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="submit()"><system-label label="LBL_OK"></system-label></button>
+    </system-modal-footer>
+
+</system-modal>

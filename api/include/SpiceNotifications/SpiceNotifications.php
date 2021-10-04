@@ -8,7 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\extensions\includes\SpiceSocket\SpiceSocket;
+use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\UserPreferences\UserPreference;

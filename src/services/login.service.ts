@@ -13,6 +13,7 @@ import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
+import {take} from 'rxjs/operators';
 
 interface loginAuthDataIf {
     userName: string;
@@ -249,7 +250,9 @@ export class loginService {
      * starts the loaded upon successful login
      */
     public load() {
-        this.loader.load().subscribe((val) => this.redirect(val));
+        this.loader.load().subscribe((val) => {
+            this.redirect(val);
+        });
     }
 
     public redirect(val) {

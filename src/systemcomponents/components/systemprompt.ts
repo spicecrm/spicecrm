@@ -85,6 +85,11 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      */
     @ViewChild('inputField', {static: false}) private inputField;
 
+    /**
+     * reference to the select field .. allows focussing when the modal is rendered
+     */
+    @ViewChild('selectField', {static: false}) private selectField;
+
     constructor( private language: language ) {
         this.answerSubject = new Subject<any>();
         this.answer = this.answerSubject.asObservable();
@@ -101,7 +106,10 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     public ngAfterViewInit() {
         if ( this.type === 'confirm' ) this.cancelButton.nativeElement.focus();
         else if ( this.type === 'info' ) this.okButton.nativeElement.focus();
-        else if ( this.type === 'input' ) this.inputField.nativeElement.focus();
+        else if ( this.type === 'input' ) {
+            if ( this.inputField ) this.inputField.nativeElement.focus();
+            else if ( this.selectField ) this.selectField.nativeElement.focus();
+        }
     }
 
     /**
