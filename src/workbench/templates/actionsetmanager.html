@@ -83,8 +83,8 @@
             </div>
         </div>
     </div>
-    <div class="slds-grid">
-        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
+    <div class="slds-grid" system-to-bottom-noscroll>
+        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right" system-to-bottom>
             <div class="slds-tree_container" role="application" style="max-width: none;" class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
                 <div *ngFor="let currentActionSetItem of currentActionSet.actions" class="slds-p-vertical--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center" (click)="selectItem(currentActionSetItem)" [ngClass]="{'slds-theme--shade' : currentActionSetItem.id == selectedItemID}" cdkDrag cdkDragBoundary=".dragboundary">
                     <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
@@ -102,11 +102,8 @@
                 </button>
             </div>
         </div>
-        <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
-            <actionsetmanager-action-details [(action)]="selectedItem"></actionsetmanager-action-details>
+        <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-vertical--x-small" system-to-bottom>
+            <actionsetmanager-action-details [action]="selectedItem"></actionsetmanager-action-details>
         </div>
-    </div>
-    <div class="slds-text-align--right slds-p-around--small slds-border--top">
-
     </div>
 </div>
