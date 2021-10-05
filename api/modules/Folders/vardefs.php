@@ -36,11 +36,10 @@ $dictionary['Folder'] = [
             'reportable' => false,
             'comment'    => 'ID of Sugar object referenced by parent_type (deprecated as of 4.2)',
         ],
-        /*
         'parent_folder' => [
             'name' => 'parent_folder',
             'type' => 'link',
-            'relationship' => 'folder_folder',
+            'relationship' => 'folders_folders',
             'source' => 'non-db',
             'module' => 'Folders',
             'vname' => 'LBL_PARENT_FOLDER',
@@ -48,12 +47,11 @@ $dictionary['Folder'] = [
         'child_folders' => [
             'name' => 'child_folders',
             'type' => 'link',
-            'relationship' => 'folder_folders',
+            'relationship' => 'folders_folders',
             'source' => 'non-db',
             'module' => 'Folders',
             'vname' => 'LBL_CHILD_FOLDERS',
         ],
-        */
         'documents' => [
             'name' => 'documents',
             'type' => 'link',
@@ -73,17 +71,7 @@ $dictionary['Folder'] = [
             'rhs_key' => 'folder_id',
             'relationship_type' => 'one-to-many'
         ],
-        /*
-        'folder_folders' => [
-            'lhs_module' => 'Folders',
-            'lhs_table' => 'folders',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Folders',
-            'rhs_table' => 'folders',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many'
-        ],
-        'folder_folder' => [
+        'folders_folders' => [
             'lhs_module' => 'Folders',
             'lhs_table' => 'folders',
             'lhs_key' => 'id',
@@ -92,7 +80,6 @@ $dictionary['Folder'] = [
             'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many'
         ]
-        */
     ]
 ];
 
