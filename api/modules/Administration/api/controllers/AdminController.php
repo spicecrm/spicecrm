@@ -19,7 +19,7 @@ use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\modules\Configurator\Configurator;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 

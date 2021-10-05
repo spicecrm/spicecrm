@@ -2,7 +2,7 @@
 namespace SpiceCRM\includes\SpiceSwagger;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 
 class SpiceSwaggerPath
 {
