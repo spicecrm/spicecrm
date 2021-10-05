@@ -238,23 +238,24 @@ export class FolderViewTree implements OnChanges, OnInit {
 
     public ngOnInit() {
         // this.modellist.module
-        let searchParams = {
-
-        };
+        let searchParams = {};
         let moduleName = 'Documents';
-        this.backend.getRequest('module/Folders/'+moduleName )
+        this.backend.getRequest('module/Folders/' + moduleName)
             .pipe(take(1))
-            .subscribe( data => {
+            .subscribe(data => {
                 this.sourceList = data.list;
                 this.buildTree();
             });
+
+
+
+
+        /*
+
+        deleteRequest()
+        module/Folders/2123-123-123-123-1223
+
+         */
+
     }
-
-    /*
-
-    deleteRequest()
-    module/Folders/2123-123-123-123-1223
-
-     */
-
 }

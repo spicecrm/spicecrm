@@ -1,4 +1,8 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {take} from "rxjs/operators";
+import {language} from "../../../services/language.service";
+import {backend} from "../../../services/backend.service";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: "folder-view-tree-item",
@@ -7,8 +11,11 @@ import {Component, EventEmitter, Input, Output} from "@angular/core";
 
 export class FolderViewTreeItems {
 
-
-
+constructor(private language: language,
+            private backend: backend,
+            private toast: toast
+            ) {
+}
     /*
     * @output onItemAdd: object
     * {
@@ -17,6 +24,14 @@ export class FolderViewTreeItems {
     * }
     */
     @Output() public onItemAdd: EventEmitter<any> = new EventEmitter<any>();
+    /*
+  * @output onItemDelete: object
+  * {
+  *   id: string = parentId,
+  *   name: string = parentName
+  * }
+  */
+    @Output() public onItemDelete: EventEmitter<any> = new EventEmitter<any>();
     /*
     * @output toggleExpandedChange: string = item.id
     */
@@ -36,6 +51,7 @@ export class FolderViewTreeItems {
     * @input config: object
     */
     @Input() private config: any = {};
+
     /*
     * @param parentId: string
     * @param parentName: string
@@ -54,6 +70,15 @@ export class FolderViewTreeItems {
     public expand(item, e?) {
         this.toggleExpandedChange.emit(item.id);
         if (e && e.stopPropagation) e.stopPropagation();
+    }
+
+    public deleteFolder() {
+        this.backend.deleteRequest('module/Folders/' + this.item.id)
+            .pipe(take(1))
+            .subscribe(data => {
+              this.onItemDelete.emit();
+              this.toast.sendToast(this.language.getLabel("MSG_SUCCESSFULLY_DELETED"), "success");
+            });
     }
 
 }
