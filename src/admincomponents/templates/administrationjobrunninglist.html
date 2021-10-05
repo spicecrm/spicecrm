@@ -46,7 +46,7 @@
                         <field-container field="job_interval" [fieldconfig]="{fieldtype: 'croninterval'}" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
                     </td>
                     <td class="slds-cell-shrink">
-                        <button (click)="killJob(job)" [disabled]="!!job.killed" system-title="LBL_KILL" class="slds-button slds-button--icon">
+                        <button (click)="killJob(job)" system-title="LBL_KILL" class="slds-button slds-button--icon">
                             <system-button-icon icon="stop"></system-button-icon>
                         </button>
                     </td>

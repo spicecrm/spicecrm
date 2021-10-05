@@ -458,7 +458,7 @@ export class relatedmodels implements OnDestroy {
     }
 
     /**
-     * helper to add items when called fromt eh handler
+     * helper to add items when called from the handler
      *
      * @param items
      */
