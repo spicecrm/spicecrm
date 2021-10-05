@@ -713,6 +713,10 @@ $app_list_strings = [
         'unread' => 'Unread',
         'bounced' => 'Bounced'
     ],
+    'dom_letter_status' => [
+        'sent' => 'sent',
+        'draft' => 'draft'
+    ],
     'dom_textmessage_status' => [
         'archived' => 'Archived',
         'closed' => 'Closed',
