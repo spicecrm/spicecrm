@@ -35,8 +35,9 @@ $dictionary['Letter'] = [
             'vname'   => 'LBL_STATUS',
             'type'    => 'enum',
             'len'     => 10,
-            'options' => 'dom_email_status',
-            'comment' => 'the status of the letter'
+            'options' => 'dom_letter_status',
+            'comment' => 'the status of the letter',
+            'default' => 'draft'
         ],
 
         // output templates for the letters
@@ -103,12 +104,33 @@ $dictionary['Letter'] = [
             'type'   => 'id',
             'source' => 'non-db',
         ],
+        'contact_name' => [
+            'name' => 'contact_name',
+            'vname' => 'LBL_CONTACT',
+            'type' => 'relate',
+            'id_name' => 'contact_id',
+            'rname' => 'name',
+            'link' => 'contacts',
+            'module' => 'Contacts',
+            'comment' => 'The name of the related contact',
+            'source' => 'non-db'
+        ],
         'account_id' => [
             'name'   => 'account_id',
             'type'   => 'id',
             'source' => 'non-db',
         ],
-
+        'account_name' => [
+            'name' => 'account_name',
+            'vname' => 'LBL_ACCOUNT',
+            'type' => 'relate',
+            'id_name' => 'account_id',
+            'rname' => 'name',
+            'link' => 'accounts',
+            'module' => 'Accounts',
+            'comment' => 'The name of the related account',
+            'source' => 'non-db'
+        ],
         // links to other modules
         'contacts' => [
             'name' => 'contacts',
