@@ -45,7 +45,7 @@ $routes = [
         'method'      => 'get',
         'route'       => '/module/Folders/{module}',
         'class'       => FoldersController::class,
-        'function'    => 'getFolder',
+        'function'    => 'getFoldersForModule',
         'description' => 'Get all the folders for a specific module.',
         'options'     => ['noAuth' => true, 'adminOnly' => false, 'validate' => true],
         'parameters'  => [
