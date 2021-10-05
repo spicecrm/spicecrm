@@ -516,6 +516,15 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
             'module' => 'Agreements',
             'default' => false
         ],
+        'letters' => [
+            'name' => 'letters',
+            'type' => 'link',
+            'relationship' => 'account_letters',
+            'source' => 'non-db',
+            'module' => 'Letters',
+            'bean_name' => 'Letter',
+            'vname' => 'LBL_LETTERS',
+        ],
     ],
     'indices' => [
         ['name' => 'idx_accnt_id_del', 'type' => 'index', 'fields' => ['id', 'deleted']],
@@ -571,6 +580,17 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
         */
         'account_emails' => [
             'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id', 'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Accounts'
+        ],
+        'account_letters' => [
+            'lhs_module' => 'Accounts',
+            'lhs_table' => 'accounts',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Letters',
+            'rhs_table' => 'letters',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Accounts'
         ],
         'account_leads' => [
