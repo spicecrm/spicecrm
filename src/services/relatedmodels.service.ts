@@ -514,7 +514,7 @@ export class relatedmodels implements OnDestroy {
     public setItem(item): Observable<any> {
         if (!this.isonlyfiltered) {
             let retSubject = new Subject<any>();
-            this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(() => {
+            this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/beans/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(() => {
                     retSubject.next(true);
                     retSubject.complete();
                 },
