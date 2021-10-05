@@ -1,14 +1,9 @@
 <?php
 namespace SpiceCRM\modules\Folders\api\controllers;
 
-use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\KREST\handlers\ModuleHandler;
-use SpiceCRM\includes\RESTManager;
-
 
 class FoldersController
 {
