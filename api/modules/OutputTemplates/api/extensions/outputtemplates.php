@@ -254,7 +254,7 @@ $routes = [
         ]
     ],
     [
-        'method'      => 'get',
+        'method'      => 'post',
         'route'       => '/module/OutputTemplates/{id}/convert/{bean_id}/to/{format}/base64',
         'oldroute'    => '/OutputTemplates/{id}/convert/{bean_id}/to/{format}/base64',
         'class'       => OutputTemplatesController::class,
@@ -279,6 +279,12 @@ $routes = [
                 'type'        => 'string',
                 'required'    => true,
                 'description' => 'not in use',
+            ],
+            'bean_data'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_OBJECT,
+                'required'    => true,
+                'description' => 'bean data to be rendered',
             ]
         ]
     ],
@@ -289,7 +295,31 @@ $routes = [
         'function'    => 'getTemplateFunctions',
         'description' => 'Get the full list of system template functions.',
         'options'     => ['noAuth' => false, 'adminOnly' => false]
-    ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/OutputTemplates/{id}/livecompile/{bean_id}',
+        'class'       => OutputTemplatesController::class,
+        'function'    => 'liveCompile',
+        'description' => 'gets the body of an email',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'parentid' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'if of parent bean',
+                'example' => '2816ba5c-97e7-11eb-8c42-00fffe0c4f07',
+                'required' => true
+            ],
+            'html' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'html string',
+                'example' => '',
+                'required' => true
+            ]
+        ]
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);
