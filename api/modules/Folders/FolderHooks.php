@@ -2,18 +2,15 @@
 
 namespace SpiceCRM\modules\Folders;
 
+use SpiceCRM\includes\Logger\LoggerManager;
+
 class FolderHooks
 {
-
-    public function FolderHandler(&$bean, $event, $arguments)
+    public function beforeDelete( &$bean, $event, $arguments )
     {
-        switch ($event) {
-            case 'before_delete':
-                $childFolders = $bean->get_linked_beans('child_folders');
-                foreach( $childFolders as $folder ) {
-                    $folder->mark_deleted( $folder->id );
-                }
-                break;
+        $childFolders = $bean->get_linked_beans('child_folders');
+        foreach( $childFolders as $folder ) {
+            $folder->mark_deleted( $folder->id );
         }
     }
 }
