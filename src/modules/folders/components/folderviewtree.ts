@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {take} from 'rxjs/operators';
 import {backend} from '../../../services/backend.service';
 import {modellist} from '../../../services/modellist.service';
@@ -15,7 +15,7 @@ declare var _: any;
     templateUrl: "./src/modules/folders/templates/folderviewtree.html"
 })
 
-export class FolderViewTree implements OnChanges, OnInit {
+export class FolderViewTree implements OnInit {
 
     /*
     * @input sourceList: object[]
@@ -29,7 +29,7 @@ export class FolderViewTree implements OnChanges, OnInit {
     *   }
     * ]
     */
-    @Input() public sourceList: any[] = [];
+    // @Input() public sourceList: any[] = [];
     /*
     * @input selectedItem: string
     */
@@ -47,67 +47,16 @@ export class FolderViewTree implements OnChanges, OnInit {
      *   name: string = parentName
      * }
      */
-    @Output() public onItemAdd: EventEmitter<any> = new EventEmitter<any>();    /*
-     * @output onTreeDrop: object
-     * {
-     *   itemWithNewParent?: object
-     *      {
-     *          id: string,
-     *          parent_id: string
-     *      },
-     *   newSortSequences?: object
-     *      {
-     *          id: string,
-     *          index: number
-     *      }
-     * }
-     */
-    @Output() public onTreeDrop: EventEmitter<any> = new EventEmitter<any>();
-    public tree: any[] = [];
-    private treeConfig: any = {
-        draggable: false,
-        canadd: false,
-        expandall: false,
-        collapsible: true,
-    };
 
+
+    public tree: any[] = [];
+
+    public sourceList: any[] = [];
 
     constructor(private backend: backend, private modellist: modellist, private language: language,
-                private toast: toast, private modal: modal , private modelutilies: modelutilities) {
-    }
-
-
-    /*
-    * @input config: object
-    * {
-    *   draggable: boolean = false,
-    *   canadd: boolean = false,
-    *   expandall: boolean = false,
-    *   collapsible: boolean = true
-    * }
-    * @set treeConfig from the input config
-    */
-    @Input()
-    set config(obj) {
-        this.treeConfig.draggable = obj.draggable || false;
-        this.treeConfig.canadd = obj.canadd || false;
-        this.treeConfig.expandall = obj.expandall || false;
-        this.treeConfig.collapsible = obj.collapsible || true;
-    }
-
-    /*
-    * @param changes: SimpleChanges
-    * @build tree from sourceList
-    * @handle selectedItem
-    */
-    public ngOnChanges(changes: SimpleChanges) {
-        // if (changes.sourceList) this.buildTree();
-        // if (changes.selectedItem) this.handleClick(this.selectedItem);
-    }
+                private toast: toast, private modal: modal , private modelutilies: modelutilities) {}
 
     public ngOnInit() {
-        // this.modellist.module
-        let searchParams = {};
         let moduleName = 'Documents';
         this.backend.getRequest('module/Folders/' + moduleName)
             .pipe(take(1))
@@ -174,7 +123,7 @@ export class FolderViewTree implements OnChanges, OnInit {
                 if (!item.systemTreeDefs) {
                     item.systemTreeDefs = {};
                 }
-                item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
+                item.systemTreeDefs.expanded = true;
                 item.systemTreeDefs.clickable = item.hasOwnProperty('clickable') ? item.clickable : true;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
@@ -252,13 +201,16 @@ export class FolderViewTree implements OnChanges, OnInit {
     }
 
     private addFolder() {
+
+
         this.modal.prompt('input', null, 'Folder Name').pipe(take(1)).subscribe(folderName => {
             let folder = {
                 name: folderName,
                 parent_id: undefined,
-                module: 'Documents'
+                module: 'Documents',
+                id: this.modelutilies.generateGuid()
             };
-            this.backend.postRequest('module/Folders/'+this.modelutilies.generateGuid(), {}, folder).pipe(take(1)).subscribe(asdf => {
+            this.backend.postRequest('module/Folders/'+folder.id, {}, folder).pipe(take(1)).subscribe(asdf => {
                         this.toast.sendToast(this.language.getLabel('MSG_FOLDER_SUCCESFULY_ADEED'), 'success');
                         this.sourceList.push(folder);
                         this.buildTree();
@@ -267,5 +219,18 @@ export class FolderViewTree implements OnChanges, OnInit {
                     this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
                 });
         });
+    }
+
+    private onItemDelete( id: string ) {
+        let index: number;
+        if ( this.sourceList.find( ( item, i ) => {
+           if ( item.id === id ) {
+               index = i;
+               return true;
+           }
+        })) {
+            this.sourceList.splice( index, 1 );
+        }
+        this.buildTree();
     }
 }
