@@ -7,9 +7,10 @@
  */
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class OutputTemplatesController
@@ -98,5 +99,29 @@ class OutputTemplatesController
             else $functions['pipe'][] = $function['name'];
         }
         return $res->withJson( $functions );
+    }
+
+    public function liveCompile(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getParsedBody();
+
+        $db = DBManagerFactory::getInstance();
+        $outputTemplate = BeanFactory::getBean('OutputTemplates', $args['id']);
+        $outputTemplate->bean_id = $args['bean_id'];
+
+        if (is_array($params['bean_data'])) {
+
+            $bean = BeanFactory::getBean($outputTemplate->module_name);
+
+            foreach ($params['bean_data'] as $field => $value) $bean->$field = $value;
+
+            $bean->save(false, false);
+        }
+
+        $file = $outputTemplate->getPdfContent();
+
+        $db->transactionRollback();
+
+        return $res->withJson(['content' => base64_encode($file)]);
     }
 }
