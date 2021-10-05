@@ -219,7 +219,8 @@ export class ServiceDocSignatureModal {
 
         switch (this.selected_format) {
             case 'pdf':
-                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
+                const body = {bean_data: this.model.data};
+                this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
                         let blob = this.datatoBlob( atob( pdf.content ) );
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
