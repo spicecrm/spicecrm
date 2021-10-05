@@ -1,8 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
-import {moveItemInArray} from "@angular/cdk/drag-drop";
-import { take } from 'rxjs/operators';
-import { backend } from '../../../services/backend.service';
-import { modellist } from '../../../services/modellist.service';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
+import {take} from 'rxjs/operators';
+import {backend} from '../../../services/backend.service';
+import {modellist} from '../../../services/modellist.service';
+import {language} from "../../../services/language.service";
+import {toast} from "../../../services/toast.service";
+import {modal} from "../../../services/modal.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 /* @ignore */
 declare var _: any;
@@ -13,6 +16,7 @@ declare var _: any;
 })
 
 export class FolderViewTree implements OnChanges, OnInit {
+
     /*
     * @input sourceList: object[]
     * [
@@ -59,7 +63,6 @@ export class FolderViewTree implements OnChanges, OnInit {
      * }
      */
     @Output() public onTreeDrop: EventEmitter<any> = new EventEmitter<any>();
-
     public tree: any[] = [];
     private treeConfig: any = {
         draggable: false,
@@ -68,9 +71,11 @@ export class FolderViewTree implements OnChanges, OnInit {
         collapsible: true,
     };
 
-    get config() {
-        return this.treeConfig;
+
+    constructor(private backend: backend, private modellist: modellist, private language: language,
+                private toast: toast, private modal: modal , private modelutilies: modelutilities) {
     }
+
 
     /*
     * @input config: object
@@ -90,8 +95,6 @@ export class FolderViewTree implements OnChanges, OnInit {
         this.treeConfig.collapsible = obj.collapsible || true;
     }
 
-    constructor( private backend: backend, private modellist: modellist ) {}
-
     /*
     * @param changes: SimpleChanges
     * @build tree from sourceList
@@ -100,6 +103,19 @@ export class FolderViewTree implements OnChanges, OnInit {
     public ngOnChanges(changes: SimpleChanges) {
         // if (changes.sourceList) this.buildTree();
         // if (changes.selectedItem) this.handleClick(this.selectedItem);
+    }
+
+    public ngOnInit() {
+        // this.modellist.module
+        let searchParams = {};
+        let moduleName = 'Documents';
+        this.backend.getRequest('module/Folders/' + moduleName)
+            .pipe(take(1))
+            .subscribe(data => {
+                this.sourceList = data.list;
+                this.buildTree();
+            });
+
     }
 
     /*
@@ -179,7 +195,6 @@ export class FolderViewTree implements OnChanges, OnInit {
         });
     }
 
-
     /*
     * @param id: string
     * @set item.systemTreeDefs.expanded
@@ -236,26 +251,21 @@ export class FolderViewTree implements OnChanges, OnInit {
         return item.id;
     }
 
-    public ngOnInit() {
-        // this.modellist.module
-        let searchParams = {};
-        let moduleName = 'Documents';
-        this.backend.getRequest('module/Folders/' + moduleName)
-            .pipe(take(1))
-            .subscribe(data => {
-                this.sourceList = data.list;
-                this.buildTree();
-            });
-
-
-
-
-        /*
-
-        deleteRequest()
-        module/Folders/2123-123-123-123-1223
-
-         */
-
+    private addFolder() {
+        this.modal.prompt('input', null, 'Folder Name').pipe(take(1)).subscribe(folderName => {
+            let folder = {
+                name: folderName,
+                parent_id: undefined,
+                module: 'Documents'
+            };
+            this.backend.postRequest('module/Folders/'+this.modelutilies.generateGuid(), {}, folder).pipe(take(1)).subscribe(asdf => {
+                        this.toast.sendToast(this.language.getLabel('MSG_FOLDER_SUCCESFULY_ADEED'), 'success');
+                        this.sourceList.push(folder);
+                        this.buildTree();
+                },
+                error => {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                });
+        });
     }
 }
