@@ -1796,6 +1796,16 @@ class SpiceFTSHandler
     }
 
     /**
+     * rolls back all changes in a transaction and stops the transaction handler
+     * by simply removing all transactional entries so nothing will be processed when a commit is called
+     */
+    public function rollbackTransaction(){
+        $this->transactionEntries['elastic'] = [];
+        $this->transactionEntries['database'] = [];
+        $this->inTransaction = false;
+    }
+
+    /**
      * returns the Version on the elastic cluster
      *
      * @return array|mixed
