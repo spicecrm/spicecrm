@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
 
@@ -11,6 +11,7 @@ declare var moment: any;
 @Component({
     selector: 'system-input-date-picker',
     templateUrl: './src/systemcomponents/templates/systeminputdatepicker.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: 'slds-datepicker'
     }
@@ -162,10 +163,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
 
         let thedate = new moment(date.format());
-        if (this.minDate && thedate.isBefore(this.minDate, 'month')) {
+        if (this.minDate && thedate.isBefore(this.minDate, 'day')) {
             return true;
         }
-        return !!(this.maxDate && thedate.isAfter(this.maxDate, 'month'));
+        return !!(this.maxDate && thedate.isAfter(this.maxDate, 'day'));
     }
 
     /*
