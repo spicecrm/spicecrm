@@ -3,6 +3,7 @@ import {take} from "rxjs/operators";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
+import { modal } from '../../../services/modal.service';
 
 @Component({
     selector: "folder-view-tree-item",
@@ -11,31 +12,32 @@ import {toast} from "../../../services/toast.service";
 
 export class FolderViewTreeItems {
 
-constructor(private language: language,
-            private backend: backend,
-            private toast: toast
-            ) {
-}
+constructor( private language: language, private backend: backend, private toast: toast, private modal: modal ) { }
+
     /*
-    * @output onItemAdd: object
+    * @output onFolderAdd: object
     * {
     *   id: string = parentId,
     *   name: string = parentName
     * }
     */
-    @Output() public onItemAdd: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public onFolderAdd = new EventEmitter<string>();
+
     /*
-  * @output onItemDelete: object
-  * {
-  *   id: string = parentId,
-  *   name: string = parentName
-  * }
+    * Trigger the parent component to sort the folder list.
+    */
+    @Output() public doSort = new EventEmitter<void>();
+
+    /*
+     * @output onItemDelete
   */
-    @Output() public onItemDelete: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public onFolderDelete: EventEmitter<any> = new EventEmitter<any>();
+
     /*
     * @output toggleExpandedChange: string = item.id
     */
     @Output() public toggleExpandedChange: EventEmitter<any> = new EventEmitter<any>();
+
     /*
     * @input item: object
     * {
@@ -46,20 +48,12 @@ constructor(private language: language,
     *     systemTreeDefs: object
     * }
     */
-    @Input() public item: any = [];
+    @Input() public item: any;
+
     /*
     * @input config: object
     */
     @Input() private config: any = {};
-
-    /*
-    * @param parentId: string
-    * @param parentName: string
-    * @emit object by @Output onItemAdd
-    */
-    public addItem(parentId, parentName) {
-        this.onItemAdd.emit({id: parentId, name: parentName});
-    }
 
     /*
     * @param item: object
@@ -76,9 +70,30 @@ constructor(private language: language,
         this.backend.deleteRequest('module/Folders/' + this.item.id)
             .pipe(take(1))
             .subscribe(data => {
-              this.onItemDelete.emit();
+              this.onFolderDelete.emit();
               this.toast.sendToast(this.language.getLabel("MSG_SUCCESSFULLY_DELETED"), "success");
             });
+    }
+
+    private editFolderName(): void {
+        this.modal.prompt('input', null, 'Folder Name', null, this.item.name ).pipe(take(1)).subscribe(folderName => {
+            folderName = folderName.trim();
+            if ( folderName ) {
+                this.item.name = folderName;
+                let folder = {
+                    name: this.item.name
+                };
+                this.backend.postRequest('module/Folders/'+this.item.id, {}, folder)
+                    .pipe(take(1))
+                    .subscribe(asdf => {
+                        this.toast.sendToast(this.language.getLabel('MSG_FOLDERNAME_CHANGED'), 'success');
+                        this.doSort.emit();
+                    },
+                    error => {
+                        this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                    });
+            }
+        });
     }
 
 }

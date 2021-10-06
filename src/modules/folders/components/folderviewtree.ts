@@ -17,44 +17,38 @@ declare var _: any;
 
 export class FolderViewTree implements OnInit {
 
-    /*
-    * @input sourceList: object[]
-    * [
-    *   {
-    *     id: string,
-    *     parent_id: string,
-    *     parent_sequence: number,
-    *     name: string,
-    *     clickable: boolean
-    *   }
-    * ]
-    */
-    // @Input() public sourceList: any[] = [];
-    /*
-    * @input selectedItem: string
-    */
-    @Input() public selectedItem: string = "";
-    /*
-    * @output selectedItemChange: string = selectedItem
-    * @note: selectedItem can be used as two way binding angular like:
-    *        <system-tree [(selectedItem)] ></system-tree>
-    */
-    @Output() public selectedItemChange: EventEmitter<any> = new EventEmitter<any>();
-    /*
-     * @output onItemAdd: object
-     * {
-     *   id: string = parentId,
-     *   name: string = parentName
-     * }
-     */
+    private config: any = {
+        draggable: false,
+        canadd: false,
+        expandall: false,
+        collapsible: true,
+    };
 
+    /*
+    * selectedItem: string
+    */
+    private selectedItem: string = "";
 
     public tree: any[] = [];
 
+    /**
+     * object[]
+     * [
+     *   {
+     *     id: string,
+     *     parent_id: string,
+     *     parent_sequence: number,
+     *     name: string,
+     *     clickable: boolean
+     *   }
+     * ]
+     */
     public sourceList: any[] = [];
 
-    constructor(private backend: backend, private modellist: modellist, private language: language,
-                private toast: toast, private modal: modal , private modelutilies: modelutilities) {}
+    private itemRelations: any[] = [];
+
+    constructor( private backend: backend, private modellist: modellist, private language: language,
+                    private toast: toast, private modal: modal , private modelutilies: modelutilities ) {}
 
     public ngOnInit() {
         let moduleName = 'Documents';
@@ -64,7 +58,18 @@ export class FolderViewTree implements OnInit {
                 this.sourceList = data.list;
                 this.buildTree();
             });
+    }
 
+    private buildItemRelations() {
+        this.itemRelations = [];
+        let indexes = {};
+        this.sourceList.forEach( ( item, i ) => indexes[item.id] = i );
+        this.sourceList.forEach( ( item, i ) => {
+            this.itemRelations[i] = { parent: item.parent_id ? indexes[item.parent_id] : null, childs: [] };
+        });
+        this.sourceList.forEach( ( item, i ) => {
+            if ( item.parent_id ) this.itemRelations[this.itemRelations[i].parent].childs.push(i);
+        });
     }
 
     /*
@@ -78,6 +83,7 @@ export class FolderViewTree implements OnInit {
         this.sortBySequence();
         this.addTreeItem();
         this.setHasChildren();
+        this.buildItemRelations();
     }
 
     /*
@@ -89,7 +95,7 @@ export class FolderViewTree implements OnInit {
     * @sort by parent_sequence
     */
     private sortBySequence() {
-        this.sourceList.sort((a, b) => a.name && b.name ? a.name > b.name ? 1 : -1 : 0);
+        this.language.sortObjects( this.sourceList, 'name');
         let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
         this.sourceList = [];
         for (let parentId in groupedByParent) {
@@ -123,7 +129,7 @@ export class FolderViewTree implements OnInit {
                 if (!item.systemTreeDefs) {
                     item.systemTreeDefs = {};
                 }
-                item.systemTreeDefs.expanded = true;
+                item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
                 item.systemTreeDefs.clickable = item.hasOwnProperty('clickable') ? item.clickable : true;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
@@ -172,7 +178,6 @@ export class FolderViewTree implements OnInit {
             if (item.id == id) {
                 if (item.systemTreeDefs && item.systemTreeDefs.clickable) {
                     item.systemTreeDefs.isSelected = true;
-                    this.selectedItemChange.emit(id);
                     this.selectedItem = id;
                 } else {
                     this.handleExpand(id);
@@ -200,19 +205,18 @@ export class FolderViewTree implements OnInit {
         return item.id;
     }
 
-    private addFolder() {
-
-
+    private addFolder( parentId: string = null, index: number = null ): void {
         this.modal.prompt('input', null, 'Folder Name').pipe(take(1)).subscribe(folderName => {
             let folder = {
                 name: folderName,
-                parent_id: undefined,
+                parent_id: parentId ? parentId : undefined,
                 module: 'Documents',
                 id: this.modelutilies.generateGuid()
             };
             this.backend.postRequest('module/Folders/'+folder.id, {}, folder).pipe(take(1)).subscribe(asdf => {
                         this.toast.sendToast(this.language.getLabel('MSG_FOLDER_SUCCESFULY_ADEED'), 'success');
                         this.sourceList.push(folder);
+                        if ( index !== null && this.tree[index] ) this.tree[index].systemTreeDefs.expanded = true;
                         this.buildTree();
                 },
                 error => {
@@ -221,16 +225,24 @@ export class FolderViewTree implements OnInit {
         });
     }
 
-    private onItemDelete( id: string ) {
-        let index: number;
-        if ( this.sourceList.find( ( item, i ) => {
+    private removeFolderFromList( id: string ) {
+        let itemsToDelete: any[] = [];
+        this.sourceList.find( ( item, i ) => {
            if ( item.id === id ) {
-               index = i;
+               this.deleteItemsRecursive( i, itemsToDelete );
                return true;
            }
-        })) {
-            this.sourceList.splice( index, 1 );
-        }
+        });
+        itemsToDelete.sort().reverse().forEach( ( item, i ) => {
+            this.sourceList.splice( itemsToDelete[i], 1 );
+            this.itemRelations.splice( itemsToDelete[i], 1 );
+        });
         this.buildTree();
     }
+
+    private deleteItemsRecursive( index, toDelete: number[] ) {
+        toDelete.push(index);
+        this.itemRelations[index].childs.forEach( item => this.deleteItemsRecursive( item, toDelete ));
+    }
+
 }
