@@ -43,6 +43,8 @@ $dictionary['Folder'] = [
             'source' => 'non-db',
             'module' => 'Folders',
             'vname' => 'LBL_PARENT_FOLDER',
+            'link_type' => 'one',
+            'side' => 'right',
         ],
         'child_folders' => [
             'name' => 'child_folders',
@@ -82,7 +84,5 @@ $dictionary['Folder'] = [
         ]
     ]
 ];
-
-
 
 VardefManager::createVardef('Folders', 'Folder', ['default', 'assignable']);
