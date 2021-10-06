@@ -296,6 +296,15 @@ $dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAILS',
             ],
+            'letters' => [
+                'name'         => 'letters',
+                'type'         => 'link',
+                'relationship' => 'contact_letters',
+                'module' => 'Letters',
+                'bean_name' => 'Letter',
+                'source'       => 'non-db',
+                'vname'        => 'LBL_LETTERS',
+            ],
             'documents' => [
                 'name' => 'documents',
                 'type' => 'link',
@@ -725,6 +734,15 @@ $dictionary['Contact'] = [
             'rhs_table' => 'notes',
             'rhs_key' => 'contact_id',
             'relationship_type' => 'one-to-many'],
+        'contact_letters' => [
+            'lhs_module' => 'Contacts',
+            'lhs_table' => 'contacts',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Letters',
+            'rhs_table' => 'letters',
+            'rhs_key' => 'contact_id',
+            'relationship_type' => 'one-to-many'
+        ],
         'contact_textmessages' => [
             'lhs_module' => 'Contacts',
             'lhs_table' => 'contacts',
