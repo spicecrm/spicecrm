@@ -1,12 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import { Component, EventEmitter, ViewContainerRef } from '@angular/core';
-import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
-import {modal} from "../../../services/modal.service";
-import {backend} from "../../../services/backend.service";
-import {configurationService} from "../../../services/configuration.service";
+import {Component} from '@angular/core';
 import {ObjectActionOutputBeanButton} from "./objectactionoutputbeanbutton";
 
 @Component({
