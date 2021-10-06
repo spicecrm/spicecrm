@@ -81,7 +81,7 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
-import /*embed*/ {Administrationuseraccesslogviewer} from './components/administrationuseraccesslogviewer';
+import /*embed*/ {AdministrationUserAccessLogViewer} from './components/administrationuseraccesslogviewer';
 
 import /*embed*/ {AdministrationLoginRestriction} from './components/administrationloginrestriction';
 import /*embed*/ {AdministrationLoginRestrictionIpAddresses} from './components/administrationloginrestrictionipaddresses';
@@ -155,7 +155,7 @@ import /*embed*/ {AdministrationLoginManagement} from './components/administrati
         AdministrationGeneralSettings,
         AdministrationLanguages,
         AdministrationDefaultPreferences,
-        Administrationuseraccesslogviewer,
+        AdministrationUserAccessLogViewer,
         AdministrationDictRepairConvertDBCharset,
         AdministrationDictRepairConvertDBCharsetModal,
         AdministrationLoginRestriction,

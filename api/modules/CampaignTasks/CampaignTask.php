@@ -1,6 +1,7 @@
 <?php
 namespace SpiceCRM\modules\CampaignTasks;
 
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -9,6 +10,7 @@ use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
+use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 class CampaignTask extends SugarBean
@@ -98,6 +100,8 @@ class CampaignTask extends SugarBean
         $this->save();
 
     }
+
+
 
     function export()
     {
@@ -312,5 +316,75 @@ class CampaignTask extends SugarBean
         }
         return true;
     }
+
+    /**
+     * returns an array of beans linked to the prospect lists
+     * take care as this instantiates beans for each record and thus ight take some time and ressources
+     * defaut limit is 100 records
+     *
+     * @param int $start
+     * @param int $limit
+     * @return array
+     */
+    private function getProspectBeans($start = 0, $limit = 100){
+        $beans = [];
+        $select_query = "SELECT plp.related_id id, plp.related_type module ";
+        $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
+        $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
+        $select_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
+        $select_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%' GROUP BY plp.related_id ";
+
+        $records = $this->db->limitQuery($select_query, $start, $limit);
+        while($record = $this->db->fetchByAssoc($records)){
+            $seed = BeanFactory::getBean($record['module'],$record['id']);
+            if($seed) $beans[] = $seed;
+        }
+
+        return $beans;
+    }
+
+    /**
+     * returns the expected number of targets
+     */
+    public function getTargetCount(){
+        $count_query = "SELECT count(distinct plp.related_id) totalcount ";
+        $count_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
+        $count_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
+        $count_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
+        $count_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
+        $records = $this->db->fetchByAssoc($this->db->query($count_query));
+
+        return $records ? $records['totalcount'] : 0;
+    }
+
+    /**
+     * produces a mailmerge PDF for the campaign
+     *
+     * @return string
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public function mailMerge($start = 0, $limit = 100){
+        /** @var OutputTemplate $outputTemplate */
+        $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
+
+        $style = $outputTemplate->getStyle();
+        $header = html_entity_decode( $outputTemplate->header);
+        $footer = html_entity_decode( $outputTemplate->footer);
+
+        $html = '';
+        foreach ($this->getProspectBeans($start, $limit) as $prospectBean){
+            $html .= $outputTemplate->translateBody($prospectBean, true);
+            $html .= '<div style="page-break-after: always;"></div>';
+        }
+        $html = "<html><head><style>$style</style></head><body><header>$header</header><footer>$footer</footer><main>$html</main></body></html>";
+
+        $class = SpiceConfig::getInstance()->config['outputtemplates']['pdf_handler_class'];
+        if(!$class) $class = '\SpiceCRM\modules\OutputTemplates\handlers\pdf\DomPdfHandler';
+        $pdfHandler = new $class($outputTemplate);
+
+        $pdfHandler->process($html);
+        return $pdfHandler->__toString();
+    }
+
 
 }
