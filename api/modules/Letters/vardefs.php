@@ -20,7 +20,7 @@ $dictionary['Letter'] = [
             'name'    => 'body',
             'type'    => 'blob',
             'dbType'  => 'longblob',
-            'vname'   => 'LBL_EMAIL_BODY',
+            'vname'   => 'LBL_LETTER_BODY',
             'comment' => 'the body of the letter',
         ],
         'description_html' => [
@@ -30,15 +30,14 @@ $dictionary['Letter'] = [
             'source' => 'non-db',
             'comment' => 'body field of the letter'
         ],
-        'status' => [
-            'name'    => 'status',
-            'vname'   => 'LBL_STATUS',
+        'letter_status' => [
+            'name'    => 'letter_status',
+            'vname'   => 'LBL_LETTER_STATUS',
             'type'    => 'enum',
             'len'     => 10,
             'options' => 'dom_letter_status',
             'comment' => 'the status of the letter',
             'default' => 'draft',
-
         ],
 
         // output templates for the letters
