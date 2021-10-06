@@ -37,7 +37,8 @@ $dictionary['Letter'] = [
             'len'     => 10,
             'options' => 'dom_letter_status',
             'comment' => 'the status of the letter',
-            'default' => 'draft'
+            'default' => 'draft',
+
         ],
 
         // output templates for the letters
