@@ -15,6 +15,7 @@ import /*embed*/ {OutputTemplatesEditor} from "./components/outputtemplatesedito
 import /*embed*/ {OutputTemplatesPreview} from "./components/outputtemplatespreview";
 import /*embed*/ {OutputTemplatesPreviewSelector} from "./components/outputtemplatespreviewselector";
 import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
+import /*embed*/ {ObjectActionLiveCompileBeanButton} from "./components/objectactionlivecompilebeanbutton";
 import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
@@ -38,7 +39,8 @@ import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtempla
         ObjectActionOutputBeanModalEmailContent,
         ObjectActionOutputBeanModal,
         fieldOutputTemplates,
-        OutputTemplatesVariableHelper
+        OutputTemplatesVariableHelper,
+        ObjectActionLiveCompileBeanButton
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent

@@ -12,7 +12,7 @@ import {configurationService} from "../../../services/configuration.service";
     selector: 'object-action-output-bean-button',
     templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanbutton.html'
 })
-export class ObjectActionOutputBeanButton {
+export class ObjectActionMarkSentBeanButton {
 
     public templates: any[] = [];
     public forcedFormat: 'html'|'pdf';
@@ -20,6 +20,10 @@ export class ObjectActionOutputBeanButton {
     public noDownload: boolean;
     public handBack: EventEmitter<string>;
     public buttonText: string;
+    /**
+     * holds the action config
+     */
+    public actionconfig: {modal_actionset: string};
 
     constructor(
         protected language: language,
@@ -65,7 +69,7 @@ export class ObjectActionOutputBeanButton {
     }
 
 
-    public openOutput() {
+    public openOutput(liveCompile?, forcedFormat?) {
         if (this.templates.length > 0) {
             // sort the templates
             this.templates.sort((a, b) => a.name > b.name ? 1 : -1);
@@ -76,6 +80,9 @@ export class ObjectActionOutputBeanButton {
                 outputModal.instance.modalTitle = this.modalTitle;
                 outputModal.instance.noDownload = this.noDownload;
                 outputModal.instance.handBack = this.handBack;
+                outputModal.instance.liveCompile = !!liveCompile;
+                outputModal.instance.forcedFormat = forcedFormat;
+                outputModal.instance.customActionsetId = this.actionconfig.modal_actionset;
                 outputModal.instance.buttonText = this.buttonText;
             });
         } else {
