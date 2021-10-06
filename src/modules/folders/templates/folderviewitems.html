@@ -15,7 +15,10 @@
                 <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>
             </div>
             <div class="slds-col_bump-left">
-                <button  class="slds-button slds-button--icon" title="delete folder" >
+                <button  class="slds-button slds-button--icon" title="Edit Name" (click)="editFolderName()">
+                    <system-button-icon [icon]="'edit'"></system-button-icon>
+                </button>
+                <button  class="slds-button slds-button--icon" title="Add Folder" (click)="onFolderAdd.emit(item.id)">
                     <system-button-icon [icon]="'new'"></system-button-icon>
                 </button>
                 <button  class="slds-button slds-button--icon" title="fffdelete folder" (click)="deleteFolder()" >
