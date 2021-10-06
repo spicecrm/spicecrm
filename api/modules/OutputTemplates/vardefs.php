@@ -156,6 +156,13 @@ $dictionary['OutputTemplate'] = [
             'type' => 'varchar',
             'len' => '255',
             'comment' => 'Name of the document, in case it published as file (to foreign persons).'
+        ],
+        'campaigntasks' => [
+            'name' => 'campaigntasks',
+            'type' => 'link',
+            'relationship' => 'campaigntask_output_template',
+            'source' => 'non-db',
+            'module' => 'CampaignTasks'
         ]
     ],
     'indices' => [
@@ -171,8 +178,5 @@ $dictionary['OutputTemplate'] = [
 
     ],
 ];
-//BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
-global $dictionary;
-//END
 
 VardefManager::createVardef('OutputTemplates','OutputTemplate', ['default', 'assignable']);
