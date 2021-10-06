@@ -11,7 +11,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceSocket\SpiceSocket;
+use SpiceCRM\KREST\handlers\ModuleHandler;
 
 class OutputTemplatesController
 {
@@ -111,16 +114,21 @@ class OutputTemplatesController
 
         if (is_array($params['bean_data'])) {
 
-            $bean = BeanFactory::getBean($outputTemplate->module_name);
-
-            foreach ($params['bean_data'] as $field => $value) $bean->$field = $value;
-
-            $bean->save(false, false);
+            $moduleHandler = new ModuleHandler();
+            $moduleHandler->add_bean($outputTemplate->module_name, $args['bean_id'], $params['bean_data']);
         }
 
         $file = $outputTemplate->getPdfContent();
 
+        // rollback all transactions to prevent saving the temporary data we got for the pdf content
         $db->transactionRollback();
+        SpiceFTSHandler::getInstance()->rollbackTransaction();
+        SpiceSocket::getInstance()->rollbackTransaction();
+
+        // start new transactions again for further processing
+        $db->transactionStart();
+        SpiceFTSHandler::getInstance()->startTransaction();
+        SpiceSocket::getInstance()->startTransaction();
 
         return $res->withJson(['content' => base64_encode($file)]);
     }
