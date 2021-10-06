@@ -65,7 +65,10 @@ export class ServiceDocSignatureModal {
     public handBack: EventEmitter<any>;
     public buttonText: string;
     private contentForHandBack: string;
-
+    /**
+     * if true send the bean data to the backend to handle live compiling the template content
+     */
+    public liveCompile: boolean = false;
     /**
      * the window itsel .. resp the containing modal container
      */
@@ -219,7 +222,8 @@ export class ServiceDocSignatureModal {
 
         switch (this.selected_format) {
             case 'pdf':
-                const body = {bean_data: this.model.data};
+                const body = {bean_data: this.liveCompile ? this.model.data : null};
+
                 this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
                         let blob = this.datatoBlob( atob( pdf.content ) );
