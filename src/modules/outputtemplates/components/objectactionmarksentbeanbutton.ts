@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, ViewContainerRef} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
@@ -12,15 +12,17 @@ import {modal} from "../../../services/modal.service";
 import {configurationService} from "../../../services/configuration.service";
 import {toast} from "../../../services/toast.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-action-mark-sent-bean-button',
     templateUrl: './src/modules/outputtemplates/templates/objectactionmarksentbeanbutton.html',
     providers: [modelattachments]
 })
-export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton {
+export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton implements OnDestroy {
 
     private selectedTemplate: {id: string, name: string};
+    private subscription = new Subscription();
 
     constructor(
         protected language: language,
@@ -38,11 +40,13 @@ export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton
     }
 
     private subscribeToTemplateIdChange() {
-        this.broadcast.message$.subscribe(res => {
-            if (res.messagetype != 'outputtemplate.selected.change') return;
+        this.subscription.add(
+            this.broadcast.message$.subscribe(res => {
+                if (res.messagetype != 'outputtemplate.selected.change') return;
 
-            this.selectedTemplate = res.messagedata;
-        });
+                this.selectedTemplate = res.messagedata;
+            })
+        );
     }
 
 
@@ -57,5 +61,9 @@ export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton
                 this.toast.sendToast('');
             }
         });
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
