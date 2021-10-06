@@ -50,6 +50,20 @@ class SpiceSocket
         foreach($this->NotificationsBuffer as $event){
             $this->emit($event['namespace'],$event['event'],$event['room'],$event['data']);
         }
+
+        // reset the notification buffer
+        $this->NotificationsBuffer = [];
+    }
+
+    /**
+     * resets the Notification Buffer and prevents any notfications being commited from the transaction
+     */
+    public function rollbackTransaction(){
+        // set the transaction to false
+        $this->inTransaction= false;
+
+        // reset the notification buffer
+        $this->NotificationsBuffer = [];
     }
 
     /**
