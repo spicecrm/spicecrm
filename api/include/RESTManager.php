@@ -51,7 +51,7 @@ use SpiceCRM\includes\Middleware\ModuleRouteMiddleware;
 use SpiceCRM\includes\Middleware\RequireAuthenticationMiddleware;
 use SpiceCRM\includes\Middleware\TransactionMiddleware;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 use SpiceCRM\includes\SpiceSwagger\SpiceSwaggerGenerator;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
