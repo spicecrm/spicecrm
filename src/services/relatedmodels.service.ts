@@ -96,7 +96,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * prevent saving the relationship entry to the backend, instead save the data in the model link object
      */
-    public saveToLinkOnly = true;
+    public saveToLinkOnly = false;
 
     /**
      * sort parameters
