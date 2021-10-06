@@ -11,6 +11,7 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ObjectActionOutputBeanModalEmailContent} from "./objectactionoutputbeanmodalemailcontent";
+import {broadcast} from "../../../services/broadcast.service";
 
 @Component({
     selector: 'object-action-output-bean-modal',
@@ -134,6 +135,7 @@ export class ObjectActionOutputBeanModal {
         public view: view,
         public backend: backend,
         public sanitizer: DomSanitizer,
+        public broadcast: broadcast,
         public viewContainerRef: ViewContainerRef
     ) {
         // get the fieldset of the email area
@@ -181,6 +183,7 @@ export class ObjectActionOutputBeanModal {
 
     set selected_template(val) {
         this._selected_template = val;
+        this.broadcast.broadcastMessage('outputtemplate.selected.change', val);
         this.rendertemplate();
     }
 
