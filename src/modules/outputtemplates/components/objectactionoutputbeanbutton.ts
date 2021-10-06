@@ -12,7 +12,7 @@ import {configurationService} from "../../../services/configuration.service";
     selector: 'object-action-output-bean-button',
     templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanbutton.html'
 })
-export class ObjectActionMarkSentBeanButton {
+export class ObjectActionOutputBeanButton {
 
     public templates: any[] = [];
     public forcedFormat: 'html'|'pdf';
