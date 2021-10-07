@@ -20,6 +20,7 @@ import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/ob
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
 import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
+import /*embed*/ {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentbeanbutton";
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtempla
         ObjectActionOutputBeanModal,
         fieldOutputTemplates,
         OutputTemplatesVariableHelper,
-        ObjectActionLiveCompileBeanButton
+        ObjectActionLiveCompileBeanButton,
+        ObjectActionMarkSentBeanButton
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent
