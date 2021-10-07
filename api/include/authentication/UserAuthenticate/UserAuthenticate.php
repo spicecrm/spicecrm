@@ -14,6 +14,7 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
@@ -157,16 +158,17 @@ class UserAuthenticate
      */
     public function get_modules_acl()
     {
-        global $moduleList;
+        $globalModuleList = SpiceModules::getInstance()->getModuleList();
 
         $actions = ['list', 'view', 'edit'];
 
         $retModules = [];
 
-        foreach (SpiceACL::getInstance()->disabledModuleList($moduleList) as $disabledModule)
-            unset($moduleList[$disabledModule]);
+        foreach (SpiceACL::getInstance()->disabledModuleList($globalModuleList) as $disabledModule) {
+            SpiceModules::getInstance()->unsetModule($disabledModule);
+        }
 
-        foreach ($moduleList as $module) {
+        foreach ($globalModuleList as $module) {
             $retModules[$module]['acl']['enabled'] = SpiceACL::getInstance()->moduleSupportsACL($module);
             if ($retModules[$module]['acl']['enabled']) {
                 foreach ($actions as $action)

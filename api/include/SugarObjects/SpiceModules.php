@@ -163,6 +163,15 @@ class SpiceModules
     }
 
     /**
+     * Removes a module from the modules list.
+     *
+     * @param string $module
+     */
+    public function unsetModule(string $module): void {
+        unset($this->moduleList[$module]);
+    }
+
+    /**
      * Sets the values for the global variables.
      * Left for backwards compatibility.
      */
