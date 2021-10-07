@@ -3,17 +3,9 @@ namespace SpiceCRM\includes\utils;
 
 use SpiceCRM\modules\Roles\Role;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use TabController;
 
 class SecurityUtils
 {
-    public static function queryModuleAccessList(&$user) {
-        $controller = new TabController();
-        $tabArray = $controller->get_tabs($user);
-
-        return $tabArray[0];
-    }
-
     public static function queryUserHasRoles($userId) {
         $role = new Role();
 
