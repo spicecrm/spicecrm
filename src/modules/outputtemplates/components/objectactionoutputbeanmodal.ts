@@ -11,12 +11,12 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ObjectActionOutputBeanModalEmailContent} from "./objectactionoutputbeanmodalemailcontent";
-import {broadcast} from "../../../services/broadcast.service";
+import {outputModalService} from "../services/outputmodal.service";
 
 @Component({
     selector: 'object-action-output-bean-modal',
     templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodal.html',
-    providers: [view],
+    providers: [view, outputModalService],
     animations: [
         trigger('slideInOut', [
             state('open', style({width: '50%'})),
@@ -134,8 +134,8 @@ export class ObjectActionOutputBeanModal {
         public modal: modal,
         public view: view,
         public backend: backend,
+        public outputModalService: outputModalService,
         public sanitizer: DomSanitizer,
-        public broadcast: broadcast,
         public viewContainerRef: ViewContainerRef
     ) {
         // get the fieldset of the email area
@@ -183,7 +183,7 @@ export class ObjectActionOutputBeanModal {
 
     set selected_template(val) {
         this._selected_template = val;
-        this.broadcast.broadcastMessage('outputtemplate.selected.change', val);
+        this.outputModalService.selectedTemplate = val;
         this.rendertemplate();
     }
 
@@ -257,6 +257,9 @@ export class ObjectActionOutputBeanModal {
     }
 
     public close() {
+        this.outputModalService.modalResponse$.next('close');
+        this.outputModalService.modalResponse$.complete();
+
         this.self.destroy();
     }
 
@@ -359,5 +362,14 @@ export class ObjectActionOutputBeanModal {
      */
     public sendEmail() {
         this.emailContent.sendEmail();
+    }
+
+    public handleAction(action: {close: boolean, name: string}) {
+
+        this.outputModalService.modalResponse$.next(action.name);
+
+        if (!!action.close) {
+            this.close();
+        }
     }
 }
