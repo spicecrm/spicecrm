@@ -187,7 +187,7 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
-        global $moduleList, $dictionary;
+        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
@@ -201,7 +201,7 @@ class AdminController
 
         $repairedTables = [];
         $sql = '';
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
                 $sql .= $db->repairTable($focus, $execute);
@@ -241,7 +241,7 @@ class AdminController
      * @throws \Exception
      */
     public function buildSQLArray(Request $req, Response $res, array $args): Response {
-        global $moduleList, $dictionary;
+        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
@@ -256,13 +256,7 @@ class AdminController
         $repairedTables = [];
         $sql = '';
 
-        // moduleList might be empty at that time. Make a full reload.
-        // Grabbing from session won't be enough
-        if(empty($moduleList)){
-            SpiceModules::getInstance()->loadModules(true);
-        }
-
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
                 $sql .= $db->repairTable($focus, $execute);
@@ -521,9 +515,7 @@ class AdminController
      */
     private function merge_files($path, $name, $filter = '')
     {
-        global $moduleList;
-
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $extension = "<?php \n //WARNING: The contents of this file are auto-generated\n";
             $extpath = "modules/$module/$path";
             $module_install = 'custom/Extension/' . $extpath;
