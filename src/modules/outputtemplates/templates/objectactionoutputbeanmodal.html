@@ -57,7 +57,7 @@
                 <button *ngIf="!expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="create()">{{buttonText}}</button>
                 <button *ngIf="expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SENDEMAIL')}}</button>
             </div>
-            <object-action-container containerclass="slds-button-group" [actionset]="customActionsetId" class="slds-m-left--x-small" style="display: inline-flex;"></object-action-container>
+            <object-action-container (actionemitter)="handleAction($event)" containerclass="slds-button-group" [actionset]="customActionsetId" class="slds-m-left--x-small" style="display: inline-flex;"></object-action-container>
         </div>
     </system-modal-footer>
 </system-modal>

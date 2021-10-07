@@ -68,8 +68,7 @@ export class ObjectActionOutputBeanButton {
         }
     }
 
-
-    public openOutput(liveCompile?, forcedFormat?) {
+    public openOutput() {
         if (this.templates.length > 0) {
             // sort the templates
             this.templates.sort((a, b) => a.name > b.name ? 1 : -1);
@@ -80,8 +79,6 @@ export class ObjectActionOutputBeanButton {
                 outputModal.instance.modalTitle = this.modalTitle;
                 outputModal.instance.noDownload = this.noDownload;
                 outputModal.instance.handBack = this.handBack;
-                outputModal.instance.liveCompile = !!liveCompile;
-                outputModal.instance.forcedFormat = forcedFormat;
                 outputModal.instance.customActionsetId = this.actionconfig.modal_actionset;
                 outputModal.instance.buttonText = this.buttonText;
             });
