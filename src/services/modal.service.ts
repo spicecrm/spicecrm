@@ -186,12 +186,12 @@ export class modal {
     /**
      * a shortcut to prompt for a confirm dialog
      *
-     * @param text
-     * @param headertext
+     * @param textLabel
+     * @param headertextLabel
      * @param theme
      */
-    public confirm(text: string, headertext: string = null, theme: string = null): Observable<any> {
-        return this.prompt('confirm', text, headertext, theme);
+    public confirm(textLabel: string, headertextLabel: string = null, theme: string = null): Observable<any> {
+        return this.prompt('confirm', textLabel, headertextLabel, theme);
     }
 
     /**

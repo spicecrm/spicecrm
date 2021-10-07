@@ -1,7 +1,7 @@
 /**
  * @module ModuleBonusPrograms
  */
-import {Component} from '@angular/core';
+import {Component, SkipSelf} from '@angular/core';
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
@@ -16,11 +16,13 @@ import {toast} from "../../../services/toast.service";
  * a button to display an extend modal for the bonus card
  */
 @Component({
-    templateUrl: './src/modules/bonusprograms/templates/bonuscardextendbutton.html'
+    templateUrl: './src/modules/bonusprograms/templates/bonuscardextendbutton.html',
+    providers: [model]
 })
 export class BonusCardExtendButton {
 
     constructor(public model: model,
+                @SkipSelf() public bonusCardModel: model,
                 public view: view,
                 public language: language,
                 public metadata: metadata,
@@ -32,18 +34,31 @@ export class BonusCardExtendButton {
     }
 
     public execute() {
+
         const loading = this.modal.await(this.language.getLabel('LBL_CALCULATING'));
-        this.backend.getRequest(`module/BonusPrograms/${this.model.getField('bonusprogram_id')}/extensionvaliditydate`).subscribe(res => {
+
+        const url = `module/BonusPrograms/${this.model.getField('bonusprogram_id')}/extensionvaliditydate`;
+
+        this.backend.getRequest(url).subscribe(res => {
 
             loading.emit();
+
+            if (!res.success) return;
 
             if (!res.extendable) {
                 this.toast.sendToast(this.language.getLabel('MSG_EXTENDING_NOT_ALLOWED'));
             } else {
-                this.modal.confirm('').subscribe(answer => {
+                const text = `${this.language.getLabel('MSG_EXTENSION_DATE')} ${res.date_start} ${res.date_end}`;
+                this.modal.confirm(text).subscribe(answer => {
                     if (!answer) return;
 
-                    // todo add new card an its extension
+                    this.model.module = 'BonusCardExtensions';
+                    this.model.initialize();
+                    this.model.setFields({
+                        date_created: res.date_start,
+                        valid_until: res.date_end,
+                        bonuscard_id: this.bonusCardModel.id
+                    });
                 });
             }
         });
