@@ -12,6 +12,7 @@ import {backend} from "../../../services/backend.service";
 import {trigger, transition, animate, style, state} from '@angular/animations';
 
 import {ObjectActionOutputBeanModal} from "../../../modules/outputtemplates/components/objectactionoutputbeanmodal";
+import {broadcast} from "../../../services/broadcast.service";
 
 @Component({
     selector: 'object-action-output-bean-modal',
@@ -29,9 +30,10 @@ export class DocumentCreateRevisionModal extends ObjectActionOutputBeanModal {
         public view: view,
         public backend: backend,
         public sanitizer: DomSanitizer,
+        public broadcast: broadcast,
         public viewContainerRef: ViewContainerRef
     ) {
-        super(language, model, metadata, modal, view, backend, sanitizer, viewContainerRef);
+        super(language, model, metadata, modal, view, backend, sanitizer, broadcast, viewContainerRef);
     }
 
     public create() {
