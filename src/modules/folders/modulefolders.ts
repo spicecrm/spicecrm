@@ -13,15 +13,12 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {FolderView} from "./components/folderview";
 import /*embed*/ {FolderViewTree} from "./components/folderviewtree";
 import /*embed*/ {FolderViewTreeItems} from "./components/folderviewtreeitems";
-import {DragDropModule} from "@angular/cdk/drag-drop";
+import /*embed*/ {DragDropModule} from "@angular/cdk/drag-drop";
+import /*embed*/ {FolderObjectListView} from './components/folderobjectlistview';
 
-
-
-
-@NgModule({
+@NgModule( {
     imports: [
         CommonModule,
         FormsModule,
@@ -31,16 +28,15 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         SystemComponents,
         DirectivesModule,
         DragDropModule,
-
     ],
     declarations: [
-        FolderView,
         FolderViewTree,
         FolderViewTreeItems,
-
+        FolderObjectListView
+    ],
+    exports: [
+        FolderViewTree
     ],
     providers: [userpreferences]
 })
-export class ModuleFolders {
-
-}
+export class ModuleFolders { }
