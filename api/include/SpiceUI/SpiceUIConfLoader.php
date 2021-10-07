@@ -360,14 +360,11 @@ class SpiceUIConfLoader
         };
 
         // process
-        $moduleList = SpiceModules::getInstance()->getModuleList();
-        if (isset($moduleList)) {
-            foreach ($sysmodules as $sysmodule) {
-                if (!in_array($sysmodule, $moduleList)) {
-                    $delPks = ['module' => $sysmodule];
-                    if(!$db->deleteQuery('sysmodules', $delPks)){
-                        LoggerManager::getLogger()->fatal('error deleting packages '.$db->lastError());
-                    }
+        foreach ($sysmodules as $sysmodule) {
+            if (!in_array($sysmodule, SpiceModules::getInstance()->getModuleList())) {
+                $delPks = ['module' => $sysmodule];
+                if(!$db->deleteQuery('sysmodules', $delPks)){
+                    LoggerManager::getLogger()->fatal('error deleting packages '.$db->lastError());
                 }
             }
         }
