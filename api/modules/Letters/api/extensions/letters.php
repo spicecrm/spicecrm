@@ -17,19 +17,25 @@ $RESTManager->registerExtension('emails', '1.0');
 
 $routes = [
     [
-        'method' => 'get',
+        'method' => 'post',
         'route' => '/module/Letters/{id}/marksent/{template_id}',
         'class' => LettersController::class,
         'function' => 'markAsSent',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters' => [
-            'attachmentId' => [
+            'id' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
-                'description' => 'The attachment ID',
+                'description' => 'the id of the letter',
             ],
+            'template_id' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'description' => 'the id of the template',
+            ]
         ],
     ],
 ];
