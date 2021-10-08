@@ -37,6 +37,7 @@
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -91,8 +92,8 @@ class UnifiedSearchAdvanced {
 
 		require_once 'include/ListView/ListViewSmarty.php';
 
-		global $modListHeader, $beanList, $beanFiles, $current_language, $app_strings, $mod_strings;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+		global $modListHeader, $beanFiles, $current_language, $app_strings, $mod_strings;
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$home_mod_strings = return_module_language($current_language, 'Home');
 
 		$this->query_string = DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($this->query_string, 'UNIFIED_SEARCH'))));
@@ -105,7 +106,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	            {
                     if (isset($unified_search_modules_display[$key]) && !empty($unified_search_modules_display[$key]['visible']))
                     {
-                        $modules_to_search[$key] = $beanList[$key];
+                        $modules_to_search[$key] = SpiceModules::getInstance()->getBeanList()[$key];
                     }
 	            }
 			}
@@ -120,13 +121,13 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 				// use user's previous selections
 			    foreach ( $users_modules as $key => $value ) {
 			    	if (isset($unified_search_modules_display[$key]) && !empty($unified_search_modules_display[$key]['visible'])) {
-		            	$modules_to_search[$key] = $beanList[$key];
+		            	$modules_to_search[$key] = SpiceModules::getInstance()->getBeanList()[$key];
 		        	}
 			    }
 			} else {
 				foreach($unified_search_modules_display as $module=>$data) {
 				    if (!empty($data['visible']) ) {
-				        $modules_to_search[$module] = $beanList[$module];
+				        $modules_to_search[$module] = SpiceModules::getInstance()->getBeanList()[$module];
 				    }
 				}
 			}
@@ -298,13 +299,11 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
 	function buildCache()
 	{
-
-		global $beanList, $beanFiles, $dictionary;
+		global $beanFiles, $dictionary;
 
 		$supported_modules = [];
 
-		foreach($beanList as $moduleName=>$beanName)
-		{
+		foreach (SpiceModules::getInstance()->getBeanList() as $moduleName=>$beanName) {
 			if (!isset($beanFiles[$beanName]))
 				continue;
 

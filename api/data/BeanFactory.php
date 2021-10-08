@@ -214,12 +214,12 @@ class BeanFactory {
      */
     public static function registerBean($module, $bean, $id=false)
     {
-        global $beanList;
-
         $config = SpiceConfig::getInstance()->config;
         $cacheEnabled = ($config['system']['module_cache_enabled'] ?? false) == 1;
 
-        if (!$cacheEnabled || empty($beanList[$module]))  return false;
+        if (!$cacheEnabled || empty(SpiceModules::getInstance()->getBeanList()[$module])) {
+            return false;
+        }
 
         if (!isset(self::$loadedBeans[$module]))
             self::$loadedBeans[$module] = [];

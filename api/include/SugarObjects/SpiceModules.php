@@ -125,6 +125,10 @@ class SpiceModules
         return $this->beanList;
     }
 
+    public function setBeanList(array $beanList): void {
+        $this->beanList = $beanList;
+    }
+
     /**
      * A getter for the bean files.
      *
