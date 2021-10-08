@@ -14,7 +14,7 @@ import {language} from '../../services/language.service';
     selector: 'componensetmanager-add-dialog',
     templateUrl: './src/workbench/templates/componentsetmanageradddialog.html'
 })
-export class ComponentsetManagerAddDialog  {
+export class ComponentsetManagerAddDialog {
     @Input() private module: string = '';
     @Input() private parent: string = '';
 
@@ -22,19 +22,57 @@ export class ComponentsetManagerAddDialog  {
     private systemmodule: string = '';
     private systemmodules: any[] = [];
     private showDeprecatedWarning: boolean = false;
+
+    /**
+     * reference to the modal self
+     */
     public self;
+
+    /**
+     * a text string to filter modules
+     *
+     * @private
+     */
+    private moduleFilter: string;
+
+    /**
+     * a text string for component filter
+     *
+     * @private
+     */
+    private componentFilter: string;
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
         this.systemmodules = this.metadata.getSystemModules();
     }
 
+    /**
+     * getter function for the components
+     */
     get components() {
-        return this.metadata.getSystemComponents(this.systemmodule);
+        if (!this.componentFilter) return this.metadata.getSystemComponents(this.systemmodule);
+
+        return this.metadata.getSystemComponents(this.systemmodule).filter(c => c.component.toLowerCase().indexOf(this.componentFilter.toLowerCase()) >= 0);
+
     }
 
+    /**
+     * getter for the modules filtered by the searchterm
+     */
+    get filteredmodules() {
+        if (!this.moduleFilter) return this.systemmodules;
+
+        return this.systemmodules.filter(m => m.module.toLowerCase().indexOf(this.moduleFilter.toLowerCase()) >= 0);
+    }
+
+    /**
+     * gets teh component name and adds a deprecated info
+     * @param component
+     * @private
+     */
     private componentName(component) {
-        if(component) {
-            if(component.deprecated == '1') {
+        if (component) {
+            if (component.deprecated == '1') {
                 return component.component + ' | dep.';
             } else {
                 return component.component;
@@ -44,14 +82,26 @@ export class ComponentsetManagerAddDialog  {
 
     }
 
+    /**
+     * closes the dialog
+     * @private
+     */
     private cancelDialog() {
         this.self.destroy();
     }
 
+    /**
+     * reacts to the escape
+     * @private
+     */
     private onModalEscX() {
         this.cancelDialog();
     }
 
+    /**
+     * adds the component
+     * @private
+     */
     private add() {
         this.metadata.addComponentToComponentset(this.modelutilities.generateGuid(), this.parent, this.component);
         this.self.destroy();
@@ -59,7 +109,7 @@ export class ComponentsetManagerAddDialog  {
 
     private checkDep(event) {
         let object = this.components.find(x => x.component === event);
-        if(object.deprecated == '1') {
+        if (object.deprecated == '1') {
             this.showDeprecatedWarning = true;
         } else {
             this.showDeprecatedWarning = false;
