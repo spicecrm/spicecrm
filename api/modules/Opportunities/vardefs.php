@@ -78,7 +78,6 @@ $dictionary['Opportunity'] = ['table' => 'opportunities', 'audited' => true, 'un
             'unified_search' => true,
             'required' => true,
             'importable' => 'required',
-            'required' => true,
         ],
         'account_id' => [
             'name' => 'account_id',
