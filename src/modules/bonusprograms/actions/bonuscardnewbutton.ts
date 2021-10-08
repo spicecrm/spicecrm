@@ -8,6 +8,7 @@ import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "bonus-cards-new-button",
@@ -26,8 +27,9 @@ export class BonusCardNewButton implements OnInit {
                 public modal: modal,
                 public toast: toast,
                 public backend: backend,
-                public model: model, @SkipSelf()
-                public parentModel: model) {
+                public model: model,
+                @SkipSelf() public parentModel: model,
+                public modelUtilities: modelutilities) {
 
     }
 
@@ -47,7 +49,9 @@ export class BonusCardNewButton implements OnInit {
             program = await this.promptProgramSelection();
         }
 
-        this.addNew(program);
+        const dates: {date_start: string, date_end: string} = await this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`).toPromise();
+
+        this.addNew({...program, ...dates});
 
     }
 
@@ -97,7 +101,7 @@ export class BonusCardNewButton implements OnInit {
     /**
      * add a new card with the program
      */
-    public addNew(program: { id: string, name: string }) {
+    public addNew(program: { id: string, name: string, purchase_date: string, valid_until: string }) {
         this.model.id = undefined;
         this.model.initialize();
         let presets;
@@ -106,6 +110,8 @@ export class BonusCardNewButton implements OnInit {
             presets = {
                 bonusprogram_id: program.id,
                 bonusprogram_name: program.name,
+                purchase_date: this.modelUtilities.backend2spice(this.model.module, 'purchase_date', program.purchase_date),
+                valid_until: this.modelUtilities.backend2spice(this.model.module, 'valid_until', program.valid_until),
             };
         }
 
