@@ -9,15 +9,18 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
-import {fieldDateTimeSpan} from "../../../objectfields/components/fielddatetimespan";
+import {fieldDateSpan} from "../../../objectfields/components/fielddatespan";
+
+/** @ignore */
+declare var moment;
 
 /**
- * a field to render a dropdown
+ * a compo date field for validity
  */
 @Component({
     templateUrl: './src/modules/bonusprograms/templates/bonuscardvaliditydatefield.html'
 })
-export class BonusCardValidityDateField extends fieldDateTimeSpan {
+export class BonusCardValidityDateField extends fieldDateSpan {
 
     constructor(public model: model,
                 public view: view,
@@ -65,11 +68,10 @@ export class BonusCardValidityDateField extends fieldDateTimeSpan {
 
         if (!!this.value) return;
 
-        this.backend.getRequest(`module/BonusPrograms/${programId}/validitydate`).subscribe(res => {
+        this.backend.getRequest(`module/BonusPrograms/${programId}/validitydates`).subscribe(res => {
 
-            if (!res) return;
-
-            this.value = this.modelUtilities.backend2spice(this.model.module, this.fieldname, res);
+            this.startDate = this.modelUtilities.backend2spice(this.model.module, 'purchase_date', res.date_start);
+            this.endDate = this.modelUtilities.backend2spice(this.model.module, 'valid_until', res.date_end);
         });
     }
 }

@@ -4,7 +4,6 @@
 import {Component, SkipSelf} from '@angular/core';
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
-import {view} from "../../../services/view.service";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {userpreferences} from "../../../services/userpreferences.service";
@@ -25,9 +24,8 @@ declare var moment;
 })
 export class BonusCardExtendButton {
 
-    constructor(public model: model,
+    constructor(public extensionModel: model,
                 @SkipSelf() public bonusCardModel: model,
-                public view: view,
                 public language: language,
                 public metadata: metadata,
                 public modal: modal,
@@ -46,25 +44,26 @@ export class BonusCardExtendButton {
 
         const loading = this.modal.await(this.language.getLabel('LBL_CALCULATING'));
 
-        const url = `module/BonusPrograms/${this.model.getField('bonusprogram_id')}/extensionvaliditydate`;
+        const url = `module/BonusPrograms/${this.bonusCardModel.getField('bonusprogram_id')}/extensionvaliditydate`;
 
         this.backend.getRequest(url).subscribe(async (res) => {
 
-            loading.next(); loading.complete();
+            loading.next();
+            loading.complete();
 
             if (!res.extendable) {
                 this.toast.sendToast(this.language.getLabel('MSG_EXTENDING_NOT_ALLOWED'));
             } else {
-                let newUntilDate = !res.date ? new moment() : this.modelUtilities.backend2spice('BonusCards', 'valid_until', res.date);
-                const untilDate = this.bonusCardModel.data.valid_until.format(this.userpreferences.getDateFormat());
+                let newUntilDate = !res.date ? new moment().add('1', 'years') : this.modelUtilities.backend2spice('BonusCards', 'valid_until', res.date);
+                const untilDate = (this.bonusCardModel.data.valid_until).format(this.userpreferences.getDateFormat());
                 const purchaseDate = this.bonusCardModel.data.purchase_date.format(this.userpreferences.getDateFormat());
 
-                let text = `${this.language.getLabel('LBL_PURCHASE_DATE')} ${purchaseDate} ${this.language.getLabel('LBL_VALID_UNTIL')} ${untilDate}`;
+                let text = `${this.language.getLabel('LBL_PURCHASE_DATE')} ${purchaseDate} ${this.language.getLabel('LBL_VALID_UNTIL')} ${untilDate} \n ${this.language.getLabel('LBL_NEW_VALID_UNTIL_DATE')}`;
 
                 let confirmAnswer;
 
                 if (res.editable) {
-                    confirmAnswer = await this.modal.prompt('input_date', text,'LBL_EXTEND', 'shade', newUntilDate).toPromise();
+                    confirmAnswer = await this.modal.prompt('input_date', text, 'LBL_EXTEND', 'shade', newUntilDate).toPromise();
                     newUntilDate = confirmAnswer;
                 } else {
                     text += ` ${this.language.getLabel('LBL_NEW_VALID_UNTIL_DATE')} ${newUntilDate.format(this.userpreferences.getDateFormat())}`;
@@ -77,13 +76,13 @@ export class BonusCardExtendButton {
                 this.bonusCardModel.setField('valid_until', newUntilDate);
                 this.bonusCardModel.save();
 
-                this.model.module = 'BonusCardExtensions';
-                this.model.initialize();
-                this.model.setFields({
+                this.extensionModel.module = 'BonusCardExtensions';
+                this.extensionModel.initialize();
+                this.extensionModel.setFields({
                     valid_until: newUntilDate,
                     bonuscard_id: this.bonusCardModel.id
                 });
-                this.model.save();
+                this.extensionModel.save();
             }
         });
     }
