@@ -50,7 +50,6 @@ class SpiceNotes {
      * @return false|string
      */
     public static function getQuickNotesForBean($beanName, $beanId,$lastN = 10) {
-        global  $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
         $quicknotes = [];
