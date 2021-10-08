@@ -597,7 +597,6 @@ $app_list_strings = [
             'Sending' => 'Sending',
         ],
     'campaign_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
@@ -609,11 +608,11 @@ $app_list_strings = [
         'NewsLetter' => 'Newsletter',
     ],
     'campaigntask_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
         'Email' => 'Email',
+        'mailmerge' => 'Mail Merge',
         'Feedback' => 'Feedback',
         'Print' => 'Print',
         'Web' => 'Web',
