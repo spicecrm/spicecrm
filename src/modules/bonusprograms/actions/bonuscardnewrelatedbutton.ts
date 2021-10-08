@@ -40,7 +40,7 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
     /**
      * add a new card with the program
      */
-    public addNew(program: { id: string, name: string }) {
+    public addNew(program: { id: string, name: string, date_end: string, date_start: string }) {
 
         this.model.id = undefined;
         let presets;
@@ -49,6 +49,8 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
             presets = {
                 bonusprogram_id: program.id,
                 bonusprogram_name: program.name,
+                purchase_date: this.modelUtilities.backend2spice(this.model.module, 'purchase_date', program.date_start),
+                valid_until: this.modelUtilities.backend2spice(this.model.module, 'valid_until', program.date_end),
             };
         }
 

@@ -101,7 +101,7 @@ export class BonusCardNewButton implements OnInit {
     /**
      * add a new card with the program
      */
-    public addNew(program: { id: string, name: string, purchase_date: string, valid_until: string }) {
+    public addNew(program: { id: string, name: string, date_start: string, date_end: string }) {
         this.model.id = undefined;
         this.model.initialize();
         let presets;
@@ -110,8 +110,8 @@ export class BonusCardNewButton implements OnInit {
             presets = {
                 bonusprogram_id: program.id,
                 bonusprogram_name: program.name,
-                purchase_date: this.modelUtilities.backend2spice(this.model.module, 'purchase_date', program.purchase_date),
-                valid_until: this.modelUtilities.backend2spice(this.model.module, 'valid_until', program.valid_until),
+                purchase_date: this.modelUtilities.backend2spice(this.model.module, 'purchase_date', program.date_start),
+                valid_until: this.modelUtilities.backend2spice(this.model.module, 'valid_until', program.date_end),
             };
         }
 
