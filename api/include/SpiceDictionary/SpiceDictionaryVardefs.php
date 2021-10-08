@@ -34,6 +34,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -449,15 +450,14 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
      * @return array|void
      */
     public static function loadRelationshipsFromDictionary(){
-        global $beanList, $dictionary, $buildingRelCache;
+        global $dictionary, $buildingRelCache;
 
         if ($buildingRelCache)
             return;
         $buildingRelCache = true;
 
         //Reload ALL the module vardefs....
-        foreach($beanList as $moduleName => $beanName)
-        {
+        foreach (SpiceModules::getInstance()->getBeanList() as $moduleName => $beanName) {
             VardefManager::loadVardef($moduleName, BeanFactory::getObjectName($moduleName), false, [
                 //If relationships are not yet loaded, we can't figure out the rel_calc_fields.
                 "ignore_rel_calc_fields" => true,

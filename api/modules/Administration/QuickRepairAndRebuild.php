@@ -37,6 +37,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 class RepairAndClear
@@ -461,12 +462,12 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	////////
 	private function _getModuleNamePlural($module_name_singular)
 	{
-		global $beanList;
-		while ($curr_module = current($beanList))
+		$globalBeanList = SpiceModules::getInstance()->getBeanList();
+		while ($curr_module = current($globalBeanList))
 		{
 			if ($curr_module == $module_name_singular)
-				return key($beanList); //name of the module, plural.
-			next($beanList);
+				return key($globalBeanList); //name of the module, plural.
+			next($globalBeanList);
 		}
 	}
 
