@@ -1,31 +1,27 @@
 <div class="slds-p-left--x-small">
-    <div style="height: 0.37rem; width: 100%"></div>
-    <article class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
-        <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
-            <div style="min-width: 16px">
-                <button *ngIf="config.collapsible && item.systemTreeDefs.hasChildren" [disabled]="config.expandall"
-                        class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
-                        (click)="expand(item, $event)">
-                    <system-button-icon [icon]="item.systemTreeDefs.expanded ? 'chevrondown' : 'chevronright'" size="xx-small"></system-button-icon>
-                </button>
-                <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
-                                     [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
-            </div>
-            <div class="slds-truncate">
-                <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>
-            </div>
-            <div class="slds-col_bump-left">
-                <button  class="slds-button slds-button--icon" title="Edit Name" (click)="editFolderName()">
-                    <system-button-icon [icon]="'edit'"></system-button-icon>
-                </button>
-                <button  class="slds-button slds-button--icon" title="Add Folder" (click)="onFolderAdd.emit(item.id)">
-                    <system-button-icon [icon]="'new'"></system-button-icon>
-                </button>
-                <button  class="slds-button slds-button--icon" title="fffdelete folder" (click)="deleteFolder()" >
-                    <system-button-icon [icon]="'delete'"></system-button-icon>
-                </button>
-            </div>
+    <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
+        <div style="min-width: 16px">
+            <button *ngIf="config.collapsible && item.systemTreeDefs.hasChildren" [disabled]="config.expandall"
+                    class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
+                    (click)="expand(item, $event)">
+                <system-button-icon [icon]="item.systemTreeDefs.expanded ? 'chevrondown' : 'chevronright'" size="xx-small"></system-button-icon>
+            </button>
+            <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
+                                 [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
         </div>
-
-    </article>
+        <div class="slds-truncate">
+            <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>
+        </div>
+        <div class="slds-col_bump-left" [ngStyle]="{'visibility':item.systemTreeDefs.isSelected?'visible':'hidden'}">
+            <button  class="slds-button slds-button--icon" title="Edit Name" (click)="editFolderName()">
+                <system-button-icon [icon]="'edit'"></system-button-icon>
+            </button>
+            <button  class="slds-button slds-button--icon" title="Add Folder" (click)="onFolderAdd.emit(item.id)">
+                <system-button-icon [icon]="'new'"></system-button-icon>
+            </button>
+            <button  class="slds-button slds-button--icon" title="fffdelete folder" (click)="deleteFolder()" >
+                <system-button-icon [icon]="'delete'"></system-button-icon>
+            </button>
+        </div>
+    </div>
 </div>
