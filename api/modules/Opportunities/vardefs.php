@@ -34,8 +34,15 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
+use SpiceCRM\includes\SugarObjects\VardefManager;
 
-$dictionary['Opportunity'] = ['table' => 'opportunities', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
+$dictionary['Opportunity'] = [
+    'table' => 'opportunities',
+    'audited' => true,
+    'unified_search' => true,
+    'full_text_search' => true,
+    'unified_search_default_enabled' => true,
+    'duplicate_merge' => true,
     'comment' => 'An opportunity is the target of selling activities',
     'fields' => [
         'name' => [
@@ -599,8 +606,8 @@ $dictionary['Opportunity'] = ['table' => 'opportunities', 'audited' => true, 'un
 //This enables optimistic locking for Saves From EditView
 , 'optimistic_locking' => true,
 ];
-\SpiceCRM\includes\SugarObjects\VardefManager::createVardef('Opportunities', 'Opportunity', ['default', 'assignable',
-]);
+
+VardefManager::createVardef('Opportunities', 'Opportunity', ['default', 'assignable']);
 
 global $dictionary;
 if(file_exists('extensions/modules/SalesDocs')) {
@@ -612,5 +619,18 @@ if(file_exists('extensions/modules/SalesDocs')) {
         'bean_name' => 'SalesDoc',
         'source' => 'non-db',
         'vname' => 'LBL_SALESDOCS',
+    ];
+}
+
+// CR1000661
+if(file_exists('extensions/modules/PartnerAgreements')) {
+    $dictionary['Opportunity']['fields']['partneragreements'] = [
+        'name' => 'partneragreements',
+        'vname' => 'LBL_PARTNERAGREEMENTS',
+        'type' => 'link',
+        'relationship' => 'partneragreements_opportunities',
+        'module' => 'PartnerAgreements',
+        'bean_name' => 'PartnerAgreement',
+        'source' => 'non-db',
     ];
 }

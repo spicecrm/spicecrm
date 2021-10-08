@@ -91,6 +91,15 @@ function return_app_list_strings_language($language, $scope = 'all') {
                 include("include/language/$lang.lang.php.override");
                 LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
             }
+            if (file_exists("extensions/include/language/$lang.lang.php")) {
+                include("extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
+            // BWC temporary name of include folder
+            if (file_exists("extensions/includes/language/$lang.lang.php")) {
+                include("extensions/includes/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
         }
 
         if($scope == 'all' || $scope == 'custom') {
@@ -106,6 +115,16 @@ function return_app_list_strings_language($language, $scope = 'all') {
             if (file_exists("custom/include/language/$lang.lang.php.override")) {
                 include("custom/include/language/$lang.lang.php.override");
                 LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
+            }
+
+            if (file_exists("custom/extensions/include/language/$lang.lang.php")) {
+                include("custom/extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
+            // BWC temporary name of include folder
+            if (file_exists("custom/extensions/includes/language/$lang.lang.php")) {
+                include("custom/extensions/includes/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
             }
         }
 
