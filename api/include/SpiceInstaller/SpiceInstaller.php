@@ -451,7 +451,7 @@ class SpiceInstaller
      */
     public function createTables($db)
     {
-        global $dictionary, $beanClasses;
+        global $dictionary;
         $globalBeanList = [];
         // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
         // load them now!
@@ -480,7 +480,10 @@ class SpiceInstaller
                     if (!empty($decodedConf['bean'])) {
                         $globalBeanList[$decodedConf['module']] = $decodedConf['bean'];
                         //todo temporary bugfix, find correct solution?
-                        $beanClasses[$decodedConf['module']] = '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean'];
+                        SpiceModules::getInstance()->setBeanClass(
+                            $decodedConf['module'],
+                            '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean']
+                        );
                     }
                 }
             }
