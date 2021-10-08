@@ -157,6 +157,10 @@ class SpiceModules
         return $this->beanClasses;
     }
 
+    public function setBeanClass(string $module, string $value): void {
+        $this->beanClasses[$module] = $value;
+    }
+
     /**
      * returns if the tagging is active for a module
      *
