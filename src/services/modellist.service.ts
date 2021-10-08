@@ -114,6 +114,11 @@ export class modellist implements OnDestroy {
     public moduleAggregates: any[] = [];
 
     /**
+     * holds the aggregates for the module
+     */
+    public moduleAggregatesByFieldname: any = {};
+
+    /**
      * the set search aggregates as returned by the search
      */
     public searchAggregates: any;
@@ -256,6 +261,7 @@ export class modellist implements OnDestroy {
         for (let moduleAggregate of this.metadata.getModuleAggregates(this.module)) {
             this.moduleAggregates.push({...moduleAggregate});
         }
+        this.moduleAggregates.forEach( item => this.moduleAggregatesByFieldname[item.fieldname] = item );
         this.moduleAggregates.sort((a, b) => {
             if (!a.priority && !b.priority) return 0;
             return (!a.priority || a.priority > b.priority) ? 1 : -1;
@@ -921,6 +927,16 @@ export class modellist implements OnDestroy {
     }
 
     /**
+     * a getter to check if the current search result has non-system aggregates
+     */
+    get hasNonSysAggregates() {
+        return this.selectedAggregates.some( item => {
+            let fieldname = item.split('::',1)[0];
+            if ( !this.moduleAggregatesByFieldname[fieldname].system ) return true;
+        });
+    }
+
+    /**
      * sets a set of aggdata to the aggregates
      *
      * @param aggregate
@@ -967,8 +983,14 @@ export class modellist implements OnDestroy {
     /**
      * clears all set aggregates
      */
-    public removeAllAggregates() {
-        this.selectedAggregates = [];
+    public removeAllAggregates( keepSystemAggregates = false ) {
+        if ( !keepSystemAggregates ) this.selectedAggregates = [];
+        else {
+            this.selectedAggregates = this.selectedAggregates.filter( item => {
+                let fieldname = item.split('::',1)[0];
+                return !!this.moduleAggregatesByFieldname[fieldname].system;
+            });
+        }
     }
 
     /*
