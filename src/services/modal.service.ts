@@ -225,7 +225,7 @@ export class modal {
      * @param theme
      */
     public info(text: string, headertext: string = null, theme: string = null): Observable<any> {
-        return this.prompt('input_date', text, headertext, theme);
+        return this.prompt('info', text, headertext, theme);
     }
 
     /**
