@@ -92,7 +92,7 @@ class UnifiedSearchAdvanced {
 
 		require_once 'include/ListView/ListViewSmarty.php';
 
-		global $modListHeader, $beanFiles, $current_language, $app_strings, $mod_strings;
+		global $modListHeader, $current_language, $app_strings, $mod_strings;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$home_mod_strings = return_module_language($current_language, 'Home');
 
@@ -149,7 +149,7 @@ class UnifiedSearchAdvanced {
 
 		if(!empty($this->query_string)) {
 			foreach($modules_to_search as $moduleName => $beanName) {
-                require_once $beanFiles[$beanName] ;
+                require_once SpiceModules::getInstance()->getBeanFiles()[$beanName] ;
                 $seed = new $beanName();
 
                 $lv = new ListViewSmarty();
@@ -214,7 +214,7 @@ class UnifiedSearchAdvanced {
                  * Use searchForm2->generateSearchWhere() to create the search query, as it can generate SQL for the full set of comparisons required
                  * generateSearchWhere() expects to find the search conditions for a field in the 'value' parameter of the searchFields entry for that field
                  */
-                require_once $beanFiles[$beanName] ;
+                require_once SpiceModules::getInstance()->getBeanFiles()[$beanName] ;
                 $seed = new $beanName();
                 
 				require_once $this->searchFormPath;
@@ -299,12 +299,12 @@ class UnifiedSearchAdvanced {
 
 	function buildCache()
 	{
-		global $beanFiles, $dictionary;
+		global $dictionary;
 
 		$supported_modules = [];
 
 		foreach (SpiceModules::getInstance()->getBeanList() as $moduleName=>$beanName) {
-			if (!isset($beanFiles[$beanName]))
+			if (!isset(SpiceModules::getInstance()->getBeanFiles()[$beanName]))
 				continue;
 
 			$beanName = BeanFactory::getObjectName($moduleName);
