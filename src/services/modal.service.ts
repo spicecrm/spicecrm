@@ -165,7 +165,7 @@ export class modal {
      * @param options options to be presented to the user
      * @param optionsAsRadio
      */
-    public prompt(type: 'info' | 'input' | 'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: Array<{ value: string, display: string }> = null, optionsAsRadio?: boolean): Observable<any> {
+    public prompt(type: 'info' | 'input' | 'input_date' | 'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: Array<{ value: string, display: string }> = null, optionsAsRadio?: boolean): Observable<any> {
         let responseSubject = new Subject();
         this.openModal("SystemPrompt").subscribe(component => {
             component.instance.type = type;
@@ -225,7 +225,7 @@ export class modal {
      * @param theme
      */
     public info(text: string, headertext: string = null, theme: string = null): Observable<any> {
-        return this.prompt('info', text, headertext, theme);
+        return this.prompt('input_date', text, headertext, theme);
     }
 
     /**
