@@ -11,6 +11,10 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
+import {modelutilities} from "../../../services/modelutilities.service";
+
+/** @ignore */
+declare var moment;
 
 /**
  * a button to display an extend modal for the bonus card
@@ -30,36 +34,56 @@ export class BonusCardExtendButton {
                 public backend: backend,
                 public toast: toast,
                 public router: Router,
+                public modelUtilities: modelutilities,
                 public userpreferences: userpreferences) {
     }
 
+    /**
+     * check if extendable then show a confirm modal
+     * if the user confirms then create an new extension and update the valid date on the card
+     */
     public execute() {
 
         const loading = this.modal.await(this.language.getLabel('LBL_CALCULATING'));
 
         const url = `module/BonusPrograms/${this.model.getField('bonusprogram_id')}/extensionvaliditydate`;
 
-        this.backend.getRequest(url).subscribe(res => {
+        this.backend.getRequest(url).subscribe(async (res) => {
 
-            loading.emit();
-
-            if (!res.success) return;
+            loading.next(); loading.complete();
 
             if (!res.extendable) {
                 this.toast.sendToast(this.language.getLabel('MSG_EXTENDING_NOT_ALLOWED'));
             } else {
-                const text = `${this.language.getLabel('MSG_EXTENSION_DATE')} ${res.date_start} ${res.date_end}`;
-                this.modal.confirm(text).subscribe(answer => {
-                    if (!answer) return;
+                let newUntilDate = !res.date ? new moment() : this.modelUtilities.backend2spice('BonusCards', 'valid_until', res.date);
+                const untilDate = this.bonusCardModel.data.valid_until.format(this.userpreferences.getDateFormat());
+                const purchaseDate = this.bonusCardModel.data.purchase_date.format(this.userpreferences.getDateFormat());
 
-                    this.model.module = 'BonusCardExtensions';
-                    this.model.initialize();
-                    this.model.setFields({
-                        date_created: res.date_start,
-                        valid_until: res.date_end,
-                        bonuscard_id: this.bonusCardModel.id
-                    });
+                let text = `${this.language.getLabel('LBL_PURCHASE_DATE')} ${purchaseDate} ${this.language.getLabel('LBL_VALID_UNTIL')} ${untilDate}`;
+
+                let confirmAnswer;
+
+                if (res.editable) {
+                    confirmAnswer = await this.modal.prompt('input_date', text,'LBL_EXTEND', 'shade', newUntilDate).toPromise();
+                    newUntilDate = confirmAnswer;
+                } else {
+                    text += ` ${this.language.getLabel('LBL_NEW_VALID_UNTIL_DATE')} ${newUntilDate.format(this.userpreferences.getDateFormat())}`;
+                    confirmAnswer = await this.modal.confirm(text, 'LBL_EXTEND').toPromise();
+                }
+
+                if (!confirmAnswer) return;
+
+                this.bonusCardModel.startEdit();
+                this.bonusCardModel.setField('valid_until', newUntilDate);
+                this.bonusCardModel.save();
+
+                this.model.module = 'BonusCardExtensions';
+                this.model.initialize();
+                this.model.setFields({
+                    valid_until: newUntilDate,
+                    bonuscard_id: this.bonusCardModel.id
                 });
+                this.model.save();
             }
         });
     }

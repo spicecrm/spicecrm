@@ -66,9 +66,10 @@ export class BonusCardValidityDateField extends fieldDateTimeSpan {
         if (!!this.value) return;
 
         this.backend.getRequest(`module/BonusPrograms/${programId}/validitydate`).subscribe(res => {
+
             if (!res) return;
 
-            this.value = this.modelUtilities.backend2spice(this.model.module, this.fieldname, programId);
+            this.value = this.modelUtilities.backend2spice(this.model.module, this.fieldname, res);
         });
     }
 }
