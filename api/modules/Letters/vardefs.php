@@ -99,43 +99,12 @@ $dictionary['Letter'] = [
             'source'      => 'non-db',
             'options'     => 'parent_type_display',
         ],
-        'contact_id' => [
-            'name'   => 'contact_id',
-            'type'   => 'id',
-            'source' => 'non-db',
-        ],
-        'contact_name' => [
-            'name' => 'contact_name',
-            'vname' => 'LBL_CONTACT',
-            'type' => 'relate',
-            'id_name' => 'contact_id',
-            'rname' => 'name',
-            'link' => 'contacts',
-            'module' => 'Contacts',
-            'comment' => 'The name of the related contact',
-            'source' => 'non-db'
-        ],
-        'account_id' => [
-            'name'   => 'account_id',
-            'type'   => 'id',
-            'source' => 'non-db',
-        ],
-        'account_name' => [
-            'name' => 'account_name',
-            'vname' => 'LBL_ACCOUNT',
-            'type' => 'relate',
-            'id_name' => 'account_id',
-            'rname' => 'name',
-            'link' => 'accounts',
-            'module' => 'Accounts',
-            'comment' => 'The name of the related account',
-            'source' => 'non-db'
-        ],
+
         // links to other modules
         'contacts' => [
             'name' => 'contacts',
             'type' => 'link',
-            'relationship' => 'contact_letters', // one-to-many bez. zu den parent_id parent_type
+            'relationship' => 'contact_letters',
             'module' => 'Contacts',
             'bean_name' => 'Contact',
             'source' => 'non-db',
