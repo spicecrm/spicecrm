@@ -90,6 +90,8 @@ class SpiceModules
                 'beanFiles'     => $this->beanFiles,
                 'beanClasses'   => $this->beanClasses
             ];
+        } elseif (isset($_SESSION['modules'])) {
+            $this->setLocalsFromSession();
         }
 
         $this->setGlobals();
@@ -182,5 +184,15 @@ class SpiceModules
         $beanList    = $_SESSION['modules']['beanList'];
         $beanClasses = $_SESSION['modules']['beanClasses'];
         $beanFiles   = $_SESSION['modules']['beanFiles'];
+    }
+
+    /**
+     * Sets the local attributes if the modules were already loaded in the session.
+     */
+    private function setLocalsFromSession(): void {
+        $this->moduleList  = $_SESSION['modules']['moduleList'];
+        $this->beanList    = $_SESSION['modules']['beanList'];
+        $this->beanClasses = $_SESSION['modules']['beanClasses'];
+        $this->beanFiles   = $_SESSION['modules']['beanFiles'];
     }
 }
