@@ -110,7 +110,7 @@ class RepairAndClear
 	public function repairDatabaseSelectModules()
 	{
 		global $mod_strings, $dictionary;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		set_time_limit(3600);
 
 		$db = DBManagerFactory::getInstance();
@@ -133,9 +133,10 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 				foreach($this->module_list as $bean_name)
 				{
 
-					if (isset($beanFiles[$bean_name]) && file_exists($beanFiles[$bean_name]))
-					{
-						require_once($beanFiles[$bean_name]);
+					if (isset(SpiceModules::getInstance()->getBeanFiles()[$bean_name])
+                        && file_exists(SpiceModules::getInstance()->getBeanFiles()[$bean_name])) {
+
+						require_once(SpiceModules::getInstance()->getBeanFiles()[$bean_name]);
 						$GLOBALS['reload_vardefs'] = true;
 						$focus = new $bean_name ();
 						#30273
@@ -398,13 +399,15 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		if(!in_array( translate('LBL_ALL_MODULES'), $this->module_list) && !empty($this->module_list))
 		{
 			foreach ($this->module_list as $bean_name){
-				if( isset($beanFiles[$bean_name]) && file_exists($beanFiles[$bean_name])) {
-					require_once($beanFiles[$bean_name]);
+				if (isset(SpiceModules::getInstance()->getBeanFiles()[$bean_name])
+                    && file_exists(SpiceModules::getInstance()->getBeanFiles()[$bean_name])) {
+
+					require_once(SpiceModules::getInstance()->getBeanFiles()[$bean_name]);
 				    $this->_rebuildAuditTablesHelper(new $bean_name());
 				}
 			}
 		} else if(in_array(translate('LBL_ALL_MODULES'), $this->module_list)) {
-			foreach ($beanFiles as $bean => $file){
+			foreach (SpiceModules::getInstance()->getBeanFiles() as $bean => $file){
 				if( file_exists($file)) {
 					require_once($file);
 				    $this->_rebuildAuditTablesHelper(new $bean());

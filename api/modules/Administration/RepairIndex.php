@@ -36,6 +36,7 @@
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\data\BeanFactory;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,7 +112,7 @@ $add_index=[];
 $drop_index=[];
 $change_index=[];
 
-global $beanFiles, $dictionary,  $mod_strings;;
+global $dictionary,  $mod_strings;;
 $current_user = AuthenticationController::getInstance()->getCurrentUser();
 include_once ('include/database/DBManager.php');
 
@@ -120,10 +121,10 @@ $processed_tables=[];
 
 ///////////////////////////////////////////////////////////////////////////////
 ////	PROCESS MODULE BEANS
-(function_exists('logThis')) ? logThis("found ".count($beanFiles)." Beans to process") : "";
+(function_exists('logThis')) ? logThis("found ".count(SpiceModules::getInstance()->getBeanFiles())." Beans to process") : "";
 (function_exists('logThis')) ? logThis("found ".count($dictionary)." Dictionary entries to process") : "";
 
-foreach ($beanFiles as $beanname=>$beanpath) {
+foreach (SpiceModules::getInstance()->getBeanFiles() as $beanname=>$beanpath) {
 	require_once($beanpath);
 	$focus= new $beanname();
 

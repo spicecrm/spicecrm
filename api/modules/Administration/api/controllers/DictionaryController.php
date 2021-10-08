@@ -102,9 +102,9 @@ class DictionaryController
 
     private function buildFieldArray($module)
     {
-        global $beanFiles;
         $returnArray = [];
-        if ($module != '' && $module != 'undefined' && file_exists($beanFiles[SpiceModules::getInstance()->getBeanList()[$module]])) {
+        if ($module != '' && $module != 'undefined'
+            && file_exists(SpiceModules::getInstance()->getBeanFiles()[SpiceModules::getInstance()->getBeanList()[$module]])) {
 
             $nodeModule = BeanFactory::getBean($module);
 
