@@ -97,8 +97,8 @@ class SpiceUIConfLoader
         // module dictionaries are unknown at that time
         // load them to make sure DBManager will have proper content in global $dictionary
         SpiceModules::getInstance()->loadModules();
-        foreach($_SESSION['modules']['moduleList'] as $idx => $module){
-            VardefManager::loadVardef($module, $_SESSION['modules']['beanList'][$module]);
+        foreach(SpiceModules::getInstance()->getModuleList() as $idx => $module){
+            VardefManager::loadVardef($module, SpiceModules::getInstance()->getBeanList()[$module]);
         }
 
     }

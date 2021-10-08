@@ -34,6 +34,8 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
+use SpiceCRM\includes\SugarObjects\SpiceModules;
+
 class SugarAutoLoader
 {
 
@@ -51,7 +53,7 @@ class SugarAutoLoader
         }
 
         if (empty(SugarAutoLoader::$moduleMap)) {
-            SugarAutoLoader::$moduleMap = $_SESSION['modules']['beanFiles'];
+            SugarAutoLoader::$moduleMap = SpiceModules::getInstance()->getBeanFiles();
         }
         if (!empty(SugarAutoLoader::$moduleMap[$class])) {
             if (file_exists(SugarAutoLoader::$moduleMap[$class])) {
