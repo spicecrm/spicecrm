@@ -76,7 +76,8 @@ class SpiceFTSBeanHandler
                     'fielddetails' => $details,
                     'type' => $indexProperty['aggregate'],
                     'collapsed' => $indexProperty['aggregatecollapsed'] == 1 ? true : false,
-                    'priority' => $indexProperty['aggregatepriority']
+                    'priority' => $indexProperty['aggregatepriority'],
+                    'system' => $indexProperty['aggregatesystem']
                 ];
             }
         }

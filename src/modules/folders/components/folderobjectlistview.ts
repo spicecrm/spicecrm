@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { metadata } from '../../../services/metadata.service';
 import { modellist } from '../../../services/modellist.service';
 
@@ -9,6 +9,8 @@ import { modellist } from '../../../services/modellist.service';
 
 export class FolderObjectListView {
 
-    constructor( private metadata: metadata, private modellist: modellist ) {}
+    @ViewChild('listContainer', {read: ViewContainerRef, static: true}) private listContainer: ViewContainerRef;
+
+    constructor( private metadata: metadata, private modellist: modellist ) { }
 
 }
