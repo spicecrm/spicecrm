@@ -600,20 +600,20 @@ class AdminController
      * @return false|Response|string
      */
     public function repairACLRoles(Request $req, Response $res, array $args) {
-        global $beanList, $beanFiles;
+        global $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $repairedACLs = [];
         $ACLActions = ACLAction::getDefaultActions();
         if (SpiceUtils::isAdmin($current_user)) {
             if (!empty($ACLActions)) {
                 foreach ($ACLActions as $action) {
-                    if (!isset($beanList[$action->category])) {
+                    if (!isset(SpiceModules::getInstance()->getBeanList()[$action->category])) {
                         ACLAction::removeActions($action->category);
                     }
 
                 }
             } else {
-                foreach ($beanList as $module => $class) {
+                foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
                     if (empty($repairedACLs[$class]) && isset($beanFiles[$class]) && file_exists($beanFiles[$class])) {
                         $current_module = BeanFactory::getBean($module);
                         if ($current_module->bean_implements('ACL') && empty($current_module->acl_display_only)) {

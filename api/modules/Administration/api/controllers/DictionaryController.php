@@ -3,6 +3,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class DictionaryController
 {
@@ -101,9 +102,9 @@ class DictionaryController
 
     private function buildFieldArray($module)
     {
-        global $beanFiles, $beanList;
+        global $beanFiles;
         $returnArray = [];
-        if ($module != '' && $module != 'undefined' && file_exists($beanFiles[$beanList [$module]])) {
+        if ($module != '' && $module != 'undefined' && file_exists($beanFiles[SpiceModules::getInstance()->getBeanList()[$module]])) {
 
             $nodeModule = BeanFactory::getBean($module);
 
