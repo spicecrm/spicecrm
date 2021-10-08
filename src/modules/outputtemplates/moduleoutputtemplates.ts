@@ -18,8 +18,7 @@ import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactiono
 import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
-
-
+import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
 
 @NgModule({
     imports: [
@@ -29,7 +28,7 @@ import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule,
+        DirectivesModule
     ],
     declarations: [
         OutputTemplatesEditor,
@@ -38,7 +37,8 @@ import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
         ObjectActionOutputBeanButton,
         ObjectActionOutputBeanModalEmailContent,
         ObjectActionOutputBeanModal,
-        fieldOutputTemplates
+        fieldOutputTemplates,
+        OutputTemplatesVariableHelper
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent
