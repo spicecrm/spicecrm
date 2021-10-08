@@ -10,6 +10,7 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {BonusCardNewButton} from "./bonuscardnewbutton";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "bonus-cards-new-related-button",
@@ -28,10 +29,11 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
                 public modal: modal,
                 public toast: toast,
                 public backend: backend,
-                public model: model, @SkipSelf()
-                public parentModel: model,
+                public model: model,
+                @SkipSelf() public parentModel: model,
+                public modelUtilities: modelutilities,
                 private relatedModels: relatedmodels) {
-        super(language, metadata, modal, toast, backend, model, parentModel);
+        super(language, metadata, modal, toast, backend, model, parentModel, modelUtilities);
 
     }
 

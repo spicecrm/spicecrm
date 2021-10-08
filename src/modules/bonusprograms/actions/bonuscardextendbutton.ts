@@ -44,7 +44,7 @@ export class BonusCardExtendButton {
 
         const loading = this.modal.await(this.language.getLabel('LBL_CALCULATING'));
 
-        const url = `module/BonusPrograms/${this.bonusCardModel.getField('bonusprogram_id')}/extensionvaliditydate`;
+        const url = `module/BonusCards/${this.bonusCardModel.id}/extensionvaliditydate`;
 
         this.backend.getRequest(url).subscribe(async (res) => {
 
