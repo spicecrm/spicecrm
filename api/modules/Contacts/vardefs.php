@@ -740,8 +740,10 @@ $dictionary['Contact'] = [
             'lhs_key' => 'id',
             'rhs_module' => 'Letters',
             'rhs_table' => 'letters',
-            'rhs_key' => 'contact_id',
-            'relationship_type' => 'one-to-many'
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Contacts'
         ],
         'contact_textmessages' => [
             'lhs_module' => 'Contacts',
