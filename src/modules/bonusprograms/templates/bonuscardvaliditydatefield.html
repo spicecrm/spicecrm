@@ -1,0 +1,28 @@
+<ng-container *ngIf="!isEditMode()">
+    <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+    <field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+        <system-display-datetime [date]="startDate" [displayTime]="false"></system-display-datetime> &nbsp;-&nbsp;<system-display-datetime [date]="endDate" [displayTime]="false"></system-display-datetime>
+    </field-generic-display>
+</ng-container>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small"
+     [ngClass]="css_classes">
+    <div class="slds-grid slds-gutters_direct-xx-small">
+        <div class="slds-size--1-of-2 slds-col">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_DATE_START"></system-label>
+                </label>
+                <system-input-date [(ngModel)]="startDate"></system-input-date>
+            </div>
+        </div>
+        <div class="slds-size--1-of-2 slds-col">
+            <div class="slds-form-element ">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_DATE_END"></system-label>
+                </label>
+                <system-input-date [(ngModel)]="endDate"></system-input-date>
+            </div>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
