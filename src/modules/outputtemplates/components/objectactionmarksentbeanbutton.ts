@@ -47,9 +47,9 @@ export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton
             this.actionemitter.emit({close: true, name: 'marksent'});
 
             if (res?.success) {
-                this.toast.sendToast('');
+                this.toast.sendToast(this.language.getLabel('LETTER_MARKED_AS_SENT'), 'success');
             } else {
-                this.toast.sendToast('');
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
             }
         });
     }
