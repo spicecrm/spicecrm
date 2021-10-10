@@ -518,7 +518,6 @@ $app_list_strings = [
         'Sending' => 'Wird gesendet',
     ],
     'campaign_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
@@ -530,11 +529,11 @@ $app_list_strings = [
         'NewsLetter' => 'Newsletter',
     ],
     'campaigntask_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
         'Email' => 'Email',
+        'mailmerge' => 'Serienbrief',
         'Feedback' => 'Umfrage',
         'Print' => 'Print',
         'Web' => 'Web',
@@ -1785,4 +1784,9 @@ $app_list_strings['relationship_type_dom'] = [
 $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
+];
+
+$app_list_strings['bonuscard_extension_status_enum'] = [
+    'initial' => 'initial',
+    'sent' => 'gesendet'
 ];
