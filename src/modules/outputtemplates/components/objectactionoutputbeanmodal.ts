@@ -260,6 +260,8 @@ export class ObjectActionOutputBeanModal {
         this.outputModalService.modalResponse$.next('close');
         this.outputModalService.modalResponse$.complete();
 
+        this.model.cancelEdit();
+
         this.self.destroy();
     }
 
