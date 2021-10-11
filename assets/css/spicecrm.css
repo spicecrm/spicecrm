@@ -435,3 +435,8 @@ input[type="submit"] {
 .slds-is-sortable:not(.slds-is-sorted) .slds-th__action:focus .slds-is-sortable__icon {
     display: none !important;
 }
+
+.slds-modal__footer .slds-button-group button:not(:first-of-type) {
+    border-left: 0;
+    margin-left: 0;
+}
