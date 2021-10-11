@@ -1,17 +1,20 @@
 <div [system-overlay-loading-spinner]="isLoading" style="height:100%">
-    <div class="slds-grid slds-p-around_xx-small slds-grid--vertical-align-center">
-        <div class="slds-tree slds-grow ">
+
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-tree slds-grow slds-m-right--medium slds-border--right">
             <div [attr.aria-selected]="selectedItem===''" (click)="selectOutsideFolders()" role="treeitem">
                 <div class="slds-tree__item">
                     <span class="slds-tree__item-label slds-truncate slds-p-left--x-large"><i>Documents not assigned to any folder.</i></span>
                 </div>
             </div>
         </div>
-        <div>
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small" (click)="unselectAll()">
+        <div class="slds-p-around--xx-small">
+            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small"
+                    (click)="unselectAll()">
                 <system-button-icon [icon]="'clear'" [size]="'xx-small'"></system-button-icon>
             </button>
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small" (click)="addFolder()">
+            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small"
+                    (click)="addFolder()">
                 <system-button-icon [icon]="'add'" [size]="'xx-small'"></system-button-icon>
 
             </button>
@@ -42,3 +45,4 @@
     </div>
 
 </div>
+
