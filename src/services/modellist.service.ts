@@ -937,6 +937,14 @@ export class modellist implements OnDestroy {
     }
 
     /**
+     * Is a specific aggregate selected?
+     */
+    public hasAggregate( aggregate: string, aggdata: string ) {
+        let searchFor = aggregate + '::' + aggdata;
+        return this.selectedAggregates.some( item => item === searchFor );
+    }
+
+    /**
      * sets a set of aggdata to the aggregates
      *
      * @param aggregate
@@ -991,6 +999,14 @@ export class modellist implements OnDestroy {
                 return !!this.moduleAggregatesByFieldname[fieldname]?.system;
             });
         }
+    }
+
+    /**
+     * Clears all set aggregates for a specific field.
+     */
+    public removeAggregatesOfField( fieldname: string ) {
+        // Keep only all for other fields selected aggregates:
+        this.selectedAggregates = this.selectedAggregates.filter( item => item.split('::',1)[0] !== fieldname );
     }
 
     /*
