@@ -174,7 +174,7 @@ class Person extends Basic
         } else {
             $this->setPrimaryEmailAddress($primaryEmailAddressId);
         }
-
+        $this->call_custom_logic('after_save_completed', '');
         return $id;
     }
 
