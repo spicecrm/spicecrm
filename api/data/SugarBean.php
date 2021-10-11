@@ -2321,7 +2321,7 @@ class SugarBean
                         $this->fill_in_link_field($field['id_name'], $field);
                     }
                     if (!empty($this->{$field['id_name']}) && ($this->object_name != $field['module'] || ($this->object_name == $field['module'] && $this->{$field['id_name']} != $this->id))) {
-                        if (SpiceModules::getInstance()->getBeanList()[$field['module']]) {
+                        if (SpiceModules::getInstance()->getBeanName($field['module'])) {
 
                                 // change to use of BeanFactory
                                 $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);

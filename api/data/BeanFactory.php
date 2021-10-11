@@ -175,7 +175,7 @@ class BeanFactory {
     }
 
     public static function getBeanName(string $module): string {
-        $beanName = SpiceModules::getInstance()->getBeanList()[$module];
+        $beanName = SpiceModules::getInstance()->getBeanName($module);
 
         return $beanName ?? false;
     }
@@ -217,7 +217,7 @@ class BeanFactory {
         $config = SpiceConfig::getInstance()->config;
         $cacheEnabled = ($config['system']['module_cache_enabled'] ?? false) == 1;
 
-        if (!$cacheEnabled || empty(SpiceModules::getInstance()->getBeanList()[$module])) {
+        if (!$cacheEnabled || empty(SpiceModules::getInstance()->getBeanName($module))) {
             return false;
         }
 
