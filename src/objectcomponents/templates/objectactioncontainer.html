@@ -7,7 +7,7 @@
             <system-button-icon icon="down"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_MORE"></system-label></span>
         </button>
-        <!-- grouped actions -->
+        <!-- grouped actions
         <div *ngIf="actionGroups.length > 0" class="slds-dropdown slds-dropdown_right slds-dropdown_actions" style="max-width: inherit">
             <div class="slds-grid">
                 <ng-container *ngFor="let actionGroup of actionGroups" >
@@ -28,8 +28,9 @@
                 </ul>
             </div>
         </div>
+        -->
         <!-- standard actions -->
-        <div *ngIf="actionGroups.length == 0" class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
+        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
             <ul class="slds-dropdown__list" role="menu">
                 <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of groupedAddActionItems()" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
                     <a href="javascript:void(0);" role="menuitem" tabindex="0">
