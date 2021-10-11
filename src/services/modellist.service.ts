@@ -932,7 +932,7 @@ export class modellist implements OnDestroy {
     get hasNonSysAggregates() {
         return this.selectedAggregates.some( item => {
             let fieldname = item.split('::',1)[0];
-            if ( !this.moduleAggregatesByFieldname[fieldname].system ) return true;
+            if ( !this.moduleAggregatesByFieldname[fieldname]?.system ) return true;
         });
     }
 
@@ -988,7 +988,7 @@ export class modellist implements OnDestroy {
         else {
             this.selectedAggregates = this.selectedAggregates.filter( item => {
                 let fieldname = item.split('::',1)[0];
-                return !!this.moduleAggregatesByFieldname[fieldname].system;
+                return !!this.moduleAggregatesByFieldname[fieldname]?.system;
             });
         }
     }
