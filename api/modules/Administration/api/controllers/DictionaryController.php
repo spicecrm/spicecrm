@@ -103,9 +103,8 @@ class DictionaryController
     private function buildFieldArray($module)
     {
         $returnArray = [];
-        if ($module != '' && $module != 'undefined'
-            && file_exists(SpiceModules::getInstance()->getBeanFiles()[SpiceModules::getInstance()->getBeanList()[$module]])) {
-
+        $beanClass = SpiceModules::getInstance()->getBeanClassForModule($module);
+        if ($module != '' && $module != 'undefined' && class_exists($beanClass)) {
             $nodeModule = BeanFactory::getBean($module);
 
             foreach ($nodeModule->field_name_map as $field_name => $field_defs) {

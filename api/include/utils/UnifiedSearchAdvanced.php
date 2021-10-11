@@ -147,17 +147,17 @@ class UnifiedSearchAdvanced {
 		$module_counts = [];
 		$has_results = false;
 
-		if(!empty($this->query_string)) {
-			foreach($modules_to_search as $moduleName => $beanName) {
-                require_once SpiceModules::getInstance()->getBeanFiles()[$beanName] ;
-                $seed = new $beanName();
+		if (!empty($this->query_string)) {
+			foreach ($modules_to_search as $moduleName => $beanName) {
+			    $beanClass = SpiceModules::getInstance()->getBeanClassForModule($moduleName);
+                $seed = new $beanClass();
 
                 $lv = new ListViewSmarty();
                 $lv->lvd->additionalDetails = false;
-                $mod_strings = return_module_language($current_language, $seed->module_dir);
+                $mod_strings = []; // return_module_language always returns an empty array anyway
 
                 //retrieve the original list view defs and store for processing in case of custom layout changes
-                require('modules/'.$seed->module_dir.'/metadata/listviewdefs.php');
+                require('modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
 				$orig_listViewDefs = $listViewDefs;
 
                 if(file_exists('custom/modules/'.$seed->module_dir.'/metadata/listviewdefs.php'))
@@ -214,8 +214,7 @@ class UnifiedSearchAdvanced {
                  * Use searchForm2->generateSearchWhere() to create the search query, as it can generate SQL for the full set of comparisons required
                  * generateSearchWhere() expects to find the search conditions for a field in the 'value' parameter of the searchFields entry for that field
                  */
-                require_once SpiceModules::getInstance()->getBeanFiles()[$beanName] ;
-                $seed = new $beanName();
+                $seed = new $beanClass();
                 
 				require_once $this->searchFormPath;
                 $searchForm = new $this->searchFormClass ( $seed, $moduleName ) ;
@@ -303,9 +302,11 @@ class UnifiedSearchAdvanced {
 
 		$supported_modules = [];
 
-		foreach (SpiceModules::getInstance()->getBeanList() as $moduleName=>$beanName) {
-			if (!isset(SpiceModules::getInstance()->getBeanFiles()[$beanName]))
-				continue;
+		foreach (SpiceModules::getInstance()->getBeanList() as $moduleName => $beanName) {
+		    $beanClass = SpiceModules::getInstance()->getBeanClassForModule($moduleName);
+			if (!class_exists($beanClass)) {
+                continue;
+            }
 
 			$beanName = BeanFactory::getObjectName($moduleName);
 			$manager = new VardefManager( );

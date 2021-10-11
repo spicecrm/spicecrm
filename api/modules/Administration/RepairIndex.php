@@ -121,21 +121,20 @@ $processed_tables=[];
 
 ///////////////////////////////////////////////////////////////////////////////
 ////	PROCESS MODULE BEANS
-(function_exists('logThis')) ? logThis("found ".count(SpiceModules::getInstance()->getBeanFiles())." Beans to process") : "";
+(function_exists('logThis')) ? logThis("found ".count(SpiceModules::getInstance()->getBeanClasses())." Beans to process") : "";
 (function_exists('logThis')) ? logThis("found ".count($dictionary)." Dictionary entries to process") : "";
 
-foreach (SpiceModules::getInstance()->getBeanFiles() as $beanname=>$beanpath) {
-	require_once($beanpath);
-	$focus= new $beanname();
+foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
+	$focus= new $beanClass();
 
 	//skips beans based on same tables. user, employee and group are an example.
-	if(empty($focus->table_name) || isset($processed_tables[$focus->table_name])) {
+	if (empty($focus->table_name) || isset($processed_tables[$focus->table_name])) {
 		continue;
 	} else {
 		$processed_tables[$focus->table_name]=$focus->table_name;
 	}
 
-	if(!empty($dictionary[$focus->object_name]['indices'])) {
+	if (!empty($dictionary[$focus->object_name]['indices'])) {
 		$indices=$dictionary[$focus->object_name]['indices'];
 	} else {
 		$indices=[];
@@ -150,7 +149,7 @@ foreach (SpiceModules::getInstance()->getBeanFiles() as $beanname=>$beanpath) {
 			continue;
 		}
 
-		if(empty($definition['db']) or $definition['db'] == $focus->db->dbType) {
+		if (empty($definition['db']) or $definition['db'] == $focus->db->dbType) {
 			$var_indices[$definition['name']] = $definition;
 		}
 	}
