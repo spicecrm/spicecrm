@@ -612,24 +612,21 @@ class AdminController
 
                 }
             } else {
-                foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
-                    if (empty($repairedACLs[$class])
-                        && isset(SpiceModules::getInstance()->getBeanFiles()[$class])
-                        && file_exists(SpiceModules::getInstance()->getBeanFiles()[$class])) {
-
-                        $current_module = BeanFactory::getBean($module);
-                        if ($current_module->bean_implements('ACL') && empty($current_module->acl_display_only)) {
-                            if (!empty($current_module->acltype)) {
-                                ACLAction::addActions($current_module->getACLCategory(), $current_module->acltype);
+                foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
+                    $beanName = SpiceModules::getInstance()->getBeanName($module);
+                    if (empty($repairedACLs[$beanName]) && class_exists($beanClass)) {
+                        $currentModule = BeanFactory::getBean($module);
+                        if ($currentModule->bean_implements('ACL') && empty($currentModule->acl_display_only)) {
+                            if (!empty($currentModule->acltype)) {
+                                ACLAction::addActions($currentModule->getACLCategory(), $currentModule->acltype);
                             } else {
-                                ACLAction::addActions($current_module->getACLCategory());
+                                ACLAction::addActions($currentModule->getACLCategory());
                             }
 
-                            $repairedACLs[$class] = true;
+                            $repairedACLs[$beanName] = true;
                         }
                     }
                 }
-
             }
         }
         if ($res) {

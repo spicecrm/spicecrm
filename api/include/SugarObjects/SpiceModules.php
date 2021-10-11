@@ -112,6 +112,18 @@ class SpiceModules
     }
 
     /**
+     * Returns the module name of a bean.
+     *
+     * @param string $beanName
+     * @return string|null
+     */
+    public function getModuleName(string $beanName): ?string {
+        $moduleNamesArray = array_flip($this->beanList);
+
+        return $moduleNamesArray[$beanName] ?? null;
+    }
+
+    /**
      * A getter for the bean list.
      *
      * @return array
@@ -125,6 +137,21 @@ class SpiceModules
         return $this->beanList;
     }
 
+    /**
+     * Returns the bean name of a module.
+     *
+     * @param string $moduleName
+     * @return string|null
+     */
+    public function getBeanName(string $moduleName): ?string {
+        return $this->beanList[$moduleName] ?? null;
+    }
+
+    /**
+     * Setter for the bean list.
+     *
+     * @param array $beanList
+     */
     public function setBeanList(array $beanList): void {
         $this->beanList = $beanList;
     }
@@ -134,6 +161,7 @@ class SpiceModules
      *
      * @return array
      * @throws \Exception
+     * @deprecated should be completely removed later
      */
     public function getBeanFiles(): array {
         if (empty($this->beanFiles)) {
@@ -157,6 +185,32 @@ class SpiceModules
         return $this->beanClasses;
     }
 
+    /**
+     * Returns the bean class for a module.
+     *
+     * @param string $beanModule
+     * @return string|null
+     */
+    public function getBeanClassForModule(string $beanModule): ?string {
+        return $this->beanClasses[$beanModule] ?? null;
+    }
+
+    /**
+     * Returns the bean class for a bean name.
+     *
+     * @param string $beanName
+     * @return string|null
+     */
+    public function getBeanClassForBeanName(string $beanName): ?string {
+        return $this->getBeanClassForModule($this->getModuleName($beanName));
+    }
+
+    /**
+     * Setter for a bean class.
+     *
+     * @param string $module
+     * @param string $value
+     */
     public function setBeanClass(string $module, string $value): void {
         $this->beanClasses[$module] = $value;
     }
