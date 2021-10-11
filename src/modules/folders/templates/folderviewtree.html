@@ -1,44 +1,48 @@
 <div [system-overlay-loading-spinner]="isLoading" style="height:100%">
-    <div class="slds-grid slds-p-around_xx-small slds-grid--vertical-align-center">
-        <div class="slds-tree slds-grow ">
+
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-tree slds-grow slds-m-right--medium slds-border--right">
             <div [attr.aria-selected]="selectedItem===''" (click)="selectOutsideFolders()" role="treeitem">
                 <div class="slds-tree__item">
                     <span class="slds-tree__item-label slds-truncate slds-p-left--x-large"><i>Documents not assigned to any folder.</i></span>
                 </div>
             </div>
         </div>
-        <div>
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small" (click)="unselectAll()">
+        <div class="slds-p-around--xx-small">
+            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small"
+                    (click)="unselectAll()">
                 <system-button-icon [icon]="'clear'" [size]="'xx-small'"></system-button-icon>
             </button>
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small" (click)="addFolder()">
+            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small"
+                    (click)="addFolder()">
                 <system-button-icon [icon]="'add'" [size]="'xx-small'"></system-button-icon>
 
             </button>
         </div>
     </div>
 
-    <div role="tree">
+    <div class="slds-scrollable--y" style="height: 750px;" role="tree">
         <ul
-            class="slds-tree " role="tree"
-            aria-labelledby="treeheading">
+                class="slds-tree " role="tree"
+                aria-labelledby="treeheading">
             <li role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn"
                 [attr.aria-level]="item.systemTreeDefs.level"
                 [attr.aria-selected]="item.systemTreeDefs.isSelected"
                 class="slds-grid slds-table_bordered">
                 <folder-view-tree-item [item]="item"
-                                  (click)="handleClick(item.id)"
-                                  [config]="config"
-                                  (toggleExpandedChange)="handleExpand($event)"
-                                  (onFolderDelete)="removeFolderFromList(item.id)"
-                                  (onFolderAdd)="addFolder($event,i)"
-                                  [title]="item.name"
-                                  (doSort)="buildTree()"
-                                  style="width: 100%"
-                                  class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
+                                       (click)="handleClick(item.id)"
+                                       [config]="config"
+                                       (toggleExpandedChange)="handleExpand($event)"
+                                       (onFolderDelete)="removeFolderFromList(item.id)"
+                                       (onFolderAdd)="addFolder($event,i)"
+                                       [title]="item.name"
+                                       (doSort)="buildTree()"
+                                       style="width: 100%"
+                                       class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
                 </folder-view-tree-item>
             </li>
         </ul>
     </div>
 
 </div>
+
