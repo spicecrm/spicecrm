@@ -24,14 +24,16 @@ export class FolderViewTree implements OnInit {
         collapsible: true,
     };
 
-    private _selectedItem: string;
+    private _selectedItem: string = '#all#docs#';
 
     /*
     * selectedItem: string
     */
     private set selectedItem( val: string ) {
+        if ( val === this._selectedItem ) return;
         this._selectedItem = val;
-        this.setAggregate( val );
+        if ( val === '#all#docs#' ) this.removeAllAggregates();
+        else this.setAggregate( val );
     }
 
     /*
@@ -66,14 +68,12 @@ export class FolderViewTree implements OnInit {
 
     public ngOnInit() {
         let moduleName = 'Documents';
-        // this.unSelect();
         this.backend.getRequest('module/Folders/' + moduleName)
             .pipe(take(1))
             .subscribe(data => {
                 this.sourceList = data.list;
                 this.buildTree();
                 this.isLoading = false;
-                // this.unSelect();
                 this.handleClick( this.getFolderIdFromList() );
             });
     }
@@ -225,9 +225,8 @@ export class FolderViewTree implements OnInit {
         return folderId;
     }
 
-
     private setAggregate( folderId: string = '' ) {
-        this.modellist.removeAllAggregates();
+        // this.modellist.removeAllAggregates();
         // this.modellist.setAggregate('folder_id', folderId );
         // console.log(this.modellist.searchAggregates?.folder_id.buckets);
         this.modellist.searchAggregates?.folder_id?.buckets.some( ( item ) => {
@@ -240,6 +239,13 @@ export class FolderViewTree implements OnInit {
         this.modellist.reLoadList();
         // console.log('selectedAgg',this.modellist.selectedAggregates);
         // console.log('searchAgg',this.modellist.searchAggregates?.folder_id.buckets);
+    }
+
+    private removeAllAggregates() {
+        this.modellist.searchAggregates?.folder_id?.buckets.some( ( item ) => {
+            this.modellist.removeAggregate('folder_id', item.aggdata );
+        });
+        this.modellist.reLoadList();
     }
 
     /*
@@ -255,9 +261,9 @@ export class FolderViewTree implements OnInit {
 
     private addFolder( parentId: string = null, index: number = null ): void {
         this.modal.prompt('input', null, 'Folder Name').pipe(take(1)).subscribe(folderName => {
-            if ( folderName ) {
+            if ( folderName !== false ) {
                 folderName = folderName.trim();
-                if( folderName ) {
+                if ( folderName ) {
                     let folder = {
                         name: folderName,
                         parent_id: parentId ? parentId : undefined,
@@ -298,8 +304,14 @@ export class FolderViewTree implements OnInit {
         this.itemRelations[index].childs.forEach( item => this.deleteItemsRecursive( item, toDelete ));
     }
 
-    private unSelect() {
+    private selectOutsideFolders() {
         this.selectedItem = ''; // do we need this?
         this.handleClick('');
     }
+
+    private unselectAll() {
+        this.selectedItem = '#all#docs#';
+    }
+
+
 }
