@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {take} from 'rxjs/operators';
 import {backend} from '../../../services/backend.service';
 import {modellist} from '../../../services/modellist.service';
@@ -6,6 +6,7 @@ import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
 import {modelutilities} from "../../../services/modelutilities.service";
+import { helper } from '../../../services/helper.service';
 
 /* @ignore */
 declare var _: any;
@@ -53,7 +54,6 @@ export class FolderViewTree implements OnInit {
      *     parent_id: string,
      *     parent_sequence: number,
      *     name: string,
-     *     clickable: boolean
      *   }
      * ]
      */
@@ -64,7 +64,7 @@ export class FolderViewTree implements OnInit {
     private isLoading = true;
 
     constructor( private backend: backend, private modellist: modellist, private language: language,
-                 private toast: toast, private modal: modal , private modelutilies: modelutilities ) {}
+                 private toast: toast, private modal: modal , private modelutilies: modelutilities, private helper: helper ) {}
 
     public ngOnInit() {
         let moduleName = 'Documents';
@@ -136,7 +136,6 @@ export class FolderViewTree implements OnInit {
     * {
     *   level: number,
     *   expanded: boolean,
-    *   clickable: boolean,
     *   isSelected: boolean,
     *   hasChildren: boolean
     * }
@@ -148,7 +147,6 @@ export class FolderViewTree implements OnInit {
                     item.systemTreeDefs = {};
                 }
                 item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
-                item.systemTreeDefs.clickable = item.hasOwnProperty('clickable') ? item.clickable : true;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
                 this.tree.push(item);
@@ -184,7 +182,7 @@ export class FolderViewTree implements OnInit {
     }
 
     /*
-    * if the item is clickable select it otherwise expand it and unselect the previous selected item from the tree.
+    * select the item and unselect the previous selected item from the tree.
     * @param id: string
     * @set? item.systemTreeDefs.isSelected
     * @set? selectedItem
@@ -194,24 +192,28 @@ export class FolderViewTree implements OnInit {
     private handleClick(id) {
         this.tree.some(item => {
             if (item.id == id) {
-                if ( item.systemTreeDefs?.clickable) {
-                    if ( !item.systemTreeDefs?.isSelected ) {
-                        item.systemTreeDefs.isSelected = true;
-                        this.selectedItem = id;
-                    }
-                } else {
-                    this.handleExpand(id);
+                if ( !item.systemTreeDefs?.isSelected ) {
+                    item.systemTreeDefs.isSelected = true;
+                    this.selectedItem = id;
                 }
                 return true;
             }
         });
         this.tree.some(item => {
-            if (item.id != id && item.systemTreeDefs && item.systemTreeDefs.isSelected) {
+            if (item.id != id && item.systemTreeDefs?.isSelected) {
                 item.systemTreeDefs.isSelected = false;
                 return true;
             }
         });
+    }
 
+    private unselectActiveTreeItem() {
+        this.tree.some( item => {
+            if( item.systemTreeDefs?.isSelected ) {
+                item.systemTreeDefs.isSelected = false;
+                return true;
+            }
+        });
     }
 
     private getFolderIdFromList() {
@@ -225,26 +227,18 @@ export class FolderViewTree implements OnInit {
         return folderId;
     }
 
-    private setAggregate( folderId: string = '' ) {
-        // this.modellist.removeAllAggregates();
-        // this.modellist.setAggregate('folder_id', folderId );
-        // console.log(this.modellist.searchAggregates?.folder_id.buckets);
-        this.modellist.searchAggregates?.folder_id?.buckets.some( ( item ) => {
-           if ( item.key === folderId || ( item.key === '#not#set#' && folderId === '' )) {
-               this.modellist.setAggregate('folder_id', item.aggdata );
-               return true;
-           }
-        });
-        // this.modellist.setAggregate('folder_id', this.modellist.searchAggregates?.folder_id.buckets[0].aggdata );
-        this.modellist.reLoadList();
-        // console.log('selectedAgg',this.modellist.selectedAggregates);
-        // console.log('searchAgg',this.modellist.searchAggregates?.folder_id.buckets);
+    private setAggregate( folderId ) {
+        if ( !folderId ) folderId = '#not#set#';
+        let aggdata = this.helper.encodeBase64('{"key":"'+folderId+'","displayName":"'+folderId+'"}');
+        if ( !this.modellist.checkAggregate('folder_id', aggdata )) {
+            this.modellist.removeAggregatesOfField('folder_id');
+            this.modellist.setAggregate('folder_id', aggdata );
+            this.modellist.reLoadList();
+        }
     }
 
     private removeAllAggregates() {
-        this.modellist.searchAggregates?.folder_id?.buckets.some( ( item ) => {
-            this.modellist.removeAggregate('folder_id', item.aggdata );
-        });
+        this.modellist.removeAggregatesOfField('folder_id');
         this.modellist.reLoadList();
     }
 
@@ -260,28 +254,30 @@ export class FolderViewTree implements OnInit {
     }
 
     private addFolder( parentId: string = null, index: number = null ): void {
-        this.modal.prompt('input', null, 'Folder Name').pipe(take(1)).subscribe(folderName => {
-            if ( folderName !== false ) {
-                folderName = folderName.trim();
+        this.modal.prompt('input', null, 'Folder Name')
+            .pipe(take(1))
+            .subscribe(folderName => {
                 if ( folderName ) {
-                    let folder = {
-                        name: folderName,
-                        parent_id: parentId ? parentId : undefined,
-                        module: 'Documents',
-                        id: this.modelutilies.generateGuid()
-                    };
-                    this.backend.postRequest( 'module/Folders/' + folder.id, {}, folder ).pipe( take( 1 ) ).subscribe( asdf => {
-                            this.toast.sendToast( this.language.getLabel( 'MSG_FOLDER_SUCCESFULY_ADEED' ), 'success' );
-                            this.sourceList.push( folder );
-                            if( index !== null && this.tree[index] ) this.tree[index].systemTreeDefs.expanded = true;
-                            this.buildTree();
-                        },
-                        error => {
-                            this.toast.sendToast( this.language.getLabel( 'LBL_ERROR' ), 'error' );
-                        } );
+                    folderName = folderName.trim();
+                    if ( folderName ) {
+                        let folder = {
+                            name: folderName,
+                            parent_id: parentId ? parentId : undefined,
+                            module: 'Documents',
+                            id: this.modelutilies.generateGuid()
+                        };
+                        this.backend.postRequest( 'module/Folders/' + folder.id, {}, folder ).pipe( take( 1 ) ).subscribe( () => {
+                                this.toast.sendToast( this.language.getLabel( 'MSG_FOLDER_SUCCESSFULY_ADDED' ), 'success' );
+                                this.sourceList.push( folder );
+                                if( index !== null && this.tree[index] ) this.tree[index].systemTreeDefs.expanded = true;
+                                this.buildTree();
+                            },
+                            error => {
+                                this.toast.sendToast( this.language.getLabel( 'LBL_ERROR' ), 'error' );
+                            } );
+                    }
                 }
-            }
-        });
+            });
     }
 
     private removeFolderFromList( id: string ) {
@@ -305,13 +301,16 @@ export class FolderViewTree implements OnInit {
     }
 
     private selectOutsideFolders() {
-        this.selectedItem = ''; // do we need this?
-        this.handleClick('');
+        this.selectedItem = '';
+        this.unselectActiveTreeItem();
     }
 
     private unselectAll() {
         this.selectedItem = '#all#docs#';
     }
 
+    private drop( data ) {
+        console.log(data);
+    }
 
 }
