@@ -49,7 +49,13 @@ export class BonusCardNewButton implements OnInit {
             program = await this.promptProgramSelection();
         }
 
-        const dates: {date_start: string, date_end: string} = await this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`).toPromise();
+        const dates: { date_start: string, date_end: string } = await this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`)
+            .toPromise()
+            .catch(() =>
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
+            );
+
+        if (!dates) return;
 
         this.addNew({...program, ...dates});
 
@@ -63,39 +69,6 @@ export class BonusCardNewButton implements OnInit {
         if (this.metadata.checkModuleAcl(this.model.module, "create")) {
             this.disabled = false;
         }
-    }
-
-    /**
-     * prompt to select a program and then open the add modal.
-     */
-    private async promptProgramSelection(): Promise<{ id: string, name: string }> {
-
-        const params = {
-            start: 0,
-            limit: 1000
-        };
-        const sortArray = [{
-            sortfield: 'last_run_date',
-            sortdirection: 'DESC'
-        }];
-
-        const programs: { list, object } = await this.backend.getList('BonusPrograms', sortArray, params).toPromise() as any;
-
-        if (!programs?.list || programs.list.length === 0) {
-            this.toast.sendToast('LBL_NO_PROGRAMS_FOUND', 'warning');
-            return undefined;
-        }
-
-        const options = programs.list.map(item => ({value: item.id, display: item.summary_text}));
-
-        const programId: string | false = await this.modal.prompt('input', 'MSG_SELECT_PROGRAM', 'LBL_BONUSCARD', 'shade', null, options, true).toPromise();
-
-        if (!programId) return undefined;
-
-        return {
-            id: programId,
-            name: options.find(o => o.value == programId).display
-        };
     }
 
     /**
@@ -116,5 +89,40 @@ export class BonusCardNewButton implements OnInit {
         }
 
         this.model.addModel('', this.parentModel, presets);
+    }
+
+    /**
+     * prompt to select a program and then open the add modal.
+     */
+    private async promptProgramSelection(): Promise<{ id: string, name: string }> {
+
+        const params = {
+            start: 0,
+            limit: 1000
+        };
+        const sortArray = [{
+            sortfield: 'last_run_date',
+            sortdirection: 'DESC'
+        }];
+
+        const programs: { list, object } = await this.backend.getList('BonusPrograms', sortArray, params).toPromise().then(() =>
+            this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
+        ) as any;
+
+        if (!programs?.list || programs.list.length === 0) {
+            this.toast.sendToast('LBL_NO_PROGRAMS_FOUND', 'warning');
+            return undefined;
+        }
+
+        const options = programs.list.map(item => ({value: item.id, display: item.summary_text}));
+
+        const programId: string | false = await this.modal.prompt('input', 'MSG_SELECT_PROGRAM', 'LBL_BONUSCARD', 'shade', null, options, true).toPromise();
+
+        if (!programId) return undefined;
+
+        return {
+            id: programId,
+            name: options.find(o => o.value == programId).display
+        };
     }
 }
