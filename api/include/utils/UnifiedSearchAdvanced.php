@@ -106,7 +106,7 @@ class UnifiedSearchAdvanced {
 	            {
                     if (isset($unified_search_modules_display[$key]) && !empty($unified_search_modules_display[$key]['visible']))
                     {
-                        $modules_to_search[$key] = SpiceModules::getInstance()->getBeanList()[$key];
+                        $modules_to_search[$key] = SpiceModules::getInstance()->getBeanName($key);
                     }
 	            }
 			}
@@ -121,13 +121,13 @@ class UnifiedSearchAdvanced {
 				// use user's previous selections
 			    foreach ( $users_modules as $key => $value ) {
 			    	if (isset($unified_search_modules_display[$key]) && !empty($unified_search_modules_display[$key]['visible'])) {
-		            	$modules_to_search[$key] = SpiceModules::getInstance()->getBeanList()[$key];
+		            	$modules_to_search[$key] = SpiceModules::getInstance()->getBeanName($key);
 		        	}
 			    }
 			} else {
 				foreach($unified_search_modules_display as $module=>$data) {
 				    if (!empty($data['visible']) ) {
-				        $modules_to_search[$module] = SpiceModules::getInstance()->getBeanList()[$module];
+				        $modules_to_search[$module] = SpiceModules::getInstance()->getBeanName($module);
 				    }
 				}
 			}

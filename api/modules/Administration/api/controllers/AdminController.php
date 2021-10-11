@@ -606,7 +606,7 @@ class AdminController
         if (SpiceUtils::isAdmin($current_user)) {
             if (!empty($ACLActions)) {
                 foreach ($ACLActions as $action) {
-                    if (!isset(SpiceModules::getInstance()->getBeanList()[$action->category])) {
+                    if (empty(SpiceModules::getInstance()->getBeanName($action->category))) {
                         ACLAction::removeActions($action->category);
                     }
 
