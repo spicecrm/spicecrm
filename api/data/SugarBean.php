@@ -1433,7 +1433,6 @@ class SugarBean
         $notificationLoader->createChangeNotifications($this, $check_notify);
         $notificationLoader->createAssignNotification($this, $check_notify);
 
-        LoggerManager::getLogger()->fatal("email just before saving to the DB" );
         if ($isUpdate) {
             $this->db->update($this);
         } else {
