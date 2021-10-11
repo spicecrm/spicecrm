@@ -11,6 +11,7 @@ import /*embed*/ {SystemPopOverDirective} from "./directives/systempopover";
 import /*embed*/ {SystemModelProviderDirective} from "./directives/systemmodelprovider";
 import /*embed*/ {SystemAutofocusDirective} from "./directives/systemautofocus";
 import /*embed*/ {SystemDropdownTriggerDirective} from "./directives/systemdropdowntrigger";
+import /*embed*/ {SystemDropdownTriggerButtonDirective} from "./directives/systemdropdowntriggerbutton";
 import /*embed*/ {SystemDropdownTriggerSimpleDirective} from "./directives/systemdropdowntriggersimple";
 import /*embed*/ {SystemToBottomDirective} from "./directives/systemtobottom";
 import /*embed*/ {SystemToBottomNoScrollDirective} from "./directives/systemtobottomnoscroll";
@@ -36,6 +37,7 @@ import /*embed*/ {SystemMultiSelectCheckboxesDirective} from './directives/syste
         SystemModelProviderDirective,
         SystemAutofocusDirective,
         SystemDropdownTriggerDirective,
+        SystemDropdownTriggerButtonDirective,
         SystemDropdownTriggerSimpleDirective,
         SystemToBottomDirective,
         SystemToBottomNoScrollDirective,
@@ -54,6 +56,7 @@ import /*embed*/ {SystemMultiSelectCheckboxesDirective} from './directives/syste
         SystemModelProviderDirective,
         SystemAutofocusDirective,
         SystemDropdownTriggerDirective,
+        SystemDropdownTriggerButtonDirective,
         SystemDropdownTriggerSimpleDirective,
         SystemToBottomDirective,
         SystemToBottomNoScrollDirective,

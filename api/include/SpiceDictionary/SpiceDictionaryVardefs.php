@@ -511,13 +511,23 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
      * @throws \Exception
      */
     public static function loadRelationshipFromRelationshipsTable($module = null){
+        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $relationships = [];
+
+        // load metadatafiles for fields details on relationship tables
+        SpiceDictionaryHandler::loadMetaDataFiles();
+
         $addWhere = (!empty($module) ? " AND (lhs_module='{$module}' OR rhs_module='{$module}' )" : '');
         $q = "SELECT rel.* FROM relationships rel WHERE rel.deleted=0 ".$addWhere;
         if($res = $db->query($q)) {
             while ($row = $db->fetchByAssoc($res)) {
                 $relationships[$row['relationship_name']] = $row;
+                if($row['relationship_type'] == 'many-to-many'){
+                    if(isset($dictionary[$relationships[$row['relationship_name']]['join_table']]) && !empty($dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'])){
+                        $relationships[$row['relationship_name']]['fields'] = $dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'];
+                    }
+                }
             }
         }
         return $relationships;
