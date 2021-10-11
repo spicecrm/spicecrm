@@ -32,7 +32,7 @@
         <!-- standard actions -->
         <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
             <ul class="slds-dropdown__list" role="menu">
-                <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of groupedAddActionItems()" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+                <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of addactionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
                     <a href="javascript:void(0);" role="menuitem" tabindex="0">
                         <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
                     </a>
