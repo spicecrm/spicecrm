@@ -82,6 +82,8 @@ export class BonusCardBulkExtendButton {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'));
             });
 
-        });
+        },
+            () => this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
+        );
     }
 }

@@ -66,7 +66,7 @@ export class BonusCardExtendButton {
                     confirmAnswer = await this.modal.prompt('input_date', text, 'LBL_EXTEND', 'shade', newUntilDate).toPromise();
                     newUntilDate = confirmAnswer;
                 } else {
-                    text += ` ${this.language.getLabel('LBL_NEW_VALID_UNTIL_DATE')} ${newUntilDate.format(this.userpreferences.getDateFormat())}`;
+                    text += ` ${newUntilDate.format(this.userpreferences.getDateFormat())}`;
                     confirmAnswer = await this.modal.confirm(text, 'LBL_EXTEND').toPromise();
                 }
 
@@ -84,6 +84,8 @@ export class BonusCardExtendButton {
                 });
                 this.extensionModel.save();
             }
-        });
+        },
+            () => this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
+        );
     }
 }
