@@ -19,7 +19,7 @@
     </div>
 
     <div role="tree">
-        <ul
+        <ul cdkDropList id="folderList" (cdkDropListDropped)="drop($event)"
             class="slds-tree " role="tree"
             aria-labelledby="treeheading">
             <li role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn"
