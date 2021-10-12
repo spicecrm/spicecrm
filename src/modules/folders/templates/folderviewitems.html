@@ -1,13 +1,13 @@
 <div class="slds-tree__item">
     <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
         <div style="min-width: 16px">
-            <button *ngIf="config.collapsible && item.systemTreeDefs.hasChildren" [disabled]="config.expandall"
+            <button *ngIf="item.systemTreeDefs.hasChildren"
                     class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
                     (click)="expand(item, $event)">
                 <system-button-icon [icon]="item.systemTreeDefs.expanded ? 'chevrondown' : 'chevronright'" size="xx-small"></system-button-icon>
             </button>
-            <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
-                                 [addclasses]="'slds-button__icon slds-button__icon_small'"></system-utility-icon>
+            <!--system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
+                                 [addclasses]="'slds-button__icon slds-button__icon_small'"></system-utility-icon-->
         </div>
         <div class="slds-truncate">
             <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>

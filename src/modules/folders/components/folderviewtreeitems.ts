@@ -53,7 +53,7 @@ constructor( private language: language, private backend: backend, private toast
     /*
     * @input config: object
     */
-    @Input() private config: any = {};
+    // @Input() private config: any = {};
 
     /*
     * @param item: object
