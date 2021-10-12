@@ -1,14 +1,14 @@
-<div [system-overlay-loading-spinner]="isLoading" style="height:100%">
+<div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid--vertical slds-height_full">
 
     <div class="slds-grid slds-grid--vertical-align-center">
-        <div class="slds-tree slds-grow slds-m-right--medium slds-border--right">
+        <div class="slds-tree slds-grow slds-border--right">
             <div [attr.aria-selected]="selectedItem===''" (click)="selectOutsideFolders()" role="treeitem">
-                <div class="slds-tree__item">
+                <div class="slds-tree__item slds-p-vertical--x-small">
                     <span class="slds-tree__item-label slds-truncate slds-p-left--x-large"><i>Documents not assigned to any folder.</i></span>
                 </div>
             </div>
         </div>
-        <div class="slds-p-around--xx-small">
+        <div class="slds-p-horizontal--x-small">
             <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small"
                     (click)="unselectAll()">
                 <system-button-icon [icon]="'clear'" [size]="'xx-small'"></system-button-icon>
@@ -21,17 +21,17 @@
         </div>
     </div>
 
-    <div role="tree">
-        <ul cdkDropList id="folderList" (cdkDropListDropped)="drop($event)"
+    <div role="tree" class="slds-grow slds-height_full slds-scrollable--y">
+        <ul id="folderList"
             class="slds-tree " role="tree"
             aria-labelledby="treeheading">
-            <li role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn"
+            <li role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn" cdkDropList (cdkDropListDropped)="drop($event,item)"
                 [attr.aria-level]="item.systemTreeDefs.level"
                 [attr.aria-selected]="item.systemTreeDefs.isSelected"
                 class="slds-grid slds-table_bordered">
                 <folder-view-tree-item [item]="item"
                                   (click)="handleClick(item.id)"
-                                  [config]="config"
+
                                   (toggleExpandedChange)="handleExpand($event)"
                                   (onFolderDelete)="removeFolderFromList(item.id)"
                                   (onFolderAdd)="addFolder($event,i)"
@@ -39,7 +39,7 @@
                                   (doSort)="buildTree()"
                                   style="width: 100%"
                                   class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
-                </folder-view-tree-item>
+                </folder-view-tree-item><!-- [config]="config" -->
             </li>
         </ul>
     </div>

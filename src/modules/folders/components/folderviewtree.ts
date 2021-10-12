@@ -18,12 +18,14 @@ declare var _: any;
 
 export class FolderViewTree implements OnInit {
 
+    /*
     private config: any = {
-        draggable: false,
-        canadd: false,
+        // draggable: false,
+        // canadd: false,
         expandall: false,
-        collapsible: true,
+        // collapsible: true,
     };
+     */
 
     private _selectedItem: string = '#all#docs#';
 
@@ -114,6 +116,7 @@ export class FolderViewTree implements OnInit {
     */
     private sortBySequence() {
         this.language.sortObjects( this.sourceList, 'name');
+        console.log(_.clone(this.sourceList));
         let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
         this.sourceList = [];
         for (let parentId in groupedByParent) {
@@ -146,7 +149,8 @@ export class FolderViewTree implements OnInit {
                 if (!item.systemTreeDefs) {
                     item.systemTreeDefs = {};
                 }
-                item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
+                // item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
+                item.systemTreeDefs.expanded = !!item.systemTreeDefs.expanded;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
                 this.tree.push(item);
@@ -309,8 +313,10 @@ export class FolderViewTree implements OnInit {
         this.selectedItem = '#all#docs#';
     }
 
-    private drop( data ) {
-        console.log(data);
+    private drop( documentData, folderItem ) {
+        this.backend.postRequest('module/Documents/'+documentData.item.data.id, {}, {folder_id:folderItem.id}).subscribe( response => {
+            this.modellist.reLoadList();
+        });
     }
 
 }
