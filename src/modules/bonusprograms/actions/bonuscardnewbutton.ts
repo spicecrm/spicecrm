@@ -105,7 +105,7 @@ export class BonusCardNewButton implements OnInit {
             sortdirection: 'DESC'
         }];
 
-        const programs: { list, object } = await this.backend.getList('BonusPrograms', sortArray, params).toPromise().then(() =>
+        const programs: { list, object } = await this.backend.getList('BonusPrograms', sortArray, params).toPromise().catch(() =>
             this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
         ) as any;
 
