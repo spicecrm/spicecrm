@@ -38,6 +38,7 @@ namespace SpiceCRM\includes;
 
 use DateTime;
 use DateTimeZone;
+use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
