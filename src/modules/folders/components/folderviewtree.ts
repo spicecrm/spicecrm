@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import {take} from 'rxjs/operators';
 import {backend} from '../../../services/backend.service';
 import {modellist} from '../../../services/modellist.service';
@@ -7,6 +7,7 @@ import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import { helper } from '../../../services/helper.service';
+import { model } from '../../../services/model.service';
 
 /* @ignore */
 declare var _: any;
@@ -27,16 +28,19 @@ export class FolderViewTree implements OnInit {
     };
      */
 
-    private _selectedItem: string = '#all#docs#';
+    @Output() private folderId = new EventEmitter();
+
+    private _selectedItem: string = null;
 
     /*
     * selectedItem: string
     */
     private set selectedItem( val: string ) {
+        this.folderId.emit(val);
         if ( val === this._selectedItem ) return;
         this._selectedItem = val;
-        if ( val === '#all#docs#' ) this.removeAllAggregates();
-        else this.setAggregate( val );
+        this.setAggregate( val );
+        this.model.setField('folder_id', val );
     }
 
     /*
@@ -66,7 +70,7 @@ export class FolderViewTree implements OnInit {
     private isLoading = true;
 
     constructor( private backend: backend, private modellist: modellist, private language: language,
-                 private toast: toast, private modal: modal , private modelutilies: modelutilities, private helper: helper ) {}
+                 private toast: toast, private modal: modal , private modelutilies: modelutilities, private helper: helper, private model: model ) {}
 
     public ngOnInit() {
         let moduleName = 'Documents';
@@ -76,7 +80,8 @@ export class FolderViewTree implements OnInit {
                 this.sourceList = data.list;
                 this.buildTree();
                 this.isLoading = false;
-                this.handleClick( this.getFolderIdFromList() );
+                let folderIdFromList = this.getFolderIdFromList();
+                if ( folderIdFromList !== null ) this.handleClick( folderIdFromList );
             });
     }
 
@@ -195,7 +200,7 @@ export class FolderViewTree implements OnInit {
     */
     private handleClick(id) {
         this.tree.some(item => {
-            if (item.id == id) {
+            if (item.id === id) {
                 if ( !item.systemTreeDefs?.isSelected ) {
                     item.systemTreeDefs.isSelected = true;
                     this.selectedItem = id;
@@ -220,17 +225,6 @@ export class FolderViewTree implements OnInit {
         });
     }
 
-    private getFolderIdFromList() {
-        let folderId = '';
-        this.modellist.searchAggregates?.folder_id?.buckets.some( item => {
-            if( item.key && item.key !== '#not#set#' ) {
-                folderId = item.key;
-                return true;
-            }
-        } );
-        return folderId;
-    }
-
     private setAggregate( folderId ) {
         if ( !folderId ) folderId = '#not#set#';
         let aggdata = this.helper.encodeBase64('{"key":"'+folderId+'","displayName":"'+folderId+'"}');
@@ -239,6 +233,19 @@ export class FolderViewTree implements OnInit {
             this.modellist.setAggregate('folder_id', aggdata );
             this.modellist.reLoadList();
         }
+    }
+
+    public getFolderIdFromList() {
+        let folderId = null;
+        this.modellist.selectedAggregates.some( item => {
+            let dummy = item.split('::',2);
+            if ( dummy[0] === 'folder_id') {
+                let aggdataObject = JSON.parse( this.helper.decodeBase64( dummy[1] ));
+                folderId = aggdataObject.key;
+            }
+        });
+        if ( folderId === '#not#set#' ) folderId = '';
+        return folderId;
     }
 
     private removeAllAggregates() {
@@ -309,13 +316,17 @@ export class FolderViewTree implements OnInit {
         this.unselectActiveTreeItem();
     }
 
+    /*
     private unselectAll() {
         this.selectedItem = '#all#docs#';
     }
 
+     */
+
     private drop( documentData, folderItem ) {
         this.backend.postRequest('module/Documents/'+documentData.item.data.id, {}, {folder_id:folderItem.id}).subscribe( response => {
-            this.modellist.reLoadList();
+            // Reload list, but before give elastic a chance with a little bit of timeout:
+            window.setTimeout( () => this.modellist.reLoadList(true), 500 );
         });
     }
 
@@ -324,6 +335,5 @@ export class FolderViewTree implements OnInit {
     public toggleDisplay() {
         this.isShow = !this.isShow;
     }
-
 
 }
