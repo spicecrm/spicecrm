@@ -11,4 +11,10 @@ export class FolderObjectListView {
 
     // constructor() { }
 
+    private folderId: string = null;
+
+    private setFolderId( folderId ) {
+        this.folderId = folderId;
+    }
+
 }

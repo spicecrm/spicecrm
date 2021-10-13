@@ -99,6 +99,14 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
+     * gets if the config has no autoload set
+     */
+    get dragAndDrop() {
+        return true;
+        return this.componentconfig.draganddrop === true;
+    }
+
+    /**
      * returns if the list can load more records
      */
     get canLoadMore() {
