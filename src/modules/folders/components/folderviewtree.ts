@@ -319,4 +319,11 @@ export class FolderViewTree implements OnInit {
         });
     }
 
+    private isShow = true;
+
+    public toggleDisplay() {
+        this.isShow = !this.isShow;
+    }
+
+
 }

@@ -1,37 +1,26 @@
-<div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid--vertical slds-height_full">
-
-    <div class="slds-grid slds-grid--vertical-align-center">
-        <div class="slds-tree slds-grow slds-border--right">
-            <div [attr.aria-selected]="selectedItem===''" (click)="selectOutsideFolders()" role="treeitem">
-                <div class="slds-tree__item slds-p-vertical--x-small">
-                    <span class="slds-tree__item-label slds-truncate slds-p-left--x-large"><i>Documents not assigned to any folder.</i></span>
-                </div>
-            </div>
-        </div>
-        <div class="slds-p-horizontal--x-small">
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small"
-                    (click)="unselectAll()">
-                <system-button-icon [icon]="'clear'" [size]="'xx-small'"></system-button-icon>
-            </button>
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-button_icon-small"
-                    (click)="addFolder()">
-                <system-button-icon [icon]="'add'" [size]="'xx-small'"></system-button-icon>
-
-            </button>
-        </div>
-    </div>
-
+<div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid--vertical" system-to-bottom>
     <div role="tree" class="slds-grow slds-height_full slds-scrollable--y">
         <ul id="folderList"
             class="slds-tree " role="tree"
             aria-labelledby="treeheading">
-            <li role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn" cdkDropList (cdkDropListDropped)="drop($event,item)"
+            <li>
+                <div class="slds-tree slds-grow">
+
+                    <div [attr.aria-selected]="selectedItem===''" (click)="selectOutsideFolders()" role="treeitem">
+                        <div class="slds-tree__item slds-p-vertical--x-small">
+                            <system-button-icon [icon]="isShow ? 'chevronright' : 'chevrondown'" size="xx-small" (click) = toggleDisplay()></system-button-icon>
+                            <span class="slds-tree__item-label slds-truncate slds-p-left--x-small"><system-label label="LBL_CORE"></system-label></span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+<div [hidden] ="isShow">
+            <li  role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn" cdkDropList (cdkDropListDropped)="drop($event,item)"
                 [attr.aria-level]="item.systemTreeDefs.level"
                 [attr.aria-selected]="item.systemTreeDefs.isSelected"
                 class="slds-grid slds-table_bordered">
                 <folder-view-tree-item [item]="item"
                                   (click)="handleClick(item.id)"
-
                                   (toggleExpandedChange)="handleExpand($event)"
                                   (onFolderDelete)="removeFolderFromList(item.id)"
                                   (onFolderAdd)="addFolder($event,i)"
@@ -41,8 +30,16 @@
                                   class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
                 </folder-view-tree-item><!-- [config]="config" -->
             </li>
+</div>
         </ul>
     </div>
 
+    <div class="slds-grid slds-text-align--center slds-p-around--x-small slds-align-bottom ">
+            <button class="slds-button slds-button--neutral slds-button--brand" title="Add Parent Folder"
+                    (click)="addFolder()">
+                <system-label label="LBL_ADD_FOLDER"></system-label>
+            </button>
+        </div>
 </div>
+
 
