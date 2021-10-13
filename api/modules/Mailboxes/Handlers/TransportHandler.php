@@ -48,7 +48,7 @@ abstract class TransportHandler
 
     public function sendMail($email)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if ($this->mailbox->active == false) {
             return [
