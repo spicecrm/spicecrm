@@ -1098,7 +1098,7 @@ function findRelationships($lhs_module, $rhs_module, $name = "", $type = "") {
  */
 function create_date($year=null,$mnth=null,$day=null)
 {
-    global $timedate;
+    $timedate = TimeDate::getInstance();
     $now = $timedate->getNow();
     if ($day==null) $day=$now->day+mt_rand(0,365);
     return $timedate->asDbDate($now->get_day_begin($day, $mnth, $year));

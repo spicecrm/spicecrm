@@ -125,7 +125,7 @@ class Email extends SugarBean
     public function save($check_notify = false, $fts_index_bean = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if ($this->isDuplicate) {
             LoggerManager::getLogger()->debug("EMAIL - tried to save a duplicate Email record");

@@ -694,7 +694,7 @@ class SpiceUtils
      * @return mixed
      */
     public static function createDate($year = null, $mnth = null, $day = null) {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $now = $timedate->getNow();
         if ($day==null) {
             $day=$now->day+mt_rand(0,365);
