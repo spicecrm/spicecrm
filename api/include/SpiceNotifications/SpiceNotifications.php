@@ -31,7 +31,7 @@ class SpiceNotifications
     const TYPE_RELATE     = 'relate';
 
     public function __construct(SugarBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null) {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();
         $this->beanModule = $bean->module_dir; // todo change it to the actual module name

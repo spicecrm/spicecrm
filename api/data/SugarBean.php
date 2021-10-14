@@ -1457,7 +1457,6 @@ class SugarBean
         }
 
         $this->call_custom_logic('after_save', '');
-
         // call fts manager to index the bean
         if ($fts_index_bean) {
 
