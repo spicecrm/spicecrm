@@ -19,6 +19,15 @@ declare var _: any;
 
 export class FolderViewTree implements OnInit {
 
+    /*
+    private config: any = {
+        // draggable: false,
+        // canadd: false,
+        expandall: false,
+        // collapsible: true,
+    };
+     */
+
     @Output() private folderId = new EventEmitter();
 
     private _selectedItem: string = null;
@@ -41,6 +50,9 @@ export class FolderViewTree implements OnInit {
         return this._selectedItem;
     }
 
+    /*
+    * tree: array
+    * */
     public tree: any[] = [];
 
     /**
@@ -49,6 +61,7 @@ export class FolderViewTree implements OnInit {
      *   {
      *     id: string,
      *     parent_id: string,
+     *     parent_sequence: number,
      *     name: string,
      *   }
      * ]
@@ -62,6 +75,9 @@ export class FolderViewTree implements OnInit {
     constructor( private backend: backend, private modellist: modellist, private language: language,
                  private toast: toast, private modal: modal , private modelutilies: modelutilities, private helper: helper, private model: model ) {}
 
+    /*
+    * getting all folders from database
+    * */
     public ngOnInit() {
         let moduleName = 'Documents';
         this.backend.getRequest('module/Folders/' + moduleName)
@@ -74,7 +90,9 @@ export class FolderViewTree implements OnInit {
                 if ( folderIdFromList !== null ) this.handleClick( folderIdFromList );
             });
     }
-
+    /*
+    * building relations between parent and child folder
+    * */
     private buildItemRelations() {
         this.itemRelations = [];
         let indexes = {};
@@ -95,7 +113,7 @@ export class FolderViewTree implements OnInit {
     */
     private buildTree() {
         this.tree = [];
-        this.sortSourceList();
+        this.sortBySequence();
         this.addTreeItem();
         this.setHasChildren();
         this.buildItemRelations();
@@ -109,8 +127,17 @@ export class FolderViewTree implements OnInit {
     * @reset sourceList
     * @sort by parent_sequence
     */
-    private sortSourceList() {
+    private sortBySequence() {
         this.language.sortObjects( this.sourceList, 'name');
+        console.log(_.clone(this.sourceList));
+        let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
+        this.sourceList = [];
+        for (let parentId in groupedByParent) {
+            if (groupedByParent.hasOwnProperty(parentId)) {
+                groupedByParent[parentId].sort((a, b) => a.parent_sequence && b.parent_sequence ? +a.parent_sequence > +b.parent_sequence ? 1 : -1 : 0);
+                this.sourceList = [...this.sourceList, ...groupedByParent[parentId]];
+            }
+        }
     }
 
     /*
@@ -135,6 +162,7 @@ export class FolderViewTree implements OnInit {
                 if (!item.systemTreeDefs) {
                     item.systemTreeDefs = {};
                 }
+                // item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
                 item.systemTreeDefs.expanded = !!item.systemTreeDefs.expanded;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
@@ -195,7 +223,9 @@ export class FolderViewTree implements OnInit {
             }
         });
     }
-
+    /*
+    * unselect folder
+    * */
     private unselectActiveTreeItem() {
         this.tree.some( item => {
             if( item.systemTreeDefs?.isSelected ) {
@@ -204,7 +234,9 @@ export class FolderViewTree implements OnInit {
             }
         });
     }
-
+    /*
+    * check folder id and setting aggregate for it
+    * */
     private setAggregate( folderId ) {
         if ( !folderId ) folderId = '#not#set#';
         let aggdata = this.helper.encodeBase64('{"key":"'+folderId+'","displayName":"'+folderId+'"}');
@@ -214,7 +246,9 @@ export class FolderViewTree implements OnInit {
             this.modellist.reLoadList();
         }
     }
-
+    /*
+    * getting folder id from currently selected aggregate
+    * */
     public getFolderIdFromList() {
         let folderId = null;
         this.modellist.selectedAggregates.some( item => {
@@ -227,7 +261,9 @@ export class FolderViewTree implements OnInit {
         if ( folderId === '#not#set#' ) folderId = '';
         return folderId;
     }
-
+    /*
+    * remove all aggregates filters
+    * */
     private removeAllAggregates() {
         this.modellist.removeAggregatesOfField('folder_id');
         this.modellist.reLoadList();
@@ -243,7 +279,9 @@ export class FolderViewTree implements OnInit {
     private trackByFn(index, item) {
         return item.id;
     }
-
+    /*
+    * add new parent folder with backend request
+    * */
     private addFolder( parentId: string = null, index: number = null ): void {
         this.modal.prompt('input', null, 'Folder Name')
             .pipe(take(1))
@@ -270,7 +308,9 @@ export class FolderViewTree implements OnInit {
                 }
             });
     }
-
+    /*
+    * delete folder from tree, when it's a parent folder also all children folders
+    * */
     private removeFolderFromList( id: string ) {
         let itemsToDelete: any[] = [];
         this.sourceList.find( ( item, i ) => {
@@ -286,15 +326,25 @@ export class FolderViewTree implements OnInit {
         this.buildTree();
     }
 
+    /*
+    * deleting all child folders
+    * */
+
     private deleteItemsRecursive( index, toDelete: number[] ) {
         toDelete.push(index);
         this.itemRelations[index].childs.forEach( item => this.deleteItemsRecursive( item, toDelete ));
     }
-
+    /*
+    * select all documents that don't have any folder
+    * */
     private selectOutsideFolders() {
         this.selectedItem = '';
         this.unselectActiveTreeItem();
     }
+
+   /*
+   * backend request, that save new folder for particular document by drag and drop
+   * */
 
     private drop( documentData, folderItem ) {
         this.backend.postRequest('module/Documents/'+documentData.item.data.id, {}, {folder_id:folderItem.id}).subscribe( response => {
@@ -303,10 +353,14 @@ export class FolderViewTree implements OnInit {
         });
     }
 
-    private showTree = true;
 
-    public toggleTree() {
-        this.showTree = !this.showTree;
+    /*
+    * change direction of chevron
+    * */
+
+    private isShow = true;
+    public toggleDisplay() {
+        this.isShow = !this.isShow;
     }
 
 }

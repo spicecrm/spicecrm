@@ -60,6 +60,9 @@ constructor( private language: language, private backend: backend, private toast
         if (e && e.stopPropagation) e.stopPropagation();
     }
 
+    /*
+    * delete child folder with backend request
+     */
     public deleteFolder() {
         this.backend.deleteRequest('module/Folders/' + this.item.id)
             .pipe(take(1))
@@ -68,6 +71,10 @@ constructor( private language: language, private backend: backend, private toast
               this.toast.sendToast(this.language.getLabel("MSG_SUCCESSFULLY_DELETED"), "success");
             });
     }
+
+        /*
+        * edit name of folder with backend request
+         */
 
     private editFolderName(): void {
         this.modal.prompt('input', null, 'Folder Name', null, this.item.name ).pipe(take(1)).subscribe(folderName => {

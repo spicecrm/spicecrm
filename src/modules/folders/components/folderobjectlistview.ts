@@ -11,6 +11,9 @@ export class FolderObjectListView {
 
     private folderId: string = null;
 
+    /*
+    * getting folder id
+    * */
     private setFolderId( folderId ) {
         this.folderId = folderId;
     }
