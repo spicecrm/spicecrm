@@ -10,6 +10,7 @@ import {modelutilities} from "./modelutilities.service";
 import {Observable, of, Subject} from "rxjs";
 import {toast} from "./toast.service";
 import {language} from './language.service';
+import {tap} from "rxjs/operators";
 
 /**
  * @ignore
@@ -468,7 +469,7 @@ export class relatedmodels implements OnDestroy {
             this.model.addRelatedRecords(this._linkName, items);
             this.items = this.items.concat(items);
             this.count = this.count + items.length;
-            return;
+            return of(false) ;
         }
 
         if (!this.isonlyfiltered) {
@@ -476,31 +477,29 @@ export class relatedmodels implements OnDestroy {
             for (let item of items) {
                 relatedIds.push(item.id);
             }
-            this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(() => {
-
-                for (let item of items) {
-                    // check if we shoudl add this item or it is already in the related models list
-                    let itemfound = false;
-                    this.items.some(curitem => {
-                        if (curitem.id == item.id) {
-                            itemfound = true;
-                            return true;
+            return this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).pipe(
+                tap(() => {
+                    let retSubject = new Subject<any>();
+                    for (let item of items) {
+                        let itemfound = false;
+                        this.items.some(curitem => {
+                            if (curitem.id == item.id) {
+                                itemfound = true;
+                                return true;
+                            }
+                        });
+                        if (!itemfound) {
+                            this.items.push(item);
+                            this.count++;
                         }
-                    });
-                    if (!itemfound) {
-                        this.items.push(item);
-                        this.count++;
                     }
-                }
-
-                // emit that a change has happened
-                // this.items$.emit(this.items);
-
-                // this.items = this.items.concat(items);
-                // this.count += items.length;
-            });
+                    retSubject.next(true);
+                    retSubject.complete();
+                })
+            );
         } else {
             this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_ADD'), 'error');
+            return of(false) ;
         }
     }
 
