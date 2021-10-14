@@ -19,15 +19,6 @@ declare var _: any;
 
 export class FolderViewTree implements OnInit {
 
-    /*
-    private config: any = {
-        // draggable: false,
-        // canadd: false,
-        expandall: false,
-        // collapsible: true,
-    };
-     */
-
     @Output() private folderId = new EventEmitter();
 
     private _selectedItem: string = null;
@@ -121,7 +112,6 @@ export class FolderViewTree implements OnInit {
     */
     private sortBySequence() {
         this.language.sortObjects( this.sourceList, 'name');
-        console.log(_.clone(this.sourceList));
         let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
         this.sourceList = [];
         for (let parentId in groupedByParent) {
@@ -154,7 +144,6 @@ export class FolderViewTree implements OnInit {
                 if (!item.systemTreeDefs) {
                     item.systemTreeDefs = {};
                 }
-                // item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
                 item.systemTreeDefs.expanded = !!item.systemTreeDefs.expanded;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
@@ -316,13 +305,6 @@ export class FolderViewTree implements OnInit {
         this.unselectActiveTreeItem();
     }
 
-    /*
-    private unselectAll() {
-        this.selectedItem = '#all#docs#';
-    }
-
-     */
-
     private drop( documentData, folderItem ) {
         this.backend.postRequest('module/Documents/'+documentData.item.data.id, {}, {folder_id:folderItem.id}).subscribe( response => {
             // Reload list, but before give elastic a chance with a little bit of timeout:
@@ -330,10 +312,10 @@ export class FolderViewTree implements OnInit {
         });
     }
 
-    private isShow = true;
+    private showTree = true;
 
-    public toggleDisplay() {
-        this.isShow = !this.isShow;
+    public toggleTree() {
+        this.showTree = !this.showTree;
     }
 
 }
