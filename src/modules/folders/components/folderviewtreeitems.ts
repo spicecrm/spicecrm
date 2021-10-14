@@ -51,11 +51,6 @@ constructor( private language: language, private backend: backend, private toast
     @Input() public item: any;
 
     /*
-    * @input config: object
-    */
-    // @Input() private config: any = {};
-
-    /*
     * @param item: object
     * @param e?: MouseEvent
     * @stop MouseEvent propagation

@@ -5,16 +5,15 @@
             aria-labelledby="treeheading">
             <li class="slds-m-top--xxx-small" cdkDropList (cdkDropListDropped)="drop($event,{id:''})">
                 <div class="slds-tree slds-grow">
-
                     <div [attr.aria-selected]="selectedItem===''" (click)="selectOutsideFolders()" role="treeitem">
                         <div class="slds-tree__item slds-p-vertical--x-small">
-                            <system-button-icon [icon]="isShow ? 'chevronright' : 'chevrondown'" size="xx-small" (click) = toggleDisplay()></system-button-icon>
+                            <system-button-icon [icon]="showTree ? 'chevronright' : 'chevrondown'" size="xx-small" (click) = toggleTree()></system-button-icon>
                             <span class="slds-tree__item-label slds-truncate slds-p-left--x-small"><system-label label="LBL_CORE"></system-label></span>
                         </div>
                     </div>
                 </div>
             </li>
-            <ng-container *ngIf="isShow">
+            <ng-container *ngIf="showTree">
                 <li  role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn" cdkDropList (cdkDropListDropped)="drop($event,item)"
                     [attr.aria-level]="item.systemTreeDefs.level"
                     [attr.aria-selected]="item.systemTreeDefs.isSelected"

@@ -1,7 +1,7 @@
 <td *ngIf="rownumbers" role="gridcell" class="slds-show--medium" style="min-width: 3rem">
     <div class="slds-text-align--center slds-text-body--small slds-text-color--inverse-weak">{{rowNumber}}</div>
 </td>
-<td role="gridcell" class="slds-show--medium">
+<td *ngIf="dragHandles" role="gridcell" class="slds-show--medium">
     <system-utility-icon cdkDragHandle [icon]="'drag_and_drop'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
 </td>
 <td *ngIf="rowselect" role="gridcell" class="slds-show--medium">
