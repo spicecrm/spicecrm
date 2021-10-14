@@ -14,7 +14,7 @@ class CallsController
 
     function setStatus(Request $req, Response $res, array $args): Response
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 

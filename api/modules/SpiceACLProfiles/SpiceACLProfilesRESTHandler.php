@@ -79,7 +79,7 @@ class SpiceACLProfilesRESTHandler
      */
     public function addProfileObject($id, $objectid)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
 
         $db->query("INSERT INTO spiceaclprofiles_spiceaclobjects (id, spiceaclprofile_id, spiceaclobject_id, date_modified, deleted) VALUES('".create_guid()."', '$id', '$objectid', '".$timedate->nowDb()."', '0')");
@@ -96,7 +96,7 @@ class SpiceACLProfilesRESTHandler
      */
     public function deleteProfileObject($id, $objectid)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
         $db->query("UPDATE spiceaclprofiles_spiceaclobjects SET deleted = 1, date_modified='" . $timedate->nowDb() . "' WHERE spiceaclprofile_id = '$id'AND spiceaclobject_id = '$objectid' AND deleted = 0");
         return true;
@@ -160,7 +160,7 @@ class SpiceACLProfilesRESTHandler
      * @throws \Exception
      */
     public function addProfileUsers($id, $userids){
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
         foreach($userids as $userid) {
             $db->query("INSERT INTO spiceaclprofiles_users (id, user_id, spiceaclprofile_id, deleted, date_modified) VALUES(".$db->getGuidSQL().", '$userid', '$id', 0, '" . $timedate->nowDb() . "')");
@@ -177,7 +177,7 @@ class SpiceACLProfilesRESTHandler
      * @throws \Exception
      */
     public function deleteProfileUser($id, $userid){
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
         $db->query("UPDATE spiceaclprofiles_users SET deleted = 1, date_modified='" . $timedate->nowDb() . "' WHERE spiceaclprofile_id = '$id' AND user_id = '$userid' AND deleted = 0");
         return true;
