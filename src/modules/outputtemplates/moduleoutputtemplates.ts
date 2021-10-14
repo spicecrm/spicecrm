@@ -11,6 +11,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
+import /*embed*/ {outputModalService} from "./services/outputmodal.service";
+
 import /*embed*/ {OutputTemplatesEditor} from "./components/outputtemplateseditor";
 import /*embed*/ {OutputTemplatesPreview} from "./components/outputtemplatespreview";
 import /*embed*/ {OutputTemplatesPreviewSelector} from "./components/outputtemplatespreviewselector";
