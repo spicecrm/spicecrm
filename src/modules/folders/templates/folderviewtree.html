@@ -1,7 +1,7 @@
 <div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid--vertical" system-to-bottom>
     <div role="tree" class="slds-grow slds-height_full slds-scrollable--y">
         <ul id="folderList"
-            class="slds-tree " role="tree"
+            class="slds-tree" role="tree"
             aria-labelledby="treeheading">
             <li class="slds-m-top--xxx-small" cdkDropList (cdkDropListDropped)="drop($event,{id:''})">
                 <div class="slds-tree slds-grow">
@@ -34,8 +34,7 @@
     </div>
 
     <div class="slds-grid slds-text-align--center slds-p-around--x-small slds-align-bottom ">
-            <button class="slds-button slds-button--neutral slds-button--brand" title="Add Parent Folder"
-                    (click)="addFolder()">
+            <button class="slds-button slds-button--neutral slds-button--brand" (click)="addFolder()">
                 <system-label label="LBL_ADD_FOLDER"></system-label>
             </button>
         </div>

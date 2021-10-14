@@ -49,7 +49,6 @@ export class FolderViewTree implements OnInit {
      *   {
      *     id: string,
      *     parent_id: string,
-     *     parent_sequence: number,
      *     name: string,
      *   }
      * ]
@@ -96,7 +95,7 @@ export class FolderViewTree implements OnInit {
     */
     private buildTree() {
         this.tree = [];
-        this.sortBySequence();
+        this.sortSourceList();
         this.addTreeItem();
         this.setHasChildren();
         this.buildItemRelations();
@@ -110,16 +109,8 @@ export class FolderViewTree implements OnInit {
     * @reset sourceList
     * @sort by parent_sequence
     */
-    private sortBySequence() {
+    private sortSourceList() {
         this.language.sortObjects( this.sourceList, 'name');
-        let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
-        this.sourceList = [];
-        for (let parentId in groupedByParent) {
-            if (groupedByParent.hasOwnProperty(parentId)) {
-                groupedByParent[parentId].sort((a, b) => a.parent_sequence && b.parent_sequence ? +a.parent_sequence > +b.parent_sequence ? 1 : -1 : 0);
-                this.sourceList = [...this.sourceList, ...groupedByParent[parentId]];
-            }
-        }
     }
 
     /*
