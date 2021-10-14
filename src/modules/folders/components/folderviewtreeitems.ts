@@ -43,7 +43,6 @@ constructor( private language: language, private backend: backend, private toast
     * {
     *     id: string,
     *     parent_id: string,
-    *     parent_sequence: number,
     *     name: string,
     *     systemTreeDefs: object
     * }
