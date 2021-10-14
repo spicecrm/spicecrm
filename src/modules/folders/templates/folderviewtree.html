@@ -3,7 +3,7 @@
         <ul id="folderList"
             class="slds-tree" role="tree"
             aria-labelledby="treeheading">
-            <li class="slds-m-top--xxx-small" cdkDropList (cdkDropListDropped)="drop($event,{id:''})">
+            <li class="slds-m-top--xxx-small" cdkDropList (cdkDropListDropped)="drop($event,{id:''})" class="slds-border--bottom">
                 <div class="slds-tree slds-grow">
                     <div [attr.aria-selected]="selectedItem===''" (click)="selectOutsideFolders()" role="treeitem">
                         <div class="slds-tree__item slds-p-vertical--x-small">
@@ -14,10 +14,9 @@
                 </div>
             </li>
             <ng-container *ngIf="showTree">
-                <li  role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn" cdkDropList (cdkDropListDropped)="drop($event,item)"
+                <li role="treeitem" *ngFor="let item of tree; let i=index; trackBy: trackByFn" cdkDropList (cdkDropListDropped)="drop($event,item)"
                     [attr.aria-level]="item.systemTreeDefs.level"
-                    [attr.aria-selected]="item.systemTreeDefs.isSelected"
-                    class="slds-grid slds-table_bordered">
+                    [attr.aria-selected]="item.systemTreeDefs.isSelected">
                     <folder-view-tree-item [item]="item"
                                       (click)="handleClick(item.id)"
                                       (toggleExpandedChange)="handleExpand($event)"
@@ -26,18 +25,18 @@
                                       [title]="item.name"
                                       (doSort)="buildTree()"
                                       style="width: 100%"
-                                      class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
+                                      class="slds-grid slds-grid--vertical slds-p-vertical--none slds-tree__item">
                     </folder-view-tree-item>
                 </li>
             </ng-container>
         </ul>
     </div>
 
-    <div class="slds-grid slds-text-align--center slds-p-around--x-small slds-align-bottom ">
-            <button class="slds-button slds-button--neutral slds-button--brand" (click)="addFolder()">
-                <system-label label="LBL_ADD_FOLDER"></system-label>
-            </button>
-        </div>
+    <div class="slds-text-align--right slds-p-around--x-small slds-border--top">
+        <button class="slds-button slds-button--neutral" (click)="addFolder()">
+            <system-label label="LBL_ADD_FOLDER"></system-label>
+        </button>
+    </div>
 </div>
 
 
