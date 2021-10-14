@@ -8,6 +8,7 @@ import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "bonus-cards-new-button",
@@ -26,8 +27,9 @@ export class BonusCardNewButton implements OnInit {
                 public modal: modal,
                 public toast: toast,
                 public backend: backend,
-                public model: model, @SkipSelf()
-                public parentModel: model) {
+                public model: model,
+                @SkipSelf() public parentModel: model,
+                public modelUtilities: modelutilities) {
 
     }
 
@@ -47,7 +49,15 @@ export class BonusCardNewButton implements OnInit {
             program = await this.promptProgramSelection();
         }
 
-        this.addNew(program);
+        const dates: { date_start: string, date_end: string } = await this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`)
+            .toPromise()
+            .catch(() =>
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
+            );
+
+        if (!dates) return;
+
+        this.addNew({...program, ...dates});
 
     }
 
@@ -59,6 +69,26 @@ export class BonusCardNewButton implements OnInit {
         if (this.metadata.checkModuleAcl(this.model.module, "create")) {
             this.disabled = false;
         }
+    }
+
+    /**
+     * add a new card with the program
+     */
+    public addNew(program: { id: string, name: string, date_start: string, date_end: string }) {
+        this.model.id = undefined;
+        this.model.initialize();
+        let presets;
+
+        if (!!program) {
+            presets = {
+                bonusprogram_id: program.id,
+                bonusprogram_name: program.name,
+                purchase_date: this.modelUtilities.backend2spice(this.model.module, 'purchase_date', program.date_start),
+                valid_until: this.modelUtilities.backend2spice(this.model.module, 'valid_until', program.date_end),
+            };
+        }
+
+        this.model.addModel('', this.parentModel, presets);
     }
 
     /**
@@ -75,7 +105,9 @@ export class BonusCardNewButton implements OnInit {
             sortdirection: 'DESC'
         }];
 
-        const programs: { list, object } = await this.backend.getList('BonusPrograms', sortArray, params).toPromise() as any;
+        const programs: { list, object } = await this.backend.getList('BonusPrograms', sortArray, params).toPromise().catch(() =>
+            this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
+        ) as any;
 
         if (!programs?.list || programs.list.length === 0) {
             this.toast.sendToast('LBL_NO_PROGRAMS_FOUND', 'warning');
@@ -92,23 +124,5 @@ export class BonusCardNewButton implements OnInit {
             id: programId,
             name: options.find(o => o.value == programId).display
         };
-    }
-
-    /**
-     * add a new card with the program
-     */
-    public addNew(program: { id: string, name: string }) {
-        this.model.id = undefined;
-        this.model.initialize();
-        let presets;
-
-        if (!!program) {
-            presets = {
-                bonusprogram_id: program.id,
-                bonusprogram_name: program.name,
-            };
-        }
-
-        this.model.addModel('', this.parentModel, presets);
     }
 }

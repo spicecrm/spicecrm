@@ -58,7 +58,7 @@ export class BonusCardBulkExtendButton {
 
         const processing = this.modal.await(this.language.getLabel('LBL_PROCESSING'));
 
-        const url = `module/BonusPrograms/extendablecards`;
+        const url = `module/BonusCards/extendablecards`;
         const cardsIds = this.modellist.getSelectedIDs();
 
         this.backend.getRequest(url, {cardsIds}).subscribe(async (res) => {
@@ -75,13 +75,15 @@ export class BonusCardBulkExtendButton {
 
             if (!confirmAnswer) return;
 
-            this.backend.postRequest(`module/BonusPrograms/bulkextend`, null, {cardsIds: res.cardsIds}).subscribe(() => {
+            this.backend.postRequest(`module/BonusCards/bulkextend`, null, {cardsIds: res.cardsIds}).subscribe(() => {
 
                 this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXTENDED'));
             }, () => {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'));
             });
 
-        });
+        },
+            () => this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
+        );
     }
 }

@@ -632,6 +632,10 @@ $app_list_strings = [
         'unread' => 'Ungelesen',
         'bounced' => 'nicht Zustellbar'
     ],
+    'dom_letter_status' => [
+        'sent' => 'gesendet',
+        'draft' => 'Entwurf'
+    ],
     'dom_textmessage_status' => [
         'archived' => 'Archiviert',
         'closed' => 'Geschlossen',

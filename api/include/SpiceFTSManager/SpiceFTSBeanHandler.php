@@ -382,7 +382,7 @@ class SpiceFTSBeanHandler
 
     private function mapDataType($type, $value)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $retvalue = $value;
         switch ($type) {
             case 'boolean':

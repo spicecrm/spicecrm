@@ -740,8 +740,10 @@ $dictionary['Contact'] = [
             'lhs_key' => 'id',
             'rhs_module' => 'Letters',
             'rhs_table' => 'letters',
-            'rhs_key' => 'contact_id',
-            'relationship_type' => 'one-to-many'
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Contacts'
         ],
         'contact_textmessages' => [
             'lhs_module' => 'Contacts',
@@ -990,3 +992,33 @@ if (file_exists('extensions/modules/Potentials')) {
     ];
 }
 VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);
+
+// CR1000661
+global $dictionary;
+if(file_exists('extensions/modules/PartnerAgreements')) {
+    $dictionary['Contact']['fields']['partneragreements'] = [
+        'name' => 'partneragreements',
+        'vname' => 'LBL_PARTNERAGREEMENTS',
+        'type' => 'link',
+        'relationship' => 'partneragreements_contacts',
+        'module' => 'PartnerAgreements',
+        'bean_name' => 'PartnerAgreement',
+        'source' => 'non-db',
+    ];
+    $dictionary['Contact']['fields']['partneragreement_role'] = [
+        'name' => 'partneragreement_role',
+        'vname' => 'LBL_ROLE',
+        'type' => 'enum',
+        'options' => 'partneragreement_contact_role_dom',
+        'source' => 'non-db',
+        'comment' => 'for relationship field partneragreement_role'
+    ];
+    $dictionary['Contact']['fields']['propensity_to_partnership'] = [
+        'name' => 'propensity_to_partnership',
+        'vname' => 'LBL_PROPENSITY_TO_PARTNERSHIP',
+        'type' => 'enum',
+        'options' => 'partneragreement_propensity_role_dom',
+        'source' => 'non-db',
+        'comment' => 'for relationship field propensity_to_partnership'
+    ];
+}
