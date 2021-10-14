@@ -19,15 +19,6 @@ declare var _: any;
 
 export class FolderViewTree implements OnInit {
 
-    /*
-    private config: any = {
-        // draggable: false,
-        // canadd: false,
-        expandall: false,
-        // collapsible: true,
-    };
-     */
-
     @Output() private folderId = new EventEmitter();
 
     private _selectedItem: string = null;
@@ -72,6 +63,8 @@ export class FolderViewTree implements OnInit {
 
     private isLoading = true;
 
+    private showTree = true;
+
     constructor( private backend: backend, private modellist: modellist, private language: language,
                  private toast: toast, private modal: modal , private modelutilies: modelutilities, private helper: helper, private model: model ) {}
 
@@ -90,6 +83,7 @@ export class FolderViewTree implements OnInit {
                 if ( folderIdFromList !== null ) this.handleClick( folderIdFromList );
             });
     }
+
     /*
     * building relations between parent and child folder
     * */
@@ -113,7 +107,7 @@ export class FolderViewTree implements OnInit {
     */
     private buildTree() {
         this.tree = [];
-        this.sortBySequence();
+        this.sortSourceList();
         this.addTreeItem();
         this.setHasChildren();
         this.buildItemRelations();
@@ -127,17 +121,8 @@ export class FolderViewTree implements OnInit {
     * @reset sourceList
     * @sort by parent_sequence
     */
-    private sortBySequence() {
+    private sortSourceList() {
         this.language.sortObjects( this.sourceList, 'name');
-        console.log(_.clone(this.sourceList));
-        let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
-        this.sourceList = [];
-        for (let parentId in groupedByParent) {
-            if (groupedByParent.hasOwnProperty(parentId)) {
-                groupedByParent[parentId].sort((a, b) => a.parent_sequence && b.parent_sequence ? +a.parent_sequence > +b.parent_sequence ? 1 : -1 : 0);
-                this.sourceList = [...this.sourceList, ...groupedByParent[parentId]];
-            }
-        }
     }
 
     /*
@@ -162,7 +147,6 @@ export class FolderViewTree implements OnInit {
                 if (!item.systemTreeDefs) {
                     item.systemTreeDefs = {};
                 }
-                // item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
                 item.systemTreeDefs.expanded = !!item.systemTreeDefs.expanded;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
@@ -223,6 +207,7 @@ export class FolderViewTree implements OnInit {
             }
         });
     }
+
     /*
     * unselect folder
     * */
@@ -234,6 +219,7 @@ export class FolderViewTree implements OnInit {
             }
         });
     }
+
     /*
     * check folder id and setting aggregate for it
     * */
@@ -246,6 +232,7 @@ export class FolderViewTree implements OnInit {
             this.modellist.reLoadList();
         }
     }
+
     /*
     * getting folder id from currently selected aggregate
     * */
@@ -261,6 +248,7 @@ export class FolderViewTree implements OnInit {
         if ( folderId === '#not#set#' ) folderId = '';
         return folderId;
     }
+
     /*
     * remove all aggregates filters
     * */
@@ -279,6 +267,7 @@ export class FolderViewTree implements OnInit {
     private trackByFn(index, item) {
         return item.id;
     }
+
     /*
     * add new parent folder with backend request
     * */
@@ -308,6 +297,7 @@ export class FolderViewTree implements OnInit {
                 }
             });
     }
+
     /*
     * delete folder from tree, when it's a parent folder also all children folders
     * */
@@ -329,11 +319,11 @@ export class FolderViewTree implements OnInit {
     /*
     * deleting all child folders
     * */
-
     private deleteItemsRecursive( index, toDelete: number[] ) {
         toDelete.push(index);
         this.itemRelations[index].childs.forEach( item => this.deleteItemsRecursive( item, toDelete ));
     }
+
     /*
     * select all documents that don't have any folder
     * */
@@ -345,7 +335,6 @@ export class FolderViewTree implements OnInit {
    /*
    * backend request, that save new folder for particular document by drag and drop
    * */
-
     private drop( documentData, folderItem ) {
         this.backend.postRequest('module/Documents/'+documentData.item.data.id, {}, {folder_id:folderItem.id}).subscribe( response => {
             // Reload list, but before give elastic a chance with a little bit of timeout:
@@ -353,14 +342,11 @@ export class FolderViewTree implements OnInit {
         });
     }
 
-
     /*
     * change direction of chevron
     * */
-
-    private isShow = true;
-    public toggleDisplay() {
-        this.isShow = !this.isShow;
+    public toggleTree() {
+        this.showTree = !this.showTree;
     }
 
 }

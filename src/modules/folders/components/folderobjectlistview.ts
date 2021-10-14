@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component } from "@angular/core";
 
 @Component({
     selector: 'folder-object-listview',
@@ -6,8 +6,6 @@ import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 })
 
 export class FolderObjectListView {
-
-    @ViewChild('listContainer', {read: ViewContainerRef, static: true}) private listContainer: ViewContainerRef;
 
     private folderId: string = null;
 
