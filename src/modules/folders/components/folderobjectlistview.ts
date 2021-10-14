@@ -9,8 +9,6 @@ export class FolderObjectListView {
 
     @ViewChild('listContainer', {read: ViewContainerRef, static: true}) private listContainer: ViewContainerRef;
 
-    // constructor() { }
-
     private folderId: string = null;
 
     private setFolderId( folderId ) {
