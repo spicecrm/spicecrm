@@ -17,7 +17,7 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 class CampaignTasksController
 {
     public function getCampaignTaskItems(Request $req, Response $res, array $args): Response {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'detail', true))
             throw (new ForbiddenException("Forbidden for details in module CampaignTasks."))->setErrorCode('noModuleDetails');

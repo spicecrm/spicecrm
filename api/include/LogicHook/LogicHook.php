@@ -79,8 +79,6 @@ class LogicHook
      */
     private static $_instance = null;
 
-	public $bean = null;
-
     protected static $hooks = [];
 
     private function __construct() {
@@ -108,11 +106,6 @@ class LogicHook
      */
 	public static function initialize(): LogicHook {
 		return self::getInstance();
-	}
-
-	public function setBean(SugarBean $bean): LogicHook {
-		$this->bean = $bean;
-		return $this;
 	}
 
     public static function refreshHooks() {
@@ -216,7 +209,7 @@ class LogicHook
      * @param null $arguments
      * @throws Exception
      */
-	public function call_custom_logic(string $moduleDir, string $event, $arguments = null): void {
+	public function call_custom_logic(string $moduleDir, $bean, string $event, $arguments = null): void {
         if (LoggerManager::getLogger()) {
             LoggerManager::getLogger()->debug("Hook called: $moduleDir::$event");
         }
@@ -236,7 +229,7 @@ class LogicHook
         }
 
 		if (!empty($allHooks)) {
-		    $this->processHooks($allHooks, $event, $arguments);
+		    $this->processHooks($allHooks, $bean, $event, $arguments);
 		}
 	}
 
@@ -250,7 +243,7 @@ class LogicHook
      * @param array $arguments
      * @throws Exception
      */
-	private function processHooks(array $hookArray, string $event, $arguments): void {
+	private function processHooks(array $hookArray, $bean, string $event, $arguments): void {
 		// Now iterate through the array for the appropriate hook
 		if (!empty($hookArray[$event])) {
 
@@ -275,8 +268,8 @@ class LogicHook
 
                 try {
                     $class = new $hookClass();
-                    if (!is_null($this->bean)) {
-                        $class->$hookFunction($this->bean, $event, $arguments);
+                    if (!is_null($bean)) {
+                        $class->$hookFunction($bean, $event, $arguments);
                     } else {
                         $class->$hookFunction($event, $arguments);
                     }
