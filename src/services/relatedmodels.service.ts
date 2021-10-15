@@ -463,7 +463,7 @@ export class relatedmodels implements OnDestroy {
      *
      * @param items
      */
-    public addItems(items) {
+    public addItems(items) : Observable<any> {
 
         if (this.saveToLinkOnly) {
             this.model.addRelatedRecords(this._linkName, items);
