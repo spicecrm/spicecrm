@@ -9,6 +9,7 @@ namespace SpiceCRM\modules\KReports;
  */
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\TimeDate;
 
 class KReportRenderer
 {

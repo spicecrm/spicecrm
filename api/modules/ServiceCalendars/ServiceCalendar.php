@@ -8,6 +8,7 @@ use DateInterval;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\TimeDate;
 
 class ServiceCalendar extends SugarBean
 {
