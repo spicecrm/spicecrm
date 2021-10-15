@@ -43,6 +43,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\includes\TimeDate;
 
 class Meeting extends SugarBean
 {
@@ -57,7 +58,7 @@ class Meeting extends SugarBean
     // this is for calendar
     function save($check_notify = FALSE, $fts_index_bean = TRUE)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if (isset($this->date_start)) {
             $td = $timedate->fromDb($this->date_start);
@@ -117,7 +118,7 @@ class Meeting extends SugarBean
     function get_user_meetings($user, $timespan = 'today')
     {
 
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         $template = $this;
 

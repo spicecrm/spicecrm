@@ -88,6 +88,10 @@ export class salesdocrecord implements OnDestroy {
 
         let taxdeterminations = this.configuration.getData('salesdoctaxdetermination');
 
+        // if we do not have tax determinations return empty
+        if(!taxdeterminations) return '';
+
+        // get the companycode
         let companycode = this.configuration.getData('companycodes').find(c => c.id == this.salesdoc.getField('companycode_id'));
 
         // first full fledged
