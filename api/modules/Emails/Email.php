@@ -474,6 +474,11 @@ class Email extends SugarBean
 
             }
 
+            // save the relationship to the parent
+            if($recipient_address['parent_type'] && $recipient_address['parent_id']){
+
+            }
+
             $addresses[$recipient_address['address_type'] . '_addrs'][] = $recipient_address['email_address'];
         }
 
