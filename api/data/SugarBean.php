@@ -1457,7 +1457,6 @@ class SugarBean
         }
 
         $this->call_custom_logic('after_save', '');
-
         // call fts manager to index the bean
         if ($fts_index_bean) {
 
@@ -1612,8 +1611,7 @@ class SugarBean
             //method defined in 'include/utils/LogicHook.php'
 
             $logicHook = LogicHook::getInstance();
-            $logicHook->setBean($this);
-            $logicHook->call_custom_logic($this->module_dir, $event, $arguments);
+            $logicHook->call_custom_logic($this->module_dir, $this, $event, $arguments);
             $this->logicHookDepth[$event]--;
         }
     }
