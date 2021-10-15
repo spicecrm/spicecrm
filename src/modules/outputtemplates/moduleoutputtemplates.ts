@@ -11,14 +11,18 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
+import /*embed*/ {outputModalService} from "./services/outputmodal.service";
+
 import /*embed*/ {OutputTemplatesEditor} from "./components/outputtemplateseditor";
 import /*embed*/ {OutputTemplatesPreview} from "./components/outputtemplatespreview";
 import /*embed*/ {OutputTemplatesPreviewSelector} from "./components/outputtemplatespreviewselector";
 import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
+import /*embed*/ {ObjectActionLiveCompileBeanButton} from "./components/objectactionlivecompilebeanbutton";
 import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
 import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
+import /*embed*/ {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentbeanbutton";
 
 @NgModule({
     imports: [
@@ -38,7 +42,9 @@ import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtempla
         ObjectActionOutputBeanModalEmailContent,
         ObjectActionOutputBeanModal,
         fieldOutputTemplates,
-        OutputTemplatesVariableHelper
+        OutputTemplatesVariableHelper,
+        ObjectActionLiveCompileBeanButton,
+        ObjectActionMarkSentBeanButton
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent

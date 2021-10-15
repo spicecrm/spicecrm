@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\modules\Emails;
 
+
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
@@ -43,6 +44,8 @@ use Exception;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -125,7 +128,7 @@ class Email extends SugarBean
     public function save($check_notify = false, $fts_index_bean = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if ($this->isDuplicate) {
             LoggerManager::getLogger()->debug("EMAIL - tried to save a duplicate Email record");
@@ -182,10 +185,17 @@ class Email extends SugarBean
                 $this->date_sent = $timedate->now();
             }
 
-            parent::save($check_notify, $fts_index_bean);
+            // save without indexing
+            parent::save($check_notify, false);
 
+            // handle theemail addresses
             $this->handleFromAddress();
             $this->saveRecipientAddresses();
+
+            // process the indexing after the addresseshave been saved so relationships are updated
+            if($fts_index_bean){
+                SpiceFTSHandler::getInstance()->indexBean($this);
+            }
         }
         LoggerManager::getLogger()->debug('-------------------------------> Email save() done');
 
@@ -470,6 +480,21 @@ class Email extends SugarBean
                     );
                 }
 
+            }
+
+            // save the relationship to the parent
+            if($recipient_address['parent_type'] && $recipient_address['parent_id']){
+                $recExists = $this->db->fetchByAssoc($this->db->query("SELECT id FROM emails_beans WHERE email_id='{$this->id}' AND bean_module = '{$recipient_address['parent_type']}' AND bean_id = '{$recipient_address['parent_id']}' AND deleted = 0"));
+                if(!$recExists){
+                    $this->db->insertQuery('emails_beans', [
+                        'id' => SpiceUtils::createGuid(),
+                        'email_id' => $this->id,
+                        'bean_module' => $recipient_address['parent_type'],
+                        'bean_id' => $recipient_address['parent_id'],
+                        'date_modified' => TimeDate::getInstance()->nowDb(),
+                        'deleted' => 0
+                    ], true);
+                }
             }
 
             $addresses[$recipient_address['address_type'] . '_addrs'][] = $recipient_address['email_address'];
@@ -1265,7 +1290,7 @@ class Email extends SugarBean
         $this->date_sent = date('Y-m-d H:i:s', $dateSent);
         $this->from_addr = $message->getSender();
         foreach ($message->getRecipients() as $recipient) {
-            $this->recipient_addresses[strtolower($recipient->getType()) . '_addrs'] = [
+            $this->recipient_addresses[] = [
                 'email_address' => $recipient->getEmail(),
                 'address_type' => strtolower($recipient->getType()),
             ];

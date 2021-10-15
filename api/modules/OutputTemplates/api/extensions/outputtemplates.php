@@ -254,7 +254,7 @@ $routes = [
         ]
     ],
     [
-        'method'      => 'get',
+        'method'      => 'post',
         'route'       => '/module/OutputTemplates/{id}/convert/{bean_id}/to/{format}/base64',
         'oldroute'    => '/OutputTemplates/{id}/convert/{bean_id}/to/{format}/base64',
         'class'       => OutputTemplatesController::class,
@@ -279,6 +279,12 @@ $routes = [
                 'type'        => 'string',
                 'required'    => true,
                 'description' => 'not in use',
+            ],
+            'bean_data'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_OBJECT,
+                'required'    => true,
+                'description' => 'bean data to be rendered',
             ]
         ]
     ],

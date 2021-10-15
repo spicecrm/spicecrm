@@ -30,6 +30,7 @@
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -382,7 +383,7 @@ class SpiceFTSBeanHandler
 
     private function mapDataType($type, $value)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $retvalue = $value;
         switch ($type) {
             case 'boolean':
