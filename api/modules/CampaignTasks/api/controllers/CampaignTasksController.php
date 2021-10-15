@@ -12,6 +12,7 @@ use SpiceCRM\modules\CampaignTasks\CampaignTask;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\TimeDate;
 
 
 class CampaignTasksController

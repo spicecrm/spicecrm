@@ -32,6 +32,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\TimeDate;
 
 class SpiceACLProfilesRESTHandler
 {
