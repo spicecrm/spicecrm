@@ -5,23 +5,18 @@ import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 
-import {userpreferences} from "../../services/userpreferences.service";
-
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
-
-import /*embed*/ {FolderView} from "./components/folderview";
-import /*embed*/ {FolderViewTree} from "./components/folderviewtree";
-import /*embed*/ {FolderViewTreeItems} from "./components/folderviewtreeitems";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 
+import /*embed*/ {FolderViewTree} from "./components/folderviewtree";
+import /*embed*/ {FolderViewTreeItems} from "./components/folderviewtreeitems";
+import /*embed*/ {FolderObjectListView} from './components/folderobjectlistview';
 
-
-
-@NgModule({
+@NgModule( {
     imports: [
         CommonModule,
         FormsModule,
@@ -31,16 +26,14 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         SystemComponents,
         DirectivesModule,
         DragDropModule,
-
     ],
     declarations: [
-        FolderView,
         FolderViewTree,
         FolderViewTreeItems,
-
+        FolderObjectListView
     ],
-    providers: [userpreferences]
+    exports: [
+        FolderViewTree
+    ]
 })
-export class ModuleFolders {
-
-}
+export class ModuleFolders { }

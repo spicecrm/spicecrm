@@ -25,9 +25,7 @@ export class FieldsetManager {
     private edit_mode: string = "custom";
     private allowBarButtons: boolean = true;
     private crNoneActive: boolean = false;
-
     private change_request_required: boolean = false;
-
     private sysModules: Array<any> = [];
     private currentModule: string = '*';
     private currentFieldSet: string = '';
