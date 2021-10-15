@@ -572,7 +572,7 @@ class ElasticHandler
      */
     private function addLogEntry($method, $url, $status = null, $request, $response) # , $rtlocal, $rtremote )
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance('spicelogger');
         //catch installation process and abort. table sysftslog will not exist at the point during installation
         if (!empty($GLOBALS['installing']))
