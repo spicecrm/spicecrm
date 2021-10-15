@@ -18,7 +18,7 @@ class IpAddresses
     {
         if ( $ipAddress === null ) $ipAddress = SpiceUtils::getClientIP();
         $db = DBManagerFactory::getInstance();
-        $ipIsBlackListed = (bool)$db->getOne( sprintf("SELECT count(*) FROM ipaddresses WHERE color=\"b\" AND address = \"%s\"", $db->quote( $ipAddress )));
+        $ipIsBlackListed = (bool)$db->getOne( sprintf("SELECT count(*) FROM ipaddresses WHERE date_deleted IS NULL AND color=\"b\" AND address = \"%s\"", $db->quote( $ipAddress )));
         return !$ipIsBlackListed;
     }
 
