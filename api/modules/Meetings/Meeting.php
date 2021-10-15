@@ -43,6 +43,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\includes\TimeDate;
 
 class Meeting extends SugarBean
 {

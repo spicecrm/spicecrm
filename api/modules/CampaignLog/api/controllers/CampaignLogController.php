@@ -5,7 +5,7 @@ namespace SpiceCRM\modules\CampaignLog\api\controllers;
 use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-
+use SpiceCRM\includes\TimeDate;
 
 class CampaignLogController{
 
