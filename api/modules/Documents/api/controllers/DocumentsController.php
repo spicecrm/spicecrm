@@ -54,7 +54,6 @@ class DocumentsController
      */
     public function revisionFromBase64(Request $req, Response $res, array $args): Response
     {
-
         $document = BeanFactory::getBean('Documents', $args['id']);
         if (!$document) {
             throw new NotFoundException('Document not found');
@@ -79,7 +78,5 @@ class DocumentsController
 
         $document->file_md5 = $attachment[0]['filemd5'];
         $document->save();
-
-        return $res->withJson(['status' => 'ok']);
     }
 }
