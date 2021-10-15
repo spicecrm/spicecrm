@@ -632,6 +632,10 @@ $app_list_strings = [
         'unread' => 'Ungelesen',
         'bounced' => 'nicht Zustellbar'
     ],
+    'dom_letter_status' => [
+        'sent' => 'gesendet',
+        'draft' => 'Entwurf'
+    ],
     'dom_textmessage_status' => [
         'archived' => 'Archiviert',
         'closed' => 'Geschlossen',
@@ -1780,4 +1784,9 @@ $app_list_strings['relationship_type_dom'] = [
 $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
+];
+
+$app_list_strings['bonuscard_extension_status_enum'] = [
+    'initial' => 'initial',
+    'sent' => 'gesendet'
 ];
