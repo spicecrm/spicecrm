@@ -60,7 +60,7 @@
                 </div>
             </div>
             <!-- the renew dialog ... needs to be added here in this way as we do not have the modal service and repository yet -->
-            <global-login-change-password class="slds-is-absolute" *ngIf="renewpassword" (closeRenewDialog)="renewpassword = false" [username]="username" [password]="password"></global-login-change-password>
+            <global-login-change-password class="slds-is-absolute" *ngIf="renewpassword" (closeRenewDialog)="handleRenewDialogClose($event)" [username]="username" [password]="password"></global-login-change-password>
             <ng-container *ngIf="loginService.session.authData.sessionId">
                 <system-loader-progress></system-loader-progress>
             </ng-container>
