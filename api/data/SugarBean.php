@@ -1611,8 +1611,7 @@ class SugarBean
             //method defined in 'include/utils/LogicHook.php'
 
             $logicHook = LogicHook::getInstance();
-            $logicHook->setBean($this);
-            $logicHook->call_custom_logic($this->module_dir, $event, $arguments);
+            $logicHook->call_custom_logic($this->module_dir, $this, $event, $arguments);
             $this->logicHookDepth[$event]--;
         }
     }

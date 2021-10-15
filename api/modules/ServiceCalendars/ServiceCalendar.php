@@ -77,7 +77,7 @@ class ServiceCalendar extends SugarBean
      * @throws Exception
      */
     public function addNWorkingDays($startdate, $days) {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         // if we have no working days and no holidays .. just add the days
         if (count($this->workingdays) == 0 && count($this->holidays) == 0) {
             $startdate->add(new DateInterval("P{$days}D"));
@@ -136,7 +136,7 @@ class ServiceCalendar extends SugarBean
      * @return bool
      */
     private function isHoliday($date) {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         return array_search($date->format($timedate->get_db_date_format()), $this->holidays) !== false ? true : false;
     }
 
