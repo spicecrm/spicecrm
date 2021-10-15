@@ -29,6 +29,7 @@
 
 namespace SpiceCRM\includes\SysTrashCan;
 
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
