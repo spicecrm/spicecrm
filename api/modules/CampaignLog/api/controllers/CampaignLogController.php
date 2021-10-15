@@ -19,7 +19,7 @@ class CampaignLogController{
 
     public function getCampaignLogByStatus(Request $req, Response $res, array $args): Response
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         // ACL Check
         /* todo: check what ACL we need to check
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'edit', true)) {
