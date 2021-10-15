@@ -260,7 +260,6 @@ export class ObjectActionOutputBeanModal {
         this.outputModalService.modalResponse$.next('close');
         this.outputModalService.modalResponse$.complete();
 
-        this.model.cancelEdit();
 
         this.self.destroy();
     }
@@ -371,6 +370,7 @@ export class ObjectActionOutputBeanModal {
         this.outputModalService.modalResponse$.next(action.name);
 
         if (!!action.close) {
+            this.model.cancelEdit();
             this.close();
         }
     }
