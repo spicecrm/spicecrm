@@ -2,6 +2,7 @@
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\includes\TimeDate;
 use Exception;
 use SpiceCRM\includes\Logger\SpiceLogger;
 use SpiceCRM\modules\Mailboxes\MailboxLogTrait;
