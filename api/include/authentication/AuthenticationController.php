@@ -293,15 +293,13 @@ class AuthenticationController
         //second use sugar authentication
         try {
 
-            if ( !IpAddresses::ipAddressIsWhite() ) {
-                # Check if the user is blocked (after too many login attempts with wrong passwords).
-                # This check must happen BEFORE checking the password. No password check (and answer to the user) in case the user is blocked!
-                $isBlocked = User::isBlockedByName(isset($impersonationUser) ? $impersonationUser : $authUser);
-                if ($isBlocked === true) {
-                    throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 4))->setLoginBlocked(true);
-                } elseif ($isBlocked !== false) {
-                    throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 4))->setLoginBlocked(true);
-                }
+            # Check if the user is blocked (after too many login attempts with wrong passwords).
+            # This check must happen BEFORE checking the password. No password check (and answer to the user) in case the user is blocked!
+            $isBlocked = User::isBlockedByName(isset($impersonationUser) ? $impersonationUser : $authUser);
+            if ($isBlocked === true) {
+                throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 4))->setLoginBlocked(true);
+            } elseif ($isBlocked !== false) {
+                throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 4))->setLoginBlocked(true);
             }
 
             $sugarAuthenticationController = new UserAuthenticate();
