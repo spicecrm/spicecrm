@@ -67,17 +67,37 @@ class BeanFactory {
      * @var string[][]
      */
     protected static $systemModules = [
-        'Administration'  => ['beanclass' => Administration::class, 'beanname' => 'Administration'],
-        'EmailAddresses'  => ['beanclass' => EmailAddress::class,   'beanname' => 'EmailAddress'],
-        'SchedulersJobs'  => ['beanclass' => SchedulerJob::class,   'beanname' => 'SchedulerJob'],
-        'SpiceACLObjects' => ['beanclass' => SpiceACLObject::class, 'beanname' => 'SpiceACLObject'],
-        'Trackers'        => ['beanclass' => Tracker::class,        'beanname' => 'Tracker'],
-        'Users'           => ['beanclass' => User::class,           'beanname' => 'User'],
-        'UserAbsences'    => ['beanclass' => UserAbsence::class,    'beanname' => 'UserAbsence'],
-        'UserAccessLogs'  => ['beanclass' => UserAccessLog::class,  'beanname' => 'UserAccessLog'],
-        'SystemTenants'   => ['beanclass' => SystemTenant::class,   'beanname' => 'SystemTenant'],
-        'Currencies'      => ['beanclass' => Currency::class,       'beanname' => 'Currency'],
+        'Administration'  => ['beanname' => 'Administration'],
+        'EmailAddresses'  => ['beanname' => 'EmailAddress'],
+        'SchedulersJobs'  => ['beanname' => 'SchedulerJob'],
+        'SpiceACLObjects' => ['beanname' => 'SpiceACLObject'],
+        'Trackers'        => ['beanname' => 'Tracker'],
+        'Users'           => ['beanname' => 'User'],
+        'UserAbsences'    => ['beanname' => 'UserAbsence'],
+        'UserAccessLogs'  => ['beanname' => 'UserAccessLog'],
+        'SystemTenants'   => ['beanname' => 'SystemTenant'],
+        'Currencies'      => ['beanname' => 'Currency'],
     ];
+
+    /**
+     * Initializes the class names of the system modules.
+     */
+    private static function initSystemModules(): void {
+        foreach (self::$systemModules as $moduleName => $beanInfo) {
+            $customClass    = "\\SpiceCRM\\custom\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
+            $extensionClass = "\\SpiceCRM\\extensions\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
+            $moduleClass    = "\\SpiceCRM\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
+            if (class_exists($customClass)) {
+                self::$systemModules[$moduleName]['beanclass'] = $customClass;
+            } elseif (class_exists($extensionClass)) {
+                self::$systemModules[$moduleName]['beanclass'] = $extensionClass;
+            } elseif (class_exists($moduleClass)) {
+                self::$systemModules[$moduleName]['beanclass'] = $moduleClass;
+            } else {
+                unset(self::$systemModules[$moduleClass]);
+            }
+        }
+    }
 
     /**
      * Returns a SugarBean object by id. The Last 10 loaded beans are cached in memory to prevent multiple retrieves per request.
@@ -120,6 +140,7 @@ class BeanFactory {
         $beanName = self::getBeanName($module);
 
         // if not found use the ones defined here as systemmodules
+        self::initSystemModules();
         if (empty($beanName) && isset(self::$systemModules[$module])){
             $beanClass = self::$systemModules[$module]['beanclass'];
             $beanName = self::$systemModules[$module]['beanname'];

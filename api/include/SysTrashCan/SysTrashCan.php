@@ -29,6 +29,7 @@
 
 namespace SpiceCRM\includes\SysTrashCan;
 
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -51,7 +52,7 @@ class SysTrashCan
      */
     static function addRecord($recordtype, $recordmodule, $recordid, $recordname = '', $linkname = '', $linkmodule = '', $linkid = '', $recorddata = '')
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
         $now = $timedate->nowDb();

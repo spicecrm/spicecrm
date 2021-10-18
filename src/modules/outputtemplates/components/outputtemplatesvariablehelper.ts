@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleOutputTemplates
  */
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { language } from '../../../services/language.service';
@@ -88,7 +88,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      */
     private functionHistory: string[] = [];
 
-    constructor( public language: language, public metadata: metadata, private backend: backend, private cdr: ChangeDetectorRef ) { }
+    constructor( public language: language, public metadata: metadata, private backend: backend, private cdr: ChangeDetectorRef) { }
 
     public ngOnInit(): void {
 
