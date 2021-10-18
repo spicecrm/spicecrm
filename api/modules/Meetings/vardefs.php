@@ -438,7 +438,7 @@ $dictionary['Meeting'] = [
         'leads' => [
             'name'         => 'leads',
             'type'         => 'link',
-            'relationship' => 'meetings_leads',
+            'relationship' => 'leads_meetings',
             'source'       => 'non-db',
             'vname'        => 'LBL_LEADS',
         ],
