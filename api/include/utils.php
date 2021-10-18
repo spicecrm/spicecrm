@@ -12,6 +12,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\TimeDate;
 
 /* * *******************************************************************************
 
@@ -91,6 +92,15 @@ function return_app_list_strings_language($language, $scope = 'all') {
                 include("include/language/$lang.lang.php.override");
                 LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
             }
+            if (file_exists("extensions/include/language/$lang.lang.php")) {
+                include("extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
+            // BWC temporary name of include folder
+            if (file_exists("extensions/includes/language/$lang.lang.php")) {
+                include("extensions/includes/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
         }
 
         if($scope == 'all' || $scope == 'custom') {
@@ -106,6 +116,16 @@ function return_app_list_strings_language($language, $scope = 'all') {
             if (file_exists("custom/include/language/$lang.lang.php.override")) {
                 include("custom/include/language/$lang.lang.php.override");
                 LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
+            }
+
+            if (file_exists("custom/extensions/include/language/$lang.lang.php")) {
+                include("custom/extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
+            // BWC temporary name of include folder
+            if (file_exists("custom/extensions/includes/language/$lang.lang.php")) {
+                include("custom/extensions/includes/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
             }
         }
 
@@ -1079,7 +1099,7 @@ function findRelationships($lhs_module, $rhs_module, $name = "", $type = "") {
  */
 function create_date($year=null,$mnth=null,$day=null)
 {
-    global $timedate;
+    $timedate = TimeDate::getInstance();
     $now = $timedate->getNow();
     if ($day==null) $day=$now->day+mt_rand(0,365);
     return $timedate->asDbDate($now->get_day_begin($day, $mnth, $year));
