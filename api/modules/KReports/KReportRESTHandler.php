@@ -374,7 +374,7 @@ $db = DBManagerFactory::getInstance();
                 // load the Module
 
                 //PHP7 - 5.6 COMPAT
-                //ORIGINAL: require_once($beanFiles[$beanList[$parentModule->$moduleArray[2]->getRelatedModuleName()]]);
+                //ORIGINAL: require_once(SpiceModules:.getInstance()->getBeanFiles()[$beanList[$parentModule->$moduleArray[2]->getRelatedModuleName()]]);
                 $moduleArrayEl = $moduleArray[2];
                 $thisModule = BeanFactory::getBean($parentModule->$moduleArrayEl->getRelatedModuleName());
                 //END
@@ -1389,7 +1389,6 @@ $db = DBManagerFactory::getInstance();
      * @return array
      * @global type $beanList
      * @global type $_REQUEST
-     * @global type $beanFiles
      */
     public function getGroupings()
     {
@@ -1425,9 +1424,7 @@ $db = DBManagerFactory::getInstance();
      * Add 2016-04-26; get also fields of type char, varchar, text
      * @param type $nodeid
      * @return array
-     * @global type $beanList
      * @global type $_REQUEST
-     * @global type $beanFiles
      */
     public function getEnumfields($module)
     {
@@ -1689,9 +1686,7 @@ $db = DBManagerFactory::getInstance();
      * Handler for DListManager
      * @param type $nodeid
      * @return array
-     * @global type $beanList
      * @global type $_REQUEST
-     * @global type $beanFiles
      */
     public function getDLists()
     {
@@ -1721,9 +1716,7 @@ $db = DBManagerFactory::getInstance();
      * Handler for DListManager
      * @param type $nodeid
      * @return array
-     * @global type $beanList
      * @global type $_REQUEST
-     * @global type $beanFiles
      */
     public function getDList($id)
     {
