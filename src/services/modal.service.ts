@@ -165,7 +165,7 @@ export class modal {
      * @param options options to be presented to the user
      * @param optionsAsRadio
      */
-    public prompt(type: 'info' | 'input' | 'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: Array<{ value: string, display: string }> = null, optionsAsRadio?: boolean): Observable<any> {
+    public prompt(type: 'info' | 'input' | 'input_date' | 'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: Array<{ value: string, display: string }> = null, optionsAsRadio?: boolean): Observable<any> {
         let responseSubject = new Subject();
         this.openModal("SystemPrompt").subscribe(component => {
             component.instance.type = type;
@@ -186,12 +186,12 @@ export class modal {
     /**
      * a shortcut to prompt for a confirm dialog
      *
-     * @param text
-     * @param headertext
+     * @param textLabel
+     * @param headertextLabel
      * @param theme
      */
-    public confirm(text: string, headertext: string = null, theme: string = null): Observable<any> {
-        return this.prompt('confirm', text, headertext, theme);
+    public confirm(textLabel: string, headertextLabel: string = null, theme: string = null): Observable<any> {
+        return this.prompt('confirm', textLabel, headertextLabel, theme);
     }
 
     /**

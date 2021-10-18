@@ -473,12 +473,11 @@ export class navigation {
 
     /**
      * adds a model as editing in the currrent scope
-     * @param module
-     * @param id
+     * @param model
      * @param summary_text
      */
-    public addModelEditing(module, id, summary_text) {
-        this.modelsEditing.push({module: module, id: id, summary_text: summary_text, tabid: this.activeTab});
+    public addModelEditing(model, summary_text) {
+        this.modelsEditing.push({model, summary_text: summary_text, tabid: this.activeTab});
     }
 
     /**
@@ -556,15 +555,11 @@ export class navigation {
      * Checks if there is any model with dirty fields (unsaved).
      */
     public anyDirtyModel(tabid?: string): boolean {
-        if (this.modelregister.some(model => {
+        return this.modelsEditing.some(model => {
             if (model.model.isDirty() && (!tabid || (tabid && (model.tabid == tabid || this.parentTabId(tabid) == tabid)))) {
                 return true;
             }
-        })) {
-            return true;
-        } else {
-            return false;
-        }
+        });
     }
 
     /**
