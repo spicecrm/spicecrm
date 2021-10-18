@@ -34,6 +34,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class SysTrashCan
 {
@@ -101,16 +102,14 @@ class SysTrashCan
      * @return bool|string
      * @throws \Exception
      */
-    static function recover($id, $related){
-        global $beanList;
-
+    public static function recover($id, $related) {
         $db = DBManagerFactory::getInstance();
 
         $record = $db->fetchByAssoc($db->query("SELECT systrashcan.* FROM systrashcan WHERE id='$id' AND recovered = '0'"));
 
         if(!$focus = BeanFactory::getBean($record['recordmodule'])){
             // BWC try using object name ... used to be the string saved in recordmodule
-            $bean = array_search($record['recordmodule'], $beanList);
+            $bean = array_search($record['recordmodule'], SpiceModules::getInstance()->getBeanList());
             $focus = BeanFactory::getBean($bean);
         }
         if($focus->retrieve($record['recordid'], true, false)){

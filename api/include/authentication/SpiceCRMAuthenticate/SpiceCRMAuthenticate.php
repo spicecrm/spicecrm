@@ -49,7 +49,6 @@ class SpiceCRMAuthenticate
         $_SESSION['type'] = 'user';
         $_SESSION['KREST'] = true;
 
-        $_SESSION['avail_modules'] = query_module_access_list($userObj);
         SpiceACL::getInstance()->filterModuleList($_SESSION['avail_modules'], false);
 
         $_SESSION['authenticated_user_id'] = $userObj->id;
