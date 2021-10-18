@@ -163,7 +163,7 @@ export class EmailSchedulesRelatedModal {
             let await = this.modal.await('LBL_LOADING');
             link.selected= false;
             link.expanded = true;
-            this.backend.getRequest(`module/ProspectLists/${this.parentModel.id}/related/${link.link}`, {
+            this.backend.getRequest(`module/${this.parentModel.module}/${this.parentModel.id}/related/${link.link}`, {
                 getcount: 0,
                 offset: 0,
                 limit: 100
@@ -204,7 +204,7 @@ export class EmailSchedulesRelatedModal {
                     link.open = true;
                     if (!link.linkedbeans) link.linkedbeans = [];
                     for (let item of items) {
-                        if(this.linkedBeans.findIndex(b => b.id == item.id) == -1) {
+                        if(link.linkedbeans.findIndex(b => b.id == item.id) == -1) {
                             item.source = 'user';
                             link.linkedbeans.push(item);
                         }
