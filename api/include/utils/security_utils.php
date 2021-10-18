@@ -72,12 +72,7 @@ $modules_exempt_from_availability_check['DocumentRevisions']='DocumentRevisions'
  */
 function query_module_access_list(&$user)
 {
-	require_once('modules/MySettings/TabController.php');
-	$controller = new TabController();
-	$tabArray = $controller->get_tabs($user);
-
-	return $tabArray[0];
-
+	return [];
 }
 
 /**
