@@ -26,7 +26,7 @@ class SpiceModules
      *
      * @var
      */
-    private $modules;
+    public $modules;
 
     /**
      * @return SpiceModules
