@@ -252,6 +252,7 @@ class SpiceModules
      * Sets the local attributes if the modules were already loaded in the session.
      */
     private function setLocalsFromSession(): void {
+        $this->modules     = $_SESSION['modules']['moduleDetails'];
         $this->moduleList  = $_SESSION['modules']['moduleList'];
         $this->beanList    = $_SESSION['modules']['beanList'];
         $this->beanClasses = $_SESSION['modules']['beanClasses'];
