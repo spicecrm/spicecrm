@@ -97,8 +97,8 @@ class SpiceUIConfLoader
         // module dictionaries are unknown at that time
         // load them to make sure DBManager will have proper content in global $dictionary
         SpiceModules::getInstance()->loadModules();
-        foreach($_SESSION['modules']['moduleList'] as $idx => $module){
-            VardefManager::loadVardef($module, $_SESSION['modules']['beanList'][$module]);
+        foreach(SpiceModules::getInstance()->getModuleList() as $idx => $module){
+            VardefManager::loadVardef($module, SpiceModules::getInstance()->getBeanName($module));
         }
 
     }
@@ -360,13 +360,11 @@ class SpiceUIConfLoader
         };
 
         // process
-        if (isset($GLOBALS['moduleList'])) {
-            foreach ($sysmodules as $sysmodule) {
-                if (!in_array($sysmodule, $GLOBALS['moduleList'])) {
-                    $delPks = ['module' => $sysmodule];
-                    if(!$db->deleteQuery('sysmodules', $delPks)){
-                        LoggerManager::getLogger()->fatal('error deleting packages '.$db->lastError());
-                    }
+        foreach ($sysmodules as $sysmodule) {
+            if (!in_array($sysmodule, SpiceModules::getInstance()->getModuleList())) {
+                $delPks = ['module' => $sysmodule];
+                if(!$db->deleteQuery('sysmodules', $delPks)){
+                    LoggerManager::getLogger()->fatal('error deleting packages '.$db->lastError());
                 }
             }
         }
