@@ -761,6 +761,7 @@ $db = DBManagerFactory::getInstance();
                         $authObjectAccess = true;
                     };
                     break;
+                case 'ig':
                 case '':
                     $authObjectAccess = true;
                     break;
