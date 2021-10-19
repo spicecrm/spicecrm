@@ -11,9 +11,7 @@
                 <div class="slds-form-element__control">
                     <div *ngIf="!options" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
                         <ng-container [ngSwitch]="type">
-
                             <system-input-date *ngSwitchCase="'input_date'" [(ngModel)]="value"></system-input-date>
-
                             <ng-container *ngSwitchDefault>
                                 <input #inputField class="slds-input" type="text" [(ngModel)]="value" tabindex="1"/>
                                 <div class="slds-input__icon-group slds-input__icon-group_right">
@@ -38,13 +36,12 @@
                             </system-input-radio>
                         </ng-template>
                     </ng-container>
-
                 </div>
             </div>
         </div>
         <footer class="slds-modal__footer">
             <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()"><system-label label="LBL_CANCEL"></system-label></button>
-            <button #okButton class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
+            <button #okButton [disabled]="(type == 'input'|| type == 'input_date') && !value" class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
         </footer>
     </div>
 </section>
