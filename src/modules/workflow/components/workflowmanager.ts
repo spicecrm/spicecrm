@@ -63,7 +63,11 @@ export class WorkflowManager implements OnInit {
      */
     set currentModule(val: string) {
         this.currentWorkflow = undefined;
-        this.workflowManagerService.currentModule = {name: val, workflowDefinitions: []};
+        this.workflowManagerService.currentModule = {
+            name: val,
+            workflowDefinitions: [],
+            fields: this.getModuleFields(val)
+        };
         this.getWorkflowDefinitions();
     }
 
@@ -184,6 +188,18 @@ export class WorkflowManager implements OnInit {
                 }
             );
         });
+    }
+
+    private getModuleFields(module: string): Array<{ name: string, label: string }> {
+
+        return _.toArray(this.metadata.getModuleFields(module))
+            .map(f => ({
+                name: f.name,
+                label: this.language.getFieldDisplayName(module, f.name)
+            }))
+            .sort((a, b) => {
+                return a.label > b.label ? 1 : -1;
+            });
     }
 
     /**

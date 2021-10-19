@@ -2,7 +2,6 @@
  * @module ModuleWorkflow
  */
 import {Component,} from '@angular/core';
-import {modelutilities} from '../../../services/modelutilities.service';
 import {model} from '../../../services/model.service';
 
 @Component({
@@ -13,12 +12,8 @@ import {model} from '../../../services/model.service';
  * handle managing the workflow task system type
  */
 export class WorkflowManagerTaskTypesSystem {
-    /**
-     * holds the active tab
-     */
-    public activeTab: string = 'T';
 
-    constructor(private model: model, private modelutilities: modelutilities) {
+    constructor(public model: model) {
 
     }
 
@@ -33,13 +28,14 @@ export class WorkflowManagerTaskTypesSystem {
         }
 
         this.model.data.type_config.systemactions.push({
-            id: this.modelutilities.generateGuid(),
-            workflowtaskdefinition_id: this.model.id,
-            deleted: 0,
-            acl: {
-                create: true,
-                edit: true
-            }
+            id: this.model.generateGuid(),
+            field: '',
+            field_value: '',
+            workflowtask_status: ''
         });
+    }
+
+    public handleDelete(id: string) {
+        // todo remove from array
     }
 }

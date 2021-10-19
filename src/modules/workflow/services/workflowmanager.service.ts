@@ -20,5 +20,5 @@ export class WorkflowManagerService {
     /**
      * holds the current module
      */
-    public currentModule: { name: string, workflowDefinitions: any[] };
+    public currentModule: { name: string, workflowDefinitions: any[], fields: Array<{ name: string, label: string }> };
 }

@@ -39,8 +39,6 @@ import /*embed*/ {WorkflowManagerDetailTaskEmailpanel} from "./components/workfl
 import /*embed*/ {WorkflowManagerDetailTaskSmspanel} from "./components/workflowmanagerdetailtasksmspanel";
 import /*embed*/ {WorkflowManagerDetailTaskSystemactionsLine} from "./components/workflowmanagerdetailtasksystemactionsline";
 import /*embed*/ {WorkflowManagerDetailConditions} from "./components/workflowmanagerdetailconditions";
-import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
-import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
 import /*embed*/ {WorkflowPanel} from "./components/workflowpanel";
 
 import /*embed*/ {WorkflowPanelHeader} from "./components/workflowpanelheader";
@@ -77,8 +75,6 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowManagerDetailTaskEmailpanel,
         WorkflowManagerDetailTaskSystemactionsLine,
         WorkflowManagerDetailConditions,
-        WorkflowManagerDetailConditionsLine,
-        WorkflowManagerFieldsdropdown,
         WorkflowPanel,
         WorkflowOpenWorkflowsPipe,
         WorkflowCompletedWorkflowsPipe,
