@@ -463,8 +463,8 @@ export class relatedmodels implements OnDestroy {
      *
      * @param items
      */
-    public addItems(items) : Observable<any> {
-
+    public addItems(items): Observable<any> {
+        let retSubject = new Subject<any>();
         if (this.saveToLinkOnly) {
             this.model.addRelatedRecords(this._linkName, items);
             this.items = this.items.concat(items);
@@ -472,35 +472,33 @@ export class relatedmodels implements OnDestroy {
             return of(false) ;
         }
 
-        if (!this.isonlyfiltered) {
-            let relatedIds: any[] = [];
-            for (let item of items) {
-                relatedIds.push(item.id);
-            }
-            return this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).pipe(
-                tap(() => {
-                    let retSubject = new Subject<any>();
-                    for (let item of items) {
-                        let itemfound = false;
-                        this.items.some(curitem => {
-                            if (curitem.id == item.id) {
-                                itemfound = true;
-                                return true;
-                            }
-                        });
-                        if (!itemfound) {
-                            this.items.push(item);
-                            this.count++;
-                        }
-                    }
-                    retSubject.next(true);
-                    retSubject.complete();
-                })
-            );
-        } else {
-            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_ADD'), 'error');
-            return of(false) ;
+        let relatedIds: any[] = [];
+        for (let item of items) {
+            relatedIds.push(item.id);
         }
+        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(
+            () => {
+                for (let item of items) {
+                    let itemfound = false;
+                    this.items.some(curitem => {
+                        if (curitem.id == item.id) {
+                            itemfound = true;
+                            return true;
+                        }
+                    });
+                    if (!itemfound) {
+                        this.items.push(item);
+                        this.count++;
+                    }
+                }
+                retSubject.next(true);
+                retSubject.complete();
+            },
+            () => {
+                retSubject.error('error adding items');
+            }
+        );
+        return retSubject.asObservable();
     }
 
     /**
