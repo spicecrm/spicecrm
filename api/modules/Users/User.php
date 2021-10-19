@@ -42,6 +42,7 @@ use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\ACLActions\ACLAction;
@@ -528,19 +529,14 @@ class User extends Person
         $isDev = $type == 'dev';
         $isAdmin = $type == 'admin';
 
-        global $beanList;
         $myModules = [];
-
-        if (!is_array($beanList)) {
-            return $myModules;
-        }
 
         // These modules don't take kindly to the studio trying to play about with them.
         static $ignoredModuleList = ['iFrames', 'Feeds', 'Home', 'Dashboard', 'Calendar', 'Activities', 'Reports'];
 
         $actions = ACLAction::getUserActions($this->id);
 
-        foreach ($beanList as $module => $val) {
+        foreach (SpiceModules::getInstance()->getBeanList() as $module => $val) {
             // Remap the module name
             $module = $this->_fixupModuleForACL($module);
             if (in_array($module, $myModules)) {

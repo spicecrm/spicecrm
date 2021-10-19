@@ -6,6 +6,7 @@ namespace SpiceCRM\data;
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\Administration\Administration;
 use SpiceCRM\modules\Currencies\Currency;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
@@ -164,20 +165,12 @@ class BeanFactory
         return self::getBean($module);
     }
 
-    public static function getBeanName($module)
-    {
-        global $beanList;
-        if (empty($beanList[$module])) return false;
-
-        return $beanList[$module];
+    public static function getBeanName(string $module): string {
+        return SpiceModules::getInstance()->getBeanName($module) ?? false;
     }
 
-    public static function getBeanClass($module)
-    {
-        global $beanClasses;
-        if (empty($beanClasses[$module])) return false;
-
-        return $beanClasses[$module];
+    public static function getBeanClass(string $module): string {
+        return SpiceModules::getInstance()->getBeanClassForModule($module) ?? false;
     }
 
     /**
@@ -208,12 +201,12 @@ class BeanFactory
      */
     public static function registerBean($module, $bean, $id = false)
     {
-        global $beanList;
-
         $config = SpiceConfig::getInstance()->config;
         $cacheEnabled = ($config['system']['module_cache_enabled'] ?? false) == 1;
 
-        if (!$cacheEnabled || empty($beanList[$module])) return false;
+        if (!$cacheEnabled || empty(SpiceModules::getInstance()->getBeanName($module))) {
+            return false;
+        }
 
         if (!isset(self::$loadedBeans[$module]))
             self::$loadedBeans[$module] = [];
@@ -264,4 +257,3 @@ class BeanFactory
         return true;
     }
 }
-
