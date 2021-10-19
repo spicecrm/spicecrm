@@ -90,6 +90,8 @@ import /*embed*/ {AdministrationPasswordConfig} from './components/administratio
 import /*embed*/ {AdministrationBlockedUsers} from './components/administrationblockedusers';
 import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
 
+import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
+
 @NgModule({
     imports: [
         CommonModule,
@@ -107,6 +109,7 @@ import /*embed*/ {AdministrationLoginManagement} from './components/administrati
         AdministrationAPIInspectorDetails,
         AdministrationapiinspectorMethodResponses,
         AdministrationApiInspectorMethodTest,
+        AdministrationGDPRRetentionManager,
         AdministrationMain,
         AdministrationMenu,
         AdministrationMenuRouteItem,

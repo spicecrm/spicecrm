@@ -32,6 +32,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -81,11 +82,10 @@ class SpiceACLObject extends SugarBean
      */
     public function generateTypes()
     {
-        global $beanList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
         if (is_admin($current_user)) {
-            foreach ($beanList as $module => $class) {
+            foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
                 $seed = BeanFactory::getBean($module);
                 if ($seed && method_exists($seed, 'bean_implements') && $seed->bean_implements('ACL')) {
                     $typeRecord = $this->db->fetchByAssoc($this->db->query("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE module = '$module' AND acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE module = '$module' AND acl = 1"));
@@ -782,14 +782,13 @@ $db = DBManagerFactory::getInstance();
     /*
     private function getKauthObjectRelationship()
     {
-        global $beanList;
-$db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
         if ($this->relationShip != '')
             return;
 
         $link = $db->fetchByAssoc($db->query("SELECT kom.* FROM korgobjecttypes_modules kom INNER JOIN kauthtypes kt ON kt.bean = kom.module WHERE kt.id='" . $this->objDetail['kauthtype_id'] . "'"));
-        $thisBean = \SpiceCRM\data\BeanFactory::getBean(array_search($link['module'], $beanList));
+        $thisBean = \SpiceCRM\data\BeanFactory::getBean(array_search($link['module'], SpiceModules::getInstance()->getBeanList()));
         $this->relationShip = $db->fetchByAssoc($db->query("SELECT * FROM relationships WHERE relationship_name ='" . $thisBean->field_name_map[$link['relatefrom']]['relationship'] . "'"));
 
 

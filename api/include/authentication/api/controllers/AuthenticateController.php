@@ -29,7 +29,8 @@ class AuthenticateController
         $parsedBody = $req->getParsedBody();
         $userAuthenticationController = new UserAuthenticate();
         $userAuthenticationController->resetPasswordByToken($args['token'], $parsedBody['newPassword']);
-        return $res;
+        return $res->withJson($res);
+
     }
 
     public function authSendTokenToUser(Request $req, Response $res, array $args): Response
@@ -41,7 +42,7 @@ class AuthenticateController
             throw new Exception();
             //catch error of sending token in order to hide success of action
         }
-        return $res;
+        return $res->withJson($res);
     }
 
     /**
@@ -59,7 +60,7 @@ class AuthenticateController
         $parsedBody = $req->getParsedBody();
         AuthenticationController::getInstance()->changePassword($parsedBody['username'], $parsedBody['password'], $parsedBody['newPassword'], false);
 
-        return $res;
+        return $res->withJson($res);
 
     }
 

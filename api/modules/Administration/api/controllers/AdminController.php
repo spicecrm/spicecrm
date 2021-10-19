@@ -187,7 +187,7 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
-        global $moduleList, $dictionary;
+        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
@@ -201,7 +201,7 @@ class AdminController
 
         $repairedTables = [];
         $sql = '';
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
                 $sql .= $db->repairTable($focus, $execute);
@@ -241,7 +241,7 @@ class AdminController
      * @throws \Exception
      */
     public function buildSQLArray(Request $req, Response $res, array $args): Response {
-        global $moduleList, $dictionary;
+        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
@@ -256,13 +256,7 @@ class AdminController
         $repairedTables = [];
         $sql = '';
 
-        // moduleList might be empty at that time. Make a full reload.
-        // Grabbing from session won't be enough
-        if(empty($moduleList)){
-            SpiceModules::getInstance()->loadModules(true);
-        }
-
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
                 $sql .= $db->repairTable($focus, $execute);
@@ -521,9 +515,7 @@ class AdminController
      */
     private function merge_files($path, $name, $filter = '')
     {
-        global $moduleList;
-
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $extension = "<?php \n //WARNING: The contents of this file are auto-generated\n";
             $extpath = "modules/$module/$path";
             $module_install = 'custom/Extension/' . $extpath;
@@ -608,34 +600,33 @@ class AdminController
      * @return false|Response|string
      */
     public function repairACLRoles(Request $req, Response $res, array $args) {
-        global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $repairedACLs = [];
         $ACLActions = ACLAction::getDefaultActions();
         if (SpiceUtils::isAdmin($current_user)) {
             if (!empty($ACLActions)) {
                 foreach ($ACLActions as $action) {
-                    if (!isset($beanList[$action->category])) {
+                    if (empty(SpiceModules::getInstance()->getBeanName($action->category))) {
                         ACLAction::removeActions($action->category);
                     }
 
                 }
             } else {
-                foreach ($beanList as $module => $class) {
-                    if (empty($repairedACLs[$class]) && isset($beanFiles[$class]) && file_exists($beanFiles[$class])) {
-                        $current_module = BeanFactory::getBean($module);
-                        if ($current_module->bean_implements('ACL') && empty($current_module->acl_display_only)) {
-                            if (!empty($current_module->acltype)) {
-                                ACLAction::addActions($current_module->getACLCategory(), $current_module->acltype);
+                foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
+                    $beanName = SpiceModules::getInstance()->getBeanName($module);
+                    if (empty($repairedACLs[$beanName]) && class_exists($beanClass)) {
+                        $currentModule = BeanFactory::getBean($module);
+                        if ($currentModule->bean_implements('ACL') && empty($currentModule->acl_display_only)) {
+                            if (!empty($currentModule->acltype)) {
+                                ACLAction::addActions($currentModule->getACLCategory(), $currentModule->acltype);
                             } else {
-                                ACLAction::addActions($current_module->getACLCategory());
+                                ACLAction::addActions($currentModule->getACLCategory());
                             }
 
-                            $repairedACLs[$class] = true;
+                            $repairedACLs[$beanName] = true;
                         }
                     }
                 }
-
             }
         }
         if ($res) {

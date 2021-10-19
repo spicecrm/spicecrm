@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\SpiceInstaller;
 use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -450,8 +451,8 @@ class SpiceInstaller
      */
     public function createTables($db)
     {
-        global $dictionary, $beanList, $beanClasses;
-        $beanList = [];
+        global $dictionary;
+        $globalBeanList = [];
         // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
@@ -477,9 +478,12 @@ class SpiceInstaller
                 $base64conf = base64_decode($moduleConf);
                 if ($decodedConf = json_decode($base64conf, true)) {
                     if (!empty($decodedConf['bean'])) {
-                        $beanList[$decodedConf['module']] = $decodedConf['bean'];
+                        $globalBeanList[$decodedConf['module']] = $decodedConf['bean'];
                         //todo temporary bugfix, find correct solution?
-                        $beanClasses[$decodedConf['module']] = '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean'];
+                        SpiceModules::getInstance()->setBeanClass(
+                            $decodedConf['module'],
+                            '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean']
+                        );
                     }
                 }
             }
@@ -497,9 +501,9 @@ class SpiceInstaller
                 $db->query($query);
             }
         }
-        ksort($beanList);
+        ksort($globalBeanList);
 
-        foreach ($beanList as $dir => $bean) {
+        foreach ($globalBeanList as $dir => $bean) {
             if ($bean == 'Administration') { // for core edition
                 require_once('metadata/system_config.php');
             } else {
@@ -545,7 +549,7 @@ class SpiceInstaller
             }
             SugarBean::createRelationshipMeta($bean, $db, $dictionary[$bean]['table'], '', $dir);
         }
-
+        SpiceModules::getInstance()->setBeanList($globalBeanList);
 
         ksort($rel_dictionary);
         foreach ($rel_dictionary as $rel_name => $rel_data) {
