@@ -59,7 +59,6 @@ class SpiceFTSRESTManager
      */
     function initialize()
     {
-        global $moduleList;
         $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
