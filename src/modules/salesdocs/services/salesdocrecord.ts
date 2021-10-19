@@ -183,6 +183,10 @@ export class salesdocrecord implements OnDestroy {
      * @private
      */
     private getTaxedParty(): Observable<boolean> {
+
+        // only if we are editing
+        if(!this.salesdoc.isEditing) return of(true);
+
         // first Receiving Account
         let rpModule = 'Accounts';
         let rpId = this.salesdoc.getField('account_rp_id');
