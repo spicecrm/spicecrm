@@ -18,7 +18,7 @@ class IpAddresses
     {
         if ( $ipAddress === null ) $ipAddress = SpiceUtils::getClientIP();
         $db = DBManagerFactory::getInstance();
-        $ipIsBlackListed = (bool)$db->getOne( sprintf("SELECT count(*) FROM ipaddresses WHERE color=\"b\" AND address = \"%s\"", $db->quote( $ipAddress )));
+        $ipIsBlackListed = (bool)$db->getOne( sprintf("SELECT count(*) FROM ipaddresses WHERE date_deleted IS NULL AND color=\"b\" AND address = \"%s\"", $db->quote( $ipAddress )));
         return !$ipIsBlackListed;
     }
 
@@ -26,10 +26,10 @@ class IpAddresses
     {
         if ( $ipAddress === null ) $ipAddress = SpiceUtils::getClientIP();
         $db = DBManagerFactory::getInstance();
-        return (bool)$db->getOne( sprintf("SELECT count(*) FROM ipaddresses WHERE color=\"w\" AND address = \"%s\"", $db->quote( $ipAddress )));
+        return (bool)$db->getOne( sprintf("SELECT count(*) FROM ipaddresses WHERE date_deleted IS NULL AND  color=\"w\" AND address = \"%s\"", $db->quote( $ipAddress )));
     }
 
-    static function addIpAddress( $color, $description, $ipAddress = null, $createdBy = null )
+    static function addIpAddress( $color, $description = null, $ipAddress = null, $createdBy = null )
     {
         if ( $ipAddress === null ) $ipAddress = SpiceUtils::getClientIP();
         $db = DBManagerFactory::getInstance();

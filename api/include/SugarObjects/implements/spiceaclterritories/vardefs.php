@@ -76,7 +76,6 @@ $vardefs = [
 // check if the object is self managed ... then add the relationship 
 $db = DBManagerFactory::getInstance();
 if ($db != null) {
-    global $beanList;
     $elementRow = $db->fetchByAssoc($db->query("SELECT * FROM spiceaclterritories_modules WHERE module='$module'"));
     if (!empty($elementRow['spiceaclterritorytype_id']) && empty($elementRow['relatefrom'])) {
         $vardefs['relationships'][strtolower($module) . '_territories'] = [
