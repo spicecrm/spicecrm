@@ -493,6 +493,9 @@ export class relatedmodels implements OnDestroy {
                 }
                 retSubject.next(true);
                 retSubject.complete();
+            },
+            () => {
+                retSubject.error('error adding items');
             }
         );
         return retSubject.asObservable();
