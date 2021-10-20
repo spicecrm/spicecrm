@@ -1,5 +1,5 @@
 <?php
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data;
 
