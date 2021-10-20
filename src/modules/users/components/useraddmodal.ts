@@ -32,7 +32,7 @@ export class UserAddModal implements OnInit {
     private password: string;
     private repeatPassword: string;
     private pwdCheck: RegExp = new RegExp("//");
-    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._]{1,60}$");
+    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
     private pwdGuideline: string;
     private autogenerate: boolean = false;
     private sendByEmail: boolean = false;
