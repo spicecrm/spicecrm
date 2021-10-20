@@ -364,15 +364,16 @@ class CampaignTask extends SugarBean
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
     public function mailMerge($start = 0, $limit = 100){
-        /** @var OutputTemplate $outputTemplate */
-        $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
-
-        $style = $outputTemplate->getStyle();
-        $header = html_entity_decode( $outputTemplate->header);
-        $footer = html_entity_decode( $outputTemplate->footer);
 
         $html = '';
         foreach ($this->getProspectBeans($start, $limit) as $prospectBean){
+            /** @var OutputTemplate $outputTemplate */
+            $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
+
+            $style = $outputTemplate->getStyle();
+            $header = html_entity_decode( $outputTemplate->header);
+            $footer = html_entity_decode( $outputTemplate->footer);
+
             $html .= $outputTemplate->translateBody($prospectBean, true);
             $html .= '<div style="page-break-after: always;"></div>';
         }
