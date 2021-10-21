@@ -145,6 +145,7 @@ export class questionnaireParticipationService {
         this.initByQuestionnaire = true;
         this.questionnaireId = questionnaireId;
         if ( !this.editMode ) this.editMode = 'preview';
+        this.routeForSave = 'module/QuestionAnswers/ofParticipation/anonymous';
         return this.loadQuestionnaire();
     }
 
@@ -618,10 +619,11 @@ export class questionnaireParticipationService {
     public save( setCompleted = false ): EventEmitter<boolean> {
         this.isSaving = true;
         let finishedSaving$ = new EventEmitter<boolean>();
-        this.backend.postRequest( this.routeForSave, {}, { setCompleted: setCompleted, answers: this.answers } ).subscribe( response => {
+        this.backend.postRequest( this.routeForSave, {}, { setCompleted: setCompleted, questionnaireId: this.questionnaireId, answers: this.answers } ).subscribe( response => {
                 this.isSaving = false;
                 this.isDirty = false;
                 this.isCompleted = !!response.isCompleted;
+                if ( this.initByQuestionnaire ) this.participationId = response.questionnaireParticipationId;
                 finishedSaving$.emit( true );
                 this.broadcast.broadcastMessage('questionnaireParticipation.saved', { id: this.participationId, parentId: this.parentId, parentType: this.parentType });
             },
