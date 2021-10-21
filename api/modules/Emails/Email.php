@@ -1168,10 +1168,14 @@ class Email extends SugarBean
     {
         $db = DBManagerFactory::getInstance();
 
-        $query = "SELECT id FROM emails WHERE message_id='" . $message_id . "'";
+        $query = "SELECT id, message_id FROM emails WHERE message_id='" . $message_id . "'";
         $q = $db->query($query);
 
         while ($row = $db->fetchRow($q)) {
+            if ($row['message_id'] != $message_id) {
+                continue;
+            }
+
             $email = BeanFactory::getBean('Emails', $row['id']);
         }
 
