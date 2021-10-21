@@ -1190,7 +1190,7 @@ if (file_exists("extensions/modules/Shops")) {
     ];
 }
 
-if (file_exists("extensions/modules/DistributionLists")) {
+if (file_exists("modules/DistributionLists")) {
     $dictionary['User']['fields']['distributionlists'] = [
         'name' => 'distributionlists',
         'vname' => 'LBL_DISTRIBUTIONLISTS',
