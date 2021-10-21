@@ -195,7 +195,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @subtract? 1 month to secondDate
     * @buildGrids
     */
-    private prevMonth() {
+    private prevMonth(e: MouseEvent) {
+        e.stopPropagation();
         this.curDate.subtract(1, 'months');
         if (this.dual) this.secondDate.subtract(1, 'months');
         this.buildGrids();
@@ -206,7 +207,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @add? 1 month to secondDate
     * @buildGrids
     */
-    private nextMonth() {
+    private nextMonth(e: MouseEvent) {
+        e.stopPropagation();
         this.curDate.add(1, 'months');
         if (this.dual) this.secondDate.add(1, 'months');
         this.buildGrids();
@@ -216,7 +218,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @set curDate to today
     * @buildGrids
     */
-    private goToday() {
+    private goToday(e: MouseEvent) {
+        e.stopPropagation();
         this.curDate = new moment();
         this.buildGrids();
     }
