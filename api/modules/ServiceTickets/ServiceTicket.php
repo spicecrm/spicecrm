@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\modules\ServiceTickets;
 
+use DateTime;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
