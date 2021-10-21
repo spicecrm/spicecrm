@@ -1,8 +1,11 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component,} from '@angular/core';
+import {Component, EventEmitter, Output,} from '@angular/core';
 import {model} from '../../../services/model.service';
+import {modal} from "../../../services/modal.service";
+import {metadata} from '../../../services/metadata.service';
+import {footer} from "../../../services/footer.service";
 
 @Component({
     selector: 'workflow-manager-task-types-system',
@@ -12,9 +15,7 @@ import {model} from '../../../services/model.service';
  * handle managing the workflow task system type
  */
 export class WorkflowManagerTaskTypesSystem {
-
     constructor(public model: model) {
-
     }
 
     /**
@@ -33,9 +34,5 @@ export class WorkflowManagerTaskTypesSystem {
             field_value: '',
             workflowtask_status: ''
         });
-    }
-
-    public handleDelete(id: string) {
-        // todo remove from array
     }
 }

@@ -5,6 +5,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[workflow-manager-detail-tasksystemactions-line]',
@@ -14,10 +15,10 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
 
     @Input() public systemaction: any = {};
     @Input() private field: string = '';
-    @Output() private delete$ = new EventEmitter<void>();
 
     constructor(private modal: modal,
                 private language: language,
+                private model: model,
                 public workflowManagerService: WorkflowManagerService) {
     }
 
@@ -27,10 +28,10 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
      */
 
     public removeDecision() {
-        this.modal.confirm('MSG_CONFIRM_KILL', this.language.getLabel('LBL_KILL')).subscribe(modalRef => {
+        this.modal.confirm('MSG_DELETE_RECORD', this.language.getLabel('LBL_DELETE')).subscribe(modalRef => {
             modalRef.instance.answer.subscribe(decision => {
                 if (decision) {
-                    this.delete$.emit();
+                    this.model.data.type_config.systemactions = this.model.data.type_config.systemactions.filter(e => e.id != this.systemaction.id);
                 }
             });
         });

@@ -24,7 +24,12 @@ export class WorkflowManagerDetailConditionsLine {
     @Input() conditions: any = {};
     @Input() module: string = '';
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(private metadata: metadata,
+                private model: model,
+                private view: view,
+                private language: language,
+                private modelutilities: modelutilities,
+                private footer: footer) {
         this.model.module = 'WorkflowConditions';
 
         // set the view to edit mode
@@ -39,7 +44,7 @@ export class WorkflowManagerDetailConditionsLine {
         this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.condition);
     }
 
-    removeCondition(){
+    removeCondition() {
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Condition';
             componenRef.instance.message = 'are you sure you want to delete the condition?';

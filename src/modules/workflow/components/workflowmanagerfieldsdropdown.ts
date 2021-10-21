@@ -16,8 +16,12 @@ export class WorkflowManagerFieldsdropdown {
 
     constructor(private model: model,
                 public workflowManagerService: WorkflowManagerService) {
-
     }
+
+    /**
+     * fill the dropwdown menu with appropriate field value
+     * @private
+     */
 
     get value() {
         return this.model.data[this.field];
