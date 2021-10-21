@@ -36,8 +36,8 @@
 global $dictionary;
 $dictionary['User'] = [
     'table' => 'users',
+    'audited' => true,
     'fields' => [
-
         'id' => [
             'name' => 'id',
             'vname' => 'LBL_ID',
@@ -988,6 +988,17 @@ $dictionary['User'] = [
             'bean_name' => 'SpiceACLProfile',
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
+        ],
+        'login_blocked' => [
+            'name' => 'login_blocked',
+            'vname' => 'LBL_LOGIN_BLOCKED',
+            'type' => 'bool',
+            'default' => '0'
+        ],
+        'login_blocked_until' => [
+            'name' => 'login_blocked_until',
+            'vname' => 'LBL_BLOCKED_UNTIL',
+            'type' => 'datetime'
         ]
     ],
     'indices' => [
@@ -1179,4 +1190,16 @@ if (file_exists("extensions/modules/Shops")) {
     ];
 }
 
+if (file_exists("modules/DistributionLists")) {
+    $dictionary['User']['fields']['distributionlists'] = [
+        'name' => 'distributionlists',
+        'vname' => 'LBL_DISTRIBUTIONLISTS',
+        'type' => 'link',
+        'relationship' => 'distributionlists_users',
+        'module' => 'DistributionLists',
+        'bean_name' => 'DistributionList',
+        'source' => 'non-db',
+        'comment' => 'DistributionLists the user is allocated to'
+    ];
+}
 

@@ -6,6 +6,7 @@ global $dictionary;
 $dictionary['Task'] = ['table' => 'tasks',
     'unified_search'   => true,
     'full_text_search' => true,
+    'audited' => true,
     'fields' => [
         'name' => [
             'name'             => 'name',
@@ -49,6 +50,7 @@ $dictionary['Task'] = ['table' => 'tasks',
             ],
             'enable_range_search' => true,
             'options'             => 'date_range_search_dom',
+            'required' => true
         ],
         'time_due' => [
             'name'       => 'time_due',

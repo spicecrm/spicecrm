@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\modules\Emails;
 
+
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
@@ -43,6 +44,8 @@ use Exception;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -125,7 +128,7 @@ class Email extends SugarBean
     public function save($check_notify = false, $fts_index_bean = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if ($this->isDuplicate) {
             LoggerManager::getLogger()->debug("EMAIL - tried to save a duplicate Email record");
@@ -182,10 +185,17 @@ class Email extends SugarBean
                 $this->date_sent = $timedate->now();
             }
 
-            parent::save($check_notify, $fts_index_bean);
+            // save without indexing
+            parent::save($check_notify, false);
 
+            // handle theemail addresses
             $this->handleFromAddress();
             $this->saveRecipientAddresses();
+
+            // process the indexing after the addresseshave been saved so relationships are updated
+            if($fts_index_bean){
+                SpiceFTSHandler::getInstance()->indexBean($this);
+            }
         }
         LoggerManager::getLogger()->debug('-------------------------------> Email save() done');
 
@@ -233,7 +243,7 @@ class Email extends SugarBean
         $referenceEmail = BeanFactory::getBean('Emails', $this->reference_id);
         $linked_fields = array_filter(
             $this->get_linked_fields(),
-            function ($key) {return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link']);},
+            function ($key) {return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link', 'mailboxes']);},
             ARRAY_FILTER_USE_KEY
         );
         foreach ($linked_fields as $name => $properties) {
@@ -470,6 +480,21 @@ class Email extends SugarBean
                     );
                 }
 
+            }
+
+            // save the relationship to the parent
+            if($recipient_address['parent_type'] && $recipient_address['parent_id']){
+                $recExists = $this->db->fetchByAssoc($this->db->query("SELECT id FROM emails_beans WHERE email_id='{$this->id}' AND bean_module = '{$recipient_address['parent_type']}' AND bean_id = '{$recipient_address['parent_id']}' AND deleted = 0"));
+                if(!$recExists){
+                    $this->db->insertQuery('emails_beans', [
+                        'id' => SpiceUtils::createGuid(),
+                        'email_id' => $this->id,
+                        'bean_module' => $recipient_address['parent_type'],
+                        'bean_id' => $recipient_address['parent_id'],
+                        'date_modified' => TimeDate::getInstance()->nowDb(),
+                        'deleted' => 0
+                    ], true);
+                }
             }
 
             $addresses[$recipient_address['address_type'] . '_addrs'][] = $recipient_address['email_address'];
@@ -1265,7 +1290,7 @@ class Email extends SugarBean
         $this->date_sent = date('Y-m-d H:i:s', $dateSent);
         $this->from_addr = $message->getSender();
         foreach ($message->getRecipients() as $recipient) {
-            $this->recipient_addresses[strtolower($recipient->getType()) . '_addrs'] = [
+            $this->recipient_addresses[] = [
                 'email_address' => $recipient->getEmail(),
                 'address_type' => strtolower($recipient->getType()),
             ];

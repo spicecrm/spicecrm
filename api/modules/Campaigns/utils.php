@@ -335,7 +335,7 @@ function write_mail_merge_log_entry($campaign_id,$pl_row) {
     }
 
     function create_campaign_log_entry($campaign_id, $focus, $rel_name, $rel_bean, $target_id = ''){
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         $target_ids = [];
         //check if this is specified for one target/contact/prospect/lead (from contact/lead detail subpanel)

@@ -31,6 +31,8 @@ interface authDataIf {
     tenant_name: string;
     obtainGDPRconsent: boolean;
     canchangepassword: boolean;
+    address_country?: string;
+    expiringPasswordValidityDays: boolean | number;
 }
 
 /**
@@ -58,7 +60,8 @@ export class session {
         tenant_id: '',
         tenant_name: '',
         obtainGDPRconsent: false,
-        canchangepassword: false
+        canchangepassword: false,
+        expiringPasswordValidityDays: false
     };
 
     /**
@@ -175,6 +178,7 @@ export class session {
         this.authData.companycode_id = '';
         this.authData.obtainGDPRconsent = false;
         this.authData.canchangepassword = false;
+        this.authData.expiringPasswordValidityDays = false;
 
         this.sessionData = {};
 

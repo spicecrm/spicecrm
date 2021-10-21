@@ -496,7 +496,7 @@ export class model implements OnDestroy {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
-                this.evaluateValidationRules(null, "init");
+                this.evaluateValidationRules(null, 'initialize');
                 this.isLoading = false;
                 this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
@@ -690,11 +690,7 @@ export class model implements OnDestroy {
                 // check conditions...
                 for (let condition of validation.conditions) {
                     let result = false;
-                    if (condition.onchange == 1 && field && condition.fieldname != field) {
-                        result = false;
-                    } else {
-                        result = this.evaluateCondition(condition);
-                    }
+                    result = this.evaluateCondition(condition);
                     checksum += result ? 1 : 0;
                     if (
                         checksum > 0 &&
@@ -882,7 +878,7 @@ export class model implements OnDestroy {
         }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
-        this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
+        this.navigation.addModelEditing(this, this.getFieldValue('summary_text'));
     }
 
 
@@ -1025,7 +1021,8 @@ export class model implements OnDestroy {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            // if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || !_.isEqual(this.data[property], this.backupData[property]))) {
                 d[property] = this.data[property];
             }
         }
@@ -1246,7 +1243,7 @@ export class model implements OnDestroy {
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
-        this.evaluateValidationRules(null, "init");
+        this.evaluateValidationRules(null, 'initialize');
 
         // set the parent model from the intialized one in the call
         this.parentmodel = parent;

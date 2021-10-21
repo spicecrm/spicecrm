@@ -23,6 +23,9 @@ export class AccountCCDetails implements OnInit {
         this.loadCompanyCodes();
     }
 
+    /**
+     * set the view
+     */
     public ngOnInit() {
         this.view.isEditable = true;
     }

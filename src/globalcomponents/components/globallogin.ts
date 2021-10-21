@@ -240,13 +240,6 @@ export class GlobalLogin {
     }
 
     /**
-     * only display the login image when the screenheight is large enough
-     */
-    get displayimage() {
-        return window.innerHeight > 800;
-    }
-
-    /**
      * returns thecurrent site id from the configuration service
      */
     get currentSiteId() {
@@ -325,5 +318,13 @@ export class GlobalLogin {
 
     get showProgressBar() {
         return this.configuration.data.loginProgressBar;
+    }
+
+    public handleRenewDialogClose(password?: string) {
+        this.renewpassword = false;
+        if (!!password) {
+            this.password = password;
+            this.login();
+        }
     }
 }

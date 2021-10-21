@@ -3,7 +3,7 @@
  */
 
 // from https://github.com/kolkov/angular-editor
-import {ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2,} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2, ChangeDetectorRef} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
@@ -28,7 +28,7 @@ declare var moment: any;
         }
     ]
 })
-export class SystemInputDate implements OnDestroy, ControlValueAccessor {
+export class SystemInputDate implements ControlValueAccessor {
 
 
     // for the value accessor
@@ -40,10 +40,6 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         moment: null,
         valid: true
     };
-
-    // for the dropdown
-    private isOpen: boolean = false;
-    private clickListener: any;
 
     /**
      * holds if the component is disabled
@@ -69,7 +65,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
                 private renderer: Renderer2,
                 private userpreferences: userpreferences,
                 private modal: modal,
-                private language: language) {
+                private cdref: ChangeDetectorRef) {
     }
 
     get isValid() {
@@ -91,8 +87,6 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
                 this._date.moment.year(newDate.year()).month(newDate.month()).date(newDate.date());
                 this._date.valid = true;
 
-                // close the dropdown
-                this.toggleClosed();
 
                 // emit the value to the ngModel directive
                 if (typeof this.onChange === 'function') {
@@ -121,12 +115,6 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
             return 'slds-dropdown_right';
         } else {
             return 'slds-dropdown_left';
-        }
-    }
-
-    public ngOnDestroy() {
-        if (this.clickListener) {
-            this.clickListener();
         }
     }
 
@@ -163,6 +151,8 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         } else {
             this.clear(false);
         }
+
+        this.cdref.detectChanges();
     }
 
     private clear(notify = true) {
@@ -173,34 +163,6 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         // emit the value to the ngModel directive
         if (typeof this.onChange === 'function' && notify) {
             this.onChange(this._date.moment);
-        }
-    }
-
-    /**
-     *  focus the text area when the editor is focussed
-     */
-    private toggleOpen() {
-
-        this.isOpen = !this.isOpen;
-        // check if we are active already
-        if (this.isOpen) {
-            // listen to the click event if it is ousoide of the current elements scope
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
-        }
-    }
-
-    private toggleClosed() {
-        // close the dropdown
-        this.isOpen = false;
-        if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
-    private onDocumentClick(event: MouseEvent) {
-        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
-            this.isOpen = false;
-            this.clickListener();
         }
     }
 
@@ -225,14 +187,10 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
             if (typeof this.onChange === 'function') {
                 this.onChange(this._date.moment);
             }
-
-            // close the dropdown
-            this.toggleClosed();
         }
     }
 
     private openCalendar() {
-        this.toggleClosed();
         this.modal.openModal('Calendar').subscribe(modalRef => {
             modalRef.instance.calendar.asPicker = true;
             modalRef.instance.calendar.pickerDate$

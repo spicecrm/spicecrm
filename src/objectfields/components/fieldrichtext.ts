@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {ChangeDetectorRef, Component, Injector} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector, OnInit} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -21,7 +21,7 @@ declare var _;
     selector: 'field-richtext',
     templateUrl: './src/objectfields/templates/fieldrichtext.html',
 })
-export class fieldRichText extends fieldGeneric {
+export class fieldRichText extends fieldGeneric implements OnInit {
     /**
      * holds the selected signature id
      */
@@ -86,7 +86,6 @@ export class fieldRichText extends fieldGeneric {
                 public cdRef: ChangeDetectorRef,
                 public sanitized: DomSanitizer) {
         super(model, view, language, metadata, router);
-        this.modelChangesSubscriber();
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
 
@@ -133,6 +132,7 @@ export class fieldRichText extends fieldGeneric {
             await this.loadMailboxSignature();
             this.loadUserSignature();
         }
+        this.modelChangesSubscriber();
     }
 
     /**
@@ -298,9 +298,11 @@ export class fieldRichText extends fieldGeneric {
     }
 
     private modelChangesSubscriber() {
-        this.subscriptions.add(this.model.data$.subscribe(data => {
+        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe(value => {
             this.setHtmlValue();
-            if (this.fieldconfig?.useSignature && !!data.mailbox_id && !this.signatures.some(s => s.id == data.mailbox_id)) {
+        }));
+        this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe(mailboxId => {
+            if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
                 this.loadMailboxSignature();
             }
         }));
