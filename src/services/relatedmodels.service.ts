@@ -448,7 +448,6 @@ export class relatedmodels implements OnDestroy {
                 return sortdirection == 'ASC' ? sortval : (sortval * -1);
             });
         }
-
     }
 
     /**
