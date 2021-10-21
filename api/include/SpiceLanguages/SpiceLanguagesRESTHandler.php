@@ -290,7 +290,7 @@ class SpiceLanguagesRESTHandler
         if(!empty($translation['custom_translations'])){
             return $translation['custom_translations'][0]['translation_default'];
         }
-        return $translation['global_translations'][0]['translation_default'];
+        return $translation['global_translations'][0]['translation_default'] ?: $labelName;
 
     }
 }
