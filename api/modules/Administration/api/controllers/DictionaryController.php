@@ -103,26 +103,24 @@ class DictionaryController
     private function buildFieldArray($module)
     {
         $returnArray = [];
-        $beanClass = SpiceModules::getInstance()->getBeanClassForModule($module);
-        if ($module != '' && $module != 'undefined' && class_exists($beanClass)) {
-            $nodeModule = BeanFactory::getBean($module);
 
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
-                if ($field_defs['type'] != 'link') {
-                    $returnArray[] = [
-                        'id' => 'field:' . $field_defs['name'],
-                        'name' => $field_defs['name'],
-                        // in case of a kreporter field return the report_data_type so operators ar processed properly
-                        // 2011-05-31 changed to kreporttype returned if fieldttype is kreporter
-                        // 2011-10-15 if the kreporttype is set return it
-                        //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
-                        'type' => (isset($field_defs['kreporttype'])) ? $field_defs['kreporttype'] : $field_defs['type'],
-                        'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
-                        'leaf' => true,
-                        'options' => $field_defs['options'],
-                        'label' => $field_defs['vname']
-                    ];
-                }
+        $nodeModule = BeanFactory::getBean($module);
+
+        foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            if ($field_defs['type'] != 'link') {
+                $returnArray[] = [
+                    'id' => 'field:' . $field_defs['name'],
+                    'name' => $field_defs['name'],
+                    // in case of a kreporter field return the report_data_type so operators ar processed properly
+                    // 2011-05-31 changed to kreporttype returned if fieldttype is kreporter
+                    // 2011-10-15 if the kreporttype is set return it
+                    //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
+                    'type' => (isset($field_defs['kreporttype'])) ? $field_defs['kreporttype'] : $field_defs['type'],
+                    'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
+                    'leaf' => true,
+                    'options' => $field_defs['options'],
+                    'label' => $field_defs['vname']
+                ];
             }
         }
 
