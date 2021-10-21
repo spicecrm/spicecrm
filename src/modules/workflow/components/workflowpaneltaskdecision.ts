@@ -1,9 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component, Input
-} from '@angular/core';
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {language} from '../../../services/language.service';
@@ -18,28 +16,26 @@ import {toast} from '../../../services/toast.service';
 
 })
 export class WorkflowPanelTaskDecision {
-
-    @Input() private workflowtask: any = {};
-    @Input() private workflow: any = {};
-    private comment: string = '';
-    private posting: boolean = false;
+    /**
+     * holds the task data passed from parent
+     */
+    public taskData: any = {};
+    /**
+     * true if posting data to backend
+     */
+    public posting: boolean = false;
 
     constructor(private model: model, private workflowservice: workflow, private language: language, private broadcast: broadcast, private toast: toast, private modelutilities: modelutilities) {
 
     }
 
-    private addComment() {
+    /**
+     * set task decision
+     * @param id
+     */
+    public setDecision(id: string) {
         this.posting = true;
-        this.workflowservice.addComment(this.workflowtask.id, this.comment).subscribe(result => {
-            this.posting = false;
-            this.comment = '';
-            this.toast.sendToast('Comment has been saved');
-        });
-    }
-
-    private doAction(action) {
-        this.posting = true;
-        this.workflowservice.doTaskAction(this.workflowtask.id, action, this.comment).subscribe(parent => {
+        this.workflowservice.callTaskMethod(this.taskData.id, 'setDecision', [id]).subscribe(parent => {
 
             this.model.data = this.modelutilities.backendModel2spice(this.model.module, parent);
 
@@ -57,18 +53,13 @@ export class WorkflowPanelTaskDecision {
              * this is mainly important so the assistant and other objects that might old it can also pick up the changes
              */
             this.broadcast.broadcastMessage('model.save', {
-                id: this.workflowtask.id,
+                id: this.taskData.id,
                 module: 'WorkflowTasks',
                 data: {}
             });
 
             this.posting = false;
-            this.comment = '';
             this.toast.sendToast('Workflow updated');
         });
-    }
-
-    get showComment() {
-        return this.workflowtask.enablecomments == '1' && parseInt(this.workflowtask.status, 10) >= 10;
     }
 }

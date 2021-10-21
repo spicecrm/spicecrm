@@ -1,5 +1,8 @@
 <system-collapsable-tab tabtitle="LBL_CONFIGURATIONS" class="slds-m-top--large spice-display-block">
     <workflow-manager-task-next-tasks></workflow-manager-task-next-tasks>
+    <div class="slds-text-title--caps slds-p-bottom--small">
+        <system-label label="LBL_ACTIONS"></system-label>
+    </div>
     <div class="slds-p-vertical--x-small">
         <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
             <thead>
@@ -24,11 +27,11 @@
             </thead>
             <tbody>
             <tr>
-                <td *ngIf="(model.data.type_config.systemactions).length == 0"
+                <td *ngIf="!model.data.type_config.systemactions || model.data.type_config.systemactions.length == 0"
                     colspan="4">
-                    <system-illustration-no-records>
+                    <div class="slds-align--absolute-center">
                         <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
-                    </system-illustration-no-records>
+                    </div>
                 </td>
             </tr>
             <tr *ngFor="let systemaction of model.data.type_config.systemactions"
@@ -36,10 +39,10 @@
             </tbody>
             <tfoot class="slds-border--top slds-theme--shade">
             <tr>
-                <td align="center" colspan="4">
+                <td colspan="4">
                     <div class="slds-align--absolute-center slds-p-around--xx-small">
                         <button class="slds-button slds-button_icon" (click)="addAction()">
-                            <system-button-icon [icon]="'add'"></system-button-icon>
+                            <system-button-icon icon="add"></system-button-icon>
                         </button>
                     </div>
                 </td>

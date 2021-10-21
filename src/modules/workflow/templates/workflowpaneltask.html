@@ -1,6 +1,6 @@
 <div class="slds-m-vertical--small slds-border--top slds-border--bottom">
-    <h3>
-        <div class="slds-theme--shade slds-text-heading--small slds-p-around--small">{{workflowtask.name}}</div>
+    <h3 class="slds-theme--shade slds-text-heading--small slds-p-around--small slds-border--bottom">
+        {{workflowtask.name}}
     </h3>
     <div *ngIf="workflowtask.description" class="slds-p-around--x-small">
         {{workflowtask.description}}
@@ -17,8 +17,6 @@
                 <system-label label="LBL_ADD_COMMENT"></system-label>
             </button>
         </div>
-        <div class="slds-col_bump-left slds-button-group" role="group">
-            <button *ngFor="let action of workflowtask.actions" class="slds-button slds-button_neutral" [disabled]="posting" (click)="doAction(action.value)"><system-label [label]="action.name"></system-label></button>
-        </div>
     </div>
+    <div #typeComponentContainer></div>
 </div>

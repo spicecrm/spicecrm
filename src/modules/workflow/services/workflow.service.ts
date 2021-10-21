@@ -82,11 +82,10 @@ export class workflow {
      * @param taskid
      * @param method
      * @param methodParams
-     * @param comment
      */
-    public doTaskAction(taskid, method: string, methodParams: any, comment = '') {
+    public callTaskMethod(taskid, method: string, methodParams: any[]) {
         let retSubject = new Subject<any>();
-        const params = {comment, methodParams};
+        const params = {methodParams};
 
         this.backend.postRequest(`module/WorkflowsTaskTypes/${method}/workflowtask/${taskid}`, {}, params).subscribe(workflow => {
 

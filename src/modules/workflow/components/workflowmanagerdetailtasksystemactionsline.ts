@@ -28,12 +28,10 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
      */
 
     public removeDecision() {
-        this.modal.confirm('MSG_DELETE_RECORD', this.language.getLabel('LBL_DELETE')).subscribe(modalRef => {
-            modalRef.instance.answer.subscribe(decision => {
-                if (decision) {
-                    this.model.data.type_config.systemactions = this.model.data.type_config.systemactions.filter(e => e.id != this.systemaction.id);
-                }
-            });
+        this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD', null, 'long'), 'MSG_DELETE_RECORD').subscribe(answer => {
+            if (answer) {
+                this.model.data.type_config.systemactions = this.model.data.type_config.systemactions.filter(e => e.id != this.systemaction.id);
+            }
         });
     }
 }
