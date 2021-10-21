@@ -39,7 +39,6 @@ export class WorkflowManagerDetailConditions {
 
     /**
      * simple setter for the conditions
-     *
      * @param conditions
      */
     set conditions(conditions) {

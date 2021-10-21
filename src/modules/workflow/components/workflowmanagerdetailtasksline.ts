@@ -12,7 +12,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 
 @Component({
-    selector: '[workflow-manager-detail-tasks-line]',
+    selector: 'workflow-manager-detail-tasks-line',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksline.html',
     providers: [model, view]
 })
@@ -34,7 +34,11 @@ export class WorkflowManagerDetailTasksLine {
         this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.task);
     }
 
-    public getTaskName(taskID, renderMultiple = false) {
+    /**
+     * assign a name to every task
+     * @param taskID
+     */
+    public getTaskName(taskID) {
         let taskname = taskID;
 
         if (taskID) {
@@ -49,6 +53,9 @@ export class WorkflowManagerDetailTasksLine {
         return taskname;
     }
 
+    /**
+     * Deletes the task
+     */
     public removeTask() {
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Task';

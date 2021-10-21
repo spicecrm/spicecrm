@@ -44,6 +44,10 @@ export class WorkflowManagerDetailConditionsLine {
         this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.condition);
     }
 
+    /**
+     * Todo: Update Logic
+     * Removes Condition
+     */
     removeCondition() {
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Condition';
