@@ -139,7 +139,7 @@ class Call extends SugarBean
             $this->duration_minutes = $this->minutes_value_default;
         }
 
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         //setting default date and time
         if (is_null($this->date_start)) {
             $this->date_start = $timedate->now();
@@ -243,7 +243,7 @@ class Call extends SugarBean
     function get_user_calls($user, $timespan = 'today')
     {
 
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         $template = $this;
 

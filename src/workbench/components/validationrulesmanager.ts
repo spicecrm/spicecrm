@@ -12,6 +12,7 @@ import {toast} from "../../services/toast.service";
 
 
 @Component({
+    selector: 'validation-rules-manager',
     templateUrl: './src/workbench/templates/validationrulesmanager.html',
 })
 export class ValidationRulesManager {
@@ -63,9 +64,13 @@ export class ValidationRulesManager {
 
     public getCurrentRuleData() {
         if (this.rules) {
-            return this.rules.find((e) => {
+            const rule = this.rules.find((e) => {
                 return e.id == this._current_rule;
             });
+            if (!!rule?.onevents) {
+                rule.onevents = rule.onevents.split(',');
+            }
+            return rule;
         } else {
             return '';
         }
@@ -89,6 +94,11 @@ export class ValidationRulesManager {
 
     public save() {
         let data = this.current_rule_data;
+
+        if (Array.isArray(data.onevents)) {
+            data.onevents = data.onevents.join(',');
+        }
+
         this.backend.postRequest('configuration/spiceui/core/modelvalidations', {}, data).subscribe(
             (success) => {
                 this.current_rule_data.isnewrecord = false;

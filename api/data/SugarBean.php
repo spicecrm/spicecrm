@@ -1,5 +1,5 @@
 <?php
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data;
 
@@ -788,8 +788,7 @@ class SugarBean
                 $RelationshipDefs = $dictionary[$key]['relationships'];
 
                 $delimiter = ',';
-                global $beanList;
-                $beanList_ucase = array_change_key_case($beanList, CASE_UPPER);
+                $beanList_ucase = array_change_key_case(SpiceModules::getInstance()->getBeanList(), CASE_UPPER);
                 foreach ($RelationshipDefs as $rel_name => $rel_def) {
                     if (isset($rel_def['lhs_module']) and !isset($beanList_ucase[strtoupper($rel_def['lhs_module'])])) {
                         LoggerManager::getLogger()->debug('skipping orphaned relationship record ' . $rel_name . ' lhs module is missing ' . $rel_def['lhs_module']);
@@ -1457,7 +1456,6 @@ class SugarBean
         }
 
         $this->call_custom_logic('after_save', '');
-
         // call fts manager to index the bean
         if ($fts_index_bean) {
 
@@ -1611,9 +1609,8 @@ class SugarBean
 
             //method defined in 'include/utils/LogicHook.php'
 
-            $logicHook = new LogicHook();
-            $logicHook->setBean($this);
-            $logicHook->call_custom_logic($this->module_dir, $event, $arguments);
+            $logicHook = LogicHook::getInstance();
+            $logicHook->call_custom_logic($this->module_dir, $this, $event, $arguments);
             $this->logicHookDepth[$event]--;
         }
     }
@@ -2322,7 +2319,7 @@ class SugarBean
                         $this->fill_in_link_field($field['id_name'], $field);
                     }
                     if (!empty($this->{$field['id_name']}) && ($this->object_name != $field['module'] || ($this->object_name == $field['module'] && $this->{$field['id_name']} != $this->id))) {
-                        if (isset($GLOBALS['beanList'][$field['module']])) {
+                        if (SpiceModules::getInstance()->getBeanName($field['module'])) {
 
                                 // change to use of BeanFactory
                                 $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
@@ -3018,10 +3015,8 @@ class SugarBean
      */
     public function checkForDuplicates()
     {
-        global $beanList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $module = array_search($this->object_name, $beanList);
-
+        $module = array_search($this->object_name, SpiceModules::getInstance()->getBeanList());
 
         $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this);
 

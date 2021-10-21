@@ -2,13 +2,14 @@
 
 namespace SpiceCRM\includes\SpiceNotifications;
 
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\extensions\includes\SpiceSocket\SpiceSocket;
+use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\UserPreferences\UserPreference;
@@ -31,7 +32,7 @@ class SpiceNotifications
     const TYPE_RELATE     = 'relate';
 
     public function __construct(SugarBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null) {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();
         $this->beanModule = $bean->module_dir; // todo change it to the actual module name

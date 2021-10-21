@@ -70,7 +70,7 @@
         </div>
     </div>
     <div class="slds-grid">
-        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
+        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right" system-to-bottom marginBottom="57">
             <div class="slds-tree_container" role="application" style="max-width: none;">
                 <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
                     <li *ngFor="let currentFieldSetItem of currentFieldSetItems" role="treeitem" [attr.aria-level]="currentFieldSetItem.level" (click)="selectItem(currentFieldSetItem, getDisplayType(currentFieldSetItem))" [ngClass]="{'slds-theme--shade' : isSelected(currentFieldSetItem.id)}">

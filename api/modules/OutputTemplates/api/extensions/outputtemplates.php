@@ -40,44 +40,86 @@ $routes = [
         'class'       => OutputTemplatesController::class,
         'function'    => 'previewhtml',
         'description' => 'get the html prieview of the given parent',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'excludeBodyValidation' => true],
         'parameters'  => [
             'body'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'html string for template-body',
             ],
             'header'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'html string for template-header',
             ],
             'footer'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'html string for template-footer',
             ],
             'stylesheet_id'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'required'    => true,
                 'description' => 'GUID of the stylesheet',
             ],
             'parentype'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_MODULE,
                 'required'    => true,
                 'description' => 'name of a module',
                 'example' => 'Accounts',
             ],
             'parentid'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'required'    => true,
                 'description' => 'GUID of the parent bean',
+            ],
+            'margin_bottom'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => true,
+                'description' => '',
+            ],
+            'margin_left'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => true,
+                'description' => '',
+            ],
+            'margin_right'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => true,
+                'description' => '',
+            ],
+            'margin_top'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => true,
+                'description' => '',
+            ],
+            'page_size'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => '',
+            ],
+            'page_orientation'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => '',
+            ],
+            'id'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => '',
             ],
         ]
     ],
@@ -91,68 +133,68 @@ $routes = [
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
             'body'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'html string for template-body',
             ],
             'header'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'html string for template-header',
             ],
             'footer'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'html string for template-footer',
             ],
             'margin_left'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'number of margin_left',
             ],
             'margin_top'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'number of margin_top',
             ],
             'margin_right'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'number of margin_right',
             ],
             'margin_bottom'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'number of margin_bottom',
             ],
             'page_size'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => "string",
                 'required'    => true,
                 'description' => 'number of page_size',
             ],
             'page_orientation'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'required'    => true,
                 'description' => 'GUID of the stylesheet',
             ],
             'parentype'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_MODULE,
                 'required'    => true,
                 'description' => 'name of a module',
                 'example' => 'Accounts',
             ],
             'parentid'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'required'    => true,
                 'description' => 'GUID of the parent bean',
@@ -212,7 +254,7 @@ $routes = [
         ]
     ],
     [
-        'method'      => 'get',
+        'method'      => 'post',
         'route'       => '/module/OutputTemplates/{id}/convert/{bean_id}/to/{format}/base64',
         'oldroute'    => '/OutputTemplates/{id}/convert/{bean_id}/to/{format}/base64',
         'class'       => OutputTemplatesController::class,
@@ -237,9 +279,23 @@ $routes = [
                 'type'        => 'string',
                 'required'    => true,
                 'description' => 'not in use',
+            ],
+            'bean_data'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_OBJECT,
+                'required'    => true,
+                'description' => 'bean data to be rendered',
             ]
         ]
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/OutputTemplates/templateFunctions',
+        'class'       => OutputTemplatesController::class,
+        'function'    => 'getTemplateFunctions',
+        'description' => 'Get the full list of system template functions.',
+        'options'     => ['noAuth' => false, 'adminOnly' => false]
+    ]
 ];
 
 $RESTManager->registerRoutes($routes);
