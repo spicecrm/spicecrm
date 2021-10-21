@@ -518,7 +518,6 @@ $app_list_strings = [
         'Sending' => 'Wird gesendet',
     ],
     'campaign_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
@@ -530,11 +529,11 @@ $app_list_strings = [
         'NewsLetter' => 'Newsletter',
     ],
     'campaigntask_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
         'Email' => 'Email',
+        'mailmerge' => 'Serienbrief',
         'Feedback' => 'Umfrage',
         'Print' => 'Print',
         'Web' => 'Web',
@@ -632,6 +631,10 @@ $app_list_strings = [
         'send_error' => 'Sendefehler',
         'unread' => 'Ungelesen',
         'bounced' => 'nicht Zustellbar'
+    ],
+    'dom_letter_status' => [
+        'sent' => 'gesendet',
+        'draft' => 'Entwurf'
     ],
     'dom_textmessage_status' => [
         'archived' => 'Archiviert',
@@ -1435,6 +1438,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'New' => 'Neu',
         'Assigned' => 'Zugewiesen',
         'Closed' => 'Geschlossen',
+        'In Process' => 'in Bearbeitung',
         'Pending Input' => 'Rückmeldung ausstehend',
         'Rejected' => 'Abgelehnt',
         'Duplicate' => 'Duplicate',
@@ -1567,6 +1571,13 @@ $app_list_strings['product_status_dom'] = [
     'draft' => 'Entwurf',
     'active' => 'Aktiv',
     'inactive' => 'Inaktiv',
+];
+
+
+$app_list_strings['product_tax_categories_dom'] = [
+    '0' => 'steuerfrei',
+    '1' => 'normal Steuersatz',
+    '2' => 'reduzierter Steuersatz',
 ];
 
 $app_list_strings['textmessage_direction'] = [
@@ -1774,4 +1785,9 @@ $app_list_strings['relationship_type_dom'] = [
 $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
+];
+
+$app_list_strings['bonuscard_extension_status_enum'] = [
+    'initial' => 'initial',
+    'sent' => 'gesendet'
 ];

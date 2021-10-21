@@ -41,7 +41,7 @@ class SpiceCronJobs
     {
         $db = DBManagerFactory::getInstance();
         $job = BeanFactory::newBean('SchedulerJobs');
-        return $job->get_full_list('schedulerjobs.priority', "schedulerjobs.next_run_date <= {$db->now()} AND schedulerjobs.job_status = 'Active'");
+        return $job->get_full_list('schedulerjobs.priority', "schedulerjobs.next_run_date <= {$db->now()} AND schedulerjobs.job_status = 'Active'") ?? [];
     }
 
     /**
@@ -70,7 +70,6 @@ class SpiceCronJobs
 
         foreach ($jobs as $job) {
 
-            $job->afterRun();
 
             $tasks = $job->get_linked_beans('schedulerjobtasks', null, [], 0, -1, 0, "schedulerjobtasks.jobtask_status != '$onHold'");
 
@@ -78,6 +77,9 @@ class SpiceCronJobs
                 $task->next_run_date = $job->next_run_date;
                 $task->resolve(SchedulerJobTask::JOB_TASK_RESOLUTION_FAILURE, $lastError['message']);
             }
+
+            $lastTask = end($tasks);
+            $job->afterRun($lastTask);
         }
     }
 }

@@ -9,6 +9,7 @@
                     <li class="slds-item">{{calldata.direction}}</li>
                     <li class="slds-item">{{msisdnFormatted}}</li>
                     <li class="slds-item">{{calldata.status}}</li>
+                    <li class="slds-item" *ngIf="canEndCall" (click)="endCall()"><system-icon icon="end_call" sprite="utility" size="x-small"></system-icon></li>
                 </ul>
             </div>
         </div>
@@ -16,20 +17,26 @@
             <button class="slds-button slds-button_icon slds-button_icon" (click)="toggleClosed()">
                 <system-button-icon [icon]="toggleIcon"></system-button-icon>
             </button>
+            <button *ngIf="canExpand" class="slds-button slds-button_icon slds-button_icon" (click)="expand()">
+                <system-button-icon [icon]="'expand_alt'"></system-button-icon>
+            </button>
             <button class="slds-button slds-button_icon slds-button_icon" (click)="closeComposer()">
                 <system-button-icon [icon]="'close'"></system-button-icon>
             </button>
         </div>
     </header>
-    <div class="slds-grow">
+    <div>
         <system-dynamic-component [component]="panelcomponent" [componentattributes]="{calldata: calldata, matchedbeans: matchedbeans}"></system-dynamic-component>
     </div>
-    <footer class="slds-docked-composer__footer slds-shrink-none">
-        <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
-            <div class="slds-col_bump-left">
-                <button class="slds-button slds-button--neutral" *ngIf="!hideEndCallButton" [disabled]="!canEndCall" (click)="endCall()"><system-button-icon icon="end_call"></system-button-icon> <system-label label="LBL_END"></system-label></button>
+    <footer class="slds-docked-composer__footer slds-shrink-none slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-col_bump-left" *ngIf="componentconfig.actionset; else defaultactions" >
+            <object-action-container [actionset]="componentconfig.actionset" (actionemitter)="handleaction($event)" ></object-action-container>
+        </div>
+        <ng-template #defaultactions>
+            <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
+                <telephony-call-panel-log-attempt-button class="slds-col_bump-left" (actionemitter)="attemptSaved($event)"></telephony-call-panel-log-attempt-button>
                 <button class="slds-button slds-button--brand" (click)="closeComposer()"><system-label label="LBL_CLOSE"></system-label></button>
             </div>
-        </div>
+        </ng-template>
     </footer>
 </section>

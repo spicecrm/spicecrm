@@ -135,10 +135,20 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_BASE64
             ],
             'listcomponent' => [
-                'in' => 'path',
+                'in' => 'body',
                 'description' => 'the used component',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => 'ObjectList',
+            ],
+            'name' => [
+                'in' => 'body',
+                'description' => 'the name of the list',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'global' => [
+                'in' => 'body',
+                'description' => 'if the list is global',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ],

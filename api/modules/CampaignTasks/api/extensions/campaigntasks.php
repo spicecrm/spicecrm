@@ -57,6 +57,46 @@ $routes = [
         ],
     ],
     [
+        'method'      => 'get',
+        'route'    => '/module/CampaignTasks/{id}/targetcount',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'getTargetCount',
+        'description' => 'returns the number of targets via linked target lists',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'    => '/module/CampaignTasks/{id}/mailmerge',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'mailmergeCampaignTask',
+        'description' => 'genereate a PDF for a mailmerge campaign',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID
+            ],
+            'start'    => [
+                'in'          => 'path',
+                'description' => 'the index to start the letter from',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC
+            ],
+            'limit'    => [
+                'in'          => 'path',
+                'description' => 'the number of records to print',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC
+            ]
+        ]
+    ],
+    [
         'method'      => 'post',
         'route'       => '/module/CampaignTasks/{id}/export',
         'oldroute'    => '/module/CampaignTasks/{campaignid}/export',

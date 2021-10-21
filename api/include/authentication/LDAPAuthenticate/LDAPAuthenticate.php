@@ -43,6 +43,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACLProfiles\SpiceACLProfile;
 use SpiceCRM\modules\Users\User;
 
@@ -110,7 +111,6 @@ class LDAPAuthenticate
      * @param STRING $password
      * @return User | false
      */
-
     public function authenticate($name, $password)
     {
         //merge to config... maybe find a better solution?
@@ -322,17 +322,23 @@ class LDAPAuthenticate
             }
         }
 
-        //todo maintain local sugar table
+        // todo maintain local spice table
         $this->synchronizeLdapFields($userObj);
 
 
         if ($this->ldapAcl) {
             $this->maintainAclProfiles($userObj);
+            $this->maintainSysuiRoles($userObj);
         }
         ldap_close($this->ldapConn);
         return $userObj;
     }
 
+    /**
+     * allocate spiceaclprofile dynamically according to ldap profile
+     * @param $userObj
+     * @throws \Exception
+     */
     private function maintainAclProfiles($userObj)
     {
         $userAclProfiles = SpiceACLProfile::getProfilesForUserRows($userObj->id);
@@ -351,7 +357,7 @@ class LDAPAuthenticate
             if (!in_array($row['spiceaclprofile_id'], $userAclProfileIds)) {
                 //required profile is not in spiceaclprofile, lets add it
                 LoggerManager::getLogger()->info("ldap maintainAclProfiles: adding acl profile " . $row['spiceaclprofile_id'] . " for user " . $userObj->id);
-                $q = "insert into spiceaclprofiles_users(id,user_id, spiceaclprofile_id) values('" . create_guid() . "','" . $userObj->id . "', '" . $row['spiceaclprofile_id'] . "')";
+                $q = "insert into spiceaclprofiles_users(id,user_id, spiceaclprofile_id) values('" . SpiceUtils::createGuid() . "','" . $userObj->id . "', '" . $row['spiceaclprofile_id'] . "')";
                 $db->query($q);
             }
         }
@@ -366,9 +372,37 @@ class LDAPAuthenticate
 
     }
 
+    /**
+     * allocate roles dynamically according to ldap profile
+     * @param $userObj
+     * @return false|void
+     * @throws \Exception
+     */
+    private function maintainSysuiRoles($userObj)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        //step 1 ... delete all sysuiuserroles for the currentUser
+        $db->query("delete from sysuiuserroles where user_id='" . $userObj->id . "'");
+
+        //step 2 ... if user is in group, add sysuiuserrole(s)
+        $query = $db->query("SELECT * FROM sysuiroles_ldap_groups where deleted=0");
+        while ($row = $db->fetchByAssoc($query)) {
+            if ($this->isInGroup($row['ldap_group_name'])) {
+                $q = "insert into sysuiuserroles(id,user_id, sysuirole_id, defaultrole) values('" . SpiceUtils::createGuid() . "','" . $userObj->id . "', '" . $row['sysuirole_id'] . "', " . $row['defaultrole'] . ")";
+                $db->query($q);
+            }
+        }
+    }
+
+    /**
+     * check required group membership
+     * @param $username
+     * @throws Exception
+     * @throws UnauthorizedException
+     */
     private function checkRequiredLdapGroupMemberships($username)
     {
-        //check required group membership
         if ($this->requiredLdapGroups !== null) {
             if ($this->ldapGroupMemberships === null) {
                 $this->loadGroupMemberShips();
@@ -383,7 +417,14 @@ class LDAPAuthenticate
         }
     }
 
-
+    /**
+     * map ldap information to User properties
+     * @param User $userObj
+     * @param bool $save
+     * @return bool
+     * @throws Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\BadRequestException
+     */
     private function synchronizeLdapFields(User $userObj, $save = true)
     {
 
@@ -420,6 +461,9 @@ class LDAPAuthenticate
         return true;
     }
 
+    /**
+     * @throws Exception
+     */
     private function loadGroupMemberShips()
     {
         $result = ldap_read($this->ldapConn, $this->getDn($this->baseDn), '(objectclass=*)', ['memberof']);
@@ -438,11 +482,11 @@ class LDAPAuthenticate
         }
     }
 
-    /*
-* This function searchs in LDAP tree
-* entry specified by samaccountname and returns its DN or empty
-* string on failure.
-*/
+    /**
+     * This function searchs in LDAP tree
+     * entry specified by samaccountname and returns its DN or empty
+     * string on failure.
+     */
     function getDN($basedn)
     {
         $attributes = ['dn'];
@@ -456,15 +500,19 @@ class LDAPAuthenticate
             return $entries[0]['dn'];
         } else {
             return '';
-        };
+        }
     }
 
-    private static function getLdapConfig()
+    /**
+     * load ldap settings
+     * @return array
+     */
+    private static function getLdapConfig(): array
     {
         $rows = [];
         $db = DBManagerFactory::getInstance();
         try {
-            $query = $db->query("SELECT * from ldap_settings where is_active = 1 order by priority");
+            $query = $db->query("SELECT * from ldap_settings where is_active = 1 AND deleted = 0 order by priority");
             while ($row = $db->fetchByAssoc($query)) {
                 $rows[] = $row;
             }
@@ -482,6 +530,7 @@ class LDAPAuthenticate
      *
      * @param STRING $name
      * @return User
+     * @throws Exception
      */
     private function createUser($name)
     {

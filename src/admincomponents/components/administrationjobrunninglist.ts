@@ -20,7 +20,7 @@ export class AdministrationJobRunningList implements OnInit {
     /**
      * holds the running jobs
      */
-    public runningJobs: { list: Array<{ id, name, last_run_date, job_interval, killed? }>, total: number, isLoading: boolean, hasError?: boolean } = {
+    public runningJobs: { list: Array<{ id, name, last_run_date, job_interval}>, total: number, isLoading: boolean, hasError?: boolean } = {
         list: [],
         total: 0,
         isLoading: false
@@ -125,7 +125,7 @@ export class AdministrationJobRunningList implements OnInit {
     /**
      * send kill request to the backend to kill the running process of the job
      */
-    public killJob(job: { id, name, last_run_date, job_interval, killed? }) {
+    public killJob(job: { id, name, last_run_date, job_interval}) {
 
         this.modal.confirm('MSG_CONFIRM_KILL', this.language.getLabel('LBL_KILL')).subscribe(answer => {
 
@@ -135,7 +135,7 @@ export class AdministrationJobRunningList implements OnInit {
                 const label = !res ? 'ERR_FAILED_TO_EXECUTE' : 'MSG_SUCCESSFULLY_EXECUTED';
                 const type = !res ? 'error' : 'success';
                 if (!!res) {
-                    job.killed = true;
+                    this.reloadList();
                 }
                 this.toast.sendToast(this.language.getLabel(label), type);
 

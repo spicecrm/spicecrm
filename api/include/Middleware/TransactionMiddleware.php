@@ -7,7 +7,7 @@ use Slim\Psr7\Response;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\extensions\includes\SpiceSocket\SpiceSocket;
+use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 
 class TransactionMiddleware
 {
