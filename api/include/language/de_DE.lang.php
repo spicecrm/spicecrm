@@ -1438,6 +1438,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'New' => 'Neu',
         'Assigned' => 'Zugewiesen',
         'Closed' => 'Geschlossen',
+        'In Process' => 'in Bearbeitung',
         'Pending Input' => 'Rückmeldung ausstehend',
         'Rejected' => 'Abgelehnt',
         'Duplicate' => 'Duplicate',
