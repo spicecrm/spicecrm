@@ -65,6 +65,7 @@ import /*embed*/ {QuestionRenderNPS} from './components/questionrendernps';
 import /*embed*/ {QuestionRenderBinarySingleMulti} from './components/questionrenderbinarysinglemulti';
 import /*embed*/ {QuestionsManagerEditRatingGroup} from './components/questionsmanagereditratinggroup';
 import /*embed*/ {fieldQuestionnaire} from './fields/fieldquestionnaire';
+import /*embed*/ {QuestionnaireFillOutActionItem} from './components/QuestionnaireFillOutActionItem';
 
 @NgModule( {
     imports: [
@@ -129,7 +130,9 @@ import /*embed*/ {fieldQuestionnaire} from './fields/fieldquestionnaire';
         QuestionRenderIST,
         QuestionRenderBinarySingleMulti,
         QuestionsManagerEditRatingGroup,
-        fieldQuestionnaire
-    ]
+        fieldQuestionnaire,
+        QuestionnaireFillOutActionItem
+    ],
+    exports: [ QuestionnaireFillOutActionItem ]
 })
 export class ModuleQuestionnaires {}
