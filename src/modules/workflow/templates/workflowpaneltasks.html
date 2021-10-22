@@ -19,9 +19,9 @@
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="let workflowtask of workflowtasks" [system-model-provider]="{module:'WorkflowTasks', id: workflowtask.id, data: workflowtask}">
+            <ng-container #modelProvider="system-model-provider" *ngFor="let workflowtask of workflowtasks" [system-model-provider]="{module:'WorkflowTasks', id: workflowtask.id, data: workflowtask}">
                 <tr workflow-panel-tasks-item><tr>
-                <tr *ngIf="workflowtask._displayComments" workflow-panel-tasks-comments [comments]="workflowtask.comments"></tr>
+                <tr *ngIf="modelProvider.model.data._displayComments" workflow-panel-tasks-comments [comments]="workflowtask.comments"></tr>
             </ng-container>
         </tbody>
     </table>
