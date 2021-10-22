@@ -9,9 +9,16 @@
                 <div class="slds-media__figure ">
                     <system-icon [module]="workflowtask.parent_type" [size]="'small'"></system-icon>
                 </div>
-                <div class="slds-media__body">
-                    <div class="slds-text-title_caps slds-text-link_reset" system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</div>
-                    <div class="slds-text-body_small slds-line-height_reset">{{workflowtask.wfname}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
+                <div class="slds-media__body slds-grid slds-grid--vertical-align-end">
+                    <div>
+                        <div class="slds-text-title_caps slds-text-link_reset" system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</div>
+                        <div class="slds-text-body_small slds-line-height_reset">{{workflowtask.wfname}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
+                    </div>
+                    <div class="slds-grid slds-grid--align-end slds-grow slds-m-left--small">
+                        <div *ngIf="workflowtask.date_due_over" class="slds-text-body_small slds-line-height_reset">
+                            <system-utility-icon icon="warning" colorclass="slds-icon-text-warning"></system-utility-icon>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

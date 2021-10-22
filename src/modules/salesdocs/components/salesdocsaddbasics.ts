@@ -15,6 +15,7 @@ import {configurationService} from '../../../services/configuration.service';
  * renders a modal that allws picking the basic paramaters for the salesdoc when adding a new sales document
  */
 @Component({
+    selector: 'salesdocs-add-basic',
     templateUrl: './src/modules/salesdocs/templates/salesdocsaddbasics.html',
     providers: [view]
 })

@@ -441,7 +441,7 @@ class Compiler
         return $loopThroughParts($obj, 1, $keepFetchedRowValue );
     }
 
-    private function getObject( $object, $beans ) {
+    public function getObject( $object, $beans ) {
 
         switch ($object) {
             case 'current_user':

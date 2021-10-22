@@ -42,7 +42,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 // load the config files
 SpiceConfig::getInstance()->loadConfigFromDB();
@@ -87,6 +87,6 @@ if (empty($GLOBALS['installing'])) {
     $system_config = BeanFactory::getBean('Administration');
     $system_config->retrieveSettings();
 
-    LogicHook::initialize()->call_custom_logic('', 'after_entry_point');
+    LogicHook::getInstance()->call_custom_logic('', 'after_entry_point');
 }
 

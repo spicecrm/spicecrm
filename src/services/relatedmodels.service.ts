@@ -10,6 +10,7 @@ import {modelutilities} from "./modelutilities.service";
 import {Observable, of, Subject} from "rxjs";
 import {toast} from "./toast.service";
 import {language} from './language.service';
+import {tap} from "rxjs/operators";
 
 /**
  * @ignore
@@ -96,7 +97,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * prevent saving the relationship entry to the backend, instead save the data in the model link object
      */
-    public saveToLinkOnly = true;
+    public saveToLinkOnly = false;
 
     /**
      * sort parameters
@@ -447,7 +448,6 @@ export class relatedmodels implements OnDestroy {
                 return sortdirection == 'ASC' ? sortval : (sortval * -1);
             });
         }
-
     }
 
     /**
@@ -458,28 +458,26 @@ export class relatedmodels implements OnDestroy {
     }
 
     /**
-     * helper to add items when called fromt eh handler
+     * helper to add items when called from the handler
      *
      * @param items
      */
-    public addItems(items) {
-
+    public addItems(items): Observable<any> {
+        let retSubject = new Subject<any>();
         if (this.saveToLinkOnly) {
             this.model.addRelatedRecords(this._linkName, items);
             this.items = this.items.concat(items);
             this.count = this.count + items.length;
-            return;
+            return of(false) ;
         }
 
-        if (!this.isonlyfiltered) {
-            let relatedIds: any[] = [];
-            for (let item of items) {
-                relatedIds.push(item.id);
-            }
-            this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(() => {
-
+        let relatedIds: any[] = [];
+        for (let item of items) {
+            relatedIds.push(item.id);
+        }
+        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(
+            () => {
                 for (let item of items) {
-                    // check if we shoudl add this item or it is already in the related models list
                     let itemfound = false;
                     this.items.some(curitem => {
                         if (curitem.id == item.id) {
@@ -492,16 +490,14 @@ export class relatedmodels implements OnDestroy {
                         this.count++;
                     }
                 }
-
-                // emit that a change has happened
-                // this.items$.emit(this.items);
-
-                // this.items = this.items.concat(items);
-                // this.count += items.length;
-            });
-        } else {
-            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_ADD'), 'error');
-        }
+                retSubject.next(true);
+                retSubject.complete();
+            },
+            () => {
+                retSubject.error('error adding items');
+            }
+        );
+        return retSubject.asObservable();
     }
 
     /**

@@ -178,6 +178,79 @@ class EmailAddress extends SugarBean
     }
 
     /**
+     * searches for email addresses on all related beans on a parent bean
+     *
+     * @param SugarBean $seed
+     * @return array
+     */
+    public function searchForParentBean($seed){
+        // the array to hold the response
+        $emailAddresses = [];
+
+        // internal array to memorize whichbeans havebeen searched for and what email addresses have been added
+        $addedBeanIds = [];
+        $addedEmailAddressIds = [];
+
+        //load all relationships and loop through them
+        $seed->load_relationships();
+        foreach($seed->field_defs as $fieldName => $fieldData){
+            if($fieldData['type'] == 'link'){
+                // try to find links ont he beans for email addresses
+                $emailAddressLinks = [];
+
+                // make sure the link is loaded
+                if(!$seed->{$fieldName}) continue;
+
+                // get the linked module
+                $linkedModule = $seed->{$fieldName}->getRelatedModuleName();
+                $related = BeanFactory::getBean($linkedModule);
+                foreach($related->field_defs as $rFieldName => $rFieldData) {
+                    if ($rFieldData['type'] == 'link' && $rFieldData['module'] == 'EmailAddresses') {
+                        $emailAddressLinks[] = $rFieldName;
+                    }
+                }
+
+                // if we have email address links parse them
+                if(count($emailAddressLinks) > 0){
+                    // get alllinked beans on the parent
+                    $linkedBeans = $seed->get_linked_beans($fieldName, $linkedModule, [], 0, -99);
+                    foreach($linkedBeans as $linkedBean){
+                        // check if we didhavethis bean already
+                        if(in_array($linkedBean->id, $addedBeanIds)) continue;
+
+                        // loop through all email address link fields
+                        foreach($emailAddressLinks as $emailAddressLink){
+                            $emailAddressesBeans = $linkedBean->get_linked_beans($emailAddressLink);
+                            foreach($emailAddressesBeans as $emailAddressesBean){
+                                // check if wehave the email address already
+                                if(in_array($linkedBean->id.$emailAddressesBean->id, $addedEmailAddressIds)) continue;
+
+                                // otherwise add
+                                $emailAddresses[] = [
+                                    'module' => $linkedModule,
+                                    'id' => $linkedBean->id,
+                                    'summary_text' => $linkedBean->summary_text ?: $linkedBean->name,
+                                    'email_address' => $emailAddressesBean->email_address,
+                                    'email_address_id' => $emailAddressesBean->id
+                                ];
+
+                                // add the reference
+                                $addedEmailAddressIds[] = $linkedBean->id.$emailAddressesBean->id;
+                            }
+                        }
+
+                        // add the id to the added beans
+                        $addedBeanIds[] = $linkedBean->id;
+                    }
+                }
+            }
+        }
+
+        // done
+        return $emailAddresses;
+    }
+
+    /**
      * mark email address as invalid and remove from primary
      * @param $emailAddress
      */

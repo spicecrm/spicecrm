@@ -43,9 +43,8 @@ export class WorkflowManagerTaskTypesDecision implements OnInit {
             .subscribe(id => {
                 if (!id) return;
                 this.model.data.type_config.decisions.push({
-                    id: this.model.generateGuid(),
-                    name: 'new Decision',
-                    task_id: id
+                    id: id,
+                    name: 'new Decision'
                 });
             });
     }

@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\modules\ServiceTickets;
 
+use DateTime;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
@@ -65,7 +66,7 @@ class ServiceTicket extends SugarBean
 
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         //set serviceticket_number
@@ -178,7 +179,7 @@ class ServiceTicket extends SugarBean
      */
     private function getSLAStartDate()
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         if (empty($this->date_entered)) {
             return new DateTime();
         } else {

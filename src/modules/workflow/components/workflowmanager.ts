@@ -10,6 +10,7 @@ import {toast} from "../../../services/toast.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * @ignore
@@ -39,6 +40,7 @@ export class WorkflowManager implements OnInit {
                 private utils: modelutilities,
                 private modal: modal,
                 private toast: toast,
+                private configurationService: configurationService,
                 public model: model,
                 private workflowManagerService: WorkflowManagerService) {
     }
@@ -63,6 +65,12 @@ export class WorkflowManager implements OnInit {
      */
     set currentModule(val: string) {
         this.currentWorkflow = undefined;
+
+        if (!val) {
+            this.workflowManagerService.currentModule = undefined;
+            return;
+        }
+
         this.workflowManagerService.currentModule = {
             name: val,
             workflowDefinitions: [],
@@ -215,15 +223,8 @@ export class WorkflowManager implements OnInit {
      * @private
      */
     private loadTypes() {
-
-        const sortArray = [{
-            sortfield: 'name',
-            sortdirection: 'ASC'
-        }];
-
-        this.backend.getList('WorkflowTaskTypes', sortArray, {start: 0, limit: 500}).subscribe((types: any) => {
-            this.workflowManagerService.types = types.list;
-        });
+        const types = this.configurationService.getData('workflowtasktypes');
+        this.workflowManagerService.types = Array.isArray(types) ? types : [];
     }
 
     /**

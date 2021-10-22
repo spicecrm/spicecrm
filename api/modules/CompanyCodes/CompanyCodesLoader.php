@@ -16,7 +16,8 @@ class CompanyCodesLoader{
             $retArray[] = [
                 'id' => $companyCode->id,
                 'name' => $companyCode->name,
-                'companycode' => $companyCode->companycode
+                'companycode' => $companyCode->companycode,
+                'country' => $companyCode->company_address_country
             ];
         }
 

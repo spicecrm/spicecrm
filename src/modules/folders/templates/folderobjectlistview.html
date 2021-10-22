@@ -1,0 +1,10 @@
+<div class="slds-grid" cdkDropListGroup system-to-bottom>
+    <div class="slds-size--1-of-3 slds-border_right slds-height_full">
+        <folder-view-tree (folderId)="setFolderId($event)"></folder-view-tree>
+    </div>
+    <div class="slds-size--2-of-3 slds-height_full">
+        <div class="slds-m-top--xxx-small">
+            <object-list *ngIf="folderId !== null" [dragAndDrop]="true"></object-list>
+        </div>
+    </div>
+</div>

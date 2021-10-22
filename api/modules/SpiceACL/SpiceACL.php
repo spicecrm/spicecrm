@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\SpiceACL;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -200,8 +201,9 @@ class SpiceACL
             }
 
             foreach ($moduleList as $moduleindex => $modulename) {
-                if (!$authModules[$modulename])
-                    unset($moduleList[$moduleindex]);
+                if (!$authModules[$modulename]) {
+                    SpiceModules::getInstance()->unsetModule($moduleindex);
+                }
             }
         }
 

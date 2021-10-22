@@ -73,6 +73,7 @@ export class OutlookLoginPane {
                     this.session.authData.userimage = repsonse.user_image;
                     this.session.authData.first_name = repsonse.first_name;
                     this.session.authData.last_name = repsonse.last_name;
+                    this.session.authData.address_country = repsonse.address_country;
                     this.session.authData.display_name = repsonse.display_name;
                     this.session.authData.email = repsonse.email;
                     this.session.authData.admin = repsonse.admin == 1 ? true : false;
