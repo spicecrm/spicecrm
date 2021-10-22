@@ -9,7 +9,7 @@
                 <div class="slds-form-element__control">
                     <div class="slds-select_container slds-m-vertical--xx-small">
                         <select class="slds-select" [disabled]="mailboxes.length == 0"
-                                [(ngModel)]="model.data.type_config.mailbox">
+                                [(ngModel)]="model.data.type_config.mailbox_id">
                             <ng-container *ngFor="let o of mailboxes">
                                 <option [value]="o.value">{{o.display}}</option>
                             </ng-container>
@@ -33,8 +33,8 @@
                             <option value="7">system routine</option>
                             <option value="8">user creator to Bean</option>
                             <option value="9">email1 of parent bean</option>
-                            <option value="A">email1 of parent of parent bean</option>
-                            <option value="B">email1 of parent of parent bea</option>
+                            <option value="A">email1 of grand parent bean</option>
+                            <option value="B">contact person of parent bean</option>
                         </select>
                     </div>
                 </div>
@@ -102,7 +102,7 @@
                         [(ngModel)]="model.data.type_config.emailcontclass"></system-input-backend-method>
             </div>
         </div>
-        <div *ngIf="contentOption == 'method' || model.data.type_config == '7'" class="slds-grid">
+        <div *ngIf="contentOption == 'method' || model.data.type_config.emailtype == '7'" class="slds-grid">
             <div class="slds-col">
                 <label class="slds-truncate">
                     <system-label label="LBL_PARAMS"></system-label>

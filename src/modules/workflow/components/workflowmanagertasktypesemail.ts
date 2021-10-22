@@ -35,10 +35,10 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
      * holds the content option for the email body
      * @private
      */
-    private contentOption: 'method' | 'email_template' = 'email_template';
+    public contentOption: 'method' | 'email_template' = 'email_template';
 
     constructor(private metadata: metadata,
-                private model: model,
+                public model: model,
                 private backend: backend,
                 private userpreferences: userpreferences,
                 private workflowManagerService: WorkflowManagerService,
@@ -68,8 +68,8 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
 
                     this.mailboxes = results.sort((a, b) => a.display.localeCompare(b.display));
 
-                    if (this.mailboxes.length > 0 && !this.model.data.type_config?.mailbox) {
-                        this.model.data.type_config.mailbox = this.mailboxes[0].value;
+                    if (this.mailboxes.length > 0 && !this.model.data.type_config?.mailbox_id) {
+                        this.model.data.type_config.mailbox_id = this.mailboxes[0].value;
                     }
 
                     // cache the options
@@ -91,12 +91,12 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
             this.backend.getList('EmailTemplates', [], {start: 0, limit: 500}).subscribe(
                 (data: any) => {
 
-                    this.emailTemplates = data.list.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule));
+                    this.emailTemplates = data.list.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule.name));
                     // cache the options
                     this.configuration.setData(`EmailTemplates`, this.emailTemplates);
                 });
         } else {
-            this.emailTemplates = options.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule));
+            this.emailTemplates = options.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule.name));
         }
     }
 

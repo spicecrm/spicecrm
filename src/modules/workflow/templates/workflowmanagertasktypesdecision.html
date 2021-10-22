@@ -27,7 +27,7 @@
                     <input type="text" [(ngModel)]="decision.name" class="slds-input">
                 </td>
                 <ng-container *ngFor="let task of workflowManagerService.tasks; trackBy: trackByFn">
-                    <ng-container *ngIf="decision.task_id == task.id">
+                    <ng-container *ngIf="decision.id == task.id">
                         <td>
                             <div class="slds-truncate">
                                 {{task.name}}
