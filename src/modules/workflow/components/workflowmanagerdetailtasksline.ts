@@ -12,7 +12,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 
 @Component({
-    selector: 'workflow-manager-detail-tasks-line',
+    selector: '[workflow-manager-detail-tasks-line]',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksline.html',
     providers: [model, view]
 })
