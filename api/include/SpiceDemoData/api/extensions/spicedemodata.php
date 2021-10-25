@@ -16,7 +16,7 @@ $routes = [
         'oldroute'    => '/generadetdemodata',
         'class'       => SpiceDemoDataController::class,
         'function'    => 'generateB2B',
-        'description' => 'create demo data in CRM for modules Accounts, Contacts & Leads',
+        'description' => 'create demo data in CRM for modules Accounts, Contacts, Leads & Opportunities',
         'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => false],
     ],
     [
