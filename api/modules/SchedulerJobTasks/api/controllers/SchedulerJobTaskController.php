@@ -60,7 +60,7 @@ class SchedulerJobTaskController
      */
     public function getSchedulerJobTaskClasses(Request $req, Response $res, array $args): Response {
         $classList = [];
-        $checkRootPaths = ['include', 'modules', 'extensions/includes', 'extensions/modules', 'custom/modules', 'custom/include'];
+        $checkRootPaths = ['include', 'modules', 'extensions/include', 'extensions/modules', 'custom/modules', 'custom/include'];
 
         foreach ($checkRootPaths as $checkRootPath) {
             $dirHandle = opendir("./$checkRootPath");
