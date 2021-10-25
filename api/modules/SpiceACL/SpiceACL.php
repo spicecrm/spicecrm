@@ -85,10 +85,12 @@ class SpiceACL
     {
         $addData = SpiceACLUsers::addFTSData($bean);
 
-        $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
-            $territoryData = $territory->addFTSData($bean);
-            $addData = array_merge($addData, $territoryData);
+        if(file_exists('extensions/modules/SpiceACLTerritories')) {
+            $territory = BeanFactory::getBean('SpiceACLTerritories');
+            if ($territory) {
+                $territoryData = $territory->addFTSData($bean);
+                $addData = array_merge($addData, $territoryData);
+            }
         }
 
         return $addData;
