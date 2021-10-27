@@ -25,7 +25,7 @@ export class spiceinstaller {
      */
     public systemid: string = '000';
     public systemname: string = '';
-    public systemurl: string = '';
+    public systemurl: string = window.location.href.split('#')[0] + 'api';
     public systemproxy: number = 1;
     public systemdevmode: boolean = false;
     public systemloginprogressbar: number = 0;
