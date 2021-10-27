@@ -29,6 +29,7 @@ class SpiceDemoDataController
         $demoGenerator->generateAccounts();
         $demoGenerator->generateContacts();
         $demoGenerator->generateLeads();
+        $demoGenerator->generateOpportunities();
         return $res->withJson(['status' => 'success']);
     }
 
