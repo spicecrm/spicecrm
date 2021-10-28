@@ -110,10 +110,10 @@ class OutputTemplatesController
     {
         $db = DBManagerFactory::getInstance();
         $functions = [ 'pipe' => [], 'noPipe' => [] ];
-        $dbResult = $db->query('SELECT name, no_pipe FROM systemplatefunctions UNION SELECT name, no_pipe FROM syscustomtemplatefunctions');
+        $dbResult = $db->query('SELECT name, no_pipe, param_configs FROM systemplatefunctions UNION SELECT name, no_pipe, param_configs FROM syscustomtemplatefunctions');
         while ( $function = $db->fetchByAssoc( $dbResult )) {
-            if ( $function['no_pipe'] === '1' ) $functions['noPipe'][] = $function['name'];
-            else $functions['pipe'][] = $function['name'];
+            if ( $function['no_pipe'] === '1' ) $functions['noPipe'][] = ['name'=>$function['name'],'paramConfigs'=>json_decode($function['param_configs'])];
+            else $functions['pipe'][] = ['name'=>$function['name'],'paramConfigs'=>json_decode($function['param_configs'])];
         }
         return $res->withJson( $functions );
     }
