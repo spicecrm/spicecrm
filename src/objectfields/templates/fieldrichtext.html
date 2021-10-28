@@ -11,7 +11,7 @@
     <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')" [templateModelForVariableHelper]="fieldconfig?.useTemplateVariableHelper ? model:null">
+    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
         <li *ngIf="fieldconfig?.useSignature">
             <div class="slds-form-element slds-grid">
                 <label class="slds-form-element__label">

@@ -13,7 +13,7 @@ import {
     Renderer2,
     ViewChild,
     ViewContainerRef,
-    Input
+    Input, Optional
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -61,7 +61,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private useMedialFile: boolean = false;
 
-    @Input() private templateModelForVariableHelper: model;
+    private get useTemplateVariableHelper() {
+        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
+    }
 
     // for the value accessor
     private onChange: (value: string) => void;
@@ -92,7 +94,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 private editorService: systemrichtextservice,
                 @Inject(DOCUMENT) private _document: any,
                 private elementRef: ElementRef,
-                private language: language) {
+                private language: language,
+                private viewContainerRef: ViewContainerRef,
+                @Optional() private model: model ) {
     }
 
     get expandIcon() {
@@ -456,10 +460,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         if (!this.isActive) {return;}
         this.editorService.saveSelection();
         this.modalOpen = true;
-        this.modal.openModal('OutputTemplatesVariableHelper')
+        this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector )
             .pipe(take(1))
             .subscribe(modal => {
-                modal.instance.templateModel = this.templateModelForVariableHelper;
                 modal.instance.response
                     .pipe(take(1))
                     .subscribe( text => {
