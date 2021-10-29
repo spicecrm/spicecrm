@@ -1,15 +1,15 @@
 /**
  * @module ModuleACL
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
-import {modellist} from '../../../services/modellist.service';
 import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from "../../../services/broadcast.service";
 
-
+/**
+ * renders theACL types Manager as part of the admin section
+ */
 @Component({
+    selector: 'acl-types-manager',
     templateUrl: './src/modules/acl/templates/acltypesmanager.html',
 })
 export class ACLTypesManager {
@@ -27,13 +27,6 @@ export class ACLTypesManager {
 
     constructor(private backend: backend, private modelutilities: modelutilities, private elementRef: ElementRef) {
 
-    }
-
-    get contentStyle() {
-        let rect = this.elementmanagercontent.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px'
-        };
     }
 
     public setType(acltype) {
@@ -59,6 +52,7 @@ export class ACLTypesManager {
             });
         }
     }
+
     public deleteField(fieldid) {
         this.backend.deleteRequest('module/SpiceACLObjects/modules/' + this.activeType.authtypeid + '/fields/' + fieldid).subscribe(fielddata => {
             this.activeType.authtypefields.some((field, index) => {
@@ -69,12 +63,14 @@ export class ACLTypesManager {
             });
         });
     }
+
     public addAction(action) {
         this.backend.postRequest('module/SpiceACLObjects/modules/'+this.activeType.authtypeid+'/actions/'+action).subscribe(actiondata => {
             this.activeType.authtypeactions.push(actiondata);
             this.sortType();
         });
     }
+
     public deleteAction(actionid) {
         this.backend.deleteRequest('module/SpiceACLObjects/modules/'+this.activeType.authtypeid+'/actions/'+actionid).subscribe(fielddata => {
             this.activeType.authtypeactions.some((action, index) => {
@@ -91,7 +87,7 @@ export class ACLTypesManager {
             return a.name > b.name;
         });
         this.activeType.authtypeactions.sort((a, b) => {
-            return a.action > b.action;
+            return a.action > b.action ? 1 : -1;
         });
     }
 
