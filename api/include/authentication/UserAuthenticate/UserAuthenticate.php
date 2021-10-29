@@ -124,6 +124,9 @@ class UserAuthenticate
         if (SpiceConfig::getInstance()->config['passwordsetting']['onenumber']) {
             $guideline .= $app_strings['MSG_PASSWORD_ONENUMBER'] . ', ';
         }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['onespecial']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONESPECIAL'] . ', ';
+        }
         if (SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength']) {
             $guideline .= SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'];
             $guideline .= ' ' . $app_strings['LBL_CHARACTERS'] . ', ';
@@ -368,6 +371,8 @@ class UserAuthenticate
             $pwdCheck .= '(?=.*[a-z])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['onenumber'])
             $pwdCheck .= '(?=.*\d)';
+        if (@SpiceConfig::getInstance()->config['passwordsetting']['onespecial'])
+            $pwdCheck .= '(?=.*[^a-zA-Z0-9])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'])
             $pwdCheck .= '.{' . SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'] . ',}';
         else
