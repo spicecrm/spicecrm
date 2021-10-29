@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceNotifications;
 
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
