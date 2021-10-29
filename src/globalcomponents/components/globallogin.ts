@@ -319,4 +319,12 @@ export class GlobalLogin {
     get showProgressBar() {
         return this.configuration.data.loginProgressBar;
     }
+
+    public handleRenewDialogClose(password?: string) {
+        this.renewpassword = false;
+        if (!!password) {
+            this.password = password;
+            this.login();
+        }
+    }
 }

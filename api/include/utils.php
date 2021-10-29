@@ -12,6 +12,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\TimeDate;
 
 /* * *******************************************************************************
 
@@ -96,8 +97,8 @@ function return_app_list_strings_language($language, $scope = 'all') {
                 LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
             }
             // BWC temporary name of include folder
-            if (file_exists("extensions/includes/language/$lang.lang.php")) {
-                include("extensions/includes/language/$lang.lang.php");
+            if (file_exists("extensions/include/language/$lang.lang.php")) {
+                include("extensions/include/language/$lang.lang.php");
                 LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
             }
         }
@@ -122,8 +123,8 @@ function return_app_list_strings_language($language, $scope = 'all') {
                 LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
             }
             // BWC temporary name of include folder
-            if (file_exists("custom/extensions/includes/language/$lang.lang.php")) {
-                include("custom/extensions/includes/language/$lang.lang.php");
+            if (file_exists("custom/extensions/include/language/$lang.lang.php")) {
+                include("custom/extensions/include/language/$lang.lang.php");
                 LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
             }
         }

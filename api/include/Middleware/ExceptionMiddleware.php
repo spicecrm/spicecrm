@@ -87,7 +87,7 @@ class ExceptionMiddleware extends FailureMiddleware
                 'trace'   => $exception->getTraceAsString(),
             ];
         } else {
-            $responseData['error'] = ['message' => 'Application Error.'];
+            $responseData['error'] = ['message' => ($exception->getCode() == 404) ? 'Not found.' : 'Application Error.'];
         }
         // todo does it have to be always 500?
         $httpCode = $exception->getCode() ?: 500;
