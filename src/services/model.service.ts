@@ -878,7 +878,7 @@ export class model implements OnDestroy {
         }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
-        this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
+        this.navigation.addModelEditing(this, this.getFieldValue('summary_text'));
     }
 
 

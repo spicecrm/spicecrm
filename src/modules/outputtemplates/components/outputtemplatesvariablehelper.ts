@@ -1,7 +1,7 @@
 /**
  * @module ModuleOutputTemplates
  */
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Optional, Output } from '@angular/core';
 import { language } from '../../../services/language.service';
 import { metadata } from '../../../services/metadata.service';
 import { take } from 'rxjs/operators';
@@ -26,7 +26,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * The model of the template the whole thing belongs to (email template or output template or ...)
      */
-    @Input() private templateModel: model;
+    private templateModel: model;
 
     /**
      * The list of the 3 on top offered modules (bean, template, current user).
@@ -34,9 +34,9 @@ export class OutputTemplatesVariableHelper implements OnInit {
     private offeredModules: any[] = [];
 
     /**
-     * The active (clicked) tab of the 3 on top offered modules.
+     * The active (selected) module off the on top offered modules.
      */
-    private activeModuleTab: 'bean'|'current_user'|'template';
+    private activeModule: string; // 'bean'|'current_user'|'template';
 
     /**
      * Holds all the fields of the modules.
@@ -86,30 +86,68 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Holds the history of selected system template functions. So the user can do a step-by-step recovery.
      */
-    private functionHistory: string[] = [];
+    private functionHistory: any[] = [];
 
-    constructor( public language: language, public metadata: metadata, private backend: backend, private cdr: ChangeDetectorRef) { }
+    /**
+     * Is there a template (EmailTemplate or OutputTemplate) in the base?
+     */
+    private hasTemplate = false;
+
+    /**
+     * The params of the actual (last selected) function.
+     */
+    private actualFunctionParams = [];
+
+    constructor( public language: language, public metadata: metadata, private backend: backend, private cdr: ChangeDetectorRef, @Optional() private model: model ) { }
 
     public ngOnInit(): void {
 
         // Build the array of offered modules.
-        // Always 3 elements:
-        // •) The bean the template is about. •) The current user. •) The template itself.
-        this.offeredModules = [
-            {   name: this.templateModel.getFieldValue('module_name'),
-                templateObjectName: 'bean',
-                displayName: this.language.getModuleName( this.templateModel.getFieldValue('module_name'), true )
-            },
-            {   name: 'Users',
-                templateObjectName: 'current_user',
-                displayName: this.language.getLabel('LBL_CURRENT_USER')
-            },
-            {   name: this.templateModel.module,
+        this.offeredModules = [{
+            name: 'Users',
+            templateObjectName: 'current_user',
+            displayName: this.language.getLabel('LBL_CURRENT_USER')
+        }];
+        if ( this.model?.module === 'CampaignTasks' ) {
+            let done = {}; // Helper object to prevent collecting one module several times.
+            if ( this.metadata.fieldDefs.ProspectLists ) {
+                let plMetadata = this.metadata.fieldDefs.ProspectLists;
+                Object.keys( plMetadata ).forEach( item => {
+                    if ( plMetadata[item].type === 'link' ) {
+                        let searchTerm = ( plMetadata[item].module ? plMetadata[item].module : plMetadata[item].name ).toLowerCase();
+                        for( let key in this.metadata.fieldDefs ) {
+                            if( key.toLowerCase() == searchTerm ) {
+                                if ( !done[key] === true ) {
+                                    this.offeredModules.push( {
+                                        name: key,
+                                        templateObjectName: 'bean.' + key,
+                                        displayName: this.language.getLabel(this.metadata.getModuleDefs( key ).module_label)
+                                    } );
+                                    done[key]=true;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        if ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' ) {
+            this.hasTemplate = true;
+            this.templateModel = this.model;
+            this.offeredModules.push({
+                name: this.templateModel.module,
                 templateObjectName: 'template',
                 displayName: this.language.getLabel('LBL_TEMPLATE')
+            });
+            if ( this.templateModel.getFieldValue('module_name')) {
+                this.offeredModules.push({
+                    name: this.templateModel.getFieldValue('module_name'),
+                    templateObjectName: 'bean.'+this.templateModel.getFieldValue('module_name'),
+                    displayName: this.language.getModuleName( this.templateModel.getFieldValue('module_name'), true )
+                });
             }
-        ];
-
+        }
+        this.language.sortObjects( this.offeredModules, 'displayName');
         // Load the system template functions from the backend.
         this.loadFunctions();
     }
@@ -124,8 +162,8 @@ export class OutputTemplatesVariableHelper implements OnInit {
             .pipe(take(1))
             .subscribe(response => {
                 this.allFunctions = response;
-                this.language.sortArray( this.allFunctions.pipe );
-                this.language.sortArray( this.allFunctions.noPipe );
+                this.language.sortObjects( this.allFunctions.pipe, 'name' );
+                this.language.sortObjects( this.allFunctions.noPipe, 'name' );
                 this.isLoadingFunctions = false;
                 this.buildOfferedFunctions();
             });
@@ -168,11 +206,11 @@ export class OutputTemplatesVariableHelper implements OnInit {
      */
     private submit(): void {
         let back;
-        if ( !this.fieldResult && !this.functionResult ) back = '';
-        if ( !this.fieldResult && this.functionResult ) back = 'func.'+this.functionResult;
+        if ( !this.fieldResult && !this.functionResultWithParams ) back = '';
+        if ( !this.fieldResult && this.functionResultWithParams ) back = 'func.'+this.functionResultWithParams;
         else {
             back = this.fieldResult;
-            if ( this.functionResult ) back += '|' + this.functionResult;
+            if ( this.functionResultWithParams ) back += '|' + this.functionResultWithParams;
         }
         this.response.emit( back );
         this.close();
@@ -215,7 +253,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * One of the 3 module tabs has beed clicked.
      */
     private setActiveModuleTab( templateObjectName ): void {
-        this.activeModuleTab = templateObjectName;
+        this.activeModule = templateObjectName;
     }
 
     /**
@@ -231,19 +269,39 @@ export class OutputTemplatesVariableHelper implements OnInit {
      */
     private functionUndo(): void {
         if ( this.functionHistory.length ) {
-            this.functionResult = this.functionHistory.pop();
+            let popped = this.functionHistory.pop();
+            this.functionResult = popped.result;
+            this.actualFunctionParams = popped.params;
             this.buildOfferedFunctions();
         }
+    }
+
+    /**
+     * Getter for the function result string incl. the parameters (seperated by ':').
+     */
+    private get functionResultWithParams() {
+        let result = this.functionResult;
+        this.actualFunctionParams.forEach( item => {
+            result += ':';
+            if ( item.value !== undefined && item.value !== '' ) result += ( item.type === 'string' ? '"'+item.value+'"' : item.value );
+            result = result.replace(/:+$/g, '');
+        });
+        return result;
     }
 
     /**
      * Fills the field with the function result.
      * And updates the offered functions (because now the pipe functions have to be displayed).
      */
-    private functionSelected( functionName: string ): void {
-        this.functionHistory.push( this.functionResult );
+    private functionSelected( func ): void {
+        this.functionHistory.push({
+            result: this.functionResult,
+            params: this.actualFunctionParams
+        });
+        this.functionResult = this.functionResultWithParams;
         if ( this.functionResult ) this.functionResult += '|';
-        this.functionResult = this.functionResult + functionName;
+        this.functionResult += func.name;
+        this.actualFunctionParams = func.paramConfigs ? JSON.parse(JSON.stringify(func.paramConfigs)) : [];
         this.buildOfferedFunctions();
     }
 
@@ -259,10 +317,17 @@ export class OutputTemplatesVariableHelper implements OnInit {
         }
         let joined = simplePath.join('.'); // The path with the syntax the template compiler needs.
         if ( joined ) joined += '.';
-        switch( this.activeModuleTab ) {
-            case 'bean': this.fieldResult = 'bean.'+joined+field; break;
-            case 'current_user': this.fieldResult = 'current_user.'+joined+field; break;
-            case 'template': this.fieldResult = 'template.'+joined+field; break;
+        if ( this.activeModule.indexOf('bean.',0) !== -1 ) {
+            this.fieldResult = 'bean.'+joined+field;
+        } else {
+            switch( this.activeModule ) {
+                case 'current_user':
+                    this.fieldResult = 'current_user.' + joined + field;
+                    break;
+                case 'template':
+                    this.fieldResult = 'template.' + joined + field;
+                    break;
+            }
         }
         this.buildOfferedFunctions();
     }

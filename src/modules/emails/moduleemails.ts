@@ -34,6 +34,7 @@ import /*embed*/ {EmailTemplatesEditor} from "./components/emailtemplateseditor"
 import /*embed*/ {EmailTemplatesPreview} from "./components/emailtemplatespreview";
 import /*embed*/ {fieldEmailSubject} from "./fields/fieldemailsubject";
 import /*embed*/ {fieldEmailActivityOpenness} from "./fields/fieldemailactivityopenness";
+import /*embed*/ {EmailParentAddressesModal} from "./components/emailparentaddressesmodal";
 
 @NgModule({
     imports: [
@@ -66,6 +67,7 @@ import /*embed*/ {fieldEmailActivityOpenness} from "./fields/fieldemailactivityo
         EmailActionSetReadButton,
         EmailTemplatesEditor,
         EmailTemplatesPreview,
+        EmailParentAddressesModal,
         fieldEmailSubject,
         fieldEmailActivityOpenness
     ]

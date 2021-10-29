@@ -424,7 +424,7 @@ class RESTManager
     private function initExtensions() {
         // check if we have extension in the local path
         $checkRootPaths = ['include', 'modules',
-                            'extensions/includes', 'extensions/modules',
+                            'extensions/include', 'extensions/modules',
                             'custom/modules', 'custom/include'];
         foreach ($checkRootPaths as $checkRootPath) {
             $KRestDirHandle = opendir("./$checkRootPath");

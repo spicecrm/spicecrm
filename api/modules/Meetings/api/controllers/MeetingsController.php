@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\TimeDate;
 
 class MeetingsController
 {

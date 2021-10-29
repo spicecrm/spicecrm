@@ -12,6 +12,7 @@ import {backend} from "../../../services/backend.service";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ObjectActionOutputBeanModalEmailContent} from "./objectactionoutputbeanmodalemailcontent";
 import {outputModalService} from "../services/outputmodal.service";
+import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'object-action-output-bean-modal',
@@ -136,7 +137,8 @@ export class ObjectActionOutputBeanModal {
         public backend: backend,
         public outputModalService: outputModalService,
         public sanitizer: DomSanitizer,
-        public viewContainerRef: ViewContainerRef
+        public viewContainerRef: ViewContainerRef,
+        public modelutilities: modelutilities
     ) {
         // get the fieldset of the email area
         let componentconfig = this.metadata.getComponentConfig('ObjectActionOutputBeanModal');
@@ -216,8 +218,9 @@ export class ObjectActionOutputBeanModal {
 
         switch (this.selected_format) {
             case 'pdf':
-
-                const body = {bean_data: this.liveCompile ? this.model.data : null};
+                const body = {
+                    bean_data: this.liveCompile ? this.modelutilities.spiceModel2backend(this.model.module, this.model.data) : null
+                };
 
                 this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
@@ -260,7 +263,6 @@ export class ObjectActionOutputBeanModal {
         this.outputModalService.modalResponse$.next('close');
         this.outputModalService.modalResponse$.complete();
 
-        this.model.cancelEdit();
 
         this.self.destroy();
     }
@@ -371,6 +373,7 @@ export class ObjectActionOutputBeanModal {
         this.outputModalService.modalResponse$.next(action.name);
 
         if (!!action.close) {
+            this.model.cancelEdit();
             this.close();
         }
     }
