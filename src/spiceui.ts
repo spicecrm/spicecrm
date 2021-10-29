@@ -181,7 +181,8 @@ export class SpiceUI {
 export class SpiceUIModule {
     constructor(
         private socket: socket,
-        private assistant: assistant
+        private assistant: assistant,
+        private reminder: reminder
     ) {
 
     }
