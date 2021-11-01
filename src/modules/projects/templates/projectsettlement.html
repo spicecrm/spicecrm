@@ -1,0 +1,70 @@
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="parent.module"></system-icon>
+                <div class="slds-media__body">
+                    <p class="slds-text-title--caps slds-line-height--reset">
+                        <system-label label="LBL_SETTLEMENT"></system-label>
+                    </p>
+                    <div>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                            <ng-container>{{parent.data.summary_text}}</ng-container>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-horizontal--x-small slds-show--medium">
+            <button class="slds-button slds-button_neutral" (click)="settle()"><system-label label="LBL_SETTLE"></system-label></button>
+        </div>
+        <!--object-action-container [actionset]="actionSet"></object-action-container-->
+    </div>
+</div>
+<div>
+    <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered" aria-label="Example table of Opportunities with no row hovers">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col" style="width: 2.5rem">
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="name"></system-label-fieldname></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="projectplannedactivity_name"></system-label-fieldname></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="created_by_name"></system-label-fieldname></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="activity_start"></system-label-fieldname></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">duration</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let projectActivity of projectActivities" [system-model-provider]="{module:'ProjectActivities', data:projectActivity}" >
+                <td>
+                    <system-checkbox [(ngModel)]="projectActivity.selected"></system-checkbox>
+                </td>
+                <td>
+                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="name"></field-container></div>
+                </td>
+                <td>
+                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="projectplannedactivity_name"></field-container></div>
+                </td>
+                <td>
+                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="created_by_name"></field-container></div>
+                </td>
+                <td>
+                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="activity_start"></field-container></div>
+                </td>
+                <td>
+                    <div class="slds-truncate"><system-input-number [(ngModel)]="projectActivity.activity_duration" [asNumber]="true"></system-input-number></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

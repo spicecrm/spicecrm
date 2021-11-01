@@ -19,9 +19,15 @@ import /*embed*/ {ProjectWBSHierarchyNode} from "./components/projectwbshierarch
 
 import /*embed*/ {ProjectActivityDashletActivity} from "./components/projectactivitydashletactivity";
 import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydashlet";
+import /*embed*/ {ProjectActivityConfirmation} from "./components/projectactivityconfirmation";
 import /*embed*/ {fieldProjectActivityEffort} from "./fields/fieldprojectactivityeffort";
 import /*embed*/ {fieldProjectPlannedActivityConsumption} from "./fields/fieldprojectplannedactivityconsumption";
 import /*embed*/ {fieldProjectActivityDropdown} from "./fields/fieldprojectactivitydropdown";
+import /*embed*/ {fieldProjectActivityStartdate} from "./fields/fieldprojectactivitystartdate";
+
+import /*embed*/ {ProjectSettlementButton} from "./components/projectsettlementbutton";
+import /*embed*/ {ProjectSettlement} from "./components/projectsettlement";
+
 
 @NgModule({
     imports: [
@@ -41,6 +47,10 @@ import /*embed*/ {fieldProjectActivityDropdown} from "./fields/fieldprojectactiv
         fieldProjectActivityDropdown,
         fieldProjectActivityEffort,
         fieldProjectPlannedActivityConsumption,
+        fieldProjectActivityStartdate,
+        ProjectActivityConfirmation,
+        ProjectSettlementButton,
+        ProjectSettlement
     ]
 })
 export class ModuleProjects {}
