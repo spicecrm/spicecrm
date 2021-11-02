@@ -13,6 +13,7 @@
       "SpiceCRM\\custom\\modules\\": "custom/modules",
       "SpiceCRM\\KREST\\": "KREST",
       "SpiceCRM\\data\\": "data",
+      "SpiceCRM\\extensions\\includes\\": "extensions/include",
       "SpiceCRM\\extensions\\": "extensions"
     }
   },
@@ -29,6 +30,5 @@
     "mtdowling/cron-expression": "^1.2"
   },
   "minimum-stability": "rc",
-  "name": "",
   "description": ""
 }
