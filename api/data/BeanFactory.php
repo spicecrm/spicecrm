@@ -165,7 +165,7 @@ class BeanFactory
         return self::getBean($module);
     }
 
-    public static function getBeanName(string $module): string {
+    public static function getBeanName(?string $module): string {
         return SpiceModules::getInstance()->getBeanName($module) ?? false;
     }
 

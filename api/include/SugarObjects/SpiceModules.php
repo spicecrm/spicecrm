@@ -143,7 +143,7 @@ class SpiceModules
      * @param string $moduleName
      * @return string|null
      */
-    public function getBeanName(string $moduleName): ?string {
+    public function getBeanName(?string $moduleName): ?string {
         return $this->beanList[$moduleName] ?? null;
     }
 
