@@ -283,9 +283,9 @@ export class OutputTemplatesVariableHelper implements OnInit {
         let result = this.functionResult;
         this.actualFunctionParams.forEach( item => {
             result += ':';
-            if ( item.value !== undefined && item.value !== '' ) result += ( item.type === 'string' ? '"'+item.value+'"' : item.value );
-            result = result.replace(/:+$/g, '');
+            if ( item.value !== undefined && item.value !== '' ) result += ( item.type === 'string' ? "'"+item.value+"'" : item.value );
         });
+        result = result.replace(/:+$/g, '');
         return result;
     }
 
