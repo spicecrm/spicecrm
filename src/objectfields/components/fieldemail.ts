@@ -98,10 +98,12 @@ export class fieldEmail extends fieldGeneric {
      * set the initial field value from emailaddresses
      */
     private setInitialFieldValue() {
-        this._value = this.model.getFieldValue(this.fieldname);
+        this._value = this.model.getField(this.fieldname);
         const emailAddresses = this.model.getRelatedRecords('email_addresses');
         const email = emailAddresses ? emailAddresses.find(email => email.primary_address == 1) : undefined;
-        this._value = email ? email.email_address : undefined;
+        if(!this._value) {
+            this._value = email ? email.email_address : undefined;
+        }
     }
 
     /**
