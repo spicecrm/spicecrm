@@ -1921,7 +1921,7 @@ export class model implements OnDestroy {
      * Deep cloning of an object. Minds also moment objects.
      * @param object The object to clone.
      */
-    private buildBackup(object) {
+    public buildBackup(object) {
         let clone = {};
         _.each(object, (value, key) => {
             if (_.isObject(value)) {

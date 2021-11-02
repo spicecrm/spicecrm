@@ -292,7 +292,7 @@ class SpiceUIConfLoader
                         " Action aborted");
 
                 //compare table column names
-                if (!$tbColCheck) {
+                if (!$tbColCheck && is_array($decodeData)) {
                     $referenceCols = array_keys($decodeData);
                     if (!empty(array_diff($referenceCols, $thisCols))) {
                         $errors[] = ("Table structure for $tb is not up-to-date or there is new module. In case of a new module, logout, login, repair, then load core package again." .
