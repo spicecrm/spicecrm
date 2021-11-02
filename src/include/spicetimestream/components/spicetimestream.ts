@@ -2,14 +2,11 @@
  * @module ModuleSpiceTimeStream
  */
 import {
-    Component, OnDestroy,
-    ViewChild,
-    ViewContainerRef
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component, OnDestroy, OnInit
 } from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
-import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
-import {modelutilities} from '../../../services/modelutilities.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {language} from '../../../services/language.service';
 import {ListTypeI} from "../../../services/interfaces.service";
@@ -22,9 +19,10 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-timestream',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestream.html'
+    templateUrl: './src/include/spicetimestream/templates/spicetimestream.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpiceTimestream implements OnDestroy {
+export class SpiceTimestream implements OnInit, OnDestroy {
 
     /**
      * holds the various subscriptions
@@ -47,7 +45,12 @@ export class SpiceTimestream implements OnDestroy {
 
 
 
-    constructor(private language: language, private userpreferences: userpreferences, private modellist: modellist, private modelutilities: modelutilities, private metadata: metadata) {
+    constructor(
+        private language: language,
+        private userpreferences: userpreferences,
+        private modellist: modellist,
+        public cdRef: ChangeDetectorRef
+    ) {
 
         // subscribe to changes of the list type
         this.subscriptions.add(
@@ -56,8 +59,24 @@ export class SpiceTimestream implements OnDestroy {
             )
         );
 
-        this.modellist.getListData();
 
+        this.subscriptions.add(
+            this.modellist.listDataChanged$.subscribe(() => {
+                this.cdRef.detectChanges();
+            })
+        );
+
+        // this.modellist.getListData();
+
+    }
+
+    public ngOnInit() {
+        // set the buckets to null
+        this.modellist.buckets = {};
+
+        if (!this.modellist.loadFromSession()) {
+            this.getListData();
+        }
     }
 
     /**
@@ -68,13 +87,28 @@ export class SpiceTimestream implements OnDestroy {
     }
 
     /**
+     * trigger get list data on the service if autoload is not disabled and the list type is not "all" or reset the list data
+     * @private
+     */
+    private getListData() {
+        if (this.modellist.currentList.id != 'all') {
+            this.modellist.getListData().subscribe(() =>
+                this.cdRef.detectChanges()
+            );
+        } else {
+            this.modellist.resetListData();
+        }
+    }
+
+    /**
      * handle the list type change to reload the data only if for this component to prevent possible actions after destroy
      * @param newType
      * @private
      */
     private handleListTypeChange(newType: ListTypeI) {
+        this.cdRef.detectChanges();
         if (newType.listcomponent != 'SpiceTimestream') return;
-        this.modellist.reLoadList();
+        this.getListData();
     }
 
 }
