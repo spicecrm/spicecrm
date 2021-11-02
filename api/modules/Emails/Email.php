@@ -53,7 +53,9 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 
 class Email extends SugarBean
@@ -125,7 +127,7 @@ class Email extends SugarBean
      */
     ///////////////////////////////////////////////////////////////////////////
     ////	SAVERS
-    public function save($check_notify = false, $fts_index_bean = true)
+    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timedate = TimeDate::getInstance();
@@ -172,7 +174,7 @@ class Email extends SugarBean
             $this->description = SugarCleaner::cleanHtml($this->description);
             $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
             $this->raw_source = SugarCleaner::cleanHtml($this->raw_source, true);
-            $this->saveEmailAddresses();
+            $this->saveEmailAddresses($ignoreInvalidEmailAddresses);
             // disable cache! timedate->now() return null at this time
             $timedate->allow_cache = false;
 
@@ -303,9 +305,9 @@ class Email extends SugarBean
     /**
      * Handles normalization of Email Addresses
      */
-    function saveEmailAddresses()
+    function saveEmailAddresses(bool $ignoreInvalid = true)
     {
-        $fromId = $this->handleSaveEmailAddress($this->from_addr);
+        $fromId = $this->handleSaveEmailAddress($this->from_addr, $ignoreInvalid);
         $this->linkEmailToAddress($fromId, 'from');
 
         // to, multiple
@@ -317,7 +319,7 @@ class Email extends SugarBean
             foreach ($exToAddrs as $toaddr) {
                 $toaddr = trim($toaddr);
                 if (!empty($toaddr)) {
-                    $toId = $this->handleSaveEmailAddress($toaddr);
+                    $toId = $this->handleSaveEmailAddress($toaddr, $ignoreInvalid);
                     $this->linkEmailToAddress($toId, 'to');
                 }
             }
@@ -331,7 +333,7 @@ class Email extends SugarBean
             foreach ($exccAddrs as $ccAddr) {
                 $ccAddr = trim($ccAddr);
                 if (!empty($ccAddr)) {
-                    $ccId = $this->handleSaveEmailAddress($ccAddr);
+                    $ccId = $this->handleSaveEmailAddress($ccAddr, $ignoreInvalid);
                     $this->linkEmailToAddress($ccId, 'cc');
                 }
             }
@@ -344,7 +346,7 @@ class Email extends SugarBean
             foreach ($exbccAddrs as $bccAddr) {
                 $bccAddr = trim($bccAddr);
                 if (!empty($bccAddr)) {
-                    $bccId = $this->handleSaveEmailAddress($bccAddr);
+                    $bccId = $this->handleSaveEmailAddress($bccAddr, $ignoreInvalid);
                     $this->linkEmailToAddress($bccId, 'bcc');
                 }
             }
@@ -353,18 +355,20 @@ class Email extends SugarBean
 
     /**
      * handle saving email address from string if it does not exist
-     * @param $addressString
+     * @param string $addressString
+     * @param bool $ignoreInvalid
      * @return string the existing/new email address id
      */
-    private function handleSaveEmailAddress($addressString)
+    private function handleSaveEmailAddress(string $addressString, bool $ignoreInvalid = true): string
     {
-        $id = $this->emailAddress->getEmailAddressId($this->db->quote(from_html($addressString)));
+        $addressString = $this->db->quote(DBUtils::fromHtml($addressString));
+        $id = EmailAddress::getEmailAddressId($addressString);
 
         if (empty($id)) {
             $newAddress = BeanFactory::newBean('EmailAddresses');
             $newAddress->email_address = $addressString;
             $newAddress->email_address_caps = strtoupper($addressString);
-            $id = $newAddress->save();
+            $id = $newAddress->save(false, true, $ignoreInvalid);
         }
 
         return $id;
