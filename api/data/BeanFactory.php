@@ -169,7 +169,7 @@ class BeanFactory
         return SpiceModules::getInstance()->getBeanName($module) ?? false;
     }
 
-    public static function getBeanClass(string $module): string {
+    public static function getBeanClass(?string $module): string {
         return SpiceModules::getInstance()->getBeanClassForModule($module) ?? false;
     }
 
