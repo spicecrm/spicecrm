@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\data\Relationships;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SugarBean;
@@ -41,15 +42,11 @@ class One2MBeanRelationship extends One2MRelationship
 
         //Since this is bean based, we know updating the RHS's field will overwrite any old value,
         //But we need to use delete to make sure custom logic is called correctly
-        if ($rhs->load_relationship($rhsLinkName))
+        // performance optimization to load the old related bean direct rather than via the links
+        if (!empty($rhs->{$this->def['rhs_key']}) && $rhs->{$this->def['rhs_key']} != $lhs->id)
         {
-            $oldLink = $rhs->$rhsLinkName;
-            $prevRelated = $oldLink->getBeans(null);
-            foreach($prevRelated as $oldLHS)
-            {
-                if ($oldLHS->id != $lhs->id)
-                    $this->remove($oldLHS, $rhs, false);
-            }
+            $oldLHS = BeanFactory::getBean($lhs->_module, $rhs->{$this->def['rhs_key']}, ['relationships' => false]);
+            $this->remove($oldLHS, $rhs, false);
         }
 
         //Make sure we load the current relationship state to the LHS link

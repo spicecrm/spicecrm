@@ -2,6 +2,7 @@
 namespace SpiceCRM\includes\SpiceSlim;
 
 use Slim\Psr7\Response as BaseResponse;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 
 class SpiceResponse extends BaseResponse
 {
@@ -20,15 +21,12 @@ class SpiceResponse extends BaseResponse
      * @param int $encodingOptions
      * @return SpiceResponse
      */
-    public function withJson($data, $status = null, $encodingOptions = 0): SpiceResponse {
+    public function withJson($data, $status = null, $encodingOptions = JSON_INVALID_UTF8_IGNORE): SpiceResponse {
         $json = json_encode($data, $encodingOptions);
 
         // Ensure that the json encoding passed successfully
         if ($json === false) {
-            throw new \RuntimeException([
-                'error' => json_last_error_msg(),
-                'serializeddata' => serialize($data),
-            ], json_last_error());
+            throw new \RuntimeException(json_last_error_msg());
         }
         $this->getBody()->write($json);
 

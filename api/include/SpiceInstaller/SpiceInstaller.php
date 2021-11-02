@@ -73,7 +73,7 @@ class SpiceInstaller
     {
         $requirements = [];
         // check php version
-        if (version_compare(phpversion(), '7.0', '<')) {
+        if (version_compare(phpversion(), '7.2', '<')) {
             $requirements['php'] = false;
         } else {
             $requirements['php'] = true;
@@ -280,10 +280,10 @@ class SpiceInstaller
         $response = $this->curlCall($this->curl, $url);
 
         if (!empty($response)) {
-            if ($response->version->number >= 7.5) {
-                $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
-            } else {
+            if (version_compare($response->version->number, '7.5', '<')) {
                 $errors = ['version not supported'];
+            } else {
+                $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
             }
         } else {
             $errors = ['invalid url', $response];
