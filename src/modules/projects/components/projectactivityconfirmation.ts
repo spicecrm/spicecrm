@@ -6,9 +6,6 @@ import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {language} from "../../../services/language.service";
-import {backend} from "../../../services/backend.service";
-import {toast} from "../../../services/toast.service";
-import {modellist} from '../../../services/modellist.service';
 
 /**
  * @ignore
@@ -44,10 +41,7 @@ export class ProjectActivityConfirmation {
         private metadata: metadata,
         @SkipSelf() private parent: model,
         private model: model,
-        private view: view,
-        private backend: backend,
-        private toast: toast,
-        private modellist: modellist
+        private view: view
     ) {
 
         // get the config
