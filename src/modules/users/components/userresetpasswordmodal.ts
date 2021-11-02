@@ -175,6 +175,7 @@ export class UserResetPasswordModal {
         if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
         if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
         if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
         if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');
@@ -192,6 +193,7 @@ export class UserResetPasswordModal {
         if (extConf.onelower) passwordChars.push(this.randomLower());
         if (extConf.oneupper) passwordChars.push(this.randomUpper());
         if (extConf.onenumber) passwordChars.push(this.randomNumber());
+        if (extConf.onespecial) passwordChars.push(this.randomSpecial());
 
         let minLength = extConf.minpwdlength ? parseInt(extConf.minpwdlength, 10) : 8;
         while (passwordChars.length < minLength) {
@@ -243,12 +245,21 @@ export class UserResetPasswordModal {
     }
 
     /**
-     * returns a random number
+     * returns a random special character
+     * @private
+     */
+    private randomSpecial() {
+        let pool = '!"#$%&\'()*+,-./:;<=>?@[\\]^_{|}~';
+        return pool.charAt( Math.floor(Math.random() * pool.length ));
+    }
+
+    /**
+     * returns a random number (digit)
      *
      * @private
      */
     private randomNumber() {
-        return String.fromCharCode((Math.floor(Math.random() * 9) + 48));
+        return String.fromCharCode((Math.floor(Math.random() * 10) + 48));
     }
 
     /**
