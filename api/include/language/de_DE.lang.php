@@ -499,9 +499,22 @@ $app_list_strings = [
         'Medium' => 'Mittel',
         'Low' => 'Niedrig',
     ],
+    'projects_plannedactivity_status_dom' => [
+        'planned' => 'geplant',
+        'released' => 'freigegeben',
+        'active' => 'aktiv',
+        'onhold' => 'in Warteschleife',
+        'completed' => 'abgeschlossen',
+        'cancelled' => 'abgesagt'
+    ],
     'projects_activity_status_dom' => [
         'created' => 'erfasst',
         'settled' => 'abgerechnet'
+    ],
+    'projects_activity_settlement_types_dom' => [
+        'regular' => 'normal',
+        'goodwill' => 'kulanz',
+        'exclude' => 'exkludiert'
     ],
     'mailbox_message_types' => [
         'sms' => 'Text Messages',
@@ -717,6 +730,7 @@ $app_list_strings = [
     ],
     'document_revisionstatus_dom' => [
         'c' => 'angelegt',
+        'q' => 'Freigabe angefordert',
         'r' => 'freigegeben',
         'a' => 'archiviert',
     ],
