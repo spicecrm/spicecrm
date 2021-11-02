@@ -123,12 +123,17 @@
                                             <system-tooltip class="slds-m-left--x-small" *ngIf="funcParam.help" [tooltiptext]="funcParam.help"></system-tooltip>
                                         </label>
                                         <div class="slds-form-element__control slds-grow" [ngClass]="{'slds-input-has-fixed-addon':!!funcParam.unit}">
-                                            <input *ngIf="!funcParam.options" type="text" id="funcParam{{i}}" class="slds-input" [(ngModel)]="funcParam.value"/>
-                                            <select *ngIf="funcParam.options" class="slds-select" id="funcParam{{i}}" [(ngModel)]="funcParam.value">
-                                                <option selected value="">Select…</option>
-                                                <option *ngFor="let option of funcParam.options | keyvalue" [value]="option.key">{{option.value}}</option>
-                                            </select>
-                                            <span *ngIf="funcParam.unit" class="slds-form-element__addon" id="fixed-text-addon-post">{{funcParam.unit}}</span>
+                                            <ng-container [ngSwitch]="funcParam.type">
+                                                <input *ngSwitchCase="'color'" type="color" id="funcParam{{i}}" class="slds-input" [(ngModel)]="funcParam.value" style="width:3.5rem;padding-left:2px;padding-right:2px"/>
+                                                <ng-container  *ngSwitchDefault>
+                                                    <input *ngIf="!funcParam.options" type="text" id="funcParam{{i}}" class="slds-input" [(ngModel)]="funcParam.value"/>
+                                                    <select *ngIf="funcParam.options" class="slds-select" id="funcParam{{i}}" [(ngModel)]="funcParam.value">
+                                                        <option selected value="">Select…</option>
+                                                        <option *ngFor="let option of funcParam.options | keyvalue" [value]="option.key">{{option.value}}</option>
+                                                    </select>
+                                                </ng-container>
+                                                <span *ngIf="funcParam.unit" class="slds-form-element__addon" id="fixed-text-addon-post">{{funcParam.unit}}</span>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </ng-container>
