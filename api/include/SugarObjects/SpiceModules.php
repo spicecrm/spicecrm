@@ -191,7 +191,7 @@ class SpiceModules
      * @param string $beanModule
      * @return string|null
      */
-    public function getBeanClassForModule(string $beanModule): ?string {
+    public function getBeanClassForModule(?string $beanModule): ?string {
         return $this->beanClasses[$beanModule] ?? null;
     }
 
