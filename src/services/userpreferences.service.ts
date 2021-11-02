@@ -10,6 +10,7 @@ import {broadcast} from './broadcast.service';
 import {configurationService} from './configuration.service';
 import {modal} from './modal.service';
 import {session} from './session.service';
+import {metadata} from "./metadata.service";
 
 /**
  * @ignore
@@ -60,11 +61,22 @@ export class userpreferences {
      */
     public preferences$: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal, private session: session) {
+    constructor(
+        private backend: backend,
+        private toast: toast,
+        private configuration: configurationService,
+        private language: language,
+        private broadcast: broadcast,
+        private modalservice: modal,
+        private session: session,
+        private metadata: metadata
+    ) {
         this.toUse = this.preferences.global;
         // this.retrievePrefsFromConfigService();
         this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') this.retrievePrefsFromConfigService();
+            if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') {
+                this.retrievePrefsFromConfigService()
+            };
         });
     }
 
@@ -76,6 +88,11 @@ export class userpreferences {
         this.askForMissingPreferences();
         this.completePreferencesWithDefaults();
         this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
+
+        // if we have a role set it
+        if(this.preferences.global.userrole){
+            this.metadata.setActiveRole(this.preferences.global.userrole);
+        }
     }
 
     public getPreferences(loadhandler: Subject<string>) {
