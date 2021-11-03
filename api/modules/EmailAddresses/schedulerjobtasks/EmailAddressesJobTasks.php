@@ -15,7 +15,7 @@ class EmailAddressesJobTasks
     {
         $emailAddresses = BeanFactory::getBean('EmailAddresses');
 
-        $list = $emailAddresses->get_list('', 'email_address LIKE "%<%"');
+        $list = $emailAddresses->get_full_list('', 'email_address LIKE "%<%"');
         foreach ($list['list'] as $item) {
             try {
                 $item->save();
