@@ -6,7 +6,7 @@
     </button>
   </div>
   <div class="slds-scrollable--y" [ngClass]="{'slds-grow':blockedUsers.length!==0}">
-    <table class="slds-table slds-table_bordered slds-table--header-fixed" system-multi-select-checkboxes [ngStyle]="{borderBottom:blockedUsers.length===0?'none':'auto'}">
+    <table class="slds-table slds-table_bordered slds-table--header-fixed" [ngStyle]="{borderBottom:blockedUsers.length===0?'none':'auto'}">
       <thead>
         <tr class="slds-text-title--caps">
           <th><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_USER_NAME"></system-label></div></th>
