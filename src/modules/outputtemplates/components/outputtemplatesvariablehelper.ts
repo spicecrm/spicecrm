@@ -277,15 +277,27 @@ export class OutputTemplatesVariableHelper implements OnInit {
     }
 
     /**
+     * Paranthesis for the param in the result?
+     */
+    private isTypeString( type: string ): boolean {
+        switch( type ) {
+            case 'string':
+            case 'color': return true;
+        }
+        return false;
+    }
+
+    /**
      * Getter for the function result string incl. the parameters (seperated by ':').
      */
     private get functionResultWithParams() {
         let result = this.functionResult;
         this.actualFunctionParams.forEach( item => {
             result += ':';
-            if ( item.value !== undefined && item.value !== '' ) result += ( item.type === 'string' ? '"'+item.value+'"' : item.value );
-            result = result.replace(/:+$/g, '');
+            if (( item.type === 'color' && item.value === '#000000' ) || item.value === undefined || item.value === '' ) return;
+            result += ( this.isTypeString( item.type ) ? "'"+item.value+"'" : item.value );
         });
+        result = result.replace(/:+$/g, '');
         return result;
     }
 
