@@ -1,0 +1,7 @@
+<div class="slds-grid slds-border--bottom" style="height: 100%">
+    <div *ngFor="let period of periods; let i = index" class="slds-border--right" [ngStyle]="getPeriodStyle()" [ngClass]="period.displayclass">
+        <div class="slds-align--absolute-center slds-truncate" style="height: 100%">
+            {{period.name}}
+        </div>
+    </div>
+</div>

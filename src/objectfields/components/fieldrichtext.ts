@@ -122,6 +122,23 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     }
 
     /**
+     * a getter for the value bound top the model
+     */
+    get value() {
+        return this.model.getField(this.fieldname);
+    }
+
+    /**
+     * a setter that returns the value to the model and triggers the validation
+     *
+     * @param val the new value
+     */
+    set value(val) {
+        this.model.setField(this.fieldname, val);
+        this.setHtmlValue();
+    }
+
+    /**
      * call to load the initial values
      */
     public async ngOnInit() {
