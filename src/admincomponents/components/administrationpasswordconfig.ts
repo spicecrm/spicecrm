@@ -30,6 +30,7 @@ export class AdministrationPasswordConfig implements OnInit {
         oneupper: true,
         onelower: true,
         onenumber: true,
+        onespecial: true,
         pwdvaliditydays: 0
     };
 
@@ -51,6 +52,7 @@ export class AdministrationPasswordConfig implements OnInit {
             oneupper: this.config.oneupper ? '1':'0',
             onelower: this.config.onelower ? '1':'0',
             onenumber: this.config.onenumber ? '1':'0',
+            onespecial: this.config.onespecial ? '1':'0',
             pwdvaliditydays: this.config.pwdvaliditydays
         };
         this.isLoading = true;
@@ -75,6 +77,7 @@ export class AdministrationPasswordConfig implements OnInit {
                 this.config.oneupper = response.oneupper === true || response.oneupper === 1 || response.oneupper === '1' || false;
                 this.config.onelower = response.onelower === true || response.onelower === 1 || response.onelower === '1' || false;
                 this.config.onenumber = response.onenumber === true || response.onenumber === 1 || response.onenumber === '1' || false;
+                this.config.onespecial = response.onespecial === true || response.onespecial === 1 || response.onespecial === '1' || false;
                 this.config.minpwdlength = parseInt( response.minpwdlength, 10 ) || 0,
                 this.config.pwdvaliditydays = parseInt( response.pwdvaliditydays, 10 ) || 0,
                 this.configBackup = JSON.parse( JSON.stringify( this.config ) );

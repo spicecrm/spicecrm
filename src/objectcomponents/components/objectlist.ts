@@ -177,6 +177,9 @@ export class ObjectList implements OnDestroy, OnInit {
         // set the limit for the loading
         this.modellist.loadlimit = 50;
 
+        // set the buckets to null
+        this.modellist.buckets = {};
+
         if (!this.modellist.loadFromSession()) {
             this.getListData();
         }

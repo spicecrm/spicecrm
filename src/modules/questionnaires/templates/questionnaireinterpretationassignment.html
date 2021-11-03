@@ -82,7 +82,7 @@
                                         </div>
                                         <div class="slds-p-around--x-small">
                                             <div [innerHTML]="sanitized.bypassSecurityTrustHtml(interpretation.text_short)"></div>
-                                            <div [ngClass]="{'slds-m-top--x-small slds-border--top slds-p-top--x-small':interpretation.text_extra.length>0}" class="slds-grid">
+                                            <div [ngClass]="{'slds-m-top--x-small slds-border--top slds-p-top--x-small':interpretation.text_extra?.length>0}" class="slds-grid">
                                                 <div class="slds-col" style="width:100%">
                                                     <div *ngIf="!meta[interpretation.id].editMode" [innerHTML]="sanitized.bypassSecurityTrustHtml(interpretation.text_extra)"></div>
                                                     <system-tinymce *ngIf="meta[interpretation.id].editMode" [elementid]="interpretation.id" [(content)]="interpretation.text_extra" (contentChange)="updateField(i)"></system-tinymce>
