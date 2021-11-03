@@ -347,3 +347,14 @@ $dictionary['Product'] = [
 ];
 
 VardefManager::createVardef('Products', 'Product', ['default', 'assignable']);
+
+if(file_exists('extensions/modules/ProjectWBSs')) {
+    $dictionary['Product']['fields']['projectwbss'] = [
+        'name' => 'projectwbss',
+        'type' => 'link',
+        'relationship' => 'projectwbss_products',
+        'module' => 'ProjectWBSs',
+        'source' => 'non-db',
+        'vname' => 'LBL_PROJECTWBSS',
+    ];
+}
