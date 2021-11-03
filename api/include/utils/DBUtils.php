@@ -3,7 +3,7 @@ namespace SpiceCRM\includes\utils;
 
 class DBUtils
 {
-    private static array $toHTML = [
+    private static $toHTML = [
         '"' => '&quot;',
         '<' => '&lt;',
         '>' => '&gt;',
