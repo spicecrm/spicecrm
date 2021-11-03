@@ -308,7 +308,7 @@ class Email extends SugarBean
     /**
      * fill in email addresses from legacy fields
      */
-    function fillInEmailAddressesFromLegacyFields()
+    function fillInEmailAddressesFromLegacyFields(bool $ignoreInvalid = true)
     {
         if (!is_array($this->recipient_addresses)) {
             $this->recipient_addresses = [];
