@@ -1,7 +1,7 @@
 /**
  * @module AdminComponentsModule
  */
-import { Component, OnInit, Input, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { modal } from '../../services/modal.service';
 import { toast } from '../../services/toast.service';
@@ -23,7 +23,6 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
     @Input() private color: string;
     @Input() private siblingComponent: AdministrationLoginRestrictionIpAddresses;
 
-    @ViewChild('addressInput', {read: ViewContainerRef, static: false}) private addressInput: ElementRef;
     @ViewChild('table', {static: true}) private table: ElementRef;
 
     private altColor: string;
@@ -225,8 +224,7 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
     private startAdding() {
         this.isAdding = true;
         this.addressError = '';
-        // this.table.nativeElement.scrollTop=0;
-        // window.setTimeout( () => this.addressInput.nativeElement.focus(), 500 );
+        this.table.nativeElement.scrollTop = 0;
     }
 
     private cancelNewAddress() {
