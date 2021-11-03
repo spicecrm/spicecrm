@@ -1494,13 +1494,13 @@ $db = DBManagerFactory::getInstance();
                             case 'datetimecombo':
                             case 'datetime':
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() - $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() - $origValue * 86400) . ' 00:00:00';
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() - $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() - $origValue * 86400) . ' 00:00:00';
                                 break;
                             default:
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() - $origValue * 86400);
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() - $origValue * 86400);
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() - $origValue * 86400);
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() - $origValue * 86400);
                                 break;
                         }
                         break;
@@ -1509,13 +1509,13 @@ $db = DBManagerFactory::getInstance();
                             case 'datetimecombo':
                             case 'datetime':
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400) . ' 00:00:00';
                                 break;
                             default:
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400);
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400);
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400);
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400);
                                 break;
                         }
                         break;
@@ -1525,18 +1525,18 @@ $db = DBManagerFactory::getInstance();
                             case 'datetime':
                                 $origValue = $whereField ['value'];
                                 $origValueto = $whereField ['valueto'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValueto * 86400) . ' 00:00:00';
-                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValueto * 86400) . ' 00:00:00';
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValueto * 86400) . ' 00:00:00';
+                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValueto * 86400) . ' 00:00:00';
                                 break;
                             default:
                                 $origValue = $whereField ['value'];
                                 $origValueto = $whereField ['valueto'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400);
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400);
-                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValueto * 86400);
-                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValueto * 86400);
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400);
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400);
+                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValueto * 86400);
+                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValueto * 86400);
 
                                 break;
                         }
