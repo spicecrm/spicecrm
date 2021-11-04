@@ -502,6 +502,7 @@ $app_list_strings = [
             'RegularUser' => 'Regular User',
             'PortalUser' => 'Portal User',
             'Administrator' => 'Administrator',
+            'APIuser' => 'API User'
         ],
     'user_status_dom' =>
         [
