@@ -246,6 +246,12 @@ $dictionary['User'] = [
             'default' => '0',
             'studio' => ['listview' => false, 'searchview' => false, 'related' => false],
         ],
+        'is_api_user' => [
+            'name' => 'is_api_user',
+            'vname' => 'LBL_IS_APIUSER',
+            'type' => 'bool',
+            'default' => '0'
+        ],
         'is_dev' => [
             'name' => 'is_dev',
             'vname' => 'LBL_IS_DEVELOPER',
