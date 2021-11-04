@@ -260,14 +260,18 @@ class User extends Person
                     switch ($this->UserType) {
                         case 'Administrator':
                             $this->is_admin = 1;
-                            $this->portal_only = 0;
+                            $this->portal_only = $this->is_api_user = 0;
                             break;
                         case 'PortalUser':
-                            $this->is_admin = 0;
+                            $this->is_admin = $this->is_api_user = 0;
                             $this->portal_only = 1;
                             break;
                         case 'RegularUser':
+                            $this->is_admin = $this->portal_only = $this->is_api_user = 0;
+                            break;
+                        case 'APIuser':
                             $this->is_admin = $this->portal_only = 0;
+                            $this->is_api_user = 1;
                             break;
                         default:
                             unset($this->UserType);
@@ -501,6 +505,7 @@ class User extends Person
 
         if ($this->is_admin) $this->UserType = 'Administrator';
         elseif ($this->portal_only) $this->UserType = 'PortalUser';
+        elseif ($this->is_api_user) $this->UserType = 'APIuser';
         else $this->UserType = 'RegularUser';
 
     }
