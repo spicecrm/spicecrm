@@ -60,6 +60,11 @@ class Compiler
      * @var mixed
      */
     private $currentTemplate;
+    /**
+     * holds the root template class to enable access it by {root_template.key}
+     * @var mixed
+     */
+    private $rootTemplate;
 
     public function __construct($template)
     {
@@ -72,6 +77,11 @@ class Compiler
      * @param $template
      */
     private function initialize($template){
+
+        if (empty($this->rootTemplate)) {
+            $this->rootTemplate = $template;
+        }
+
         $this->currentTemplate = $template;
         $this->doc = new DOMDocument('1.0');
         $this->root = $this->doc->appendChild( $this->doc->createElement('html') );
@@ -458,6 +468,9 @@ class Compiler
                 break;
             case 'template':
                 $obj = BeanFactory::getBean($this->currentTemplate->module_dir, $this->currentTemplate->id);
+                break;
+            case 'root_template':
+                $obj = BeanFactory::getBean($this->rootTemplate->module_dir, $this->rootTemplate->id);
                 break;
             default:
                 $obj = $beans[$object];
