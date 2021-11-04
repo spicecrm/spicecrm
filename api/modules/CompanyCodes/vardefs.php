@@ -170,10 +170,44 @@ $dictionary['CompanyCode'] = [
             'rname' => 'name',
             'source' => 'non-db',
             'module' => 'Shops',
-        ]
+        ],
+        // CR1000674
+        'currency_id' => [
+            'name' => 'currency_id',
+            'type' => 'id',
+            'group' => 'currency_id',
+            'vname' => 'LBL_CURRENCY',
+            'reportable' => false,
+            'comment' => 'ID of currency used'
+        ],
+        'currency_name' => [
+            'name' => 'currency_name',
+            'rname' => 'name',
+            'id_name' => 'currency_id',
+            'vname' => 'LBL_CURRENCY',
+            'type' => 'relate',
+            'isnull' => 'true',
+            'table' => 'currencies',
+            'module' => 'Currencies',
+            'source' => 'non-db',
+            'comment' => 'Currency'
+        ],
+        'currency_symbol' => [
+            'name' => 'currency_symbol',
+            'rname' => 'symbol',
+            'id_name' => 'currency_id',
+            'vname' => 'LBL_CURRENCY_SYMBOL',
+            'type' => 'relate',
+            'isnull' => 'true',
+            'table' => 'currencies',
+            'module' => 'Currencies',
+            'source' => 'non-db',
+            'comment' => 'Currency symbole'
+        ],
     ],
     'indices' => [
         ['name' => 'idx_companycodes_id_del', 'type' => 'index', 'fields' => ['id', 'deleted'],],
+        ['name' => 'idx_companycodes_currency_del', 'type' => 'index', 'fields' => ['currency_id', 'deleted'],],
     ],
     'relationships' => [
         'companycodes_accountkpis' =>
