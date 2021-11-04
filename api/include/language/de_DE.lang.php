@@ -428,6 +428,7 @@ $app_list_strings = [
         'RegularUser' => 'Standardbenutzer',
         'PortalUser' => 'Portalbenutzer',
         'Administrator' => 'Administrator',
+        'APIuser' => 'API-Benutzer'
     ],
     'calendar_type_dom' =>
         [
