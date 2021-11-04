@@ -306,7 +306,7 @@ class AuthenticationController
             $userObj = $sugarAuthenticationController->authenticate( $authUser, $authPass, $impersonationUser );
 
             // check if password is expired
-            if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() )) {
+            if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() ) and !$userObj->is_api_user ) {
                 throw new UnauthorizedException('Password expired.', 2 );
             }
 
@@ -347,6 +347,7 @@ class AuthenticationController
 
         $loginData = [
             'admin' => $currentUser->is_admin == '1' ? true : false,
+            'is_api_user' => $currentUser->is_api_user == '1' ? true : false,
             'display_name' => $currentUser->get_summary_text(),
             'email' => $currentUser->email1,
             'first_name' => $currentUser->first_name,
