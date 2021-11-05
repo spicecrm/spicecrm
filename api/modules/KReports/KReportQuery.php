@@ -1270,7 +1270,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 }
                 break;
             case 'today':
-                $todayDate = date('Y-m-d', mktime());
+                $todayDate = date('Y-m-d', time());
                 $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $todayDate . ' 23:59:59\'';
                 break;
             case 'past':

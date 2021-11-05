@@ -7,33 +7,42 @@
         <div class="slds-grid slds-grid--vertical" style="height:100%">
             <div class="slds-grid slds-grow" style="height:0">
 
-                <div class="slds-size--2-of-3 slds-border--right slds-grid slds-grid--vertical" style="height: 100%;">
+                <div class="slds-size--3-of-5 slds-border--right slds-grid slds-grid--vertical" style="height: 100%;">
 
                     <div class="slds-grid slds-grid--vertical slds-grow" style="height:0">
 
-                        <div class="slds-border--bottom" style="height:50%">
-                            <div class="slds-tabs--default slds-grid slds-grid--vertical" style="height: 100%">
-                                <div class="slds-grid">
-                                    <ul class="slds-tabs--default__nav slds-scrollable--x slds-grow" role="tablist">
-                                        <li *ngFor="let module of offeredModules; trackBy: trackByFn"
-                                            (click)="setActiveModuleTab(module.templateObjectName)" [class.slds-active]="module.templateObjectName == activeModuleTab"
-                                            class="slds-tabs--default__item slds-grid slds-grid_vertical-align-center" role="presentation">
-                                            <a class="slds-tabs--default__link slds-grid" href="javascript:void(0)">
-                                                <system-icon [module]="module.name" size="small" divClass="slds-m-right--x-small"></system-icon>
-                                                <span class="slds-truncate">{{module.displayName}}</span>
-                                            </a>
-                                        </li>
-                                    </ul>
+                        <div class="slds-border--bottom slds-grid slds-grid--vertical" style="height:50%">
+
+                            <div class="slds-form-element slds-m-around--small" style="margin-top:0">
+                                <label class="slds-form-element__label" for="templateVarHelperSource">Variable Source</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" id="templateVarHelperSource" [(ngModel)]="activeModule">
+                                            <option hidden selected><system-label label="LBL_SELECT"></system-label></option>
+                                            <ng-container *ngFor="let module of offeredModules; trackBy: trackByFn">
+                                                <option *ngIf="module.templateObjectName !== 'current_user' && module.templateObjectName !== 'template'" [value]="module.templateObjectName">{{module.displayName}}</option>
+                                            </ng-container>
+                                            <option *ngIf="offeredModules.length" style="font-size:1px;background-color:#ccc" disabled>&nbsp;</option>
+                                            <option [value]="'current_user'"><system-label label="LBL_CURRENT_USER"></system-label></option>
+                                            <ng-container *ngIf="hasTemplate">
+                                                <option style="font-size:1px;background-color:#ccc" disabled>&nbsp;</option>
+                                                <option [value]="'template'" style="border-top:1px solid #333333"><system-label label="LBL_TEMPLATE"></system-label></option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="slds-grow" style="height:0" *ngIf="!!activeModuleTab">
-                                    <div *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="activeModuleTab != module.templateObjectName" class="slds-scrollable--y" style="height: 100%">
+                            </div>
+
+                            <div class="slds-grid slds-grid--vertical slds-grow" style="x-height:100%">
+                                <div class="slds-grow" style="height:0" *ngIf="!!activeModule">
+                                    <div *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="activeModule != module.templateObjectName" class="slds-scrollable--y" style="height: 100%">
                                         <system-module-tree [module]="module.name" (itemSelected)="treeItemSelected( $event, module.name )"></system-module-tree>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="slds-grid slds-grid--vertical" style="height: 50%">
+                        <div class="slds-grid slds-grid--vertical" style="height:50%">
                             <div class=" slds-input-has-icon slds-input-has-icon_left slds-m-around--x-small" role="none">
                                 <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
                                 <input class="slds-input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="fieldFilter"/>
@@ -50,7 +59,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="isLoadingModuleFields || activeModuleTab != module.templateObjectName">
+                                    <tbody *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="isLoadingModuleFields || activeModule != module.templateObjectName">
                                         <tr  *ngFor="let field of getFilteredFields( moduleFields[module.name] ); trackBy: trackByFn">
                                             <td>
                                                 <div class="slds-truncate"><a href="javascript:void(0)" (click)="fieldSelected(field.name)">{{field.name}}</a></div>
@@ -82,7 +91,7 @@
 
                 </div>
 
-                <div class="slds-size--1-of-3 slds-grid slds-grid--vertical slds-p-top--x-small" style="height: 100%">
+                <div class="slds-size--2-of-5 slds-grid slds-grid--vertical slds-p-top--x-small" style="height: 100%">
 
                     <div class="slds-grow slds-scrollable--y slds-m-bottom--x-small">
                         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none">
@@ -96,7 +105,7 @@
                             <tbody>
                                 <tr *ngFor="let function of offeredFunctions">
                                     <td>
-                                        <div class="slds-truncate"><a href="javascript:void(0)" (click)="functionSelected(function)">{{function}}</a></div>
+                                        <div class="slds-truncate"><a href="javascript:void(0)" (click)="functionSelected(function)">{{function.name}}</a></div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -104,10 +113,36 @@
                     </div>
 
                     <div class="slds-border--top slds-grid slds-grid--vertical-align-end slds-p-horizontal--medium slds-p-bottom--medium slds-p-top--xx-small">
-                        <div class="slds-form-element slds-col--bump-right slds-grow slds-m-right--small">
-                            <label class="slds-form-element__label" for="TemplateVarHelperFieldFunction"><system-label label="LBL_FUNCTION"></system-label></label>
-                            <div class="slds-form-element__control slds-grow">
-                                <input type="text" id="TemplateVarHelperFieldFunction" class="slds-input" [(ngModel)]="functionResult" disabled/>
+                        <div class="slds-grow slds-p-right--small">
+                            <div *ngIf="actualFunctionParams.length" class="slds-grid slds-p-top--xx-small">
+                                <ng-container *ngFor="let funcParam of actualFunctionParams; let isFirst = first; let i = index">
+                                    <div class="slds-form-element slds-grow" [ngClass]="{'slds-p-left--x-small':!isFirst}">
+                                        <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center" for="funcParam{{i}}">
+                                            <abbr *ngIf="funcParam.required" class="slds-required" title="required">* </abbr>
+                                            <system-label [label]="funcParam.label"></system-label>
+                                            <system-tooltip class="slds-m-left--x-small" *ngIf="funcParam.help" [tooltiptext]="funcParam.help"></system-tooltip>
+                                        </label>
+                                        <div class="slds-form-element__control slds-grow" [ngClass]="{'slds-input-has-fixed-addon':!!funcParam.unit}">
+                                            <ng-container [ngSwitch]="funcParam.type">
+                                                <input *ngSwitchCase="'color'" type="color" id="funcParam{{i}}" class="slds-input" [(ngModel)]="funcParam.value" style="width:3.5rem;padding-left:2px;padding-right:2px"/>
+                                                <ng-container  *ngSwitchDefault>
+                                                    <input *ngIf="!funcParam.options" type="text" id="funcParam{{i}}" class="slds-input" [(ngModel)]="funcParam.value"/>
+                                                    <select *ngIf="funcParam.options" class="slds-select" id="funcParam{{i}}" [(ngModel)]="funcParam.value">
+                                                        <option selected value="">Select…</option>
+                                                        <option *ngFor="let option of funcParam.options | keyvalue" [value]="option.key">{{option.value}}</option>
+                                                    </select>
+                                                </ng-container>
+                                                <span *ngIf="funcParam.unit" class="slds-form-element__addon" id="fixed-text-addon-post">{{funcParam.unit}}</span>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="TemplateVarHelperFieldFunction"><system-label label="LBL_FUNCTION"></system-label> / <system-label label="LBL_FUNCTION_CHAIN"></system-label></label>
+                                <div class="slds-form-element__control slds-grow">
+                                    <input type="text" id="TemplateVarHelperFieldFunction" class="slds-input" [ngModel]="functionResultWithParams" disabled/>
+                                </div>
                             </div>
                         </div>
                         <button class="slds-button slds-button--icon slds-button_icon-border" (click)="functionUndo()" [disabled]="!functionHistory.length">
