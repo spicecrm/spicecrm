@@ -2,7 +2,7 @@
 namespace SpiceCRM\includes\SpiceSwagger;
 
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 
 class SpiceSwaggerParameter
 {

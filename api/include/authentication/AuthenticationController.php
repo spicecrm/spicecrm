@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\authentication;
 
 use http\Exception\UnexpectedValueException;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -60,7 +61,6 @@ class AuthenticationController
     public $systemtenantname = null;
     public $errorReason;
     public $errorCode;
-
 
     /**
      * The Singleton's constructor should always be private to prevent direct
@@ -162,6 +162,12 @@ class AuthenticationController
      */
     public function authenticate($username = null, $password = null, $token = null, $tokenIssuer = null, $impersonationUser = null )
     {
+        $config = SpiceConfig::getInstance()->config;
+
+        if ( !IpAddresses::checkIpAddress() ) {
+            throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
+        }
+
         try {
             /** @var User $userObj */
             $userObj = null;
@@ -182,7 +188,7 @@ class AuthenticationController
                 $this->token = SpiceCRMAuthenticate::createSession($this->currentUser);
 
                 //should we log successful login?
-                if (array_key_exists("logSuccessLogin", SpiceConfig::getInstance()->config)) {
+                if (array_key_exists("logSuccessLogin", $config )) {
                     $this->logSuccessLogin($userObj);
                 }
 
@@ -193,17 +199,25 @@ class AuthenticationController
         } catch (UnauthorizedException $e) {
             //log login attempt
             /** @var UserAccessLog $userAccessLogObj */
-            $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
-            $userAccessLogObj->addRecord("loginfail", empty( $impersonationUser ) ? $username : $impersonationUser.'#as#'.$username );
-            if ($username) {
-                $amountFailedLogins = $userAccessLogObj->getAmountFailedLoginsWithinByUsername($username);
-                if ($amountFailedLogins > 10) { //todo use a config variable
-                    //todo block user - via status on user ... or new field?
+
+            if ( UserAccessLog::getNumberLoginAttemptsByIp() > $config['login_attempt_restriction']['ip_number_attempts'] and !IpAddresses::ipAddressIsWhite() ) {
+                IpAddresses::addIpAddress('b');
+            };
+
+            # "loginBlocked" is set in case the login or password check has not happened, because the user is (temporary) blocked.
+            if ( !$e->isLoginBlocked() ) {
+                $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
+                $userAccessLogObj->addRecord("loginfail", empty($impersonationUser) ? $username : $impersonationUser . '#as#' . $username);
+                if ( $username ) {#and !IpAddresses::ipAddressIsWhite() ) {
+                    if ( isset( $config['login_attempt_restriction']['user_number_attempts'] )) { # attempt restriction is configured
+                        $amountFailedLogins = UserAccessLog::getAmountFailedLoginsWithinByUsername( $username, $config['login_attempt_restriction']['user_monitored_period'] );
+                        if ( $amountFailedLogins >= $config['login_attempt_restriction']['user_number_attempts'] ) {
+                            User::blockUserByName( $username, $config['login_attempt_restriction']['user_blocking_duration'] );
+                        }
+                    }
                 }
-            } else {
-                //todo should we block by ip?
+                unset($userAccessLogObj);
             }
-            unset($userAccessLogObj);
 
             $this->errorReason = $e->getMessage();
             $this->errorCode = $e->getErrorCode();
@@ -250,63 +264,10 @@ class AuthenticationController
                 break;
             case "Inactive":
                 throw new UnauthorizedException("User is inactive", 4);
-            case "Blocked":
-                throw new UnauthorizedException("User is blocked", 3);
             default:
                 throw new UnauthorizedException("User Status is unknown", 5);
         }
         return true;
-    }
-
-    function hasPasswordExpired(User $userObj)
-    {
-
-        $type = '';
-        if ($userObj->system_generated_password == '1') {
-            return true;
-        }
-
-        if ($userObj->portal_only == '0') {
-            global $mod_strings, $timedate;
-            $res = SpiceConfig::getInstance()->config['passwordsetting'];
-            if ($type != '') {
-                switch ($res[$type . 'expiration']) {
-
-                    case '1':
-                        global $timedate;
-                        if ($userObj->pwd_last_changed == '') {
-                            $userObj->pwd_last_changed = $timedate->nowDb();
-                            $userObj->save();
-                        }
-
-                        $expireday = $res[$type . 'expirationtype'] * $res[$type . 'expirationtime'];
-                        $expiretime = $timedate->fromUser($userObj->pwd_last_changed)->add(new \DateInterval("P{$expireday}D"))->getTimeStamp();
-
-                        if ($timedate->getNow()->getTimeStamp() < $expiretime)
-                            return false;
-                        else {
-                            return true;
-                        }
-                        break;
-
-
-                    case '2':
-                        $login = $userObj->getPreference('loginexpiration');
-                        $userObj->setPreference('loginexpiration', $login + 1);
-                        $userObj->save();
-                        if ($login + 1 >= $res[$type . 'expirationlogin']) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
-
-                    case '0':
-                        return false;
-                        break;
-                }
-            }
-        }
     }
 
     /**
@@ -331,16 +292,26 @@ class AuthenticationController
 
         //second use sugar authentication
         try {
+
+            # Check if the user is blocked (after too many login attempts with wrong passwords).
+            # This check must happen BEFORE checking the password. No password check (and answer to the user) in case the user is blocked!
+            $isBlocked = User::isBlockedByName(isset($impersonationUser) ? $impersonationUser : $authUser);
+            if ($isBlocked === true) {
+                throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 4))->setLoginBlocked(true);
+            } elseif ($isBlocked !== false) {
+                throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 4))->setLoginBlocked(true);
+            }
+
             $sugarAuthenticationController = new UserAuthenticate();
             $userObj = $sugarAuthenticationController->authenticate( $authUser, $authPass, $impersonationUser );
-            //check if password is expired
-            if ($this->hasPasswordExpired($userObj)) {
-                throw new UnauthorizedException("Password expired", 2);
+
+            // check if password is expired
+            if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() ) and !$userObj->is_api_user ) {
+                throw new UnauthorizedException('Password expired.', 2 );
             }
 
         } catch (UnauthorizedException $e) {
-            throw new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode());
-
+            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))->setLoginBlocked( $e->isLoginBlocked() );
         }
         return $userObj;
     }
@@ -376,6 +347,7 @@ class AuthenticationController
 
         $loginData = [
             'admin' => $currentUser->is_admin == '1' ? true : false,
+            'is_api_user' => $currentUser->is_api_user == '1' ? true : false,
             'display_name' => $currentUser->get_summary_text(),
             'email' => $currentUser->email1,
             'first_name' => $currentUser->first_name,
@@ -390,7 +362,8 @@ class AuthenticationController
             'tenant_id' => $currentUser->systemtenant_id,
             'tenant_name' => $this->systemtenantname,
             'obtainGDPRconsent' => false,
-            'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword()
+            'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
+            'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays
         ];
 
         // Is it a portal user? And the GDPR consent for portal users is configured?

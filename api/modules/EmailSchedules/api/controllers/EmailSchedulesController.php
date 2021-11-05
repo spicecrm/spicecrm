@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\EmailSchedules\api\controllers;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -100,7 +101,9 @@ class EmailSchedulesController
         $bean->load_relationships();
         if (!empty($relatedModules)) {
             foreach ($relatedModules as $related) {
-                $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
+                if(!empty($related) && isset(SpiceModules::getInstance()->modules[$related])) {
+                    $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
+                }
             }
         }
 
@@ -134,9 +137,13 @@ class EmailSchedulesController
             }
         }
 
-        if (count($relatedbeans) > 0) {
+        // create the scheduleid
+        if (count($relatedbeans) > 0 || count($postBody['linkedbeans']) > 0) {
             $emailscheduleId = $this->saveBean($postBody, $args['id']);
+        }
 
+        // post the related beans
+        if (count($relatedbeans) > 0) {
             $query = "INSERT INTO emailschedules_beans (id, emailschedule_status, emailschedule_id, bean_module, bean_id, date_modified, deleted) VALUES ";
             if (!empty($emailscheduleId)) {
                 foreach ($relatedbeans as $relatedbean) {
@@ -152,8 +159,25 @@ class EmailSchedulesController
             }
         }
 
+        if(count($postBody['linkedbeans']) > 0){
+            $query = "INSERT INTO emailschedules_beans (id, emailschedule_status, emailschedule_id, bean_module, bean_id, date_modified, deleted) VALUES ";
+            if (!empty($emailscheduleId)) {
+                foreach ($postBody['linkedbeans'] as $module => $ids) {
+                    foreach ($ids as $id) {
+                        $guid = SpiceUtils::createGuid();
+                        $query .= "('$guid', 'queued', '$emailscheduleId', '{$module}', '{$id}', now(), 0),";
+                    }
+                }
+                if (!empty($query)) {
+                    $query = substr_replace($query, ";", -1);
+                    $db->query($query);
+                }
+            }
+        }
+
+        // retun the status
         return $res->withJson([
-            'status' => boolval($relatedbeans),
+            'status' => count($relatedbeans) > 0 || count($postBody['linkedbeans']) > 0,
             'emailschedule' => $emailscheduleId,
         ]);
     }

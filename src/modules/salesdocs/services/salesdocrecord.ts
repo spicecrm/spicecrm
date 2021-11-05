@@ -88,6 +88,10 @@ export class salesdocrecord implements OnDestroy {
 
         let taxdeterminations = this.configuration.getData('salesdoctaxdetermination');
 
+        // if we do not have tax determinations return empty
+        if(!taxdeterminations) return '';
+
+        // get the companycode
         let companycode = this.configuration.getData('companycodes').find(c => c.id == this.salesdoc.getField('companycode_id'));
 
         // first full fledged
@@ -179,6 +183,10 @@ export class salesdocrecord implements OnDestroy {
      * @private
      */
     private getTaxedParty(): Observable<boolean> {
+
+        // only if we are editing
+        if(!this.salesdoc.isEditing) return of(true);
+
         // first Receiving Account
         let rpModule = 'Accounts';
         let rpId = this.salesdoc.getField('account_rp_id');

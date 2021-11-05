@@ -32,7 +32,7 @@ export class UserAddModal implements OnInit {
     private password: string;
     private repeatPassword: string;
     private pwdCheck: RegExp = new RegExp("//");
-    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._]{1,60}$");
+    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
     private pwdGuideline: string;
     private autogenerate: boolean = false;
     private sendByEmail: boolean = false;
@@ -168,6 +168,7 @@ export class UserAddModal implements OnInit {
         if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
         if(extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
         if(extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if(extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
         if(extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');

@@ -1545,7 +1545,7 @@ class OCI8Manager extends DBManager
     /**
      * @see DBManager::upsertQuery()
      */
-    public function upsertQuery($table, array $pks, array $data)
+    public function upsertQuery($table, array $pks, array $data, bool $execute)
     {
 
         $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'");
@@ -1560,7 +1560,7 @@ class OCI8Manager extends DBManager
             return $this->updateQuery($table, $pks, $data);
             // $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
         } else {
-            return $this->insertQuery($table, $data);
+            return $this->insertQuery($table, $data, $execute);
         }
     }
 

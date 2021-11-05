@@ -1,7 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Injector,
+    Input,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -30,6 +38,11 @@ export class ObjectList implements OnDestroy, OnInit {
      * the componentconfig
      */
     public componentconfig: any = {};
+
+    /**
+     * Show drag handle and provide drag&drop functionality.
+     */
+    @Input() private dragAndDrop = false;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -163,6 +176,9 @@ export class ObjectList implements OnDestroy, OnInit {
 
         // set the limit for the loading
         this.modellist.loadlimit = 50;
+
+        // set the buckets to null
+        this.modellist.buckets = {};
 
         if (!this.modellist.loadFromSession()) {
             this.getListData();

@@ -46,15 +46,10 @@ export class ServiceSelectQueueModal {
     }
 
     private save() {
-        if (!this.model.isEditing) {
-            this.model.setField('servicequeue_id', this.selectedqueueid);
-            this.model.setField('servicequeue_name', this.getQueueName(this.selectedqueueid));
-        } else {
-            this.model.startEdit();
-            this.model.setField('servicequeue_id', this.selectedqueueid);
-            this.model.setField('servicequeue_name', this.getQueueName(this.selectedqueueid));
-            this.model.save();
-        }
+
+        this.model.setField('servicequeue_id', this.selectedqueueid);
+        this.model.setField('servicequeue_name', this.getQueueName(this.selectedqueueid));
+        this.model.save();
 
         if(this.note){
             this.serviceticketnote.module = 'ServiceTicketNotes';

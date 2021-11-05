@@ -4,10 +4,36 @@
         <system-label label="LBL_FILL_IN_QUESTIONNAIRE"></system-label>
     </system-modal-header>
 
-    <system-modal-content [grow]="true">
-        <questionnaire-render *ngIf="(parentId !== undefined && parentType !== undefined) || participationId !== undefined"   [parentId]="parentId" [parentType]="parentType" [participationId]="participationId" editMode="questionnaire"
-                              (questionnaireParticipation$)="qp = $event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false"
-                              (isDirty$)="qpIsDirty=$event" (isSaving$)="qpIsSaving=$event" (isLoaded$)="qpIsLoaded=$event" [inModal]="false"></questionnaire-render>
+    <system-modal-content [grow]="true" [system-overlay-loading-spinner]="awaitingEnd">
+
+        <div *ngIf="isAnonymous && !questionnaireId" class="slds-grid slds-grid_vertical slds-size--1-of-1 slds-align_absolute-center slds-height_full">
+            <div *ngIf="offeredQuestionnaires.length; else spinner" class="slds-grid slds-grid--vertical-align-end">
+                <div class="slds-form-element slds-m-right--medium">
+                    <label class="slds-form-element__label" for="questionnaireFillOutModalSelection"><system-label label="LBL_QUESTIONNAIRE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" id="questionnaireFillOutModalSelection" (change)="idSelectedQuestionnaire=$event.target.value">
+                                <option selected hidden><system-label label="LBL_SELECT"></system-label> …</option>
+                                <option *ngFor="let quest of offeredQuestionnaires" [value]="quest.id">{{quest.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div><button class="slds-button slds-button--neutral" [disabled]="!idSelectedQuestionnaire" (click)="questionnaireId=idSelectedQuestionnaire">OK</button></div>
+            </div>
+            <ng-template #spinner><system-spinner></system-spinner></ng-template>
+        </div>
+
+        <ng-container *ngIf="!isAnonymous || questionnaireId">
+
+            <questionnaire-render [parentId]="parentId" [parentType]="parentType" [participationId]="participationId" [questionnaireId]="idSelectedQuestionnaire" editMode="questionnaire"
+                                  (questionnaireParticipation$)="qp = $event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false"
+                                  (isDirty$)="qpIsDirty=$event" (isSaving$)="qpIsSaving=$event" (isLoaded$)="qpIsLoaded=$event" [inModal]="false"></questionnaire-render>
+
+            <system-componentset *ngIf="isAnonymous && componentconfig.componentsetSpecialFields && qpIsLoaded" [componentset]="componentconfig.componentsetSpecialFields"></system-componentset>
+
+        </ng-container>
+
     </system-modal-content>
 
     <system-modal-footer>
@@ -16,7 +42,7 @@
                 <span *ngIf="qpIsLoaded && qp?.isCompleted"><system-label label="MSG_PARTICIPATION_FORMALLY_COMPLETED"></system-label></span>
             </div>
             <div>
-                <button [disabled]="!qpIsDirty || qpIsSaving" class="slds-button slds-button_neutral" (click)="saveAndClose(false)"><system-label label="LBL_SAVE"></system-label></button>
+                <button *ngIf="!isAnonymous" [disabled]="!qpIsDirty || qpIsSaving" class="slds-button slds-button_neutral" (click)="saveAndClose(false)"><system-label label="LBL_SAVE"></system-label></button>
                 <button *ngIf="qpIsLoaded && !qp.isCompleted" [disabled]="!qpIsDirty || qpIsSaving" class="slds-button slds-button_brand" (click)="saveAndClose(true)"><system-label label="LBL_SAVE_AND_FINISH"></system-label></button>
                 <button [disabled]="qpIsSaving" class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
             </div>

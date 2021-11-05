@@ -1,0 +1,21 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <ng-container *ngFor="let type of types">
+        <system-label *ngIf="value == type.method" [label]="type.label"></system-label>
+    </ng-container>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select [(ngModel)]="value" [disabled]="types?.length === 0" class="slds-select">
+                    <option value=""></option>
+                    <option *ngFor="let type of types" [value]="type.method">
+                        <system-label [label]="type.label"></system-label>
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

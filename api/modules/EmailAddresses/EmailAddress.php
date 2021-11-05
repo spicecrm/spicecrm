@@ -2,50 +2,51 @@
 
 namespace SpiceCRM\modules\EmailAddresses;
 
-use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ *
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
 
 /*********************************************************************************
  * Description:
@@ -63,39 +64,60 @@ class EmailAddress extends SugarBean
      * holds the table name
      * @var string
      */
-    var $table_name = 'email_addresses';
+    public $table_name = 'email_addresses';
     /**
      * holds the module name
      * @var string
      */
-    var $module_dir = 'EmailAddresses';
+    public $module_dir = 'EmailAddresses';
     /**
      * holds the object name
      * @var string
      */
-    var $object_name = 'EmailAddress';
+    public $object_name = 'EmailAddress';
     /**
      * holds the email address field from db
      * @var string
      */
-    var $email_address;
+    public $email_address;
     /**
      * holds the email address caps field from db
      * @var string
      */
-    var $email_address_caps;
+    public $email_address_caps;
 
     /**
-     * regex to check email validation
-     * @var string
+     * clean the email address before save
+     * @param false $check_notify
+     * @param bool $fts_index_bean
+     * @param $ignoreInvalidEmailAddresses bool
+     * @return int|string
+     * @throws Exception
+     * @see SugarBean::save
      */
-    var $regex = "/^(?:['\.\-\+&#!\$\*=\?\^_`\{\}~\/\w]+)@(?:(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|\w+(?:[\.-]*\w+)*(?:\.[\w-]{2,})+)\$/";
+    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    {
+        $this->email_address = $this->cleanAddress($this->email_address);
+        $this->email_address_caps = $this->cleanAddress($this->email_address_caps);
+        if (!$ignoreInvalidEmailAddresses && !$this->isValidEmailAddress($this->email_address)) {
+            throw new Exception("Invalid Email Address: {$this->email_address}", 422);
+        }
+        return parent::save($check_notify, $fts_index_bean);
+    }
+
+    /**
+     * check if the email addresses is valid
+     */
+    public static function isValidEmailAddress($text)
+    {
+        return filter_var($text, FILTER_VALIDATE_EMAIL);
+    }
 
     /**
      * search email address fields in all modules with the email address search term and return the result
      * @param $searchterm
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function search($searchterm): array
     {
@@ -178,6 +200,80 @@ class EmailAddress extends SugarBean
     }
 
     /**
+     * searches for email addresses on all related beans on a parent bean
+     *
+     * @param SugarBean $seed
+     * @return array
+     */
+    public function searchForParentBean($seed)
+    {
+        // the array to hold the response
+        $emailAddresses = [];
+
+        // internal array to memorize whichbeans havebeen searched for and what email addresses have been added
+        $addedBeanIds = [];
+        $addedEmailAddressIds = [];
+
+        //load all relationships and loop through them
+        $seed->load_relationships();
+        foreach ($seed->field_defs as $fieldName => $fieldData) {
+            if ($fieldData['type'] == 'link') {
+                // try to find links ont he beans for email addresses
+                $emailAddressLinks = [];
+
+                // make sure the link is loaded
+                if (!$seed->{$fieldName}) continue;
+
+                // get the linked module
+                $linkedModule = $seed->{$fieldName}->getRelatedModuleName();
+                $related = BeanFactory::getBean($linkedModule);
+                foreach ($related->field_defs as $rFieldName => $rFieldData) {
+                    if ($rFieldData['type'] == 'link' && $rFieldData['module'] == 'EmailAddresses') {
+                        $emailAddressLinks[] = $rFieldName;
+                    }
+                }
+
+                // if we have email address links parse them
+                if (count($emailAddressLinks) > 0) {
+                    // get alllinked beans on the parent
+                    $linkedBeans = $seed->get_linked_beans($fieldName, $linkedModule, [], 0, -99);
+                    foreach ($linkedBeans as $linkedBean) {
+                        // check if we didhavethis bean already
+                        if (in_array($linkedBean->id, $addedBeanIds)) continue;
+
+                        // loop through all email address link fields
+                        foreach ($emailAddressLinks as $emailAddressLink) {
+                            $emailAddressesBeans = $linkedBean->get_linked_beans($emailAddressLink);
+                            foreach ($emailAddressesBeans as $emailAddressesBean) {
+                                // check if wehave the email address already
+                                if (in_array($linkedBean->id . $emailAddressesBean->id, $addedEmailAddressIds)) continue;
+
+                                // otherwise add
+                                $emailAddresses[] = [
+                                    'module' => $linkedModule,
+                                    'id' => $linkedBean->id,
+                                    'summary_text' => $linkedBean->summary_text ?: $linkedBean->name,
+                                    'email_address' => $emailAddressesBean->email_address,
+                                    'email_address_id' => $emailAddressesBean->id
+                                ];
+
+                                // add the reference
+                                $addedEmailAddressIds[] = $linkedBean->id . $emailAddressesBean->id;
+                            }
+                        }
+
+                        // add the id to the added beans
+                        $addedBeanIds[] = $linkedBean->id;
+                    }
+                }
+            }
+        }
+
+        // done
+        return $emailAddresses;
+    }
+
+    /**
      * mark email address as invalid and remove from primary
      * @param $emailAddress
      */
@@ -246,19 +342,14 @@ class EmailAddress extends SugarBean
 
     /**
      * Normalizes an RFC-clean email address, returns a string that is the email address only
-     * @param string $addr Dirty email address in the following form: "name" <email@example.com>
+     * @param string $text Dirty email address in the following form: "name" <email@example.com>
      * @return string clean email address
      */
-    function cleanAddress($addr): string
+    public static function cleanAddress(string $text): ?string
     {
-        $addr = trim(from_html($addr));
-
-        if (strpos($addr, "<") !== false && strpos($addr, ">") !== false) {
-            $address = trim(substr($addr, strrpos($addr, "<") + 1, strrpos($addr, ">") - strrpos($addr, "<") - 1));
-        } else {
-            $address = trim($addr);
-        }
-        return $address;
+        $text = DBUtils::fromHtml($text);
+        preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $text, $matches);
+        return $matches[0][0];
     }
 
     /**
