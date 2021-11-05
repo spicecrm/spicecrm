@@ -12,10 +12,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {ServiceCalendarManager} from "./components/servicecalendarmanager";
-import /*embed*/ {SystemCalendarListDays} from "./components/systemcalendarlistdays";
-import /*embed*/ {SystemCalendarListGetHolidaysModal} from "./components/systemcalendarlistgetholidaysmodal";
-import /*embed*/ {SystemCalendarListGetHolidaysButton} from "./components/systemcalendarlistgetholidaysbutton";
+import /*embed*/ {ServiceCalendars} from "./components/servicecalendars";
+import /*embed*/ {ServiceCalendarTime} from "./components/servicecalendartime";
 
 @NgModule({
     imports: [
@@ -28,12 +26,9 @@ import /*embed*/ {SystemCalendarListGetHolidaysButton} from "./components/system
         DirectivesModule,
     ],
     declarations: [
-        ServiceCalendarManager,
-        SystemCalendarListDays,
-        SystemCalendarListGetHolidaysModal,
-        SystemCalendarListGetHolidaysButton
+        ServiceCalendars,
+        ServiceCalendarTime
     ]
 })
 export class ModuleServiceCalendars {
-
 }

@@ -8,11 +8,11 @@ import {metadata} from "../../../services/metadata.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
-    selector: 'service-calendar-manager-days',
-    templateUrl: './src/modules/servicecalendars/templates/servicecalendarmanagerdays.html',
+    selector: 'service-calendar-time',
+    templateUrl: './src/modules/servicecalendars/templates/servicecalendartime.html',
     providers: [relatedmodels]
 })
-export class ServiceCalendarManagerDays implements OnChanges {
+export class ServiceCalendarTime implements OnChanges {
 
     @Input() private calendarid: string;
 
@@ -27,10 +27,10 @@ export class ServiceCalendarManagerDays implements OnChanges {
     ) {
         this.relatedmodels.module = 'ServiceCalendars';
         this.relatedmodels.relatedModule = 'ServiceCalendarTimes';
-        this.relatedmodels.linkName = 'servicecalendartimes';
+        this.relatedmodels.linkName = 'ServicecalendarTimes';
         this.relatedmodels.loaditems = 1000;
 
-        this.componentconfig = this.metadata.getComponentConfig('SystemCalendarListDays', 'ServiceCalendarTimes');
+        this.componentconfig = this.metadata.getComponentConfig('ServiceCalendars', 'ServiceCalendarTimes');
         this.listfields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
     }
 
