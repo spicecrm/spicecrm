@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef,
-    Injector,
+    Injector, OnDestroy,
     OnInit
 } from '@angular/core';
 import {model} from '../../../services/model.service';
@@ -13,9 +13,10 @@ import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {currency} from '../../../services/currency.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {Subscription} from "rxjs";
+import {broadcast} from "../../../services/broadcast.service";
 
 declare var moment: any;
 
@@ -23,7 +24,7 @@ declare var moment: any;
     selector: 'salesdocs-items-container',
     templateUrl: './src/modules/salesdocs/templates/salesdocsitemscontainer.html'
 })
-export class SalesDocsItemsContainer implements OnInit {
+export class SalesDocsItemsContainer implements OnInit, OnDestroy {
 
     /**
      * the items on the sales Document
@@ -40,6 +41,11 @@ export class SalesDocsItemsContainer implements OnInit {
      */
     private fieldsetItems: any[] = [];
 
+    /**
+     * the columns to be displayed
+     */
+    private subscription = new Subscription();
+
     constructor(
         private userpreferences: userpreferences,
         private injector: Injector,
@@ -50,13 +56,15 @@ export class SalesDocsItemsContainer implements OnInit {
         private modal: modal,
         private view: view,
         private configuration: configurationService,
-        private metadata: metadata
+        private metadata: metadata,
+        private broadcast: broadcast,
     ) {
-        let itemSubscription = this.model.data$.subscribe(data => {
-            if (this.buildItems()) {
-                if (itemSubscription) itemSubscription.unsubscribe();
-            }
-        });
+        this.subscription.add(
+            this.broadcast.message$.subscribe(msg => {
+                    if (msg.messagetype == 'model.save' || msg.messagetype == 'model.loaded' && msg.messagedata.module === this.model.module) {
+                        this.buildItems();
+                    }
+                }));
 
         // determine the list fieldset
         let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
@@ -70,6 +78,13 @@ export class SalesDocsItemsContainer implements OnInit {
      */
     public ngOnInit() {
         this.recalculate();
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**
@@ -120,7 +135,7 @@ export class SalesDocsItemsContainer implements OnInit {
      * build the items and render them in the container
      */
     private buildItems(): boolean {
-        if (!this.model.data.salesdocitems) return false;
+        if (!this.model.data?.salesdocitems) return false;
 
         this.items = [];
         for (let itemid in this.model.data.salesdocitems.beans) {
