@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\SpiceACL;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -84,10 +85,12 @@ class SpiceACL
     {
         $addData = SpiceACLUsers::addFTSData($bean);
 
-        $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
-            $territoryData = $territory->addFTSData($bean);
-            $addData = array_merge($addData, $territoryData);
+        if(file_exists('extensions/modules/SpiceACLTerritories')) {
+            $territory = BeanFactory::getBean('SpiceACLTerritories');
+            if ($territory) {
+                $territoryData = $territory->addFTSData($bean);
+                $addData = array_merge($addData, $territoryData);
+            }
         }
 
         return $addData;
@@ -200,8 +203,9 @@ class SpiceACL
             }
 
             foreach ($moduleList as $moduleindex => $modulename) {
-                if (!$authModules[$modulename])
-                    unset($moduleList[$moduleindex]);
+                if (!$authModules[$modulename]) {
+                    SpiceModules::getInstance()->unsetModule($moduleindex);
+                }
             }
         }
 

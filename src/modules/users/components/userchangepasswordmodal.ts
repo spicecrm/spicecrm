@@ -60,12 +60,12 @@ export class UserChangePasswordModal {
     private repFieldVisited = false;
 
     /**
-     * reference toe hte modal itself
+     * reference to the modal itself
      */
     public self: any = undefined;
 
     /**
-     * indicates that the modalis posting
+     * indicates that the modal is posting
      * @private
      */
     private posting: boolean = false;
@@ -145,6 +145,7 @@ export class UserChangePasswordModal {
         if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
         if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
         if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
         if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');

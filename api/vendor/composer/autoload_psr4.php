@@ -16,6 +16,7 @@ return array(
     'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src/Svg'),
     'SpiceCRM\\modules\\' => array($baseDir . '/modules'),
     'SpiceCRM\\includes\\' => array($baseDir . '/include'),
+    'SpiceCRM\\extensions\\includes\\' => array($baseDir . '/extensions/include'),
     'SpiceCRM\\extensions\\' => array($baseDir . '/extensions'),
     'SpiceCRM\\data\\' => array($baseDir . '/data'),
     'SpiceCRM\\custom\\modules\\' => array($baseDir . '/custom/modules'),

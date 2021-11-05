@@ -9,6 +9,7 @@ namespace SpiceCRM\modules\KReports;
  */
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\TimeDate;
 
 class KReportRenderer
 {
@@ -122,21 +123,21 @@ class KReportRenderer
 
     public static function kdateRenderer($fieldid, $record)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         // 2013-10-03 no Date TZ Conversion Bug#504
         return ($record[$fieldid] != '' ? $timedate->to_display_date($record[$fieldid], false) : '');
     }
 
     public static function kdatetimeRenderer($fieldid, $record)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 $db = DBManagerFactory::getInstance();
         return ($record[$fieldid] != '' ? $db->fromConvert($record[$fieldid], 'datetime') : '');
     }
 
     public static function kdatetutcRenderer($fieldid, $record)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         return ($record[$fieldid] != '' ? $record[$fieldid] : '');
     }
 

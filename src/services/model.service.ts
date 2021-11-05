@@ -878,7 +878,7 @@ export class model implements OnDestroy {
         }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
-        this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
+        this.navigation.addModelEditing(this, this.getFieldValue('summary_text'));
     }
 
 
@@ -1921,7 +1921,7 @@ export class model implements OnDestroy {
      * Deep cloning of an object. Minds also moment objects.
      * @param object The object to clone.
      */
-    private buildBackup(object) {
+    public buildBackup(object) {
         let clone = {};
         _.each(object, (value, key) => {
             if (_.isObject(value)) {
