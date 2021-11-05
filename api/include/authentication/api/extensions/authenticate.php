@@ -193,9 +193,10 @@ $routes = [
 ];
 
 $RESTManager->registerExtension('userpassword', '2.0', [
-    'oneupper' => SpiceConfig::getInstance()->config['passwordsetting']['oneupper'],
-    'onelower' => SpiceConfig::getInstance()->config['passwordsetting']['onelower'],
-    'onenumber' => SpiceConfig::getInstance()->config['passwordsetting']['onenumber'],
+    'oneupper' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['oneupper'],
+    'onelower' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onelower'],
+    'onenumber' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onenumber'],
+    'onespecial' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onespecial'],
     'minpwdlength' => SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'],
     'regex' => '^' . UserAuthenticate::getPwdCheckRegex() . '$'
 ],

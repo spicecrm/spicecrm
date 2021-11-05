@@ -502,6 +502,7 @@ $app_list_strings = [
             'RegularUser' => 'Regular User',
             'PortalUser' => 'Portal User',
             'Administrator' => 'Administrator',
+            'APIuser' => 'API User'
         ],
     'user_status_dom' =>
         [
@@ -577,6 +578,14 @@ $app_list_strings = [
         'Medium' => 'Medium',
         'Low' => 'Low',
     ],
+    'projects_plannedactivity_status_dom' => [
+        'planned' => 'planned',
+        'released' => 'released',
+        'active' => 'active',
+        'onhold' => 'on Hold',
+        'completed' => 'completed',
+        'cancelled' => 'cancelled'
+    ],
     'projects_activity_status_dom' => [
         'created' => 'created',
         'settled' => 'settled'
@@ -597,7 +606,6 @@ $app_list_strings = [
             'Sending' => 'Sending',
         ],
     'campaign_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
@@ -609,11 +617,11 @@ $app_list_strings = [
         'NewsLetter' => 'Newsletter',
     ],
     'campaigntask_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
         'Email' => 'Email',
+        'mailmerge' => 'Mail Merge',
         'Feedback' => 'Feedback',
         'Print' => 'Print',
         'Web' => 'Web',
@@ -712,6 +720,10 @@ $app_list_strings = [
         'send_error' => 'Send Error',
         'unread' => 'Unread',
         'bounced' => 'Bounced'
+    ],
+    'dom_letter_status' => [
+        'sent' => 'sent',
+        'draft' => 'draft'
     ],
     'dom_textmessage_status' => [
         'archived' => 'Archived',
@@ -1659,6 +1671,12 @@ $app_list_strings['projects_activity_status_dom'] = [
     'billed' => 'billed',
 ];
 
+$app_list_strings['projects_activity_settlement_types_dom'] = [
+    'regular' => 'regular',
+    'goodwill' => 'goodwill',
+    'exclude' => 'exclude'
+];
+
 //ProductAttributes
 $app_list_strings['productattributedatatypes_dom'] = [
     'di' => 'Dropdown',
@@ -2082,12 +2100,7 @@ $app_list_strings['relationship_type_dom'] = [
     'colleague' => 'colleague'
 ];
 
-$app_list_strings['dayofweek_dom'] = [
-    '1' => 'Monday',
-    '2' => 'Tuesday',
-    '3' => 'Wednesday',
-    '4' => 'Thursday',
-    '5' => 'Friday',
-    '6' => 'Saturday',
-    '7' => 'Sunday',
+$app_list_strings['bonuscard_extension_status_enum'] = [
+    'initial' => 'initial',
+    'sent' => 'sent'
 ];

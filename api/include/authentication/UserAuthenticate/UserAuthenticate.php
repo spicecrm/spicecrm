@@ -14,12 +14,14 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\modules\Users\User;
+use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 
 /**
  * This file is used to control the authentication process.
@@ -36,8 +38,12 @@ class UserAuthenticate
      * @return User
      * @throws UnauthorizedException
      */
-    function authenticate($authUser, $password, $impersonatingUserName = null, $noException = false )
+    function authenticate($authUser, $password, $impersonatingUserName = null )
     {
+        if ( !IpAddresses::checkIpAddress(SpiceUtils::getClientIP()) ) {
+            throw new UnauthorizedException('Access denied, IP Address not allowed.', 11);
+        }
+
         $db = DBManagerFactory::getInstance();
         $impersonatingUser = null;
         $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND deleted = 0 and external_auth_only = 0";
@@ -61,8 +67,7 @@ class UserAuthenticate
             if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
             return $userObj;
         } else {
-            if ( $noException ) return false;
-            else throw new UnauthorizedException( "Invalid Username/Password combination".$authUser.$password, 1 );
+            throw new UnauthorizedException("Invalid Username/Password combination", 1);
         }
     }
 
@@ -119,6 +124,9 @@ class UserAuthenticate
         if (SpiceConfig::getInstance()->config['passwordsetting']['onenumber']) {
             $guideline .= $app_strings['MSG_PASSWORD_ONENUMBER'] . ', ';
         }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['onespecial']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONESPECIAL'] . ', ';
+        }
         if (SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength']) {
             $guideline .= SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'];
             $guideline .= ' ' . $app_strings['LBL_CHARACTERS'] . ', ';
@@ -153,16 +161,17 @@ class UserAuthenticate
      */
     public function get_modules_acl()
     {
-        global $moduleList;
+        $globalModuleList = SpiceModules::getInstance()->getModuleList();
 
         $actions = ['list', 'view', 'edit'];
 
         $retModules = [];
 
-        foreach (SpiceACL::getInstance()->disabledModuleList($moduleList) as $disabledModule)
-            unset($moduleList[$disabledModule]);
+        foreach (SpiceACL::getInstance()->disabledModuleList($globalModuleList) as $disabledModule) {
+            SpiceModules::getInstance()->unsetModule($disabledModule);
+        }
 
-        foreach ($moduleList as $module) {
+        foreach ($globalModuleList as $module) {
             $retModules[$module]['acl']['enabled'] = SpiceACL::getInstance()->moduleSupportsACL($module);
             if ($retModules[$module]['acl']['enabled']) {
                 foreach ($actions as $action)
@@ -234,18 +243,18 @@ class UserAuthenticate
     }
 
     /**
-     * @param $user User | integer
+     * @param $user User | string
      * @param $type string
      * @return false|\SpiceCRM\data\SugarBean
      * @throws Exception
      */
-    public function getProperEmailTemplate($user, $type)
+    public function getProperEmailTemplate( $userIdOrBean, $type )
     {
 
-        if (!is_object($user)) {
-            $user = BeanFactory::getBean('Users', $user);
-            if (empty($user->id)) throw (new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $memmy . '"');
-        }
+        if ( !is_object( $userIdOrBean )) {
+            $user = BeanFactory::getBean('Users', $userIdOrBean );
+            if ( empty( $user->id )) throw ( new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
+        } else $user = $userIdOrBean;
 
         $destUserPrefs = new UserPreference($user);
         $destUserPrefs->reloadPreferences();
@@ -362,6 +371,8 @@ class UserAuthenticate
             $pwdCheck .= '(?=.*[a-z])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['onenumber'])
             $pwdCheck .= '(?=.*\d)';
+        if (@SpiceConfig::getInstance()->config['passwordsetting']['onespecial'])
+            $pwdCheck .= '(?=.*[^a-zA-Z0-9])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'])
             $pwdCheck .= '.{' . SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'] . ',}';
         else

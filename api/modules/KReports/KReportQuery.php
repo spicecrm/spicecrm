@@ -281,7 +281,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         $this->joinSegments['root:' . $this->root_module] = array('alias' => $this->rootGuid, 'level' => 0);
 
         // get ther root Object
-        //require_once($beanFiles[$beanList[$this->root_module]]);
+        //require_once(SpiceModules::getInstance()->getBeanFiles()[$beanList[$this->root_module]]);
         //$this->joinSegments['root:' . $this->root_module]['object'] = new $beanList[$this->root_module]();
         $this->joinSegments['root:' . $this->root_module]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->root_module);
 
@@ -1270,7 +1270,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 }
                 break;
             case 'today':
-                $todayDate = date('Y-m-d', mktime());
+                $todayDate = date('Y-m-d', time());
                 $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $todayDate . ' 23:59:59\'';
                 break;
             case 'past':

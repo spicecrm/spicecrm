@@ -129,7 +129,7 @@ class Task extends SugarBean
     function get_user_tasks($user, $timespan = 'today')
     {
 
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         $template = $this;
 
