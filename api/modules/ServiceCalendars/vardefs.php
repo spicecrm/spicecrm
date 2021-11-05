@@ -35,6 +35,14 @@ $dictionary['ServiceCalendar'] = [
             'link' => 'systemholidaycalendar',
             'join_name' => 'systemholidaycalendar',
         ],
+        'servicecalendartimes' => [
+            'vname' => 'LBL_SERVICECALENDARTIMES',
+            'name' => 'servicecalendartimes',
+            'type' => 'link',
+            'module' => 'ServiceCalendarTimes',
+            'relationship' => 'servicecalendar_servicecalendartimes',
+            'source' => 'non-db'
+        ],
         'systemholidaycalendar' => [
             'vname' => 'LBL_SYSTEMHOLIDAYCALENDAR',
             'name' => 'systemholidaycalendar',
