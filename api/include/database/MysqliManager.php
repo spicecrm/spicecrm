@@ -548,13 +548,22 @@ class MysqliManager extends DBManager
      *
      * @see DBManager::upsertQuery()
      */
-    public function upsertQuery($table, array $pks, array $data)
+    public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
+        // quote the names
         $cols = array_keys($data);
+        foreach ( $cols as $k => $v ) {
+            $cols[$k] = $this->quote($v);
+        }
+
+        // quote the values
         $vals = array_values($data);
-        foreach ( $cols as $k => $v ) $cols[$k] = $this->quote( $v );
-        foreach ( $vals as $k => $v ) $vals[$k] = is_null( $v ) ? 'null' : $this->quote( $v );
-        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES ('" . implode("','", $vals) . "')");
+        foreach ( $vals as $k => $v ) {
+            $vals[$k] = is_null($v) ? "null" : "'{$this->quote( $v )}'";
+        }
+
+        // run the query
+        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES ('" . implode(",", $vals) . "')");
     }
 
     /**
