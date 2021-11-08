@@ -68,6 +68,9 @@ import /*embed*/ {ActionsetManager} from "./components/actionsetmanager";
 import /*embed*/ {ActionsetManagerActionDetails} from "./components/actionsetmanageractiondetails";
 import /*embed*/ {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog";
 
+import /*embed*/ {CategoryTreeManager} from "./components/categorytreemanager";
+import /*embed*/ {CategoryTreeManagerNode} from "./components/categorytreemanagernode";
+
 import /*embed*/ {ComponentsetManager} from "./components/componentsetmanager";
 import /*embed*/ {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
 
@@ -153,6 +156,8 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DragDropModule
     ],
     declarations: [
+        CategoryTreeManager,
+        CategoryTreeManagerNode,
         DomainManager,
         DomainManagerDefinitions,
         DomainManagerFields,
