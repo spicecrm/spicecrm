@@ -60,6 +60,11 @@ class Compiler
      * @var mixed
      */
     private $currentTemplate;
+    /**
+     * holds the root template class to enable access it by {root_template.key}
+     * @var mixed
+     */
+    private $rootTemplate;
 
     public function __construct($template)
     {
@@ -72,6 +77,11 @@ class Compiler
      * @param $template
      */
     private function initialize($template){
+
+        if (empty($this->rootTemplate)) {
+            $this->rootTemplate = $template;
+        }
+
         $this->currentTemplate = $template;
         $this->doc = new DOMDocument('1.0');
         $this->root = $this->doc->appendChild( $this->doc->createElement('html') );
@@ -173,8 +183,13 @@ class Compiler
                         }
 
                         $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
-                        foreach ($linkedBeans as $linkedBean) {
-                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]));
+                        foreach ($linkedBeans as $index => $linkedBean) {
+                            // set the params for teh first or last entry
+                            $params = [];
+                            if($index == 0) $params[] = 'data-spicefor-first';
+                            if($index == count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
+
+                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]), $params);
                             // $response .= $this->processBlocks($this->getBlocks($contentString), array_merge($beans, [$forArray[1] => $linkedBean]), $lang);
                         }
                         break;
@@ -229,13 +244,29 @@ class Compiler
         return $elements;
     }
 
-    private function createNewElement($thisElement, $beans){
+    /**
+     *
+     * @param $thisElement
+     * @param $beans
+     * @param array $params .. an array of additonal params, currentlyused for first and last in an spicefor loop
+     * @return mixed
+     * @throws BadRequestException
+     */
+    private function createNewElement($thisElement, $beans, $params = []){
         $newElement = $this->doc->createElement($thisElement->tagName);
         if($thisElement->hasAttributes()){
             foreach($thisElement->attributes as $attribute){
                 switch($attribute->nodeName){
                     case 'data-spicefor':
                     case 'data-spiceif':
+                        break;
+                    case 'data-spicefor-first':
+                    case 'data-spicefor-last':
+                        if(array_search($attribute->nodeName, $params) >= 0){
+                            $newAttribute = $this->doc->createAttribute($attribute->nodeName);
+                            $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                            $newElement->appendChild($newAttribute);
+                        }
                         break;
                     default:
                         $newAttribute = $this->doc->createAttribute($attribute->nodeName);
@@ -458,6 +489,9 @@ class Compiler
                 break;
             case 'template':
                 $obj = BeanFactory::getBean($this->currentTemplate->module_dir, $this->currentTemplate->id);
+                break;
+            case 'root_template':
+                $obj = BeanFactory::getBean($this->rootTemplate->module_dir, $this->rootTemplate->id);
                 break;
             default:
                 $obj = $beans[$object];

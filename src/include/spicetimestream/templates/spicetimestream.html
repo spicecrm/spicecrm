@@ -1,0 +1,16 @@
+<div class="slds-grid">
+    <div class="slds-border--right" style="width:250px;">
+        <spice-timestream-selector [timestream]="timestream"></spice-timestream-selector>
+    </div>
+    <div class="slds-grow">
+        <div style="height: 40px;" spice-timestream-header [timestream]="timestream"></div>
+    </div>
+</div>
+<div class="slds-grid" (system-to-bottom)="modellist.loadMoreList()">
+    <div class="slds-border--right" style="width:250px;">
+        <div *ngFor="let item of modellist.listData.list" class="slds-border--bottom slds-p-vertical--xx-small slds-p-horizontal--x-small" style="height: 34px;" spice-timestream-label [item]="item" [module]="modellist.module"></div>
+    </div>
+    <div class="slds-grow slds-theme--default">
+        <div *ngFor="let item of modellist.listData.list" spice-timestream-item [timestream]="timestream" [module]="modellist.module" [element]="item" style="height: 34px;"></div>
+    </div>
+</div>
