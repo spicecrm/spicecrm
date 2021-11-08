@@ -36,16 +36,15 @@
                                 <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="toggleShowPassword()">
                                     <system-button-icon [icon]="!showPassword ? 'preview': 'hide'" size="medium"></system-button-icon>
                                 </button>
-                                <button *ngIf="autoGenerate" class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="copyPassword()">
+                                <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="copyPassword()" [disabled]="!autoGenerate">
                                     <system-button-icon icon="copy" size="medium"></system-button-icon>
                                 </button>
                             </div>
                         </div>
                     </div>
                     <system-checkbox [(ngModel)]="autoGenerate"><system-label label="LBL_AUTO_GENERATE"></system-label></system-checkbox>
-                    <system-checkbox class="slds-m-left--x-small" [(ngModel)]="sendByEmail"><system-label label="LBL_SEND_BY_EMAIL"></system-label></system-checkbox>
-                    <system-checkbox class="slds-m-left--x-small" [(ngModel)]="forceReset"><system-label label="LBL_FORCE_RESET"></system-label></system-checkbox>
-
+                    <system-checkbox class="slds-m-left--small" [(ngModel)]="sendByEmail"><system-label label="LBL_SEND_BY_EMAIL"></system-label></system-checkbox>
+                    <system-checkbox class="slds-m-left--small" [(ngModel)]="forceReset"><system-label label="LBL_FORCE_RESET"></system-label></system-checkbox>
                 </div>
             </div>
         </system-section>
