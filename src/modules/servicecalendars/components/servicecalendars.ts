@@ -37,12 +37,13 @@ export class ServiceCalendars implements OnInit {
         private model: model,
         private metadata: metadata,
     ) {
-        let componentconfig = this.metadata.getComponentConfig('ServiceCalendars', 'ServiceCalendarTime');
+        let componentconfig = this.metadata.getComponentConfig('ServiceCalendars', 'ServiceCalendars');
         this.actionset = componentconfig.actionset;
     }
 
     public ngOnInit() {
         this.modellist.initialize('ServiceCalendars');
+        this.modellist.getListData();
     }
 
     /**
@@ -84,9 +85,9 @@ export class ServiceCalendars implements OnInit {
      * @private
      */
     private addDay() {
-        this.model.module = 'ServiceCalendarTime';
+        this.model.module = 'ServiceCalendarTimes';
         this.model.initialize();
-        this.model.addModel(null, null, {systemholidaycalendar_id: this.activeCalendar});
+        this.model.addModel(null, null, {servicecalendar_id: this.activeCalendar});
     }
 
 }

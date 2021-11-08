@@ -27,17 +27,27 @@ export class ServiceCalendarTime implements OnChanges {
     ) {
         this.relatedmodels.module = 'ServiceCalendars';
         this.relatedmodels.relatedModule = 'ServiceCalendarTimes';
-        this.relatedmodels.linkName = 'ServicecalendarTimes';
+        this.relatedmodels.linkName = 'servicecalendartimes';
         this.relatedmodels.loaditems = 1000;
 
-        this.componentconfig = this.metadata.getComponentConfig('ServiceCalendars', 'ServiceCalendarTimes');
+        this.componentconfig = this.metadata.getComponentConfig('ServiceCalendars', 'ServiceCalendars');
         this.listfields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
     }
 
     public ngOnChanges(changes: SimpleChanges) {
         this.relatedmodels.id = this.calendarid;
         this.relatedmodels.resetData();
-        this.relatedmodels.getData();
+
+        // sort the data by first day and then time start
+        this.relatedmodels.getData().subscribe(data => {
+            this.relatedmodels.items.sort((a, b) => {
+                if(a.dayofweek == b.dayofweek){
+                    return a.timestart > b.timestart ? 1 : -1;
+                } else {
+                    return a.dayofweek > b.dayofweek ? 1 : -1;
+                }
+            })
+        });
     }
 
 }
