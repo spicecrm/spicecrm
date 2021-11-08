@@ -552,7 +552,7 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * @see DBManager::upsertQuery()
      */
-    public function upsertQuery($table, array $pks, array $data)
+    public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
 
         $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'");
@@ -566,7 +566,7 @@ protected function checkQuery($sql, $object_name = false)
             }
             $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
         } else {
-            $this->insertQuery($table, $data);
+            $this->insertQuery($table, $data, $execute);
         }
     }
 
