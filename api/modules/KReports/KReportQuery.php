@@ -6,7 +6,7 @@ namespace SpiceCRM\modules\KReports;
 use DateInterval;
 use DateTime;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\modules\KReports\KReportUtil;
+
 use SpiceCRM\modules\KReports\KReportQueryArray;
 
 global $dictionary;
