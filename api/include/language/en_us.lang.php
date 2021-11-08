@@ -578,6 +578,14 @@ $app_list_strings = [
         'Medium' => 'Medium',
         'Low' => 'Low',
     ],
+    'projects_plannedactivity_status_dom' => [
+        'planned' => 'planned',
+        'released' => 'released',
+        'active' => 'active',
+        'onhold' => 'on Hold',
+        'completed' => 'completed',
+        'cancelled' => 'cancelled'
+    ],
     'projects_activity_status_dom' => [
         'created' => 'created',
         'settled' => 'settled'
@@ -1661,6 +1669,12 @@ $app_list_strings['projects_milestone_status_dom'] = [
 $app_list_strings['projects_activity_status_dom'] = [
     'created' => 'created',
     'billed' => 'billed',
+];
+
+$app_list_strings['projects_activity_settlement_types_dom'] = [
+    'regular' => 'regular',
+    'goodwill' => 'goodwill',
+    'exclude' => 'exclude'
 ];
 
 //ProductAttributes
