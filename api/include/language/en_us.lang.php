@@ -51,6 +51,16 @@ $app_list_strings = [
         'C' => 'Consumer',
     ],
 
+    'dayofweek_dom' => [
+        '0' => 'Sunday',
+        '1' => 'Monday',
+        '2' => 'Tuesday',
+        '3' => 'Wednesday',
+        '4' => 'Thursday',
+        '5' => 'Friday',
+        '6' => 'Saturday'
+    ],
+
     //e.g. en franï¿½ais 'Analyst'=>'Analyste',
     'account_type_dom' => [
         '' => '',

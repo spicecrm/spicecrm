@@ -38,6 +38,7 @@ export class HolidayCalendarList implements OnInit {
 
     public ngOnInit() {
         this.modellist.initialize('SystemHolidayCalendars');
+        this.modellist.getListData();
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-namespace SpiceCRM\extensions\modules\ServiceCalendars;
+namespace SpiceCRM\modules\ServiceCalendars;
 
 use DateTime;
 use DateTimeZone;
