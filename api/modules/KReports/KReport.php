@@ -278,12 +278,8 @@ class KReport extends SugarBean
             $paramsArray ['exclusiveGrouping'] = $parameters ['exclusiveGrouping'];
 
         if (isset($parameters['start']) && isset($parameters['limit'])) {
-            //handle start not set and start content (added maretval 2019-05-03)
-            if (isset($parameters['start']) && !KReportUtil::KReportValueIsIntegerOnly($parameters['start']))
-                $paramsArray['start'] = 0;
-            //handle limit not set and limit content (added maretval 2019-05-03)
-            if (isset($parameters['limit']) && !KReportUtil::KReportValueIsIntegerOnly($parameters['limit']))
-                $paramsArray['limit'] = 0;
+            $paramsArray['start'] = $parameters['start'] ?: 0;
+            $paramsArray['limit'] = $parameters['limit'] ?: 0;
         }
 
 
@@ -838,12 +834,8 @@ $db = DBManagerFactory::getInstance();
     {
         $query = '';
 
-        //handle start not set and start content (added maretval 2019-05-03)
-        if (!isset($parameters['start']) || !KReportUtil::KReportValueIsIntegerOnly((int)$parameters['start']))
-            $parameters['start'] = 0;
-        //handle limit not set and limit content (added maretval 2019-05-03)
-        if (!isset($parameters['limit']) || !KReportUtil::KReportValueIsIntegerOnly((int)$parameters['limit']))
-            $parameters['limit'] = 0;
+        $parameters['start'] = $parameters['start'] ?:0;
+        $parameters['limit'] = $parameters['limit'] ?: 0;
 
 
         if (!empty(SpiceConfig::getInstance()->config['k_dbconfig_clone'])) {
@@ -1049,15 +1041,10 @@ $db = DBManagerFactory::getInstance();
         // return an empty array if we have nothing else
         $retArray = [];
 
-        //handle start not set and start content (added maretval 2019-05-03)
-        if (!isset($parameters['start']) || !KReportUtil::KReportValueIsIntegerOnly($parameters['start']))
-            $parameters['start'] = 0;
-        //handle limit not set and limit content (added maretval 2019-05-03)
-        if (!isset($parameters['limit']) || !KReportUtil::KReportValueIsIntegerOnly($parameters['limit']))
-            $parameters['limit'] = 0;
-        //handle snapshot_id content (added maretval 2019-05-03)
-        if ($snapshotid != '0' && !KReportUtil::KReportValueIsAnId($snapshotid))
-            $snapshotid = '0';
+
+        $parameters['start'] = $parameters['start'] ?: 0;
+        $parameters['limit'] = $parameters['limit'] ?:0;
+        $snapshotid = $snapshotid ?: '0';
 
 
         // get the sql array or retrieve from snapshot if set
