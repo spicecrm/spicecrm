@@ -19,11 +19,30 @@
                     <system-input-number [disabled]="!restrictions.user.enabled" [(ngModel)]="restrictions.user.monitored_period" [onlyField]="true" id="user-monitored-period" [precision]="0" [asNumber]="true"></system-input-number>
                 </div>
             </div>
-            <div class="slds-form-element slds-m-left--medium">
+            <fieldset class="slds-form-element slds-m-left--medium">
+                <legend class="slds-form-element__legend slds-form-element__label" style="font-weight:normal"><system-label label="LBL_LOCK_TYPE"></system-label></legend>
+                <div class="slds-form-element__control">
+                    <span class="slds-radio">
+                      <input type="radio" id="user-lock-type-time" value="time" [(ngModel)]="restrictions.user.blocking_type" [disabled]="!restrictions.user.enabled" />
+                      <label class="slds-radio__label" for="user-lock-type-time">
+                        <span class="slds-radio_faux"></span>
+                          <span class="slds-form-element__label"><system-label label="LBL_TIME"></system-label></span>
+                      </label>
+                    </span>
+                    <span class="slds-radio">
+                      <input type="radio" id="user-lock-type-perm" value="permanent" [(ngModel)]="restrictions.user.blocking_type" [disabled]="!restrictions.user.enabled" />
+                      <label class="slds-radio__label" for="user-lock-type-perm">
+                        <span class="slds-radio_faux"></span>
+                        <span class="slds-form-element__label"><system-label label="LBL_PERMANENT"></system-label></span>
+                      </label>
+                    </span>
+                </div>
+            </fieldset>
+            <div class="slds-form-element slds-m-left--x-small">
                 <label class="slds-form-element__label" for="user-blocking-duration">
                     <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_BLOCKING_DURATION"></system-label> (<system-label label="LBL_MINUTES" length="short" style="display:inline-block"></system-label>)</label>
                 <div class="slds-form-element__control">
-                    <system-input-number [disabled]="!restrictions.user.enabled" [(ngModel)]="restrictions.user.blocking_duration" [onlyField]="true" id="user-blocking-duration" [precision]="0" [asNumber]="true"></system-input-number>
+                    <system-input-number [disabled]="!restrictions.user.enabled || restrictions.user.blocking_type === 'permanent'" [(ngModel)]="restrictions.user.blocking_duration" [onlyField]="true" id="user-blocking-duration" [precision]="0" [asNumber]="true" (ngModelChange)="restrictions.user.blocking_type = ( restrictions.user.blocking_duration === 0 ? 'permanent':'time')"></system-input-number>
                 </div>
             </div>
         </div>
