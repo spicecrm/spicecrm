@@ -1,0 +1,26 @@
+<div *ngIf="!searchTerm && !searchFavorites" class="slds-grid">
+    <div *ngFor="let lvl of levels; let i = index" class="slds-col slds-size--1-of-{{depth}}" [ngClass]="{'slds-border--right': i < depth -1}">
+        <ng-container *ngIf="i == 0 || levels[i - 1]">
+            <div *ngFor="let cat of levelCategories(i); trackBy: trackByFn" [ngClass]="{'slds-theme--shade': isCategorySelected(i, cat)}">
+                <div class="slds-truncate slds-p-around--xx-small" [title]="cat.node_name" (mouseenter)="select(i, cat)" (click)="choose(i, cat)">
+                    <span *ngIf="!cat.selectable && cat.categories" style="cursor: default;"><system-label [label]="cat.node_name"></system-label></span>
+                    <span *ngIf="cat.selectable || !cat.categories" style="cursor: pointer; text-decoration: underline;"><system-label [label]="cat.node_name"></system-label></span>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<div *ngIf="searchTerm && !searchFavorites">
+    <div *ngFor="let node of getMatchedNodes()" class="slds-truncate slds-p-around--xx-small" (click)="selectNode(node)">
+        <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links">
+            <li *ngFor="let cat of node" class="slds-item"><system-label [label]="cat.node_name"></system-label></li>
+        </ul>
+    </div>
+</div>
+<div *ngIf="searchFavorites">
+    <div *ngFor="let node of getFavoriteNodes()" class="slds-truncate slds-p-around--xx-small" (click)="selectNode(node)">
+        <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links">
+            <li *ngFor="let cat of node" class="slds-item"><system-label [label]="cat.node_name"></system-label></li>
+        </ul>
+    </div>
+</div>
