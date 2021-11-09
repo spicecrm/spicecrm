@@ -40,7 +40,7 @@ class IpAddresses
         }
 
         if ( $color === 'w' or $color === 'b' ) {
-            $result = $db->query( sprintf('INSERT INTO ipaddresses SET color = "%s", address = "%s", date_entered = "%s"', $color, $ipAddress, $now ).( isset( $createdBy ) ? ', created_by = "'.$db->quote( $createdBy ).'"':'' ).( isset( $description ) ? ', description = "'.$db->quote( $description ).'"':'' ));
+            $result = $db->query( sprintf('INSERT INTO ipaddresses SET id = "%s", color = "%s", address = "%s", date_entered = "%s"', SpiceUtils::createGuid(), $color, $ipAddress, $now ).( isset( $createdBy ) ? ', created_by = "'.$db->quote( $createdBy ).'"':'' ).( isset( $description ) ? ', description = "'.$db->quote( $description ).'"':'' ));
         }
 
         if ( $db->getAffectedRowCount( $result ) !== 1 ) throw new Exception('Database error.');

@@ -46,6 +46,7 @@ use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\ACLActions\ACLAction;
+use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 // workaround for spiceinstaller
@@ -917,14 +918,14 @@ class User extends Person
     }
 
     /**
-     * isBlockedByName
+     * isBlocked
      *
      * Checks if a user is blocked permanent or for a specific time.
      *
      * @param $username The name of the user.
      * @return True if permanent or the amount of minutes in case the blocking is for a specific time.
      */
-    public static function isBlockedByName( $username ) {
+    public static function isBlocked( $username ) {
         $db = DBManagerFactory::getInstance();
 
         $dtObj=new \DateTime();
@@ -969,6 +970,11 @@ class User extends Person
         $remainingDays = $config['pwdvaliditydays'] - $passwordAge;
 
         return $remainingDays < 1;
+    }
+
+    public static function isAdmin_byName( $username ) {
+        $db = DBManagerFactory::getInstance();
+        return (boolean)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
     }
 
 }
