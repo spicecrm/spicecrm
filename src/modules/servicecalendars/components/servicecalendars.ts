@@ -1,18 +1,23 @@
 /**
- * @module ModuleHolidayCalendars
+ * @module serviceCalendarManager
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from "../../../services/modellist.service";
 
+/**
+ * @ignore
+ */
+declare var workTime: any;
+
 @Component({
-    selector: 'holiday-calendar-list',
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlist.html',
+    selector: 'service-calendars',
+    templateUrl: './src/modules/servicecalendars/templates/servicecalendars.html',
     providers: [modellist, model]
 })
-export class HolidayCalendarList implements OnInit {
+export class ServiceCalendars implements OnInit {
 
     /**
      * the active calendar id
@@ -32,12 +37,12 @@ export class HolidayCalendarList implements OnInit {
         private model: model,
         private metadata: metadata,
     ) {
-        let componentconfig = this.metadata.getComponentConfig('HolidayCalendarList', 'SystemHolidayCalendars');
+        let componentconfig = this.metadata.getComponentConfig('ServiceCalendars', 'ServiceCalendars');
         this.actionset = componentconfig.actionset;
     }
 
     public ngOnInit() {
-        this.modellist.initialize('SystemHolidayCalendars');
+        this.modellist.initialize('ServiceCalendars');
         this.modellist.getListData();
     }
 
@@ -70,7 +75,7 @@ export class HolidayCalendarList implements OnInit {
      * @private
      */
     private addCalendar() {
-        this.model.module = 'SystemHolidayCalendars';
+        this.model.module = 'ServiceCalendars';
         this.model.initialize();
         this.model.addModel();
     }
@@ -80,9 +85,9 @@ export class HolidayCalendarList implements OnInit {
      * @private
      */
     private addDay() {
-        this.model.module = 'SystemHolidayCalendarDays';
+        this.model.module = 'ServiceCalendarTimes';
         this.model.initialize();
-        this.model.addModel(null, null, {systemholidaycalendar_id: this.activeCalendar});
+        this.model.addModel(null, null, {servicecalendar_id: this.activeCalendar});
     }
 
 }
