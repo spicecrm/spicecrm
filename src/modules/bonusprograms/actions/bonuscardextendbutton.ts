@@ -76,6 +76,7 @@ export class BonusCardExtendButton {
                 this.bonusCardModel.setField('valid_until', newUntilDate);
                 this.bonusCardModel.save();
 
+                this.extensionModel.reset();
                 this.extensionModel.module = 'BonusCardExtensions';
                 this.extensionModel.initialize();
                 this.extensionModel.setFields({
