@@ -10,6 +10,9 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 
+/** @ignore */
+declare var moment;
+
 @Component({
     selector: "bonus-cards-new-button",
     templateUrl: "./src/modules/bonusprograms/templates/bonuscardnewbutton.html",
@@ -49,13 +52,13 @@ export class BonusCardNewButton implements OnInit {
             program = await this.promptProgramSelection();
         }
 
-        const dates: { date_start: string, date_end: string } = await this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`)
+        let dates: { date_start: string, date_end: string } = await this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`)
             .toPromise()
             .catch(() =>
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
             );
 
-        if (!dates) return;
+        if (!dates) dates = {date_start: new moment(), date_end: new moment().add(1, 'years')};
 
         this.addNew({...program, ...dates});
 
