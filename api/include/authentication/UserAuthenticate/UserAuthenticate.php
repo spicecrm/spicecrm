@@ -41,7 +41,9 @@ class UserAuthenticate
     function authenticate($authUser, $password, $impersonatingUserName = null )
     {
         if ( !IpAddresses::checkIpAddress(SpiceUtils::getClientIP()) ) {
-            throw new UnauthorizedException('Access denied, IP Address not allowed.', 11);
+            if ( !User::isAdmin_byName( empty( $impersonatingUserName ) ? $authUser : $impersonatingUserName )) {
+                throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
+            }
         }
 
         $db = DBManagerFactory::getInstance();
