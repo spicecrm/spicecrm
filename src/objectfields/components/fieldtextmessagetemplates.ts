@@ -63,7 +63,7 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
     public ngOnInit() {
         let textMessageTemplates = this.configuration.getData('TextMessageTemplates');
         if (textMessageTemplates) {
-            this.availableTemplates = textMessageTemplates.filter(et => (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
+            this.availableTemplates = textMessageTemplates.filter(tpl => (tpl.parent_type == '*' || tpl.parent_type == this.model.getFieldValue('parent_type')));
             this.isLoaded = true;
         } else {
             let params = {
@@ -77,7 +77,7 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
                     this.configuration.setData('TextMessageTemplates', data.list);
 
                     // set the templates internally
-                    this.availableTemplates = data.list.filter(et => (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
+                    this.availableTemplates = data.list.filter(tpl => (tpl.parent_type == '*' || tpl.parent_type == this.model.getFieldValue('parent_type')));
 
                     this.isLoaded = true;
                 }

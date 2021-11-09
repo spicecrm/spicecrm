@@ -165,7 +165,8 @@ class AuthenticationController
         $config = SpiceConfig::getInstance()->config;
 
         if ( !IpAddresses::checkIpAddress() ) {
-            throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
+            if ( !User::isAdmin_byName( $username ))
+                throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
         }
 
         try {
@@ -200,7 +201,7 @@ class AuthenticationController
             //log login attempt
             /** @var UserAccessLog $userAccessLogObj */
 
-            if ( UserAccessLog::getNumberLoginAttemptsByIp() > $config['login_attempt_restriction']['ip_number_attempts'] and !IpAddresses::ipAddressIsWhite() ) {
+            if ( $config['login_attempt_restriction']['ip_enabled'] and UserAccessLog::getNumberLoginAttemptsByIp() > $config['login_attempt_restriction']['ip_number_attempts']*1 and !IpAddresses::ipAddressIsWhite() ) {
                 IpAddresses::addIpAddress('b');
             };
 
@@ -295,18 +296,18 @@ class AuthenticationController
 
             # Check if the user is blocked (after too many login attempts with wrong passwords).
             # This check must happen BEFORE checking the password. No password check (and answer to the user) in case the user is blocked!
-            $isBlocked = User::isBlockedByName(isset($impersonationUser) ? $impersonationUser : $authUser);
+            $isBlocked = User::isBlocked(isset($impersonationUser) ? $impersonationUser : $authUser);
             if ($isBlocked === true) {
-                throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 4))->setLoginBlocked(true);
+                throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 3))->setLoginBlocked(true);
             } elseif ($isBlocked !== false) {
-                throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 4))->setLoginBlocked(true);
+                throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 3))->setLoginBlocked(true);
             }
 
             $sugarAuthenticationController = new UserAuthenticate();
             $userObj = $sugarAuthenticationController->authenticate( $authUser, $authPass, $impersonationUser );
 
             // check if password is expired
-            if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() )) {
+            if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() ) and !$userObj->is_api_user ) {
                 throw new UnauthorizedException('Password expired.', 2 );
             }
 
@@ -347,6 +348,7 @@ class AuthenticationController
 
         $loginData = [
             'admin' => $currentUser->is_admin == '1' ? true : false,
+            'is_api_user' => $currentUser->is_api_user == '1' ? true : false,
             'display_name' => $currentUser->get_summary_text(),
             'email' => $currentUser->email1,
             'first_name' => $currentUser->first_name,

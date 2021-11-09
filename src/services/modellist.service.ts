@@ -650,7 +650,7 @@ export class modellist implements OnDestroy {
     public loadFromSession(): boolean {
         this.useCache = true;
         let sessionData = this.configuration.getData('lastlist_' + this.module);
-        if (!!sessionData) {
+        if (!!sessionData && sessionData.buckets?.bucketfield == this.buckets?.bucketfield) {
             this.listData = sessionData.listdata;
             this.searchTerm = sessionData.searchterm;
             this.searchAggregates = sessionData.searchaggregates;
