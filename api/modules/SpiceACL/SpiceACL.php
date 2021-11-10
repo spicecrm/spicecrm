@@ -551,7 +551,7 @@ class SpiceACL
 
             // build the access array
             foreach ($actions as $actionid => $actionname) {
-                $aArray[$actionname] = array_search($actionname, $activitiesAllowed) !== false;
+                $aArray[$actionname] = array_search($actionid, $activitiesAllowed) !== false;
             }
         } else {
             //check if module is under ACL. Useful for modules like Activities, History, Calendar
