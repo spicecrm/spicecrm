@@ -1004,6 +1004,7 @@ class Email extends SugarBean
 
     function addEmailAddress($type, $address)
     {
+        if (!$address) return null;
         $this->recipient_addresses[] = [
             'address_type' => $type,
             'email_address' => EmailAddress::cleanAddress($address)
