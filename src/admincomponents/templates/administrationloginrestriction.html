@@ -41,7 +41,7 @@
             <div class="slds-form-element slds-m-left--x-small">
                 <label class="slds-form-element__label" for="user-blocking-duration">
                     <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_BLOCKING_DURATION"></system-label> (<system-label label="LBL_MINUTES" length="short" style="display:inline-block"></system-label>)</label>
-                <div class="slds-form-element__control">
+                <div class="slds-form-element__control" [ngClass]="{'slds-has-error':restrictions.user.blocking_type === 'time' && restrictions.user.blocking_duration === 0}">
                     <system-input-number [disabled]="!restrictions.user.enabled || restrictions.user.blocking_type === 'permanent'" [(ngModel)]="restrictions.user.blocking_duration" [onlyField]="true" id="user-blocking-duration" [precision]="0" [asNumber]="true" (ngModelChange)="restrictions.user.blocking_type = ( restrictions.user.blocking_duration === 0 ? 'permanent':'time')"></system-input-number>
                 </div>
             </div>
