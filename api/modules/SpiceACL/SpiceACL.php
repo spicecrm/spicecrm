@@ -306,7 +306,7 @@ class SpiceACL
      *
      * our own functions
      */
-    private function getActivityValueByAction($action, $module)
+    private function getActivityValueByAction($action, $module = null)
     {
         switch ($action) {
             case 'index':
@@ -324,9 +324,11 @@ class SpiceACL
                 return 'edit';
             default:
                 // check if we have a custom action
-                $db = DBManagerFactory::getInstance();
-                $moduleId = SpiceModules::getInstance()->getModuleId($module);
-                $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action'"));
+                if($module) {
+                    $db = DBManagerFactory::getInstance();
+                    $moduleId = SpiceModules::getInstance()->getModuleId($module);
+                    $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action'"));
+                }
                 return $customAction['id'] ?: $action;
             /*
         default:
