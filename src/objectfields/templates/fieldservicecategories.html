@@ -1,0 +1,35 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    {{display_value}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container slds-has-inline-listbox">
+                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-lookup">
+
+                    <div *ngIf="display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                        <div class="slds-pill_container">
+                          <span class="slds-pill slds-size--1-of-1">
+                            <span class="slds-pill__label">{{display_value}}</span>
+                            <button class="slds-button slds-button--icon slds-pill__remove" (click)="unchooseCategories()">
+                              <system-button-icon [icon]="'close'"></system-button-icon>
+                            </button>
+                          </span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                        <input class="slds-input slds-combobox__input" type="search" placeholder="{{language.getLabel('LBL_SEARCH')}}" [(ngModel)]="search" (click)="checkUserAction($event)" (keyup)="checkUserAction($event)" />
+                    </div>
+
+                    <div *ngIf="show_tree">
+                        <field-service-category-tree [maxlevels]="maxlevels" (choose)="chooseCategories($event)"></field-service-category-tree>
+                    </div>
+
+                    <div *ngIf="show_search">
+                        <field-service-category-search [search]="search" (choose)="chooseCategories($event)"></field-service-category-search>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
