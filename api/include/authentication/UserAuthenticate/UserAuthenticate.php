@@ -41,7 +41,9 @@ class UserAuthenticate
     function authenticate($authUser, $password, $impersonatingUserName = null )
     {
         if ( !IpAddresses::checkIpAddress(SpiceUtils::getClientIP()) ) {
-            throw new UnauthorizedException('Access denied, IP Address not allowed.', 11);
+            if ( !User::isAdmin_byName( empty( $impersonatingUserName ) ? $authUser : $impersonatingUserName )) {
+                throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
+            }
         }
 
         $db = DBManagerFactory::getInstance();
@@ -123,6 +125,9 @@ class UserAuthenticate
         }
         if (SpiceConfig::getInstance()->config['passwordsetting']['onenumber']) {
             $guideline .= $app_strings['MSG_PASSWORD_ONENUMBER'] . ', ';
+        }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['onespecial']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONESPECIAL'] . ', ';
         }
         if (SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength']) {
             $guideline .= SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'];
@@ -368,6 +373,8 @@ class UserAuthenticate
             $pwdCheck .= '(?=.*[a-z])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['onenumber'])
             $pwdCheck .= '(?=.*\d)';
+        if (@SpiceConfig::getInstance()->config['passwordsetting']['onespecial'])
+            $pwdCheck .= '(?=.*[^a-zA-Z0-9])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'])
             $pwdCheck .= '.{' . SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'] . ',}';
         else

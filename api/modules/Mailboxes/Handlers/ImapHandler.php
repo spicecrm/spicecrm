@@ -201,7 +201,7 @@ class ImapHandler extends TransportHandler
 
                 $email->body = $structure->getEmailBody();
                 try {
-                    $email->save();
+                    $email->save(false, true, false);
                 } catch (Exception $e) {
                     LoggerManager::getLogger()->error('Could not save email: ' . $email->name);
                     continue;
@@ -278,8 +278,7 @@ class ImapHandler extends TransportHandler
                     continue;
                 }
 
-                $email->deleted = 1;
-                $email->save();
+                $email->mark_deleted($email->id);
 
                 ++$deleted_mail_count;
             }

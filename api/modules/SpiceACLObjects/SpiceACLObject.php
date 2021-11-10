@@ -219,8 +219,8 @@ class SpiceACLObject extends SugarBean
     public function getUserACLObjects($module = null)
     {
         global  $timedate;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
 
         if (SpiceConfig::getInstance()->config['acl']['disable_cache'] || empty($_SESSION['spiceaclaccess']['aclobjects'])) {
             $this->aclobjects = [];
@@ -250,8 +250,8 @@ $db = DBManagerFactory::getInstance();
             while ($aclobject = $db->fetchByAssoc($aclobjects)) {
                 $this->authObjects[$aclobject['id']] = $aclobject;
 
-                //read the org values
-                if ($territory) {
+                // read the org values - check on method_exists because of SpiceCRM core edition
+                if ($territory && method_exists($territory, 'getAclObjectTerritoryValues')) {
                     $this->authObjects[$aclobject['id']]['objectterritoryvalues'] = $territory->getAclObjectTerritoryValues($aclobject['id']);
                 }
 
@@ -260,7 +260,7 @@ $db = DBManagerFactory::getInstance();
                 while ($objectAction = $db->fetchByAssoc($objectActions))
                     $this->authObjects[$aclobject['id']]['objectactions'][] = $objectAction['spiceaclaction_id'];
 
-                //read the field values
+                // read the field values
                 $objectValues = $db->query("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues INNER JOIN spiceaclmodulefields ON spiceaclmodulefields.id = spiceaclobjectvalues.spiceaclmodulefield_id WHERE spiceaclobject_id='{$aclobject['id']}'");
                 while ($thisObjectValue = $db->fetchByAssoc($objectValues))
                     $this->authObjects[$aclobject['id']]['objectelementvalues'][$thisObjectValue['name']] = [
