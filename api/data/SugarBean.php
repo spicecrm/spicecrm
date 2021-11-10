@@ -2475,7 +2475,7 @@ class SugarBean
     function mark_deleted($id)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         if (isset($_SESSION['show_deleted'])) {
             $this->mark_undeleted($id);
         } else {
