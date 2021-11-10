@@ -247,7 +247,16 @@ $dictionary['Consumer'] = [
             'module' => 'Inquiries',
             'relationship' => 'consumer_inquiries',
             'source' => 'non-db'
-        ]
+        ],
+        'letters' => [
+            'name' => 'letters',
+            'type' => 'link',
+            'relationship' => 'consumer_letters',
+            'source' => 'non-db',
+            'module' => 'Letters',
+            'bean_name' => 'Letter',
+            'vname' => 'LBL_LETTERS',
+        ],
     ],
     'relationships' => [
         'consumers_email_addresses' => [
