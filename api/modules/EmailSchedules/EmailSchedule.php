@@ -120,7 +120,10 @@ class EmailSchedule extends SugarBean
             if (empty($seed)) {
                 $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
                 $status = 'record_not_loaded';
-            } else {
+            } else if($seed->is_inactive) {
+                $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
+                $status = 'record_inactive';
+            }else {
                 $email = $this->sendEmail($seed, $emailScheduleId, true);
                 if ($email == false) {
                     $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
