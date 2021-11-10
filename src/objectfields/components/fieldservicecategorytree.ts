@@ -9,7 +9,7 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-service-category-tree',
-    templateUrl: './src/objectfields/templates/fieldcategorytree.html'
+    templateUrl: './src/objectfields/templates/fieldservicecategorytree.html'
 })
 export class fieldServiceCategoryTree
 {
@@ -66,7 +66,6 @@ export class fieldServiceCategoryTree
      */
     select(cat)
     {
-        //console.log(cat);
         this.selected_categorys[cat.level] = cat;
         if(cat.categories) {
             this.levels[cat.level + 1] = cat.categories;
@@ -75,8 +74,6 @@ export class fieldServiceCategoryTree
         else{
             this.resetLevels(cat.level+1);
         }
-
-        //console.log(this.levels);
     }
 
     /**
