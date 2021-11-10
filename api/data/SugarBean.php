@@ -2474,6 +2474,15 @@ class SugarBean
      */
     function mark_deleted($id)
     {
+        // make sure that we retrieve before we continue in case we did not retrieve before calling this function
+        if (empty($this->id)) {
+            $bean = BeanFactory::getBean($this->module_name, $id, ['relationships' => false ]);
+            // check if retrieve succeed to prevent recursion
+            if (!empty($bean->id)) {
+                $bean->mark_deleted($id);
+                return;
+            }
+        }
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $date_modified = TimeDate::getInstance()->nowDb();
         if (isset($_SESSION['show_deleted'])) {

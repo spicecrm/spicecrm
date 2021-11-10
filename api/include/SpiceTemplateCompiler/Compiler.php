@@ -183,8 +183,13 @@ class Compiler
                         }
 
                         $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
-                        foreach ($linkedBeans as $linkedBean) {
-                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]));
+                        foreach ($linkedBeans as $index => $linkedBean) {
+                            // set the params for teh first or last entry
+                            $params = [];
+                            if($index == 0) $params[] = 'data-spicefor-first';
+                            if($index == count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
+
+                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]), $params);
                             // $response .= $this->processBlocks($this->getBlocks($contentString), array_merge($beans, [$forArray[1] => $linkedBean]), $lang);
                         }
                         break;
@@ -239,13 +244,29 @@ class Compiler
         return $elements;
     }
 
-    private function createNewElement($thisElement, $beans){
+    /**
+     *
+     * @param $thisElement
+     * @param $beans
+     * @param array $params .. an array of additonal params, currentlyused for first and last in an spicefor loop
+     * @return mixed
+     * @throws BadRequestException
+     */
+    private function createNewElement($thisElement, $beans, $params = []){
         $newElement = $this->doc->createElement($thisElement->tagName);
         if($thisElement->hasAttributes()){
             foreach($thisElement->attributes as $attribute){
                 switch($attribute->nodeName){
                     case 'data-spicefor':
                     case 'data-spiceif':
+                        break;
+                    case 'data-spicefor-first':
+                    case 'data-spicefor-last':
+                        if(array_search($attribute->nodeName, $params) >= 0){
+                            $newAttribute = $this->doc->createAttribute($attribute->nodeName);
+                            $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                            $newElement->appendChild($newAttribute);
+                        }
                         break;
                     default:
                         $newAttribute = $this->doc->createAttribute($attribute->nodeName);
