@@ -306,7 +306,7 @@ class SpiceACL
      *
      * our own functions
      */
-    private function getActivityValueByAction($action)
+    private function getActivityValueByAction($action, $module)
     {
         switch ($action) {
             case 'index':
@@ -323,7 +323,11 @@ class SpiceACL
             case 'editview':
                 return 'edit';
             default:
-                return $action;
+                // check if we have a custom action
+                $db = DBManagerFactory::getInstance();
+                $moduleId = SpiceModules::getInstance()->getModuleId($module);
+                $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action'"));
+                return $customAction['id'] ?: $action;
             /*
         default:
             if (\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['acl']['disable_cache'] || !isset($_SESSION['spiceaclaccess']['aclmoduleactions'][$module][$action])) {
@@ -383,7 +387,7 @@ class SpiceACL
         $isCustomActivity = false;
 
         // get the activitiy
-        $thisActivity = $this->getActivityValueByAction($view);
+        $thisActivity = $this->getActivityValueByAction($view, $bean->_module ?: $bean);
         // if activitiy is not found return false
         if ($thisActivity === false) {
             return false;
