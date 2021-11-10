@@ -51,6 +51,16 @@ $app_list_strings = [
         'C' => 'Consumer',
     ],
 
+    'dayofweek_dom' => [
+        '0' => 'Sunday',
+        '1' => 'Monday',
+        '2' => 'Tuesday',
+        '3' => 'Wednesday',
+        '4' => 'Thursday',
+        '5' => 'Friday',
+        '6' => 'Saturday'
+    ],
+
     //e.g. en franï¿½ais 'Analyst'=>'Analyste',
     'account_type_dom' => [
         '' => '',
@@ -502,6 +512,7 @@ $app_list_strings = [
             'RegularUser' => 'Regular User',
             'PortalUser' => 'Portal User',
             'Administrator' => 'Administrator',
+            'APIuser' => 'API User'
         ],
     'user_status_dom' =>
         [
@@ -576,6 +587,14 @@ $app_list_strings = [
         'High' => 'High',
         'Medium' => 'Medium',
         'Low' => 'Low',
+    ],
+    'projects_plannedactivity_status_dom' => [
+        'planned' => 'planned',
+        'released' => 'released',
+        'active' => 'active',
+        'onhold' => 'on Hold',
+        'completed' => 'completed',
+        'cancelled' => 'cancelled'
     ],
     'projects_activity_status_dom' => [
         'created' => 'created',
@@ -1660,6 +1679,12 @@ $app_list_strings['projects_milestone_status_dom'] = [
 $app_list_strings['projects_activity_status_dom'] = [
     'created' => 'created',
     'billed' => 'billed',
+];
+
+$app_list_strings['projects_activity_settlement_types_dom'] = [
+    'regular' => 'regular',
+    'goodwill' => 'goodwill',
+    'exclude' => 'exclude'
 ];
 
 //ProductAttributes

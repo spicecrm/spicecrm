@@ -116,6 +116,8 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
             // add the end date
             fields[this.fieldend] = newEndDate;
+        } else if (!this.model.getField(this.fieldend)) {
+            fields[this.fieldend] = new moment(date);
         }
 
         // set the fields on the model

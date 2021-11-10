@@ -1,0 +1,18 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <button (click)="cancel()" *ngIf="value && canManage" class="slds-m-right--x-small slds-button slds-button--icon">
+            <system-button-icon icon="clear"></system-button-icon>
+        </button>
+        <system-display-datetime [date]="value"></system-display-datetime>
+        <button (click)="record()" *ngIf="!value && canManage" class="slds-col--bump-left slds-button slds-button--icon">
+            <system-button-icon icon="clock"></system-button-icon>
+        </button>
+        <button (click)="start()" *ngIf="!value && canManage" class="slds-col--bump-left slds-button slds-button--icon">
+            <system-button-icon icon="play"></system-button-icon>
+        </button>
+        <button (click)="stop()" *ngIf="value && canManage" class="slds-col--bump-left slds-m-left--x-small slds-button slds-button--icon">
+            <system-button-icon icon="stop"></system-button-icon>
+        </button>
+    </div>
+</field-generic-display>
