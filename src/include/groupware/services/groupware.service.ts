@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
+import {broadcast} from "../../../services/broadcast.service";
 
 /**
  * Groupware Service is used to communicate between SpiceCRM and a 3rd party platform.
@@ -50,7 +51,8 @@ export abstract class GroupwareService {
 
     constructor(
         public backend: backend,
-        public model: model
+        public model: model,
+        public broadcast: broadcast
     ) {
     }
 
@@ -60,6 +62,7 @@ export abstract class GroupwareService {
      */
     public addBean(bean) {
         this.archiveto.push(bean);
+        this.broadcast.broadcastMessage('groupware.activeto', bean);
     }
 
     /**
@@ -69,6 +72,7 @@ export abstract class GroupwareService {
     public removeBean(bean) {
         let foundindex = this.archiveto.findIndex(element => bean.id == element.id);
         this.archiveto.splice(foundindex, 1);
+        this.broadcast.broadcastMessage('groupware.activeto', undefined);
     }
 
     /**
