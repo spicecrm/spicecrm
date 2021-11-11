@@ -7,6 +7,9 @@ import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
+import {session} from "../../../services/session.service";
+
+declare var libphonenumber: any;
 
 /**
  * renders a modal to update the phone fields on a module
@@ -49,6 +52,7 @@ export class TelephonyCallModelUpdate implements OnInit {
         private modal: modal,
         private model: model,
         private view: view,
+        private session: session,
         private metadata: metadata
     ) {
         this.view.displayLabels = false;
@@ -90,7 +94,20 @@ export class TelephonyCallModelUpdate implements OnInit {
         // let await = this.modal.await('LBL_LOADING_DATA');
         this.model.module = this.calldata.relatedmodule;
         this.model.id = this.calldata.relatedid;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.calldata.relateddata);
         this.model.startEdit();
+    }
+
+    /**
+     * gets a formatted MSISDN
+     */
+    get msisdnFormatted() {
+        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.session.authData.address_country && this.calldata.msisdn.length > 5) {
+            let msisdn = this.calldata.msisdn;
+            return libphonenumber.parsePhoneNumberFromString(msisdn, this.session.authData.address_country).formatInternational();
+        } else {
+            return this.calldata.msisdn;
+        }
     }
 
     /**
@@ -101,7 +118,7 @@ export class TelephonyCallModelUpdate implements OnInit {
     }
 
     private copy2Field(field) {
-        this.model.setField(field, this.calldata.msisdn);
+        this.model.setField(field, this.msisdnFormatted);
     }
 
     /**
