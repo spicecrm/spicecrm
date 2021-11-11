@@ -131,6 +131,16 @@ $dictionary['Letter'] = [
             'vname' => 'LBL_CONSUMER',
             'comment'  => 'The link to the consumer',
         ],
+        'consumers' => [
+            'name' => 'consumers',
+            'type' => 'link',
+            'relationship' => 'consumer_letters',
+            'module' => 'Consumers',
+            'bean_name' => 'Contact',
+            'source' => 'non-db',
+            'vname' => 'LBL_CONSUMERS',
+            'comment'  => 'The link to the consumer',
+        ],
 
     ],
     'relationships' => [
