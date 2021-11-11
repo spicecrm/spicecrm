@@ -277,6 +277,9 @@ class Mailbox extends SugarBean {
         switch ($this->transport) {
             case self::TRANSPORT_EWS:
                 return $this->ews_email ?? $this->ews_username;
+            case self::TRANSPORT_PERSONAL_EWS:
+                $current_user = AuthenticationController::getInstance()->getCurrentUser();
+                return $current_user->user_name;
             case self::TRANSPORT_GMAIL:
                 return $this->gmail_email_address ?? $this->gmail_user_name;
             case self::TRANSPORT_PERSONAL_GMAIL:
