@@ -7,11 +7,6 @@ import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from "../../../services/modellist.service";
 
-/**
- * @ignore
- */
-declare var workTime: any;
-
 @Component({
     selector: 'service-calendars',
     templateUrl: './src/modules/servicecalendars/templates/servicecalendars.html',
@@ -76,6 +71,7 @@ export class ServiceCalendars implements OnInit {
      */
     private addCalendar() {
         this.model.module = 'ServiceCalendars';
+        this.model.id = '';
         this.model.initialize();
         this.model.addModel();
     }
@@ -86,6 +82,7 @@ export class ServiceCalendars implements OnInit {
      */
     private addDay() {
         this.model.module = 'ServiceCalendarTimes';
+        this.model.id = '';
         this.model.initialize();
         this.model.addModel(null, null, {servicecalendar_id: this.activeCalendar});
     }
