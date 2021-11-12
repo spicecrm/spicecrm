@@ -14,8 +14,7 @@ import {language} from '../../services/language.service';
     selector: 'validationrules-actions',
     templateUrl: './src/workbench/templates/validationrulesactions.html',
 })
-export class ValidationRulesActions implements OnInit
-{
+export class ValidationRulesActions implements OnInit {
     @Input() data; // validation rule data
     readonly action_options = [
         'set_value',
@@ -29,7 +28,7 @@ export class ValidationRulesActions implements OnInit
         'show',
         'require',
     ];
-    fieldname_options:any[] = [];
+    fieldname_options: any[] = [];
 
     constructor(
         private metadata: metadata,
@@ -40,21 +39,19 @@ export class ValidationRulesActions implements OnInit
     }
 
     // @Inputs are only loaded here...???
-    ngOnInit()
-    {
-        for(let opt in this.metadata.getModuleFields(this.data.module))
-        {
+    ngOnInit() {
+        for (let opt in this.metadata.getModuleFields(this.data.module)) {
             this.fieldname_options.push(opt);
         }
     }
 
-    get actions()
-    {
-        return this.data.actions.filter((e) => {return e.deleted != 1});
+    get actions() {
+        return this.data.actions.filter((e) => {
+            return e.deleted != 1
+        });
     }
 
-    addAction()
-    {
+    addAction() {
         return this.data.actions.push({
             id: this.utils.generateGuid(),
             sysuimodelvalidation_id: this.data.id,
@@ -62,14 +59,13 @@ export class ValidationRulesActions implements OnInit
         });
     }
 
-    removeAction(id)
-    {
-        let idx = this.data.actions.findIndex((e) => {return e.id == id});
-        if( this.data.actions[idx].isnewrecord )
-        {
-            this.data.actions.splice(idx,1);
-        }
-        else {
+    removeAction(id) {
+        let idx = this.data.actions.findIndex((e) => {
+            return e.id == id
+        });
+        if (this.data.actions[idx].isnewrecord) {
+            this.data.actions.splice(idx, 1);
+        } else {
             this.data.actions[idx].deleted = 1;
         }
         return true;
