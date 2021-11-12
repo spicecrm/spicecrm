@@ -34,6 +34,9 @@ export class ServiceSelectQueueModal {
             for (let queue of queues.list) {
                 if (queue.id != this.parentqueue_id) {
                     this.queues.push(queue);
+                    this.queues = this.queues.sort( (a,b) => {
+                        return a.name.localeCompare(b.name);
+                    });
                 }
             }
             this.loading = false;
@@ -49,6 +52,7 @@ export class ServiceSelectQueueModal {
 
         this.model.setField('servicequeue_id', this.selectedqueueid);
         this.model.setField('servicequeue_name', this.getQueueName(this.selectedqueueid));
+        this.model.setField('serviceticket_status', 'In Process');
         this.model.save();
 
         if(this.note){
@@ -57,6 +61,8 @@ export class ServiceSelectQueueModal {
             this.serviceticketnote.setField('description', this.note);
             this.serviceticketnote.save();
         }
+
+
 
         this.self.destroy();
     }
