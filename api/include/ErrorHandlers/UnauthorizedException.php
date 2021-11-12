@@ -5,7 +5,8 @@ class UnauthorizedException extends Exception {
 
     protected $isFatal = false;
     protected $httpCode = 401;
-    protected $loginBlocked = false;
+    protected $userBlocked = false;
+    protected $ipBlocked = false;
 
     /**
      * UnauthorizedException constructor.
@@ -30,13 +31,22 @@ class UnauthorizedException extends Exception {
         parent::__construct( isset( $message ) ? $message : 'No Authorization', $errorCode );
     }
 
-    public function setLoginBlocked( $bool ) {
-        $this->loginBlocked = $bool;
+    public function setUserBlocked( $bool ) {
+        $this->userBlocked = $bool;
         return $this;
     }
 
-    public function isLoginBlocked() {
-        return $this->loginBlocked;
+    public function setIPblocked( $bool ) {
+        $this->ipBlocked = $bool;
+        return $this;
+    }
+
+    public function isUserBlocked() {
+        return $this->userBlocked;
+    }
+
+    public function isIPblocked() {
+        return $this->ipBlocked;
     }
 
 }
