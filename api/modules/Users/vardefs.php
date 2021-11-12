@@ -298,7 +298,6 @@ $dictionary['User'] = [
             'name' => 'date_modified',
             'vname' => 'LBL_DATE_MODIFIED',
             'type' => 'datetime',
-            'required' => true,
             'studio' => [
                 'editview' => false,
                 'quickcreate' => false,
