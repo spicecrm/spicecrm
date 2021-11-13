@@ -88,7 +88,7 @@ class SpiceFileUtils
      * @param $context
      * @return boolean - Returns a file pointer on success, false otherwise
      */
-    public static function spiceFopen($filename, $mode, $use_include_path = false, $context = null):bool {
+    public static function spiceFopen($filename, $mode, $use_include_path = false, $context = null) {
         //check to see if the file exists, if not then use touch to create it.
         if (!file_exists($filename)) {
             self::spiceTouch($filename);
@@ -391,9 +391,14 @@ class SpiceFileUtils
                 '// created: ' . date('Y-m-d H:i:s') . "\n";
         }
         $exp = var_export($the_array, TRUE);
-        $the_string .= "\$$the_name = " .
-            $exp .
-            ";";
+        $patterns = [
+            "/array \(/" => '[',
+            "/^([ ]*)\)(,?)$/m" => '$1]$2',
+            "/=>[ ]?\n[ ]+\[/" => '=> [',
+            "/([ ]*)(\'[^\']+\') => ([\[\'])/" => '$1$2 => $3',
+        ];
+        $exp = preg_replace(array_keys($patterns), array_values($patterns), $exp);
+        $the_string .= "\$$the_name = $exp;";
 
         return self::spiceFilePutContents($the_file, $the_string, LOCK_EX) !== false;
     }
