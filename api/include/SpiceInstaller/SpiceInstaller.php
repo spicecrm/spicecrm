@@ -348,8 +348,6 @@ class SpiceInstaller
             'site_url' => $postData['backendconfig']['backendUrl'],
             'developerMode' => false,
             'cache_dir' => 'cache/',
-            'log_dir' => '.',
-            'log_file' => 'spicecrm.log',
             'session_dir' => '',
             'tmp_dir' => 'cache/xml/',
             'media_files_dir' => 'media/',
@@ -358,13 +356,20 @@ class SpiceInstaller
             'import_max_records_per_file' => 500,
             'unique_key' => md5(SpiceUtils::createGuid()),
             'verify_client_ip' => false,
-            'krest' =>
-                [
-                    'error_reporting' => 22517,
-                    'display_errors' => 0,
-                ],
+            'krest' => [
+                'error_reporting' => 22517,
+                'display_errors' => 0,
+            ],
             'logger' => [
-                'level' => 'error',
+                'level' => 'fatal,error',
+                'file' => [
+                    'ext' => 'log',
+                    'name' => 'spicecrm',
+                    'dateFormat' => '%c',
+                    'maxSize' => '10MB',
+                    'maxLogs' => 10,
+                    'suffix' => '',
+                ]
             ],
             'frontend_url' => $postData['backendconfig']['frontendUrl']
         ];
@@ -380,10 +385,6 @@ class SpiceInstaller
     {
         SpiceFileUtils::spiceFilePutContents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$sugar_config=');
         SpiceFileUtils::spiceWriteArrayToFile("sugar_config", $spice_config, 'config.php');
-        if (!file_exists('config_override.php')) {
-            $overrides = "\$sugar_config['syslanguages']['spiceuisource']='db';";
-            file_put_contents('config_override.php', '<?php' . PHP_EOL . '/***CONFIGURATOR***/' . PHP_EOL . $overrides . PHP_EOL . '/***CONFIGURATOR***/');
-        }
         return true;
     }
 
@@ -424,7 +425,7 @@ class SpiceInstaller
 
         $db = $this->dbManagerFactory->getInstance();
 
-        if (!empty($db) && isset($postData['databaseuser']) && in_array( 'db_user_name' ,$postData['databaseuser'])) {
+        if (!empty($db) && isset($postData['databaseuser']) && in_array('db_user_name', $postData['databaseuser'])) {
             $db->createDBuser($dbconfig['db_name'], $dbconfig['db_host_name'], $postData['databaseuser']['db_user_name'], $postData['databaseuser']['db_password']);
         }
         return $db;
@@ -657,7 +658,7 @@ class SpiceInstaller
         $postData = $body->getParsedBody();
 
         //generate a new sugar_config
-        $newSugarConfig= $this->generateSugarConfig($postData);
+        $newSugarConfig = $this->generateSugarConfig($postData);
 
         //assign to global instance
         SpiceConfig::getInstance()->config = $this->generateSugarConfig($postData);
