@@ -218,7 +218,6 @@ class SpiceACLObject extends SugarBean
     */
     public function getUserACLObjects($module = null)
     {
-        global  $timedate;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 

@@ -81,8 +81,6 @@ if (empty($GLOBALS['installing'])) {
     // load the config from the db and populate to \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config
     SpiceConfig::getInstance()->loadConfigFromDB();
 
-    $GLOBALS['timedate'] = TimeDate::getInstance();
-
     $current_user = BeanFactory::getBean('Users');//todo-uebelmar clarify... no global $current_user .. this variable has no usage and no scope
     $system_config = BeanFactory::getBean('Administration');
     $system_config->retrieveSettings();

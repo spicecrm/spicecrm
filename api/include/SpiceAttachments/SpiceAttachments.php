@@ -170,7 +170,7 @@ class SpiceAttachments
             'id' => $guid,
             'user_id' => $current_user->id,
             'user_name' => $current_user->user_name,
-            'date' => $GLOBALS['timedate']->nowDb(),
+            'date' => TimeDate::getInstance()->nowDb(),
             'text' => nl2br($file['text']),
             'filename' => $filename,
             'filesize' => $filesize,
