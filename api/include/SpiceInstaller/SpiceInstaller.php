@@ -9,6 +9,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\Users\User;
@@ -344,42 +346,25 @@ class SpiceInstaller
             'dbconfigoption' => $postData['dboptions'],
             'fts' => $postData['fts'],
             'site_url' => $postData['backendconfig']['backendUrl'],
-            'developerMode' => (empty($postData['backendconfig']['developerMode']) || $postData['backendconfig']['developerMode'] == 'false' ? false : true),
+            'developerMode' => false,
             'cache_dir' => 'cache/',
             'log_dir' => '.',
             'log_file' => 'spicecrm.log',
             'session_dir' => '',
-            'sugar_version' => '2020.01.00',
-            'default_language' => $postData['language']['language_code'],
             'tmp_dir' => 'cache/xml/',
             'media_files_dir' => 'media/',
             'upload_dir' => 'upload/',
             'upload_maxsize' => 30000000,
             'import_max_records_per_file' => 500,
-            'unique_key' => md5(create_guid()),
+            'unique_key' => md5(SpiceUtils::createGuid()),
             'verify_client_ip' => false,
             'krest' =>
                 [
                     'error_reporting' => 22517,
                     'display_errors' => 0,
                 ],
-            'languages' => [
-                $postData['language']['language_code'] => $postData['language']['language_name']
-            ],
             'logger' => [
-//                'default' => 'SpiceLogger',
                 'level' => 'error',
-//                'file' => [
-//                    'ext' => '.log',
-//                    'name' => 'sugarcrm',
-//                    'dateFormat' => '%c',
-//                    'maxSize' => '10MB',
-//                    'maxLogs' => 10,
-//                    'suffix' => '',
-//                ],
-//                'db' => [
-//                    'clean_interval' => '7 DAY',
-//                ],
             ],
             'frontend_url' => $postData['backendconfig']['frontendUrl']
         ];
@@ -391,10 +376,10 @@ class SpiceInstaller
      * @param $postData
      * @return boolean
      */
-    private function writeConfig($sugar_config)
+    private function writeConfig($spice_config)
     {
-        file_put_contents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$sugar_config=');
-        write_array_to_file("sugar_config", $sugar_config, 'config.php');
+        SpiceFileUtils::spiceFilePutContents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$sugar_config=');
+        SpiceFileUtils::spiceWriteArrayToFile("sugar_config", $spice_config, 'config.php');
         if (!file_exists('config_override.php')) {
             $overrides = "\$sugar_config['syslanguages']['spiceuisource']='db';";
             file_put_contents('config_override.php', '<?php' . PHP_EOL . '/***CONFIGURATOR***/' . PHP_EOL . $overrides . PHP_EOL . '/***CONFIGURATOR***/');
