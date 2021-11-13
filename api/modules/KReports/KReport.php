@@ -345,8 +345,6 @@ class KReport extends SugarBean
 
     function buildLinkArray($fieldArray)
     {
-        global $app_list_strings, $timedate;
-
         $linkArray = [];
 
         foreach ($fieldArray as $fieldId => $fieldName) {
@@ -366,24 +364,6 @@ class KReport extends SugarBean
         }
         return $linkArray;
     }
-
-    /* widgets removed
-    function evaluateWidgets($fieldArray, $excludeFields = array()) {
-        global $app_list_strings, $timedate;
-
-        $listFieldArray = json_decode(html_entity_decode($this->listfields, ENT_QUOTES, 'UTF-8'), true);
-
-        foreach ($fieldArray as $fieldID => $fieldValue) {
-            if (isset($this->listFieldArrayById [$fieldID] ['widget']) && $this->listFieldArrayById [$fieldID] ['widget'] != '') {
-                require_once ('modules/KReports/KReporterWidgets/' . $this->listFieldArrayById [$fieldID] ['widget'] . '.php');
-                $widgetClass = new $this->listFieldArrayById[$fieldID]['widget']();
-                $fieldValue = $widgetClass->renderField($fieldValue);
-            }
-            $returnArray [$fieldID] = $fieldValue;
-        }
-        return $returnArray;
-    }
-    */
 
     function calculateValueOfTotal($fieldArray, &$cumulatedArray = [])
     {
@@ -424,9 +404,6 @@ class KReport extends SugarBean
 
     function formatFields($fieldArray, $excludeFields = [], $toPdf = false, $forceUTF8 = false)
     {
-        //require_once('modules/Currencies/Currency.php');
-
-        global $app_list_strings, $mod_strings, $timedate;
 
         // 2012-03-29 memorize the complete fields ... has issues with the currencies
         $completeFieldArray = $fieldArray;
@@ -544,8 +521,6 @@ class KReport extends SugarBean
 
     function formateDateTime($fieldArray, $excludeFields = [])
     {
-
-        global $app_list_strings, $timedate;
 
         foreach ($fieldArray as $fieldID => $fieldValue) {
             // get the FieldDetails from the Query
