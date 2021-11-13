@@ -7,6 +7,7 @@ import {HttpClient} from "@angular/common/http";
 import {Router} from '@angular/router';
 import {configurationService} from '../../../services/configuration.service';
 import {toast} from '../../../services/toast.service';
+import {modal} from '../../../services/modal.service';
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -16,10 +17,11 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerReview implements AfterViewInit {
-    private loading: boolean = false;
-    private mapped: any;
+    private installing: boolean = false;
+
     constructor(
         private toast: toast,
+        private modal: modal,
         private http: HttpClient,
         private router: Router,
         private configurationService: configurationService,
@@ -37,11 +39,11 @@ export class SpiceInstallerReview implements AfterViewInit {
      * sends the configuration data to the backend, sets the site data and redirects to the login
      */
     private install() {
-        this.loading = true;
+        this.installing = true;
         this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/process`, this.spiceinstaller.configObject).subscribe(
             (response: any) => {
                 let res = response;
-                this.loading = false;
+                this.installing = false;
                 if (!res.success) {
                     for (let e in res.errors) {
                         this.toast.sendAlert('Error with: ' + e, 'error');
@@ -65,12 +67,12 @@ export class SpiceInstallerReview implements AfterViewInit {
                 }
             },
             (error: any) => {
-                this.loading = false;
                 switch (error.status) {
                     case 500:
                         this.toast.sendAlert(error.message, 'error');
                         break;
                 }
+                this.installing = false;
             });
     }
 }
