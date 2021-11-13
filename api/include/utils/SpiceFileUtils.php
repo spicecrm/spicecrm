@@ -375,6 +375,30 @@ class SpiceFileUtils
     }
 
     /**
+     * @param $the_name
+     * @param $the_array
+     * @param $the_file
+     * @param string $mode
+     * @param string $header
+     * @return bool
+     */
+    public static function spiceWriteArrayToFile( $the_name, $the_array, $the_file, $mode="w", $header='' )
+    {
+        if(!empty($header) && ($mode != 'a' || !file_exists($the_file))){
+            $the_string = $header;
+        }else{
+            $the_string =   "<?php\n" .
+                '// created: ' . date('Y-m-d H:i:s') . "\n";
+        }
+        $exp = var_export($the_array, TRUE);
+        $the_string .= "\$$the_name = " .
+            $exp .
+            ";";
+
+        return self::spiceFilePutContents($the_file, $the_string, LOCK_EX) !== false;
+    }
+
+    /**
      * Guess MIME type for file
      * @param string $filename
      * @return string MIME type
