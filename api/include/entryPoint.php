@@ -85,6 +85,5 @@ if (empty($GLOBALS['installing'])) {
     $system_config = BeanFactory::getBean('Administration');
     $system_config->retrieveSettings();
 
-    LogicHook::getInstance()->call_custom_logic('', 'after_entry_point');
 }
 
