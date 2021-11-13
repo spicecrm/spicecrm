@@ -667,7 +667,6 @@ class SpiceInstaller
     public function install($body)
     {
         set_time_limit(30000);
-        $GLOBALS['timedate'] = new TimeDate();
 
         $errors = [];
         $postData = $body->getParsedBody();

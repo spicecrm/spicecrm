@@ -68,7 +68,6 @@ try {
         // load the core dictionary files
         SpiceDictionaryHandler::loadMetaDataFiles();
 
-        $GLOBALS['timedate'] = TimeDate::getInstance();
         $RESTManager->authenticate();
 
         // register the upload stream handler
