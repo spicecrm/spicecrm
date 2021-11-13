@@ -51,17 +51,6 @@ class Task extends SugarBean
     public $object_name = "Task";
     public $module_dir = 'Tasks';
 
-    // This is used to retrieve related fields from form posts.
-    public $additional_column_fields = [
-        'assigned_user_name',
-        'assigned_user_id',
-        'contact_name',
-        'contact_phone',
-        'contact_email',
-        'parent_name',
-    ];
-
-
     /**
      * Available status values
      */
@@ -71,13 +60,6 @@ class Task extends SugarBean
     const PENDING_INPUT = 'Pending Input';
     const DEFERRED = 'Deferred';
 
-    /**
-     * Task constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * save
@@ -124,97 +106,6 @@ class Task extends SugarBean
         }
         return '';
     }
-
-
-    function get_user_tasks($user, $timespan = 'today')
-    {
-
-        $timedate = TimeDate::getInstance();
-
-        $template = $this;
-
-        // get the own meetings
-        $myquery = "SELECT id FROM tasks WHERE deleted = 0 AND assigned_user_id = '$user->id' AND status in ('Not Started', 'In Progress', 'Pending Input')";
-
-        // add the timespan
-        switch ($timespan) {
-            case 'all':
-                $end = new DateTime();
-                $end->setTime(23, 59, 59);
-                $myquery .= " AND tasks.date_due <= '" . $timedate->asDb($end) . "'";
-                break;
-            case 'today':
-                $start = new DateTime();
-                $start->setTime(0, 0, 0);
-                $end = new DateTime();
-                $end->setTime(23, 59, 59);
-                $myquery .= " AND tasks.date_due >= '" . $timedate->asDb($start) . "' AND tasks.date_due <= '" . $timedate->asDb($end) . "'";
-                break;
-            case 'overdue':
-                $end = new DateTime();
-                $end->setTime(0, 0, 0);
-                $myquery .= " AND tasks.date_due < '" . $timedate->asDb($end) . "'";
-                break;
-            case 'future':
-                $start = new DateTime();
-                $start->setTime(0, 0, 0);
-                $myquery .= " AND tasks.date_due > '" . $timedate->asDb($start) . "''";
-                break;
-        }
-
-        $result = $this->db->query($myquery, true);
-
-        $list = [];
-
-        while ($row = $this->db->fetchByAssoc($result)) {
-            $record = BeanFactory::getBean('Tasks', $row['id']);
-
-            if ($record != null) {
-                // this copies the object into the array
-                $list[] = $record;
-            }
-        }
-        return $list;
-
-    }
-
-    /*
-     * function to retrieve a query string for the activity stream
-     */
-    function get_activities_query($parentModule, $parentId, $own = false)
-    {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $query = "SELECT id, date_due sortdate, 'Tasks' module FROM tasks where ((parent_type = '$parentModule' and parent_id = '$parentId') or contact_id = '$parentId') and deleted = 0 and status in ('In Progress', 'Not Started', 'Pending Input')";
-
-        switch ($own) {
-            case 'assigned':
-                $query .= " AND tasks.assigned_user_id='$current_user->id'";
-                break;
-            case 'created':
-                $query .= " AND tasks.created_by='$current_user->id'";
-                break;
-        }
-
-        return $query;
-    }
-
-    function get_history_query($parentModule, $parentId, $own = false)
-    {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $query = "SELECT DISTINCT(id), date_due sortdate, 'Tasks' module FROM tasks where ((parent_type = '$parentModule' and parent_id = '$parentId') or contact_id = '$parentId') and deleted = 0 and status not in ('In Progress', 'Not Started', 'Pending Input')";
-
-        switch ($own) {
-            case 'assigned':
-                $query .= " AND tasks.assigned_user_id='$current_user->id'";
-                break;
-            case 'created':
-                $query .= " AND tasks.created_by='$current_user->id'";
-                break;
-        }
-
-        return $query;
-    }
-
 
     /**
      * sets the proper date either date_entered, date_start or date_
