@@ -59,12 +59,18 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         private metadata: metadata,
         private broadcast: broadcast,
     ) {
+        // build in any case if the items had already been passed in
+        this.buildItems();
+
+        // add the subscriber
         this.subscription.add(
             this.broadcast.message$.subscribe(msg => {
                     if (msg.messagetype == 'model.save' || msg.messagetype == 'model.loaded' && msg.messagedata.module === this.model.module) {
                         this.buildItems();
                     }
-                }));
+                }
+            )
+        );
 
         // determine the list fieldset
         let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
