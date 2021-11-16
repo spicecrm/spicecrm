@@ -16,55 +16,51 @@
             </div>
         </div>
         <div class="slds-m-horizontal--x-small slds-show--medium">
-            <button class="slds-button slds-button_neutral" (click)="settle()"><system-label label="LBL_SETTLE"></system-label></button>
+            <button [disabled]="!canSettle" class="slds-button slds-button_neutral" (click)="settle()"><system-label label="LBL_SETTLE"></system-label></button>
+            <button [disabled]="!canSettle" class="slds-button slds-button--icon slds-button--icon-border" (click)="loadUnsettledActivities()"><system-button-icon icon="refresh"></system-button-icon></button>
         </div>
         <!--object-action-container [actionset]="actionSet"></object-action-container-->
     </div>
 </div>
-<div>
-    <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered" aria-label="Example table of Opportunities with no row hovers">
-        <thead>
-            <tr class="slds-line-height_reset">
-                <th class="" scope="col" style="width: 2.5rem">
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="name"></system-label-fieldname></div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="projectplannedactivity_name"></system-label-fieldname></div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="created_by_name"></system-label-fieldname></div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="activity_start"></system-label-fieldname></div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate">duration</div>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let projectActivity of projectActivities" [system-model-provider]="{module:'ProjectActivities', data:projectActivity}" >
-                <td>
-                    <system-checkbox [(ngModel)]="projectActivity.selected"></system-checkbox>
-                </td>
-                <td>
-                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="name"></field-container></div>
-                </td>
-                <td>
-                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="projectplannedactivity_name"></field-container></div>
-                </td>
-                <td>
-                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="created_by_name"></field-container></div>
-                </td>
-                <td>
-                    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="activity_start"></field-container></div>
-                </td>
-                <td>
-                    <div class="slds-truncate"><system-input-number [(ngModel)]="projectActivity.activity_duration" [asNumber]="true"></system-input-number></div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div system-to-bottom [system-overlay-loading-spinner]="loading">
+    <div *ngFor="let projectWBS of projectWBSs">
+        <h2 class="slds-text-heading--small slds-p-around--small">{{projectWBS.name}}</h2>
+        <table class="slds-table slds-table--fixed-layout slds-no-row-hover slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col" style="width: 1.5rem"></th>
+                    <th style="width: 50%" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="name"></system-label-fieldname></div>
+                    </th>
+                    <th style="width: 50%" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="projectplannedactivity_name"></system-label-fieldname></div>
+                    </th>
+                    <th style="width: 120px" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="created_by_name"></system-label-fieldname></div>
+                    </th>
+                    <th style="width: 130px" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="activity_start"></system-label-fieldname></div>
+                    </th>
+                    <th style="width: 100px" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="settlement_type"></system-label-fieldname></div>
+                    </th>
+                    <th style="width: 80px" class="slds-text-align--center" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="activity_duration"></system-label-fieldname></div>
+                    </th>
+                    <th style="width: 120px" class="slds-text-align--center" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectActivities" field="corrected_duration"></system-label-fieldname></div>
+                    </th>
+                    <th style="width: 2rem" class="" scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let projectActivity of projectWBSActivities(projectWBS); trackBy: trackByFn" project-settlement-line [projectactivitiy]="projectActivity"></tr>
+                <tr>
+                    <td colspan="7"></td>
+                    <td class="slds-text-align--center">{{projectWBSTotalSettlmentEffort(projectWBS).display}}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
