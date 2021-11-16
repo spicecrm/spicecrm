@@ -1391,16 +1391,16 @@ export class model implements OnDestroy {
         // handle links
         switch (fieldDef.type) {
             case 'link':
-                if (params?.generatenewid) {
-                    if (_.isObject(value) && value.beans) {
-                        const newLink = {beans: {}};
-                        for (let relId in value.beans) {
-                            if (!value.beans.hasOwnProperty(relId)) continue;
-
-                            const newId = this.utils.generateGuid();
-                            newLink.beans[newId] = {...value.beans[relId]};
-                            newLink.beans[newId].id = newId;
+                if (_.isObject(value) && value.beans) {
+                    const newLink = {beans: {}};
+                    for (let relId in value.beans) {
+                        if (!value.beans.hasOwnProperty(relId)) continue;
+                        let newId = relId;
+                        if (params?.generatenewid) {
+                            newId = this.utils.generateGuid();
                         }
+                        newLink.beans[newId] = {...value.beans[relId]};
+                        newLink.beans[newId].id = newId;
                         this.setField(toField, newLink);
                     }
                 }

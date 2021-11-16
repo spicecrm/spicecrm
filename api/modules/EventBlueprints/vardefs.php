@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
