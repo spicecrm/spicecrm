@@ -151,7 +151,11 @@ export class ACLProfilesManagerProfile implements OnChanges {
 
     private sortobjects() {
         this.aclobjects.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
+            if(a.module == b.module) {
+                return a.name.localeCompare(b.name);
+            } else {
+                return a.module.localeCompare(b.module);
+            }
         });
     }
 
