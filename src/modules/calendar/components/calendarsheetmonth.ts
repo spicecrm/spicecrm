@@ -202,7 +202,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
             event.visible = false;
 
-            const eventDaysCount = Math.ceil(event.end.diff(event.start, 'day', true));
+            const eventDaysCount = event.end.diff(event.start, 'day') + 1;
 
             Array.from({length: eventDaysCount}, (_, i) => moment(event.start).add(i, 'days'))
                 .forEach(eventDay => {
@@ -213,7 +213,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             if (!Array.isArray(event.illusions)) return;
 
             event.illusions.forEach(illusion => {
-                const eventDaysCount = Math.ceil(illusion.end.diff(illusion.start, 'day', true));
+                const eventDaysCount = illusion.end.diff(illusion.start, 'day') + 1;
 
                 Array.from({length: eventDaysCount}, (_, i) => moment(illusion.start).add(i, 'days'))
                     .forEach(eventDay => {
@@ -368,19 +368,32 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             .forEach(event => {
                 if (event.isMulti) {
 
-                    const eventDaysCount = Math.ceil(event.end.diff(event.start, 'day', true));
+                    const eventDaysCount = event.end.diff(event.start, 'day') + 1;
 
                     // define the day events
                     Array.from({length: eventDaysCount}, (_, i) => moment(event.start).add(i, 'days'))
                         .forEach(eventDay => {
                             const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
+
+                            if (!day) return;
+
                             if (isNaN(event.sequence)) {
                                 event.sequence = day.events.length;
                             }
                             day.events.push(event);
                             day.visibleEventsCount++;
                         });
-                    const eventWeeksCount = Math.ceil(event.end.diff(event.start, 'week', true));
+                    const gridLastWeek = this.monthGrid[this.monthGrid.length -1];
+                    let eventEnd = moment(event.end);
+                    let eventStart = moment(event.start);
+
+                    if (eventStart.isBefore(this.monthGrid[0][0].date)) {
+                        eventStart = this.monthGrid[0][0].date;
+                    }
+                    if (eventEnd.isAfter(gridLastWeek[gridLastWeek.length - 1].date)) {
+                        eventEnd = gridLastWeek[gridLastWeek.length - 1].date;
+                    }
+                    const eventWeeksCount = eventEnd.diff(eventStart, 'week') + 1;
 
                     if (eventWeeksCount < 2) return;
 
@@ -389,8 +402,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     }
 
                     // define the event weeks
-                    Array.from({length: eventWeeksCount}, (_, i) => moment(moment(event.start).day(this.calendar.weekstartday)).add(i, 'weeks'))
-                        .forEach(week => {
+                    Array.from({length: (eventWeeksCount - 1)}, (_, i) => moment(moment(event.start).day(this.calendar.weekstartday)).add(i + 1, 'weeks'))
+                        .forEach((week, index) => {
+
                             const illusionEvent = {...event};
                             illusionEvent.illusionStart = moment(week.day(this.calendar.weekStartDay));
                             illusionEvent.illusionEnd = illusionEvent.end.isAfter(week, 'weeks') ? moment(week.day(this.calendar.weekDaysCount)) : moment(event.end);
@@ -399,6 +413,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
                 } else {
                     const day = this.monthGrid[this.weeksIndices[event.start.week()]][this.daysIndices[`${event.start.month()}${event.start.date()}`]];
+
+                    if (!day) return;
+
                     event.sequence = day.events.length;
                     day.events.push(event);
                     day.visibleEventsCount++;
@@ -450,6 +467,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private buildGrid() {
 
         this.monthGrid = [];
+        this.weeksIndices = {};
+        this.daysIndices = {};
 
         const firstWeek = moment(this.setdate.format()).date(1).day(this.calendar.weekStartDay).format();
 
@@ -537,12 +556,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             event.style = {display: 'none'};
             return;
         }
-        const eventStart = event.illusionStart || event.start;
-        const eventEnd = event.illusionEnd || event.end;
+        const eventStart = moment(event.illusionStart || event.start);
+        const eventEnd = moment(event.illusionEnd || event.end);
         const weekI = this.weeksIndices[eventStart.week()];
         const startDate = eventStart.isBefore(this.monthGrid[weekI][0].date, 'days') ? this.monthGrid[weekI][0].date : eventStart;
         const endDate = eventEnd.isAfter(this.monthGrid[weekI][this.monthGrid[weekI].length - 1].date, 'days') ? this.monthGrid[weekI][this.monthGrid[weekI].length - 1].date : eventEnd;
-        const length = Math.ceil(endDate.diff(startDate, 'day', true));
+        // reset the start date
+        startDate.set({hour: 0, minute: 0, second: 0});
+        const length = endDate.diff(startDate, 'day') + 1;
         const sheetContainer = this.sheetContainer.element.nativeElement;
 
         if (!('style' in event)) {

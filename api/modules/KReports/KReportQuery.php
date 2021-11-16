@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\KReports;
 
 use DateInterval;
 use DateTime;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 use SpiceCRM\modules\KReports\KReportQueryArray;
@@ -965,13 +966,13 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 if ($valuekey != '')
                     $value = str_replace('T', ' ', $valuekey);
                 else
-                    $value = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$value), false);
+                    $value = TimeDate::getInstance()->to_db_date(str_replace('T', ' ' ,$value), false);
 
 
                 if ($valuetokey != '')
                     $valueto = str_replace('T', ' ' ,$valuetokey);
                 else
-                    $valueto = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$valueto), false);
+                    $valueto = TimeDate::getInstance()->to_db_date(str_replace('T', ' ' ,$valueto), false);
             }
             if ($this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo') {
                 //2011-07-17 .. db formated dtae stroed in key field
@@ -980,7 +981,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 else {
                     // legacy handling ... try to interpret date
                     $timeArray = explode(' ', str_replace('T', ' ', $value));
-                    $value = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
+                    $value = TimeDate::getInstance()->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                 }
 
                 if ($valueto != '' || $valuetokey != '') {
@@ -989,7 +990,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     else {
                         // legacy handling ... try to interpret date
                         $timeArray = explode(' ', str_replace('T', ' ', $valueto));
-                        $valueto = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
+                        $valueto = TimeDate::getInstance()->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                     }
                 }
             }
@@ -1041,7 +1042,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             break;
                         //		case 'date':
                         //		case 'datetime':
-                        //			$thisWhereString .= ' = \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                        //			$thisWhereString .= ' = \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                         //			break;
                         default:
                             //BEGIN ticket 0001025 maretval 2019-11-26 implement grouping in where clause
@@ -1107,7 +1108,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             case 'after':
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date no handled in client
-                // $thisWhereString .= ' > \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                // $thisWhereString .= ' > \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                 $thisWhereString .= ' > \'' . $value . '\'';
                 break;
             case 'less':
@@ -1116,7 +1117,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             case 'before':
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date no handled in client
-                // $thisWhereString .= ' < \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                // $thisWhereString .= ' < \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                 $thisWhereString .= ' < \'' . $value . '\'';
                 break;
             case 'greaterequal':
@@ -1141,7 +1142,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date handling now on client side
                 if ($this->fieldNameMap[$fieldid]['type'] == 'date' || $this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo')
-                    // $thisWhereString .= ' >= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $GLOBALS['timedate']->to_db_date($valueto, false) . '\'';
+                    // $thisWhereString .= ' >= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . TimeDate::getInstance()->to_db_date($valueto, false) . '\'';
                     $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $valueto . '\'';
                 elseif ($this->fieldNameMap[$fieldid]['type'] == 'varchar' || $this->fieldNameMap[$fieldid]['type'] == 'name') {
                     //2012-11-24 change so we increae the last char by one ord numkber and change to a smaller than
@@ -1294,7 +1295,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 } else
                     // 2011-03-25 date handling no on client side
-                    //$thisWhereString .= ' >= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    //$thisWhereString .= ' >= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                     $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'lastnweeks':
@@ -1368,9 +1369,9 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     $date = time();
                     $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 } else {
-                    //$conCatAdd = ' <= \'' . $GLOBALS['timedate']->to_db_date($value) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s') . '\'';
+                    //$conCatAdd = ' <= \'' . TimeDate::getInstance()->to_db_date($value) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s') . '\'';
                     // 2011-03-25 date handling now on client side
-                    // $thisWhereString .= ' <= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    // $thisWhereString .= ' <= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                     $thisWhereString .= ' <= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 }
                 break;

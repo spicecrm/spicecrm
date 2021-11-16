@@ -69,6 +69,37 @@ $routes = [
         ]
     ],
     [
+        'method' => 'put',
+        'route' => '/module/EmailSchedules/{id}/cancel',
+        'class' => EmailSchedulesController::class,
+        'function' => 'cancelSchedule',
+        'description' => 'cancelles a scheduled email',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the record',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',
+            ]
+        ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/module/EmailSchedules/{id}/beans',
+        'class' => EmailSchedulesController::class,
+        'function' => 'getScheduledBeans',
+        'description' => 'retrives all beans for the Schedule',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the record',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
         'method' => 'post',
         'route' => '/module/EmailSchedules/{id}/{parentmodule}/{parentid}',
         'oldroute' => '/modules/EmailSchedules/saveScheduleFromRelated',
