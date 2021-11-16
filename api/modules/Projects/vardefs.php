@@ -540,6 +540,7 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'name' => 'projectsettlementprofiles',
         'type' => 'link',
         'vname' => 'LBL_PROJECTSETTLEMENTPROFILES',
+        'module' => 'ProjectSettlementProfiles',
         'relationship' => 'projectsettlementprofiles_project',
         'source' => 'non-db',
     ];
