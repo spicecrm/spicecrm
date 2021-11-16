@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Connectivity\SpiceCRMExchangeReSync;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Connectivity\SpiceCRMExchangeSubscriptions;
