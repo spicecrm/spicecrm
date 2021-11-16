@@ -46,7 +46,7 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
     public ngOnInit() {
         // check if we are in readonly mode or if the view shpoudl be set as editable
         if (this.readonly === true || this.componentconfig.readonly) {
-            this.view.isEditable == false;
+            this.view.isEditable = false;
         } else {
             this.view.isEditable = true;
 
