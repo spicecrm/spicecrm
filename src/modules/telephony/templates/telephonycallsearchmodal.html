@@ -1,0 +1,30 @@
+<system-modal>
+    <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+    <system-modal-content system-modal-content-grow>
+        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
+             role="none">
+            <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+            <input [disabled]="searching" system-autofocus class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
+        </div>
+        <ul role="listbox">
+            <li global-header-search-results-item global-header-search-results-item-nonavigation class="slds-box--border slds-m-vertical--xx-small" *ngFor="let searchResult of searchresults" [hit]="searchResult" (selected)="select(searchResult, $event)"></li>
+        </ul>
+        <div class="slds-align--absolute-center" style="height: calc(100% - 50px)" *ngIf="!searchTerm && !searching">
+            <system-label label="LBL_ENTER_SEARCHTERM"></system-label>
+        </div>
+        <div class="slds-align--absolute-center" style="height: calc(100% - 50px)" *ngIf="searchTerm && !searching && searchresults.length ==0">
+            <system-label label="LBL_NO_RECORDS_FOUND"></system-label>
+        </div>
+        <div class="slds-align--absolute-center" style="height: calc(100% - 50px)" *ngIf="searching">
+            <div class="slds-grid slds-grid--vertical">
+            <system-spinner></system-spinner>
+                <div class="slds-p-vertical--small">
+                    <system-label label="LBL_SEARCHING"></system-label>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

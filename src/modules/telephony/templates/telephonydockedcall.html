@@ -30,7 +30,7 @@
     </div>
     <footer class="slds-docked-composer__footer slds-shrink-none slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
         <div class="slds-col_bump-left" *ngIf="componentconfig.actionset; else defaultactions" >
-            <object-action-container [actionset]="componentconfig.actionset" (actionemitter)="handleaction($event)" ></object-action-container>
+            <object-action-container [disabled]="actionsDisabled" [actionset]="componentconfig.actionset" (actionemitter)="handleaction($event)" ></object-action-container>
         </div>
         <ng-template #defaultactions>
             <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
