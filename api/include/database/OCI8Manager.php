@@ -33,6 +33,7 @@ use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 /**
  * OCI8 driver
@@ -296,7 +297,7 @@ class OCI8Manager extends DBManager
             case 'add_time':
                 return "$string + {$additional_parameters[0]}/24 + {$additional_parameters[1]}/1440";
             case 'add_tz_offset' :
-                $getUserUTCOffset = $GLOBALS['timedate']->getUserUTCOffset();
+                $getUserUTCOffset = TimeDate::getInstance()->getUserUTCOffset();
                 $operation = $getUserUTCOffset < 0 ? '-' : '+';
 
                 return $string . ' ' . $operation . ' ' . abs($getUserUTCOffset) . '/1440';
@@ -1545,7 +1546,7 @@ class OCI8Manager extends DBManager
     /**
      * @see DBManager::upsertQuery()
      */
-    public function upsertQuery($table, array $pks, array $data, bool $execute)
+    public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
 
         $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'");
