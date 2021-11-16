@@ -40,8 +40,8 @@ export class EmailSchedulesCancelButton {
                 if(res){
                     this.backend.putRequest(`module/EmailSchedules/${this.model.id}/cancel`).subscribe(
                         res => {
-                            this.actionemitter.emit('save');
                             this.model.setField('email_schedule_status', 'cancelled');
+                            this.actionemitter.emit('save');
                         }
                     );
                 }
