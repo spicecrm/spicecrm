@@ -7,6 +7,7 @@ use SpiceCRM\data\SugarBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 /*********************************************************************************
  * Description: This file handles the Data base functionality for the application.
@@ -582,7 +583,7 @@ class MysqliManager extends DBManager
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
 
-        if(!empty($GLOBALS['sugar_config']['check_query'])){
+        if(!empty(SpiceConfig::getInstance()->config['check_query'])){
             $this->checkQuery($sql);
         }
         if(!$execute) {
@@ -621,7 +622,7 @@ class MysqliManager extends DBManager
         foreach($badQuery as $table=>$data ){
             if(!empty($data)){
                 $warning = ' Table:' . $table . ' Data:' . $data;
-                if(!empty($GLOBALS['sugar_config']['check_query_log'])){
+                if(!empty(SpiceConfig::getInstance()->config['check_query_log'])){
                     LoggerManager::getLogger()->fatal($sql);
                     LoggerManager::getLogger()->fatal('CHECK QUERY:' .$warning);
                 }
@@ -848,7 +849,7 @@ class MysqliManager extends DBManager
             case 'add_time':
                 return "DATE_ADD($string, INTERVAL + CONCAT({$additional_parameters[0]}, ':', {$additional_parameters[1]}) HOUR_MINUTE)";
             case 'add_tz_offset' :
-                $getUserUTCOffset = $GLOBALS['timedate']->getUserUTCOffset();
+                $getUserUTCOffset = TimeDate::getInstance()->getUserUTCOffset();
                 $operation = $getUserUTCOffset < 0 ? '-' : '+';
                 return $string . ' ' . $operation . ' INTERVAL ' . abs($getUserUTCOffset) . ' MINUTE';
             case 'avg':

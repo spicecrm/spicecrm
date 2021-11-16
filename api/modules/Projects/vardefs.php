@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;

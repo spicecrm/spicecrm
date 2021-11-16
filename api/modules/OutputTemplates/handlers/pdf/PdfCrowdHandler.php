@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
 use Pdfcrowd\HtmlToPdfClient;
