@@ -33,10 +33,7 @@ import /*embed*/ {WorkflowManagerDetailTasks} from "./components/workflowmanager
 import /*embed*/ {WorkflowManagerDetailTasksLine} from "./components/workflowmanagerdetailtasksline";
 import /*embed*/ {WorkflowManagerDetailTask} from "./components/workflowmanagerdetailtask";
 import /*embed*/ {WorkflowManagerDetailTaskTaskpanel} from "./components/workflowmanagerdetailtasktaskpanel";
-import /*embed*/ {WorkflowManagerDetailTaskDescriptionpanel} from "./components/workflowmanagerdetailtaskdescriptionpanel";
 import /*embed*/ {WorkflowManagerDetailTaskAssignmentpanel} from "./components/workflowmanagerdetailtaskassignmentpanel";
-import /*embed*/ {WorkflowManagerDetailTaskEmailpanel} from "./components/workflowmanagerdetailtaskemailpanel";
-import /*embed*/ {WorkflowManagerDetailTaskSmspanel} from "./components/workflowmanagerdetailtasksmspanel";
 import /*embed*/ {WorkflowManagerDetailTaskSystemactionsLine} from "./components/workflowmanagerdetailtasksystemactionsline";
 import /*embed*/ {WorkflowManagerDetailConditions} from "./components/workflowmanagerdetailconditions";
 import /*embed*/ {WorkflowPanel} from "./components/workflowpanel";
@@ -72,9 +69,7 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowManagerDetailTasksLine,
         WorkflowManagerDetailTask,
         WorkflowManagerDetailTaskTaskpanel,
-        WorkflowManagerDetailTaskDescriptionpanel,
         WorkflowManagerDetailTaskAssignmentpanel,
-        WorkflowManagerDetailTaskEmailpanel,
         WorkflowManagerDetailTaskSystemactionsLine,
         WorkflowManagerDetailConditions,
         WorkflowPanel,
@@ -95,7 +90,6 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowManagerTaskTypesSystem,
         WorkflowManagerTaskTypesDecision,
         WorkflowManagerTaskTypesSms,
-        WorkflowManagerDetailTaskSmspanel,
         WorkflowManagerTaskTypesStandard,
         WorkflowManagerTaskNextTasks,
         WorkflowPanelTaskStandard,
