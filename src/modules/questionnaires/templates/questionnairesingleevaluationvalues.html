@@ -2,9 +2,9 @@
     <div class="slds-m-horizontal_xx-small slds-m-vertical_small">
         <system-stencil *ngIf="isLoading"></system-stencil>
         <div *ngIf="!isLoading">
-            <span *ngIf="!noParticipation">
-                <span *ngFor="let value of evaluationValues" class="slds-badge slds-badge_lightest slds-text-body_regular quest-eval-catname">{{value.name}} <span class="slds-badge slds-badge slds-text-body_regular quest-eval-points">{{value.points}}</span></span>
-            </span>
+            <div *ngIf="!noParticipation" style="margin-top:-0.5rem;margin-right:-0.25rem">
+                <span *ngFor="let value of evaluationValues" class="slds-badge slds-badge_lightest slds-text-body_regular quest-eval-catname">{{value.name}}<span class="slds-badge slds-badge slds-text-body_regular quest-eval-points">{{value.points}}</span></span>
+            </div>
             <span *ngIf="noParticipation" class="slds-m-horizontal--x-small">
                 <system-label label="MSG_NO_QUESTIONNAIRE_PARTICIPATION_YET"></system-label>
             </span>
