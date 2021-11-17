@@ -80,16 +80,7 @@ $routes = [
                 'required' => false
             ]
         ]
-    ],
-// no longer in use
-//    [
-//        'method'      => 'get',
-//        'route'       => '/module/Activities/{parentmodule}/{parentid}',
-//        'class'       => ActivitiesKRESTController::class,
-//        'function'    => 'loadHistory',
-//        'description' => 'load held activities into activity stream',
-//        'options'     => ['noAuth' => true, 'adminOnly' => false],
-//    ],
+    ]
 ];
 
 $RESTManager->registerRoutes($routes);

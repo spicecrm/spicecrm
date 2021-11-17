@@ -1583,12 +1583,15 @@ $app_list_strings['scrum_status_dom'] = [
 
 $app_list_strings['emailschedule_status_dom'] = [
     'queued' => 'queued',
+    'cancelled' => 'cancelled',
     'sent' => 'sent',
 ];
 
 $app_list_strings['email_schedule_status_dom'] = [
     'open' => 'open',
+    'processing' => 'processing',
     'done' => 'done',
+    'cancelled' => 'cancelled',
     'done_with_errors' => 'done with errors',
     'record_not_loaded' => 'record not loaded',
 ];

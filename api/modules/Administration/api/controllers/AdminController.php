@@ -136,12 +136,7 @@ class AdminController
      * @throws ForbiddenException
      */
     public function writeGeneralSettings(Request $req, Response $res, array $args): Response {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-
-        if (!$current_user->is_admin) {
-            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
-        }
 
         $diffArray = [];
 
@@ -153,14 +148,13 @@ class AdminController
                 switch ($itemname) {
                     case 'name':
                         SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
-                        $query = "UPDATE config SET value = '$itemvalue' WHERE categroy = 'system' AND name = '$itemname'";
+                        $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
                         $db->query($query);
                         break;
                     default:
                         SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
                         $diffArray[$itemname] = $itemvalue;
                 }
-
             }
 
             // handle advanced settings

@@ -793,7 +793,18 @@ $app_list_strings = [
     ],
     'emailschedule_status_dom' => [
         'queued' => 'in der Warteschlange',
-        'sent' => 'gesendet'],
+        'cancelled' => 'abgebrochen',
+        'sent' => 'gesendet'
+    ],
+
+    'email_schedule_status_dom' => [
+        'open' => 'offen',
+        'processing' => 'in Bearbeitung',
+        'done' => 'abgeschlossen',
+        'cancelled' => 'abgebrochen',
+        'done_with_errors' => 'abgeschlossen mit Fehlern',
+        'record_not_loaded' => 'Datensätze nicht geladen',
+    ],
 
 // deferred
     /*// QUEUES MODULE DOMs
