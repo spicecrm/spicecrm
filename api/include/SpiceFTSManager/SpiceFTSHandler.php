@@ -111,6 +111,18 @@ class SpiceFTSHandler
     }
 
     /**
+     * returns if the module should be considered in the phone search
+     *
+     * @param $module the name of the module
+     * @return array|bool
+     */
+    static function checkPhone($module)
+    {
+        $settings = SpiceFTSUtils::getBeanIndexSettings($module);
+        return $settings['phonesearch'] ? true : false;
+    }
+
+    /**
      * processes the search
      *
      * @param $req

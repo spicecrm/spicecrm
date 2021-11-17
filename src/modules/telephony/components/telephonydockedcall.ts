@@ -149,6 +149,14 @@ export class TelephonyDockedCall {
     }
 
     /**
+     * get if the actionset in total should be disabled
+     * only can be used when the relatedid is set and when the status is connected or disconnected
+     */
+    get actionsDisabled(){
+        return !this.calldata.relatedid || (this.calldata.status != 'connected' && this.calldata.status != 'disconnected');
+    }
+
+    /**
      * listen to the handler if an attempt has been saved
      * if yes close the composer otherwise send a toast to the user
      * ToDo: Error handling?

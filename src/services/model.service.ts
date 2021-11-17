@@ -130,7 +130,7 @@ export class model implements OnDestroy {
      *}
      *```
      */
-    public mode$: EventEmitter<string> = new EventEmitter();
+    public mode$: EventEmitter<'edit'|'display'> = new EventEmitter();
 
     /**
      * fires when the editing of the model is cancelled
