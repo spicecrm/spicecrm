@@ -116,7 +116,7 @@ class EmailSchedulesController
         $seed->save();
 
         // cancel all scheudled lines
-        DBManagerFactory::getInstance()->query("UDPATE emailschedules_beans SET emailschedule_status = 'cancelled' WHERE emailschedule_status='queued' AND emailschedule_id='$seed->id'");
+        DBManagerFactory::getInstance()->query("UPDATE emailschedules_beans SET emailschedule_status = 'cancelled' WHERE emailschedule_status='queued' AND emailschedule_id='$seed->id'");
 
         return $res->withJson(['status'=> 'success']);
     }
