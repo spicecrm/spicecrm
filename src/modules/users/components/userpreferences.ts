@@ -71,6 +71,13 @@ export class UserPreferences implements OnDestroy {
         'navigation_paradigm',
         'distance_unit_system'
     ];
+
+    /**
+     * holds an empty  dashboard to help set empty value for default dashboard
+     * @private
+     */
+    private defaultDashboardPlaceHolder = {};
+
     /**
      * holds the dashboard sets
      * @private
@@ -85,7 +92,7 @@ export class UserPreferences implements OnDestroy {
      * holds the home dashboard data
      * @private
      */
-    private homeDashboardData = {};
+    private homeDashboardData: any = {};
     /**
      * holds a list of available dashboards
      * @private
@@ -159,10 +166,23 @@ export class UserPreferences implements OnDestroy {
             this.canEdit = this.metadata.checkModuleAcl('UserPreferences', 'edit');
         }
 
+        this.loadDasboardPlaceHolder();
         this.loadDashboardsLists();
-
         this.loadPreferences();
 
+
+    }
+
+    /**
+     * load dashboard place Holder
+     * to enable us set empty value for the home dashboard preference
+     * @private
+     */
+    private loadDasboardPlaceHolder() {
+        this.defaultDashboardPlaceHolder = {
+            id: '',
+            name: this.language.getLabel('LBL_ROLE_DEFAULT_DASHBOARD')
+        };
     }
 
     /**
@@ -203,7 +223,8 @@ export class UserPreferences implements OnDestroy {
     private loadDashboardsLists() {
         this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboards: any) => {
-                this.dashboards = dashboards.list;
+                // inject empty record for "default dashboard", add the rest
+                this.dashboards = [].concat(this.dashboards, this.defaultDashboardPlaceHolder, dashboards.list);
                 this.setHomeDashboardData(this.preferences.home_dashboard);
             });
         this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
@@ -229,7 +250,6 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private setHomeDashboardData(value) {
-        this.preferences.home_dashboard = value;
         this.homeDashboardData = this.dashboards.find(dashboard => dashboard.id == value);
     }
 

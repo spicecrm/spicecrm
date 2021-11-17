@@ -659,7 +659,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'source'       => 'non-db'
     ];
 }
-if (file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
     $dictionary['Email']['fields']['serviceorders'] = [
         'name'         => 'serviceorders',
         'vname'        => 'LBL_EMAILS_SERVICEORDERS_REL',

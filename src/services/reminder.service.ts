@@ -32,7 +32,7 @@ export class reminder {
 
     public reminders: any[] = [];
     public loaded: boolean = false;
-    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>()
+    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
     constructor(private backend: backend, private broadcast: broadcast, private configuration: configurationService, private session: session) {

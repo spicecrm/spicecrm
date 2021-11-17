@@ -36,9 +36,11 @@
 ********************************************************************************/
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SugarBean;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 require_once('modules/ACLActions/actiondefs.php');
 require_once('modules/ACL/ACLJSController.php');
@@ -252,18 +254,18 @@ class ACLController {
 	public function moduleSupportsACL($module)
     {
 		static $checkModules = [];
-		global $beanFiles, $beanList;
-		if(isset($checkModules[$module])){
+
+		if (isset($checkModules[$module])) {
 			return $checkModules[$module];
 		}
-		if(!isset($beanList[$module])){
+		if (empty(SpiceModules::getInstance()->getBeanName($module))) {
 			$checkModules[$module] = false;
 
-		}else{
+		} else {
             $mod = BeanFactory::getBean($module);
-			if(!is_subclass_of($mod, 'SugarBean')){
+			if (!is_subclass_of($mod, SugarBean::class)) {
 				$checkModules[$module] = false;
-			}else{
+			} else {
 				$checkModules[$module] = $mod->bean_implements('ACL');
 			}
 		}

@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -36,8 +36,8 @@
 global $dictionary;
 $dictionary['User'] = [
     'table' => 'users',
+    'audited' => true,
     'fields' => [
-
         'id' => [
             'name' => 'id',
             'vname' => 'LBL_ID',
@@ -246,6 +246,12 @@ $dictionary['User'] = [
             'default' => '0',
             'studio' => ['listview' => false, 'searchview' => false, 'related' => false],
         ],
+        'is_api_user' => [
+            'name' => 'is_api_user',
+            'vname' => 'LBL_IS_APIUSER',
+            'type' => 'bool',
+            'default' => '0'
+        ],
         'is_dev' => [
             'name' => 'is_dev',
             'vname' => 'LBL_IS_DEVELOPER',
@@ -292,7 +298,6 @@ $dictionary['User'] = [
             'name' => 'date_modified',
             'vname' => 'LBL_DATE_MODIFIED',
             'type' => 'datetime',
-            'required' => true,
             'studio' => [
                 'editview' => false,
                 'quickcreate' => false,
@@ -379,6 +384,12 @@ $dictionary['User'] = [
             'type' => 'phone',
             'dbType' => 'varchar',
             'len' => '50',
+        ],
+        'phone_extension' => [
+            'name' => 'phone_extension',
+            'vname' => 'LBL_EXTENSION_PHONE',
+            'type' => 'varchar',
+            'len' => '5',
         ],
         'status' => [
             'name' => 'status',
@@ -519,7 +530,7 @@ $dictionary['User'] = [
             'name' => 'activity_status_date_modified',
             'type' => 'datetime',
             'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODFIFIED',
+            'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
             'comment' => 'non db field retrieved from the relationship to the meeting call etc'
         ],
         'activity_required' => [
@@ -688,19 +699,42 @@ $dictionary['User'] = [
             'type' => 'varchar',
             'source' => 'non-db',
             'group' => 'email1',
-            'merge_filter' => 'enabled',
-            'required' => true,
+            'merge_filter' => 'enabled'
+        ],
+        'primary_address' => [
+            'name' => 'primary_address',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'vname' => 'LBL_PRIMARY_ADDRESS'
+        ],
+        'opt_in_status' => [
+            'name' => 'opt_in_status',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'comment' => 'possible values opted_in, opted_out, pending'
         ],
         'email_addresses' => [
             'name' => 'email_addresses',
             'type' => 'link',
             'relationship' => 'users_email_addresses',
-            'module' => 'EmailAddress',
+            'module' => 'EmailAddresses',
             'bean_name' => 'EmailAddress',
             'source' => 'non-db',
             'vname' => 'LBL_EMAIL_ADDRESSES',
             'reportable' => false,
+            'default' => true,
             'required' => false,
+            'side' => 'left',
+            'rel_fields' => [
+                'opt_in_status' => [
+                    'type' => 'bool',
+                    'map' => 'opt_in_status'
+                ],
+                'primary_address' => [
+                    'type' => 'bool',
+                    'map' => 'primary_address'
+                ]
+            ],
         ],
         'email_addresses_primary' => [
             'name' => 'email_addresses_primary',
@@ -859,6 +893,7 @@ $dictionary['User'] = [
         ],
         'userabsences' => [
             'name' => 'userabsences',
+            'vname' => 'LBL_USER_ABSENCES',
             'rel_fields' => ['user_id' => ['type' => 'id']],
             'type' => 'link',
             'relationship' => 'users_userabsences',
@@ -867,6 +902,7 @@ $dictionary['User'] = [
         ],
         'repabscences' => [
             'name' => 'repabscences',
+            'vname' => 'LBL_REPRESENTATIVE_DURING_ABSENCE',
             'rel_fields' => ['user_id' => ['type' => 'id']],
             'type' => 'link',
             'relationship' => 'representatives_userabsences',
@@ -948,7 +984,26 @@ $dictionary['User'] = [
             'module' => 'Shops',
             'source' => 'non-db',
         ],
-
+        'spiceaclprofiles' => [
+            'name' => 'spiceaclprofiles',
+            'type' => 'link',
+            'relationship' => 'spiceaclprofiles_users',
+            'module' => 'SpiceACLProfiles',
+            'bean_name' => 'SpiceACLProfile',
+            'source' => 'non-db',
+            'vname' => 'LBL_SPICEACLPROFILES'
+        ],
+        'login_blocked' => [
+            'name' => 'login_blocked',
+            'vname' => 'LBL_LOGIN_BLOCKED',
+            'type' => 'bool',
+            'default' => '0'
+        ],
+        'login_blocked_until' => [
+            'name' => 'login_blocked_until',
+            'vname' => 'LBL_BLOCKED_UNTIL',
+            'type' => 'datetime'
+        ]
     ],
     'indices' => [
         [
@@ -1059,7 +1114,7 @@ $dictionary['User'] = [
 
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
 global $dictionary;
-if (file_exists('modules/ServiceQueues/ServiceQueue.php')) {
+if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
     $dictionary['User']['fields']['servicequeues'] = [
         'vname' => 'LBL_SERVICEQUEUES',
         'name' => 'servicequeues',
@@ -1072,7 +1127,7 @@ if (file_exists('modules/ServiceQueues/ServiceQueue.php')) {
 
 }
 // CR1000333
-if (file_exists('modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
+if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
     $dictionary['User']['fields']['systemdeploymentreleases'] = [
         'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
         'name' => 'systemdeploymentreleases',
@@ -1083,7 +1138,7 @@ if (file_exists('modules/SystemDeploymentReleases/SystemDeploymentRelease.php'))
         'source' => 'non-db'
     ];
 }
-if (file_exists('modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
+if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
     $dictionary['User']['fields']['cr_user_role'] = [
         'vname' => 'LBL_ROLE',
         'name' => 'cr_user_role',
@@ -1104,7 +1159,7 @@ if (file_exists('modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
     ];
 
 }
-if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
+if (file_exists("modules/ServiceTickets")) {
     $dictionary['User']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
@@ -1116,7 +1171,7 @@ if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
     ];
 }
 // Not sure we need this at all.... commented for now
-//if (is_file("modules/ServiceEquipments/ServiceEquipment.php")) {
+//if (file_exists("extensions/modules/ServiceEquipments")) {
 //    $dictionary['User']['fields']['serviceequipments'] = array(
 //        'name' => 'serviceequipments',
 //        'type' => 'link',
@@ -1127,7 +1182,7 @@ if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
 //        'default' => false
 //    );
 //}
-if (is_file("modules/Shops/Shop.php")) {
+if (file_exists("extensions/modules/Shops")) {
     $dictionary['User']['fields']['shops'] = [
         'name' => 'shops',
         'type' => 'link',
@@ -1139,4 +1194,16 @@ if (is_file("modules/Shops/Shop.php")) {
     ];
 }
 
+if (file_exists("modules/DistributionLists")) {
+    $dictionary['User']['fields']['distributionlists'] = [
+        'name' => 'distributionlists',
+        'vname' => 'LBL_DISTRIBUTIONLISTS',
+        'type' => 'link',
+        'relationship' => 'distributionlists_users',
+        'module' => 'DistributionLists',
+        'bean_name' => 'DistributionList',
+        'source' => 'non-db',
+        'comment' => 'DistributionLists the user is allocated to'
+    ];
+}
 

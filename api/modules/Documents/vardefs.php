@@ -309,6 +309,19 @@ $dictionary['Document'] = ['table' => 'documents',
             'type'        => 'parent',
             'source'      => 'non-db'
         ],
+        'folder_id' => [
+            'name'       => 'folder_id',
+            'vname'      => 'LBL_FOLDER_ID',
+            'type'       => 'id'
+        ],
+        'folder' => [
+            'name' => 'folder',
+            'type' => 'link',
+            'relationship' => 'documents_folders',
+            'source' => 'non-db',
+            'module' => 'Folders',
+            'vname' => 'LBL_FOLDERS',]
+
     ],
     'indices' => [
         ['name' => 'idx_doc_cat', 'type' => 'index', 'fields' => ['category_id', 'subcategory_id']],

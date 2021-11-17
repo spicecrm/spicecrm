@@ -1,5 +1,5 @@
 <?php
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data;
 
@@ -757,7 +757,11 @@ class SugarBean
                     // Users/vardefs.php
                     $filename = 'modules/Users/vardefs.php';
                 } else {
-                    $filename = 'modules/' . $module_dir . '/vardefs.php';
+                    if (file_exists( "extensions/modules/{$module_dir}/vardefs.php")) {
+                        $filename = "extensions/modules/{$module_dir}/vardefs.php";
+                    } elseif (file_exists( "modules/{$module_dir}/vardefs.php")) {
+                        $filename = "modules/{$module_dir}/vardefs.php";
+                    }
                 }
             }
 
@@ -784,8 +788,7 @@ class SugarBean
                 $RelationshipDefs = $dictionary[$key]['relationships'];
 
                 $delimiter = ',';
-                global $beanList;
-                $beanList_ucase = array_change_key_case($beanList, CASE_UPPER);
+                $beanList_ucase = array_change_key_case(SpiceModules::getInstance()->getBeanList(), CASE_UPPER);
                 foreach ($RelationshipDefs as $rel_name => $rel_def) {
                     if (isset($rel_def['lhs_module']) and !isset($beanList_ucase[strtoupper($rel_def['lhs_module'])])) {
                         LoggerManager::getLogger()->debug('skipping orphaned relationship record ' . $rel_name . ' lhs module is missing ' . $rel_def['lhs_module']);
@@ -809,7 +812,7 @@ class SugarBean
                         $toInsert = [];
                         foreach ($keys as $key) {
                             if ($key == "id") {
-                                $toInsert[$key] = create_guid();
+                                $toInsert[$key] = SpiceUtils::createGuid();
                             } else if ($key == "relationship_name") {
                                 $toInsert[$key] = $rel_name;
                             } else if (isset($rel_def[$key])) {
@@ -955,7 +958,7 @@ class SugarBean
                 return true;
             }
         }
-        LoggerManager::getLogger()->fatal("SugarBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->module_dir);
+        LoggerManager::getLogger()->info("SugarBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->module_dir);
 
         return false;
     }
@@ -1406,15 +1409,6 @@ class SugarBean
         $this->call_custom_logic("before_save", $custom_logic_arguments);
         unset($custom_logic_arguments);
 
-        // If we're importing back semi-colon separated non-primary emails
-        if ($this->hasEmails() && !empty($this->email_addresses_non_primary) && is_array($this->email_addresses_non_primary)) {
-            // Add each mail to the account
-            foreach ($this->email_addresses_non_primary as $mail) {
-                $this->emailAddress->addAddress($mail);
-            }
-            $this->emailAddress->saveEmailAddress($this->id, $this->module_dir);
-        }
-
         //construct the SQL to create the audit record if auditing is enabled.
         $auditDataChanges = [];
         if ($this->is_AuditEnabled()) {
@@ -1462,7 +1456,6 @@ class SugarBean
         }
 
         $this->call_custom_logic('after_save', '');
-
         // call fts manager to index the bean
         if ($fts_index_bean) {
 
@@ -1616,9 +1609,8 @@ class SugarBean
 
             //method defined in 'include/utils/LogicHook.php'
 
-            $logicHook = new LogicHook();
-            $logicHook->setBean($this);
-            $logicHook->call_custom_logic($this->module_dir, $event, $arguments);
+            $logicHook = LogicHook::getInstance();
+            $logicHook->call_custom_logic($this->module_dir, $this, $event, $arguments);
             $this->logicHookDepth[$event]--;
         }
     }
@@ -2327,7 +2319,7 @@ class SugarBean
                         $this->fill_in_link_field($field['id_name'], $field);
                     }
                     if (!empty($this->{$field['id_name']}) && ($this->object_name != $field['module'] || ($this->object_name == $field['module'] && $this->{$field['id_name']} != $this->id))) {
-                        if (isset($GLOBALS['beanList'][$field['module']])) {
+                        if (SpiceModules::getInstance()->getBeanName($field['module'])) {
 
                                 // change to use of BeanFactory
                                 $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
@@ -2455,7 +2447,7 @@ class SugarBean
         $bean = BeanFactory::getBean($this->_module);
 
         // We have some data.
-        while (($row = $bean->db->fetchByAssoc($result)) != null) {
+        while (($row = $this->db->fetchByAssoc($result)) != null) {
 
             $seed = BeanFactory::getBean($this->_module, $row['id'], ['relationships' => false]);
 
@@ -2482,8 +2474,17 @@ class SugarBean
      */
     function mark_deleted($id)
     {
+        // make sure that we retrieve before we continue in case we did not retrieve before calling this function
+        if (empty($this->id)) {
+            $bean = BeanFactory::getBean($this->module_name, $id, ['relationships' => false ]);
+            // check if retrieve succeed to prevent recursion
+            if (!empty($bean->id)) {
+                $bean->mark_deleted($id);
+                return;
+            }
+        }
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         if (isset($_SESSION['show_deleted'])) {
             $this->mark_undeleted($id);
         } else {
@@ -2537,7 +2538,7 @@ class SugarBean
         $custom_logic_arguments['id'] = $id;
         $this->call_custom_logic("before_restore", $custom_logic_arguments);
 
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         $query = "UPDATE $this->table_name set deleted=0 , date_modified = '$date_modified' where id='$id'";
         $this->db->query($query, true, "Error marking record undeleted: ");
 
@@ -2818,6 +2819,8 @@ class SugarBean
 
     /**
      * Construct where clause from a list of name-value pairs.
+     * if value is passed as array the values are put into an IN statement
+     *
      * @param array $fields_array Name/value pairs for column checks
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return string The WHERE clause
@@ -2829,9 +2832,19 @@ class SugarBean
             if (!empty($where_clause)) {
                 $where_clause .= " AND ";
             }
+
             $name = $this->db->getValidDBName($name);
 
-            $where_clause .= "$name = " . $this->db->quoted($value, false);
+            // if we pass ina  list of values convert to an IN statement
+            if(is_array($value)){
+                $valArray = [];
+                foreach($value as $thisValue){
+                    $valArray[] = $this->db->quoted($thisValue, false);
+                }
+                $where_clause .= "$name IN (" . implode(',', $valArray) . ")";
+            } else {
+                $where_clause .= "$name = " . $this->db->quoted($value, false);
+            }
         }
         if (!empty($where_clause)) {
             if ($deleted) {
@@ -2869,7 +2882,7 @@ class SugarBean
         $where = '';
 
         // make sure there is a date modified
-        $date_modified = $this->db->convert("'" . $GLOBALS['timedate']->nowDb() . "'", 'datetime');
+        $date_modified = $this->db->convert("'" . TimeDate::getInstance()->nowDb() . "'", 'datetime');
 
         $row = null;
         if ($check_duplicates) {
@@ -2951,17 +2964,13 @@ class SugarBean
             case 'edit':
             case 'save':
                 if (!$is_owner && $not_set && !empty($this->id)) {
-                    //$class = get_class($this);
-                    //$temp = new $class();
                     if (!empty($this->fetched_row) && !empty($this->fetched_row['id']) && !empty($this->fetched_row['assigned_user_id']) && !empty($this->fetched_row['created_by'])) {
                         //$temp->populateFromRow($this->fetched_row);
                     } else {
-                        $class = get_class($this);
-                        $temp = new $class();
-                        $temp->retrieve($this->id);
+                        $temp = BeanFactory::getBean($this->module_name, $this->id, ['relationships' => false]);
                         $is_owner = $temp->isOwner($current_user->id);
+                        unset($temp);
                     }
-                    //$is_owner = $temp->isOwner($current_user->id);
                 }
             case 'popupeditview':
             case 'editview':
@@ -3015,10 +3024,8 @@ class SugarBean
      */
     public function checkForDuplicates()
     {
-        global $beanList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $module = array_search($this->object_name, $beanList);
-
+        $module = array_search($this->object_name, SpiceModules::getInstance()->getBeanList());
 
         $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this);
 
@@ -3150,7 +3157,7 @@ class SugarBean
         $clone->cloningData['count']++;
         $clone->new_with_id = true;
         $clone->update_date_entered = true;
-        $clone->date_entered = $GLOBALS['timedate']->nowDb();
+        $clone->date_entered = TimeDate::getInstance()->nowDb();
         $clone->onClone();
         $clone->save();
 

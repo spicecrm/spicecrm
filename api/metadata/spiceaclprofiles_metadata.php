@@ -1,5 +1,5 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 $dictionary ['SpiceACLProfiles_SpiceACLObjects'] = [
     'table' => 'spiceaclprofiles_spiceaclobjects',

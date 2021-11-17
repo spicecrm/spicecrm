@@ -8,5 +8,5 @@ $kreportEmailSubject = 'K Reporter';
 $kreportEmailBody = 'This is your scheduled Report';
 
 // exculde Modules from Selection in Reports
-$excludedModules = ['Schedulers', 'Administration'];
+$excludedModules = ['SchedulerJobs', 'Administration'];
 

@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -191,8 +165,135 @@ $dictionary['Project'] = [
             'module' => 'ProjectMilestones',
             'relationship' => 'projects_projectmilestones',
             'source' => 'non-db',
-        ]
-
+        ],
+        // CR1000674
+        'account_op_id' => [
+            'name' => 'account_op_id',
+            'vname' => 'LBL_ACCOUNT_OP_ID',
+            'type' => 'id',
+            'audited' => true,
+            'comment' => 'ordering party'
+        ],
+        'account_op_name' => [
+            'name' => 'account_op_name',
+            'rname' => 'name',
+            'id_name' => 'account_op_id',
+            'vname' => 'LBL_ACCOUNTOP',
+            'type' => 'relate',
+            'link' => 'projects_accountsop',
+            'isnull' => 'true',
+            'table' => 'accounts',
+            'module' => 'Accounts',
+            'source' => 'non-db',
+        ],
+        'projects_accountsop' => [
+            'name' => 'projects_accountsop',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS_ACCOUNTSOP',
+            'relationship' => 'projects_accountsop',
+            'source' => 'non-db',
+        ],
+        'account_rp_id' => [
+            'name' => 'account_rp_id',
+            'vname' => 'LBL_ACCOUNT_RP_ID',
+            'type' => 'id',
+            'comment' => 'receiving party'
+        ],
+        'account_rp_name' => [
+            'name' => 'account_rp_name',
+            'rname' => 'name',
+            'id_name' => 'account_rp_id',
+            'vname' => 'LBL_ACCOUNTRP',
+            'type' => 'relate',
+            'link' => 'projects_accountsrp',
+            'isnull' => 'true',
+            'table' => 'accounts',
+            'module' => 'Accounts',
+            'source' => 'non-db',
+        ],
+        'projects_accountsrp' => [
+            'name' => 'projects_accountsrp',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS_ACCOUNTSRP',
+            'relationship' => 'projects_accountsrp',
+            'source' => 'non-db',
+        ],
+        'description_header' => [
+            'name' => 'description_header',
+            'vname' => 'LBL_HEADER',
+            'type' => 'text',
+            'comment' => 'text to use as header for full project description'
+        ],
+        'description_footer' => [
+            'name' => 'description_footer',
+            'vname' => 'LBL_FOOTER',
+            'type' => 'text',
+            'comment' => 'text to use as footer for full project description'
+        ],
+        'paymentterms' => [
+            'name' => 'paymentterms',
+            'vname' => 'LBL_PAYMENTTERMS',
+            'type' => 'enum',
+            'len' => 10,
+            'options' => 'salesdocs_paymentterms',
+        ],
+        'companycode_id' => [
+            'name' => 'companycode_id',
+            'vname' => 'LBL_COMPANYCODE',
+            'type' => 'id',
+        ],
+        'companycode_name' => [
+            'name' => 'companycode_name',
+            'rname' => 'name',
+            'id_name' => 'companycode_id',
+            'vname' => 'LBL_COMPANY',
+            'type' => 'relate',
+            'link' => 'companycodes',
+            'isnull' => 'true',
+            'table' => 'companycodes',
+            'module' => 'CompanyCodes',
+            'source' => 'non-db'
+        ],
+        'companycodes' => [
+            'name' => 'companycodes',
+            'type' => 'link',
+            'vname' => 'LBL_COMPANYCODES',
+            'relationship' => 'companycodes_project',
+            'source' => 'non-db',
+        ],
+        'contact_id' => [
+            'name' => 'contact_id',
+            'vname' => 'LBL_CONTACT_ID',
+            'type' => 'id',
+            'comment' => 'ID of the primary contact'
+        ],
+        'contact_name' => [
+            'name' => 'contact_name',
+            'rname' => 'name',
+            'db_concat_fields' => [
+                0 => 'salutation',
+                1 => 'degree1',
+                2 => 'first_name',
+                3 => 'last_name',
+                4 => 'degree2'
+            ],
+            'id_name' => 'contact_id',
+            'vname' => 'LBL_CONTACT',
+            'type' => 'relate',
+            'link' => 'primary_contact',
+            'isnull' => 'true',
+            'table' => 'contacts',
+            'module' => 'Contacts',
+            'source' => 'non-db',
+            'comment' => 'name of the primary contact'
+        ],
+        'primary_contact' => [
+            'name' => 'primary_contact',
+            'type' => 'link',
+            'vname' => 'LBL_PRIMARY_CONTACT',
+            'relationship' => 'project_primary_contact',
+            'source' => 'non-db',
+        ],
     ],
 
     'relationships' => [
@@ -299,6 +400,44 @@ $dictionary['Project'] = [
             'rhs_key' => 'project_id',
             'relationship_type' => 'one-to-many'
         ],
+        // CR1000674
+        'projects_accountsop' => [
+            'rhs_module' => 'Projects',
+            'rhs_table' => 'projects',
+            'rhs_key' => 'account_op_id',
+            'lhs_module' => 'Accounts',
+            'lhs_table' => 'accounts',
+            'lhs_key' => 'id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'projects_accountsrp' => [
+            'rhs_module' => 'Projects',
+            'rhs_table' => 'projects',
+            'rhs_key' => 'account_rp_id',
+            'lhs_module' => 'Accounts',
+            'lhs_table' => 'accounts',
+            'lhs_key' => 'id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'companycodes_project' => [
+            'lhs_module' => 'CompanyCodes',
+            'lhs_table' => 'companycodes',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Projects',
+            'rhs_table' => 'projects',
+            'rhs_key' => 'companycode_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'project_primary_contact' => [
+            'lhs_module' => 'Contacts',
+            'lhs_table' => 'contacts',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Projects',
+            'rhs_table' => 'projects',
+            'rhs_key' => 'contact_id',
+            'relationship_type' => 'one-to-many'
+        ],
+
     ],
     'indices' => [
         ['name' => 'idx_projects_typedel', 'type' => 'index', 'fields' => ['project_type', 'deleted']],
@@ -310,7 +449,7 @@ $dictionary['Project'] = [
 // CE version has not all projects modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
 global $dictionary;
-if(is_file('modules/ProjectActivities/ProjectActivity.php')) {
+if(file_exists('extensions/modules/ProjectActivities')) {
     $dictionary['Project']['fields']['projectactivities'] = [
         'name' => 'projectactivities',
         'vname' => 'LBL_PROJECTACTIVITIES',
@@ -320,7 +459,7 @@ if(is_file('modules/ProjectActivities/ProjectActivity.php')) {
         'module' => 'ProjectActivities',
     ];
 }
-if(is_file('modules/ProjectWBSs/ProjectWBS.php')) {
+if(file_exists('extensions/modules/ProjectWBSs')) {
     $dictionary['Project']['fields']['projectwbss'] = [
         'name' => 'projectwbss',
         'vname' => 'LBL_PROJECTWBSS',
@@ -330,7 +469,7 @@ if(is_file('modules/ProjectWBSs/ProjectWBS.php')) {
         'module' => 'ProjectWBSs'
     ];
 }
-if(is_file('modules/Products/Product.php')) {
+if(file_exists('extensions/modules/Products')) {
     $dictionary['Project']['fields']['products'] = [
         'name' => 'products',
         'vname' => 'LBL_PRODUCTS',
@@ -346,7 +485,7 @@ VardefManager::createVardef('Projects', 'Project', ['default', 'assignable']);
 
 global $dictionary;
 // CR1000336
-if(is_file('modules/SystemDeploymentReleases/SystemDeploymentRelease.php')){
+if (file_exists('extensions/modules/SystemDeploymentReleases')) {
     $dictionary['Project']['relationships']['account_systemdeploymentreleases'] = [
         'lhs_module' => 'Projects', 'lhs_table' => 'projects', 'lhs_key' => 'id',
         'rhs_module' => 'SystemDeploymentReleases', 'rhs_table' => 'systemdeploymentreleases', 'rhs_key' => 'parent_id',
@@ -364,7 +503,7 @@ if(is_file('modules/SystemDeploymentReleases/SystemDeploymentRelease.php')){
 //    );
 }
 
-if(is_file('modules/SalesDocs/SalesDoc.php')) {
+if (file_exists('extensions/modules/SalesDocs')) {
     $dictionary['Project']['fields']['salesdocs'] = [
         'name' => 'salesdocs',
         'type' => 'link',
@@ -373,6 +512,47 @@ if(is_file('modules/SalesDocs/SalesDoc.php')) {
         'bean_name' => 'SalesDoc',
         'source' => 'non-db',
         'vname' => 'LBL_SALESDOCS',
+    ];
+}
+
+if(file_exists('extensions/modules/ProjectSettlementProfiles')){
+    $dictionary['Project']['fields']['projectsettlementprofile_id'] = [
+        'name' => 'projectsettlementprofile_id',
+        'vname' => 'LBL_PROJECTSETTLEMENT',
+        'type' => 'id',
+        'comment' => 'ID of the project settlement profile'
+    ];
+
+    $dictionary['Project']['fields']['projectsettlementprofile_name'] = [
+        'name' => 'projectsettlementprofile_name',
+        'rname' => 'name',
+        'id_name' => 'projectsettlementprofile_id',
+        'vname' => 'LBL_PROJECTSETTLEMENTPROFILE',
+        'type' => 'relate',
+        'link' => 'projectsettlementprofiles',
+        'isnull' => 'true',
+        'table' => 'projectsettlementprofiles',
+        'module' => 'ProjectSettlementProfiles',
+        'source' => 'non-db',
+        'comment' => 'Name of the project settlement profile'
+    ];
+    $dictionary['Project']['fields']['projectsettlementprofiles'] = [
+        'name' => 'projectsettlementprofiles',
+        'type' => 'link',
+        'vname' => 'LBL_PROJECTSETTLEMENTPROFILES',
+        'module' => 'ProjectSettlementProfiles',
+        'relationship' => 'projectsettlementprofiles_project',
+        'source' => 'non-db',
+    ];
+
+    $dictionary['Project']['relationships']['companycodes_project'] = [
+        'lhs_module' => 'ProjectSettlementProfiles',
+        'lhs_table' => 'projectsettlementprofiles',
+        'lhs_key' => 'id',
+        'rhs_module' => 'Projects',
+        'rhs_table' => 'projects',
+        'rhs_key' => 'projectsettlementprofile_id',
+        'relationship_type' => 'one-to-many'
     ];
 }
 

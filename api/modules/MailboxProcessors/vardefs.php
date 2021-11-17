@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 //dictionary global variable => class name als key
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -11,12 +12,6 @@ $dictionary['MailboxProcessor'] = [
     'unified_search' =>  false,
 
     'fields' => [
-        'id' => [
-            'name'			=> 'id',
-            'type'			=> 'id',
-            'vname'         => 'LBL_MAILBOX_PROCESSOR_ID',
-            'required'		=> true,
-        ],
         'mailbox_id' => [
             'name'			=> 'mailbox_id',
             'type'			=> 'id',
@@ -76,13 +71,13 @@ $dictionary['MailboxProcessor'] = [
             'default' => true
         ],
     ],
-
-    'relationships' => [
-
-    ],
-
+    'relationships' => [],
     'indices' => [
-
+        [
+            'name'   => 'idx_mailbox_processors_mailboxid',
+            'type'   => 'index',
+            'fields' => ['mailbox_id'],
+        ],
     ]
 ];
 

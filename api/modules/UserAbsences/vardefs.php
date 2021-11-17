@@ -1,5 +1,5 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -67,6 +67,7 @@ $dictionary['UserAbsence'] = [
         ],
         'users' => [
             'name' => 'users',
+            'vname' => 'LBL_USERS',
             'type' => 'link',
             'relationship' => 'users_userabsences',
             'source' => 'non-db',
@@ -92,6 +93,7 @@ $dictionary['UserAbsence'] = [
         ],
         'representative_link' => [
             'name' => 'representative_link',
+            'vname' => 'LBL_REPRESENTATIVE_DURING_ABSENCE',
             'type' => 'link',
             'relationship' => 'representatives_userabsences',
             'source' => 'non-db',

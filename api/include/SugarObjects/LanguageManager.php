@@ -67,12 +67,26 @@ class LanguageManager
                 'communication_language' => $language['communication_language']
             ];
 
-            if($language['is_default'])
+            if($language['is_default']) {
                 $retArray['default'] = $language['language_code'];
+            }
         }
 
         return $retArray;
     }
+
+    /**
+     * returns the code for the default language
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function getDefaultLanguage(){
+        $db = DBManagerFactory::getInstance();
+        $languages = $db->fetchByAssoc($db->query("SELECT language_code FROM syslangs WHERE is_default = 1"));
+        return $languages['language_code'];
+    }
+
 
     /**
      * syslanguage

@@ -9,13 +9,14 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\TimeDate;
 
 class MeetingsController
 {
 
     static function setStatus(Request $req, Response $res, array $args): Response
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
@@ -33,9 +34,9 @@ class MeetingsController
 // for exchange: send status to exchange => setInvitationStatusOnExchange() doesn't work... access denied...
 // No documentation found to make it work.... Removed for now
 //            if($bean->load_relationship('users')){
-//                if(class_exists('\SpiceCRM\includes\SpiceCRMExchange\ModuleHandlers\SpiceCRMExchangeMeetings')){
+//                if(class_exists('\SpiceCRM\extensions\includes\SpiceCRMExchange\ModuleHandlers\SpiceCRMExchangeMeetings')){
 //                    // check if user has a calendar exchange subscription & Meetings to be synced
-//                    $userexchangesyncconfig = new \SpiceCRM\includes\SpiceCRMExchange\Connectivity\SpiceCRMExchangeUserSyncConfig($current_user->id);
+//                    $userexchangesyncconfig = new \SpiceCRM\extensions\includes\SpiceCRMExchange\Connectivity\SpiceCRMExchangeUserSyncConfig($current_user->id);
 //                    $syncmeetings = false;
 //                    $userconfig = $userexchangesyncconfig->getConfig();
 //                    foreach($userconfig as $idx => $cnf){
@@ -51,9 +52,9 @@ class MeetingsController
 //                    // trigger set invitation status
 //                    if($syncmeetings){
 //                        file_put_contents('ews.log', '$cnf => '.print_r($cnf, true)."\n", FILE_APPEND);
-//                        $exchangeMeetingHandler = new \SpiceCRM\includes\SpiceCRMExchange\ModuleHandlers\SpiceCRMExchangeMeetings($current_user, $bean, true);
+//                        $exchangeMeetingHandler = new \SpiceCRM\extensions\includes\SpiceCRMExchange\ModuleHandlers\SpiceCRMExchangeMeetings($current_user, $bean, true);
 //                        // overwrite connector with current user (else assigned user  of event will be used as impersonated user
-//                        $exchangeMeetingHandler->connector = new \SpiceCRM\includes\SpiceCRMExchange\SpiceCRMExchangeConnector($current_user);
+//                        $exchangeMeetingHandler->connector = new \SpiceCRM\extensions\includes\SpiceCRMExchange\SpiceCRMExchangeConnector($current_user);
 //                        $exchangeMeetingHandler->setInvitationStatusOnExchange($bean, $args['status']);
 //                    }
 //

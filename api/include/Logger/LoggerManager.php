@@ -61,8 +61,8 @@ class LoggerManager
 
 	//these are the mappings for levels to different log types
 	private static $_logMapping = [
-		'default' => '\\SpiceCRM\\includes\\Logger\\SpiceLogger',
-		'fatal' => '\\SpiceCRM\\includes\\Logger\\SpiceLogger',
+		'default' => SpiceLogger::class,
+		'fatal'   => SpiceLogger::class,
     ];
 
 	//these are the log level mappings anything with a lower value than your current log level will be logged
@@ -260,7 +260,9 @@ class LoggerManager
      *
      */
     public static function getLevelCategories(){
-        if(empty(self::$_levelCategories) && isset( SpiceConfig::getInstance()->config['logger']['default'] ) && (SpiceConfig::getInstance()->get('logger.default') ?: '\\SpiceCRM\\includes\\Logger\\SpiceLogger') === '\\SpiceCRM\\includes\\Logger\\SpiceLogger'){
+        if (empty(self::$_levelCategories) && isset(SpiceConfig::getInstance()->config['logger']['default'])
+            && (SpiceConfig::getInstance()->get('logger.default') ?: SpiceLogger::class) === SpiceLogger::class) {
+
             $levelCategories = [];
             if(DBManagerFactory::getInstance()) {
                 $res = DBManagerFactory::getInstance()->queryOnly("SELECT * FROM syslogusers WHERE logstatus > 0 ORDER BY level");
@@ -281,7 +283,7 @@ class LoggerManager
 	{
 		if(!LoggerManager::$_instance){
 			LoggerManager::$_instance = new LoggerManager();
-            self::setLogger('default',(SpiceConfig::getInstance()->get('logger.default') ?: '\\SpiceCRM\\includes\\Logger\\SpiceLogger'));
+            self::setLogger('default',(SpiceConfig::getInstance()->get('logger.default') ?: SpiceLogger::class));
             self::setDbConfig(SpiceConfig::getInstance()->get('dbconfig'));
             self::getLevelCategories();
 		}
@@ -354,4 +356,44 @@ class LoggerManager
         return $traces;
     }
 
+    /**
+     * return a human readable string for the given php error type
+     * @param $type
+     * @return string
+     */
+    public static function parseErrorType($type): string
+    {
+        switch ($type) {
+            case E_USER_ERROR:
+                return "Fatal User Error";
+            case E_COMPILE_ERROR:
+                return "Fatal Compile Error";
+            case E_CORE_ERROR:
+                return "Fatal Core Error";
+            case E_ERROR:
+                return "Fatal Error";
+            case E_PARSE:
+                return "Parse Error";
+            case E_RECOVERABLE_ERROR:
+                return "Recoverable Error";
+            case E_DEPRECATED:
+                return "Deprecated";
+            case E_USER_DEPRECATED:
+                return "User Deprecated";
+            case E_NOTICE :
+                return "Notice";
+            case E_USER_NOTICE:
+                return "User Notice";
+            case E_WARNING:
+                return "Warning Warning";
+            case E_CORE_WARNING:
+                return "Core Warning";
+            case E_USER_WARNING:
+                return "User Warning";
+            case E_COMPILE_WARNING:
+                return "Compile Warning";
+            default:
+                return 'Unknown Error';
+        }
+    }
 }

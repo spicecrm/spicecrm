@@ -162,7 +162,7 @@ $dictionary['DocumentRevision'] = [
         ]
     ],
     'indices' => [
-        ['name' => 'documentrevisionspk', 'type' => 'primary', 'fields' => ['id']],
+//        ['name' => 'documentrevisionspk', 'type' => 'primary', 'fields' => ['id']],
         ['name' => 'documentrevision_mimetype', 'type' => 'index', 'fields' => ['file_mime_type']],
     ]
 ];

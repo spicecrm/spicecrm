@@ -1,47 +1,20 @@
 <?php
-/*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
+use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
 use SpiceCRM\includes\Localization\Localization;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
 class Person extends Basic
 {
+    // adds the letter salutation functions
+    use letterSalutationTrait;
+
     var $picture;
     /**
      * @var bool controls whether or not to invoke the getLocalFormatttedName method with title and salutation
@@ -66,18 +39,13 @@ class Person extends Basic
      */
     public function retrieve($id = -1, $encode = true, $deleted = true, $relationships = true)
     {
-        $ret_val = parent::retrieve($id, $encode, $deleted, $relationships);
+        $retVal = parent::retrieve($id, $encode, $deleted, $relationships);
         $this->_create_proper_name_field();
         // call fill_in_relationship_fields again .... workaround till we get the SugarBean::fill_in_relationship_fields clean
-        if($relationships) {
+        if ($relationships) {
             $this->fill_in_relationship_fields();
         }
-        // Fix call and meeting participants: populate email1 in beans that are retrieved as related
-        if ($relationships == false) {
-            $EmailAddress = BeanFactory::getBean('EmailAddresses');
-            $EmailAddress->handleLegacyRetrieve($this);
-        }
-        return $ret_val;
+        return $retVal;
     }
 
     /**
@@ -101,19 +69,6 @@ class Person extends Basic
             return $this->retrieve($row['bean_id'], $encode, $deleted, $relationships);
         }
         return false;
-    }
-
-    /**
-     * Populate email address fields here instead of retrieve() so that they are properly available for logic hooks
-     *
-     * @see parent::fill_in_relationship_fields()
-     */
-    public function fill_in_relationship_fields()
-    {
-        parent::fill_in_relationship_fields();
-        if($this->emailAddress) {
-            $this->emailAddress->handleLegacyRetrieve($this);
-        }
     }
 
     /**
@@ -169,67 +124,84 @@ class Person extends Basic
         $this->full_name = $full_name; //used by campaigns
     }
 
-    public function getLetterSalutation()
-    {
 
-        global $app_list_strings;
-        return $app_list_strings['salutation_letter_dom'][$this->salutation];
-    }
-
-    public function getLetterName()
-    {
-        $nameArray = [];
-        if(!empty($this->degree1)) $nameArray[] =  $this->degree1;
-        if(!empty($this->first_name)) $nameArray[] =  $this->first_name;
-        if(!empty($this->last_name)) $nameArray[] =  $this->last_name;
-        if(!empty($this->degree2)) $nameArray[] =  $this->degree2;
-        return implode(' ', $nameArray);
-    }
-
-    public function getLetterLastName()
-    {
-        $nameArray = [];
-        if(!empty($this->degree1)) $nameArray[] =  $this->degree1;
-        if(!empty($this->last_name)) $nameArray[] =  $this->last_name;
-        if(!empty($this->degree2)) $nameArray[] =  $this->degree2;
-        return implode(' ', $nameArray);
-    }
 
     /**
+     * handle saving/adding the primary email address
      * @see parent::save()
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        //If we are saving due to relationship changes, don't bother trying to update the emails
-        if (!empty($GLOBALS['resavingRelatedBeans'])) {
-            parent::save($check_notify, $fts_index_bean);
+        $id = parent::save($check_notify, $fts_index_bean);
+
+        if (empty(trim($this->email1))){
             return $this->id;
         }
 
-        $ori_in_workflow = empty($this->in_workflow) ? false : true;
-        if($this->emailAddress) {
-            $this->emailAddress->handleLegacySave($this, $this->module_dir);
-            // bug #39188 - store emails state before workflow make any changes
-            $this->emailAddress->stash($this->id, $this->module_dir);
+        $primaryEmailAddressId = EmailAddress::getEmailAddressId($this->email1);
+
+        if (!$primaryEmailAddressId) {
+            $newEmailAddress = BeanFactory::newBean('EmailAddresses');
+            $newEmailAddress->email_address = $this->email1;
+            $newEmailAddress->email_address_caps = strtoupper($this->email1);
+            $primaryEmailAddressId = $newEmailAddress->save();
         }
 
-        parent::save($check_notify, $fts_index_bean);
-        // $this->emailAddress->evaluateWorkflowChanges($this->id, $this->module_dir);
-        $override_email = [];
-        if (!empty($this->email1_set_in_workflow)) {
-            $override_email['emailAddress0'] = $this->email1_set_in_workflow;
+        if (!empty($this->primary_email_opt_in_status)) {
+            $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->primary_email_opt_in_status]);
+        } else {
+            $this->setPrimaryEmailAddress($primaryEmailAddressId);
         }
-        if (!empty($this->email2_set_in_workflow)) {
-            $override_email['emailAddress1'] = $this->email2_set_in_workflow;
+
+        return $id;
+    }
+
+    /**
+     * fill in primary email address opt in status
+     * @param $status
+     */
+    public function fillInPrimaryEmailAddressOptInStatus($status)
+    {
+        $this->primary_email_opt_in_status = $status;
+    }
+
+    /**
+     * set the primary email address from the email1 field
+     * @param string $primaryEmailAddressId
+     * @param array $relFieldsValues
+     */
+    private function setPrimaryEmailAddress(string $primaryEmailAddressId, $relFieldsValues = [])
+    {
+
+        $relationExists = false;
+        $linkedEmailAddresses = $this->get_linked_beans('email_addresses');
+
+        if (!is_array($linkedEmailAddresses)) return;
+
+        foreach ($linkedEmailAddresses as $linkedEmailAddress) {
+
+            if ($primaryEmailAddressId == $linkedEmailAddress->email_address_id) {
+
+                $relationExists = true;
+                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 1]);
+            } else {
+                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 0]);
+            }
         }
-        if (!isset($this->in_workflow)) {
-            $this->in_workflow = false;
+
+        if (!$relationExists) {
+            $relFieldsValues['primary_address'] = 1;
+            $this->email_addresses->add($primaryEmailAddressId, $relFieldsValues);
+            $data = [
+                'id' => $this->email_addresses->relationship->relid,
+                'email_address_id' => $primaryEmailAddressId,
+                'bean_id' => $this->id,
+                'bean_module' => $this->_module,
+                'opt_in_status' => $relFieldsValues['opt_in_status'],
+                'primary_address' => $relFieldsValues['primary_address']
+            ];
+            EmailAddress::writeRelationshipAudit($data, $data);
         }
-        if ($this->emailAddress && ($ori_in_workflow === false || !empty($override_email))) {
-            $this->emailAddress->saveEmailAddress($this->id, $this->module_dir, $override_email, '', '', '', '', $this->in_workflow);
-            // $this->emailAddress->applyWorkflowChanges($this->id, $this->module_dir);
-        }
-        return $this->id;
     }
 
     /**
@@ -314,11 +286,12 @@ class Person extends Basic
      * @return mixed : bool | array
      */
     public function getPrimaryEmailAddressData(){
-        if($this->emailAddress && is_array($this->emailAddress->addresses)){
-            foreach($this->emailAddress->addresses as $emailAddr){
-                if($emailAddr['primary_address']){
-                    return $emailAddr;
-                }
+
+        $linkedAddresses = $this->get_linked_beans('email_addresses');
+
+        foreach($linkedAddresses as $linkedAddresse){
+            if($linkedAddresse->primary_address){
+                return $linkedAddresse;
             }
         }
         return false;
@@ -374,5 +347,26 @@ class Person extends Basic
         $content .= $this->primary_address_country && $this->primary_address_country != "" ? "{$this->primary_address_country}" : '';
         $content .= "\nEND:VCARD";
         return $content;
+    }
+
+    /**
+     * override sugar function fill in additional fields on retrieve
+     */
+    public function fill_in_additional_detail_fields()
+    {
+        parent::fill_in_additional_detail_fields();
+        $this->fillInEmail1Field();
+    }
+
+    /**
+     * fill in the email1 field called by fill_in_additional_detail_fields
+     */
+    private function fillInEmail1Field() {
+        $emailAddresses = $this->get_linked_beans('email_addresses');
+        foreach ($emailAddresses as $emailAddress) {
+            if ($emailAddress->primary_address != 1) continue;
+            $this->email1 = $emailAddress->email_address;
+            break;
+        }
     }
 }

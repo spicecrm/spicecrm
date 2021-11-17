@@ -92,7 +92,7 @@ export class ObjectRelatedlistTable implements OnInit {
         if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] && ! this.relatedmodels.linkEndPoint) {
             this.logger.error('Missing link or wrong link name ("' + this.relatedmodels._linkName + '")!');
         } else {
-            if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field) {
+            if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName]?.sequence_field) {
                 this.sequencefield = this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field;
             }
         }
@@ -109,6 +109,25 @@ export class ObjectRelatedlistTable implements OnInit {
 
     get module() {
         return this.relatedmodels.relatedModule;
+    }
+
+    /**
+     * reads the field defs and returns a style attribute that can be appield to the head if set in the config
+     *
+     * @param column
+     * @private
+     */
+    private getColumnStyle(column) {
+
+        // check that we have a dimension
+        if (column.fieldconfig?.widthdimension && column.fieldconfig?.width) {
+            return {
+                width: column.fieldconfig?.width + column.fieldconfig.widthdimension
+            };
+        }
+
+        return {};
+
     }
 
     private isSortable(field): boolean {
@@ -142,11 +161,11 @@ export class ObjectRelatedlistTable implements OnInit {
         let i = 0;
         for (let item of this.relatedmodels.items) {
             item[this.sequencefield] = i;
-            updateArray.push({id: item.id, sequence_number: i});
+            updateArray.push({id: item.id, [this.sequencefield]: i});
             i++;
         }
 
-        this.backend.postRequest('module/' + this.relatedmodels.relatedModule, {}, updateArray);
+        this.relatedmodels.updateItems(updateArray);
     }
 
     private dragStarted(e) {

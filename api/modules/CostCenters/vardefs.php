@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 //dictionary global variable => class name als key
 use SpiceCRM\includes\SugarObjects\VardefManager;

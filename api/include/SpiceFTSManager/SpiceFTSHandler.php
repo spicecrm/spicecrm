@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
@@ -41,6 +15,7 @@ use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
 use UnifiedSearchAdvanced;
 use SpiceCRM\modules\UserPreferences\UserPreference;
+use SpiceCRM\includes\TimeDate;
 
 class SpiceFTSHandler
 {
@@ -133,6 +108,18 @@ class SpiceFTSHandler
     {
         $settings = SpiceFTSUtils::getBeanIndexSettings($module);
         return $settings['globalsearch'] ? true : false;
+    }
+
+    /**
+     * returns if the module should be considered in the phone search
+     *
+     * @param $module the name of the module
+     * @return array|bool
+     */
+    static function checkPhone($module)
+    {
+        $settings = SpiceFTSUtils::getBeanIndexSettings($module);
+        return $settings['phonesearch'] ? true : false;
     }
 
     /**
@@ -420,26 +407,35 @@ class SpiceFTSHandler
             // get the fielddefs
             $metadataFile = null;
             $foundViewDefs = false;
-            if (file_exists('custom/modules/' . $module['module'] . '/metadata/listviewdefs.php')) {
-                $metadataFile = 'custom/modules/' . $module['module'] . '/metadata/listviewdefs.php';
+            if (file_exists("custom/modules/{$module['module']}/metadata/listviewdefs.php")) {
+                $metadataFile = "custom/modules/{$module['module']}/metadata/listviewdefs.php";
                 $foundViewDefs = true;
             } else {
-                if (file_exists('custom/modules/' . $module['module'] . '/metadata/metafiles.php')) {
-                    require_once('custom/modules/' . $module['module'] . '/metadata/metafiles.php');
+                if (file_exists("custom/modules/{$module['module']}/metadata/metafiles.php")) {
+                    require_once("custom/modules/{$module['module']}/metadata/metafiles.php");
                     if (!empty($metafiles[$module['module']]['listviewdefs'])) {
                         $metadataFile = $metafiles[$module['module']]['listviewdefs'];
                         $foundViewDefs = true;
                     }
-                } elseif (file_exists('modules/' . $module['module'] . '/metadata/metafiles.php')) {
-                    require_once('modules/' . $module['module'] . '/metadata/metafiles.php');
+                } elseif (file_exists("extensions/modules/{$module['module']}/metadata/metafiles.php")) {
+                    require_once("extensions/modules/{$module['module']}/metadata/metafiles.php");
+                    if (!empty($metafiles[$module['module']]['listviewdefs'])) {
+                        $metadataFile = $metafiles[$module['module']]['listviewdefs'];
+                        $foundViewDefs = true;
+                    }
+                } elseif (file_exists("modules/{$module['module']}/metadata/metafiles.php")) {
+                    require_once("modules/{$module['module']}/metadata/metafiles.php");
                     if (!empty($metafiles[$module['module']]['listviewdefs'])) {
                         $metadataFile = $metafiles[$module['module']]['listviewdefs'];
                         $foundViewDefs = true;
                     }
                 }
             }
-            if (!$foundViewDefs && file_exists('modules/' . $module['module'] . '/metadata/listviewdefs.php')) {
-                $metadataFile = 'modules/' . $module['module'] . '/metadata/listviewdefs.php';
+            if (!$foundViewDefs && file_exists("extensions/modules/{$module['module']}/metadata/listviewdefs.php")) {
+                $metadataFile = "extensions/modules/{$module['module']}/metadata/listviewdefs.php";
+
+            } elseif (!$foundViewDefs && file_exists("modules/{$module['module']}/metadata/listviewdefs.php")) {
+                $metadataFile = "modules/{$module['module']}/metadata/listviewdefs.php";
 
             }
 
@@ -514,7 +510,6 @@ class SpiceFTSHandler
      */
     function indexBean($bean)
     {
-        global $timedate;
         $indexResponse = [];
         $beanHandler = new SpiceFTSBeanHandler($bean);
 
@@ -538,7 +533,7 @@ class SpiceFTSHandler
                     ]
                 ]);
                 $this->transactionEntries['elastic'][] = json_encode($indexArray);
-                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '{$bean->id}'";
+                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
             } else {
                 $indexResponse = $this->elasticHandler->document_index($beanModule, $indexArray);
 
@@ -548,7 +543,7 @@ class SpiceFTSHandler
                 // if (!$indexResponse->error) {
                 if ($indexResponse && !in_array('error', $indexResponse)) {
                     // update the date
-                    $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '{$bean->id}'");
+                    $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'");
                 }
             }
         }
@@ -1281,7 +1276,7 @@ class SpiceFTSHandler
 
                     // get the email addresses
                     $krestHandler = new ModuleHandler();
-                    $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
+                    // $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
 
                     $hit['acl'] = $seed->getACLActions();
                     $hit['acl_fieldcontrol'] = $this->get_acl_fieldaccess($seed);
@@ -1618,7 +1613,6 @@ class SpiceFTSHandler
      */
     function bulkIndexBeans($packagesize, $module = null, $toConsole = false)
     {
-        global $timedate;
 
         $db = DBManagerFactory::getInstance();
 
@@ -1711,7 +1705,7 @@ class SpiceFTSHandler
                     $indexResponse = $this->elasticHandler->bulk($bulkItems);
                     if (!$indexResponse->errors) {
                         if (count($bulkUpdates['indexed']) > 0)
-                            $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . $timedate->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                            $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                         if (count($bulkUpdates['deleted']) > 0)
                             $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
@@ -1729,7 +1723,7 @@ class SpiceFTSHandler
                 $indexResponse = $this->elasticHandler->bulk($bulkItems);
                 if (!$indexResponse->errors) {
                     if (count($bulkUpdates['indexed']) > 0)
-                        $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . $timedate->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                        $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                     if (count($bulkUpdates['deleted']) > 0)
                         $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
@@ -1755,7 +1749,7 @@ class SpiceFTSHandler
             $indexResponse = $this->elasticHandler->bulk($bulkItems);
             if (!$indexResponse->errors) {
                 if (count($bulkUpdates['indexed']) > 0)
-                    $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . $timedate->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                    $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                 if (count($bulkUpdates['deleted']) > 0)
                     $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
@@ -1807,6 +1801,16 @@ class SpiceFTSHandler
         }
 
         // reset the transaction array and flag
+        $this->transactionEntries['elastic'] = [];
+        $this->transactionEntries['database'] = [];
+        $this->inTransaction = false;
+    }
+
+    /**
+     * rolls back all changes in a transaction and stops the transaction handler
+     * by simply removing all transactional entries so nothing will be processed when a commit is called
+     */
+    public function rollbackTransaction(){
         $this->transactionEntries['elastic'] = [];
         $this->transactionEntries['database'] = [];
         $this->inTransaction = false;

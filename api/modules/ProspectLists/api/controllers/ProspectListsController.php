@@ -25,6 +25,7 @@ class ProspectListsController
 
         $pl = BeanFactory::getBean('ProspectLists');
         $pl->name = $requestParams['targetlistname'];
+        $pl->list_type = 'default';
         $pl->assigned_user_id = $current_user->id;
         $pl->assigned_user_name = $current_user->get_summary_text();
         $pl->save();
@@ -67,6 +68,7 @@ class ProspectListsController
 
         $pl = BeanFactory::getBean('ProspectLists');
         $pl->name = $postBody['targetlistname'];
+        $pl->list_type = 'default';
         $pl->assigned_user_id = $current_user->id;
         $pl->assigned_user_name = $current_user->get_summary_text();
         $pl->save();

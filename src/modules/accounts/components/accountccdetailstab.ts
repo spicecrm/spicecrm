@@ -66,7 +66,7 @@ export class AccountCCDetailsTab {
     private setModelData() {
         if (this.data) {
             this.model.id = this.data.id;
-            this.model.data = this.model.utils.backendModel2spice(this.model.module, this.data);
+            this.model.setFields(this.model.utils.backendModel2spice(this.model.module, this.data));
         } else {
             this.model.initialize(this.parent);
             this.model.setFields({

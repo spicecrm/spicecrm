@@ -144,16 +144,6 @@ class registry {
 		    'seamless_login',
 		    ['session'=>'xsd:string'],
 		    ['return'=>'xsd:int']);
-		    
-		$this->serviceClass->registerFunction(
-		    'set_note_attachment',
-	        ['session'=>'xsd:string','note'=>'tns:new_note_attachment'],
-	        ['return'=>'tns:new_set_entry_result']);
-
-		$this->serviceClass->registerFunction(
-		    'get_note_attachment',
-		    ['session'=>'xsd:string', 'id'=>'xsd:string'],
-		    ['return'=>'tns:new_return_note_attachment']);
 	        
 		$this->serviceClass->registerFunction(
 		    'set_document_revision',

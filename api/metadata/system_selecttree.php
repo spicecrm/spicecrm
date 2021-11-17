@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['sysselecttree_fields'] = [
     'table' => 'sysselecttree_fields',
     'fields' => [

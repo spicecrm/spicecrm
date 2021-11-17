@@ -79,7 +79,7 @@ export class ObjectRecordFieldset implements OnInit {
         for (let item of this.fieldsetitems) {
             this.numberOfColumns = this.numberOfColumns + (item.fieldconfig.width ? item.fieldconfig.width * 1 : (item.fieldconfig.width = 1));
         }
-        if (!this.renderVertical && this.numberOfColumns > 8) console.warn('wrong fieldset grid (' + this.fieldset + ')');
+        if (!this.renderVertical && ( this.numberOfColumns > 8 && this.numberOfColumns !== 12 )) console.warn('wrong fieldset grid (' + this.fieldset + ')');
     }
 
     /**

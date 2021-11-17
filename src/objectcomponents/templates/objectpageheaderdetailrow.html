@@ -12,12 +12,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 <div class="slds-grid slds-grid--vertical-align-start">
     <div>
-        <ul *ngIf="!collapsed" class="slds-grid" [ngStyle]="{opacity: opacity}">
-            <li object-page-header-detail-row-field class="slds-m-right--medium" *ngFor="let field of getFields()" [field]="field"></li>
+        <ul *ngIf="!collapsed" class="slds-grid">
+            <ng-container *ngFor="let field of getFields()">
+                <li object-page-header-detail-row-field *ngIf="displayField(field)" [field]="field"
+                    class="slds-m-right--medium"></li>
+            </ng-container>
         </ul>
         <ul *ngIf="collapsed" class="slds-list--horizontal slds-has-dividers--left">
-            <ng-container *ngFor="let field of getFields()">
-                <li *ngIf="model.data[field.field]" class="slds-item slds-grid slds-grid--vertical-align-center">
+            <ng-container *ngFor="let field of fields">
+                <li *ngIf="model.data[field.field] && displayField(field)" class="slds-item slds-grid slds-grid--vertical-align-center">
                     <field-label *ngIf="showLabel(field.fieldconfig)" [fieldname]="field.field" [fieldconfig]="field.fieldconfig" [addclasses]="'slds-truncate'"></field-label>
                     <span *ngIf="!field.fieldconfig.hidelabel" class="slds-p-right--xx-small">:</span>
                     <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>

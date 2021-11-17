@@ -22,11 +22,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         <system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
             <div class="slds-grid">
                 <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
-                    <field-container *ngIf="!preferences.home_dashboard" [system-model-provider]="{module: 'Dashboards', id: preferences.home_dashboard, data: homeDashboardData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+<!--                    <field-container *ngIf="!preferences.home_dashboard" [system-model-provider]="{module: 'Dashboards', id: preferences.home_dashboard, data: homeDashboardData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>-->
+                    <system-preferences-panel-item-display>
+                        <span *ngIf="homeDashboardData && homeDashboardData.name">{{homeDashboardData.name}}</span>
+                    </system-preferences-panel-item-display>
                     <system-preferences-panel-item-edit>
                         <div class="slds-select_container">
-                            <select class="slds-select" [ngModel]="preferences.home_dashboard" (ngModelChange)="setHomeDashboardData($event)">
-                                <option value="">-- Default Dashboard --</option>
+                            <select class="slds-select" [(ngModel)]="preferences.home_dashboard" (ngModelChange)="setHomeDashboardData($event)">
                                 <option *ngFor="let dashboard of dashboards" [value]="dashboard.id">{{dashboard.name}}</option>
                             </select>
                         </div>

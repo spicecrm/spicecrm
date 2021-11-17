@@ -22,13 +22,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 </div>
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div class="slds-form-element__control">
-        <div class="slds-radio--button-group">
-          <div *ngFor="let o of getOptions()" class="slds-button slds-radio--button" (click)="setValue(o.value)">
-            <input type="radio" [name]="fieldname" [value]="o.value" [checked]="o.value === value"/>
-            <label class="slds-radio--button__label" >
-                <span class="slds-radio--faux">{{o.display}}</span>
-            </label>
-          </div>
+        <div class="slds-grid--vertical">
+            <system-input-radio [name]="fieldid" [value]="o.value" *ngFor="let o of options" [(ngModel)]="value" >{{o.display}}</system-input-radio>
         </div>
     </div>
 </div>

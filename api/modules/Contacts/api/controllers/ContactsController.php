@@ -3,7 +3,7 @@ namespace SpiceCRM\modules\Contacts\api\controllers;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\SpiceCRMExchange\ModuleHandlers\SpiceCRMExchangeContacts;
+use SpiceCRM\extensions\includes\SpiceCRMExchange\ModuleHandlers\SpiceCRMExchangeContacts;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;

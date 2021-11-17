@@ -2,6 +2,9 @@
 
 /* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
 
+/** @var string $module */
+/** @var string $object_name */
+
 $vardefs = [
     'fields' => [
         'name' => [
@@ -372,6 +375,18 @@ $vardefs = [
             'studio' => ['editField' => true, 'searchview' => false],
             'full_text_search' => ['boost' => 3, 'analyzer' => 'whitespace'], //bug 54567
         ],
+        'primary_address' => [
+            'name' => 'primary_address',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'vname' => 'LBL_PRIMARY_ADDRESS'
+        ],
+        'opt_in_status' => [
+            'name' => 'opt_in_status',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'comment' => 'possible values opted_in, opted_out, pending'
+        ],
         'email_addresses_primary' =>
             [
                 'name' => 'email_addresses_primary',
@@ -390,7 +405,19 @@ $vardefs = [
                 'vname' => 'LBL_EMAIL_ADDRESSES',
                 'reportable' => false,
                 'unified_search' => true,
-                'rel_fields' => ['primary_address' => ['type' => 'bool']],
+                'default' => true,
+                'module' => 'EmailAddresses',
+                'side' => 'left',
+                'rel_fields' => [
+                    'opt_in_status' => [
+                        'type' => 'bool',
+                        'map' => 'opt_in_status'
+                    ],
+                    'primary_address' => [
+                        'type' => 'bool',
+                        'map' => 'primary_address'
+                    ]
+                ]
             ],
         // Used for non-primary mail import
         'email_addresses_non_primary' =>
@@ -413,7 +440,7 @@ $vardefs = [
         ]
     ],
     'relationships' => [
-        strtolower($module) . '_email_addresses' =>
+        strtolower($object_name) . '_email_addresses' =>
             [
                 'lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
@@ -422,7 +449,7 @@ $vardefs = [
                 'relationship_role_column' => 'bean_module',
                 'relationship_role_column_value' => $module
             ],
-        strtolower($module) . '_email_addresses_primary' =>
+        strtolower($object_name) . '_email_addresses_primary' =>
             ['lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
                 'relationship_type' => 'many-to-many',

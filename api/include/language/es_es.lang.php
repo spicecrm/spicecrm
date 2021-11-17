@@ -50,7 +50,7 @@ $app_list_strings = [
         'TimePeriods'                                      => 'Períodos de Tiempo',
         'TaxRates'                                         => 'Tipos de Impuestos',
         'ContractTypes'                                    => 'Tipos de Contrato',
-        'Schedulers'                                       => 'Planificadores',
+        'SchedulerJobs'                                       => 'Planificadores',
         'Project'                                          => 'Proyectos',
         'Campaigns'                                        => 'Campañas',
         'CampaignLog'                                      => 'Registro de Campañas',
@@ -881,23 +881,22 @@ $app_list_strings = [
     ],
 
 
-    'schedulers_times_dom' => [
-        'not run'                                          => 'Hora de Ejecución Pasada, No Ejecutado',
-        'ready'                                            => 'Listo',
-        'in progress'                                      => 'En Progreso',
-        'failed'                                           => 'Fallado',
-        'completed'                                        => 'Completado',
-        'no curl'                                          => 'No ejecutado: cURL no está disponible',
+    'jobtask_status_dom' => [
+        'active' => 'active',
+        'running' => 'running',
+        'on_hold' => 'on hold'
     ],
 
 
-    'scheduler_status_dom' => [
+    'job_status_dom' => [
         'Active'                                           => 'Activo',
         'Inactive'                                         => 'Inactivo',
+        'OnHold' => 'On hold',
+        'Running' => 'Running',
     ],
 
 
-    'scheduler_period_dom' => [
+    'job_period_dom' => [
         'min'                                              => 'Minutos',
         'hour'                                             => 'Horas',
     ],

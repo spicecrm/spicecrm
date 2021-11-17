@@ -11,15 +11,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 -->
 
 <div class="slds-grid slds-grid--vertical-align-center">
-    <div>
-        <object-listview-aggregate-item-term *ngIf="item.from" [aggregate]="aggregate" [item]="{key: item.from}"></object-listview-aggregate-item-term>
-        <span *ngIf="!item.from">*</span>
-    </div>
-    <div class="slds-p-horizontal--xx-small">
-        -
-    </div>
-    <div>
-        <object-listview-aggregate-item-term *ngIf="item.to" [aggregate]="aggregate" [item]="{key: item.to}"></object-listview-aggregate-item-term>
-        <span *ngIf="!item.to">*</span>
-    </div>
+    <div *ngIf="item.displayName; else noDisplayname"><system-label [label]="item.displayName"></system-label></div>
+    <ng-template #noDisplayname>
+        <div>
+            <object-listview-aggregate-item-term *ngIf="item.from" [aggregate]="aggregate" [item]="{key: item.from}"></object-listview-aggregate-item-term>
+            <span *ngIf="!item.from">*</span>
+        </div>
+        <div class="slds-p-horizontal--xx-small">
+            -
+        </div>
+        <div>
+            <object-listview-aggregate-item-term *ngIf="item.to" [aggregate]="aggregate" [item]="{key: item.to}"></object-listview-aggregate-item-term>
+            <span *ngIf="!item.to">*</span>
+        </div>
+    </ng-template>
 </div>

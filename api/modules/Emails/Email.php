@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\modules\Emails;
 
+
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
@@ -43,6 +44,8 @@ use Exception;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -50,7 +53,9 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 
 class Email extends SugarBean
@@ -122,10 +127,10 @@ class Email extends SugarBean
      */
     ///////////////////////////////////////////////////////////////////////////
     ////	SAVERS
-    public function save($check_notify = false, $fts_index_bean = true)
+    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if ($this->isDuplicate) {
             LoggerManager::getLogger()->debug("EMAIL - tried to save a duplicate Email record");
@@ -169,7 +174,6 @@ class Email extends SugarBean
             $this->description = SugarCleaner::cleanHtml($this->description);
             $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
             $this->raw_source = SugarCleaner::cleanHtml($this->raw_source, true);
-            $this->saveEmailAddresses();
             // disable cache! timedate->now() return null at this time
             $timedate->allow_cache = false;
 
@@ -182,10 +186,21 @@ class Email extends SugarBean
                 $this->date_sent = $timedate->now();
             }
 
-            parent::save($check_notify, $fts_index_bean);
+            // save without indexing
+            parent::save($check_notify, false);
 
+            // handle the email addresses
+            if (!is_array($this->recipient_addresses) || empty($this->recipient_addresses)) {
+                $this->fillInEmailAddressesFromLegacyFields();
+
+            }
             $this->handleFromAddress();
-            $this->saveRecipientAddresses();
+            $this->saveRecipientAddresses($ignoreInvalidEmailAddresses);
+
+            // process the indexing after the addresseshave been saved so relationships are updated
+            if($fts_index_bean){
+                SpiceFTSHandler::getInstance()->indexBean($this);
+            }
         }
         LoggerManager::getLogger()->debug('-------------------------------> Email save() done');
 
@@ -233,7 +248,7 @@ class Email extends SugarBean
         $referenceEmail = BeanFactory::getBean('Emails', $this->reference_id);
         $linked_fields = array_filter(
             $this->get_linked_fields(),
-            function ($key) {return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link']);},
+            function ($key) {return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link', 'mailboxes']);},
             ARRAY_FILTER_USE_KEY
         );
         foreach ($linked_fields as $name => $properties) {
@@ -291,57 +306,63 @@ class Email extends SugarBean
 
 
     /**
-     * Handles normalization of Email Addressess
+     * fill in email addresses from legacy fields
      */
-    function saveEmailAddresses()
+    function fillInEmailAddressesFromLegacyFields(bool $ignoreInvalid = true)
     {
-        // from, single address
-        $fromId = $this->emailAddress->getEmailGUID(from_html($this->from_addr));
-        if (!empty($fromId)) {
-            $this->linkEmailToAddress($fromId, 'from');
+        if (!is_array($this->recipient_addresses)) {
+            $this->recipient_addresses = [];
         }
 
-        // to, multiple
-        $replace = [",", ";"];
-        $toaddrs = str_replace($replace, "::", from_html($this->to_addrs));
-        $exToAddrs = explode("::", $toaddrs);
+        $fields = [
+            'bcc' => 'bcc_addrs',
+            'cc' => 'cc_addrs',
+            'to' => 'to_addrs',
+            'from' => 'from_addr',
+        ];
 
-        if (!empty($exToAddrs)) {
-            foreach ($exToAddrs as $toaddr) {
-                $toaddr = trim($toaddr);
-                if (!empty($toaddr)) {
-                    $toId = $this->emailAddress->getEmailGUID($toaddr);
-                    $this->linkEmailToAddress($toId, 'to');
+        foreach ($fields as $type => $field) {
+
+            if (empty($this->$field)) continue;
+
+            $addressesString = str_replace([",", ";"], "::", DBUtils::fromHtml($this->$field));
+            $addresses = explode("::", $addressesString);
+
+            if (empty($addresses)) continue;
+
+            foreach ($addresses as $address) {
+                $address = EmailAddress::cleanAddress($address);
+                $existingIndex = array_search($address, array_column($this->recipient_addresses, 'email_address'));
+
+                if (empty($address) || ($existingIndex !== false && $this->recipient_addresses[$existingIndex]['address_type'] == $type)) {
+                    continue;
                 }
+
+                $this->addEmailAddress($type, $address);
             }
+
+        }
+    }
+
+    /**
+     * handle saving email address from string if it does not exist
+     * @param string $addressString
+     * @param bool $ignoreInvalid
+     * @return string the existing/new email address id
+     */
+    private function handleSaveEmailAddress(string $addressString, bool $ignoreInvalid = true): string
+    {
+        $addressString = $this->db->quote(DBUtils::fromHtml($addressString));
+        $id = EmailAddress::getEmailAddressId($addressString);
+
+        if (empty($id)) {
+            $newAddress = BeanFactory::newBean('EmailAddresses');
+            $newAddress->email_address = $addressString;
+            $newAddress->email_address_caps = strtoupper($addressString);
+            $id = $newAddress->save(false, true, $ignoreInvalid);
         }
 
-        // cc, multiple
-        $ccAddrs = str_replace($replace, "::", from_html($this->cc_addrs));
-        $exccAddrs = explode("::", $ccAddrs);
-
-        if (!empty($exccAddrs)) {
-            foreach ($exccAddrs as $ccAddr) {
-                $ccAddr = trim($ccAddr);
-                if (!empty($ccAddr)) {
-                    $ccId = $this->emailAddress->getEmailGUID($ccAddr);
-                    $this->linkEmailToAddress($ccId, 'cc');
-                }
-            }
-        }
-
-        // bcc, multiple
-        $bccAddrs = str_replace($replace, "::", from_html($this->bcc_addrs));
-        $exbccAddrs = explode("::", $bccAddrs);
-        if (!empty($exbccAddrs)) {
-            foreach ($exbccAddrs as $bccAddr) {
-                $bccAddr = trim($bccAddr);
-                if (!empty($bccAddr)) {
-                    $bccId = $this->emailAddress->getEmailGUID($bccAddr);
-                    $this->linkEmailToAddress($bccId, 'bcc');
-                }
-            }
-        }
+        return $id;
     }
 
     /**
@@ -366,7 +387,7 @@ class Email extends SugarBean
         }
     }
 
-    function saveRecipientAddresses()
+    function saveRecipientAddresses($ignoreInvalid = true)
     {
         if (!is_array($this->recipient_addresses) || empty($this->recipient_addresses)) {
             $this->addressesToArray();
@@ -402,7 +423,7 @@ class Email extends SugarBean
                             $emailAddress->email_address_caps = strtoupper($recipient_address['email_address']);
                             $emailAddress->invalid_email = 0;
                             $emailAddress->opt_out = 0;
-                            $emailAddress->save();
+                            $emailAddress->save(false, true, $ignoreInvalid);
                         }
                         $recipient_address['email_address_id'] = $emailAddress->id;
                     }
@@ -454,6 +475,21 @@ class Email extends SugarBean
                     );
                 }
 
+            }
+
+            // save the relationship to the parent
+            if($recipient_address['parent_type'] && $recipient_address['parent_id']){
+                $recExists = $this->db->fetchByAssoc($this->db->query("SELECT id FROM emails_beans WHERE email_id='{$this->id}' AND bean_module = '{$recipient_address['parent_type']}' AND bean_id = '{$recipient_address['parent_id']}' AND deleted = 0"));
+                if(!$recExists){
+                    $this->db->insertQuery('emails_beans', [
+                        'id' => SpiceUtils::createGuid(),
+                        'email_id' => $this->id,
+                        'bean_module' => $recipient_address['parent_type'],
+                        'bean_id' => $recipient_address['parent_id'],
+                        'date_modified' => TimeDate::getInstance()->nowDb(),
+                        'deleted' => 0
+                    ], true);
+                }
             }
 
             $addresses[$recipient_address['address_type'] . '_addrs'][] = $recipient_address['email_address'];
@@ -683,9 +719,19 @@ class Email extends SugarBean
      * @return mixed
      * @throws Exception
      */
-    public
-    function sendEmail()
+    public function sendEmail()
     {
+        /*prep for tracking pixel .. ToDo: complete this
+        $key = '2fs5uhnjcnpxcpg9';
+        $method = 'blowfish';
+        $data = $this->_module .':'.$this->id;
+        $encrypted = openssl_encrypt($data, $method, $key);
+
+        // $decrypted = openssl_decrypt($encrypted, $method, $key);
+
+        $this->body .= '<img src="https://softwarecheck.us3.list-manage.com/track/open.php?'.base64_encode($encrypted) .'" height="1" width="1">';
+        */
+
         if ($this->mailbox_id) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
         }
@@ -968,9 +1014,10 @@ class Email extends SugarBean
 
     function addEmailAddress($type, $address)
     {
+        if (!$address) return null;
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => $address
+            'email_address' => EmailAddress::cleanAddress($address)
         ];
     }
 
@@ -1127,10 +1174,14 @@ class Email extends SugarBean
     {
         $db = DBManagerFactory::getInstance();
 
-        $query = "SELECT id FROM emails WHERE message_id='" . $message_id . "'";
+        $query = "SELECT id, message_id FROM emails WHERE message_id='" . $message_id . "'";
         $q = $db->query($query);
 
         while ($row = $db->fetchRow($q)) {
+            if ($row['message_id'] != $message_id) {
+                continue;
+            }
+
             $email = BeanFactory::getBean('Emails', $row['id']);
         }
 
@@ -1249,7 +1300,7 @@ class Email extends SugarBean
         $this->date_sent = date('Y-m-d H:i:s', $dateSent);
         $this->from_addr = $message->getSender();
         foreach ($message->getRecipients() as $recipient) {
-            $this->recipient_addresses[strtolower($recipient->getType()) . '_addrs'] = [
+            $this->recipient_addresses[] = [
                 'email_address' => $recipient->getEmail(),
                 'address_type' => strtolower($recipient->getType()),
             ];

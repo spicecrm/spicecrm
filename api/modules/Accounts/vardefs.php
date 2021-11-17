@@ -238,27 +238,6 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
                 ]
             ]
         ],
-        'email_addresses' => [
-            'name' => 'email_addresses',
-            'type' => 'link',
-            'relationship' => 'accounts_email_addresses',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAIL_ADDRESSES',
-            'reportable' => false,
-            'unified_search' => false,
-            'rel_fields' => ['primary_address' => ['type' => 'bool']],
-            'studio' => ["formula" => false],
-        ],
-        'email_addresses_primary' =>
-            [
-                'name' => 'email_addresses_primary',
-                'type' => 'link',
-                'relationship' => 'accounts_email_addresses_primary',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-                'duplicate_merge' => 'disabled',
-                'studio' => ["formula" => false],
-            ],
         'opportunities' =>
             [
                 'name' => 'opportunities',
@@ -468,6 +447,16 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
                 'source' => 'non-db',
                 'vname' => 'LBL_EVENT_LOCATION',
             ],
+        'location_eventblueprints' =>
+            [
+                'name' => 'location_eventblueprints',
+                'type' => 'link',
+                'relationship' => 'account_eventblueprints',
+                'module' => 'EventBlueprints',
+                'bean_name' => 'EventBlueprint',
+                'source' => 'non-db',
+                'vname' => 'LBL_EVENT_LOCATION',
+            ],
         'events' => [
             'name' => 'events',
             'type' => 'link',
@@ -518,6 +507,23 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
             'source' => 'non-db',
             'module' => 'AccountVATIDs',
             'default' => true
+        ],
+        'agreements' => [
+            'name' => 'agreements',
+            'type' => 'link',
+            'relationship' => 'account_agreements',
+            'source' => 'non-db',
+            'module' => 'Agreements',
+            'default' => false
+        ],
+        'letters' => [
+            'name' => 'letters',
+            'type' => 'link',
+            'relationship' => 'account_letters',
+            'source' => 'non-db',
+            'module' => 'Letters',
+            'bean_name' => 'Letter',
+            'vname' => 'LBL_LETTERS',
         ],
     ],
     'indices' => [
@@ -574,6 +580,17 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
         */
         'account_emails' => [
             'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id', 'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Accounts'
+        ],
+        'account_letters' => [
+            'lhs_module' => 'Accounts',
+            'lhs_table' => 'accounts',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Letters',
+            'rhs_table' => 'letters',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Accounts'
         ],
         'account_leads' => [
@@ -649,7 +666,7 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
 global $dictionary;
-if (is_file("modules/SalesDocs/SalesDoc.php")) {
+if (file_exists("extensions/modules/SalesDocs")) {
     $dictionary['Account']['fields']['salesdocs'] = [
         'name' => 'salesdocs',
         'type' => 'link',
@@ -686,7 +703,7 @@ if (is_file("modules/SalesDocs/SalesDoc.php")) {
         'comment' => 'SalesDocs as invoice recipient'
     ];
 }
-if (is_file("modules/Addresses/Address.php")) {
+if (file_exists("modules/Addresses")) {
     $dictionary['Account']['fields']['addresses'] = [
         'name' => 'addresses',
         'type' => 'link',
@@ -697,7 +714,7 @@ if (is_file("modules/Addresses/Address.php")) {
         'default' => true
     ];
 }
-if (is_file("modules/ServiceOrders/ServiceOrder.php")) {
+if (file_exists("extensions/modules/ServiceOrders")) {
     $dictionary['Account']['fields']['serviceorders'] = [
         'name' => 'serviceorders',
         'type' => 'link',
@@ -724,7 +741,7 @@ if (is_file("modules/ServiceOrders/ServiceOrder.php")) {
         'vname' => 'LBL_SERVICEORDER_ROLE'
     ];
 }
-if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
+if (file_exists("modules/ServiceTickets")) {
     $dictionary['Account']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
@@ -735,7 +752,7 @@ if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
         'default' => false
     ];
 }
-if (is_file("modules/ServiceEquipments/ServiceEquipment.php")) {
+if (file_exists("extensions/modules/ServiceEquipments")) {
     $dictionary['Account']['fields']['serviceequipments'] = [
         'name' => 'serviceequipments',
         'type' => 'link',
@@ -746,7 +763,7 @@ if (is_file("modules/ServiceEquipments/ServiceEquipment.php")) {
         'default' => false
     ];
 }
-if (is_file("modules/ServiceLocations/ServiceLocation.php")) { // CR1000239
+if (file_exists("extensions/modules/ServiceLocations")) { // CR1000239
     $dictionary['Account']['fields']['servicelocations'] = [
         'name' => 'servicelocations',
         'module' => 'ServiceLocations',
@@ -757,7 +774,7 @@ if (is_file("modules/ServiceLocations/ServiceLocation.php")) { // CR1000239
         'vname' => 'LBL_SERVICELOCATIONS',
     ];
 }
-if (is_file("modules/ProductVariants/ProductVariant.php")) {
+if (file_exists("extensions/modules/ProductVariants")) {
     $dictionary['Account']['fields']['manufactures'] = [
         'name' => 'manufactures',
         'vname' => 'LBL_PRODUCTVARIANT',
@@ -785,7 +802,7 @@ global $dictionary;
 $dictionary['Account']['fields']['name']['importable'] = 'required';
 
 // CR1000336
-if(is_file('modules/SystemDeploymentReleases/SystemDeploymentRelease.php')){
+if(file_exists('extensions/modules/SystemDeploymentReleases')){
 
     $dictionary['Account']['fields']['systemdeploymentreleases'] = [
         'name' => 'systemdeploymentreleases',
@@ -795,6 +812,7 @@ if(is_file('modules/SystemDeploymentReleases/SystemDeploymentRelease.php')){
         'bean_name' => 'SystemDeploymentRelease',
         'source' => 'non-db',
         'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
+        'side' => 'left'
     ];
     $dictionary['Account']['relationships']['account_systemdeploymentreleases'] = [
         'lhs_module' => 'Accounts',
@@ -809,7 +827,7 @@ if(is_file('modules/SystemDeploymentReleases/SystemDeploymentRelease.php')){
     ];
 }
 
-if(is_file('modules/Potentials/Potential.php')){
+if (file_exists('extensions/modules/Potentials')) {
 
     $dictionary['Account']['fields']['potentials'] = [
         'name' => 'potentials',
@@ -846,7 +864,7 @@ if(is_file('modules/Potentials/Potential.php')){
 
 }
 
-if(is_file('modules/BonusCards/BonusCard.php')){
+if(file_exists('extensions/modules/BonusCards')){
     $dictionary['Account']['fields']['bonuscards'] = [
         'name' => 'bonuscards',
         'type' => 'link',
@@ -858,7 +876,7 @@ if(is_file('modules/BonusCards/BonusCard.php')){
     ];
 }
 
-if(is_file('modules/Products/Product.php')){
+if(file_exists('extensions/modules/Products')){
     $dictionary['Account']['fields']['manufactured_products'] = [
         'vname' => 'LBL_MANUFACTURED_PRODUCTS',
         'name' => 'manufactured_products',
@@ -879,7 +897,7 @@ if(is_file('modules/Products/Product.php')){
     ];
 }
 
-if(is_file('modules/ServiceCalls/ServiceCall.php')){
+if(file_exists('extensions/modules/ServiceCalls')){
     $dictionary['Account']['fields']['servicecalls'] = [
         'vname' => 'LBL_SERVICECALLS',
         'name' => 'servicecalls',

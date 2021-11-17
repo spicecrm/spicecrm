@@ -36,7 +36,8 @@
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\Accounts\Account;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\data\BeanFactory;
 
 ///////////////////////////////////////////////////////////////////////////////
 ////	LOCAL UTILITY
@@ -111,7 +112,7 @@ $add_index=[];
 $drop_index=[];
 $change_index=[];
 
-global $beanFiles, $dictionary,  $mod_strings;;
+global $dictionary,  $mod_strings;;
 $current_user = AuthenticationController::getInstance()->getCurrentUser();
 include_once ('include/database/DBManager.php');
 
@@ -120,21 +121,20 @@ $processed_tables=[];
 
 ///////////////////////////////////////////////////////////////////////////////
 ////	PROCESS MODULE BEANS
-(function_exists('logThis')) ? logThis("found ".count($beanFiles)." Beans to process") : "";
+(function_exists('logThis')) ? logThis("found ".count(SpiceModules::getInstance()->getBeanClasses())." Beans to process") : "";
 (function_exists('logThis')) ? logThis("found ".count($dictionary)." Dictionary entries to process") : "";
 
-foreach ($beanFiles as $beanname=>$beanpath) {
-	require_once($beanpath);
-	$focus= new $beanname();
+foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
+	$focus= new $beanClass();
 
 	//skips beans based on same tables. user, employee and group are an example.
-	if(empty($focus->table_name) || isset($processed_tables[$focus->table_name])) {
+	if (empty($focus->table_name) || isset($processed_tables[$focus->table_name])) {
 		continue;
 	} else {
 		$processed_tables[$focus->table_name]=$focus->table_name;
 	}
 
-	if(!empty($dictionary[$focus->object_name]['indices'])) {
+	if (!empty($dictionary[$focus->object_name]['indices'])) {
 		$indices=$dictionary[$focus->object_name]['indices'];
 	} else {
 		$indices=[];
@@ -149,7 +149,7 @@ foreach ($beanFiles as $beanname=>$beanpath) {
 			continue;
 		}
 
-		if(empty($definition['db']) or $definition['db'] == $focus->db->dbType) {
+		if (empty($definition['db']) or $definition['db'] == $focus->db->dbType) {
 			$var_indices[$definition['name']] = $definition;
 		}
 	}
@@ -198,7 +198,7 @@ if((count($drop_index) > 0 or count($add_index) > 0 or count($change_index) > 0)
 		echo ($_REQUEST['silent']) ? "" : "<a href='index.php?module=Administration&action=RepairIndex&mode=execute'>Execute Script</a>";
 	}
 
-	$focus = new Account();
+	$focus = BeanFactory::getBean('Accounts');
 	if(count($drop_index) > 0) {
 		if(isset($_REQUEST['mode']) and $_REQUEST['mode']=='execute') {
 			echo ($_REQUEST['silent']) ? "" : $mod_strings['LBL_REPAIR_INDEX_DROPPING'];

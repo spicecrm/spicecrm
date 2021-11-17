@@ -13,7 +13,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ModuleCalendar
  */
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Injector, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Injector,
+    OnDestroy,
+    Renderer2,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
@@ -23,6 +34,8 @@ import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {take} from "rxjs/operators";
 import {metadata} from "../../../services/metadata.service";
+
+declare var moment: any;
 
 /**
  * Main container which displays a monitor panel, a header with tools and the calendar selected sheet.
@@ -236,6 +249,13 @@ export class Calendar implements AfterViewInit, OnDestroy {
                         if (module) {
                             this.model.module = module.name;
                             let presets: any = {[module.dateStartFieldName]: event};
+
+                            // set a default date end date
+                            if (module.dateEndFieldName) {
+                                let dateEnd = moment(event).add(30, 'm');
+                                presets[module.dateEndFieldName] = dateEnd;
+                            }
+
                             if (module.name == 'UserAbsences') {
                                 presets.user_id = this.calendar.owner;
                                 presets.user_name = this.calendar.ownerName;

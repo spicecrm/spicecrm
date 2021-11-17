@@ -139,6 +139,7 @@ export class GlobalLoginResetPassword {
         let requArray = [];
         if (extConf.onelower) requArray.push('one lower case');
         if (extConf.oneupper) requArray.push('one upper case');
+        if (extConf.onespecial) requArray.push('one special');
         if (extConf.onenumber) requArray.push('one number');
         if (extConf.minpwdlength) requArray.push('minimum length ' + extConf.minpwdlength);
 

@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceNotifications;
 
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -31,7 +32,7 @@ class SpiceNotifications
     const TYPE_RELATE     = 'relate';
 
     public function __construct(SugarBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null) {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();
         $this->beanModule = $bean->module_dir; // todo change it to the actual module name
@@ -97,7 +98,7 @@ class SpiceNotifications
 
         if ($parsedTpl === false) return;
 
-        $sendToEmail = $this->assignedUser->emailAddress->getPrimaryAddress($this->assignedUser);
+        $sendToEmail = $this->assignedUser->email1;
         if (empty($sendToEmail)) {
             LoggerManager::getLogger()->warn("Notifications: No e-mail address set for user '{$this->assignedUser->user_name}', cancelling send.");
             return false;
@@ -112,7 +113,7 @@ class SpiceNotifications
             $email->body = $parsedTpl['body_html'];
             $email->addEmailAddress('to', $sendToEmail);
             // add the from address
-            $email->addEmailAddress('from', $current_user->emailAddress->getPrimaryAddress($current_user));
+            $email->addEmailAddress('from', $current_user->email1);
             $sendResults = $email->sendEmail();
             if (isset($sendResults['errors'])) {
                 LoggerManager::getLogger()->fatal('Error sending notification email over Mailbox in SugarBean on file ' . __FILE__ . ', line ' . __LINE__ . '.');

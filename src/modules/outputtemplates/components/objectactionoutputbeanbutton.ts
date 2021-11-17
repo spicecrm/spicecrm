@@ -32,6 +32,10 @@ export class ObjectActionOutputBeanButton {
     public noDownload: boolean;
     public handBack: EventEmitter<string>;
     public buttonText: string;
+    /**
+     * holds the action config
+     */
+    public actionconfig: {modal_actionset: string};
 
     constructor(
         protected language: language,
@@ -76,7 +80,6 @@ export class ObjectActionOutputBeanButton {
         }
     }
 
-
     public openOutput() {
         if (this.templates.length > 0) {
             // sort the templates
@@ -88,6 +91,7 @@ export class ObjectActionOutputBeanButton {
                 outputModal.instance.modalTitle = this.modalTitle;
                 outputModal.instance.noDownload = this.noDownload;
                 outputModal.instance.handBack = this.handBack;
+                outputModal.instance.customActionsetId = this.actionconfig.modal_actionset;
                 outputModal.instance.buttonText = this.buttonText;
             });
         } else {

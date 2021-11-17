@@ -13,10 +13,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     <div *ngIf="!displayLink()" class="slds-truncate">
-        <span [ngClass]="{'slds-text-color_error' : highlightdate}">{{displayDate}}</span>
+        <span [ngClass]="{'slds-text-color_error' : highlightdate}"><system-display-datetime [date]="value" [displayTime]="false"></system-display-datetime></span>
     </div>
     <div *ngIf="displayLink()" class="slds-truncate">
-        <a href="javascript:void(0);" (click)="goRecord()"><span [ngClass]="{'slds-text-color_error' : highlightdate}">{{displayDate}}</span></a>
+        <a href="javascript:void(0);" (click)="goRecord()"><span [ngClass]="{'slds-text-color_error' : highlightdate}"><system-display-datetime [date]="value" [displayTime]="false"></system-display-datetime></span></a>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">

@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 $dictionary['serviceorders_users'] = [
     'table' => 'serviceorders_users',

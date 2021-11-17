@@ -1,18 +1,22 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\KREST\handlers;
 
 use LanguageManager;
-use NoteSoap;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\UploadFile;
+use SpiceCRM\includes\TimeDate;
 
 /*
  * This File is part of KREST is a Restful service extension for SugarCRM
@@ -36,7 +40,6 @@ use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\Trackers\Tracker;
 use SpiceCRM\modules\Trackers\TrackerManager;
-use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use stdClass;
 use SpiceCRM\modules\UserPreferences\UserPreference;
@@ -89,7 +92,7 @@ class ModuleHandler
     public function get_dynamic_domains($modules, $language)
     {
 
-        global $beanList, $dictionary;
+        global $dictionary;
 
         $dynamicDomains = [];
 
@@ -118,7 +121,7 @@ class ModuleHandler
 
     public function get_bean_list($beanModule, $searchParams, $addwhere = "")
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -172,13 +175,17 @@ class ModuleHandler
                 $thisBean = BeanFactory::getBean($beanModule, $hit['_id'], ['encode' => false, 'forceRetrieve' => true]);
 
                 // if we had an error retrieving continue
-                if (!$thisBean) continue;
+                // but reduce the totalcount by one so in case this is a limited list there is no attempt to load more
+                if (!$thisBean) {
+                    $totalcount--;
+                    continue;
+                }
 
                 // get the list details
                 $thisBean->retrieveListDetails();
 
                 // map and add to the array
-                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean);
+                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, false);
             }
             $retArray['aggregations'] = $result['aggregations'];
             $retArray['buckets'] = $result['buckets'];
@@ -344,11 +351,11 @@ class ModuleHandler
                 # It can´t be used in the db request, so "sort_on" (and optional "sort_on2") should have been defined in vardefs.
                 # The field name(s) in "sort_on" (and "sort_on2") are used instead. They are real/existing db fields.
                 # Better would be an array ( "sort_fields"=>array("nameOfField1","nameOfField2",...) ), but "sort_on"/"sort_on2" is already implemented and used elsewhere, so I use it here.
-                if (isset($dictionary[$thisBean->object_name]['fields'][$searchParams['sortfield']]['sort_on']{0}))
+                if (isset($dictionary[$thisBean->object_name]['fields'][$searchParams['sortfield']]['sort_on'][0]))
                     $sortfield = $dictionary[$thisBean->object_name]['fields'][$searchParams['sortfield']]['sort_on'];
-                if (isset($dictionary[$thisBean->object_name]['fields'][$searchParams['sortfield']]['sort_on2']{0}))
+                if (isset($dictionary[$thisBean->object_name]['fields'][$searchParams['sortfield']]['sort_on2'][0]))
                     $sortfield .= ', ' . $dictionary[$thisBean->object_name]['fields'][$searchParams['sortfield']]['sort_on2'];
-                if (!isset($sortfield{0})) $sortfield = $searchParams['sortfield'];
+                if (!isset($sortfield[0])) $sortfield = $searchParams['sortfield'];
 
                 $searchParams['orderby'] = $sortfield . ' ' . ($searchParams['sortdirection'] ? strtoupper($searchParams['sortdirection']) : 'ASC');
 
@@ -361,9 +368,9 @@ class ModuleHandler
             $sortFields = json_decode(html_entity_decode($searchParams['sortfields']), true);
             foreach ($sortFields as $sortField) {
                 $sf = $sortField['sortfield'];
-                if (isset($dictionary[$thisBean->object_name]['fields'][$sortField['sortfield']]['sort_on']{0}))
+                if (isset($dictionary[$thisBean->object_name]['fields'][$sortField['sortfield']]['sort_on'][0]))
                     $sf = $dictionary[$thisBean->object_name]['fields'][$sortField['sortfield']]['sort_on'];
-                if (isset($dictionary[$thisBean->object_name]['fields'][$sortField['sortfield']]['sort_on2']{0}))
+                if (isset($dictionary[$thisBean->object_name]['fields'][$sortField['sortfield']]['sort_on2'][0]))
                     $sf .= ', ' . $dictionary[$thisBean->object_name]['fields'][$sortField['sortfield']]['sort_on2'];
 
                 $orderbys[] = $sf . ' ' . ($sortField['sortdirection'] ? strtoupper($sortField['sortdirection']) : 'ASC');
@@ -441,7 +448,7 @@ class ModuleHandler
                     $thisBean->retrieveListDetails();
 
                     // map and add to the array
-                    $beanData[] = $this->mapBeanToArray($beanModule, $thisBean);
+                    $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, false);
                 }
 
                 $bucketitem['items'] = $bucketitem['items'] + count($beanList['list']);
@@ -475,7 +482,7 @@ class ModuleHandler
                 // retrieve the additonal list details
                 $thisBean->retrieveListDetails();
 
-                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean);
+                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, false);
             }
 
             // get the count
@@ -514,8 +521,8 @@ class ModuleHandler
 
     public function export_bean_list($beanModule, $searchParams)
     {
-        global $dictionary, $app_list_strings, $current_language, $timedate;
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        global  $app_list_strings, $current_language;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
 
         $app_list_strings = return_app_list_strings_language($current_language);
@@ -669,6 +676,403 @@ class ModuleHandler
 
     }
 
+    public static function get_module_records_timeline($parentid, $findEnd, $startDate, $endDate = '', $searchterm = '', $own = '', $objects = []): array
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // gets the modules we have to search in for records
+        $modules = SpiceFTSUtils::getTimelineModules();
+        $moduleQueries = [];
+        $queryModules = [];
+        $totalCount = 0;
+        $postFilters = [];
+        if(array_search_insensitive('Modules', $objects) !== false) $objects = [];
+
+        // all modules that potentially could be listed
+        $candidateModules = [];
+
+        // create an instance of the elastichandler
+        $elastichandler = new ElasticHandler();
+
+
+
+        foreach ($modules as $module => $moduleDetails) {
+
+
+            // check acl access for the user as well as if a filter object is set
+            //if(!SpiceACL::getInstance()->checkACLAccess($module, 'list') || ($objects && count($objects) > 0 && array_search_insensitive($module, $objects) === false)){
+            if (!SpiceACL::getInstance()->checkAccess($module, 'list') || !$elastichandler->checkIndex($module)) {
+                continue;
+            }
+
+            $candidateModules[] = $module;
+
+            // if access is granted build the module query
+            $beanHandler = new SpiceFTSBeanHandler($module);
+            $moduleQuery = $beanHandler->getModuleSearchQuery($searchterm);
+
+            $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["_index" => SpiceFTSUtils::getIndexNameForModule($module)]];
+            $moduleQuery['bool']['filter']['bool']['must'][] = ['match' => ["_activityparentids" => $parentid]];
+
+
+            // builds a query to get the whole amount of module records which we can access
+            if($findEnd) {
+                $EndQuery = $moduleQuery;
+                $EndQuery['bool']['filter']['bool']['must'][] = ['range' => ['_activitydate' => ['lt' => $startDate]]];
+                $CountQueries[] = $EndQuery;
+            }
+
+
+            // build the module query depending on the given end Date
+            if($endDate !== '') {
+                $moduleQuery['bool']['filter']['bool']['must'][] = ['range' => ['_activitydate' => ['gte' => $endDate, 'lt' => $startDate]]];
+            } else {
+                $moduleQuery['bool']['filter']['bool']['must'][] = ['range' => ['_activitydate' => ['lt' => $startDate]]];
+            }
+
+            switch ($own) {
+                case 'assigned':
+                    $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["assigned_user_id" => $current_user->id]];
+                    break;
+                case 'created':
+                    $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["created_by" => $current_user->id]];
+                    break;
+            }
+
+            $moduleQueries[] = $moduleQuery;
+
+            // collect all modules we should query for building the search URL listing the indexes
+            $queryModules[] = SpiceFTSUtils::getIndexNameForModule($module);
+
+
+            if ($objects && count($objects) > 0 && array_search_insensitive($module, $objects) === false) {
+                $postFilters[] = [
+                    'term' => ['_index' => SpiceFTSUtils::getIndexNameForModule($module)]
+                ];
+            }
+        }
+
+        // if we do not have any modules to query - return an empty response
+        if(count($moduleQueries) === 0) {
+            return ['records' => [], 'totalCount' => 0, 'TimelineModules' => []];
+        }
+
+        // main query
+        $query = [
+            "size" => 24,
+            "query" => [
+                'bool' => [
+                    'should' => $moduleQueries
+                ]
+            ],
+            "sort" => [['_activitydate' => ['order' => 'desc']]]
+        ];
+
+        if (count($postFilters) > 0) {
+            $query['post_filter'] = [
+                "bool" => [
+                    "must_not" => $postFilters
+                ]
+            ];
+        }
+
+        // to get the number of module records we can load
+        if($findEnd) {
+            $countQuery = [
+                "size" => 0,
+                "query" => [
+                    'bool' => [
+                        'should' => $CountQueries
+                    ]
+                ]
+            ];
+            if (count($postFilters) > 0) {
+                $countQuery['post_filter'] = [
+                    "bool" => [
+                        "must_not" => $postFilters
+                    ]
+                ];
+            }
+            $totalCount = $elastichandler->getHitsTotalValue(json_decode($elastichandler->query('POST', join(',', $queryModules) . '/_search', null, $countQuery), true));
+        }
+
+        $results = json_decode($elastichandler->query('POST', join(',', $queryModules) . '/_search', null, $query), true);
+
+
+        // gets the found records
+        $items = [];
+
+
+        foreach ($results['hits']['hits'] as &$hit) {
+            if(!$seed = BeanFactory::getBean($elastichandler->getHitModule($hit), $hit['_id'])){
+                LoggerManager::getLogger()->fatal(__CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly');
+                LoggerManager::getLogger()->fatal($hit);
+                continue;
+            }
+
+            // get the email addresses
+            $krestHandler = new ModuleHandler();
+
+            $items[] = [
+                'id' => $seed->id,
+                'module' => $elastichandler->getHitModule($hit),
+                'date' => $hit['_source']['_activitydate'],
+                'related_ids' => $hit['_source']['related_ids'],
+                'record_Type' => 'module',
+                'data' => $krestHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed, false)
+            ];
+        }
+
+        $recordSearch = !$findEnd || $totalCount !== 0;
+        $counts = ['modulesTook' => count($items), 'totalModules' => $totalCount, 'auditsTook' => 0, 'totalAudits' => 0];
+
+        return ['records' => $items, 'counts' => $counts, 'TimelineModules' => $candidateModules, 'moduleSearch' => $recordSearch, 'auditSearch' => false];
+    }
+
+    public function get_timeline_records($beanModule, $beanId, $body): array
+    {
+        // get all essential params
+        $startDate = $body['startDate'];
+        $endDate = $body['endDate'];
+        $moduleSearch = $body['moduleSearch'];
+        $auditSearch = $body['auditSearch'];
+        $searchterm = $body['searchTerm'];
+        $own = $body['own'];
+        $objects = json_decode($body['objects']);
+        $timeRangeStart = $body['timeRangeStart'];
+        $findEnd = false;
+
+
+        // check if we cann access an audit_log
+        $thisBean = BeanFactory::getBean($beanModule, $beanId);
+        $isAudit = $thisBean->is_AuditEnabled();
+
+        $timelineModules = [];
+
+
+        foreach (SpiceFTSUtils::getTimelineModules() as $module => $moduleDetails) {
+            $timelineModules[] = $module;
+        }
+        $modules = $isAudit? array_merge(['auditLog'], $timelineModules) : $timelineModules;
+
+        // checks if we have a startDate
+        if (!$startDate)
+        {
+            $findEnd = true;
+            $startDate = date("Y-m-d H:i:s");
+        }
+
+        if($startDate === $timeRangeStart) {
+            $findEnd = true;
+        }
+
+        // returns if searching for module and audit records is deactivated
+        if(!$moduleSearch && (!$auditSearch || !$isAudit || $own === 'assigned'))
+        {
+            $data = ['counts' => ['totalModules' => 0, 'modulesTook' => 0, 'totalAudits' => 0, 'auditsTook' => 0], 'endDate' => $endDate, 'records' => []];
+            $moduleSearch = false;
+            $auditSearch = false;
+            $point = 5;
+        }
+
+        // handles the search process if searching for module records is deactivated
+        elseif((count($objects) === 1 && $objects[0] === 'auditLog'))
+        {
+            // collecting necessary data for the further search process
+            $moduleSearch = false;
+            $auditSearch = true;
+            $point = 7;
+
+        }
+
+        // handles the search process if searching for audit records is not allowed or deactivated
+        elseif(!$isAudit || $searchterm !== '' || $own === 'assigned' ||
+            (count($objects) >= 1 && array_search_insensitive('auditLog', $objects) === false))
+        {
+            // collecting necessary data for the further search process
+            $moduleSearch = true;
+            $auditSearch = false;
+            $point = 7;
+        }
+
+        if($moduleSearch && $auditSearch) {
+            $auditOverview = self::get_auditlog_for_timeline($beanModule, $beanId, false, $startDate, '', $own, true);
+            $auditSearch = $auditOverview['auditSearch'];
+            $endDate = $auditOverview['endDate'];
+        }
+
+        if($moduleSearch) {
+            $data = self::get_module_records_timeline($beanId, $findEnd, $startDate, $endDate, $searchterm, $own, $objects);
+            if($data['counts']['modulesTook'] > 24) $endDate = end($data['records'])['date'];
+            $moduleData = $data;
+            $moduleSearch = $data['moduleSearch'];
+        }
+
+        if($auditSearch) {
+            $endDate = $moduleSearch? $endDate : '';
+            $data = self::get_auditlog_for_timeline($beanModule, $beanId, $findEnd, $startDate, $endDate, $own);
+
+            $auditData = $data;
+        }
+
+        if($auditSearch && $moduleSearch) {
+            $data = self::get_records_merged_for_timeline($moduleData, $auditData);
+            $point = 1;
+        }
+
+        $endDate = !end($data['records'])['date']? '' : end($data['records'])['date'];
+        $records = self::add_Date_Dividers($data['records'], $startDate, $findEnd);
+        $counts = $data['counts'];
+
+        return ['point' => $point, 'records' => $records, 'moduleSearch' => $moduleSearch, 'auditSearch' => $auditSearch, 'endDate' => $endDate, 'counts' => $counts, 'timelineModules' => $modules];
+    }
+
+
+
+    public function get_records_merged_for_timeline($moduleData, $auditData): array
+    {
+        $records = array_merge($moduleData['records'], $auditData['records']);
+
+        // sorts the records by date
+        usort($records, function($element1, $element2) {
+
+            $v1 = strtotime($element1['date']);
+
+            $v2 = strtotime($element2['date']);
+
+            return $v2 - $v1;
+        });
+
+        $counts = ['totalModules' => $moduleData['counts']['totalModules'], 'modulesTook' => $moduleData['counts']['modulesTook'], 'totalAudits' => $auditData['counts']['totalAudits'],'auditsTook' => $auditData['counts']['auditsTook']];
+
+        return ['records' => $records, 'counts' => $counts];
+    }
+
+    public function add_Date_Dividers($records, $startDate, $findEnd)
+    {
+        $dates = [];
+        $lastDates = [];
+        $lastDate = '';
+
+        foreach($records as $recordIndex => $record) {
+
+            if(!$lastDate) $lastDate = date('Y-m', strtotime($startDate));
+
+
+            $date = date('Y-m', strtotime($record['date']));
+
+            if($findEnd && $recordIndex === 0) $lastDate = '0';
+            elseif ($date !== $lastDate) {
+                $records[intval($recordIndex)]['divider'] = $date;
+            }
+            $lastDates[] = $lastDate;
+            $dates[] = $date;
+            $lastDate = $date;
+
+        }
+
+        return $records;
+    }
+
+
+    public function get_auditlog_for_timeline($beanModule, $beanId, $findEnd = false, $startDate = null, $endDate = '', $own = '', $count = false)
+    {
+
+        $db = DBManagerFactory::getInstance();
+
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
+            throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
+
+
+        $thisBean = BeanFactory::getBean($beanModule, $beanId);
+        if (!isset($thisBean->id)) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
+
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser()->id;
+        $totalCount = 0;
+
+        // define the querries
+        if($own === 'created' || $own === 'assigned') {
+            $CQuery = "SELECT b.id, DATE_FORMAT(b.date_created, '%Y-%m') dateCreatedMonth, b.date_created dateCreatedExact, COUNT(b.trans_id) id_count FROM (SELECT a.id, a.transaction_id trans_id, a.date_created FROM " . $thisBean->get_audit_table_name() . " a WHERE a.created_by = '$currentUser' AND a.parent_id = '$beanId' AND a.date_created < '$startDate' GROUP BY trans_id ORDER BY a.date_created ASC) b GROUP BY dateCreatedMonth ORDER BY dateCreatedMonth desc";
+            $AMQuery = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' AND al.created_by = '$currentUser' AND al.date_created >= '$endDate' AND al.date_created < '$startDate'";
+            $AQuery = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' AND al.created_by = '$currentUser' AND al.date_created < '$startDate' ORDER BY al.date_created DESC LIMIT 20";
+            $FEQuery = "SELECT COUNT(b.trans_id) totalCount FROM (SELECT a.transaction_id trans_id FROM " . $thisBean->get_audit_table_name() . " a WHERE a.created_by = '$currentUser' AND a.parent_id = '$beanId' AND a.date_created <= '$startDate' GROUP BY trans_id) b";
+        } else {
+            $CQuery = "SELECT b.id, DATE_FORMAT(b.date_created, '%Y-%m') dateCreatedMonth, b.date_created dateCreatedExact, COUNT(b.trans_id) id_count FROM (SELECT a.id, a.transaction_id trans_id, a.date_created FROM " . $thisBean->get_audit_table_name() . " a WHERE parent_id = '$beanId' AND a.date_created < '$startDate' GROUP BY trans_id ORDER BY a.date_created ASC) b GROUP BY dateCreatedMonth ORDER BY dateCreatedMonth desc";
+            $AMQuery = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' AND al.date_created >= '$endDate' AND al.date_created < '$startDate'";
+            $AQuery = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' AND al.date_created < '$startDate' ORDER BY al.date_created DESC LIMIT 20";
+            $FEQuery = "SELECT COUNT(b.trans_id) totalCount FROM (SELECT a.transaction_id trans_id FROM " . $thisBean->get_audit_table_name() . " a WHERE a.parent_id = '$beanId' AND a.date_created <= '$startDate' GROUP BY trans_id) b";
+        }
+
+        // calculates the whole amount of audit records we can access
+        if($findEnd) {
+
+            $auditRecords = $db->query($FEQuery);
+
+            while ($auditRecord = $db->fetchByAssoc($auditRecords)) {
+                $totalCount = intval($auditRecord['totalCount']);
+            }
+        }
+
+        // loops over the records grouped by months and blocks the case of loading too many records
+        // returns the amount of records and the date of the oldest one for the further module record search
+        if($count) {
+            $auditRecords = $db->query($CQuery);
+            $records = 0;
+
+            while ($auditRecord = $db->fetchByAssoc($auditRecords)) {
+
+                $records += $auditRecord['id_count'];
+                $date = $auditRecord['dateCreatedExact'];
+
+                if($records >= 12) break;
+            }
+            $auditSearch = !$findEnd || $totalCount !== 0;
+            return ['endDate' => $date, 'count' => $records, 'auditSearch' => $auditSearch];
+
+
+        } elseif($endDate === '') {
+            $auditRecords = $db->query($AQuery);
+        } else {
+            $auditRecords = $db->query($AMQuery);
+        }
+
+        $auditLog = [];
+        $records = [];
+
+        while ($auditRecord = $db->fetchByAssoc($auditRecords)) {
+            $date = $auditRecord['date_created'];
+            if (!isset($auditLog[$auditRecord['transaction_id']])) {
+                $auditLog[$auditRecord['transaction_id']] = [
+                    'id' => $auditRecord['transaction_id'],
+                    'date' => $auditRecord['date_created'],
+                    'created_by' => $auditRecord['created_by'],
+                    'user_name' => $auditRecord['user_name'],
+                    'record_Type' => 'audit',
+                    'data' => []
+                ];
+            }
+
+            // add the log record
+            $auditLog[$auditRecord['transaction_id']]['data'][] = [
+                'field_name' => $auditRecord['field_name'],
+                'data_type' => $auditRecord['data_type'],
+                'before_value_string' => $auditRecord['before_value_string'],
+                'before_value_text' => $auditRecord['before_value_text'],
+                'after_value_string' => $auditRecord['after_value_string'],
+                'after_value_text' => $auditRecord['after_value_text'],
+            ];
+        }
+        foreach($auditLog as $transaction_id => $audits) {
+            $records[] = $audits;
+        }
+
+        $auditSearch = !$findEnd || $totalCount !== 0;
+        $counts = ['modulesTook' => 0, 'totalModules' => 0, 'auditsTook' => count($records), 'totalAudits' => $totalCount];
+
+        return ['records' => $records, 'counts' => $counts, 'endDate' => $date, 'auditSearch' => $auditSearch, 'moduleSearch' => false];
+    }
+
     public function get_bean_auditlog($beanModule, $beanId, $params)
     {
         $db = DBManagerFactory::getInstance();
@@ -760,87 +1164,6 @@ class ModuleHandler
         return ['count' => $duplicates['count'], 'records' => $retArray];
     }
 
-
-    public function get_bean_attachment(string $beanModule, string $beanId): array {
-        // acl check if user can get the detail
-        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
-            throw (new ForbiddenException("Forbidden to view in for module $beanModule."))->setErrorCode('noModuleView');
-
-        $thisBean = BeanFactory::getBean($beanModule);
-        $thisBean->retrieve($beanId);
-        if (!isset($thisBean->id)) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
-
-        if ($thisBean->file_name || $thisBean->filename) {
-            require_once('modules/Notes/NoteSoap.php');
-            $noteSoap = new NoteSoap();
-            $fileData = $noteSoap->retrieveFile($thisBean->id, $thisBean->file_name ?: $thisBean->filename);
-            // In case the file is a text file:
-            // For a correct display of special characters in the browser, convert the file content to UTF8, if it not already UTF8 encoded.
-            if ($thisBean->file_mime_type === 'text/plain') {
-                $dummy = base64_decode($fileData);
-                $dummy = mb_check_encoding($dummy, 'UTF-8') ? $dummy : utf8_encode($dummy);
-                $fileData = base64_encode($dummy);
-            }
-            if ($fileData >= -1)
-                return [
-                    'filename' => $thisBean->file_name ?: $thisBean->filename,
-                    'file' => $fileData,
-                    'filetype' => $thisBean->file_mime_type
-                ];
-        }
-
-        // if we did not return before we did not find the file
-        throw (new NotFoundException('Attachment/File not found.'));
-    }
-
-    public function set_bean_attachment(string $beanModule, string $beanId, ?array $post) {
-        $upload_file = new UploadFile('file');
-        if ($post['file']) {
-            $decodedFile = base64_decode($post['file']);
-            $upload_file->set_for_soap($beanId, $decodedFile);
-            $upload_file->final_move($beanId, true);
-        }
-
-        return ['filename' => $post['filename'], 'filetype' => $post['filemimetype'], 'filemd5' => 'md5hash'];
-    }
-
-    /**
-     * upload an attachment
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return array
-     */
-    public function uploadFile($params) {
-        $upload_file = new UploadFile('file');
-        $decodedFile = base64_decode($params['file']);
-        $file_md5 = md5($decodedFile);
-        $upload_file->set_for_soap($file_md5, $decodedFile);
-        $upload_file->final_move($file_md5, true);
-
-        return $file_md5;
-    }
-
-    public function download_bean_attachment(string $beanModule, string $beanId): void {
-        $seed = BeanFactory::getBean($beanModule, $beanId);
-        if ($seed) {
-            $download_location = "upload://" . $beanId;
-
-            // make sure to clean the buffer
-            while (ob_get_level() && @ob_end_clean()) ;
-
-            header("Pragma: public");
-            header("Cache-Control: maxage=1, post-check=0, pre-check=0");
-            header('Content-type: application/octet-stream');
-            header("Content-Disposition: attachment; filename=\"" . $seed->filename . "\";");
-            header("X-Content-Type-Options: nosniff");
-            header("Content-Length: " . filesize($download_location));
-            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 2592000));
-            readfile($download_location);
-        }
-    }
-
-
     public function get_related(string $beanModule, string $beanId, string $linkName, array $params): array {
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
@@ -855,7 +1178,8 @@ class ModuleHandler
         } else {
             LoggerManager::getLogger()->fatal("Error trying to load relationship using link name = " . $linkName . " in bean " . $beanModule);
         }
-        if (isset($thisBean->field_defs[$linkName]['sequence_field']{0})) {
+
+        if (isset($thisBean->field_defs[$linkName]['sequence_field'])) {
             $sortBySequenceField = $isSequenced = true;
             $sequenceField = $thisBean->field_defs[$linkName]['sequence_field'];
         }
@@ -896,15 +1220,27 @@ class ModuleHandler
         if (!SpiceACL::getInstance()->checkAccess($relModule, 'list', true) && !SpiceACL::getInstance()->checkAccess($relModule, 'listrelated', true))
             throw (new ForbiddenException('Forbidden to list in module ' . $relModule . '.'))->setErrorCode('noModuleList');
 
+        // exclude inactive
+        if($params['excludeinactive']){
+            $relSeed = BeanFactory::getBean($relModule);
+            if($relSeed->field_defs['is_inactive']){
+                if ($addWhere != '') {
+                    $addWhere = "($addWhere) AND ({$relSeed->table_name}.is_inactive <> 1)";
+                } else {
+                    $addWhere = "{$relSeed->table_name}.is_inactive <> 1";
+                }
+            }
+        }
+
         // get related beans and related module
         // get_linked_beans($field_name, $bean_name, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
-        $relBeans = $thisBean->get_linked_beans($linkName, $GLOBALS['beanList'][$beanModule], $sortingDefinition, $dummy = $params['offset'] ?: 0, $dummy + ($params['limit'] ?: 5), 0, $addWhere);
+        $relBeans = $thisBean->get_linked_beans($linkName, SpiceModules::getInstance()->getBeanName($beanModule), $sortingDefinition, $dummy = $params['offset'] ?: 0, $dummy + ($params['limit'] ?: 5), 0, $addWhere);
 
         $retArray = [];
         foreach ($relBeans as $relBean) {
             if (empty($relBean->relid))
                 $relBean->relid = SpiceUtils::createGuid();
-            $retArray[$relBean->relid] = $this->mapBeanToArray($relModule, $relBean);
+            $retArray[$relBean->relid] = $this->mapBeanToArray($relModule, $relBean, false);
 
             // add relationship fields
             if (is_array($relBean->relationhshipfields)) {
@@ -921,7 +1257,7 @@ class ModuleHandler
         // wtf? retrieve all the related data and at the end, ignore all this and count it new? (╯°□°)╯︵ ┻━┻
         if ($params['getcount']) {
             return [
-                'count' => count($relBeans) > 0 ? $thisBean->get_linked_beans_count($linkName, $GLOBALS['beanList'][$beanModule], 0, $addWhere) : 0,
+                'count' => count($relBeans) > 0 ? $thisBean->get_linked_beans_count($linkName, SpiceModules::getInstance()->getBeanName($beanModule), 0, $addWhere) : 0,
                 'list' => $retArray
             ];
         } else
@@ -1073,7 +1409,7 @@ class ModuleHandler
      */
     public function add_bean($beanModule, $beanId, $post_params, $query_params = [])
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'edit', true) && !SpiceACL::getInstance()->checkAccess($beanModule, 'create', true))
@@ -1153,6 +1489,15 @@ class ModuleHandler
             $thisBean->notify_on_save = true;
         }
 
+        $tempEmail1 = null;
+
+        // workaround: to prevent saving the email address twice
+        if (isset($thisBean->email1) || isset($post_params['email1'])) {
+            $tempEmail1 = $thisBean->email1 ?? $post_params['email1'];
+            $thisBean->email1 = '';
+            unset($post_params['email1']);
+        }
+
         // save the bean bbut do not index .. indexing is handled later here since we might save related beans
         $thisBean->update_date_entered = true;
         $thisBean->save(!empty($thisBean->notify_on_save), false);
@@ -1191,6 +1536,33 @@ class ModuleHandler
                         $beans = $post_params[$fieldData['name']]['beans'];
                         foreach ($beans as $thisBeanId => $beanData) {
                             $seed = BeanFactory::getBean($relModule, $thisBeanId);
+
+                            // handle email addresses link
+                            if ($fieldData['name'] == 'email_addresses') {
+
+                                // hold the retrieved email address if exists
+                                $beforeEmailAddress = !$seed ? null : ['id' => $seed->id, 'email_address' => $seed->email_address];
+
+                                // try to find the seed by the email address
+                                $seed = BeanFactory::getBean('EmailAddresses');
+                                $seed->retrieve_by_string_fields(['email_address_caps' => strtoupper($beanData['email_address'])]);
+
+                                // if the seed was not found
+                                if (!$seed->id) {
+
+                                    // set seed to null to force creating a new one
+                                    $seed = null;
+
+                                    // delete the old relationship and generate a new guid if the email address from the old retrieved seed does not match the current one and the id was the same
+                                    if ($beforeEmailAddress && $beanData['email_address'] != $beforeEmailAddress['email_address']) {
+                                        $thisBean->$fieldId->delete($thisBean, $beforeEmailAddress['id']);
+                                        $beanData['id'] = SpiceUtils::createGuid();
+                                    }
+                                } else {
+                                    $beanData['id'] = $seed->id;
+                                }
+                            }
+
                             if (empty($beanData['deleted'])) {
                                 // if it does not exist create new bean
                                 if (!$seed) {
@@ -1230,10 +1602,6 @@ class ModuleHandler
             }
         }
 
-        if (is_array($post_params['emailaddresses'])) {
-            $this->setEmailAddresses($beanModule, $thisBean->id, $post_params['emailaddresses']);
-        }
-
         // check on sync_comtact for Contacts Module
         if ($thisBean->module_name == 'Contacts') {
             if ($thisBean->load_relationship('user_sync', 'User')) {
@@ -1243,14 +1611,6 @@ class ModuleHandler
                     $thisBean->user_sync->delete(AuthenticationController::getInstance()->getCurrentUser()->id);
                 }
             }
-        }
-
-        // see if we have an attachement
-        if ($beanModule == 'Notes' && isset($post_params['file']) && isset($post_params['filename'])) {
-            require_once('modules/Notes/NoteSoap.php');
-            $noteSoap = new NoteSoap();
-            $post_params['id'] = $thisBean->id;
-            $noteSoap->newSaveFile($post_params);
         }
 
         // if favorite is set .. update this as well
@@ -1268,6 +1628,11 @@ class ModuleHandler
         $thisBean->call_custom_logic('after_save_completed', '');
 
         if (@SpiceConfig::getInstance()->config['krest']['retrieve_after_save']) $thisBean->retrieve();
+
+        // refill the email1 if it was cleared in the workaround line
+        if ($tempEmail1) {
+            $thisBean->email1 = $tempEmail1;
+        }
 
         return $this->mapBeanToArray($beanModule, $thisBean);
     }
@@ -1491,7 +1856,7 @@ class ModuleHandler
                     }
                     break;
                 case 'link':
-                    if ($resolvelinks && $fieldData['default'] === true && $fieldData['module']) {
+                    if (($resolvelinks && $fieldData['default'] === true && $fieldData['module']) || $fieldData['name'] == 'email_addresses') {
                         $beanDataArray[$fieldId]['beans'] = new stdClass();
                         $thisBean->load_relationship($fieldId);
                         if ($thisBean->{$fieldId}) {
@@ -1519,11 +1884,6 @@ class ModuleHandler
 
         // get the summary text
         $beanDataArray['summary_text'] = $thisBean ? $thisBean->get_summary_text() : '';
-
-        // get the email addresses
-        if($thisBean->hasEmails()) {
-            $beanDataArray['emailaddresses'] = $this->getEmailAddresses($beanModule, $thisBean->id);
-        }
 
         // get the ACL Array
         $beanDataArray['acl'] = $thisBean->getACLActions();
@@ -1553,38 +1913,9 @@ class ModuleHandler
         return $beanDataArray;
     }
 
-    /**
-     * returns the email addresses for a given bean
-     *
-     * @param $beanObject
-     * @param $beanId
-     * @return mixed
-     */
-    public function getEmailAddresses($beanObject, $beanId)
-    {
-        $emailAddresses = BeanFactory::getBean('EmailAddresses');
-        return $emailAddresses->getAddressesByGUID($beanId, $beanObject);
-    }
-
-    /**
-     * sets the email addresses for a given bean
-     *
-     * @param $beanModule
-     * @param $beanId
-     * @param $emailaddresses
-     */
-    private function setEmailAddresses($beanModule, $beanId, $emailaddresses)
-    {
-
-        $emailAddresses = BeanFactory::getBean('EmailAddresses');
-        $emailAddresses->addresses = $emailaddresses;
-        $emailAddresses->saveEmailAddress($beanId, $beanModule);
-    }
-
-
     private function write_spiceuitracker($module, $bean)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 

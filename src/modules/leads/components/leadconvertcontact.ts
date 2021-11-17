@@ -79,16 +79,17 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         this.model.id = null;
         this.model.isNew = true;
         this.model.initialize(this.lead);
+
         this.model.initializeField(
-            'emailaddresses',
-            [{
+            'email_addresses',
+            {"beans": [{
                 id: this.model.generateGuid(),
                 bean_id: this.model.id,
                 bean_module: this.model.module,
                 email_address: this.lead.getField('email1'),
                 email_address_id: '',
                 primary_address: '1'
-            }]
+            }]}
         );
 
         /**

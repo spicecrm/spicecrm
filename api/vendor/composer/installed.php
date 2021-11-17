@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'b4fb8054ff68ca1da5c7b164b584ba2eaa82c8a2',
+    'reference' => 'd10b045068a3c3945e114deb843c7f20917bf53b',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'b4fb8054ff68ca1da5c7b164b584ba2eaa82c8a2',
+      'reference' => 'd10b045068a3c3945e114deb843c7f20917bf53b',
     ),
     'brick/math' => 
     array (
@@ -49,12 +49,12 @@
     ),
     'giggsey/libphonenumber-for-php' => 
     array (
-      'pretty_version' => '8.12.20',
-      'version' => '8.12.20.0',
+      'pretty_version' => '8.12.22',
+      'version' => '8.12.22.0',
       'aliases' => 
       array (
       ),
-      'reference' => '743585979ef96f2be123518c0a58083cf678bd47',
+      'reference' => 'dc9992c35e52235c36241ebb5ddc280ceebe3c09',
     ),
     'giggsey/locale' => 
     array (
@@ -83,6 +83,15 @@
       ),
       'reference' => '08fa988af7506b8dc366737b06c86633ba8cecbc',
     ),
+    'mtdowling/cron-expression' => 
+    array (
+      'pretty_version' => 'v1.2.3',
+      'version' => '1.2.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9be552eebcc1ceec9776378f7dcc085246cacca6',
+    ),
     'nikic/fast-route' => 
     array (
       'pretty_version' => 'v1.3.0',
@@ -94,12 +103,12 @@
     ),
     'opis/closure' => 
     array (
-      'pretty_version' => '3.6.1',
-      'version' => '3.6.1.0',
+      'pretty_version' => '3.6.2',
+      'version' => '3.6.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5',
+      'reference' => '06e2ebd25f2869e54a306dda991f7db58066f7f6',
     ),
     'pear/console_getopt' => 
     array (
@@ -166,12 +175,12 @@
     ),
     'php-di/php-di' => 
     array (
-      'pretty_version' => '6.3.1',
-      'version' => '6.3.1.0',
+      'pretty_version' => '6.3.3',
+      'version' => '6.3.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '78278800b18e7c5582fd4d4e629715f5eebbfcc0',
+      'reference' => 'da8e476cafc8011477e2ec9fd2e4706947758af2',
     ),
     'php-di/phpdoc-reader' => 
     array (
@@ -259,12 +268,12 @@
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.1.3',
-      'version' => '1.1.3.0',
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
     'ralouphie/getallheaders' => 
     array (
@@ -372,12 +381,12 @@
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v4.4.21',
-      'version' => '4.4.21.0',
+      'pretty_version' => 'v4.4.22',
+      'version' => '4.4.22.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3871c720871029f008928244e56cf43497da7e9d',
+      'reference' => '1c2fd24147961525eaefb65b11987cab75adab59',
     ),
     'tecnickcom/tc-lib-barcode' => 
     array (

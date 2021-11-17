@@ -49,10 +49,15 @@ export class fieldEmail extends fieldGeneric {
         this.subscriptions.add(
             this.model.data$.subscribe(modeldata => {
                 if (!this.value || (!!this.value  && this.value != modeldata.email1)) {
-                    this._value = modeldata.email1;
+                    this.setInitialFieldValue();
                 }
             })
         );
+
+        this.model.observeFieldChanges('email_addresses').subscribe(() => {
+            this.setInitialFieldValue();
+        });
+
     }
 
     /**
@@ -105,10 +110,12 @@ export class fieldEmail extends fieldGeneric {
      * set the initial field value from emailaddresses
      */
     private setInitialFieldValue() {
-        this._value = this.model.getFieldValue(this.fieldname);
-        const emailAddresses = this.model.getFieldValue('emailaddresses');
+        this._value = this.model.getField(this.fieldname);
+        const emailAddresses = this.model.getRelatedRecords('email_addresses');
         const email = emailAddresses ? emailAddresses.find(email => email.primary_address == 1) : undefined;
-        this._value = email ? email.email_address : undefined;
+        if(!this._value) {
+            this._value = email ? email.email_address : undefined;
+        }
     }
 
     /**
@@ -118,28 +125,35 @@ export class fieldEmail extends fieldGeneric {
     private setPrimaryEmail(value: string) {
 
         let newEmail = !!value ? {
-            id: '',
-            email_address_id: '',
+            id: this.model.generateGuid(),
             primary_address: '1',
             email_address: value.toLowerCase(),
             email_address_caps: value.toUpperCase()
         } : undefined;
 
-        let emailAddresses = this.model.getFieldValue('emailaddresses');
+        let emailAddresses = this.model.getRelatedRecords('email_addresses');
 
         if ((!emailAddresses || emailAddresses.length == 0) && !!newEmail) {
             emailAddresses = [newEmail];
         } else if (!newEmail) {
             emailAddresses = emailAddresses.filter(email => email.primary_address != 1);
         } else {
-            emailAddresses = emailAddresses.map(email => {
-                if (email.primary_address == 1 && newEmail.email_address_caps != email.email_address_caps) {
-                    email = newEmail;
+
+            let exists = false;
+
+            emailAddresses.forEach(email => {
+
+                if (newEmail.email_address_caps == email.email_address_caps) {
+                    exists = true;
+                    email.primary_address = 1;
+                } else {
+                    email.primary_address = 0;
                 }
-                return email;
             });
+
+            if (!exists) emailAddresses.push(newEmail);
         }
-        this.model.setField('emailaddresses', emailAddresses);
+        this.model.setRelatedRecords('email_addresses', emailAddresses);
     }
 
     /**

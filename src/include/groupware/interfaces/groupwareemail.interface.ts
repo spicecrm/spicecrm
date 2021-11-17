@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ModuleGroupware
  */
-interface GroupwareEmail {
+export interface GroupwareEmail {
     body: string;
     cc: string;
     date: string;

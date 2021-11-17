@@ -63,6 +63,7 @@ $dictionary['ProspectList'] = [
             'options' => 'prospect_list_type_dom',
             'len' => 100,
             'importable' => 'required',
+            'required' => true
         ],
         'date_entered' => [
             'name' => 'date_entered',

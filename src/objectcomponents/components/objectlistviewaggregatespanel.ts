@@ -59,7 +59,7 @@ export class ObjectListViewAggregatesPanel {
      * reset all aggregate filters
      */
     private clearAggregates() {
-        this.modellist.removeAllAggregates();
+        this.modellist.removeAllAggregates(true);
         this.modellist.reLoadList();
     }
 

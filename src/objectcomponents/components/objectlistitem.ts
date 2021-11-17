@@ -47,6 +47,11 @@ export class ObjectListItem implements OnInit, OnDestroy {
     @Input() private rownumbers: boolean = false;
 
     /**
+     * set to true if drag handles should be displayed
+     */
+    @Input() private dragHandles: boolean = false;
+
+    /**
      * if the select ois to be displayed but disabled
      */
     @Input() private rowselectdisabled: boolean = false;

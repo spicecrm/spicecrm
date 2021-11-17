@@ -22,7 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <system-modal-content [grow]="grow" margin="none" #modalContent>
         <div *ngIf="!showDuplicatesTable"  class="slds-grid">
             <div class="slds-grid--vertical slds-grow">
-                <object-edit-modal-dialog-container [module]="model.module"></object-edit-modal-dialog-container>
+                <object-edit-modal-dialog-container [componentSet]="componentconfig.componentset"></object-edit-modal-dialog-container>
             </div>
             <div *ngIf="showDuplicates" class="slds-size--1-of-3 slds-border--left">
                 <object-edit-modal-dialog-duplicates-panel (close)="showDuplicates = false"></object-edit-modal-dialog-duplicates-panel>

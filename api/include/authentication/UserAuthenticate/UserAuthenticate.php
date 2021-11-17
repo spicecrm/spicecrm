@@ -2,40 +2,7 @@
 
 namespace SpiceCRM\includes\authentication\UserAuthenticate;
 
-/*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use DateTime;
 use DateInterval;
@@ -47,12 +14,14 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\modules\Users\User;
+use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 
 /**
  * This file is used to control the authentication process.
@@ -71,6 +40,12 @@ class UserAuthenticate
      */
     function authenticate($authUser, $password, $impersonatingUserName = null )
     {
+        if ( !IpAddresses::checkIpAddress(SpiceUtils::getClientIP()) ) {
+            if ( !User::isAdmin_byName( empty( $impersonatingUserName ) ? $authUser : $impersonatingUserName )) {
+                throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
+            }
+        }
+
         $db = DBManagerFactory::getInstance();
         $impersonatingUser = null;
         $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND deleted = 0 and external_auth_only = 0";
@@ -93,8 +68,9 @@ class UserAuthenticate
             $userObj = BeanFactory::getBean("Users", $row['id']);
             if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
             return $userObj;
+        } else {
+            throw new UnauthorizedException("Invalid Username/Password combination", 1);
         }
-        throw new UnauthorizedException("Invalid Username/Password combination", 1);
     }
 
     /**
@@ -150,6 +126,9 @@ class UserAuthenticate
         if (SpiceConfig::getInstance()->config['passwordsetting']['onenumber']) {
             $guideline .= $app_strings['MSG_PASSWORD_ONENUMBER'] . ', ';
         }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['onespecial']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONESPECIAL'] . ', ';
+        }
         if (SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength']) {
             $guideline .= SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'];
             $guideline .= ' ' . $app_strings['LBL_CHARACTERS'] . ', ';
@@ -184,16 +163,17 @@ class UserAuthenticate
      */
     public function get_modules_acl()
     {
-        global $moduleList;
+        $globalModuleList = SpiceModules::getInstance()->getModuleList();
 
         $actions = ['list', 'view', 'edit'];
 
         $retModules = [];
 
-        foreach (SpiceACL::getInstance()->disabledModuleList($moduleList) as $disabledModule)
-            unset($moduleList[$disabledModule]);
+        foreach (SpiceACL::getInstance()->disabledModuleList($globalModuleList) as $disabledModule) {
+            SpiceModules::getInstance()->unsetModule($disabledModule);
+        }
 
-        foreach ($moduleList as $module) {
+        foreach ($globalModuleList as $module) {
             $retModules[$module]['acl']['enabled'] = SpiceACL::getInstance()->moduleSupportsACL($module);
             if ($retModules[$module]['acl']['enabled']) {
                 foreach ($actions as $action)
@@ -265,18 +245,18 @@ class UserAuthenticate
     }
 
     /**
-     * @param $user User | integer
+     * @param $user User | string
      * @param $type string
      * @return false|\SpiceCRM\data\SugarBean
      * @throws Exception
      */
-    public function getProperEmailTemplate($user, $type)
+    public function getProperEmailTemplate( $userIdOrBean, $type )
     {
 
-        if (!is_object($user)) {
-            $user = BeanFactory::getBean('Users', $user);
-            if (empty($user->id)) throw (new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $memmy . '"');
-        }
+        if ( !is_object( $userIdOrBean )) {
+            $user = BeanFactory::getBean('Users', $userIdOrBean );
+            if ( empty( $user->id )) throw ( new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
+        } else $user = $userIdOrBean;
 
         $destUserPrefs = new UserPreference($user);
         $destUserPrefs->reloadPreferences();
@@ -335,7 +315,8 @@ class UserAuthenticate
             throw new Exception("User with email " . $usernameOrEmail . " not found");
         }
 
-        $token = User::generatePassword();
+        $user = BeanFactory::newBean('Users');
+        $token = $user->generatePassword();
 
         // store the new token
         $db->query(sprintf("INSERT INTO users_password_tokens ( id, user_id, date_generated ) VALUES ( '%s', '%s', '%s' )", $db->quote($token), ($user_id), TimeDate::getInstance()->nowDb()));
@@ -393,6 +374,8 @@ class UserAuthenticate
             $pwdCheck .= '(?=.*[a-z])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['onenumber'])
             $pwdCheck .= '(?=.*\d)';
+        if (@SpiceConfig::getInstance()->config['passwordsetting']['onespecial'])
+            $pwdCheck .= '(?=.*[^a-zA-Z0-9])';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'])
             $pwdCheck .= '.{' . SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'] . ',}';
         else

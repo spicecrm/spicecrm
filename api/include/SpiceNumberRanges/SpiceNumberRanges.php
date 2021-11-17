@@ -18,10 +18,9 @@ class SpiceNumberRanges
      * returns the next number for a given range id
      *
      * @param $range
-     * @param array $options
      * @return false|string
      */
-    public static function getNextNumber($range, $options = [])
+    public static function getNextNumber($range)
     {
         $db = DBManagerFactory::getInstance();
 
@@ -46,13 +45,14 @@ class SpiceNumberRanges
 
         $number = $numberRange['next_number'] ?: $numberRange['range_from'];
 
-        # If desired (options) set a padding to the number:
-        if (@$options['withPadding'] and !empty($numberRange['length'])) {
-            $number = str_pad($number, $numberRange['length'], '0', STR_PAD_LEFT);
+        # set a padding to the number:
+        if (!empty($numberRange['length'])) {
+            $length = !empty($numberRange['prefix']) ? $numberRange['length'] - strlen($numberRange['prefix']) : $numberRange['length'];
+            $number = str_pad($number, $length, '0', STR_PAD_LEFT);
         }
 
-        # If desired (options) set a prefix at the beginning. Uses the prefix defined in the db table "sysnumberranges".
-        if (@$options['withPrefix'] and !empty($numberRange['prefix'])) $number = $numberRange['prefix'] . $number;
+        # Uses the prefix defined in the db table "sysnumberranges".
+        if (!empty($numberRange['prefix'])) $number = $numberRange['prefix'] . $number;
 
         return $number;
     }
@@ -86,6 +86,17 @@ class SpiceNumberRanges
 
         $db->query("UPDATE sysnumberranges SET next_number = '$nextNumber' WHERE id = '{$numberRange['id']}'");
 
-        return (int)($numberRange['next_number'] ?: $numberRange['range_from']);
+        $number = $numberRange['next_number'] ?: $numberRange['range_from'];
+
+        # set a padding to the number:
+        if (!empty($numberRange['length'])) {
+            $length = !empty($numberRange['prefix']) ? $numberRange['length'] - strlen($numberRange['prefix']) : $numberRange['length'];
+            $number = str_pad($number, $length, '0', STR_PAD_LEFT);
+        }
+
+        # Uses the prefix defined in the db table "sysnumberranges".
+        if (!empty($numberRange['prefix'])) $number = $numberRange['prefix'] . $number;
+
+        return $number;
     }
 }

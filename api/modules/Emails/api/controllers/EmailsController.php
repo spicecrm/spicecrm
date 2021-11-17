@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Emails\api\controllers;
 use SpiceCRM\data\BeanFactory;
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -12,7 +13,7 @@ use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
-use SpiceCRM\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -21,6 +22,23 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class EmailsController
 {
+    /**
+     * returns a tracking pixel
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function trackEmail(Request $req, Response $res, array $args): Response
+    {
+        // evaluate the tracking parmas and do the magic
+
+        $res->getBody()->write(base64_decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="));
+        return $res->withHeader('Content-Type', 'image/png');
+    }
+
     /**
      * Returns the Email UUID for a given Message ID, or null if the Email doesn't exist in the Spice DB.
      *

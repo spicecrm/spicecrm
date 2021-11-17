@@ -59,13 +59,19 @@ export class ACLProfilesManagerProfiles {
         this.activeProfileId = '';
         this.profileselected.emit(this.activeProfileId);
 
-        let params = {fields: ['id', 'name', 'description', 'status'], searchterm: this.searchterm, limit: '-99'};
+        let params = {fields: ['id', 'name', 'description', 'status', 'for_portal_users'], searchterm: this.searchterm, limit: '-99'};
 
         this.backend.getRequest('module/SpiceACLProfiles', params).subscribe(aclprofiles => {
             this.aclprofiles = aclprofiles.list;
 
             // sort by name
             this.aclprofiles.sort((a, b) => a.name > b.name ? 1 : -1);
+
+            this.aclprofiles.forEach( profile => {
+                if( profile.hasOwnProperty( 'for_portal_users' ) ) {
+                    profile.for_portal_users = this.modelutilities.backend2spice( "SpiceACLProfiles", 'for_portal_users', profile.for_portal_users );
+                }
+            });
 
             this.loading = false;
         });

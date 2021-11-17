@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 $dictionary['syststatusnetworks'] = [
     'table' => 'syststatusnetworks',
@@ -38,6 +39,11 @@ $dictionary['syststatusnetworks'] = [
         ],
         'prompt_label' => [
             'name' => 'prompt_label',
+            'type' => 'varchar',
+            'len' => 100
+        ],
+        'required_model_state' => [
+            'name' => 'required_model_state',
             'type' => 'varchar',
             'len' => 100
         ]

@@ -12,13 +12,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    {{displayValue?.display}}
+    <ng-container *ngFor="let o of options; trackBy: trackByFn">
+        <ng-container *ngIf="o.value == value">
+            {{o.display}}
+        </ng-container>
+    </ng-container>
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div class="slds-form-element__control" [ngClass]="getFieldClass()">
         <div class="slds-select_container slds-m-vertical--xx-small">
-            <select class="slds-select" [disabled]="options.length == 0" [(ngModel)]="value">
-                <ng-container *ngFor="let o of options">
+            <select class="slds-select" [disabled]="options.length == 0" [(ngModel)]="value" (ngModelChange)="setToPreferences($event)">
+                <ng-container *ngFor="let o of options; trackBy: trackByFn">
                     <option [value]="o.value" >{{o.display}}</option>
                 </ng-container>
             </select>

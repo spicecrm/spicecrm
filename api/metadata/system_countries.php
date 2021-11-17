@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 $dictionary['syscountries'] = [
     'table' => 'syscountries',

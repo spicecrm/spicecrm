@@ -57,7 +57,7 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
      */
     private duration: any;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
     }
 

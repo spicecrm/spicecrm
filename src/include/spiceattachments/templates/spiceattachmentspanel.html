@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <div *ngIf="!isHidden" class="slds-box slds-m-around--xx-small" (system-drop-file)="fileDrop($event)">
     <div>
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <spice-attachment-file *ngFor="let file of modelattachments.files" [modelattachments]="modelattachments" [file]="file" class="slds-media slds-size--1-of-1"></spice-attachment-file>
+            <spice-attachment-file *ngFor="let file of modelattachments.files" [modelattachments]="modelattachments" [file]="file" [editmode]="editing" class="slds-media slds-size--1-of-1"></spice-attachment-file>
         </div>
         <div *ngIf="modelattachments.loading" class="slds-p-around--x-small slds-align--absolute-center">
             <div class="slds-grid slds-grid--vertical-align-center">

@@ -30,6 +30,12 @@ import /*embed*/ {CampaignSendTestMailButton} from './components/campaignsendtes
 import /*embed*/ {CampaignExportButton} from './components/campaignexportbutton';
 import /*embed*/ {CampaignExportModal} from './components/campaignexportmodal';
 import /*embed*/ {CampaignTaskEmailPanel} from './components/campaigntaskemailpanel';
+import /*embed*/ {CampaignTaskAddModal} from "./components/campaigntaskaddmodal";
+import /*embed*/ {CampaignTaskAddButton} from "./components/campaigntaskaddbutton";
+import /*embed*/ {CampaignTaskMailMergePanel} from "./components/campaigntaskmailmergepanel";
+import /*embed*/ {CampaignTaskMailergeButton} from "./components/campaigntaskmailmergebutton";
+import /*embed*/ {CampaignTaskMailMergeModal} from "./components/campaigntaskmailmergemodal";
+import {DirectivesModule} from "../../directives/directives";
 
 @NgModule({
     imports: [
@@ -39,6 +45,7 @@ import /*embed*/ {CampaignTaskEmailPanel} from './components/campaigntaskemailpa
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule,
     ],
     declarations: [
         CampaignTaskActivateButton,
@@ -47,7 +54,12 @@ import /*embed*/ {CampaignTaskEmailPanel} from './components/campaigntaskemailpa
         CampaignSendTestMailButton,
         CampaignExportButton,
         CampaignExportModal,
-        CampaignTaskEmailPanel
+        CampaignTaskEmailPanel,
+        CampaignTaskAddButton,
+        CampaignTaskAddModal,
+        CampaignTaskMailMergePanel,
+        CampaignTaskMailergeButton,
+        CampaignTaskMailMergeModal
     ]
 })
 export class ModuleCampaigns {}

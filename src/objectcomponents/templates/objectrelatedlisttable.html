@@ -12,32 +12,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 <table *ngIf="!noAccess;else noaccess" class="slds-table slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
     <thead>
-        <tr class="slds-text-title--caps">
-            <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
-            <ng-container *ngIf="isSequenced">
-                <th *ngFor="let item of listfields" class="slds-resizable" scope="col">
-                    <span class="slds-th__action slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
-                </th>
-            </ng-container>
-            <ng-container *ngIf="!isSequenced">
-                <th *ngFor="let item of listfields" class=" slds-is-sortable slds-resizable" scope="col">
-                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
-                        <span class="slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
-                        <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
-                    </a>
-                </th>
-            </ng-container>
-            <th *ngIf="!hideActions"  class="slds-cell-shrink" scope="col"></th>
-        </tr>
+    <tr class="slds-text-title--caps">
+        <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
+        <ng-container *ngIf="isSequenced">
+            <th *ngFor="let item of listfields" class="slds-resizable" [ngStyle]="getColumnStyle(item)" scope="col">
+                <span class="slds-th__action slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
+            </th>
+        </ng-container>
+        <ng-container *ngIf="!isSequenced">
+            <th *ngFor="let item of listfields" class="slds-is-sortable slds-resizable" [ngStyle]="getColumnStyle(item)" scope="col">
+                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
+                    <span class="slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
+                    <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
+                </a>
+            </th>
+        </ng-container>
+        <th *ngIf="!hideActions"  class="slds-cell-shrink" scope="col"></th>
+    </tr>
     </thead>
     <ng-container *ngIf="!isSequenced">
         <tbody>
-            <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" [hideActions]="hideActions" [listitemactionset]="listitemactionset" class="slds-hint-parent"></tr>
+        <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" [hideActions]="hideActions" [listitemactionset]="listitemactionset" class="slds-hint-parent"></tr>
         </tbody>
     </ng-container>
     <ng-container *ngIf="isSequenced">
         <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
-            <tr object-related-list-sequenced-item *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" [module]="module" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+            <tr object-related-list-sequenced-item *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" [module]="module" [listfields]="listfields" [listitem]="relateditem" [listItemActionset]="listitemactionset" class="slds-hint-parent"></tr>
         </tbody>
     </ng-container>
     <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="isSequenced" [tools]="!hideActions"></tbody>

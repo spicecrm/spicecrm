@@ -185,7 +185,7 @@ $dictionary['Contact'] = [
                 'name' => 'activity_status_date_modified',
                 'type' => 'datetime',
                 'source' => 'non-db',
-                'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODFIFIED',
+                'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
                 'comment' => 'non db field retrieved from the relationship to the meeting call etc'
             ],
             'activity_required' => [
@@ -295,6 +295,15 @@ $dictionary['Contact'] = [
                 'relationship' => 'emails_contacts_rel',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAILS',
+            ],
+            'letters' => [
+                'name'         => 'letters',
+                'type'         => 'link',
+                'relationship' => 'contact_letters',
+                'module' => 'Letters',
+                'bean_name' => 'Letter',
+                'source'       => 'non-db',
+                'vname'        => 'LBL_LETTERS',
             ],
             'documents' => [
                 'name' => 'documents',
@@ -725,6 +734,17 @@ $dictionary['Contact'] = [
             'rhs_table' => 'notes',
             'rhs_key' => 'contact_id',
             'relationship_type' => 'one-to-many'],
+        'contact_letters' => [
+            'lhs_module' => 'Contacts',
+            'lhs_table' => 'contacts',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Letters',
+            'rhs_table' => 'letters',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Contacts'
+        ],
         'contact_textmessages' => [
             'lhs_module' => 'Contacts',
             'lhs_table' => 'contacts',
@@ -831,7 +851,7 @@ $dictionary['Contact'] = [
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
 global $dictionary;
-if (is_file("modules/SalesDocs/SalesDoc.php")) {
+if (file_exists("extensions/modules/SalesDocs")) {
     $dictionary['Contact']['fields']['salesdocsop'] = [
         'name' => 'salesdocsop',
         'type' => 'link',
@@ -857,7 +877,7 @@ if (is_file("modules/SalesDocs/SalesDoc.php")) {
         'source' => 'non-db',
     ];
 }
-if (is_file("modules/ContactsOnlineProfiles/ContactsOnlineProfile.php")) {
+if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
     $dictionary['Contact']['fields']['contactsonlineprofiles'] = [
         'name' => 'contactsonlineprofiles',
         'type' => 'link',
@@ -867,7 +887,7 @@ if (is_file("modules/ContactsOnlineProfiles/ContactsOnlineProfile.php")) {
         'source' => 'non-db',
     ];
 }
-if (is_file("modules/ContactCCDetails/ContactCCDetail.php")) {
+if (file_exists("extensions/modules/ContactCCDetails")) {
     $dictionary['Contact']['fields']['contactccdetails'] = [
         'name' => 'contactccdetails',
         'vname' => 'LBL_CONTACTCCDETAILS_LINK',
@@ -881,7 +901,7 @@ if (is_file("modules/ContactCCDetails/ContactCCDetail.php")) {
         'module' => 'ContactCCDetails'
     ];
 }
-if (is_file("modules/Addresses/Address.php")) {
+if (file_exists("modules/Addresses")) {
     $dictionary['Contact']['fields']['addresses'] = [
         'name' => 'addresses',
         'type' => 'link',
@@ -892,7 +912,7 @@ if (is_file("modules/Addresses/Address.php")) {
         'default' => true
     ];
 }
-if (is_file("modules/ServiceOrders/ServiceOrder.php")) {
+if (file_exists("extensions/modules/ServiceOrders")) {
     $dictionary['Contact']['fields']['serviceorders'] = [
         'name' => 'serviceorders',
         'type' => 'link',
@@ -903,7 +923,7 @@ if (is_file("modules/ServiceOrders/ServiceOrder.php")) {
         'default' => false
     ];
 }
-if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
+if (file_exists("modules/ServiceTickets")) {
     $dictionary['Contact']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
@@ -914,7 +934,7 @@ if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
         'default' => false
     ];
 }
-if (is_file("modules/ServiceCalls/ServiceCall.php")) {
+if (file_exists("extensions/modules/ServiceCalls")) {
     $dictionary['Contact']['fields']['servicecalls'] = [
         'name' => 'servicecalls',
         'type' => 'link',
@@ -926,7 +946,7 @@ if (is_file("modules/ServiceCalls/ServiceCall.php")) {
     ];
 }
 
-if (is_file("modules/ServiceFeedbacks/ServiceFeedback.php")) {
+if (file_exists("extensions/modules/ServiceFeedbacks")) {
     $dictionary['Contact']['fields']['servicefeedbacks'] = [
         'name' => 'servicefeedbacks',
         'type' => 'link',
@@ -939,7 +959,7 @@ if (is_file("modules/ServiceFeedbacks/ServiceFeedback.php")) {
 
 }
 // Not sure we need this at all.... commented for now
-//if (is_file("modules/ServiceEquipments/ServiceEquipment.php")) {
+//if (file_exists("extensions/modules/ServiceEquipments")) {
 //    $dictionary['Contact']['fields']['serviceequipments'] = array(
 //        'name' => 'serviceequipments',
 //        'type' => 'link',
@@ -951,7 +971,7 @@ if (is_file("modules/ServiceFeedbacks/ServiceFeedback.php")) {
 //    );
 //}
 
-if (is_file('modules/SalesVouchers/SalesVoucher.php')) {
+if (file_exists('extensions/modules/SalesVouchers')) {
     $dictionary['Contact']['fields']['salesvouchers'] = [
         'name' => 'salesvouchers',
         'type' => 'link',
@@ -961,7 +981,7 @@ if (is_file('modules/SalesVouchers/SalesVoucher.php')) {
         'vname' => 'LBL_SALESVOUCHERS',
     ];
 }
-if (is_file('modules/Potentials/Potential.php')) {
+if (file_exists('extensions/modules/Potentials')) {
     $dictionary['Contact']['fields']['potentials'] = [
         'name' => 'potentials',
         'type' => 'link',
@@ -972,3 +992,33 @@ if (is_file('modules/Potentials/Potential.php')) {
     ];
 }
 VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);
+
+// CR1000661
+global $dictionary;
+if(file_exists('extensions/modules/PartnerAgreements')) {
+    $dictionary['Contact']['fields']['partneragreements'] = [
+        'name' => 'partneragreements',
+        'vname' => 'LBL_PARTNERAGREEMENTS',
+        'type' => 'link',
+        'relationship' => 'partneragreements_contacts',
+        'module' => 'PartnerAgreements',
+        'bean_name' => 'PartnerAgreement',
+        'source' => 'non-db',
+    ];
+    $dictionary['Contact']['fields']['partneragreement_role'] = [
+        'name' => 'partneragreement_role',
+        'vname' => 'LBL_ROLE',
+        'type' => 'enum',
+        'options' => 'partneragreement_contact_role_dom',
+        'source' => 'non-db',
+        'comment' => 'for relationship field partneragreement_role'
+    ];
+    $dictionary['Contact']['fields']['propensity_to_partnership'] = [
+        'name' => 'propensity_to_partnership',
+        'vname' => 'LBL_PROPENSITY_TO_PARTNERSHIP',
+        'type' => 'enum',
+        'options' => 'partneragreement_propensity_role_dom',
+        'source' => 'non-db',
+        'comment' => 'for relationship field propensity_to_partnership'
+    ];
+}

@@ -544,6 +544,18 @@ $vardefs = [
             'comment' => 'Phone number of the assistant of the contact',
             'merge_filter' => 'enabled',
         ],
+        'primary_address' => [
+            'name' => 'primary_address',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'vname' => 'LBL_PRIMARY_ADDRESS'
+        ],
+        'opt_in_status' => [
+            'name' => 'opt_in_status',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'comment' => 'possible values opted_in, opted_out, pending'
+        ],
         'email_addresses_primary' => [
             'name' => 'email_addresses_primary',
             'type' => 'link',
@@ -560,7 +572,19 @@ $vardefs = [
             'vname' => 'LBL_EMAIL_ADDRESSES',
             'reportable' => false,
             'unified_search' => true,
-            'rel_fields' => ['primary_address' => ['type' => 'bool']],
+            'default' => true,
+            'side' => 'left',
+            'module' => 'EmailAddresses',
+            'rel_fields' => [
+                'opt_in_status' => [
+                    'type' => 'bool',
+                    'map' => 'opt_in_status'
+                ],
+                'primary_address' => [
+                    'type' => 'bool',
+                    'map' => 'primary_address'
+                ]
+            ],
         ],
         // Used for non-primary mail import
         'email_addresses_non_primary' => [

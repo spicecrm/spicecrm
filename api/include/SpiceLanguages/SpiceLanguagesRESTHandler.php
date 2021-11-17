@@ -251,10 +251,10 @@ class SpiceLanguagesRESTHandler
      */
     public function retrieveLabelDataByName($labelName, $language = null)
     {
-        $query = $this->db->query("SELECT *, 'global' scope FROM syslanguagelabels WHERE name = '$labelName'");
+        $query = $this->db->query("SELECT syslanguagelabels.*, 'global' scope FROM syslanguagelabels WHERE name = '$labelName'");
         $label = $this->db->fetchByAssoc($query);
         if (!$label) {
-            $query = $this->db->query("SELECT *, 'custom' scope FROM syslanguagecustomlabels WHERE name = '$labelName'");
+            $query = $this->db->query("SELECT syslanguagecustomlabels.*, 'custom' scope FROM syslanguagecustomlabels WHERE name = '$labelName'");
             $label = $this->db->fetchByAssoc($query);
         }
         if (!$label) return 0;
@@ -290,7 +290,7 @@ class SpiceLanguagesRESTHandler
         if(!empty($translation['custom_translations'])){
             return $translation['custom_translations'][0]['translation_default'];
         }
-        return $translation['global_translations'][0]['translation_default'];
+        return $translation['global_translations'][0]['translation_default'] ?: $labelName;
 
     }
 }

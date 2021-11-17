@@ -10,16 +10,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<div class="slds-p-around--medium">
+<div class="slds-p-around--small">
     <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
         Define Backend Connection
     </h2>
-    <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
+    <!--div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>id</label>
         <div class="slds-form-element__control">
             <input type="text" class="slds-input" [disabled]="checking" [(ngModel)]="spiceinstaller.systemid"/>
         </div>
-    </div>
+    </div-->
     <div class="slds-form-element slds-p-vertical--xx-small" >
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Name</label>
         <div class="slds-form-element__control">
@@ -55,23 +55,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         </div>
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
-        <label class="slds-form-element__label">Show Loader Details</label>
+        <label class="slds-form-element__label">Show Forgot Password on Login Screen</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
-                <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemloginprogressbar">
-                    <option value="0">Yes</option>
-                    <option value="1">No</option>
+                <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemallowforgotpass">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
         </div>
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
-        <label class="slds-form-element__label">Show Forgot Password on Login Screen</label>
+        <label class="slds-form-element__label">Show LoginSidebar</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
-                <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemallowforgotpass">
-                    <option value="0">Yes</option>
-                    <option value="1">No</option>
+                <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemloginsidebar">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </select>
             </div>
         </div>

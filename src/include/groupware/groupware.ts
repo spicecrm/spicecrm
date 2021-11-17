@@ -26,6 +26,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
 import {ObjectFields} from "../../objectfields/objectfields";
 
+import /*embed*/ {GroupwareEmail} from "./interfaces/groupwareemail.interface";
+
 import /*embed*/ {GroupwareService} from './services/groupware.service';
 
 import /*embed*/ {GroupwarePaneBean} from './components/groupwarepanebean';

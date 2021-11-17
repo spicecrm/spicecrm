@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['sysservicecategories'] = [
     'table' => 'sysservicecategories',
     'fields' => [

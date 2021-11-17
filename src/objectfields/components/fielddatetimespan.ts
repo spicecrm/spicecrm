@@ -57,7 +57,7 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
      */
     private duration: any;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
 
     }
@@ -128,6 +128,8 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
             // add the end date
             fields[this.fieldend] = newEndDate;
+        } else if (!this.model.getField(this.fieldend)) {
+            fields[this.fieldend] = new moment(date);
         }
 
         // set the fields on the model

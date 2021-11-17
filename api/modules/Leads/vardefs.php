@@ -1,40 +1,41 @@
 <?php
 /*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ *
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
+
 global $dictionary;
 $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
     'comment' => 'Leads are persons of interest early in a sales cycle', 'fields' => [
@@ -229,25 +230,25 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
                 'full_text_search' => 1,
                 'comment' => 'Description of lead account'
             ],
-        'contact_linked_name' =>  [
-                'name' => 'contact_linked_name',
-                'rname' => 'name',
-                'id_name' => 'contact_id',
-                'vname' => 'LBL_CONTACT',
-                'type' => 'relate',
-                'link' => 'contact',
-                'table' => 'contacts',
-                'isnull' => 'true',
-                'module' => 'Contacts',
-                'source' => 'non-db',
-                'additionalFields' => ['id' => 'contact_id']
+        'contact_linked_name' => [
+            'name' => 'contact_linked_name',
+            'rname' => 'name',
+            'id_name' => 'contact_id',
+            'vname' => 'LBL_CONTACT',
+            'type' => 'relate',
+            'link' => 'contact',
+            'table' => 'contacts',
+            'isnull' => 'true',
+            'module' => 'Contacts',
+            'source' => 'non-db',
+            'additionalFields' => ['id' => 'contact_id']
         ],
-        'contact_id' =>       [
-                'name' => 'contact_id',
-                'type' => 'id',
-                'reportable' => false,
-                'vname' => 'LBL_CONTACT_ID',
-                'comment' => 'If converted, Contact ID resulting from the conversion'
+        'contact_id' => [
+            'name' => 'contact_id',
+            'type' => 'id',
+            'reportable' => false,
+            'vname' => 'LBL_CONTACT_ID',
+            'comment' => 'If converted, Contact ID resulting from the conversion'
         ],
         'contact' => [
             'name' => 'contact',
@@ -259,25 +260,25 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
             'reportable' => false,
             'side' => 'right'
         ],
-        'consumer_linked_name' =>  [
-                'name' => 'consumer_linked_name',
-                'rname' => 'name',
-                'id_name' => 'consumer_id',
-                'vname' => 'LBL_CONSUMER',
-                'type' => 'relate',
-                'link' => 'consumer',
-                'table' => 'consumers',
-                'isnull' => 'true',
-                'module' => 'Consumers',
-                'source' => 'non-db',
-                'additionalFields' => ['id' => 'consumer_id']
+        'consumer_linked_name' => [
+            'name' => 'consumer_linked_name',
+            'rname' => 'name',
+            'id_name' => 'consumer_id',
+            'vname' => 'LBL_CONSUMER',
+            'type' => 'relate',
+            'link' => 'consumer',
+            'table' => 'consumers',
+            'isnull' => 'true',
+            'module' => 'Consumers',
+            'source' => 'non-db',
+            'additionalFields' => ['id' => 'consumer_id']
         ],
-        'consumer_id' =>       [
-                'name' => 'consumer_id',
-                'type' => 'id',
-                'reportable' => false,
-                'vname' => 'LBL_CONSUMER_ID',
-                'comment' => 'If converted, Consumer ID resulting from the conversion'
+        'consumer_id' => [
+            'name' => 'consumer_id',
+            'type' => 'id',
+            'reportable' => false,
+            'vname' => 'LBL_CONSUMER_ID',
+            'comment' => 'If converted, Consumer ID resulting from the conversion'
         ],
         'consumer' => [
             'name' => 'consumer',
@@ -533,7 +534,7 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
             [
                 'name' => 'meetings',
                 'type' => 'link',
-                'relationship' => 'meetings_leads',
+                'relationship' => 'leads_meetings',
                 'source' => 'non-db',
                 'vname' => 'LBL_MEETINGS',
             ],
@@ -541,7 +542,7 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
             [
                 'name' => 'calls',
                 'type' => 'link',
-                'relationship' => 'calls_leads',
+                'relationship' => 'leads_calls',
                 'source' => 'non-db',
                 'vname' => 'LBL_CALLS',
             ],
@@ -552,14 +553,6 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
                 'relationship' => 'lead_meetings',
                 'source' => 'non-db',
                 'vname' => 'LBL_MEETINGS',
-            ],
-        'oldcalls' =>
-            [
-                'name' => 'oldcalls',
-                'type' => 'link',
-                'relationship' => 'lead_calls',
-                'source' => 'non-db',
-                'vname' => 'LBL_CALLS',
             ],
         'emails' =>
             [
@@ -631,7 +624,7 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
         ]
 
     ]
-, 'indices' => [
+    , 'indices' => [
         ['name' => 'idx_lead_acct_name_first', 'type' => 'index', 'fields' => ['account_name', 'deleted']],
         ['name' => 'idx_lead_last_first', 'type' => 'index', 'fields' => ['last_name', 'first_name', 'deleted']],
         ['name' => 'idx_lead_del_stat', 'type' => 'index', 'fields' => ['last_name', 'status', 'deleted', 'first_name']],
@@ -645,7 +638,7 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
         ['name' => 'idx_leads_id_del', 'type' => 'index', 'fields' => ['id', 'deleted',]],
 
     ]
-, 'relationships' => [
+    , 'relationships' => [
         'lead_direct_reports' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'reports_to_id',
             'relationship_type' => 'one-to-many'],
@@ -653,22 +646,16 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
             'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Leads']
-    , 'lead_notes' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+        , 'lead_notes' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Leads']
 
-    , 'lead_meetings' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+        , 'lead_meetings' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Leads']
-
-    , 'lead_calls' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads']
-
-    , 'lead_emails' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+        , 'lead_emails' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Leads'],
@@ -691,11 +678,21 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
             'rhs_table' => 'leads',
             'rhs_key' => 'potential_id',
             'relationship_type' => 'one-to-many'
+        ],
+        'leads_calls' => [
+            'lhs_module' => 'Leads',
+            'lhs_table' => 'leads',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Calls',
+            'rhs_table' => 'calls',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Leads',
         ]
-
     ]
     //This enables optimistic locking for Saves From EditView
-, 'optimistic_locking' => true,
+    , 'optimistic_locking' => true,
 ];
 
 VardefManager::createVardef('Leads', 'Lead', ['default', 'assignable',

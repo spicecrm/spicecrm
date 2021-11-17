@@ -49,13 +49,13 @@ class SpiceFTSFilters
             };
 
             $aggregateFilterKeys[] = $filterData['key'];
-            if (isset($filterData['from'])) {
+            if (isset($filterData['from']) || isset($filterData['to'])) {
                 $queryType = 'range';
+                $agg = [];
+                if($filterData['to']) $agg['lt'] = $filterData['to'];
+                if($filterData['from']) $agg['gte'] = $filterData['from'];
                 $ranges[] = [
-                    $aggregatesFilter => [
-                        'gte' => $filterData['from'],
-                        'lt' => $filterData['to']
-                    ]
+                    $aggregatesFilter => $agg
                 ];
             }
         }
@@ -75,9 +75,10 @@ class SpiceFTSFilters
                     $rangesArray = [];
                     foreach ($ranges as $range)
                         $rangesArray[] = ['range' => $range];
-                    $filter = [
-                        'or' => $rangesArray
-                    ];
+                    $filter = ['bool' => [
+                        'should' => $rangesArray,
+                        'minimum_should_match' => 1
+                    ]];
                 } else
                     $filter = ["range" => reset($ranges)];
                 break;

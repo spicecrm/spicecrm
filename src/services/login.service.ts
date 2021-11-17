@@ -25,6 +25,7 @@ import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
+import {take} from 'rxjs/operators';
 
 interface loginAuthDataIf {
     userName: string;
@@ -132,6 +133,7 @@ export class loginService {
                     this.session.authData.userimage = response.user_image;
                     this.session.authData.first_name = response.first_name;
                     this.session.authData.last_name = response.last_name;
+                    this.session.authData.address_country = response.address_country;
                     this.session.authData.display_name = response.display_name;
                     this.session.authData.email = response.email;
                     this.session.authData.admin = response.admin;
@@ -260,7 +262,9 @@ export class loginService {
      * starts the loaded upon successful login
      */
     public load() {
-        this.loader.load().subscribe((val) => this.redirect(val));
+        this.loader.load().subscribe((val) => {
+            this.redirect(val);
+        });
     }
 
     public redirect(val) {

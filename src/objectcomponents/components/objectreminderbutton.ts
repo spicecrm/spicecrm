@@ -42,9 +42,11 @@ export class ObjectReminderButton {
             this.reminder.loaded$.subscribe(loaded => {
                 this.loadReminder();
             });
-        } else {
-            this.loadReminder();
         }
+
+        // oad in any case
+        this.loadReminder();
+
     }
 
     private loadReminder() {

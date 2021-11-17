@@ -39,6 +39,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_mkdir
  * Call this function instead of mkdir to apply preconfigured permission
  * settings when creating the directory.  This method is basically
@@ -90,6 +91,7 @@ function sugar_mkdir($pathname, $mode=null, $recursive=false, $context='') {
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * Convert all \ to / in path, remove multiple '/'s and '/./'
  * @param string $path
  * @return string
@@ -110,6 +112,7 @@ function clean_path( $path )
 
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_fopen
  * Call this function instead of fopen to apply preconfigured permission
  * settings when creating the the file.  This method is basically
@@ -137,6 +140,7 @@ function sugar_fopen($filename, $mode, $use_include_path=false, $context=null){
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_file_put_contents
  * Call this function instead of file_put_contents to apply preconfigured permission
  * settings when creating the the file.  This method is basically
@@ -172,6 +176,7 @@ function sugar_file_put_contents($filename, $data, $flags=null, $context=null){
 
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_file_put_contents_atomic
  * This is an atomic version of sugar_file_put_contents.  It attempts to circumvent the shortcomings of file_put_contents
  * by creating a temporary unique file and then doing an atomic rename operation.
@@ -221,6 +226,7 @@ function sugar_file_put_contents_atomic($filename, $data, $mode='wb', $use_inclu
 
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_file_get_contents
  *
  * @param $filename - String value of the file to create
@@ -247,6 +253,7 @@ function sugar_file_get_contents($filename, $use_include_path=false, $context=nu
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_touch
  * Attempts to set the access and modification times of the file named in the filename
  * parameter to the value given in time . Note that the access time is always modified,
@@ -290,6 +297,7 @@ function sugar_touch($filename, $time=null, $atime=null) {
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_chmod
  * Attempts to change the permission of the specified filename to the mode value specified in the
  * default_permissions configuration; otherwise, it will use the mode value.
@@ -315,6 +323,7 @@ function sugar_chmod($filename, $mode=null) {
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_chown
  * Attempts to change the owner of the file filename to the user specified in the
  * default_permissions configuration; otherwise, it will use the user value.
@@ -340,6 +349,7 @@ function sugar_chown($filename, $user='') {
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * sugar_chgrp
  * Attempts to change the group of the file filename to the group specified in the
  * default_permissions configuration; otherwise it will use the group value.
@@ -365,6 +375,7 @@ function sugar_chgrp($filename, $group='') {
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * get_mode
  *
  * Will check to see if there is a default mode defined in the config file, otherwise return the
@@ -385,17 +396,30 @@ function get_mode($key = 'dir_mode', $mode=null) {
 	return $mode;
 }
 
+/**
+ * @deprecated moved to SpiceFileUtils
+ * @param $path
+ * @param string $mode
+ * @return bool
+ */
 function sugar_is_dir($path, $mode='r'){
 		if(defined('TEMPLATE_URL'))return is_dir($path, $mode);
 		return is_dir($path);
 }
 
+/**
+ * @deprecated moved to SpiceFileUtils
+ * @param $path
+ * @param string $mode
+ * @return bool
+ */
 function sugar_is_file($path, $mode='r'){
 		if(defined('TEMPLATE_URL'))return is_file($path, $mode);
 		return is_file($path);
 }
 
 /**
+ * @deprecated moved to SpiceFileUtils
  * Get filename in cache directory
  * @api
  * @param string $file

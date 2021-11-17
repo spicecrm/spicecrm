@@ -289,12 +289,15 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
         const multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount;
-        const startDate = new moment(this.setdate).day(this.calendar.weekStartDay).hour(0).minute(0).second(0);
-        const endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd'));
-        const startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days') : 0);
-        const endDateDifference = (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));
+        const weekStartDate = moment(moment(this.setdate).day(this.calendar.weekStartDay).hour(this.calendar.startHour).format('YYYY-MM-DD HH:00:00'));
+        const weekEndDate = moment(moment(weekStartDate).add(moment.duration(this.calendar.weekDaysCount, 'd')).hour(this.calendar.endHour));
+        const eventStart = event.start.isBefore(weekStartDate) ? weekStartDate : event.start;
+        const eventEnd = event.end.isAfter(weekEndDate) ? weekEndDate : event.end;
+        const startDateDifference = ((+event.start.diff(weekStartDate, 'days') > 0) ? +event.start.diff(weekStartDate, 'days') : 0);
         const left = startDateDifference * multiEventsContainerWidth;
-        const width = (this.calendar.weekDaysCount - (startDateDifference + endDateDifference)) * multiEventsContainerWidth;
+        const max = this.calendar.weekDaysCount - startDateDifference;
+        const eventLength = Math.abs(eventEnd.diff(eventStart, 'days')) + (eventEnd.hour() > eventStart.hour() || eventEnd.minute() > eventStart.minute() ? 1 : 0);
+        const width = (eventLength > max ? max : eventLength) * multiEventsContainerWidth;
 
         this.sheetDays.some(day => {
             if (day.events.indexOf(event) > -1) {
@@ -357,6 +360,14 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * subscribe to resize event to reset the events style
      */
     private subscribeToChanges() {
+        this.subscription.add(
+            this.calendar.layoutChange$.subscribe(() => {
+                this.buildSheetDays();
+                this.arrangeMultiEvents();
+                this.setEventsStyle();
+                this.setMultiEventsStyle();
+            })
+        );
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 if (calendar.id == 'owner') {
                     this.getOwnerEvents();
@@ -443,7 +454,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.ownerMultiEvents = [];
         this.arrangeMultiEvents();
 
-        if (!this.calendar.ownerCalendarVisible) return this.cdRef.detectChanges();
+        if (!this.calendar.ownerCalendarVisible) return this.setEventsStyle();
 
         this.calendar.loadEvents(this.startDate, this.endDate)
             .subscribe(events => {
@@ -467,7 +478,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.googleMultiEvents = [];
         this.arrangeMultiEvents();
         if (!this.googleIsVisible || this.calendar.isMobileView) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadGoogleEvents(this.startDate, this.endDate)
@@ -496,7 +507,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.arrangeMultiEvents();
 
         if (this.calendar.isMobileView || !calendar.visible) {
-            return this.cdRef.detectChanges();
+            return this.setEventsStyle();
         }
 
         this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
@@ -526,7 +537,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.userMultiEvents = [];
         this.arrangeMultiEvents();
         if (this.calendar.isMobileView) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadUsersEvents(this.startDate, this.endDate)

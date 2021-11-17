@@ -142,7 +142,7 @@ export class model implements OnDestroy {
      *}
      *```
      */
-    public mode$: EventEmitter<string> = new EventEmitter();
+    public mode$: EventEmitter<'edit'|'display'> = new EventEmitter();
 
     /**
      * fires when the editing of the model is cancelled
@@ -384,8 +384,11 @@ export class model implements OnDestroy {
         return this.getFieldValue('summary_text');
     }
 
+    /**
+     * return fields definitions loaded from metadata service
+     */
     get fields(): any[] {
-        if (this.module && (!this._fields || this._fields.length == 0)) {
+        if (this.module && _.isEmpty(this._fields)) {
             this._fields = this.metadata.getModuleFields(this.module);
         }
 
@@ -500,11 +503,12 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
                 this.data = res;
+                this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
-                this.evaluateValidationRules(null, "init");
+                this.evaluateValidationRules(null, 'initialize');
                 this.isLoading = false;
                 this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
@@ -698,11 +702,7 @@ export class model implements OnDestroy {
                 // check conditions...
                 for (let condition of validation.conditions) {
                     let result = false;
-                    if (condition.onchange == 1 && field && condition.fieldname != field) {
-                        result = false;
-                    } else {
-                        result = this.evaluateCondition(condition);
-                    }
+                    result = this.evaluateCondition(condition);
                     checksum += result ? 1 : 0;
                     if (
                         checksum > 0 &&
@@ -746,7 +746,7 @@ export class model implements OnDestroy {
     public evaluateCondition(condition): boolean {
         let check: boolean = false;
 
-        if (typeof this.data[condition.fieldname] == "undefined") {
+        if (condition.comparator != 'empty' && typeof this.data[condition.fieldname] == undefined) {
             return false;
         }
 
@@ -802,13 +802,13 @@ export class model implements OnDestroy {
                 /*
                 * params has to be an json string like this:
                 {
-                    editable: true,
-                    invalid: false,
-                    required: false,
-                    incomplete: false,
-                    disabled: false,
-                    hidden: false,
-                    readonly: false,
+                    "editable": true,
+                    "invalid": false,
+                    "required": false,
+                    "incomplete": false,
+                    "disabled": false,
+                    "hidden": false,
+                    "readonly": false,
                 }
                 */
                 params = (typeof params == "string" ? JSON.parse(params) : params);
@@ -890,7 +890,7 @@ export class model implements OnDestroy {
         }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
-        this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
+        this.navigation.addModelEditing(this, this.getFieldValue('summary_text'));
     }
 
 
@@ -960,15 +960,19 @@ export class model implements OnDestroy {
         return this.field$.pipe(filter(fieldObj => fieldObj.field == field), map(v => v.value));
     }
     /**
-     * serts an object of fields on a model
+     * sets an object of fields on a model
      *
      * @param fieldData a simple object with the fieldname and the value to be set
      */
     public setFields(fieldData) {
         let changedFields = [];
         for (let fieldName in fieldData) {
+            if (!fieldData.hasOwnProperty(fieldName)) continue;
             let fieldValue = fieldData[fieldName];
             if (_.isString(fieldValue)) fieldValue = fieldValue.trim();
+            if (this.data[fieldName] != fieldValue) {
+                this.field$.next({field: fieldName, value: fieldValue});
+            }
             this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
@@ -977,6 +981,18 @@ export class model implements OnDestroy {
 
         // run the duplicate check
         this.duplicateCheckOnChange(changedFields);
+    }
+
+    /**
+     * emit fields changes from the data object
+      * @param data
+     * @private
+     */
+    private emitFieldsChanges(data) {
+        for (let fieldName in data) {
+            if (!data.hasOwnProperty(fieldName)) continue;
+            this.field$.next({field: fieldName, value: data[fieldName]});
+        }
     }
 
     /**
@@ -1017,7 +1033,8 @@ export class model implements OnDestroy {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            // if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || !_.isEqual(this.data[property], this.backupData[property]))) {
                 d[property] = this.data[property];
             }
         }
@@ -1132,6 +1149,23 @@ export class model implements OnDestroy {
         return responseSubject.asObservable();
     }
 
+
+    /**
+     * saves the changes on the model and sends it
+     * Be aware that send functionality is triggered in backend within save logic itself
+     * @param notify if set to true a toast is sent once the send is completed (defaults to false)
+     */
+    public saveAndSend(notify: boolean = false, toastLabel: string = 'LBL_DATA_SENT'): Observable<boolean> {
+        let _notify = notify;
+        let _observable = this.save(false);
+
+        // if notification is on send a toast
+        if (_notify) {
+            this.toast.sendToast(this.language.getLabel(toastLabel) + ".", "success");
+        }
+        return _observable;
+    }
+
     /**
      * resets all model"s data to a blank state
      */
@@ -1221,14 +1255,23 @@ export class model implements OnDestroy {
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
-        this.evaluateValidationRules(null, "init");
+        this.evaluateValidationRules(null, 'initialize');
 
         // set the parent model from the intialized one in the call
         this.parentmodel = parent;
     }
 
 
-    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
+    /**
+     * adds a model
+     *
+     * @param addReference, a reference that is returned .. can be sooner than later be discontinued
+     * @param parent the parent model used for copyrules applications
+     * @param presetsany kind of preset fields
+     * @param preventGoingToRecord
+     * @param componentconfig
+     */
+    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false, componentconfig?) {
 
         // a response subject to return if the model has been saved
         let retSubject = new Subject<any>();
@@ -1250,6 +1293,12 @@ export class model implements OnDestroy {
                     editModalRef.instance.model.isNew = true;
                     editModalRef.instance.reference = this.reference;
                     editModalRef.instance.preventGoingToRecord = preventGoingToRecord;
+
+                    // if we have passed in a componentconfig use this one
+                    if (componentconfig) {
+                        editModalRef.instance.componentconfig = componentconfig;
+                    }
+
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
 
@@ -1354,16 +1403,16 @@ export class model implements OnDestroy {
         // handle links
         switch (fieldDef.type) {
             case 'link':
-                if (params?.generatenewid) {
-                    if (_.isObject(value) && value.beans) {
-                        const newLink = {beans: {}};
-                        for (let relId in value.beans) {
-                            if (!value.beans.hasOwnProperty(relId)) continue;
-
-                            const newId = this.utils.generateGuid();
-                            newLink.beans[newId] = {...value.beans[relId]};
-                            newLink.beans[newId].id = newId;
+                if (_.isObject(value) && value.beans) {
+                    const newLink = {beans: {}};
+                    for (let relId in value.beans) {
+                        if (!value.beans.hasOwnProperty(relId)) continue;
+                        let newId = relId;
+                        if (params?.generatenewid) {
+                            newId = this.utils.generateGuid();
                         }
+                        newLink.beans[newId] = {...value.beans[relId]};
+                        newLink.beans[newId].id = newId;
                         this.setField(toField, newLink);
                     }
                 }
@@ -1704,6 +1753,8 @@ export class model implements OnDestroy {
         if (records) {
             return this.addRelatedRecords(relation_link_name, records);
         }
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
     }
 
     /**
@@ -1728,6 +1779,9 @@ export class model implements OnDestroy {
             }
             this.data[relation_link_name].beans[record.id] = record;
         }
+
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
         return true;
     }
 
@@ -1745,6 +1799,10 @@ export class model implements OnDestroy {
 
         if (!this.data[relation_link_name]) {
             this.data[relation_link_name] = {beans: []};
+        }
+
+        if (!this.data[relation_link_name].beans_relations_to_delete) {
+            this.data[relation_link_name].beans_relations_to_delete = {};
         }
 
         for (let record of records) {
@@ -1875,7 +1933,7 @@ export class model implements OnDestroy {
      * Deep cloning of an object. Minds also moment objects.
      * @param object The object to clone.
      */
-    private buildBackup(object) {
+    public buildBackup(object) {
         let clone = {};
         _.each(object, (value, key) => {
             if (_.isObject(value)) {

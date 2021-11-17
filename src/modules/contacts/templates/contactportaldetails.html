@@ -58,12 +58,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     </div>
                 </div>
             </div>
-            <div class="slds-form-element">
+            <div *ngIf="aclRoles.length" class="slds-form-element">
                 <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_ACL_ROLE"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="user.aclRole">
                             <option *ngFor="let aclRole of aclRoles" [value]="aclRole.id" [selected]="user.aclRole === aclRole.id">{{aclRole.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="aclProfiles.length" class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_SPICEACLPROFILE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="user.aclProfile">
+                            <option *ngFor="let aclProfile of aclProfiles" [value]="aclProfile.id" [selected]="user.aclProfile === aclProfile.id">{{aclProfile.name}}</option>
                         </select>
                     </div>
                 </div>

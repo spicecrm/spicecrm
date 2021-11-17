@@ -15,11 +15,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium">
             <!--div class="spiceLoginLogo"-->
-            <div *ngIf="displayimage"  class="slds-align--absolute-center slds-p-vertical--medium">
+            <div class="slds-align--absolute-center slds-p-vertical--medium">
                 <global-login-image></global-login-image>
-            </div>
-            <div *ngIf="!displayimage" class="slds-align--absolute-center slds-p-vertical--medium">
-                <global-header-image></global-header-image>
             </div>
             <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser" [system-overlay-loading-spinner]="loggingIn">
                 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
@@ -75,7 +72,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                 </div>
             </div>
             <!-- the renew dialog ... needs to be added here in this way as we do not have the modal service and repository yet -->
-            <global-login-change-password class="slds-is-absolute" *ngIf="renewpassword" (closeRenewDialog)="renewpassword = false" [username]="username" [password]="password"></global-login-change-password>
+            <global-login-change-password class="slds-is-absolute" *ngIf="renewpassword" (closeRenewDialog)="handleRenewDialogClose($event)" [username]="username" [password]="password"></global-login-change-password>
             <ng-container *ngIf="loginService.session.authData.sessionId">
                 <system-loader-progress></system-loader-progress>
             </ng-container>

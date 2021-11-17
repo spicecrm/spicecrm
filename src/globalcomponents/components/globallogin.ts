@@ -20,7 +20,6 @@ import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
 import {broadcast} from '../../services/broadcast.service';
-import {cookie} from '../../services/cookie.service';
 import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -107,7 +106,6 @@ export class GlobalLogin {
                 private http: HttpClient,
                 private configuration: configurationService,
                 private session: session,
-                private cookie: cookie,
                 private toast: toast,
                 private language: language,
                 private broadcast: broadcast,
@@ -144,7 +142,7 @@ export class GlobalLogin {
         }
 
         // check the last selected language from the Cookie
-        this.lastSelectedLanguage = this.cookie.getValue('spiceuilanguage');
+        this.lastSelectedLanguage = localStorage.getItem('spiceuilanguage');
 
     }
 
@@ -254,13 +252,6 @@ export class GlobalLogin {
     }
 
     /**
-     * only display the login image when the screenheight is large enough
-     */
-    get displayimage() {
-        return window.innerHeight > 800;
-    }
-
-    /**
      * returns thecurrent site id from the configuration service
      */
     get currentSiteId() {
@@ -339,5 +330,13 @@ export class GlobalLogin {
 
     get showProgressBar() {
         return this.configuration.data.loginProgressBar;
+    }
+
+    public handleRenewDialogClose(password?: string) {
+        this.renewpassword = false;
+        if (!!password) {
+            this.password = password;
+            this.login();
+        }
     }
 }

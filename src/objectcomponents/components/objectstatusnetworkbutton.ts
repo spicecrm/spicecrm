@@ -68,7 +68,7 @@ export class ObjectStatusNetworkButton implements OnInit {
      */
     get primaryItem() {
         for (let statusnetworkitem of this.statusNetwork) {
-            if (statusnetworkitem.status_from == this.model.getField(this.statusField)) {
+            if (statusnetworkitem.status_from == this.model.getField(this.statusField) && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
                 return statusnetworkitem;
             }
         }
@@ -83,7 +83,7 @@ export class ObjectStatusNetworkButton implements OnInit {
         let retArray = [];
         let firstHit = false;
         for (let statusnetworkitem of this.statusNetwork) {
-            if (statusnetworkitem.status_from == this.model.getField(this.statusField)) {
+            if (statusnetworkitem.status_from == this.model.getField(this.statusField) && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
 
                 if (firstHit) {
                     retArray.push(statusnetworkitem);

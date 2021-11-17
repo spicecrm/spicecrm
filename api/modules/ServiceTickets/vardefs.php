@@ -1,5 +1,5 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -363,7 +363,7 @@ VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assi
 
 global $dictionary;
 
-if(is_file('modules/ServiceOrders/ServiceOrder.php')) {
+if(file_exists('extensions/modules/ServiceOrders')) {
     $dictionary['ServiceTicket']['fields']['serviceorders'] = [
         'vname' => 'LBL_SERVICEORDERS',
         'name' => 'serviceorders',
@@ -374,7 +374,7 @@ if(is_file('modules/ServiceOrders/ServiceOrder.php')) {
         'source' => 'non-db'
     ];
 }
-if(is_file('modules/ServiceQueues/ServiceQueue.php')) {
+if(file_exists('extensions/modules/ServiceQueues')) {
     $dictionary['ServiceTicket']['fields']['servicequeue_id'] = [
         'name' => 'servicequeue_id',
         'vname' => 'LBL_SERVICEQUEUE_ID',
@@ -413,7 +413,7 @@ if(is_file('modules/ServiceQueues/ServiceQueue.php')) {
 
 }
 
-if(is_file('modules/ServiceCalls/ServiceCall.php')) {
+if(file_exists('extensions/modules/ServiceCalls')) {
     $dictionary['ServiceTicket']['fields']['servicecall_id'] = [
         'name' => 'servicecall_id',
         'vname' => 'LBL_SERVICECALL_ID',
@@ -452,7 +452,7 @@ if(is_file('modules/ServiceCalls/ServiceCall.php')) {
     ];
 }
 
-if(is_file('modules/ServiceFeedbacks/ServiceFeedback.php')) {
+if(file_exists('extensions/modules/ServiceFeedbacks')) {
     //servicefeedbacks
     $dictionary['ServiceTicket']['fields']['servicefeedbacks'] = [
         'vname' => 'LBL_SERVICEFEEDBACKS',
@@ -465,7 +465,7 @@ if(is_file('modules/ServiceFeedbacks/ServiceFeedback.php')) {
     ];
 }
 
-if(is_file('modules/ServiceEquipments/ServiceEquipment.php')) {
+if(file_exists('extensions/modules/ServiceEquipments')) {
     //serviceequipment
     $dictionary['ServiceTicket']['fields']['serviceequipment_id'] = [
         'name' => 'serviceequipment_id',
@@ -504,7 +504,7 @@ if(is_file('modules/ServiceEquipments/ServiceEquipment.php')) {
     ];
 }
 
-if(is_file('modules/ServiceEquipments/ServiceEquipment.php')) {
+if(file_exists('extensions/modules/ServiceEquipments')) {
 //servicelocation
     $dictionary['ServiceTicket']['fields']['servicelocation_id'] = [
         'name' => 'servicelocation_id',
@@ -544,7 +544,7 @@ if(is_file('modules/ServiceEquipments/ServiceEquipment.php')) {
 
 }
 
-if(is_file('modules/ServiceTicketSLAs/ServiceTicketSLA.php')) {
+if(file_exists('extensions/modules/ServiceTicketSLAs')) {
     //serviceslas
     $dictionary['ServiceTicket']['fields']['serviceticketsla_id'] = [
         'name' => 'serviceticketsla_id',
@@ -576,7 +576,7 @@ if(is_file('modules/ServiceTicketSLAs/ServiceTicketSLA.php')) {
     ];
 }
 
-if(is_file('modules/ServiceTicketNotes/ServiceTicketNote.php')) {
+if(file_exists('extensions/modules/ServiceTicketNotes')) {
     $dictionary['ServiceTicket']['fields']['serviceticketnotes'] = [
         'vname' => 'LBL_SERVICETICKETNOTES',
         'name' => 'serviceticketnotes',
@@ -587,7 +587,7 @@ if(is_file('modules/ServiceTicketNotes/ServiceTicketNote.php')) {
         'source' => 'non-db'
     ];
 }
-if(is_file('modules/ServiceTicketStages/ServiceTicketStage.php')) {
+if(file_exists('extensions/modules/ServiceTicketStages')) {
 
     $dictionary['ServiceTicket']['fields']['serviceticketstages'] = [
         'name' => 'serviceticketstages',

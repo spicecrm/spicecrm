@@ -1,5 +1,9 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\GoogleCalendar;
+
+use SpiceCRM\extensions\modules\GoogleCalendar\GoogleCalendarEvent;
 
 interface GoogleCalendarEventInterface {
     public function toEvent();

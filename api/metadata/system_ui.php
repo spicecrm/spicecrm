@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 $dictionary['systextids_modules'] = [
     'table' => 'systextids_modules',

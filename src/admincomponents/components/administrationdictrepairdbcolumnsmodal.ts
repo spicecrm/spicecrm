@@ -22,6 +22,8 @@ import {modal} from "../../services/modal.service";
 import {metadata} from "../../services/metadata.service";
 import {helper} from "../../services/helper.service";
 
+
+
 @Component({
     selector: 'administration-dict-repair-db-columns-modal',
     templateUrl: './src/admincomponents/templates/administrationdictrepairdbcolumnsmodal.html'
@@ -200,3 +202,4 @@ export class AdministrationDictRepairDbColumnsModal {
     }
 
 }
+

@@ -10,13 +10,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<header class="slds-modal__header slds-modal__header_empty">
-    <button *ngIf="!isSmall" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" style="color:white;" (click)="close.emit(true)">
-        <system-button-icon icon="close" size="large"></system-button-icon>
-        <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
-    </button>
-    <button *ngIf="isSmall" class="slds-button slds-button_icon slds-is-absolute" style="top: 3px; right: 3px;" (click)="close.emit(true)">
-        <system-button-icon icon="close"></system-button-icon>
-        <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
-    </button>
+<header class="slds-modal__header slds-modal__header--empty">
+    <ng-container *ngIf="!hiddenCloseButton">
+        <button *ngIf="!isSmall" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" style="color:white;" (click)="close.emit(true)">
+            <system-button-icon icon="close" size="large"></system-button-icon>
+            <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
+        </button>
+        <button *ngIf="isSmall" class="slds-button slds-button_icon slds-is-absolute" style="top: 3px; right: 3px;" (click)="close.emit(true)">
+            <system-button-icon icon="close"></system-button-icon>
+            <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
+        </button>
+    </ng-container>
 </header>

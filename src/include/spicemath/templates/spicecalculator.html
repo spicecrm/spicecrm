@@ -1,0 +1,254 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div [ngClass]="{'slds-grid': size,
+                 'slds-grid--vertical': size,
+                 'slds-height_full': true}">
+    <div *ngIf="size" [@slideInOutHistory]="historyState" class="slds-size_1-of-1 slds-grid slds-grid--vertical" style="height: 5%;overflow: hidden; display:flex">
+        <div class="slds-grid slds-height_full">
+            <div style="width: 5%" class="slds-m-around--xxx-small">
+                <button (click)="deleteHistory()" class="slds-button slds-size--1-of-1 slds-height_full">
+                    <system-button-icon icon="delete" class="slds-align--absolute-center"></system-button-icon>
+                </button>
+            </div>
+            <div class="slds-grid slds-grid--vertical slds-scrollable--y slds-p-around--xx-small" style="width: 95%; display: flex; flex-direction: column-reverse">
+                <div *ngFor="let obj of history" class="slds-m-around--xxx-small">
+                    <button class="slds-button slds-button_neutral slds-grid slds-grid--vertical slds-p-around--x-small slds-size--1-of-1"
+                            (click)="restoreHistory(history.indexOf(obj))">
+                        <span class="slds-text-heading--small slds-size--1-of-1 slds-text-align--right" style="overflow: hidden; font-size: 0.75rem; float:right">{{obj['mainDisplay']}}</span>
+                        <span class="slds-text-heading_medium slds-size--1-of-1 slds-text-align--right" style="overflow: hidden; font-size: 1rem; float: right">{{obj['value']}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button *ngIf="size" class="slds-button slds-button_icon slds-button_icon slds-split-view__toggle-button slds-size_1-of-1" style="height: 4%; position: unset"
+            (click)="slideHistory()">
+        <system-button-icon icon="refresh" style="transform: scale(-0.75, 0.75)"></system-button-icon>
+    </button>
+    <div [@slideInOutCalculatorTop]="size? historyState : 'ClosedCompletely'" class="slds-grid slds-size--1-of-1 slds-height_full">
+        <div [@slideInOutCalculatorRight]="size? 'closedRightCompletely' : historyState" class="slds-grid slds-grid--vertical slds-m-around--small">
+            <div class="slds-p-bottom--xxx-small" style="height: 30%">
+                <div class="slds-has-dividers_around-space slds-height_full">
+                    <div class="slds-grid slds-grid--vertical slds-item slds-height_full">
+                        <div style="height: 50%">
+                            <svg #mainDisParent id="subDis1" class="slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text #mainDis2 x="100%" y="50%" text-anchor="end" dominant-baseline="central" font-size="150%">{{mainDisplayText}}</text>
+                            </svg>
+                        </div>
+                        <div style="height: 50%">
+                            <svg #subDisParent id="subDis1" class="slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text #subDis2 id="subDis2" x="100%" y="50%" text-anchor="end" dominant-baseline="central" font-size="300%">{{value}}</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-grid--vertical slds-gutters_direct-xxx-small" style="height: 70%">
+                <div class="slds-grid slds-gutters_direct-xxx-small slds-height_full" style="height: 20%">
+                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button--icon slds-button--icon-border slds-size--1-of-1 slds-height_full" (click)="percent()">
+                            <svg class="slds-button__icon slds-size_1-of-1" style="height: 45%; color: var(--color-grey-13)">
+                                <use xlink:href="./vendor/sldassets/icons/utility-sprite/svg/symbols.svg#percent"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="setSettings('value')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">CE</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none" style="font-size: 100%"
+                                (click)="setSettings('default')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">C</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button--icon slds-button--icon-border slds-size--1-of-1 slds-height_full" style="font-size: 100%" (click)="delete()">
+                            <svg class="slds-button__icon slds-size--1-of-1" style="height: 45%; color: var(--color-grey-13)">
+                                <use xlink:href="./vendor/sldassets/icons/utility-sprite/svg/symbols.svg#back"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none" style="font-size: 100%"
+                                (click)="onKeyPress('/')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">/</text>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters_direct-xxx-small slds-height_full" style="height: 20%">
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('7')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">7</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('8')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">8</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('9')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">9</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('*')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">*</text>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters_direct-xxx-small slds-height_full" style="height: 20%">
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('4')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">4</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('5')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">5</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('6')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">6</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('-')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">-</text>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters_direct-xxx-small slds-height_full" style="height: 20%">
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('1')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">1</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('2')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">2</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('3')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">3</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('+')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">+</text>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters_direct-xxx-small slds-height_full" style="height: 20%">
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="negate()">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">(-)</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress('0')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">0</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="onKeyPress(decimalSeparator)">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">{{decimalSeparator}}</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-height_full">
+                        <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
+                                (click)="calculate('enter')">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">=</text>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button *ngIf="!size" class="slds-button slds-button_icon slds-button_icon slds-split-view__toggle-button slds-is-open" style="width: 3%; position: unset"
+                (click)="slideHistory()">
+            <system-button-icon icon="refresh" style="transform: scale(-0.75, 0.75)"></system-button-icon>
+        </button>
+        <div *ngIf="!size" [@slideInOutHistory]="historyState">
+            <div class="slds-grid slds-grid--vertical slds-scrollable--y slds-p-around--xx-small" style="height: 95%; width: 100%">
+                <button *ngFor="let obj of history" class="slds-button slds-button_neutral slds-grid slds-grid--vertical slds-p-around--x-small slds-size--1-of-1 slds-m-around--xxx-small slds-m-left--none"
+                        (click)="restoreHistory(history.indexOf(obj))">
+                    <span class="slds-text-heading--small slds-size--1-of-1 slds-text-align--right" style="overflow: hidden; font-size: 0.75rem; float:right">{{obj['mainDisplay']}}</span>
+                    <span class="slds-text-heading_medium slds-size--1-of-1 slds-text-align--right" style="overflow: hidden; font-size: 1rem; float: right">{{obj['value']}}</span>
+                </button>
+            </div>
+            <div style="height: 5%" class="slds-p-around--xxx-small">
+                <button (click)="deleteHistory()" style="float: right" class="slds-size--1-of-1 slds-button slds-height_full">
+                    <system-button-icon icon="delete" class="slds-align--absolute-center"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

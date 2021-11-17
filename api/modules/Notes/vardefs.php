@@ -264,7 +264,7 @@ $dictionary['Note'] = [
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
 global $dictionary;
-if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
+if (file_exists("modules/ServiceTickets")) {
     $dictionary['Note']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
@@ -275,7 +275,7 @@ if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
         'vname' => 'LBL_SERVICETICKET',
     ];
 }
-if (is_file("modules/ServiceOrders/ServiceOrder.php")) {
+if (file_exists("extensions/modules/ServiceOrders")) {
     $dictionary['Note']['fields']['serviceorders'] = [
         'name' => 'serviceorders',
         'type' => 'link',

@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
@@ -51,8 +52,6 @@ class PackageController {
     }
 
     public function getPackages(Request $req, Response $res, array $args): Response {
-        
-//        $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
 
@@ -80,9 +79,16 @@ class PackageController {
 
         // CR1000338 disable blacklisted packages
         if(isset( SpiceConfig::getInstance()->config['packageloader']['blacklist']) && !empty(SpiceConfig::getInstance()->config['packageloader']['blacklist'])) {
-            foreach ($content->packages as $idx => $package) {
-                if (in_array($package->package, SpiceConfig::getInstance()->config['packageloader']['blacklist'])) {
-                    $package->extensions = 'locked by admin'; // will disable package load since there is no KREST extension by that name
+            if(is_array(SpiceConfig::getInstance()->config['packageloader']['blacklist'])) {
+                $blacklist = SpiceConfig::getInstance()->config['packageloader']['blacklist']; // BWC with array in config_override.php
+            } else{
+                $blacklist =json_decode(SpiceConfig::getInstance()->config['packageloader']['blacklist'], true);
+            }
+            if(is_array($blacklist)) {
+                foreach ($content->packages as $idx => $package) {
+                    if (in_array($package->package, $blacklist)) {
+                        $package->extensions = 'locked by admin'; // will disable package load since there is no KREST extension by that name
+                    }
                 }
             }
         }
@@ -92,7 +98,11 @@ class PackageController {
     public function loadPackage(Request $req, Response $res, array $args): Response {
         $this->checkAdmin();
         $confloader = new SpiceUIConfLoader($this->getRepoUrl($args['repository']));
-        return $res->withJson(['response' => $confloader->loadPackage($args['package'], '*')]);
+        $result = ['response' => $confloader->loadPackage($args['package'], '*')];
+        if ($result['response']['success']) {
+            SpiceModules::getInstance()->loadModules(true);
+        }
+        return $res->withJson($result);
     }
 
     public function deletePackage(Request $req, Response $res, array $args): Response {

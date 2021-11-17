@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -36,6 +37,7 @@ class ErrorMiddleware extends FailureMiddleware
             $responseData['error'] = [ 'message' => $inDevMode ? 'Application Error.' : $errorMessage ];
             $httpCode = 500;
 
+            DBManagerFactory::getInstance()->transactionRollback();
             return $this->generateResponse($responseData, $httpCode);
         }
         return null;

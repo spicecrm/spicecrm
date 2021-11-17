@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
 $dictionary['CallAttempt'] = [

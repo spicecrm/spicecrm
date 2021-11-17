@@ -1,10 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maretval
- * Date: 06.06.2018
- * Time: 18:30
- */
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['syslogs'] = [
     'table' => 'syslogs',
     'fields' => [

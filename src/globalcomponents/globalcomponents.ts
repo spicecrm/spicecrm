@@ -245,6 +245,7 @@ import /*embed*/ {GlobalNotificationsListView} from './components/globalnotifica
         GlobalDockedComposer,
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
+        GlobalHeaderSearchResultsItem
     ]
 })
 export class GlobalComponents {

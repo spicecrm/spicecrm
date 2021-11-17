@@ -103,11 +103,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                         </div>
                     </div>
                     <div class="slds-form-element slds-p-vertical--x-small slds-grid">
-                        <div class="slds-form-element__control slds-size--1-of-2">
+                        <div class="slds-form-element__control slds-size--1-of-3">
                             <system-checkbox [disabled]="!fieldDetails.aggregate" [(ngModel)]="fieldDetails.aggregatecollapsed"><system-label label="LBL_COLLAPSED"></system-label></system-checkbox>
                         </div>
-                        <div class="slds-form-element__control slds-size--1-of-2">
+                        <div class="slds-form-element__control slds-size--1-of-3">
                             <system-checkbox [disabled]="fieldDetails.aggregate != 'term'" [(ngModel)]="fieldDetails.aggregateempty"><system-label label="LBL_AGGREGATEEMPTYVALUES"></system-label></system-checkbox>
+                        </div>
+                        <div class="slds-form-element__control slds-size--1-of-3">
+                            <system-checkbox [disabled]="fieldDetails.aggregate != 'term'" [(ngModel)]="fieldDetails.aggregatesystem"><system-label label="LBL_SYSTEMAGGREGATE"></system-label></system-checkbox>
                         </div>
                     </div>
                     <div class="slds-form-element" *ngIf="fieldDetails.aggregate">

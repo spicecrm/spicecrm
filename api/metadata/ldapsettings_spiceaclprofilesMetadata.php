@@ -1,42 +1,48 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
-$dictionary ['SpiceACLProfiles_LdapGrups'] = array(
+$dictionary ['spiceaclprofiles_ldap_groups'] = [
     'table' => 'spiceaclprofiles_ldap_groups',
-    'fields' => array(
-        'id' => array(
+    'fields' => [
+        'id' => [
             'name' => 'id',
             'type' => 'id'
-        ),
-        'ldap_group_name' => array(
+        ],
+        'ldap_group_name' => [
             'name' => 'ldap_group_name',
             'type' => 'id'
-        ),
-        'spiceaclprofile_id' => array(
+        ],
+        'spiceaclprofile_id' => [
             'name' => 'spiceaclprofile_id',
             'type' => 'id'
-        ),
-        'date_modified' => array(
+        ],
+        'date_modified' => [
             'name' => 'date_modified',
             'type' => 'datetime'
-        ),
-        'deleted' => array(
+        ],
+        'deleted' => [
             'name' => 'deleted',
             'type' => 'bool',
             'default' => false
-        )
-    ),
-    'indices' => array(
-        array(
-            'name' => 'idx_ldap_group_name',
+        ]
+    ],
+    'indices' => [
+        [
+            'name' => 'spiceaclprofiles_ldap_groupspk',
+            'type' => 'primary',
+            'fields' => ['id']
+        ],
+        [
+            'name' => 'idx_spiceaclprofiles_ldap_groups_ldap_group_name',
             'type' => 'index',
-            'fields' => array('ldap_group_name')
-        ),
-        array(
-            'name' => 'idx_spiceaclprofile_id',
+            'fields' => ['ldap_group_name']
+        ],
+        [
+            'name' => 'idx_spiceaclprofiles_ldap_groups_spiceaclprofile_id',
             'type' => 'index',
-            'fields' => array('spiceaclprofile_id')
-        )
+            'fields' => ['spiceaclprofile_id']
+        ]
 
-    )
-);
+    ]
+];
 

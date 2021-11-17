@@ -195,8 +195,6 @@ class ConfigTransferController
 
         if ( $filecontent->format != self::$dataFormat ) throw ( new BadRequestException('Wrong file format.'))->setErrorCode('wrongFileFormat');
 
-        $db->transactionStart();
-
         self::fetchAllTablenamesOfDB();
 
         $unknownTables = [];
@@ -222,22 +220,15 @@ class ConfigTransferController
                     $db->deleteAll($tablename);
                     foreach ( $rows as $k2 => $v2 ) {
                         $vals = (array)$v2;
-                        $result = $db->upsertQuery($tablename, ["id" => $vals["id"]], $vals);
-                        if (empty($result)) {
-                            $db->transactionRollback();
-                            throw (new Exception('Unknown database error. Please refer to the CRM log.'))->setErrorCode('databaseError')->getLogMessage('Unknown database error.');
-                        }
-                        $numberLinesInserted += $db->getAffectedRowCount($result);
+                        $db->upsertQuery($tablename, ["id" => $vals["id"]], $vals);
+                        $numberLinesInserted++;
                     }
                 }
             } else $unknownTables[$tablename] = true;
         }
         if ( count( $unknownTables ) and ( !isset( $params['ignoreUnknownTables'] ) or $params['ignoreUnknownTables'] === false )) {
-            $db->transactionRollback();
             throw ( new BadRequestException( 'Unknown table(s) "' . implode('", "', array_keys( $unknownTables )) . '".' ) )->setErrorCode( 'unknownTables' );
         }
-
-        $db->transactionCommit();
 
         return $res->withJson([
             'numberLinesInserted' => $numberLinesInserted,

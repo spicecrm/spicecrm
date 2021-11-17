@@ -76,13 +76,19 @@ $routes = [
             ],
             'aclRole'        => [
                 'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => false,
                 'description' => 'The ACL role of the user to be created.',
+            ],
+            'aclProfile'        => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => false,
+                'description' => 'The ACL profile of the user to be created.',
             ],
             'portalRole'        => [
                 'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
+                'type'        => ValidationMiddleware::TYPE_GUID,
                 'required'    => true,
                 'description' => 'The portal role of the user to be created.',
             ],
@@ -134,8 +140,14 @@ $routes = [
             'aclRole'        => [
                 'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+                'required'    => false,
                 'description' => 'The ACL role of the user to be created.',
+            ],
+            'aclProfile'        => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => false,
+                'description' => 'The ACL profile of the user to be created.',
             ],
             'portalRole'        => [
                 'in'          => 'body',

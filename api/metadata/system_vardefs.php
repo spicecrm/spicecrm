@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 /**
  * CR1000108
  * Tables for Spice variable definitions

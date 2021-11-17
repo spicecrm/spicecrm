@@ -59,6 +59,10 @@ export class calendar implements OnDestroy {
      */
     public otherCalendarsColor$ = new EventEmitter<any>();
     /**
+     * emit when the layout change e.g. zoom in/out
+     */
+    public layoutChange$ = new EventEmitter<any>();
+    /**
      * holds a list of fts calendar enabled modules
      */
     public modules: any[] = [];
@@ -498,10 +502,11 @@ export class calendar implements OnDestroy {
                         for (let event of res.events) {
                             if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
 
-                            event.start = moment(event.start.dateTime || event.start.date).format('YYYY-MM-DD HH:mm:ss');
-                            event.end = moment(event.end.dateTime || event.end.date).format('YYYY-MM-DD HH:mm:ss');
-                            event.start = moment(event.start).second(1);
-                            event.end = moment(event.end).second(1);
+                            event.start = moment(moment(event.start.dateTime ?? event.start.date)
+                                .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
+                            event.end = moment(moment(event.end.dateTime ?? event.end.date)
+                                .format(!event.end.dateTime && !!event.end.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
+
                             event.isMulti = +event.end.diff(event.start, 'days') > 0;
                             event.color = this.googleColor;
                             event.type = 'google';

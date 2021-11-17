@@ -85,7 +85,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
         const body = {
             category_ids: this.inputData.category_ids.join(','),
             text: this.inputData.text,
-            display_name: this.inputData.display_name
+            display_name: this.inputData.display_name ? this.inputData.display_name : ''
         };
 
         this.backend.postRequest('common/spiceattachments/' + this.attachment.id, {}, body).subscribe(res => {

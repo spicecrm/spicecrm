@@ -29,10 +29,10 @@ class AccountKpiController{
         $seed = BeanFactory::getBean('Accounts', $args['id']);
 
         $date = new DateTime();
-        $yearTo = $req->getParams()['yearto'] ?: $date->format('Y');
+        $yearTo = $req->getQueryParams()['yearto'] ?: $date->format('Y');
 
         $date->sub(new DateInterval('P4Y'));
-        $yearFrom = $req->getParams()['yearfrom'] ?: $date->format('Y');
+        $yearFrom = $req->getQueryParams()['yearfrom'] ?: $date->format('Y');
 
         $retArray = [
             'companycodes' => [],

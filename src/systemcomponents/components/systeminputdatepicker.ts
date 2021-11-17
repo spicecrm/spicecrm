@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
 
@@ -23,6 +23,7 @@ declare var moment: any;
 @Component({
     selector: 'system-input-date-picker',
     templateUrl: './src/systemcomponents/templates/systeminputdatepicker.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: 'slds-datepicker'
     }
@@ -174,10 +175,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
 
         let thedate = new moment(date.format());
-        if (this.minDate && thedate.isBefore(this.minDate, 'month')) {
+        if (this.minDate && thedate.isBefore(this.minDate, 'day')) {
             return true;
         }
-        return !!(this.maxDate && thedate.isAfter(this.maxDate, 'month'));
+        return !!(this.maxDate && thedate.isAfter(this.maxDate, 'day'));
     }
 
     /*
@@ -206,7 +207,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @subtract? 1 month to secondDate
     * @buildGrids
     */
-    private prevMonth() {
+    private prevMonth(e: MouseEvent) {
+        e.stopPropagation();
         this.curDate.subtract(1, 'months');
         if (this.dual) this.secondDate.subtract(1, 'months');
         this.buildGrids();
@@ -217,7 +219,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @add? 1 month to secondDate
     * @buildGrids
     */
-    private nextMonth() {
+    private nextMonth(e: MouseEvent) {
+        e.stopPropagation();
         this.curDate.add(1, 'months');
         if (this.dual) this.secondDate.add(1, 'months');
         this.buildGrids();
@@ -227,7 +230,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @set curDate to today
     * @buildGrids
     */
-    private goToday() {
+    private goToday(e: MouseEvent) {
+        e.stopPropagation();
         this.curDate = new moment();
         this.buildGrids();
     }
@@ -283,7 +287,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         let j = 0;
         while (j < 6) {
             let i = 0;
-            let week = {days: [], number: fdom.format('w')};
+            let week = {days: [], number: fdom.format('W')};
             while (i < 7) {
                 // push the day only if we are in currentGrid and the date is the same or before the current date
                 // or if we are not i dual mode and the date is after the current date

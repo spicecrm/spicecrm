@@ -65,8 +65,9 @@ class SugarCache
      */
     protected static function _init()
     {
-        if (SpiceConfig::getInstance()->config['cache'] && SpiceConfig::getInstance()->config['cache']['class']) {
-            $cacheClassFileName = SpiceConfig::getInstance()->config['cache']['class'];
+        $spice_config = SpiceConfig::getInstance()->config;
+        if (isset($spice_config['cache']) &&  isset($spice_config['cache']['class'])) {
+            $cacheClassFileName = $spice_config['cache']['class'];
             self::$_cacheInstance = new $cacheClassFileName();
         } else {
             self::$_cacheInstance = new SugarCacheMemory();

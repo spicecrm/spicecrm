@@ -551,7 +551,6 @@ class SoapHelperWebServices
     function getRelationshipResults($bean, $link_field_name, $link_module_fields, $optional_where = '')
     {
         LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->getRelationshipResults');
-        global $timedate;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $bean->load_relationship($link_field_name);
@@ -942,7 +941,7 @@ class SoapHelperWebServices
         $assigned_user_id = $current_user->id;
 
         // check if it already exists
-        $focus = new Account();
+        $focus = BeanFactory::getBean('Accounts');
         if ($focus->ACLAccess('Save')) {
             $class = get_class($seed);
             $temp = new $class();

@@ -5,7 +5,8 @@ use SpiceCRM\data\SugarBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
@@ -53,41 +54,40 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;use SpiceCRM\includ
 
 class Relationship extends SugarBean {
 
-	var $object_name='Relationship';
-	var $module_dir = 'Relationships';
-	var $new_schema = true;
-	var $table_name = 'relationships';
+	public $object_name='Relationship';
+    public $module_dir = 'Relationships';
+    public $new_schema = true;
+    public $table_name = 'relationships';
 
-	var $id;
-	var $relationship_name;
-	var $lhs_module;
-	var $lhs_table;
-	var $lhs_key;
-	var $rhs_module;
-	var $rhs_table;
-	var $rhs_key;
-	var $join_table;
-	var $join_key_lhs;
-	var $join_key_rhs;
-	var $relationship_type;
-	var $relationship_role_column;
-	var $relationship_role_column_value;
-	var $reverse;
+    public $id;
+    public $relationship_name;
+    public $lhs_module;
+    public $lhs_table;
+    public $lhs_key;
+    public $rhs_module;
+    public $rhs_table;
+    public $rhs_key;
+    public $join_table;
+    public $join_key_lhs;
+    public $join_key_rhs;
+    public $relationship_type;
+    public $relationship_role_column;
+    public $relationship_role_column_value;
+    public $reverse;
 
-	var $_self_referencing;
+    public $_self_referencing;
 
-	function __construct() {
-		parent::__construct();
-	}
 
-	/*returns true if the relationship is self referencing. equality check is performed for both table and
+	/**
+     * returns true if the relationship is self referencing. equality check is performed for both table and
 	 * key names.
+     * @return boolean
 	 */
-	function is_self_referencing() {
+	public function is_self_referencing() {
 		if (empty($this->_self_referencing)) {
 			$this->_self_referencing=false;
 
-			//is it self referencing, both table and key name from lhs and rhs should  be equal.
+			// is self referencing, both table and key name from lhs and rhs should  be equal.
 			if ($this->lhs_table == $this->rhs_table && $this->lhs_key == $this->rhs_key) {
 				$this->_self_referencing=true;
 			}
@@ -95,7 +95,10 @@ class Relationship extends SugarBean {
 		return $this->_self_referencing;
 	}
 
-	/*returns true if a relationship with provided name exists*/
+	/**
+     * returns true if a relationship with provided name exists
+     * @return boolean
+     */
 	static function exists($relationship_name,&$db) {
 		$query = "SELECT relationship_name FROM relationships WHERE deleted=0 AND relationship_name = '".$relationship_name."'";
 		$result = $db->query($query,true," Error searching relationships table..");
@@ -103,64 +106,71 @@ class Relationship extends SugarBean {
 		if ($row != null) {
 			return true;
 		}
-
 		return false;
 	}
 
-	function delete($relationship_name,&$db) {
-
+    /**
+     * @param $relationship_name
+     * @param $db
+     * @return void
+     */
+	public function delete($relationship_name,&$db) {
 		$query = "UPDATE relationships SET deleted=1 WHERE deleted=0 AND relationship_name = '".$relationship_name."'";
 		$result = $db->query($query,true," Error updating relationships table for ".$relationship_name);
-
 	}
 
+    /**
+     * give it the relationship_name and base module
+     * it will return the module name on the other side of the relationship
+     * @param $relationship_name
+     * @param $base_module
+     * @param $db
+     * @return false
+     */
+//    public function get_other_module($relationship_name, $base_module, &$db){
+//		$query = "SELECT relationship_name, rhs_module, lhs_module FROM relationships WHERE deleted=0 AND relationship_name = '".$relationship_name."'";
+//		$result = $db->query($query,true," Error searching relationships table..");
+//		$row  =  $db->fetchByAssoc($result);
+//		if ($row != null) {
+//
+//			if($row['rhs_module']==$base_module){
+//				return $row['lhs_module'];
+//			}
+//			if($row['lhs_module']==$base_module){
+//				return $row['rhs_module'];
+//			}
+//		}
+//		return false;
+//	}
 
-	function get_other_module($relationship_name, $base_module, &$db){
-	//give it the relationship_name and base module
-	//it will return the module name on the other side of the relationship
+    /**
+     * give it the relationship_name and base module
+     * it will return the module name on the other side of the relationship
+     * @param $lhs_module
+     * @param $rhs_module
+     * @param $db
+     * @return null|array
+     */
+//	public function retrieve_by_sides($lhs_module, $rhs_module, &$db){
+//		$query = "SELECT * FROM relationships WHERE deleted=0 AND lhs_module = '".$lhs_module."' AND rhs_module = '".$rhs_module."'";
+//		$result = $db->query($query,true," Error searching relationships table..");
+//		$row  =  $db->fetchByAssoc($result);
+//		if ($row != null) {
+//			return $row;
+//		}
+//		return null;
+//	}
 
-		$query = "SELECT relationship_name, rhs_module, lhs_module FROM relationships WHERE deleted=0 AND relationship_name = '".$relationship_name."'";
-		$result = $db->query($query,true," Error searching relationships table..");
-		$row  =  $db->fetchByAssoc($result);
-		if ($row != null) {
-
-			if($row['rhs_module']==$base_module){
-				return $row['lhs_module'];
-			}
-			if($row['lhs_module']==$base_module){
-				return $row['rhs_module'];
-			}
-		}
-
-		return false;
-
-
-	//end function get_other_module
-	}
-
-	function retrieve_by_sides($lhs_module, $rhs_module, &$db){
-	//give it the relationship_name and base module
-	//it will return the module name on the other side of the relationship
-
-		$query = "SELECT * FROM relationships WHERE deleted=0 AND lhs_module = '".$lhs_module."' AND rhs_module = '".$rhs_module."'";
-		$result = $db->query($query,true," Error searching relationships table..");
-		$row  =  $db->fetchByAssoc($result);
-		if ($row != null) {
-
-			return $row;
-
-		}
-
-		return null;
-
-
-	//end function retrieve_by_sides
-	}
-
-	function retrieve_by_modules($lhs_module, $rhs_module, &$db, $type =''){
-	//give it the relationship_name and base module
-	//it will return the module name on the other side of the relationship
-
+    /**
+     * give it the relationship_name and base module
+     * /it will return the module name on the other side of the relationship
+     * @param $lhs_module
+     * @param $rhs_module
+     * @param $db
+     * @param string $type
+     * @return null|array
+     */
+	public function retrieve_by_modules($lhs_module, $rhs_module, $db, $type =''){
 		$query = "	SELECT * FROM relationships
 					WHERE deleted=0
 					AND (
@@ -175,119 +185,20 @@ class Relationship extends SugarBean {
 		$result = $db->query($query,true," Error searching relationships table..");
 		$row  =  $db->fetchByAssoc($result);
 		if ($row != null) {
-
 			return $row['relationship_name'];
-
 		}
-
 		return null;
-
-
-	//end function retrieve_by_sides
-	}
-
-
-	function retrieve_by_name($relationship_name) {
-
-		if (empty($GLOBALS['relationships'])) {
-			$this->load_relationship_meta();
-		}
-
-//		_ppd($GLOBALS['relationships']);
-
-		if (array_key_exists($relationship_name, $GLOBALS['relationships'])) {
-
-			foreach($GLOBALS['relationships'][$relationship_name] as $field=>$value)
-			{
-					$this->$field = $value;
-			}
-		}
-		else {
-			LoggerManager::getLogger()->fatal('Error fetching relationship from cache '.$relationship_name);
-			return false;
-		}
-	}
-
-	function load_relationship_meta() {
-		if (!file_exists(Relationship::cache_file_dir().'/'.Relationship::cache_file_name_only())) {
-			$this->build_relationship_cache();
-		}
-		$relationships = [];
-		include(Relationship::cache_file_dir().'/'.Relationship::cache_file_name_only());
-		$GLOBALS['relationships']=$relationships;
-	}
-
-	function build_relationship_cache() {
-		$query="SELECT * from relationships where deleted=0";
-		$result=$this->db->query($query);
-
-		while (($row=$this->db->fetchByAssoc($result))!=null) {
-			$relationships[$row['relationship_name']] = $row;
-		}
-		
-		sugar_mkdir($this->cache_file_dir(), null, true);
-        $out = "<?php \n \$relationships = " . var_export($relationships, true) . ";";
-        sugar_file_put_contents_atomic(Relationship::cache_file_dir() . '/' . Relationship::cache_file_name_only(), $out);
-		
-        SugarRelationshipFactory::rebuildCache();
 	}
 
 	/**
 	 * rebuild relationship table
-     * cache table for relationships when using ['systemvardefs']['dictionary']
+     * @return void
 	 */
-	function build_dictionary_relationship_cache() {
-	    if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            SpiceDictionaryVardefs::deleteAllRelationshipsCacheFromDb();
-            $relationships = SpiceDictionaryVardefs::loadRelationships();
-            SpiceDictionaryVardefs::saveRelationshipsCacheToDb($relationships);
-            $GLOBALS['relationships'] = $relationships;
-        }
+	public function build_relationship_cache() {
+        SpiceDictionaryVardefs::deleteAllRelationshipsCacheFromDb();
+        $relationships = SpiceDictionaryVardefs::loadRelationshipsFromDictionary();
+        SpiceDictionaryVardefs::saveRelationshipsCacheToDb($relationships);
+        $_SESSION['relationships'] = $relationships;
 	}
-
-
-	public static function cache_file_dir() {
-		return sugar_cached("modules/Relationships");
-	}
-	public static function cache_file_name_only() {
-		return 'relationships.cache.php';
-	}
-	
-	public static function delete_cache() {
-		$filename=Relationship::cache_file_dir().'/'.Relationship::cache_file_name_only();
-		if (file_exists($filename)) {
-			unlink($filename);
-		}
-        SugarRelationshipFactory::deleteCache();
-	}
-
-
-	function trace_relationship_module($base_module, $rel_module1_name, $rel_module2_name=""){
-		global $beanList;
-		global $dictionary;
-
-		$temp_module = BeanFactory::getBean($base_module);
-
-		$rel_attribute1_name = $temp_module->field_defs[strtolower($rel_module1_name)]['relationship'];
-		$rel_module1 = $this->get_other_module($rel_attribute1_name, $base_module, $temp_module->db);
-		$rel_module1_bean = BeanFactory::getBean($rel_module1);
-
-		if($rel_module2_name!=""){
-			$rel_attribute2_name = $rel_module1_bean->field_defs[strtolower($rel_module2_name)]['relationship'];
-			$rel_module2 = $this->get_other_module($rel_attribute2_name, $rel_module1_bean->module_dir, $rel_module1_bean->db);
-			$rel_module2_bean = BeanFactory::getBean($rel_module2);
-			return $rel_module2_bean;
-
-		} else {
-			//no rel_module2, so return rel_module2 bean
-			return $rel_module1_bean;
-		}
-
-	//end function trace_relationship_module
-	}
-
-
-
 
 }
-?>

@@ -118,7 +118,8 @@ export class ACLProfilesManagerProfile implements OnChanges {
     private save() {
         this.backend.save('SpiceACLProfiles', this.profileid, {
             name: this.profile.name,
-            description: this.profile.description
+            description: this.profile.description,
+            for_portal_users: this.profile.for_portal_users
         });
     }
 
@@ -162,7 +163,11 @@ export class ACLProfilesManagerProfile implements OnChanges {
 
     private sortobjects() {
         this.aclobjects.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
+            if(a.module == b.module) {
+                return a.name.localeCompare(b.name);
+            } else {
+                return a.module.localeCompare(b.module);
+            }
         });
     }
 

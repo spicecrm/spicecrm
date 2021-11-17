@@ -29,9 +29,14 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryVardefs  {
 
@@ -395,7 +400,7 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
-     * build query to retrieve relationships
+     * build query to retrieve relationships from new sysdictionaryrelationships
      *
      * @param string $module filter results to a specific module
      * @return string
@@ -441,6 +446,93 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
         return $q;
     }
 
+    /**
+     * @return array|void
+     */
+    public static function loadRelationshipsFromDictionary(){
+        global $dictionary, $buildingRelCache;
+
+        if ($buildingRelCache)
+            return;
+        $buildingRelCache = true;
+
+        //Reload ALL the module vardefs....
+        foreach (SpiceModules::getInstance()->getBeanList() as $moduleName => $beanName) {
+            VardefManager::loadVardef($moduleName, BeanFactory::getObjectName($moduleName), false, [
+                //If relationships are not yet loaded, we can't figure out the rel_calc_fields.
+                "ignore_rel_calc_fields" => true,
+            ]);
+        }
+
+        $relationships = [];
+
+        //Grab all the relationships from the dictionary.
+        foreach ($dictionary as $key => $def)
+        {
+            if (!empty($def['relationships']))
+            {
+                foreach($def['relationships'] as $relKey => $relDef)
+                {
+                    if ($key == $relKey) // Relationship only entry, we need to capture everything
+                        $relationships[$key] = array_merge(['name' => $key], $def, $relDef);
+                    else {
+                        $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
+                        if(!empty($relationships[$relKey]['join_table']) && empty($relationships[$relKey]['fields'])
+                            && isset($dictionary[$relationships[$relKey]['join_table']]['fields'])) {
+                            $relationships[$relKey]['fields'] = $dictionary[$relationships[$relKey]['join_table']]['fields'];
+                        }
+                    }
+                    $relationships[$relKey]['relationship_name'] = $relKey;
+                }
+            }
+        }
+
+        return $relationships;
+    }
+
+    /**
+     * load relationships from table relationships
+     * @param null $module
+     * @return array
+     * @throws \Exception
+     */
+    public static function loadRelationships($module = null){
+        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
+            $relationships = self::loadRelationshipFromSysDictionaryRelationshipsTable($module);
+        } else{
+            $relationships = self::loadRelationshipFromRelationshipsTable($module);
+        }
+        return $relationships;
+    }
+
+    /**
+     * BWC mode: relationships stored in relationships table
+     * @return array
+     * @throws \Exception
+     */
+    public static function loadRelationshipFromRelationshipsTable($module = null){
+        global $dictionary;
+        $db = DBManagerFactory::getInstance();
+        $relationships = [];
+
+        // load metadatafiles for fields details on relationship tables
+        SpiceDictionaryHandler::loadMetaDataFiles();
+
+        $addWhere = (!empty($module) ? " AND (lhs_module='{$module}' OR rhs_module='{$module}' )" : '');
+        $q = "SELECT rel.* FROM relationships rel WHERE rel.deleted=0 ".$addWhere;
+        if($res = $db->query($q)) {
+            while ($row = $db->fetchByAssoc($res)) {
+                $relationships[$row['relationship_name']] = $row;
+                if($row['relationship_type'] == 'many-to-many'){
+                    if(isset($dictionary[$relationships[$row['relationship_name']]['join_table']]) && !empty($dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'])){
+                        $relationships[$row['relationship_name']]['fields'] = $dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'];
+                    }
+                }
+            }
+        }
+        return $relationships;
+    }
+
 
 
 
@@ -449,8 +541,9 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
      *
      * @param string $module filter results to a specific module
      * @return array
+     * @throws \Exception
      */
-    public static function loadRelationships($module = null){
+    public static function loadRelationshipFromSysDictionaryRelationshipsTable($module = null){
         $db = DBManagerFactory::getInstance();
         $relationships = [];
         $q = self::getLoadRelationshipsQuery($module);
@@ -963,7 +1056,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         // insert 1 record per field
         foreach($dict['fields'] as $field => $fieldDef){
             $insertParams = [
-                'id' => create_guid(),
+                'id' => SpiceUtils::createGuid(),
                 'sysdictionarydefinition_id' => $dict['id'],
                 'sysdomainfield_id' => $fieldDef['sysdomainfield_id'],
                 'fieldname' => $fieldDef['name'],
@@ -1162,16 +1255,20 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @return boolean
      */
     public static function deleteAllRelationshipsCacheFromDb(){
+        $tableName = 'relationships';
+        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+            $tableName = 'sysdictionaryrelationships';
+        }
         $db = DBManagerFactory::getInstance();
-        if(!$db->truncateQuery('relationships')){
-            $GLOBALS['log']->fatal('error truncating relationships table '.$db->lastError());
+        if(!$db->truncateQuery($tableName)){
+            $GLOBALS['log']->fatal('error truncating '.$tableName.' table '.$db->lastError());
             return false;
         }
         return true;
     }
 
     /**
-     * get relationships from cache table relatioships
+     * get relationships from cache table relationships
      *
      * @return array
      */
@@ -1204,25 +1301,26 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         }
 
         $insertParams = [
-            'id' => create_guid(),
+            'id' => SpiceUtils::createGuid(),
             'relationship_name' => $relationship['relationship_name'],
             'lhs_module' => $relationship['lhs_module'],
             'lhs_table' => $relationship['lhs_table'],
             'lhs_key' => $relationship['lhs_key'],
-            'lhs_linkname' => $relationship['lhs_linkname'],
-            'lhs_linklabel' => $relationship['lhs_linklabel'],
+                'lhs_linkname' => $relationship['lhs_linkname'], // preparing future relationship table from sysdictionary
+                'lhs_linklabel' => $relationship['lhs_linklabel'], // preparing future relationship table from sysdictionary
             'rhs_module' => $relationship['rhs_module'],
             'rhs_table' => $relationship['rhs_table'],
             'rhs_key' => $relationship['rhs_key'],
-            'rhs_linkname' => $relationship['rhs_linkname'],
-            'rhs_linklabel' => $relationship['rhs_linklabel'],
-            'rhs_relatename' => $relationship['rhs_relatename'],
-            'rhs_relatelabel' => $relationship['rhs_relatelabel'],
+                'rhs_linkname' => $relationship['rhs_linkname'], // preparing future relationship table from sysdictionary
+                'rhs_linklabel' => $relationship['rhs_linklabel'], // preparing future relationship table from sysdictionary
+                'rhs_relatename' => $relationship['rhs_relatename'], // preparing future relationship table from sysdictionary
+                'rhs_relatelabel' => $relationship['rhs_relatelabel'], // preparing future relationship table from sysdictionary
             'join_table' => $relationship['join_table'],
             'join_key_lhs' => $relationship['join_key_lhs'],
             'join_key_rhs' => $relationship['join_key_rhs'],
             'relationship_type' => $relationship['relationship_type'],
             'relationship_role_column' => $relationship['relationship_role_column'],
+            'relationship_role_column_value' => $relationship['relationship_role_column_value'],
             'reverse' => $relationship['reverse'],
         ];
 
@@ -1239,7 +1337,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      */
     public static function saveRelationshipsCacheToDb($relationships){
         // insert 1 record per relationship
-        foreach($relationships as $relationship){
+        foreach($relationships as $relKey => $relationship){
             self::saveRelationshipCacheToDb($relationship, false);
         }
     }

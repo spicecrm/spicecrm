@@ -1,0 +1,62 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<!--
+SpiceUI 2021.01.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<div class="slds-grid" [ngClass]="itemside">
+    <div *ngIf="!side" style="width: 70px" class="slds-align--absolute-center slds-m-horizontal--none">
+        <p>{{date}}</p>
+    </div>
+    <div *ngIf="!side" class="objecttimeline-item-nubbin-right slds-align--absolute-center"></div>
+    <section class="objecttimeline-item slds-m-vertical--medium slds-height_full" (click)="timeline.setRecord(record)">
+        <div class="slds-popover__body slds-grid" [ngClass]="{'slds-grid--align-spread': side}" style="height: 90px">
+            <div style="width: 32px" class="slds-grid slds-grid--vertical slds-grid--vertical-align-center">
+                <div style="width: 32px" class="slds-m-horizontal--xx-small">
+                    <system-icon icon="record_update"></system-icon>
+                </div>
+                <div *ngIf="timeline.smartFontSize" class="slds-height_full slds-align--absolute-center">
+                    <button (click)="openModal()" class="slds-button slds-button--icon-border-filled slds-p-horizontal--medium slds-button--icon slds-button--icon-small">
+                        <system-button-icon icon="search"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="slds-grid slds-grid--align-spread" style="width: calc(100% - 32px)">
+                <div class="slds-grid--vertical slds-size--1-of-1 slds-p-left--small">
+                    <div class="slds-grid slds-grid--align-spread slds-size--1-of-1" style="min-height: 32px">
+                        <header class="slds-popover__header slds-p-around--none" style="border: 0">
+                            <h2 [ngClass]="{'slds-text-heading--medium': !timeline.smartFontSize, 'slds-text-heading--small': timeline.smartFontSize}"><span system-model-popover [module]="'Users'" [id]="record.created_by">{{user_name}}</span> - {{fieldCount}}</h2>
+                        </header>
+                        <button *ngIf="!timeline.smartFontSize" (click)="openModal()" class="slds-button slds-button--icon-border-filled slds-p-horizontal--medium slds-button--icon slds-button--icon-small">
+                            <system-button-icon icon="search"></system-button-icon>
+                        </button>
+                    </div>
+                    <div class="slds-truncate slds-p-top--xxx-small" style="width: calc(100% - 12px)">
+                        <span>{{description}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div *ngIf="side" class="objecttimeline-item-nubbin-left slds-align--absolute-center"></div>
+    <div *ngIf="side" style="width: 70px" class="slds-align--absolute-center slds-m-horizontal--none">
+        <p>{{date}}</p>
+    </div>
+</div>

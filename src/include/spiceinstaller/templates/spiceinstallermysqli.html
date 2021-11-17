@@ -42,7 +42,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         </div>
     </div>
 </div>
-<div *ngIf="spiceinstaller.dbaccessuser == 'newdbuser'" class="slds-form-element slds-p-vertical--small slds-p-left--small">
+<div *ngIf="spiceinstaller.dbaccessuser == 'newdbuser'" class="slds-form-element slds-p-vertical--small">
     <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !userNameCondition}">
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Database User Name</label>
         <div class="slds-form-element__control">
@@ -57,7 +57,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         </div>
     </div>
 </div>
-<div *ngIf="spiceinstaller.dbaccessuser == 'existinguser'" class="slds-form-element slds-p-vertical--small slds-p-left--small">
+<div *ngIf="spiceinstaller.dbaccessuser == 'existinguser'" class="slds-form-element slds-p-vertical--small">
     <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !userNameCondition}">
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Database User Name</label>
         <div class="slds-form-element__control">

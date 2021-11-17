@@ -1,6 +1,9 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\CampaignTasks;
 
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -9,6 +12,7 @@ use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
+use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 class CampaignTask extends SugarBean
@@ -54,6 +58,11 @@ class CampaignTask extends SugarBean
         // disable ONLY_FULL_GROUP_BY if this is set
         $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
+        // set the group by mode off on MySQL
+        if($this->db->dbType == 'mysql') {
+            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+        }
+
         $delete_query = "DELETE FROM campaign_log WHERE campaign_id='" . $this->campaign_id . "' AND campaigntask_id='" . $this->id . "' AND activity_type='$status'";
         $this->db->query($delete_query);
 
@@ -93,6 +102,8 @@ class CampaignTask extends SugarBean
         $this->save();
 
     }
+
+
 
     function export()
     {
@@ -175,7 +186,7 @@ class CampaignTask extends SugarBean
      * @return bool
      */
     function sendQueuedEmails(){
-        $queuedEmails = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Email' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC");
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Email' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
             if($queuedEmail['campaigntask_id'] != $this->id){
@@ -184,7 +195,11 @@ class CampaignTask extends SugarBean
 
             // load the bean and send the email
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
-            if($seed){
+            if($seed && $seed->is_inactive) {
+                $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
+                $campaignLog->activity_type = 'inactive';
+                $campaignLog->save();
+            } else if($seed) {
                 $email = $this->sendEmail($seed, true);
                 if($email == false){
                     $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
@@ -216,7 +231,7 @@ class CampaignTask extends SugarBean
      */
     function sendEmail($seed, $saveEmail = false, $test = false)
     {
-        if(!$seed->emailAddress->getPrimaryAddress($seed)) {
+        if(!$seed->email1) {
             return false;
         }
 
@@ -239,7 +254,7 @@ class CampaignTask extends SugarBean
         $email->name = $test ? ('[TEST] ' . $this->email_subject) : $this->email_subject;
         $email->body = $parsedHtml['body_html'];
 
-        $email->addEmailAddress('to', $seed->emailAddress->getPrimaryAddress($seed));
+        $email->addEmailAddress('to', $seed->email1);
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
 
         $categories = SpiceAttachments::getAttachmentCategories('CampaignTasks', true);
@@ -307,5 +322,76 @@ class CampaignTask extends SugarBean
         }
         return true;
     }
+
+    /**
+     * returns an array of beans linked to the prospect lists
+     * take care as this instantiates beans for each record and thus ight take some time and ressources
+     * defaut limit is 100 records
+     *
+     * @param int $start
+     * @param int $limit
+     * @return array
+     */
+    private function getProspectBeans($start = 0, $limit = 100){
+        $beans = [];
+        $select_query = "SELECT plp.related_id id, plp.related_type module ";
+        $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
+        $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
+        $select_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
+        $select_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%' GROUP BY plp.related_id ";
+
+        $records = $this->db->limitQuery($select_query, $start, $limit);
+        while($record = $this->db->fetchByAssoc($records)){
+            $seed = BeanFactory::getBean($record['module'],$record['id']);
+            if($seed) $beans[] = $seed;
+        }
+
+        return $beans;
+    }
+
+    /**
+     * returns the expected number of targets
+     */
+    public function getTargetCount(){
+        $count_query = "SELECT count(distinct plp.related_id) totalcount ";
+        $count_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
+        $count_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
+        $count_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
+        $count_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
+        $records = $this->db->fetchByAssoc($this->db->query($count_query));
+
+        return $records ? $records['totalcount'] : 0;
+    }
+
+    /**
+     * produces a mailmerge PDF for the campaign
+     *
+     * @return string
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public function mailMerge($start = 0, $limit = 100){
+
+        $html = '';
+        foreach ($this->getProspectBeans($start, $limit) as $prospectBean){
+            /** @var OutputTemplate $outputTemplate */
+            $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
+
+            $style = $outputTemplate->getStyle();
+            $header = html_entity_decode( $outputTemplate->header);
+            $footer = html_entity_decode( $outputTemplate->footer);
+
+            $html .= $outputTemplate->translateBody($prospectBean, true);
+            $html .= '<div style="page-break-after: always;"></div>';
+        }
+        $html = "<html><head><style>$style</style></head><body><header>$header</header><footer>$footer</footer><main>$html</main></body></html>";
+
+        $class = SpiceConfig::getInstance()->config['outputtemplates']['pdf_handler_class'];
+        if(!$class) $class = '\SpiceCRM\modules\OutputTemplates\handlers\pdf\DomPdfHandler';
+        $pdfHandler = new $class($outputTemplate);
+
+        $pdfHandler->process($html);
+        return $pdfHandler->__toString();
+    }
+
 
 }

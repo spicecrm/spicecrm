@@ -189,6 +189,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             </li>
         </ul>
         <ul class="slds-button-group-list">
+            <li *ngIf="useTemplateVariableHelper">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_TEMPLATE_VARIABLE_HELPER')" (click)="executeCommand('openTemplateVariableHelper')">
+                    <system-button-icon icon="variable"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REMOVE_FORMATTING')" (click)="executeCommand('removeFormat')" >
                     <system-button-icon icon="remove_formatting"></system-button-icon>

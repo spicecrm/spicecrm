@@ -192,7 +192,7 @@ $vardefs = [
             [
                 'name' => 'created_by_link',
                 'type' => 'link',
-                'relationship' => strtolower($module) . '_created_by',
+                'relationship' => (isset($table_name) ? $table_name : strtolower($module)). '_created_by',
                 'vname' => 'LBL_CREATED_BY',
                 'link_type' => 'one',
                 'module' => 'Users',
@@ -205,7 +205,7 @@ $vardefs = [
             [
                 'name' => 'modified_user_link',
                 'type' => 'link',
-                'relationship' => strtolower($module) . '_modified_user',
+                'relationship' => (isset($table_name) ? $table_name : strtolower($module)). '_modified_user',
                 'vname' => 'LBL_MODIFIED_BY',
                 'link_type' => 'one',
                 'module' => 'Users',
@@ -217,16 +217,16 @@ $vardefs = [
 
     ],
     'indices' => [
-        'id' => ['name' => strtolower($module) . 'pk', 'type' => 'primary', 'fields' => ['id']],
+        'id' => ['name' => (isset($table_name) ? $table_name : strtolower($module)). 'pk', 'type' => 'primary', 'fields' => ['id']],
     ],
     'relationships' => [
-        strtolower($module) . '_modified_user' =>
+        (isset($table_name) ? $table_name : strtolower($module)). '_modified_user' =>
             ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-                'rhs_module' => $module, 'rhs_table' => strtolower($module), 'rhs_key' => 'modified_user_id',
+                'rhs_module' => $module, 'rhs_table' => (isset($table_name) ? $table_name : strtolower($module)), 'rhs_key' => 'modified_user_id',
                 'relationship_type' => 'one-to-many']
-    , strtolower($module) . '_created_by' =>
+    , (isset($table_name) ? $table_name : strtolower($module)). '_created_by' =>
             ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-                'rhs_module' => $module, 'rhs_table' => strtolower($module), 'rhs_key' => 'created_by',
+                'rhs_module' => $module, 'rhs_table' => (isset($table_name) ? $table_name : strtolower($module)), 'rhs_key' => 'created_by',
                 'relationship_type' => 'one-to-many']
     ],
 ];

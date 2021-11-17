@@ -223,8 +223,9 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         let links = [];
         for (let linkname of linknames) {
             linkname = linkname.trim();
-            if(this.metadata.getFieldDefs(this.model.module, linkname)) {
-                links.push({name: linkname, module: this.metadata.getFieldDefs(this.model.module, linkname).module});
+            let module = this.metadata.getFieldDefs(this.model.module, linkname)?.module;
+            if(module && this.metadata.moduleDefs[module]) {
+                links.push({name: linkname, module: module});
             }
         }
         return links;

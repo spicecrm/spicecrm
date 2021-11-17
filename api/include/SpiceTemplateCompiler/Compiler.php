@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceTemplateCompiler;
 
@@ -80,24 +54,35 @@ class Compiler
     public $lang;
     public $pipeFunctions = null;
     public $noPipeFunctions = null;
-    public $templateModule = null;
-    public $templateBodyFieldName = 'body';
     public $app_list_strings = [];
+    /**
+     * holds the current template class to enable access it by {template.key}
+     * @var mixed
+     */
+    private $currentTemplate;
+    /**
+     * holds the root template class to enable access it by {root_template.key}
+     * @var mixed
+     */
+    private $rootTemplate;
 
-    public function __construct($templateModule = null, $templateBodyFieldName = 'body')
+    public function __construct($template)
     {
-        $this->initialize($templateModule, $templateBodyFieldName);
+        $this->initialize($template);
     }
 
     /**
-     * set the template module and field name
+     * set the current template
      * initialize a DOM Document
-     * @param null $templateModule
-     * @param string $templateBodyFieldName
+     * @param $template
      */
-    private function initialize($templateModule = null, $templateBodyFieldName = 'body'){
-        $this->templateModule = $templateModule;
-        $this->templateBodyFieldName = $templateBodyFieldName;
+    private function initialize($template){
+
+        if (empty($this->rootTemplate)) {
+            $this->rootTemplate = $template;
+        }
+
+        $this->currentTemplate = $template;
         $this->doc = new DOMDocument('1.0');
         $this->root = $this->doc->appendChild( $this->doc->createElement('html') );
     }
@@ -198,8 +183,13 @@ class Compiler
                         }
 
                         $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
-                        foreach ($linkedBeans as $linkedBean) {
-                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]));
+                        foreach ($linkedBeans as $index => $linkedBean) {
+                            // set the params for teh first or last entry
+                            $params = [];
+                            if($index == 0) $params[] = 'data-spicefor-first';
+                            if($index == count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
+
+                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]), $params);
                             // $response .= $this->processBlocks($this->getBlocks($contentString), array_merge($beans, [$forArray[1] => $linkedBean]), $lang);
                         }
                         break;
@@ -207,21 +197,41 @@ class Compiler
                     } else if( $node->getAttribute('data-spicetemplate')) {
                         $templateId = $node->getAttribute('data-spicetemplate');
                         if ( !in_array( $templateId, $this->idsOfParentTemplates )) { # prevents recursion (sub template is the same as template)
-                            $subTemplate = BeanFactory::getBean($this->templateModule);
-                            $subTemplate->idsOfParentTemplates = $this->idsOfParentTemplates;
-                            $subTemplate->retrieve( $templateId );
-                            if ( !isset( $subTemplate->id[0] )) {
-                                throw new BadRequestException("{$this->templateModule}: Subtemplate with ID '$templateId' not found.");
+
+                            $subTemplate = BeanFactory::getBean('OutputTemplates', $templateId);
+                            $bodyFieldName = 'body';
+
+                            if (!$subTemplate) {
+                                $subTemplate = BeanFactory::getBean('EmailTemplates', $templateId);
+                                $bodyFieldName = 'body_html';
                             }
+
+                            if (!$subTemplate) {
+                                $subTemplate = BeanFactory::getBean('TextMessageTemplate', $templateId);
+                            }
+                            $subTemplate->idsOfParentTemplates = $this->idsOfParentTemplates;
+
+                            if ( !isset( $subTemplate->id[0] )) {
+                                throw new BadRequestException("{$this->module_name}: Subtemplate with ID '$templateId' not found.");
+                            }
+
+                            // set the current template from the embedded template to enable access to by {template.key}
+                            $previousTemplate = $this->currentTemplate;
+                            $this->currentTemplate = $subTemplate;
+
                             $subDoc = new DOMDocument();
                             # The empty span is a workaround to make loadHTML() work with things like <div data-spiceif="....">...</div>.
                             # LIBXML_HTML_NOIMPLIED is necessary to prevent loadHTML from adding <html> and <body> around.
-                            $subDoc->loadHTML( '<span></span>'.mb_convert_encoding($subTemplate->{$this->templateBodyFieldName}, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+                            $subDoc->loadHTML( '<span></span>'.mb_convert_encoding($subTemplate->$bodyFieldName, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
                             foreach ( $subDoc->childNodes as $item ) {
                                 $elements[] = $this->createNewElement( $item, $beans );
                             }
+
+                            // reset the current template from the previous template
+                            $this->currentTemplate = $previousTemplate;
+
                         } else {
-                            throw new BadRequestException("{$this->templateModule}: Recursion with embedded template detected/prevented.");
+                            throw new BadRequestException("{$this->module_name}: Recursion with embedded template detected/prevented.");
                         }
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
@@ -234,13 +244,29 @@ class Compiler
         return $elements;
     }
 
-    private function createNewElement($thisElement, $beans){
+    /**
+     *
+     * @param $thisElement
+     * @param $beans
+     * @param array $params .. an array of additonal params, currentlyused for first and last in an spicefor loop
+     * @return mixed
+     * @throws BadRequestException
+     */
+    private function createNewElement($thisElement, $beans, $params = []){
         $newElement = $this->doc->createElement($thisElement->tagName);
         if($thisElement->hasAttributes()){
             foreach($thisElement->attributes as $attribute){
                 switch($attribute->nodeName){
                     case 'data-spicefor':
                     case 'data-spiceif':
+                        break;
+                    case 'data-spicefor-first':
+                    case 'data-spicefor-last':
+                        if(array_search($attribute->nodeName, $params) >= 0){
+                            $newAttribute = $this->doc->createAttribute($attribute->nodeName);
+                            $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                            $newElement->appendChild($newAttribute);
+                        }
                         break;
                     default:
                         $newAttribute = $this->doc->createAttribute($attribute->nodeName);
@@ -446,7 +472,7 @@ class Compiler
         return $loopThroughParts($obj, 1, $keepFetchedRowValue );
     }
 
-    private function getObject( $object, $beans ) {
+    public function getObject( $object, $beans ) {
 
         switch ($object) {
             case 'current_user':
@@ -460,6 +486,12 @@ class Compiler
                 break;
             case 'func':
                 $obj = new SystemTemplateFunctions();
+                break;
+            case 'template':
+                $obj = BeanFactory::getBean($this->currentTemplate->module_dir, $this->currentTemplate->id);
+                break;
+            case 'root_template':
+                $obj = BeanFactory::getBean($this->rootTemplate->module_dir, $this->rootTemplate->id);
                 break;
             default:
                 $obj = $beans[$object];
@@ -687,7 +719,7 @@ class Compiler
         $this->loadTemplateFunctions();
 
         if (( !$noPipe and !isset( $this->pipeFunctions[$name] )) or ( $noPipe and !isset( $this->noPipeFunctions[$name] ))) {
-            throw new BadRequestException("{$this->templateModule} Invalid template function '$name'");
+            throw new BadRequestException("{$this->module_name} Invalid template function '$name'");
         }
 
         $functionDef = ( $noPipe ? $this->noPipeFunctions[$name] : $this->pipeFunctions[$name] );

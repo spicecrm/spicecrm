@@ -95,7 +95,7 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
      * a getter to hide the field
      */
     get hideStreetNumber() {
-        const addressConfig = JSON.parse(this.configurationService.data.backendextensions.address_format?.config || '{}');
+        const addressConfig = JSON.parse(this.configurationService.data.backendextensions.address_format?.config?.format || '{}');
         if (addressConfig?.hidestreetnumber) return true;
         return false;
     }

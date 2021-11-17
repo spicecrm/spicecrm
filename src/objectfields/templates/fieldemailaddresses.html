@@ -13,10 +13,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--xx-small spice-fieldminheight" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div *ngFor="let emailaddress of emailAddresses; trackBy: trackByFn" class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
-        <system-input-radio value="1" [ngModel]="emailaddress.primary_address" [disabled]="true" class="slds-truncate"></system-input-radio>
+        <system-input-radio *ngIf="!fieldconfig.singleMode" value="1" [ngModel]="emailaddress.primary_address" [disabled]="true" system-title="LBL_PRIMARY" class="slds-truncate"></system-input-radio>
         <div class="slds-m-bottom--xx-small slds-grow">
             <div class="slds-grid slds-grid--vertical-align-center">
-                <button class="slds-button slds-button_icon slds-m-right--xx-small" [disabled]="emailaddress.invalid_email == '1'" (click)="sendEmail(emailaddress)">
+                <button *ngIf="!!emailaddress.email_address" class="slds-button slds-button_icon slds-m-right--xx-small" [disabled]="emailaddress.invalid_email == '1'" (click)="sendEmail(emailaddress)">
                     <system-button-icon icon="email" sprite="action"></system-button-icon>
                 </button>
                 <div class="slds-truncate" [style.text-decoration]="emailaddress.invalid_email == '1' ? 'line-through' : 'initial'">{{emailaddress.email_address}}</div>
@@ -28,16 +28,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     </div>
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-m-top--xx-small">
-    <div *ngFor="let emailAddress of emailAddresses; trackBy: trackByFn" [class.slds-m-bottom--x-small]="emailAddresses.length > 1" class="slds-grid">
-        <system-input-radio *ngIf="emailAddresses.length > 1" value="1" [name]="primaryInputRadioName" [ngModel]="emailAddress.primary_address == '1'" (ngModelChange)="setPrimary(emailAddress)" [disabled]="emailAddress.invalid_email == 1 || !emailAddress.email_address" class="slds-m-top--xx-small" style="max-width: 1.4rem"></system-input-radio>
-        <field-email-emailaddress (keyup.enter)="addEmailAddress(true)" [emailAddress]="emailAddress" (onBlur)="setEmailAddressesField()" class="slds-grow"></field-email-emailaddress>
+    <div *ngFor="let emailAddress of emailAddresses; trackBy: trackByFn" [class.slds-m-bottom--x-small]="emailAddresses.length > 0" class="slds-grid">
+        <system-input-radio *ngIf="!fieldconfig.singleMode" value="1" [name]="primaryInputRadioName" [ngModel]="emailAddress.primary_address == '1'" (ngModelChange)="setPrimary(emailAddress)" [disabled]="emailAddress.invalid_email == 1 || !emailAddress.email_address" system-title="LBL_PRIMARY" class="slds-m-top--xx-small" style="max-width: 1.4rem"></system-input-radio>
+        <field-email-emailaddress (keyup.enter)="startAdding()" [emailAddress]="emailAddress" (onBlur)="setEmailAddressesField()" class="slds-grow"></field-email-emailaddress>
         <field-email-emailaddress-status [status]="emailAddress.opt_in_status" class="slds-p-right--xx-small slds-p-left--x-small slds-m-top--xx-small"></field-email-emailaddress-status>
         <button (click)="handleOnDelete(emailAddress)" [disabled]="emailAddress.primary_address == '1' && emailAddresses.length > 1" class="slds-button slds-button--icon slds-m-top--xxx-small" style="max-height: 1.6rem">
             <system-button-icon icon="clear"></system-button-icon>
         </button>
     </div>
+    <div *ngIf="isAdding" class="slds-grid">
+        <system-input-radio *ngIf="!fieldconfig.singleMode" value="1" [name]="primaryInputRadioName" [ngModel]="inputNewEmailAddress.primary_address == '1'" (ngModelChange)="setPrimary(inputNewEmailAddress)" [disabled]="inputNewEmailAddress.invalid_email == 1 || !inputNewEmailAddress.email_address" class="slds-m-top--xx-small" style="max-width: 1.4rem"></system-input-radio>
+        <field-email-emailaddress (keyup.enter)="startAdding()" [emailAddress]="inputNewEmailAddress" (onBlur)="setEmailAddressesField()" class="slds-grow"></field-email-emailaddress>
+        <field-email-emailaddress-status [status]="inputNewEmailAddress.opt_in_status" class="slds-p-right--xx-small slds-p-left--x-small slds-m-top--xx-small"></field-email-emailaddress-status>
+        <button (click)="cancelAdding()" [disabled]="inputNewEmailAddress.primary_address == '1' && emailAddresses.length > 1" class="slds-button slds-button--icon slds-m-top--xxx-small" style="max-height: 1.6rem">
+            <system-button-icon icon="clear"></system-button-icon>
+        </button>
+    </div>
     <div *ngIf="canAdd" class="slds-grid slds-align-content-center slds-p-vertical--x-small">
-        <button class="slds-button slds-button--icon-small slds-button--icon-border" system-title="LBL_NEW" (click)="addEmailAddress(true)">
+        <button class="slds-button slds-button--icon-small slds-button--icon-border" system-title="LBL_NEW" (click)="startAdding()">
             <system-button-icon icon="add"></system-button-icon>
         </button>
     </div>

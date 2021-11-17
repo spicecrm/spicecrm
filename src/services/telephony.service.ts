@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import {Injectable, EventEmitter} from '@angular/core';
 import {broadcast} from './broadcast.service';
 import {telephonyCallI} from "./interfaces.service";
+import {BehaviorSubject} from "rxjs";
 
 declare var moment: any;
 
@@ -43,6 +44,14 @@ export class telephony {
      */
     public terminateCall$: EventEmitter<telephonyCallI> = new EventEmitter<telephonyCallI>();
 
+    /**
+     * actions that are possible. needs to be set by the call listener to enable thee actions
+     */
+    public actions: any = {
+        hangup: false,
+        transfer: false
+    };
+
     constructor(private broadcast: broadcast) {
 
         // subscribe to the logout so we can remove all open composers
@@ -55,6 +64,8 @@ export class telephony {
             this.isActive = false;
         }
     }
+
+
 
     /**
      * initiate the calling of an msisdn

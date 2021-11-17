@@ -20,8 +20,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <div class="slds-small-size--1-of-1 slds-medium-size--1-of-2">
                 <div class="slds-p-around--x-small">
                     <div class="slds-form--stacked slds-text-align--left">
-                        <div *ngIf="pwdGuideline" class="slds-m-vertical--medium">
-                            <system-label label="LBL_PWD_GUIDELINE"></system-label>:{{pwdGuideline}}<br>
+                        <div *ngIf="pwdGuideline">
+                            <system-label style="display:inline-block" label="LBL_PWD_GUIDELINE"></system-label>: {{pwdGuideline}}<br>
                         </div>
                         <div class="slds-grid">
                             <div class="slds-size--10-of-12">
@@ -41,20 +41,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                                     </div>
                                     <field-messages [messages]="rePasswordMsg"></field-messages>
                                 </div>
+
                             </div>
 
-                            <div class="slds-size--2-of-12 slds-p-horizontal--xx-small slds-p-vertical--small">
+                            <div class="slds-size--2-of-12 slds-p-horizontal--xx-small slds-p-vertical--small" style="white-space:nowrap">
                                 <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="toggleShowPassword()">
                                     <system-button-icon [icon]="!showPassword ? 'preview': 'hide'" size="medium"></system-button-icon>
                                 </button>
-                                <button *ngIf="autoGenerate" class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="copyPassword()">
+                                <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="copyPassword()" [disabled]="!autoGenerate">
                                     <system-button-icon icon="copy" size="medium"></system-button-icon>
                                 </button>
                             </div>
                         </div>
                     </div>
                     <system-checkbox [(ngModel)]="autoGenerate"><system-label label="LBL_AUTO_GENERATE"></system-label></system-checkbox>
-                    <system-checkbox [(ngModel)]="sendByEmail"><system-label label="LBL_SEND_BY_EMAIL"></system-label></system-checkbox>
+                    <system-checkbox class="slds-m-left--small" [(ngModel)]="sendByEmail"><system-label label="LBL_SEND_BY_EMAIL"></system-label></system-checkbox>
+                    <system-checkbox class="slds-m-left--small" [(ngModel)]="forceReset"><system-label label="LBL_FORCE_RESET"></system-label></system-checkbox>
                 </div>
             </div>
         </system-section>

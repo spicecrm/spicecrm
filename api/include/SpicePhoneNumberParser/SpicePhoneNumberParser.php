@@ -26,17 +26,24 @@ class SpicePhoneNumberParser
      * @return string
      */
     public static function convertToE164($phoneNumberString) {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
         if ($phoneNumberString == '') {
             return '';
         }
 
         $phoneNumberString = preg_replace('/\D/',"",$phoneNumberString);
 
-
         $phoneUtil = PhoneNumberUtil::getInstance();
+
+        $country = SpiceConfig::getInstance()->config['telephony']['default_country'];
+        if($current_user->address_country){
+            $country = $current_user->address_country;
+        }
+
         try {
             // todo recognize the country code from the bean address data if possible
-            $conversion = $phoneUtil->parse($phoneNumberString, SpiceConfig::getInstance()->config['telephony']['default_country']);
+            $conversion = $phoneUtil->parse($phoneNumberString, $country);
             if ($phoneUtil->isValidNumber($conversion)) {
                 return $phoneUtil->format($conversion, PhoneNumberFormat::E164);
             } else {

@@ -37,13 +37,31 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class ACLTypesManagerTypes {
 
-    @ViewChild('header', {read: ViewContainerRef, static: true}) public header: ViewContainerRef;
-
+    /**
+     * inicates that we are loading
+     */
     public loading: boolean = true;
 
+    /**
+     * the list of acl types
+     */
     public acltypes: any[] = [];
+
+    /**
+     * the active type id
+     */
     public activeTypeId: string = '';
 
+    /**
+     * a filter for the module
+     *
+     * @private
+     */
+    private filter: string;
+
+    /**
+     * an output when the type is selected
+     */
     @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
@@ -58,16 +76,23 @@ export class ACLTypesManagerTypes {
         });
     }
 
+    /**
+     * returns a filtered list of acl types
+     */
+    get acltypeslist(){
+        if(!this.filter) return this.acltypes;
+
+        return this.acltypes.filter(t => t.id == this.activeTypeId ||  t.module.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0);
+    }
+
+    /**
+     * selects a type
+     *
+     * @param acltype
+     */
     public selectType(acltype) {
         this.activeTypeId = acltype.id;
         this.typeselected.emit(acltype);
-    }
-
-    get contentStyle() {
-        let rect = this.header.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        };
     }
 
 }

@@ -15,14 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  */
 import {
     AfterViewChecked,
+    ChangeDetectorRef,
     Directive,
     ElementRef,
     HostBinding,
     HostListener,
     Input,
     OnDestroy,
-    Renderer2,
-    ChangeDetectorRef
+    Renderer2
 } from '@angular/core';
 import {footer} from "../../services/footer.service";
 
@@ -43,10 +43,11 @@ import {footer} from "../../services/footer.service";
 export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewChecked {
 
     @HostBinding('class.slds-is-open') public dropDownOpen: boolean = false;
+    public hasTriggerButton = false;
     private clickListener: any;
+    private triggerClickListener: any;
     private previousTriggerRect: any;
     private dropdownElement: HTMLElement;
-
     /*
     * @input dropdowntrigger: boolean = false
     */
@@ -73,19 +74,19 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     public ngOnDestroy() {
         this.removeDropdownFromFooter();
         if (this.clickListener) this.clickListener();
+        if (this.triggerClickListener) this.triggerClickListener();
     }
 
-    /*
-    * @move the dropdown element to the footer
-    * @reset dropdown right and transform
-    * @set dropdown position
-    * @toggle open dropdown
-    * @listen to global click event
-    * @remove dropdown from footer if it is closed
-    * @remove global click listener
-    */
-    @HostListener('click', ['$event'])
-    private openDropdown(event) {
+    /**
+     * move the dropdown element to the footer
+     * reset dropdown right and transform
+     * set dropdown position
+     * toggle open dropdown
+     * listen to global click event
+     * remove dropdown from footer if it is closed
+     * remove global click listener
+     */
+    public openDropdown(event) {
 
         this.setDropdownElement();
 
@@ -99,13 +100,26 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
             this.toggleOpenDropdown();
 
             if (this.dropDownOpen) {
-                event.preventDefault();
+                if (event) event.preventDefault();
                 this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
             } else {
                 this.removeDropdownFromFooter();
                 this.clickListener();
             }
         }
+    }
+
+    /**
+     * open the dropdown on the host click if the trigger button was not defined
+     * @param event
+     * @private
+     */
+    @HostListener('click', ['$event'])
+    private hostClick(event) {
+
+        if (this.hasTriggerButton) return;
+
+        this.openDropdown(event);
     }
 
     /*

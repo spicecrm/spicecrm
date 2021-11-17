@@ -173,8 +173,10 @@ class SysModuleFilters
                 $focus = new $class();
                 if (method_exists($focus, $method)) {
                     $ids = $focus->$method($bean);
-                    if (count($ids) > 0) {
+                    if (is_array($ids) && count($ids) > 0) {
                         $whereClause = (!empty($whereClause) ? "($whereClause) AND " : "") . " ($tablename.id IN ('" . implode("','", $ids) . "'))";
+                    } else if($ids){
+                        $whereClause = (!empty($whereClause) ? "($whereClause) AND " : "") . " ({$ids})";
                     }
                 }
             }

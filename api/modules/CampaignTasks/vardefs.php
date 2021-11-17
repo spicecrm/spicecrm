@@ -1,7 +1,8 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
+
 global $dictionary;
 $dictionary['CampaignTask'] = [
     'table' => 'campaigntasks',
@@ -72,31 +73,57 @@ $dictionary['CampaignTask'] = [
             'source' => 'non-db',
             'module' => 'Campaigns'
         ],
-        'email_template_name' =>
-            [
-                'name' => 'email_template_name',
-                'rname' => 'name',
-                'id_name' => 'email_template_id',
-                'vname' => 'LBL_EMAILTEMPLATE',
-                'type' => 'relate',
-                'table' => 'email_templates',
-                'isnull' => 'true',
-                'module' => 'EmailTemplates',
-                'dbType' => 'varchar',
-                'link' => 'emailtemplates',
-                'len' => '255',
-                'source' => 'non-db',
-            ],
+        'email_template_name' => [
+            'name' => 'email_template_name',
+            'rname' => 'name',
+            'id_name' => 'email_template_id',
+            'vname' => 'LBL_EMAILTEMPLATE',
+            'type' => 'relate',
+            'table' => 'email_templates',
+            'isnull' => 'true',
+            'module' => 'EmailTemplates',
+            'dbType' => 'varchar',
+            'link' => 'emailtemplates',
+            'len' => '255',
+            'source' => 'non-db',
+        ],
         'emailtemplates' => [
             'name' => 'emailtemplates',
             'type' => 'link',
             'relationship' => 'campaigntask_email_template',
             'source' => 'non-db',
-            'module' => 'EmailTemaplates'
+            'module' => 'EmailTemplates'
         ],
         'email_template_id' => [
             'name' => 'email_template_id',
             'vname' => 'LBL_EMAILTEMPLATE_ID',
+            'type' => 'varchar',
+            'len' => 36
+        ],
+        'output_template_name' => [
+            'name' => 'output_template_name',
+            'rname' => 'name',
+            'id_name' => 'output_template_id',
+            'vname' => 'LBL_OUTPUT_TEMPLATE',
+            'type' => 'relate',
+            'table' => 'output_template',
+            'isnull' => 'true',
+            'module' => 'OutputTemplates',
+            'dbType' => 'varchar',
+            'link' => 'outputtemplates',
+            'len' => '255',
+            'source' => 'non-db',
+        ],
+        'outputtemplate' => [
+            'name' => 'outputtemplate',
+            'type' => 'link',
+            'relationship' => 'campaigntask_output_template',
+            'source' => 'non-db',
+            'module' => 'OutputTemplates'
+        ],
+        'output_template_id' => [
+            'name' => 'output_template_id',
+            'vname' => 'LBL_OUTPUTTEMPLATE_ID',
             'type' => 'varchar',
             'len' => 36
         ],
@@ -164,13 +191,13 @@ $dictionary['CampaignTask'] = [
             'name' => 'email_subject',
             'vname' => 'LBL_SUBJECT',
             'type' => 'varchar',
-            'comment' => 'the subject when an email is composed right in the campaigntask'
+            'comment' => 'the subject when an email / letter is composed right in the campaigntask'
         ],
         'email_body' => [
             'name' => 'email_body',
             'vname' => 'LBL_EMAIL_BODY_PLAIN',
             'type' => 'text',
-            'comment' => 'Plain text body to be used in resulting email',
+            'comment' => 'Plain text body to be used in resulting email / document',
             'stylesheet_id_field' => 'email_stylesheet_id',
             'audited' => false
         ],
@@ -196,42 +223,42 @@ $dictionary['CampaignTask'] = [
             'comment' => 'the style id when an email is composed right in the campaigntask'
         ],
         'questionnaire_id' => [
-            'name'       => 'questionnaire_id',
-            'vname'      => 'LBL_QUESTIONNAIRE_ID',
-            'type'       => 'id',
+            'name' => 'questionnaire_id',
+            'vname' => 'LBL_QUESTIONNAIRE_ID',
+            'type' => 'id',
             'reportable' => true,
-            'comment'    => 'The ID of the questionnaire',
-            'required'   => false,
+            'comment' => 'The ID of the questionnaire',
+            'required' => false,
         ],
         'questionnaire_name' => [
-            'name'             => 'questionnaire_name',
-            'vname'            => 'LBL_QUESTIONNAIRE',
-            'type'             => 'relate',
-            'source'           => 'non-db',
-            'len'              => '255',
-            'id_name'          => 'questionnaire_id',
-            'rname'            => 'name',
-            'module'           => 'Questionnaires',
-            'link'             => 'questionnaire'
+            'name' => 'questionnaire_name',
+            'vname' => 'LBL_QUESTIONNAIRE',
+            'type' => 'relate',
+            'source' => 'non-db',
+            'len' => '255',
+            'id_name' => 'questionnaire_id',
+            'rname' => 'name',
+            'module' => 'Questionnaires',
+            'link' => 'questionnaire'
         ],
         'questionnaire' => [
-            'vname'        => 'LBL_QUESTIONNAIRES',
-            'name'         => 'questionnaire',
-            'type'         => 'link',
-            'module'       => 'Questionnaires',
+            'vname' => 'LBL_QUESTIONNAIRES',
+            'name' => 'questionnaire',
+            'type' => 'link',
+            'module' => 'Questionnaires',
             'relationship' => 'campaigntasks_questionnaire',
-            'link_type'    => 'one',
-            'side'         => 'right',
-            'source'       => 'non-db',
+            'link_type' => 'one',
+            'side' => 'right',
+            'source' => 'non-db',
         ],
         'servicefeedbacks' => [
-            'vname'        => 'LBL_SERVICEFEEDBACKS',
-            'name'         => 'servicefeedbacks',
-            'type'         => 'link',
-            'module'       => 'ServiceFeedbacks',
+            'vname' => 'LBL_SERVICEFEEDBACKS',
+            'name' => 'servicefeedbacks',
+            'type' => 'link',
+            'module' => 'ServiceFeedbacks',
             'relationship' => 'servicefeedbacks_campaigntasks',
-            'link_type'    => 'one',
-            'source'       => 'non-db'
+            'link_type' => 'one',
+            'source' => 'non-db'
         ]
     ],
     'relationships' => [
@@ -260,6 +287,15 @@ $dictionary['CampaignTask'] = [
             'rhs_module' => 'CampaignTasks',
             'rhs_table' => 'campaigntasks',
             'rhs_key' => 'email_template_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'campaigntask_output_template' => [
+            'lhs_module' => 'OutputTemplates',
+            'lhs_table' => 'outputtemplates',
+            'lhs_key' => 'id',
+            'rhs_module' => 'CampaignTasks',
+            'rhs_table' => 'campaigntasks',
+            'rhs_key' => 'output_template_id',
             'relationship_type' => 'one-to-many'
         ],
         'campaigntasks_questionnaire' => [

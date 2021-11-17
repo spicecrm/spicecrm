@@ -24,7 +24,6 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
     selector: 'spice-installer-systemcheck',
     templateUrl: './src/include/spiceinstaller/templates/spiceinstallersystemcheck.html',
 })
-
 export class SpiceInstallerSystemCheck {
     private loading: boolean = false;
     private requirements: any = [];
@@ -38,6 +37,14 @@ export class SpiceInstallerSystemCheck {
         this.checkSystem();
     }
 
+    get checkFailed(){
+
+        for(let req of Object.values(this.requirements)){
+            if(!req) return true;
+        }
+
+        return false;
+    }
 
     private checkSystem() {
         this.loading = true;

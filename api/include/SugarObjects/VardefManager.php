@@ -200,11 +200,10 @@ class VardefManager{
     static function clearVardef($module_dir = '', $object_name = ''){
         //if we have a module name specified then just remove that vardef file
         //otherwise go through each module and remove the vardefs.php
-        if(!empty($module_dir) && !empty($object_name)){
+        if (!empty($module_dir) && !empty($object_name)) {
             self::_clearCache($module_dir, $object_name);
-        }else{
-            global $beanList;
-            foreach($beanList as $module_dir => $object_name){
+        } else {
+            foreach (SpiceModules::getInstance()->getBeanList() as $module_dir => $object_name) {
                 self::_clearCache($module_dir, $object_name);
             }
         }
@@ -244,9 +243,10 @@ class VardefManager{
      */
     static function refreshVardefs($module, $object, $additional_search_paths = null, $cacheCustom = false, $params = []){
         // Some of the vardefs do not correctly define dictionary as global.  Declare it first.
-        global $dictionary, $beanList;
+        global $dictionary;
         $vardef_paths = [
                     'modules/'.$module.'/vardefs.php',
+                    'extensions/modules/'.$module.'/vardefs.php',
                     'custom/modules/'.$module.'/Ext/Vardefs/vardefs.ext.php',
                     'custom/modules/'.$module.'/vardefs.php',
                     'custom/Extension/modules/'.$module.'/Ext/Vardefs/vardefs.php'

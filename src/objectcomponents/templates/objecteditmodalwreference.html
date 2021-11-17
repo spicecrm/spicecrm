@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <h2 class="slds-text-heading--medium">{{modalHeader}}</h2>
         </div>
         <div class="slds-modal__content slds-is-relative" #modalContent [ngStyle]="contentStyle">
-            <object-edit-modal-dialog-container [module]="model.module" [componentSet]="componentSet"></object-edit-modal-dialog-container>
+            <object-edit-modal-dialog-container [componentSet]="componentSet"></object-edit-modal-dialog-container>
             <object-edit-modal-dialog-duplicates class="slds-is-absolute slds-theme--shade" *ngIf="showDuplicates" [ngStyle]="duplicateStyle" [duplicates]="duplicates"></object-edit-modal-dialog-duplicates>
         </div>
         <div class="slds-modal__footer">

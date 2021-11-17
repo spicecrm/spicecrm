@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['sysfts'] = [
     'table' => 'sysfts',
     'fields' => [
@@ -43,6 +45,7 @@ $dictionary['sysfts'] = [
     ]
 ];
 
+/* moved to the api log
 $dictionary['sysftslog'] = [
     'table' => 'sysftslog',
     'fields' => [
@@ -92,3 +95,4 @@ $dictionary['sysftslog'] = [
             'fields' => ['id']]
     ]
 ];
+*/

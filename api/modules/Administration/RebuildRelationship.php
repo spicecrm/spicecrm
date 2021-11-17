@@ -4,6 +4,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
 /*********************************************************************************
@@ -56,7 +57,7 @@ if(!isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) || 
 // loop through all of the modules and create entries in the Relationships table (the relationships metadata) for every standard relationship, that is, relationships defined in the /modules/<module>/vardefs.php
 // SugarBean::createRelationshipMeta just takes the relationship definition in a file and inserts it as is into the Relationships table
 // It does not override or recreate existing relationships
-    foreach ($GLOBALS['moduleList'] as $module) {
+    foreach (SpiceModules::getInstance()->getModuleList() as $module) {
         $focus = BeanFactory::getBean($module);
         if ($focus instanceof SugarBean) {
             $table_name = $focus->table_name;
@@ -70,7 +71,7 @@ if(!isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) || 
     }
 
 // do the same for custom relationships (true in the last parameter to SugarBean::createRelationshipMeta) - that is, relationships defined in the custom/modules/<modulename>/Ext/vardefs/ area
-    foreach ($GLOBALS['moduleList'] as $module) {
+    foreach (SpiceModules::getInstance()->getModuleList() as $module) {
         $focus = BeanFactory::getBean($module);
         if ($focus instanceof SugarBean) {
             $table_name = $focus->table_name;

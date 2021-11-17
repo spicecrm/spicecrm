@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\KREST\controllers;
 
@@ -54,21 +55,7 @@ class CoreController
      */
     public function getSysinfo(Request $req, Response $res, array $args): Response {
 
-        if (isset(SpiceConfig::getInstance()->config['syslanguages']['spiceuisource']) && SpiceConfig::getInstance()->config['syslanguages']['spiceuisource'] == 'db') {
-
-            $languages = LanguageManager::getLanguages(true);
-        } else {
-
-            foreach (SpiceConfig::getInstance()->config['languages'] as $language_code => $language_name) {
-                $languages['available'][] = [
-                    'language_code' => $language_code,
-                    'language_name' => $language_name,
-                    'system_language' => true,
-                    'communication_language' => true
-                ];
-            }
-            $languages['default'] = SpiceConfig::getInstance()->config['default_language'];
-        }
+        $languages = LanguageManager::getLanguages(true);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
         $aclcontroller = 'spiceacl';
@@ -168,10 +155,10 @@ class CoreController
         }
 
         // see if we have a language passed in .. if not use the default
-        if (empty($language)) $language = SpiceConfig::getInstance()->config['default_language'];
+        if (empty($language)) $language = LanguageManager::getDefaultLanguage();
 
-        $appStrings = return_app_list_strings_language($language);
-
+        // get the app List Strings
+        $appStrings = SpiceUtils::returnAppListStringsLanguage($language);
 
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
         $syslanguages = [];

@@ -15,16 +15,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         <header class="slds-modal__header slds-theme_{{theme}}" [style.height]="headertext ? 'auto':'1rem'">
             <h2 *ngIf="headertext" class="slds-text-heading_medium slds-hyphenate"><system-label [label]="headertext"></system-label></h2>
         </header>
-        <div *ngIf="text || type === 'input'" class="slds-modal__content slds-text-align_center ">
+        <div *ngIf="text || type.startsWith('input')" class="slds-modal__content slds-text-align_center ">
             <div *ngIf="text" class="slds-m-vertical_medium">
                 <div *ngFor="let line of splitText">{{line}}</div>
             </div>
-            <div *ngIf="type === 'input'" class="slds-form-element slds-m-vertical_medium">
-                <div #inputField class="slds-form-element__control">
-                    <input *ngIf="!options" class="slds-input" type="text" [(ngModel)]="value" />
+            <div *ngIf="type.startsWith('input')" class="slds-form-element slds-m-vertical_medium">
+                <div class="slds-form-element__control">
+                    <div *ngIf="!options" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                        <ng-container [ngSwitch]="type">
+                            <system-input-date *ngSwitchCase="'input_date'" [(ngModel)]="value"></system-input-date>
+                            <ng-container *ngSwitchDefault>
+                                <input #inputField class="slds-input" type="text" [(ngModel)]="value" tabindex="1"/>
+                                <div class="slds-input__icon-group slds-input__icon-group_right">
+                                    <button class="slds-input__icon slds-input__icon_right slds-button slds-button--icon" style="position: relative;" (click)="value=''">
+                                        <system-button-icon icon="clear"></system-button-icon>
+                                    </button>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
                     <ng-container *ngIf="options">
                         <div *ngIf="!optionsAsRadio; else radioGroupContainer" class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="value">
+                            <select #selectField class="slds-select" [(ngModel)]="value" tabindex="1">
                                 <option *ngFor="let option of options" [value]="option.value">
                                     {{option.display}}
                                 </option>
@@ -36,13 +48,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                             </system-input-radio>
                         </ng-template>
                     </ng-container>
-
                 </div>
             </div>
         </div>
         <footer class="slds-modal__footer">
             <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()"><system-label label="LBL_CANCEL"></system-label></button>
-            <button #okButton class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
+            <button #okButton [disabled]="(type == 'input'|| type == 'input_date') && !value" class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
         </footer>
     </div>
 </section>

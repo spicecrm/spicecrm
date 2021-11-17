@@ -84,7 +84,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * the change date comes from the parent
      */
-    @Input() private setdate: any = {};
+    @Input() private setDate: any = {};
     /**
      * holds a boolean of google events visibility
      */
@@ -127,12 +127,17 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * subscribe to resize event to reset the events style
      */
     private subscribeToChanges() {
+        this.subscription.add(
+            this.calendar.layoutChange$.subscribe(() => {
+                this.setEventsStyle();
+            })
+        );
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-            if (calendar.id == 'owner') {
-                this.getOwnerEvents();
-            } else {
-                this.getUserEvents(calendar);
-            }
+                if (calendar.id == 'owner') {
+                    this.getOwnerEvents();
+                } else {
+                    this.getUserEvents(calendar);
+                }
             })
         );
         this.resizeListener = this.renderer.listen('window', 'resize', () =>
@@ -165,7 +170,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @return startDate: moment
      */
     get startDate() {
-        return new moment(this.setdate).hour(this.calendar.startHour).minute(0).second(0);
+        return new moment(this.setDate).hour(this.calendar.startHour).minute(0).second(0);
     }
 
     /**
@@ -180,7 +185,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      */
     get isTodayStyle() {
         let today = new moment();
-        let isToday = today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date();
+        let isToday = today.year() === this.setDate.year() && today.month() === this.setDate.month() && today.date() == this.setDate.date();
         return {
             color: isToday ? this.calendar.todayColor : 'inherit'
         };
@@ -191,11 +196,11 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param changes
      */
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes.setdate) {
+        if (changes.setDate) {
             this.getOwnerEvents();
             this.getUsersEvents();
         }
-        if (changes.googleIsVisible || changes.setdate) {
+        if (changes.googleIsVisible || changes.setDate) {
             this.getGoogleEvents();
         }
     }
@@ -271,7 +276,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
 
-        if (!this.calendar.ownerCalendarVisible) return this.cdRef.detectChanges();
+        if (!this.calendar.ownerCalendarVisible) return this.setEventsStyle();
 
         this.calendar.loadEvents(this.startDate, this.endDate)
             .subscribe(events => {
@@ -292,7 +297,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
         this.googleEvents = [];
         this.googleMultiEvents = [];
         if (!this.googleIsVisible || this.calendar.isMobileView) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadGoogleEvents(this.startDate, this.endDate)
@@ -318,7 +323,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
         if (this.calendar.isMobileView || !calendar.visible) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
@@ -345,7 +350,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
         this.userEvents = [];
         this.userMultiEvents = [];
         if (this.calendar.isMobileView) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadUsersEvents(this.startDate, this.endDate)
@@ -381,9 +386,9 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     private displayDate(type) {
         switch (type) {
             case 'day':
-                return this.setdate.format('ddd');
+                return this.setDate.format('ddd');
             case 'date':
-                return this.setdate.format(this.calendar.isDashlet ? 'D, MMMM' : 'D');
+                return this.setDate.format(this.calendar.isDashlet ? 'D, MMMM' : 'D');
         }
     }
 

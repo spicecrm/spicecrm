@@ -264,4 +264,47 @@ export class helper {
         return bytes.toFixed(1) + " " + units[u];
     }
 
+    /**
+     * generates a password that matches the minimal requirements
+     * fills it up with lower case chars to the required minimum length
+     *
+     * @private
+     */
+    public generatePassword( extConf: any ): string {
+        let passwordChars: string[] = [];
+
+        let usedCharTypes: string[] = [];
+        ['upper', 'number', 'special', 'lower'].forEach( type => {
+            if ( extConf['one'+type] ) usedCharTypes.push(type);
+        });
+
+        let sizeRemaining = extConf.minpwdlength;
+        usedCharTypes.forEach( ( type, i ) => {
+            let dummy;
+            if ( i === usedCharTypes.length-1 ) {
+                dummy = sizeRemaining;
+            } else {
+                dummy = Math.floor( Math.random() * ( sizeRemaining - ( usedCharTypes.length - i - 1 ) )) + 1;
+            }
+            for ( let j = 0; j<dummy; j++ ) passwordChars.push( this.pwRandomChar( type ));
+            sizeRemaining = sizeRemaining - dummy;
+        });
+
+        return this.shuffle( passwordChars ).join('');
+    }
+
+    /**
+     * for passwords: returns a random character of a specific type (lower, upper, digit, special).
+     * @private
+     */
+    private pwRandomChar( type: string ): string {
+        let specialChars = '!"#$%&\'()*+,-./:;<=>?@[\\]^_{|}~';
+        switch( type ) {
+            case 'upper':   return String.fromCharCode( Math.floor( Math.random() * 26 ) + 65 );
+            case 'lower':   return String.fromCharCode( Math.floor( Math.random() * 26 ) + 97 );
+            case 'special': return specialChars.charAt(  Math.floor(Math.random() * specialChars.length ));
+            case 'number':  return String.fromCharCode( Math.floor( Math.random() * 10 ) + 48 );
+        }
+    }
+
 }

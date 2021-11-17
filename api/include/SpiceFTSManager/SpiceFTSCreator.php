@@ -31,6 +31,7 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use Sugar_Smarty;
 
 class SpiceFTSCreator {
@@ -151,7 +152,7 @@ class SpiceFTSCreator {
 
         //check if modules are available (CE/PRO)
         foreach($ftsmodules as $ftsmodule){
-            if(in_array($ftsmodule, $GLOBALS['moduleList'])){
+            if(in_array($ftsmodule, SpiceModules::getInstance()->getModuleList())){
                 $keepftsmodules[] = $ftsmodule;
             }
         }

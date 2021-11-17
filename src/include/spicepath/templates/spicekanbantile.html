@@ -25,12 +25,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <object-action-menu class="slds-col_bump-left" buttonsize="x-small"></object-action-menu>
         </div>
         <div class="slds-tile__detail slds-text-body--small">
-            <div class="slds-p-vertical--x-small">
-                <field-container *ngIf="componentconfig.amount" [field]="componentconfig.amount" [fielddisplayclass]="'slds-text-heading--medium'"></field-container>
+            <div *ngIf="componentconfig.amount" class="slds-p-vertical--x-small">
+                <field-container [field]="componentconfig.amount" [fielddisplayclass]="'slds-text-heading--medium'"></field-container>
             </div>
             <div class="slds-grid" *ngFor="let componentField of componentFields">
-                <field-label class="slds-truncate"  [fieldname]="componentField.field" [fieldconfig]="componentField.fieldconfig"></field-label>
-                <field-container class="slds-col--bump-left slds-truncate" [field]="componentField.field" [fieldconfig]="componentField.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+                <field-label class="slds-truncate" *ngIf="!componentField.fieldconfig.hidelabel" [fieldname]="componentField.field" [fieldconfig]="componentField.fieldconfig"></field-label>
+                <field-container class="slds-col--bump-left slds-truncate" [ngClass]="{'slds-size--1-of-1' : componentField.fieldconfig.hidelabel}" [field]="componentField.field" [fieldconfig]="componentField.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
             </div>
         </div>
     </div>

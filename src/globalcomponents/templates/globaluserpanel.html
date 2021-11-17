@@ -30,11 +30,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <!--div class="OptionsSeparator"><system-label label="LBL_OPTIONS"></system-label></div-->
     <div class="slds-p-around--small slds-form--stacked">
         <system-language-selector></system-language-selector>
-        <div class="slds-p-top--x-small">
-            <div class="slds-form-element">
-                <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
-                <system-input-timezone [(ngModel)]="currentTz" ></system-input-timezone>
-            </div>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
+            <system-input-timezone [(ngModel)]="currentTz" ></system-input-timezone>
         </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">

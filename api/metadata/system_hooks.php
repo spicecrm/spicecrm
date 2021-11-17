@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['syshooks'] = [
     'table' => 'syshooks',
     'fields' => [

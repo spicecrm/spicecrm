@@ -34,7 +34,8 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-/*
+/**
+ * @deprecated moved to ArrayUtils
  * this function is used to overide a value in an array and returns the string code to write
  * @params : $array_name - a String containing the name of an array.
  * @params : $value_name - a String containing the name of a variable in the array.
@@ -42,7 +43,6 @@
  * 
  * @returns: String. Example - override_value_to_string($name, 'b', 1) = '$name['b'] = 1;'
  */
-
 function override_value_to_string($array_name, $value_name, $value)
 {
     $string = "\${$array_name}[" . var_export($value_name, true) . "] = ";
@@ -51,7 +51,8 @@ function override_value_to_string($array_name, $value_name, $value)
 }
 
 
-/*
+/**
+ * @deprecated moved to ArrayUtils
  * Given an array and key names, return a string in the form of $array_name[$key_name[0]][$key_name[1]]... = $value recursively.
  * @params : $key_names - array of keys
  * 			 $array_name- name of the array
@@ -59,8 +60,6 @@ function override_value_to_string($array_name, $value_name, $value)
  * 			 $eval - evals the generated string if true, note that the array name must be in the global space!
  * @return : example - string $array_name['a']['b']['c'][.] = 'hello'
  */
-
-
 function override_value_to_string_recursive2($array_name, $value_name, $value, $save_empty = true)
 {
     $quoted_vname = var_export($value_name, true);
@@ -81,6 +80,7 @@ function override_value_to_string_recursive2($array_name, $value_name, $value, $
 }
 
 /**
+ * @deprecated moved to ArrayUtils
  * This function returns an array of all the key=>value pairs in $array1
  * that are wither not present, or different in $array2.
  * If a key exists in $array2 but not $array1, it will not be reported.
@@ -113,6 +113,7 @@ function deepArrayDiff($array1, $array2, $allowEmpty = false)
 }
 
 /**
+ * @deprecated moved to ArrayUtils
  * Recursivly set a value in an array, creating sub arrays as necessary
  *
  * @param unknown_type $array
@@ -134,6 +135,7 @@ function setDeepArrayValue(&$array, $key, $value)
 
 
 /**
+ * @deprecated moved to ArrayUtils
  * Search an array for a given value ignorning case sensitivity
  *
  * @param unknown_type $key

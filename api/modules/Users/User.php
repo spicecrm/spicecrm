@@ -42,9 +42,11 @@ use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\ACLActions\ACLAction;
+use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 // workaround for spiceinstaller
@@ -259,14 +261,18 @@ class User extends Person
                     switch ($this->UserType) {
                         case 'Administrator':
                             $this->is_admin = 1;
-                            $this->portal_only = 0;
+                            $this->portal_only = $this->is_api_user = 0;
                             break;
                         case 'PortalUser':
-                            $this->is_admin = 0;
+                            $this->is_admin = $this->is_api_user = 0;
                             $this->portal_only = 1;
                             break;
                         case 'RegularUser':
+                            $this->is_admin = $this->portal_only = $this->is_api_user = 0;
+                            break;
+                        case 'APIuser':
                             $this->is_admin = $this->portal_only = 0;
+                            $this->is_api_user = 1;
                             break;
                         default:
                             unset($this->UserType);
@@ -500,6 +506,7 @@ class User extends Person
 
         if ($this->is_admin) $this->UserType = 'Administrator';
         elseif ($this->portal_only) $this->UserType = 'PortalUser';
+        elseif ($this->is_api_user) $this->UserType = 'APIuser';
         else $this->UserType = 'RegularUser';
 
     }
@@ -528,19 +535,14 @@ class User extends Person
         $isDev = $type == 'dev';
         $isAdmin = $type == 'admin';
 
-        global $beanList;
         $myModules = [];
-
-        if (!is_array($beanList)) {
-            return $myModules;
-        }
 
         // These modules don't take kindly to the studio trying to play about with them.
         static $ignoredModuleList = ['iFrames', 'Feeds', 'Home', 'Dashboard', 'Calendar', 'Activities', 'Reports'];
 
         $actions = ACLAction::getUserActions($this->id);
 
-        foreach ($beanList as $module => $val) {
+        foreach (SpiceModules::getInstance()->getBeanList() as $module => $val) {
             // Remap the module name
             $module = $this->_fixupModuleForACL($module);
             if (in_array($module, $myModules)) {
@@ -726,7 +728,7 @@ class User extends Person
         $emailTempl->body = $memmy['body'];
         $emailTempl->subject = $memmy['subject'];
 
-        $itemail = $this->emailAddress->getPrimaryAddress($this);
+        $itemail = $this->email1;
 
         $emailObj = BeanFactory::getBean('Emails');
         $emailObj->name = from_html($emailTempl->subject);
@@ -889,4 +891,90 @@ class User extends Person
     {
         return $this->retrieve_by_string_fields(['user_name' => $name]);
     }
+
+    /**
+     * blockUserByName
+     *
+     * Blocks a user (prevent from login) permanent or for a specific time.
+     *
+     * @param $username The name of the user.
+     * @param $blockingDuration The time in minutes that the user should be blocked from logging in. From now on.
+     * @return The user bean.
+     */
+    public static function blockUserByName( $username, $blockingDuration = null ) {
+        $user = BeanFactory::getBean('Users');
+        $user->findByUserName( $username );
+
+        if ( $blockingDuration ) {
+            $dtObj=new \DateTime();
+            $dtObj->setTimestamp(time()+$blockingDuration*60);
+            $user->login_blocked_until = Timedate::getInstance()->asDb($dtObj);
+        } else {
+            $user->login_blocked = true;
+        }
+
+        $user->save();
+        return $user;
+    }
+
+    /**
+     * isBlocked
+     *
+     * Checks if a user is blocked permanent or for a specific time.
+     *
+     * @param $username The name of the user.
+     * @return True if permanent or the amount of minutes in case the blocking is for a specific time.
+     */
+    public static function isBlocked( $username ) {
+        $db = DBManagerFactory::getInstance();
+
+        $dtObj=new \DateTime();
+        $dtObj->setTimestamp(time());
+        $now = Timedate::getInstance()->asDb($dtObj);
+
+        $row = $db->fetchOne( sprintf('SELECT login_blocked, TIMESTAMPDIFF( SECOND, "'.$now.'", login_blocked_until ) as blocked_seconds FROM users WHERE user_name = "%s"', $db->quote( $username )));
+        if ( $row['login_blocked'] ) return true;
+        if ( $row['blocked_seconds'] > 0 ) return ceil( $row['blocked_seconds']/60 );
+        return false;
+    }
+
+    /**
+     * hasExpiredPassword
+     *
+     * Checks if the password of the user is expired (returns true) or will expire soon (returns the number of days of remaining validity).
+     *
+     * @return True If the password is expired.
+     * @return False If the password is not expired and will not expire soon.
+     * @return Integer Number of days of remaining validity, in case the password will expire soon.
+     */
+    function hasExpiredPassword()
+    {
+        $config = SpiceConfig::getInstance()->config['passwordsetting'];
+        $timedate = TimeDate::getInstance();
+
+        # Password expiration is OFF or not configured.
+        if ( empty( $config['pwdvaliditydays'] )) return false;
+
+        # In case password expiration is used, we make sure the date of last password change is set.
+        # If not, we set it. Then a further expiration check for this time makes no sense, so return true.
+        if ( empty( $this->pwd_last_changed )) {
+            $this->pwd_last_changed = $timedate->nowDb();
+            $this->save();
+            return false;
+        }
+
+        # Calculate the age of the password (in days).
+        $passwordAge = ( new \DateTime( $this->pwd_last_changed ))->setTime(0,0,0)->diff( $timedate->getNow()->setTime(0,0,0))->format('%r%a')*1;
+
+        # Calculate the remaining days until expiration.
+        $remainingDays = $config['pwdvaliditydays'] - $passwordAge;
+
+        return $remainingDays < 1;
+    }
+
+    public static function isAdmin_byName( $username ) {
+        $db = DBManagerFactory::getInstance();
+        return (boolean)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
+    }
+
 }

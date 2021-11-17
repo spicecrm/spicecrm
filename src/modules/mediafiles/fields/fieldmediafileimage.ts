@@ -261,7 +261,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     public isEditable(): boolean {
         return this.getStati( this.fieldname ).editable && !this.getStati( this.fieldname ).readonly && !this.getStati( this.fieldname ).disabled && !this.getStati( this.fieldname ).hidden;
     }
-    cdnurl
+
     public ngOnDestroy() {
         if ( this.unsubscribeClickListener ) this.unsubscribeClickListener();
         super.ngOnDestroy();

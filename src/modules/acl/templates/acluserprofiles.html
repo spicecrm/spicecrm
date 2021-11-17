@@ -10,48 +10,52 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<table class="slds-table slds-table_bordered slds-table_cell-buffer" style="box-shadow:0px 2px 5px 0 rgba(0,0,0,.1); border-radius: .15rem">
+<table class="slds-table slds-table--fixed-layout slds-table_bordered" style="box-shadow:0px 2px 5px 0 rgba(0,0,0,.1); border-radius: .15rem">
     <thead class="slds-table--bordered slds-text-align_center">
-    <tr class="slds-text-title--caps">
-        <th><system-label label="LBL_SPICEACLPROFILE"></system-label></th>
-        <th><system-label label="LBL_SCOPE"></system-label></th>
-        <th><system-label label="LBL_ACTIVE"></system-label></th>
-    </tr>
+        <tr class="slds-text-title--caps">
+            <th><system-label label="LBL_SPICEACLPROFILE"></system-label></th>
+            <th style="width: 4rem" class="slds-text-align--center"><system-label label="LBL_SCOPE"></system-label></th>
+            <th style="width: 4rem" class="slds-text-align--center"><system-label label="LBL_ACTIVE"></system-label></th>
+        </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let userProfile of userProfiles" class="slds-hint-parent" [ngClass]="{'slds-is-selected': userProfile.id == selectedProfileId}">
-        <ng-container>
-            <td (click)="selectProfile(userProfile.id)">
-                {{userProfile.name}}
-            </td>
-            <td>
-                <system-custom-icon [icon]="userProfile.user_id == '*' ? 'global' : 'custom'" size="x-small"></system-custom-icon>
-            </td>
-            <td>
-                <system-custom-icon [icon]="userProfile.statue == 'r' ? 'light-bulb-off' : 'light-bulb-on'" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
-            </td>
-        </ng-container>
-    </tr>
+        <tr *ngFor="let userProfile of userProfiles" class="slds-hint-parent" [ngClass]="{'slds-is-selected': userProfile.id == selectedProfileId}">
+            <ng-container>
+                <td (click)="selectProfile(userProfile.id)">
+                    {{userProfile.name}}
+                </td>
+                <td class="slds-text-align--center">
+                    <system-custom-icon [icon]="userProfile.user_id == '*' ? 'global' : 'custom'" size="x-small"></system-custom-icon>
+                </td>
+                <td class="slds-text-align--center">
+                    <system-custom-icon [icon]="userProfile.statue == 'r' ? 'light-bulb-off' : 'light-bulb-on'" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
+                </td>
+            </ng-container>
+        </tr>
     </tbody>
 </table>
 
-<table *ngIf="profileObjects.length > 0" class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-top--medium" style="box-shadow:0px 2px 5px 0 rgba(0,0,0,.1); border-radius: .15rem">
+<table *ngIf="profileObjects.length > 0" class="slds-table slds-table--fixed-layout slds-table_bordered slds-table_cell-buffer slds-m-top--medium" style="box-shadow:0px 2px 5px 0 rgba(0,0,0,.1); border-radius: .15rem">
     <thead class="slds-table--bordered slds-text-align_center">
-    <tr class="slds-text-title--caps">
-        <th><system-label label="LBL_SPICEACLOBJECT"></system-label></th>
-        <th><system-label label="LBL_ACTIVE"></system-label></th>
-    </tr>
+        <tr class="slds-text-title--caps">
+            <th style="width: 30%"><system-label label="LBL_MODULE"></system-label></th>
+            <th style="width: 70%"><system-label label="LBL_SPICEACLOBJECT"></system-label></th>
+            <th style="width: 4rem" class="slds-text-align--center"><system-label label="LBL_ACTIVE"></system-label></th>
+        </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let profileObject of profileObjects" class="slds-hint-parent">
-        <ng-container>
-            <td>
-                {{profileObject.name}}
-            </td>
-            <td>
-                <system-custom-icon [icon]="profileObject.statue == 'r' ? 'light-bulb-off' : 'light-bulb-on'" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
-            </td>
-        </ng-container>
-    </tr>
+        <tr *ngFor="let profileObject of profileObjects" class="slds-hint-parent">
+            <ng-container>
+                <td>
+                    {{profileObject.module}}
+                </td>
+                <td>
+                    {{profileObject.name}}
+                </td>
+                <td class="slds-text-align--center">
+                    <system-custom-icon [icon]="profileObject.statue == 'r' ? 'light-bulb-off' : 'light-bulb-on'" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
+                </td>
+            </ng-container>
+        </tr>
     </tbody>
 </table>

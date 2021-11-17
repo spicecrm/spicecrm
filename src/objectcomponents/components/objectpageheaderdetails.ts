@@ -17,9 +17,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import {
     Component,
     ElementRef,
-OnInit
+    OnInit
 } from '@angular/core';
-import {ActivatedRoute, Router}   from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 
@@ -29,24 +29,28 @@ import {model} from '../../services/model.service';
     templateUrl: './src/objectcomponents/templates/objectpageheaderdetails.html',
 
 })
-export class ObjectPageHeaderDetails implements OnInit{
-    componentconfig: any = {};
+export class ObjectPageHeaderDetails implements OnInit {
+    /**
+     * the componenntconfig loaded from the top of retrieved for the module
+     */
+    public componentconfig: any = {};
+
+    private collapsed: boolean = false;
+
+    private fieldset: string;
 
     constructor(private elementref: ElementRef, private activatedRoute: ActivatedRoute, private router: Router, private model: model, private metadata: metadata) {
 
     }
 
-    ngOnInit(){
-        if(JSON.stringify(this.componentconfig) == '{}')
+    public ngOnInit() {
+        if (JSON.stringify(this.componentconfig) == '{}') {
             this.componentconfig = this.metadata.getComponentConfig('ObjectPageHeaderDetails', this.model.module);
-    }
 
-    get fieldSets(){
-        return this.componentconfig && this.componentconfig.fieldset ? [this.componentconfig.fieldset] : [];
-    }
+            this.collapsed = this.componentconfig.collapsed ? this.componentconfig.collapsed : false;
 
-    get collapsed(){
-        return this.componentconfig.collapsed ? this.componentconfig.collapsed : false;
+            this.fieldset = this.componentconfig.fieldset ? this.componentconfig.fieldset : '';
+        }
     }
 
 }

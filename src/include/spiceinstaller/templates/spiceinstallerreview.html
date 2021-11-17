@@ -84,14 +84,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         </tr>
         </tbody>
     </table>
-
     <div class="slds-align-bottom slds-grid slds-grid--vertical-align-center slds-p-vertical--small">
-        <div *ngIf="loading" class="cssload-container">
-            <div class="cssload-double-torus" style="width: 16px; height: 16px;"></div>
-        </div>
         <div class="slds-m-left--small slds-size--1-of-1">
-            <button class="slds-button slds-button--brand" [disabled]="loading" (click)="install()">begin installation</button>
-
+            <button class="slds-button slds-button--brand" (click)="install()">begin installation</button>
         </div>
     </div>
 </div>
+<ng-container *ngIf="installing">
+    <section role="dialog" aria-modal="true"  class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header slds-modal__header_empty"></div>
+            <div class="slds-modal__content slds-p-around_medium slds-align--absolute-center">
+                <div class="slds-p-horizontal--x-large slds-grid slds-grid--vertical-align-center">
+                    <div class="cssload-double-torus" style="width: 16px; height: 16px;"></div>
+                    <div class="slds-p-left--medium">Installing</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</ng-container>

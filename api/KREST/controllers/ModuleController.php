@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\KREST\controllers;
 
@@ -14,17 +15,6 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class ModuleController
 {
-    public function uploadFile(Request $req, Response $res, array $args): Response
-    {
-        $moduleHandler = new ModuleHandler(RESTManager::getInstance()->app);
-        $params = $req->getParsedBody();
-
-        if (!$params['file']) {
-            throw new BadRequestException('missing file data');
-        }
-
-        return $res->withJson(['file_md5' => $moduleHandler->uploadFile($params)]);
-    }
 
     public function getBeanList(Request $req, Response $res, array $args): Response
     {
@@ -158,26 +148,14 @@ class ModuleController
         return $res->withJson($moduleHandler->get_bean_auditlog($args['beanName'], $args['beanId'], $params));
     }
 
-    public function getBeanAttachments(Request $req, Response $res, array $args): Response
+    public function loadFTSTimeline(Request $req, Response $res, array $args): Response
     {
-        $moduleHandler = new ModuleHandler(RESTManager::getInstance()->app);
-
-        return $res->withJson($moduleHandler->get_bean_attachment($args['beanName'], $args['beanId']));
-    }
-
-    public function downloadBeanAttachment(Request $req, Response $res, array $args): Response
-    {
-        $moduleHandler = new ModuleHandler(RESTManager::getInstance()->app);
-
-        return $res->withJson($moduleHandler->download_bean_attachment($args['beanName'], $args['beanId']));
-    }
-
-    public function setBeanAttachment(Request $req, Response $res, array $args): Response
-    {
-        $moduleHandler = new ModuleHandler(RESTManager::getInstance()->app);
-
         $postBody = $req->getParsedBody();
-        return $res->withJson($moduleHandler->set_bean_attachment($args['beanName'], $args['beanId'], $postBody));
+
+        $moduleHandler = new ModuleHandler(RESTManager::getInstance()->app);
+        $results = $moduleHandler->get_timeline_records($args['beanName'], $args['beanId'], $postBody);
+        // $results = $moduleHandler->get_module_records_timeline($args['beanId'], 'Module', true, null, '', $postBody['searchTerm'], '', json_decode($postBody['objects']));
+        return $res->withJson($results);
     }
 
     public function postChecklist(Request $req, Response $res, array $args): Response
@@ -235,6 +213,16 @@ class ModuleController
         $moduleHandler = new ModuleHandler(RESTManager::getInstance()->app);
         $postBody = $req->getParsedBody();
         return $res->withJson($moduleHandler->set_related($args['beanName'], $args['beanId'], $args['linkName'], $postBody));
+    }
+
+    public function setRelatedBeans(Request $req, Response $res, array $args): Response {
+        $moduleHandler = new ModuleHandler(RESTManager::getInstance()->app);
+        $postBody = $req->getParsedBody();
+        $resArray = [];
+        foreach ($postBody['beans'] as $item)
+            $resArray[] = $moduleHandler->set_related($args['beanName'], $args['beanId'], $args['linkName'], $item);
+
+        return $res->withJson($resArray);
     }
 
     public function deleteRelatedBean(Request $req, Response $res, array $args): Response

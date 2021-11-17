@@ -18,6 +18,7 @@ import {Router} from '@angular/router';
 import {broadcast} from '../../services/broadcast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {userpreferences} from "../../services/userpreferences.service";
 
 /**
  * the app launcher dialog that renders the users roles and also the users modules. Allows filering and navigating to a specific module/application
@@ -41,7 +42,8 @@ export class GlobalAppLauncherDialog {
         private metadata: metadata,
         private language: language,
         private router: Router,
-        private broadcast: broadcast
+        private broadcast: broadcast,
+        private userpreferences: userpreferences
     ) {
     }
 
@@ -74,6 +76,9 @@ export class GlobalAppLauncherDialog {
      */
     private setRole(roleid) {
         this.metadata.setActiveRole(roleid);
+
+        // set the role to the preferences
+        this.userpreferences.setPreference('userrole', roleid)
 
         // navigate home and broadcast the message
         this.broadcast.broadcastMessage('applauncher.setrole', roleid);

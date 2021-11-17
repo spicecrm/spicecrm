@@ -37,6 +37,8 @@
 /modules/SpiceUIGenerator/csv/*
 
 # Ignore some files and directories from the custom directory.
+/custom/application
+/custom/application/*
 /custom/blowfish/*.*
 /custom/modules/*/Ext
 /custom/modules/*/Ext/*

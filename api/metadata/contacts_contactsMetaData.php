@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+
 $dictionary['contacts_contacts'] = [
     'table' => 'contacts_contacts',
     'fields' => [
@@ -23,7 +25,8 @@ $dictionary['contacts_contacts'] = [
             'relationship_type' => 'many-to-many',
             'join_table' => 'contacts_contacts',
             'join_key_lhs' => 'parent_id',
-            'join_key_rhs' => 'child_id'
+            'join_key_rhs' => 'child_id',
+            'reverse' => 1
         ]
     ]
 ];

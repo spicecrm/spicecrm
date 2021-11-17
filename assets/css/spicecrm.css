@@ -332,8 +332,22 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     color: var(--color-grey-9);
 }
 
+/* focus color in brand when button is not disabled */
+.slds-button--icon:enabled:focus,
+.slds-button--icon:enabled:hover,
+.slds-button--icon-border-filled:enabled:focus,
+.slds-button--icon-border-filled:enabled:hover {
+    color: var(--color-border-brand);
+}
+
 .slds-button.slds-button--brand, .slds-button.slds-button_brand {
     color: var(--color-white);
+}
+
+/* add a class that he button does not turn to highlight color when hovering and focus */
+.slds-button-no-focus:focus,
+.slds-button-no-focus:hover{
+    background-color: inherit;
 }
 
 /* fix for scoped tabs when the second tba is selected */
@@ -430,4 +444,13 @@ input[type="button"],
 input[type="search"],
 input[type="submit"] {
     -webkit-appearance: none;
+}
+
+.slds-is-sortable:not(.slds-is-sorted) .slds-th__action:focus .slds-is-sortable__icon {
+    display: none !important;
+}
+
+.slds-modal__footer .slds-button-group button:not(:first-of-type) {
+    border-left: 0;
+    margin-left: 0;
 }

@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 $dictionary['sysmodulefilters'] = [
     'table' => 'sysmodulefilters',

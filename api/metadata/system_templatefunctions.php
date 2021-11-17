@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['systemplatefunctions'] = [
     'table' => 'systemplatefunctions',
     'fields' => [
@@ -20,6 +22,11 @@ $dictionary['systemplatefunctions'] = [
             'name' => 'no_pipe',
             'type' => 'bool',
             'default' => '0'
+        ],
+        'param_configs' => [
+            'name' => 'param_configs',
+            'type' => 'varchar',
+            'len' => 2500
         ],
         'version' => [
             'name' => 'version',
@@ -62,6 +69,11 @@ $dictionary['syscustomtemplatefunctions'] = [
             'name' => 'no_pipe',
             'type' => 'bool',
             'default' => '0'
+        ],
+        'param_configs' => [
+            'name' => 'param_configs',
+            'type' => 'varchar',
+            'len' => 2500
         ],
         'version' => [
             'name' => 'version',

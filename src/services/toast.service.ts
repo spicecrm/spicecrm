@@ -23,9 +23,9 @@ import {modelutilities} from "./modelutilities.service";
 export class toast {
 
     /**
-     * array holding the current active toasts that are rendered in the toas container
+     * array holding the current active toasts that are rendered in the toast container
      */
-    private activeToasts: any[] = [];
+    public activeToasts: any[] = [];
 
     /*  Showing toasts is based on the array "activeToasts" and the angular change detection cares for displaying the toasts.
      *  But sometimes the change detection is not triggered automatically. For example: getAsString() of ClipboardEvent.

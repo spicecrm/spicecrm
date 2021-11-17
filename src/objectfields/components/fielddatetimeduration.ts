@@ -23,8 +23,8 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -43,7 +43,7 @@ export class fieldDateTimeDuration extends fieldGeneric {
     private durationMinutes: string[] = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
 
     /**
-     * the duration, held intrnally so we can move the end date when the start date moves
+     * the duration, held internally so we can move the end date when the start date moves
      *
      * @private
      */
@@ -112,7 +112,7 @@ export class fieldDateTimeDuration extends fieldGeneric {
      * returns the hours from teh duration object
      */
     get currentHours() {
-        if(!this.duration) return 0;
+        if (!this.duration) return 0;
         return this.duration.get('hours');
     }
 
@@ -120,7 +120,7 @@ export class fieldDateTimeDuration extends fieldGeneric {
      * returns the minuts from the duration object
      */
     get currentMinutes() {
-        if(!this.duration) return 0;
+        if (!this.duration) return 0;
         return this.duration.get('minutes');
     }
 
@@ -144,14 +144,14 @@ export class fieldDateTimeDuration extends fieldGeneric {
     }
 
     /**
-     * getter for teh duration minutes
+     * getter for the duration minutes
      */
     get editDurationMinutes() {
         return this.currentMinutes; // this.model.data[this.fieldminutes];
     }
 
     /**
-     * setter for the durtion minutes
+     * setter for the duration minutes
      *
      * @param minutes
      */

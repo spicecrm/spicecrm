@@ -60,7 +60,7 @@ export class SystemPopover implements OnInit {
         let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
 
-        if (rect.left < poprect.width) {
+        if (window.innerWidth - rect.left > poprect.width) {
             this.popoverside = 'right';
         } else {
             this.popoverside = 'left';
@@ -72,13 +72,13 @@ export class SystemPopover implements OnInit {
             this.popoverpos = 'bottom';
             return {
                 top: (rect.top - poprect.height + this.heightcorrection) + 'px',
-                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - this.widthcorrection) + 'px'
+                left: this.popoverside == 'right' ? (rect.left + 100) + 'px' : (rect.left - poprect.width - this.widthcorrection) + 'px'
             };
         } else {
             this.popoverpos = 'top';
             return {
                 top: (rect.top - this.heightcorrection) + 'px',
-                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - this.widthcorrection) + 'px'
+                left: this.popoverside == 'right' ? (rect.left + 100) + 'px' : (rect.left - poprect.width - this.widthcorrection) + 'px'
             };
         }
     }

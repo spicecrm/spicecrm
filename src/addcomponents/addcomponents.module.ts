@@ -23,11 +23,6 @@ import  { ObjectComponents}      from "../objectcomponents/objectcomponents";
 
 import /*embed*/ { DhtmlxDiagram } from "./components/dhtmlxdiagram";
 
-import /*embed*/ { SpiceTimestream } from "./components/spicetimestream";
-import /*embed*/ { SpiceTimestreamHeader } from "./components/spicetimestreamheader";
-import /*embed*/ { SpiceTimestreamLabel } from "./components/spicetimestreamlabel";
-import /*embed*/ { SpiceTimestreamItem } from "./components/spicetimestreamitem";
-
 import /*embed*/ { SpiceTerritorriesDetail } from "./components/spiceterritorriesdetail";
 import /*embed*/ { SpiceTerritorriesPrimary, SpiceTerritoriesAdditional } from "./components/spiceterritoriesadditional";
 
@@ -42,10 +37,6 @@ import /*embed*/ { SpiceTerritorriesPrimary, SpiceTerritoriesAdditional } from "
     ],
     declarations: [
         DhtmlxDiagram,
-        SpiceTimestream,
-        SpiceTimestreamHeader,
-        SpiceTimestreamLabel,
-        SpiceTimestreamItem,
         SpiceTerritorriesDetail,
         SpiceTerritorriesPrimary,
         SpiceTerritoriesAdditional

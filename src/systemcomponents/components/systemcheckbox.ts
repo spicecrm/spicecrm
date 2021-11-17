@@ -69,7 +69,14 @@ export class SystemCheckbox implements ControlValueAccessor, OnChanges, AfterVie
     /**
      * to disable the checkbox
      */
-    @Input() private disabled = false;
+    private _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     /**
      * an event emitter for the click

@@ -10,27 +10,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+<div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small slds-border--top slds-border--bottom">
     <h2 class="slds-text-heading--small"><system-label label="LBL_ACTIONS"></system-label></h2>
     <button class="slds-col--bump-left slds-button slds-button--brand" (click)="addAction()"><system-label label="LBL_ADD"></system-label></button>
 </div>
-<table class="slds-table slds-table_bordered slds-table_cell-buffer">
-    <thead>
-    <tr class="slds-text-title_caps">
-        <th scope="col">
-            <div class="slds-truncate"><system-label label="LBL_ACTION"></system-label></div>
-        </th>
-        <th scope="col" style="width: 3rem;"></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let action of authtypeactions">
-        <td>
-            <div class="slds-truncate">{{action.action}}</div>
-        </td>
-        <td style="width: 3rem;">
-            <system-utility-icon icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deleteAction(action.id)"></system-utility-icon>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div system-to-bottom>
+    <table class="slds-table slds-table--header-fixed slds-table_bordered slds-table_cell-buffer">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate slds-th__action"><system-label label="LBL_ACTION"></system-label></div>
+            </th>
+            <th scope="col" style="width: 3rem;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let action of authtypeactions">
+            <td>
+                <div class="slds-truncate">{{action.action}}</div>
+            </td>
+            <td style="width: 3rem;">
+                <system-utility-icon icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deleteAction(action.id)"></system-utility-icon>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

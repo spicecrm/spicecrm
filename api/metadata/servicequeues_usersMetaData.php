@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['servicequeues_users'] = [
     'table' => 'servicequeues_users',
     'fields' => [

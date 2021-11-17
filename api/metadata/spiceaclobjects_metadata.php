@@ -1,8 +1,7 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
-
-
-$dictionary ['SpiceACLModuleFields'] = [
+$dictionary['SpiceACLModuleFields'] = [
     'table' => 'spiceaclmodulefields',
     'fields' => [
         'id' => [
@@ -65,7 +64,7 @@ $dictionary ['SpiceACLModuleFields'] = [
 ];
 
 
-$dictionary ['SpiceACLStandardActions'] = [
+$dictionary['SpiceACLStandardActions'] = [
     'table' => 'spiceaclstandardactions',
     'fields' => [
         'id' => [
@@ -105,7 +104,7 @@ $dictionary ['SpiceACLStandardActions'] = [
     ]
 ];
 
-$dictionary ['SpiceACLModuleActions'] = [
+$dictionary['SpiceACLModuleActions'] = [
     'table' => 'spiceaclmoduleactions',
     'fields' => [
         'id' => [
@@ -153,7 +152,7 @@ $dictionary ['SpiceACLModuleActions'] = [
     ]
 ];
 
-$dictionary ['SpiceACLObjectActions'] = [
+$dictionary['SpiceACLObjectActions'] = [
     'table' => 'spiceaclobjectactions',
     'fields' => [
         'id' => [
@@ -230,7 +229,7 @@ $dictionary['spiceaclobjectvalues'] = [
     ]
 ];
 
-$dictionary ['SpiceACLObjectsTerritoryElementValues'] = [
+$dictionary['SpiceACLObjectsTerritoryElementValues'] = [
     'table' => 'spiceaclobjectsterritoryelementvalues',
     'fields' => [
         'spiceaclobject_id' => [
@@ -260,7 +259,7 @@ $dictionary ['SpiceACLObjectsTerritoryElementValues'] = [
     ]
 ];
 
-$dictionary ['SpiceACLObjectFields'] = [
+$dictionary['SpiceACLObjectFields'] = [
     'table' => 'spiceaclobjectfields',
     'fields' => [
         'id' => [

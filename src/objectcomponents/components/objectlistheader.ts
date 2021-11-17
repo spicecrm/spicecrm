@@ -54,6 +54,11 @@ export class ObjectListHeader implements OnDestroy{
     @Input() private showRowNumber: boolean = false;
 
     /**
+     * show the number column as first column
+     */
+    @Input() private showDragHandle: boolean = false;
+
+    /**
      * display the row action menu or hide the column
      */
     @Input() private showRowActionMenu: boolean = true;

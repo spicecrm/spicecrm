@@ -82,8 +82,7 @@ class SugarWebServiceImplv4 extends SugarWebServiceImplv3_1
         } catch (\SpiceCRM\includes\ErrorHandlers\UnauthorizedException $e) {
             $error->set_error($e->getMessage());
             LoggerManager::getLogger()->fatal('Lockout reached for user ' . $user_auth['user_name']);
-            LogicHook::initialize();
-            $GLOBALS['logic_hook']->call_custom_logic('Users', 'login_failed');
+            LogicHook::getInstance()->call_custom_logic('Users', 'login_failed');
             self::$helperObject->setFaultObject($error);
             return;
         }
@@ -555,51 +554,6 @@ class SugarWebServiceImplv4 extends SugarWebServiceImplv3_1
         }
         LoggerManager::getLogger()->info('End: SugarWebServiceImpl->job_queue_next');
         return ["results" => $jobid];
-    }
-
-    /**
-     * Run cleanup and schedule
-     * @param string $session
-     * @param string $clientid
-     */
-    public function job_queue_cycle($session, $clientid)
-    {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->job_queue_cycle');
-        $error = new SoapError();
-        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->job_queue_cycle denied.');
-            return;
-        }
-        $queue = new SugarJobQueue();
-        $queue->cleanup();
-        $queue->runSchedulers();
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->job_queue_cycle');
-        return ["results" => "ok"];
-    }
-
-    /**
-     * Run job from queue
-     * @param string $session
-     * @param string $jobid
-     * @param string $clientid
-     */
-    public function job_queue_run($session, $jobid, $clientid)
-    {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->job_queue_run');
-        $error = new SoapError();
-        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->job_queue_run denied.');
-            return;
-        }
-        LoggerManager::getLogger()->debug('Starting job $jobid execution as $clientid');
-        require_once 'modules/SchedulersJobs/SchedulersJob.php';
-        $result = SchedulersJob::runJobId($jobid, $clientid);
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->job_queue_run');
-        if ($result === true) {
-            return ["results" => true];
-        } else {
-            return ["results" => false, "message" => $result];
-        }
     }
 }
 

@@ -20,6 +20,7 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {session} from "../../../services/session.service";
 import {configurationService} from "../../../services/configuration.service";
+import { helper } from '../../../services/helper.service';
 
 /**
  * renders a modal to rest the password of a user and resend the password
@@ -106,7 +107,8 @@ export class UserResetPasswordModal {
         private toast: toast,
         private session: session,
         private backend: backend,
-        private configuration: configurationService
+        private configuration: configurationService,
+        private helper: helper
     ) {
 
         this.getInfo();
@@ -137,9 +139,10 @@ export class UserResetPasswordModal {
      */
     set autoGenerate(value) {
         this.autogenerate = value;
-        // this.password = value ? Math.random().toString(36).slice(-8) : undefined;
-        this.password = value ? this.generatePassword() : undefined;
-        this.repeatPassword = this.password;
+        if ( value ) {
+            this.password = this.helper.generatePassword(this.configuration.getCapabilityConfig('userpassword'));
+            this.repeatPassword = this.password;
+        }
     }
 
     /**
@@ -187,80 +190,10 @@ export class UserResetPasswordModal {
         if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
         if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
         if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
         if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');
-    }
-
-    /**
-     * generates a password that matches the minimal requiremens
-     * fills it up with lower case chars to the required minimum length
-     *
-     * @private
-     */
-    private generatePassword() {
-        let passwordChars: string[] = [];
-        let extConf = this.configuration.getCapabilityConfig('userpassword');
-        if (extConf.onelower) passwordChars.push(this.randomLower());
-        if (extConf.oneupper) passwordChars.push(this.randomUpper());
-        if (extConf.onenumber) passwordChars.push(this.randomNumber());
-
-        let minLength = extConf.minpwdlength ? parseInt(extConf.minpwdlength, 10) : 8;
-        while (passwordChars.length < minLength) {
-            passwordChars.push(this.randomLower());
-        }
-
-        passwordChars = this.shuffle(passwordChars);
-        return passwordChars.join('');
-    }
-
-    /**
-     * shuffles an array
-     * @param array
-     * @private
-     */
-    private shuffle(arr) {
-        let currentIndex = arr.length, temporaryValue, randomIndex;
-
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-
-            // And swap it with the current element.
-            temporaryValue = arr[currentIndex];
-            arr[currentIndex] = arr[randomIndex];
-            arr[randomIndex] = temporaryValue;
-        }
-
-        return arr;
-    }
-
-    /**
-     * returns a radnom upper character
-     * @private
-     */
-    private randomUpper() {
-        return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
-    }
-
-    /**
-     * returns a random lower character
-     * @private
-     */
-    private randomLower() {
-        return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
-    }
-
-    /**
-     * returns a random number
-     *
-     * @private
-     */
-    private randomNumber() {
-        return String.fromCharCode((Math.floor(Math.random() * 9) + 48));
     }
 
     /**
@@ -283,7 +216,7 @@ export class UserResetPasswordModal {
             this.updating = true;
             this.backend.postRequest(`module/Users/${this.model.id}/password/reset`, {}, {
                 newPassword: this.password,
-                forceReset: this.autoGenerate,
+                forceReset: this.forceReset,
                 sendEmail: this.sendByEmail
             }).subscribe(res => {
                 this.close();

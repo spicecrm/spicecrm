@@ -82,12 +82,12 @@ export class loader {
 
                 // sort the loader arrays
                 this.loadElements.primary.sort((a, b) => {
-                    return a.sequence > b.sequence ? 1 : -1;
+                    return parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1;
                 });
 
                 // sort the loader arrays
                 this.loadElements.secondary.sort((a, b) => {
-                    return a.sequence > b.sequence ? 1 : -1;
+                    return parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1;
                 });
 
                 // resolve the subject to start the loader

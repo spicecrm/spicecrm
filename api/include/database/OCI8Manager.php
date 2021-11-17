@@ -30,8 +30,10 @@ namespace SpiceCRM\includes\database;
 
 
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 /**
  * OCI8 driver
@@ -272,10 +274,9 @@ class OCI8Manager extends DBManager
         }
 
         switch (strtolower($type)) {
-            case 'date':
-                return "TO_DATE($string, 'YYYY-MM-DD')";
             case 'time':
                 return "TO_DATE($string, 'HH24:MI:SS')";
+            case 'date':
             case 'datetime':
                 return "TO_DATE($string, 'YYYY-MM-DD HH24:MI:SS'$additional_parameters_string)";
             case 'today':
@@ -296,7 +297,7 @@ class OCI8Manager extends DBManager
             case 'add_time':
                 return "$string + {$additional_parameters[0]}/24 + {$additional_parameters[1]}/1440";
             case 'add_tz_offset' :
-                $getUserUTCOffset = $GLOBALS['timedate']->getUserUTCOffset();
+                $getUserUTCOffset = TimeDate::getInstance()->getUserUTCOffset();
                 $operation = $getUserUTCOffset < 0 ? '-' : '+';
 
                 return $string . ' ' . $operation . ' ' . abs($getUserUTCOffset) . '/1440';
@@ -1545,7 +1546,7 @@ class OCI8Manager extends DBManager
     /**
      * @see DBManager::upsertQuery()
      */
-    public function upsertQuery($table, array $pks, array $data)
+    public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
 
         $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'");
@@ -1557,10 +1558,10 @@ class OCI8Manager extends DBManager
             foreach ($data as $col => $val) {
                 $sets[] = "$col = '{$this->quote($val)}'";
             }
-            $this->updateQuery($table, $pks, $data);
+            return $this->updateQuery($table, $pks, $data);
             // $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
         } else {
-            $this->insertQuery($table, $data);
+            return $this->insertQuery($table, $data, $execute);
         }
     }
 
@@ -1753,7 +1754,26 @@ class OCI8Manager extends DBManager
         return $this->query('ROLLBACK');
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function convertDBCharset(string $charset, string $collation): bool {
+        throw new Exception('Database charset conversion not available for OCI8.');
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function convertTableCharset(string $tableName, string $charset, string $collation): bool {
+        throw new Exception('Table charset conversion not available for OCI8.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDatabaseCharsetInfo(): array {
+        throw new Exception('Retrieving database charset not available for OCI8.');
+    }
 }
 
 ?>

@@ -12,6 +12,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
 
@@ -79,10 +80,11 @@ class SpiceUIRESTHandler
      */
     function getModules()
     {
-        global $moduleList, $modInvisList;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        global $modInvisList;
+        $globalModuleList = SpiceModules::getInstance()->getModuleList();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        SpiceACL::getInstance()->filterModuleList($moduleList);
+        SpiceACL::getInstance()->filterModuleList($globalModuleList);
         SpiceACL::getInstance()->filterModuleList($modInvisList);
 
         $retArray = [];
@@ -90,7 +92,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $dbresult = $this->db->query("SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules");
         while ( $m = $this->db->fetchByAssoc( $dbresult )){
             // check if we have the module or if it has been filtered out
-            if(!$m['acl'] || $current_user->is_admin || array_search($m['module'], $moduleList) !== false || array_search($m['module'], $modInvisList) !== false)
+            if(!$m['acl'] || $current_user->is_admin || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
                 $modules[$m['module']] = $m;
         }
 
@@ -730,14 +732,14 @@ $db = DBManagerFactory::getInstance();
                       sysuimodelvalidation_id = '{$act['sysuimodelvalidation_id']}',
                       fieldname = '{$act['fieldname']}',
                       action = '{$act['action']}',
-                      params = '".$this->db->quote($act['params'])."',
+                      params = '".$this->db->quote(is_array($act['params']) ? json_encode($act['params']) : $act['params'])."',
                       priority = ".(int)$act['priority'].",
                       deleted = ".(int)$act['deleted']."
                     ON DUPLICATE KEY UPDATE
                       sysuimodelvalidation_id = '{$act['sysuimodelvalidation_id']}',
                       fieldname = '{$act['fieldname']}',
                       action = '{$act['action']}',
-                      params = '".$this->db->quote($act['params'])."',
+                      params = '".$this->db->quote(is_array($act['params']) ? json_encode($act['params']) : $act['params'])."',
                       priority = ".(int)$act['priority'].",
                       deleted = ".(int)$act['deleted'];
                 if (!$this->db->query($sql)) {

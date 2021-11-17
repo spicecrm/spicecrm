@@ -25,7 +25,7 @@ import {
     Renderer2,
     ViewChild,
     ViewContainerRef,
-    Input
+    Input, Optional
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -36,6 +36,7 @@ import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileup
 import {language} from "../../services/language.service";
 import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
+import { model } from '../../services/model.service';
 
 @Component({
     selector: "system-richtext-editor",
@@ -72,6 +73,10 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private useMedialFile: boolean = false;
 
+    private get useTemplateVariableHelper() {
+        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
+    }
+
     // for the value accessor
     private onChange: (value: string) => void;
     private onTouched: () => void;
@@ -101,7 +106,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 private editorService: systemrichtextservice,
                 @Inject(DOCUMENT) private _document: any,
                 private elementRef: ElementRef,
-                private language: language) {
+                private language: language,
+                private viewContainerRef: ViewContainerRef,
+                @Optional() private model: model ) {
     }
 
     get expandIcon() {
@@ -179,6 +186,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 break;
             case 'insertImage':
                 this.insertImage();
+                break;
+            case 'openTemplateVariableHelper':
+                this.openTemplateVariableHelper();
                 break;
             default:
                 if (this.isActive && command != '') {
@@ -296,7 +306,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     private openSourceEditor() {
-        this.modal.openModal('SystemRichTextSourceModal').subscribe(componentRef => {
+        this.modal.openModal('SystemRichTextSourceModal', null, this.viewContainerRef.injector ).subscribe(componentRef => {
             componentRef.instance._html = this._html;
             componentRef.instance.html.subscribe(newHtml => {
                 // update our internal value
@@ -457,4 +467,23 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     private focusEditor() {
         this.htmlEditor.element.nativeElement.focus();
     }
+
+    private openTemplateVariableHelper() {
+        if (!this.isActive) {return;}
+        this.editorService.saveSelection();
+        this.modalOpen = true;
+        this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector )
+            .pipe(take(1))
+            .subscribe(modal => {
+                modal.instance.response
+                    .pipe(take(1))
+                    .subscribe( text => {
+                        this.focusEditor();
+                        this.editorService.restoreSelection();
+                        this._document.execCommand('insertText', false, '{'+text+'}' );
+                        this.modalOpen = false;
+                    });
+            });
+    }
+
 }

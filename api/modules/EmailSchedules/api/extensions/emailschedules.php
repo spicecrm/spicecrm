@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\EmailSchedules\api\controllers\EmailSchedulesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -95,13 +69,44 @@ $routes = [
         ]
     ],
     [
+        'method' => 'put',
+        'route' => '/module/EmailSchedules/{id}/cancel',
+        'class' => EmailSchedulesController::class,
+        'function' => 'cancelSchedule',
+        'description' => 'cancelles a scheduled email',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the record',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',
+            ]
+        ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/module/EmailSchedules/{id}/beans',
+        'class' => EmailSchedulesController::class,
+        'function' => 'getScheduledBeans',
+        'description' => 'retrives all beans for the Schedule',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the record',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
         'method' => 'post',
         'route' => '/module/EmailSchedules/{id}/{parentmodule}/{parentid}',
         'oldroute' => '/modules/EmailSchedules/saveScheduleFromRelated',
         'class' => EmailSchedulesController::class,
         'function' => 'saveScheduleFromRelated',
         'description' => 'saves a scheduled email for each related link of the parent',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters' => [
             'id' => [
                 'in' => 'path',
@@ -110,16 +115,20 @@ $routes = [
                 'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',
             ],
             'parentmodule' => [
-                'in' => 'body',
+                'in' => 'path',
                 'description' => 'the name of the parent module',
-                'type' => ValidationMiddleware::TYPE_STRING,
+                'type' => ValidationMiddleware::TYPE_MODULE,
                 'example' => 'ProspectLists',
             ],
             'parentid' => [
                 'in' => 'path',
                 'description' => 'the id of the parent',
-                'type' => ValidationMiddleware::TYPE_GUID,
-                'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'module' => [
+                'in' => 'body',
+                'description' => 'the name of the linked module',
+                'type' => ValidationMiddleware::TYPE_MODULE
             ],
             'links' => [
                 'in' => 'body',
@@ -127,12 +136,32 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_ARRAY,
                 'example' => '["Contacts", "Accounts"]',
             ],
+            'linkedbeans' => [
+                'in' => 'body',
+                'description' => 'manual linked beans if the link is not selecteds',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
             'data' => [
                 'in' => 'body',
                 'description' => 'data object of the email schedule',
                 'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'example' => '{"assigned_user_id": "1","assigned_user_name": "admin", ..}',
             ],
+            'ids' => [
+                'in' => 'body',
+                'description' => 'an array of ids',
+                'type' => ValidationMiddleware::TYPE_ARRAY
+            ],
+            'aggregates' => [
+                'in' => 'body',
+                'description' => 'aggregates',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
+            'searchterm' => [
+                'in' => 'body',
+                'description' => 'a searchterm entered',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
         ]
     ],
     [

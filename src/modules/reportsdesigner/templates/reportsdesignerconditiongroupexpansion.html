@@ -71,6 +71,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     </div>
                 </div>
             </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_CUSTOM_FUNCTION"></system-label></label>
+                    <system-input-base64 [(ngModel)]="whereCondition.customSqlQuery"></system-input-base64>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_OVERRIDE_TYPE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="whereCondition.overrideType">
+                                <option></option>
+                                <option *ngFor="let keyValue of reportsDesignerService.operatorTypes | keyvalue" [value]="keyValue.key">
+                                    <system-label [label]="'LBL_OP_' + keyValue.key | uppercase"></system-label>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </fieldset>
 </div>

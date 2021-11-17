@@ -13,7 +13,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Injector,
+    Input,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -30,33 +38,23 @@ import {skip} from "rxjs/operators";
 @Component({
     selector: 'object-list',
     templateUrl: './src/objectcomponents/templates/objectlist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class ObjectList implements OnDestroy, OnInit {
-
     /**
      * the subscription to the modellist
      */
     public subscriptions: Subscription = new Subscription();
-
     /**
      * the componentconfig
      */
     public componentconfig: any = {};
 
     /**
-     * returns the actionset from the config
+     * Show drag handle and provide drag&drop functionality.
      */
-    get actionset() {
-        return this.componentconfig.actionset;
-    }
-
-    /**
-     * returns if the listservic eis loading
-     */
-    get isloading() {
-        return this.modellist.isLoading;
-    }
+    @Input() private dragAndDrop = false;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -69,10 +67,111 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
+     * returns the actionset from the config
+     */
+    get actionset() {
+        return this.componentconfig.actionset;
+    }
+
+    /**
+     * returns if the list service is loading
+     */
+    get isloading() {
+        return this.modellist.isLoading;
+    }
+
+    /**
+     * getter if the list config allows inline editing
+     */
+    get inlineedit() {
+        return this.componentconfig.inlineedit;
+    }
+
+    /**
+     * a getter if the view is considered small
+     * to render the view properly
+     */
+    get issmall() {
+        return this.layout.screenwidth == 'small';
+    }
+
+    /**
+     * returns the sortfield from the config
+     */
+    get sortfield() {
+        return this.componentconfig.sortfield;
+    }
+
+    /**
+     * returns the sortdirection from the componentconfig
+     */
+    get sortdirection() {
+        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
+    }
+
+    /**
+     * displays rownumbers if set in the config
+     */
+    get rowNumbers() {
+        return this.componentconfig.rownumbers === true;
+    }
+
+    /**
+     * gets if the config has no autoload set
+     */
+    get noAutoLoad() {
+        return this.componentconfig.noautoload === true;
+    }
+
+    /**
+     * returns if the list can load more records
+     */
+    get canLoadMore() {
+        return this.modellist.canLoadMore();
+    }
+
+    /**
      * call to initialize the component
      */
     public ngOnInit() {
         this.initialize();
+    }
+
+    /**
+     * unsubscribe from the model list subscription
+     * reset the use cache value in case other component does not use cache
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+        this.modellist.useCache = false;
+    }
+
+    /**
+     * load more items from teh manual pushed button
+     *
+     * @private
+     */
+    public loadMore() {
+        this.modellist.loadMoreList();
+    }
+
+    /**
+     * manages the scroll event for the infinite Scroll
+     */
+    public onScroll() {
+        if (!this.noAutoLoad) {
+            this.modellist.loadMoreList();
+        }
+    }
+
+    /**
+     * trackby function to optimize performance onm the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
     }
 
     /**
@@ -89,6 +188,9 @@ export class ObjectList implements OnDestroy, OnInit {
 
         // set the limit for the loading
         this.modellist.loadlimit = 50;
+
+        // set the buckets to null
+        this.modellist.buckets = {};
 
         if (!this.modellist.loadFromSession()) {
             this.getListData();
@@ -141,93 +243,6 @@ export class ObjectList implements OnDestroy, OnInit {
         } else {
             this.modellist.resetListData();
         }
-    }
-
-    /**
-     * getter if the list config allows inline editing
-     */
-    get inlineedit() {
-        return this.componentconfig.inlineedit;
-    }
-
-    /**
-     * a getter if the view is considered small
-     * to render the view properly
-     */
-    get issmall() {
-        return this.layout.screenwidth == 'small';
-    }
-
-    /**
-     * returns the sortfield from the config
-     */
-    get sortfield() {
-        return this.componentconfig.sortfield;
-    }
-
-    /**
-     * returns the sortdirection from the componentconfig
-     */
-    get sortdirection() {
-        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
-    }
-
-    /**
-     * unsubscribe from the model list subscription
-     * reset the use cache value in case other component does not use cache
-     */
-    public ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-        this.modellist.useCache = false;
-    }
-
-    /**
-     * displays rownumbers if set in the config
-     */
-    get rowNumbers() {
-        return this.componentconfig.rownumbers === true;
-    }
-
-    /**
-     * gets if the config has no autoload set
-     */
-    get noAutoLoad() {
-        return this.componentconfig.noautoload === true;
-    }
-
-    /**
-     * returns if the list can load more records
-     */
-    get canLoadMore() {
-        return this.modellist.canLoadMore();
-    }
-
-    /**
-     * load more items from teh manual pushed button
-     *
-     * @private
-     */
-    private loadMore() {
-        this.modellist.loadMoreList();
-    }
-
-    /**
-     * manages the scroll event for the infinite Scroll
-     */
-    private onScroll() {
-        if (!this.noAutoLoad) {
-            this.modellist.loadMoreList();
-        }
-    }
-
-    /**
-     * trackby function to optimize performance onm the for loop
-     *
-     * @param index
-     * @param item
-     */
-    protected trackbyfn(index, item) {
-        return item.id;
     }
 
     /**

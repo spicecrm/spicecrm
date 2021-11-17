@@ -13,20 +13,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <div class="slds-form-element" [ngClass]="{'slds-has-error': !isValid}">
     <div class="slds-form-element__control">
         <div class="slds-combobox_container">
-            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-picklist slds-timepicker" [ngClass]="{'slds-is-open':isOpen}" role="combobox">
+            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-picklist slds-timepicker" system-dropdown-trigger role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input class="slds-input slds-combobox__input" aria-controls="listbox-unique-id" autocomplete="off" role="textbox" type="text" placeholder=" " [(ngModel)]="display" />
-                    <div class="slds-input__icon-group slds-input__icon-group_right">
+                    <input [disabled]="isDisabled" class="slds-input slds-combobox__input" aria-controls="listbox-unique-id" autocomplete="off" role="textbox" type="text" placeholder=" " [(ngModel)]="display" />
+                    <div *ngIf="!isDisabled" class="slds-input__icon-group slds-input__icon-group_right">
                         <button *ngIf="canclear" class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="clear()">
                             <system-button-icon icon="clear"></system-button-icon>
                         </button>
-                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="toggleOpen()">
+                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" system-dropdown-trigger-button style="position: relative;">
                             <system-button-icon icon="event"></system-button-icon>
                         </button>
                     </div>
                 </div>
                 <div aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown--large" [ngClass]="dropdownside" role="dialog">
-                    <system-input-date-picker *ngIf="isOpen" [setDate]="_date.moment" (datePicked)="datePicked($event)"></system-input-date-picker>
+                    <system-input-date-picker [setDate]="_date.moment" (datePicked)="datePicked($event)"></system-input-date-picker>
                     <div *ngIf="showCalendarButton" class="slds-grid slds-grid--align-center">
                         <button class="slds-button slds-text-link slds-p-around--xx-small" (click)="openCalendar()"><system-label label="LBL_CALENDAR"></system-label></button>
                     </div>

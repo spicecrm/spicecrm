@@ -17,29 +17,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
                  aria-expanded="true" aria-haspopup="listbox" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input (focus)="onFocus()" type="text" [attr.disabled]="disabled ? 'disabled' : null"
-                           class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off"
-                           role="textbox" placeholder="{{language.getLabel('LBL_SEARCH')}}"
-                           [value]="selectedItem?.name || ''"
-                           (keyup)="onKeydown($event)"
-                    />
+                    <input type="text" (focus)="onFocus()" (blur)="onBlur($event)" (click)="onInputClick($event)" [(ngModel)]="value" (keyup)="onKeyup($event)" [disabled]="disabled" system-placeholder="LBL_SEARCH" class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off" role="textbox">
                     <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
                 </div>
-                <div *ngIf="show_list" [ngClass]="getDropdownLength" class="slds-dropdown slds-dropdown_fluid" role="listbox">
-                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                        <ng-container *ngFor="let selectItem of searchList | keyvalue">
-                            <li *ngIf="selectItem.key != '_undefined'" role="presentation" class="">
+                <div *ngIf="searchListVisible" [style.max-height]="dropdownLength" class="slds-dropdown slds-dropdown_fluid slds-scrollable--y" role="listbox">
+                    <ul #resultList class="slds-listbox slds-listbox_vertical" role="presentation">
+                        <ng-container *ngFor="let item of searchList">
+                            <li *ngIf="item.isGroup" role="presentation" [attr.data-is-group]="true">
                                 <div class="slds-border_bottom slds-border_top slds-p-left_small" style="background-color: #ecebea;">
                                   <span class="slds-truncate size-xx-small" style="font-weight: bold; font-size: 12px;">
-                                        {{selectItem.key}}
+                                        {{item.name}}
                                   </span>
                                 </div>
                             </li>
-                            <li *ngFor="let selectItem of selectItem.value" role="presentation" class="slds-listbox__item" (click)="itemClicked(selectItem, $event)">
-                                <div [ngClass]="{'slds-has-focus':  selectedItem?.id == selectItem.id}" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                            <li *ngIf="!item.isGroup" role="presentation" class="slds-listbox__item" (mousedown)="$event.preventDefault()" (click)="itemClicked(item, $event)">
+                                <div [class.slds-has-focus]="item.id == focusedItemId" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                     <span class="slds-media__body">
-                                      <span class="slds-truncate" title="" value="selectItem.id">
-                                          <span [innerHTML]="selectItem.name"> </span>
+                                      <span class="slds-truncate">
+                                          <span [innerHTML]="item.content"> </span>
                                       </span>
                                     </span>
                                 </div>

@@ -15,11 +15,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  */
 
 import {
-    AfterViewInit,
     Component,
-    Input,
-    ViewChild,
-    ViewContainerRef
+    Input, OnInit
 } from '@angular/core';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
@@ -28,36 +25,24 @@ import {metadata} from '../../services/metadata.service';
     selector: 'object-edit-modal-dialog-container',
     templateUrl: './src/objectcomponents/templates/objecteditmodaldialogcontainer.html'
 })
-export class ObjectEditModalDialogContainer implements AfterViewInit {
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
-    private componentRefs: Array<any> = [];
-    @Input() private componentSet: String = '';
-    @Input() private module: String = '';
+export class ObjectEditModalDialogContainer implements OnInit {
+    /**
+     * an optional input for a componentset to be rendered
+     * @private
+     */
+    @Input() private componentSet: string = '';
 
     constructor(private model: model, private metadata: metadata) {
 
     }
 
-    public ngAfterViewInit() {
-        this.renderComponentSet();
-    }
-
-    private renderComponentSet() {
-
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
-
+    /**
+     * if no componentset has been sent in use the one from the Detail View
+     */
+    public ngOnInit() {
         if(!this.componentSet || this.componentSet == '') {
             let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
             this.componentSet = componentconfig.componentset;
         }
-        for (let thisComponent of this.metadata.getComponentSetObjects(this.componentSet)) {
-            this.metadata.addComponent(thisComponent.component, this.container).subscribe(componentRef => {
-                componentRef.instance.componentconfig = thisComponent.componentconfig;
-                this.componentRefs.push(componentRef);
-            });
-        }
     }
-
 }

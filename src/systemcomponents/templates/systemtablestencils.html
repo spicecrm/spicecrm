@@ -11,6 +11,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 -->
 
 <tr *ngFor="let row of rowArray" [ngStyle]="linestyle(row)">
+    <td *ngIf="dragHandles" class="slds-cell-shrink"></td>
     <td *ngIf="rownumbers"></td>
     <td *ngIf="select" class="slds-cell-shrink"></td>
     <td *ngFor="let col of colArray">

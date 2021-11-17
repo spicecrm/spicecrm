@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -40,34 +14,6 @@ $RESTManager = RESTManager::getInstance();
 $RESTManager->registerExtension('module', '2.0', ['disableAutoloadListAll' => SpiceConfig::getInstance()->config['module_list']['disable_autoload_list_all']]);
 
 $routes = [
-    [
-        'method'      => 'post',
-        'route'       => '/common/bean/file/upload',
-        'class'       => ModuleController::class,
-        'function'    => 'uploadFile',
-        'description' => 'Attachment upload',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
-        'parameters'  => [
-            'file' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_BASE64,
-                'required' => true,
-                'description' => 'The file content base64 encoded.',
-            ],
-            'file_mime_type' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => true,
-                'description' => 'type of the file',
-            ],
-            'file_name' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => true,
-                'description' => 'name of the file',
-            ]
-        ]
-    ],
     [
         'method'      => 'get',
         'route'       => '/module/{beanName}',
@@ -99,6 +45,12 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_COMPLEX,
                 'required'    => false,
                 'description' => '',
+            ],
+            'filtercontextbeanid'     => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false,
+                'description' => 'additonal values that can be passed in',
             ],
             'limit'      => [
                 'in'          => 'query',
@@ -192,7 +144,7 @@ $routes = [
         'route'       => '/module/{beanName}',
         'class'       => ModuleController::class,
         'function'    => 'postBean',
-        'description' => 'Post bean',
+        'description' => 'Post bean (insert or update)',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
         'parameters'  => [
             'beanName'   => [
@@ -526,88 +478,73 @@ $routes = [
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{beanId}/noteattachment',
+        'method'      => 'post',
+        'route'       => '/module/Timeline/{beanName}/{beanId}',
         'class'       => ModuleController::class,
-        'function'    => 'getBeanAttachments',
-        'description' => 'Get bean attachments',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'function'    => 'loadFTSTimeline',
+        'description' => 'get held items in timeline stream for specified bean',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters'  => [
             'beanName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
-                'description' => 'The name of the module',
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
+                'description' => 'name of the module'
             ],
-            'beanId'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
-                'description' => 'GUID of the bean',
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'description' => 'id of the parent bean'
             ],
-        ],
-    ],
-    [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{beanId}/noteattachment/download',
-        'class'       => ModuleController::class,
-        'function'    => 'downloadBeanAttachment',
-        'description' => 'Download bean attachment',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'     => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
-                'description' => 'The name of the module',
+            'startDate' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
+                'description' => 'tracks the last date to avoid double loading of records'
             ],
-            'beanId'       => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
-                'description' => 'GUID of the bean',
+            'endDate' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
+                'description' => 'if a record was deleted while opened timeline it the date of the oldest displayed entry to load the same timespan as currently shown'
             ],
-        ],
-    ],
-    [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/{beanId}/noteattachment',
-        'class'       => ModuleController::class,
-        'function'    => 'setBeanAttachment',
-        'description' => 'Set bean attachment',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'     => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
-                'description' => 'The name of the module',
+            'searchTerm' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
             ],
-            'beanId'       => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
-                'description' => 'GUID of the bean',
+            'moduleSearch' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => true,
+                'description' => 'indicates if searching for module records is allowed'
             ],
-            'filename'     => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
-                'description' => 'The file name',
+            'auditSearch' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => true,
+                'description' => 'indicates if searching for audit records is allowed'
             ],
-            'filemimetype' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
-                'description' => 'The mime type of the file',
+            'own' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'true',
+                'required' => true
             ],
-            'file'         => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_BASE64,
-                'required'    => true,
-                'description' => 'The base64 contents of the file',
+            'objects' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => '[]',
+                'required' => true
             ],
-        ],
+            'timeRangeStart' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
+                'description' => 'holds a start date to search from - chosen by the user'
+            ]
+        ]
     ],
     [
         'method'      => 'post',
@@ -758,6 +695,12 @@ $routes = [
                 'required'    => false,
                 'description' => '',
             ],
+            'excludeinactive'           => [
+                'in'          => 'excludeinactive',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => 'set to excludeinactive',
+            ],
             'module'   => [
                 'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_MODULE,
@@ -888,6 +831,77 @@ $routes = [
                 'required'    => false,
                 'description' => '',
             ],
+            // possibly there are more
+        ],
+    ],
+    [
+        'method'      => 'put',
+        'route'       => '/module/{beanName}/{beanId}/related/beans/{linkName}',
+        'class'       => ModuleController::class,
+        'function'    => 'setRelatedBeans',
+        'description' => 'Set related beans',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters'  => [
+            'beanName'       => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'beanId'         => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'GUID of the bean',
+            ],
+            'linkName'       => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'The name of the link',
+            ],
+            'id'             => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => false,
+                'description' => 'GUID of the related bean',
+            ],
+            'deleted'        => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => 'Deleted flag',
+            ],
+            'date_modified'  => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_DATETIME,
+                'required'    => false,
+                'description' => 'Date modified',
+            ],
+            'date_entered'  => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_DATETIME,
+                'required'    => false,
+                'description' => 'Date entered',
+            ],
+            'date_indexed'  => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_DATETIME,
+                'required'    => false,
+                'description' => 'Date indexed',
+            ],
+            'name'           => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false,
+                'description' => '',
+            ],
+            'emailaddresses' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'required'    => false,
+                'description' => 'array of related beans to be updated',
+            ]
             // possibly there are more
         ],
     ],

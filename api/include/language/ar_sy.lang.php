@@ -901,22 +901,21 @@ $app_list_strings = [
         'html' => 'HTML أيميل',
         'plain' => 'إيميل نص بدون تنسيق'],
 
-    'schedulers_times_dom' => [
-        'not run' => 'وقت التشغيل الماضي ، لم يتم التنفيذ',
-        'ready' => 'جاهز',
-        'in progress' => 'جار العمل عليه',
-        'failed' => 'أخفق',
-        'completed' => 'مكتمل',
-        'no curl' => 'لا يعمل: لاتوجد cURL متاحة',
+    'jobtask_status_dom' => [
+        'active' => 'نشط',
+        'running' => 'جاري التشغيل',
+        'on_hold' => 'إيقاف مؤقت'
     ],
 
-    'scheduler_status_dom' =>
+    'job_status_dom' =>
         [
             'Active' => 'نشط',
             'Inactive' => 'غير نشط',
+            'OnHold' => 'إيقاف مؤقت',
+            'Running' => 'قيد التشغيل',
         ],
 
-    'scheduler_period_dom' =>
+    'job_period_dom' =>
         [
             'min' => 'دقائق',
             'hour' => 'ساعات',
@@ -2274,7 +2273,7 @@ $app_list_strings['mailboxes_smtp_encryption_dom'] = [
 
 $app_strings = array_merge($app_strings, $addAppString);
 
-if (file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
     $app_list_strings['serviceorder_status_dom'] = [
         'new' => 'جديد',
         'planned' => 'تم التخطيط له',
@@ -2312,7 +2311,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'تذاكر الخدمة';
 
 }
-if (file_exists('modules/ServiceFeedbacks/ServiceFeedback.php')) {
+if (file_exists('extensions/modules/ServiceFeedbacks/ServiceFeedback.php')) {
     $app_list_strings['service_satisfaction_scale_dom'] = [
         1 => '1 - غير راض',
         2 => '2',
@@ -2441,4 +2440,9 @@ $app_list_strings['catalogorder_status'] = [
     'in_process' => 'قيد العمل',
     'sent' => 'تم ارساله',
     'cancelled' => 'ملغى',
+];
+
+$app_list_strings['job_callback_on_dom'] = [
+    'success' => 'نجاح',
+    'failure' => 'إخفاق',
 ];

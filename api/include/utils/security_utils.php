@@ -35,12 +35,12 @@
 ********************************************************************************/
 
 
-/* 
- * func: query_module_access 
+/**
+ * func: query_module_access
  * param: $moduleName
- * 
+ *
  * returns 1 if user has access to a module, else returns 0
- * 
+ *
  */
 
 use SpiceCRM\modules\Roles\Role;
@@ -62,46 +62,68 @@ $modules_exempt_from_availability_check['ProspectLists']='ProspectLists';
 // $modules_exempt_from_availability_check['EmailMarketing']='EmailMarketing';
 // $modules_exempt_from_availability_check['EmailMan']='EmailMan';
 $modules_exempt_from_availability_check['Users']='Users';
-$modules_exempt_from_availability_check['SchedulersJobs']='SchedulersJobs';
+$modules_exempt_from_availability_check['SchedulerJobTasks']='SchedulerJobTasks';
 $modules_exempt_from_availability_check['DocumentRevisions']='DocumentRevisions';
+
+/**
+ * @deprecated moved to SecurityUtils
+ * @param $user
+ * @return mixed
+ */
 function query_module_access_list(&$user)
 {
-	require_once('modules/MySettings/TabController.php');
-	$controller = new TabController();
-	$tabArray = $controller->get_tabs($user); 
-
-	return $tabArray[0];
-		
+	return [];
 }
 
+/**
+ * @deprecated moved to SecurityUtils
+ * @param $user_id
+ * @return mixed
+ */
 function query_user_has_roles($user_id)
 {
-	
-	
+
+
 	$role = new Role();
-	
+
 	return $role->check_user_role_count($user_id);
 }
 
+/**
+ * @deprecated moved to SecurityUtils
+ * @param $user_id
+ * @return array
+ */
 function get_user_allowed_modules($user_id)
 {
-	
+
 
 	$role = new Role();
-	
+
 	$allowed = $role->query_user_allowed_modules($user_id);
 	return $allowed;
 }
 
+/**
+ * @deprecated moved to SecurityUtils
+ * @param $user_id
+ * @param $allowed
+ * @return array
+ */
 function get_user_disallowed_modules($user_id, &$allowed)
 {
-	
+
 
 	$role = new Role();
 	$disallowed = $role->query_user_disallowed_modules($user_id, $allowed);
 	return $disallowed;
 }
-// grabs client ip address and returns its value
+
+/**
+ * @deprecated moved to SecurityUtils
+ * grabs client ip address and returns its value
+ * @return false|mixed
+ */
 function query_client_ip()
 {
 	global $_SERVER;

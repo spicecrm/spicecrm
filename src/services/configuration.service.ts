@@ -15,7 +15,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  */
 import {Injectable, EventEmitter} from '@angular/core';
 
-import {cookie} from './cookie.service';
 import {session} from './session.service';
 import {broadcast} from './broadcast.service';
 
@@ -81,7 +80,6 @@ export class configurationService {
     private locationHash: string;
 
     constructor(private http: HttpClient,
-                private cookie: cookie,
                 private session: session,
                 private broadcast: broadcast,
                 private title: Title,

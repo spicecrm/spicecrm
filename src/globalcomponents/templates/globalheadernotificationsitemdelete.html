@@ -20,7 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         <div class="slds-grid slds-grid_align-spread" [class.slds-text-title_bold]="notification.notification_read != 1">
             <a href="javascript:void(0);" class="slds-text-link_reset slds-has-flexi-truncate">
                 <h3 class="slds-truncate">
-                    <span system-title="LBL_DELETED">
+                    <span system-title="LBL_DELETED" class="slds-m-right--xx-small">
                         <system-label label="LBL_DELETED"></system-label>
                     </span>
                     <span system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">

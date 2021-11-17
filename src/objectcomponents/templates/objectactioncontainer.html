@@ -19,6 +19,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <system-button-icon icon="down"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_MORE"></system-label></span>
         </button>
+        <!-- grouped actions
+        <div *ngIf="actionGroups.length > 0" class="slds-dropdown slds-dropdown_right slds-dropdown_actions" style="max-width: inherit">
+            <div class="slds-grid">
+                <ng-container *ngFor="let actionGroup of actionGroups" >
+                    <ul class="slds-border--right" style="min-width: 150px">
+                        <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of groupedAddActionItems(actionGroup)" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+                            <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                                <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                            </a>
+                        </li>
+                    </ul>
+                </ng-container>
+                <ul class="slds-dropdown__list" role="menu" style="min-width: 150px">
+                    <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of groupedAddActionItems()" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                            <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        -->
+        <!-- standard actions -->
         <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
             <ul class="slds-dropdown__list" role="menu">
                 <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of addactionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">

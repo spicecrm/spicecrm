@@ -47,6 +47,7 @@ $GLOBALS['toHTML_keys'] = array_keys($toHTML);
 $GLOBALS['toHTML_values'] = array_values($toHTML);
 $GLOBALS['toHTML_keys_set'] = implode("", $GLOBALS['toHTML_keys']);
 /**
+ * @deprecated moved to DBUtils
  * Replaces specific characters with their HTML entity values
  * @param string $string String to check/replace
  * @param bool $encode Default true
@@ -83,6 +84,7 @@ function to_html($string, $encode = true)
 
 
 /**
+ * @deprecated moved to DBUtils
  * Replaces specific HTML entity values with the true characters
  * @param string $string String to check/replace
  * @param bool $encode Default true
@@ -112,7 +114,8 @@ function from_html($string, $encode = true)
     return $cache[$string];
 }
 
-/*
+/**
+ * @deprecated moved to DBUtils
  * Return a version of $proposed that can be used as a column name in any of our supported databases
  * Practically this means no longer than 25 characters as the smallest identifier length for our supported DBs is 30 chars for Oracle plus we add on at least four characters in some places (for indices for example)
  * @param string $name Proposed name for the column

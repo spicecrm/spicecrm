@@ -13,12 +13,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <td *ngIf="rownumbers" role="gridcell" class="slds-show--medium" style="min-width: 3rem">
     <div class="slds-text-align--center slds-text-body--small slds-text-color--inverse-weak">{{rowNumber}}</div>
 </td>
+<td *ngIf="dragHandles" role="gridcell" class="slds-show--medium">
+    <system-utility-icon cdkDragHandle [icon]="'drag_and_drop'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+</td>
 <td *ngIf="rowselect" role="gridcell" class="slds-show--medium">
     <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"></system-checkbox>
 </td>
 <td style="min-width: 2rem" *ngFor="let item of listFields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
     <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+
 </td>
 <td *ngIf="showActionMenu" role="gridcell" class="slds-cell-shrink">
     <object-action-menu [buttonsize]="'small'"></object-action-menu>
 </td>
+
+

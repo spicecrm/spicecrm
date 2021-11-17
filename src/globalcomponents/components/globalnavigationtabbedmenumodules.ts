@@ -59,8 +59,14 @@ export class GlobalNavigationTabbedMenuModules {
      */
     private activeModule: string = '';
 
+    /**
+     * is initialized indicates if we have built tjhe module lis or need to rebuild it
+     *
+     * @private
+     */
+    private initialized: boolean = false;
+
     constructor(private metadata: metadata, private broadcast: broadcast, private navigation: navigation, private router: Router, private language: language, private recent: recent, private favorite: favorite, private elementRef: ElementRef) {
-        this.buildMenuItems();
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -111,8 +117,6 @@ export class GlobalNavigationTabbedMenuModules {
     private handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
-            case 'loader.reloaded':
-            case 'loader.primarycompleted':
                 this.buildMenuItems();
                 break;
         }
@@ -127,6 +131,12 @@ export class GlobalNavigationTabbedMenuModules {
      */
     private openMenu() {
         this.isopen = true;
+
+        // if we are not initialized do this now
+        if (!this.initialized) {
+            this.buildMenuItems();
+            this.initialized = true;
+        }
 
         this.activeModule = this.navigation.activeModule;
     }

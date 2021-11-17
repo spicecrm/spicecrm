@@ -19,6 +19,8 @@ import {model} from '../../../services/model.service';
 import {metadata} from "../../../services/metadata.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
+declare var moment: any;
+
 @Component({
     selector: 'holiday-calendar-list-days',
     templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlistdays.html',
@@ -49,7 +51,11 @@ export class HolidayCalendarListDays implements OnChanges {
     public ngOnChanges(changes: SimpleChanges) {
         this.relatedmodels.id = this.calendarid;
         this.relatedmodels.resetData();
-        this.relatedmodels.getData();
+        this.relatedmodels.getData().subscribe(data => {
+            this.relatedmodels.items.sort((a, b) => {
+                return moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? 1 : -1;
+            })
+        });
     }
 
 }

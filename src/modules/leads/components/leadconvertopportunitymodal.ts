@@ -56,7 +56,7 @@ export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
         this.model.initialize(this.lead);
     }
 
-    public ngAfterViewInit() {
+    public ngAfterViewInit(){
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
         this.componentSet = componentconfig.componentset;
     }

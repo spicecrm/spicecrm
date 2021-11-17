@@ -9,24 +9,24 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class SpiceUIModulesController
 {
     function geUnfilteredModules(){
-        global $moduleList, $modInvisList;
+        global $modInvisList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
         $modules = [];
-        if(!is_array($moduleList)) $moduleList = [];
         if(!is_array($modInvisList)) $modInvisList = [];
 
         // select from sysmodules
         $dbresult = $db->query("SELECT * FROM sysmodules");
         while ($m = $db->fetchByAssoc($dbresult)) {
             // check if we have the module or if it has been filtered out
-            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin ) || $m['module'] == 'Home' || array_search($m['module'], $moduleList) !== false || array_search($m['module'], $modInvisList) !== false)
+            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin ) || $m['module'] == 'Home' || array_search($m['module'], SpiceModules::getInstance()->getModuleList()) !== false || array_search($m['module'], $modInvisList) !== false)
                 $modules[$m['module']] = $m;
         }
 
@@ -34,16 +34,24 @@ class SpiceUIModulesController
         $dbresult = $db->query("SELECT * FROM syscustommodules");
         while ($m = $db->fetchByAssoc($dbresult)) {
             // check if we have the module or if it has been filtered out
-            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin  ) || $m['module'] == 'Home' || array_search($m['module'], $moduleList) !== false || array_search($m['module'], $modInvisList) !== false)
+            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin  ) || $m['module'] == 'Home' || array_search($m['module'], SpiceModules::getInstance()->getModuleList()) !== false || array_search($m['module'], $modInvisList) !== false)
                 $modules[$m['module']] = $m;
         }
 
         return $modules;
     }
 
+    /**
+     * returns the complete list of modules
+     *
+     * @return array|mixed
+     * @throws \Exception
+     *
+     */
     function getModules()
     {
-        global $moduleList, $modInvisList;
+        global $modInvisList;
+        $globalModuleList = SpiceModules::getInstance()->getModuleList();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
@@ -55,13 +63,10 @@ class SpiceUIModulesController
             if(!SpiceACL::getInstance()) return [];
 
             // filter the module list
-            SpiceACL::getInstance()->filterModuleList($moduleList);
+            SpiceACL::getInstance()->filterModuleList($globalModuleList);
 
-            // in case $moduleList or $modInvisList are no longer an array, define as such
+            // in case $modInvisList is no longer an array, define as such
             // might happen when a new user has no ACL allocated
-            if(!is_array($moduleList)){
-                $moduleList = [];
-            }
             if(!is_array($modInvisList)){
                 $modInvisList = [];
             }
@@ -72,7 +77,7 @@ class SpiceUIModulesController
             $dbresult = $db->query("SELECT * FROM sysmodules");
             while ($m = $db->fetchByAssoc($dbresult)) {
                 // check if we have the module or if it has been filtered out
-                if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $moduleList) !== false || array_search($m['module'], $modInvisList) !== false)
+                if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
                     $modules[$m['module']] = $m;
             }
 
@@ -80,7 +85,7 @@ class SpiceUIModulesController
             $dbresult = $db->query("SELECT * FROM syscustommodules");
             while ($m = $db->fetchByAssoc($dbresult)) {
                 // check if we have the module or if it has been filtered out
-                if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $moduleList) !== false || array_search($m['module'], $modInvisList) !== false)
+                if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
                     $modules[$m['module']] = $m;
             }
 
@@ -132,6 +137,7 @@ class SpiceUIModulesController
                         'ftsgeo' => SpiceFTSHandler::checkGeo($module['module']),
                         'ftsaggregates' => $ftsBeanHandler->getAggregates(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
+                        'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module'])
                     ];
                 }
             }
@@ -163,6 +169,11 @@ class SpiceUIModulesController
     }
 
 
+    /**
+     * loads and returns the field defs of the various modules
+     *
+     * @return array
+     */
     function getFieldDefs()
     {
         $retArray = [];
@@ -188,8 +199,14 @@ class SpiceUIModulesController
             $indexProperties = SpiceFTSUtils::getBeanIndexProperties($module);
             if ($indexProperties) {
                 foreach ($indexProperties as $indexProperty) {
+                    // set the info on the duplicate check
                     if ($indexProperty['duplicatecheck'] && isset($retArray[$module][$indexProperty['indexfieldname']])) {
                         $retArray[$module][$indexProperty['indexfieldname']]['duplicatecheck'] = true;
+                    }
+
+                    // set the info on the phone search
+                    if ($indexProperty['phonesearch'] && isset($retArray[$module][$indexProperty['indexfieldname']])) {
+                        $retArray[$module][$indexProperty['indexfieldname']]['phonesearch'] = true;
                     }
                 }
             }
@@ -198,12 +215,23 @@ class SpiceUIModulesController
         return $retArray;
     }
 
+    /**
+     * loads the fieldtype mappings
+     *
+     * @return array
+     * @throws \Exception
+     */
     static function getFieldDefMapping()
     {
         $db = DBManagerFactory::getInstance();
         $mappingArray = [];
 
-        $mappings = $db->query("SELECT * FROM sysuifieldtypemapping UNION SELECT * FROM sysuicustomfieldtypemapping");
+        $mappings = $db->query("SELECT * FROM sysuifieldtypemapping");
+        while ($mapping = $db->fetchByAssoc($mappings)) {
+            $mappingArray[$mapping['fieldtype']] = $mapping['component'];
+        }
+
+        $mappings = $db->query("SELECT * FROM sysuicustomfieldtypemapping");
         while ($mapping = $db->fetchByAssoc($mappings)) {
             $mappingArray[$mapping['fieldtype']] = $mapping['component'];
         }
@@ -211,6 +239,12 @@ class SpiceUIModulesController
         return $mappingArray;
     }
 
+    /**
+     * loads the defined status networks
+     *
+     * @return array
+     * @throws \Exception
+     */
     static function getModuleStatusNetworks()
     {
         $db = DBManagerFactory::getInstance();
@@ -224,6 +258,8 @@ class SpiceUIModulesController
 
 
     /**
+     * loadsand combines the sysui roles
+     *
      * @return array
      */
     static function getSysRoles()

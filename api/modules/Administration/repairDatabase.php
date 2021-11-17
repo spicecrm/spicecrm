@@ -41,7 +41,6 @@ use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-global $moduleList;
 $current_user = AuthenticationController::getInstance()->getCurrentUser();
 set_time_limit(3600);
 
@@ -111,7 +110,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 		VardefManager::clearVardef();
 		$repairedTables = [];
 
-		foreach ($moduleList as $module) {
+		foreach (\SpiceCRM\includes\SugarObjects\SpiceModules::getInstance()->getModuleList() as $module) {
 
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {

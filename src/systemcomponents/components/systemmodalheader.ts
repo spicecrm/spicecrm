@@ -41,6 +41,19 @@ export class SystemModalHeader {
      */
     @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+    /**
+     * an attribute that can be set to hide the close button
+     *
+     * @param value
+     */
+    @Input('system-modal-header-noclose') set hideClose(value) {
+        if (value === false) {
+            this.hiddenCloseButton = false;
+        } else {
+            this.hiddenCloseButton = true;
+        }
+    }
+
     constructor(private language: language, private layout: layout) {
 
     }

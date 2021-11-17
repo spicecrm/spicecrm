@@ -23,7 +23,7 @@ class EmailTemplatesController{
         $template_list = [];
 
         $res = $db->query("SELECT id, name FROM email_templates
-                WHERE type = 'bean2mail' AND (for_bean = '{$args['parentmodule']}' OR for_bean = '*' )");
+                WHERE deleted=0 AND type = 'bean2mail' AND (for_bean = '{$args['parentmodule']}' OR for_bean = '*' )");
         while($row = $db->fetchByAssoc($res)) $template_list[] = $row;
 
         return $res->withJson($template_list);

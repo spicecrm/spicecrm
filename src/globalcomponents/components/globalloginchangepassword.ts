@@ -46,7 +46,7 @@ export class GlobalLoginChangePassword {
      *
      * @private
      */
-    @Output() private closeRenewDialog: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() private closeRenewDialog: EventEmitter<string> = new EventEmitter<string>();
 
     /**
      * the entered password
@@ -111,11 +111,10 @@ export class GlobalLoginChangePassword {
 
     /**
      * closes the dialog
-     *
-     * @private
+     * @param password
      */
-    private closeDialog() {
-        this.closeRenewDialog.emit(true);
+    public closeDialog(password?: string) {
+        this.closeRenewDialog.emit(password);
     }
 
 
@@ -131,6 +130,7 @@ export class GlobalLoginChangePassword {
         if (extConf.onelower) requArray.push('one lower case');
         if (extConf.oneupper) requArray.push('one upper case');
         if (extConf.onenumber) requArray.push('one number');
+        if (extConf.onespecial) requArray.push('one special');
         if (extConf.minpwdlength) requArray.push('minimum length ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');
@@ -157,7 +157,7 @@ export class GlobalLoginChangePassword {
             }).subscribe(
                 (res) => {
                     this.toast.sendToast('Password was successfully changed', 'success', '', 5);
-                    this.closeDialog();
+                    this.closeDialog(this.newPassword);
                 },
                 (err: any) => {
                     this.posting = false;

@@ -13,19 +13,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <div class="slds-datepicker__filter slds-grid">
     <div class="slds-datepicker__filter_month slds-grid slds-grid_align-spread slds-grow">
         <div class="slds-align-middle">
-            <button class="slds-button slds-button_icon slds-button_icon-container" title="Previous Month" (click)="prevMonth()">
+            <button class="slds-button slds-button_icon slds-button_icon-container" title="Previous Month" (click)="prevMonth($event)">
                 <system-button-icon [icon]="'left'"></system-button-icon>
             </button>
         </div>
         <h2 aria-atomic="true" aria-live="assertive" class="slds-align-middle">{{currentMonth}}</h2>
         <div class="slds-align-middle">
-            <button class="slds-button slds-button_icon slds-button_icon-container" title="Next Month" (click)="nextMonth()">
+            <button class="slds-button slds-button_icon slds-button_icon-container" title="Next Month" (click)="nextMonth($event)">
                 <system-button-icon [icon]="'right'"></system-button-icon>
             </button>
         </div>
     </div>
     <div class="slds-shrink-none">
-        <system-select [selectList]="yearsList" [(selectedItem)]="currentYear" [emitInputValueOnEnterPress]="true"></system-select>
+        <system-select [selectList]="yearsList" [(ngModel)]="currentYear" [emitInputValueOnEnterPress]="true"></system-select>
     </div>
 </div>
 <table aria-labelledby="month" aria-multiselectable="true" class="slds-datepicker__month slds-m-left--x-small" role="grid">
@@ -74,4 +74,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         </tr>
     </tbody>
 </table>
-<button *ngIf="showTodayButton" class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday()"><system-label label="LBL_TODAY"></system-label></button>
+<button *ngIf="showTodayButton" class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday($event);"><system-label label="LBL_TODAY"></system-label></button>

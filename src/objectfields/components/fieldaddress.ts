@@ -68,7 +68,7 @@ export class fieldAddress extends fieldGeneric {
     * get the hidden fields from the config table in db
      */
     public getAddressConfig() {
-        this.config_address_format = JSON.parse(this.configuration.data.backendextensions.address_format.config);
+        this.config_address_format = JSON.parse(this.configuration.data.backendextensions.address_format.config.format);
     }
 
     /*

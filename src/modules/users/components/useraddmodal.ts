@@ -23,6 +23,7 @@ import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
+import {helper} from '../../../services/helper.service';
 
 /**
  * @ignore
@@ -44,10 +45,11 @@ export class UserAddModal implements OnInit {
     private password: string;
     private repeatPassword: string;
     private pwdCheck: RegExp = new RegExp("//");
-    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._]{1,60}$");
+    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
     private pwdGuideline: string;
     private autogenerate: boolean = false;
     private sendByEmail: boolean = false;
+    private forceReset: boolean = true;
     private showPassword: boolean = false;
     private saveTriggered: boolean = false;
     private canSendByEmail: boolean = true;
@@ -62,7 +64,8 @@ export class UserAddModal implements OnInit {
         private view: view,
         private cdr: ChangeDetectorRef,
         private metadata: metadata,
-        private configuration: configurationService
+        private configuration: configurationService,
+        private helper: helper
     ) {
         this.model.module = "Users";
         this.view.isEditable = true;
@@ -149,8 +152,10 @@ export class UserAddModal implements OnInit {
 
     set autoGenerate(value) {
         this.autogenerate = value;
-        this.password = value ? Math.random().toString(36).slice(-8) : '';
-        this.repeatPassword = this.password;
+        if ( value ) {
+            this.password = this.helper.generatePassword(this.configuration.getCapabilityConfig('userpassword'));
+            this.repeatPassword = this.password;
+        }
     }
 
     public ngOnInit() {
@@ -180,6 +185,7 @@ export class UserAddModal implements OnInit {
         if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
         if(extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
         if(extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if(extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
         if(extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');
@@ -240,7 +246,7 @@ export class UserAddModal implements OnInit {
     private savePassword(goDetail) {
         let body = {
             newPassword: this.password,
-            forceReset: this.autoGenerate,
+            forceReset: this.forceReset,
             sendEmail: this.canSendByEmail ? this.sendByEmail : false
         };
         this.backend.postRequest("module/Users/"+this.model.id+"/password/reset", {}, body).subscribe(res => {

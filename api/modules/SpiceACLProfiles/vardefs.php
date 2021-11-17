@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -9,7 +10,8 @@ $dictionary ['SpiceACLProfile'] = [
             'name' => 'status',
             'type' => 'enum',
             'len' => 1,
-            'options' => 'kauthprofiles_status'],
+            'options' => 'kauthprofiles_status'
+        ],
         'users' =>    [
             'name' => 'users',
             'type' => 'link',
@@ -18,6 +20,13 @@ $dictionary ['SpiceACLProfile'] = [
             'module' => 'Users',
             'vname' => 'LBL_USERS',
         ],
+        'for_portal_users' => [
+            'name' => 'for_portal_users',
+            'vname' => 'LBL_FOR_PORTAL_USERS',
+            'type' => 'bool',
+            'default' => '0',
+            'comment' => 'ACL profile is intended for portal users.'
+        ]
     ],
     'indices' => [
     ]

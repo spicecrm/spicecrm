@@ -6,40 +6,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 if (!defined('sugarEntry')) define('sugarEntry', true);
-/*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 require('service/core/SugarSoapService.php');
 require('vendor/nusoap/nusoap.php');
@@ -221,22 +188,23 @@ abstract class NusoapSoap extends SugarSoapService
 
     private function writeLog()
     {
+        $db = DBManagerFactory::getInstance('spicelogger');
         $this->logging = false;
-        if (DBManagerFactory::getInstance()->tableExists('sysapilogconfig')) {
+        if ($db->tableExists('sysapilogconfig')) {
             // check if this request has to be logged by some rules...
             $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE 
-              (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND
+              (route = '{$this->logEntry->route}' OR route = '*' OR route LIKE '%{$this->logEntry->route}%') AND
               (method = '{$this->logEntry->method}' OR method = '*') AND
               (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND
               (ip = '{$this->logEntry->ip}' OR ip = '*') AND
               is_active = 1";
-            $res = DBManagerFactory::getInstance()->query($sql);
-            $row = DBManagerFactory::getInstance()->fetchByAssoc($res);
+            $res = $db->query($sql);
+            $row = $db->fetchByAssoc($res);
             if ($row['cnt'] > 0) {
                 $this->logging = true;
                 // write the log...
                 $this->logEntry->id = SpiceUtils::createGuid();
-                $id = DBManagerFactory::getInstance()->insertQuery('sysapilog', (array)$this->logEntry);
+                $db->insertQuery('sysapilog', (array)$this->logEntry);
             } else {
                 $this->logging = false;
             }
@@ -252,7 +220,7 @@ abstract class NusoapSoap extends SugarSoapService
             $this->logEntry->response_body = $this->server->responseSOAP;
 
             // update the log...
-            $result = DBManagerFactory::getInstance()->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array)$this->logEntry);
+            $result = DBManagerFactory::getInstance('spicelogger')->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array)$this->logEntry);
         }
     }
 

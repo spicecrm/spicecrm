@@ -118,6 +118,7 @@ export class GlobalLoginForgotPassword {
         if (extConf.onelower) requArray.push('one lower case');
         if (extConf.oneupper) requArray.push('one upper case');
         if (extConf.onenumber) requArray.push('one number');
+        if (extConf.onespecial) requArray.push('one special');
         if (extConf.minpwdlength) {
             requArray.push('minimum length ' + extConf.minpwdlength);
             this.tokenLength = parseInt(extConf.minpwdlength, 10);

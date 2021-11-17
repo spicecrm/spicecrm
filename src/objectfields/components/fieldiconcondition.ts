@@ -77,10 +77,6 @@ export class fieldIconCondition extends fieldGeneric {
         );
     }
 
-    public ngAfterViewChecked() {
-        console.log('checked');
-    }
-
     /**
      * call the initialize on the parent and set the local values
      */

@@ -11,9 +11,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 -->
 
 <span class="slds-checkbox">
-    <input #inputCheckbox type="checkbox" id="checkbox-{{id}}" [attr.aria-labelledby]="'checkbox-button-label-'+id+' check-group-header'" (click)="click($event)" [disabled]="disabled" [value]="value" [(ngModel)]="model_value" />
+    <input #inputCheckbox type="checkbox" id="checkbox-{{id}}" [attr.aria-labelledby]="'checkbox-button-label-'+id+' check-group-header'" (click)="click($event)" [disabled]="_disabled" [value]="value" [(ngModel)]="model_value" />
     <label class="slds-checkbox__label slds-truncate" for="checkbox-{{id}}" id="checkbox-button-label-{{id}}">
         <span class="slds-checkbox_faux slds-m-horizontal--xxx-small"></span>
-        <span *ngIf="!hidelabel" class="slds-form-element__label slds-p-horizontal--xx-small"><ng-content></ng-content></span>
+        <span *ngIf="!hidelabel" class="slds-form-element__label slds-p-left--xx-small"><ng-content></ng-content></span>
     </label>
 </span>

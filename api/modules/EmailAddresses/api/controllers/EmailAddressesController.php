@@ -2,6 +2,7 @@
 namespace SpiceCRM\modules\EmailAddresses\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\modules\EmailAddresses\EmailAddressRestHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -37,4 +38,16 @@ class EmailAddressesController
         return $res->withJson($result);
 
     }
+
+    public function searchParentBeanMailAddress(Request $req, Response $res, array $args): Response {
+        $seed = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
+        if(!$seed){
+            throw new NotFoundException('record not found');
+        }
+
+
+        $emailAddress = BeanFactory::getBean('EmailAddresses');
+        return $res->withJson($emailAddress->searchForParentBean($seed));
+    }
+
 }

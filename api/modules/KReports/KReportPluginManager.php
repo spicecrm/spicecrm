@@ -19,6 +19,7 @@ class KReportPluginManager
             include('modules/KReports/plugins.dictionary');
 
             foreach ($plugins as $thisPlugin => $thisPluginData) {
+                $pluginDirectory = ($thisPluginData['extension'] ? "extensions/" : "") . "modules/KReports/Plugins/";
 
                 // write to the Object varaible so we have all plugins by ID
                 $this->plugins[$thisPlugin] = $thisPluginData;
@@ -26,26 +27,26 @@ class KReportPluginManager
                 // add specific plugins metadata to the array
                 switch ($thisPluginData['type']) {
                     case 'presentation':
-                        $this->plugins[$thisPlugin]['plugindirectory'] = 'modules/KReports/Plugins/Presentation/' . $thisPluginData['directory'];
-                        if (file_exists('modules/KReports/Plugins/Presentation/' . $thisPluginData['directory'] . '/pluginmetadata.php')) {
+                        $this->plugins[$thisPlugin]['plugindirectory'] = "{$pluginDirectory}Presentation/{$thisPluginData['directory']}";
+                        if (file_exists("{$pluginDirectory}Presentation/{$thisPluginData['directory']}/pluginmetadata.php")) {
                             $pluginmetadata = [];
-                            include('modules/KReports/Plugins/Presentation/' . $thisPluginData['directory'] . '/pluginmetadata.php');
+                            include("{$pluginDirectory}Presentation/{$thisPluginData['directory']}/pluginmetadata.php");
                             $this->plugins[$thisPlugin]['metadata'] = $pluginmetadata;
                         }
                         break;
                     case 'visualization':
-                        $this->plugins[$thisPlugin]['plugindirectory'] = 'modules/KReports/Plugins/Visualization/' . $thisPluginData['directory'];
-                        if (file_exists('modules/KReports/Plugins/Visualization/' . $thisPluginData['directory'] . '/pluginmetadata.php')) {
+                        $this->plugins[$thisPlugin]['plugindirectory'] = "{$pluginDirectory}Visualization/{$thisPluginData['directory']}";
+                        if (file_exists("{$pluginDirectory}Visualization/{$thisPluginData['directory']}/pluginmetadata.php")) {
                             $pluginmetadata = [];
-                            include('modules/KReports/Plugins/Visualization/' . $thisPluginData['directory'] . '/pluginmetadata.php');
+                            include("{$pluginDirectory}Visualization/{$thisPluginData['directory']}/pluginmetadata.php");
                             $this->plugins[$thisPlugin]['metadata'] = $pluginmetadata;
                         }
                         break;
                     case 'integration':
-                        $this->plugins[$thisPlugin]['plugindirectory'] = 'modules/KReports/Plugins/Integration/' . $thisPluginData['directory'];
-                        if (file_exists('modules/KReports/Plugins/Integration/' . $thisPluginData['directory'] . '/pluginmetadata.php')) {
+                        $this->plugins[$thisPlugin]['plugindirectory'] = "{$pluginDirectory}Integration/{$thisPluginData['directory']}";
+                        if (file_exists("{$pluginDirectory}Integration/{$thisPluginData['directory']}/pluginmetadata.php")) {
                             $pluginmetadata = [];
-                            include('modules/KReports/Plugins/Integration/' . $thisPluginData['directory'] . '/pluginmetadata.php');
+                            include("{$pluginDirectory}Integration/{$thisPluginData['directory']}/pluginmetadata.php");
                             $this->plugins[$thisPlugin]['metadata'] = $pluginmetadata;
                         }
                         break;
@@ -230,6 +231,13 @@ class KReportPluginManager
                 return new $className();
 
                 return true;
+            }
+            if (file_exists('extensions/modules/KReports/Plugins/Presentation/' . $this->plugins[$pluginId]['directory'] . '/' . $this->plugins[$pluginId]['metadata']['phpinclude'])) {
+                require_once('extensions/modules/KReports/Plugins/Presentation/' . $this->plugins[$pluginId]['directory'] . '/' . $this->plugins[$pluginId]['metadata']['phpinclude']);
+
+                //eval($this->plugins[$pluginId]['id'] . 'detailviewdisplay($view);');
+                $className = 'kreportpresentation' . $this->plugins[$pluginId]['id'];
+                return new $className();
             }
             if (file_exists('modules/KReports/Plugins/Presentation/' . $this->plugins[$pluginId]['directory'] . '/' . $this->plugins[$pluginId]['metadata']['phpinclude'])) {
                 require_once('modules/KReports/Plugins/Presentation/' . $this->plugins[$pluginId]['directory'] . '/' . $this->plugins[$pluginId]['metadata']['phpinclude']);

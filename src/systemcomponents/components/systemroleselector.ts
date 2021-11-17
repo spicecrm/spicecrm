@@ -17,6 +17,7 @@ import {Component, EventEmitter, Input, OnInit} from "@angular/core";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {broadcast} from "../../services/broadcast.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 declare var _: any;
 
@@ -31,7 +32,12 @@ export class SystemRoleSelector implements OnInit {
      */
     private roles: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private broadcast: broadcast) {
+    constructor(
+        private language: language,
+        private metadata: metadata,
+        private broadcast: broadcast,
+        private userpreferences: userpreferences
+    ) {
     }
 
     public ngOnInit(): void {
@@ -59,6 +65,9 @@ export class SystemRoleSelector implements OnInit {
      */
     private setActiveRole(roleid){
         this.metadata.setActiveRole(roleid);
+
+        // set the role to the preferences
+        this.userpreferences.setPreference('userrole', roleid)
 
         // navigate home and broadcast the message
         this.broadcast.broadcastMessage('applauncher.setrole', roleid);

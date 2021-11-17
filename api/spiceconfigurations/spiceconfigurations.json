@@ -1,0 +1,35 @@
+{
+    "packages": {
+        "spicecore": "spicecore.txt"
+    },
+    "languages": {
+        "en_us": "en_us.txt",
+        "de_DE": "de_DE.txt"
+    },
+    "build": {
+        "releasenumber": "2021.01.001",
+        "buildnumber": "2021.01.001.1613930873124"
+    },
+    "system": {
+        "php": {
+            "min": "7.2",
+            "max": "8.0"
+        },
+        "elasticsearch": {
+            "min": "7.6.2",
+            "max": "7.11.0"
+        },
+        "mysql": {
+            "min": "5.7",
+            "max": "8.0"
+        },
+        "oci": {
+            "min": "5.7?",
+            "max": "8.0?"
+        },
+        "mssql": {
+            "min": "5.7?",
+            "max": "8.0?"
+        }
+    }
+}

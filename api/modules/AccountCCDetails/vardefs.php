@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -103,6 +104,12 @@ $dictionary['AccountCCDetail'] = [
             'type' => 'varchar',
             'len' => 20,
             'vname' => 'LBL_INCOTERM2',
+        ],
+        'organisational_type' => [
+            'name' => 'organisational_type',
+            'type' => 'varchar',
+            'len' => 20,
+            'vname' => 'LBL_TYPE',
         ],
     ],
     'indices' => [

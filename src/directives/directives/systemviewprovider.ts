@@ -44,13 +44,16 @@ export class SystemViewProviderDirective implements AfterViewInit, OnDestroy {
     }
 
     @Input('system-view-provider')
-    set viewSettings(viewSettings: { editable: boolean, displayLabels: boolean }) {
+    set viewSettings(viewSettings: { editable: boolean, displayLabels: boolean, displayLinks: boolean }) {
         if (viewSettings.editable) {
             this.view.isEditable = true;
         }
 
         if (viewSettings.displayLabels === false) {
             this.view.displayLabels = false;
+        }
+        if (viewSettings.displayLinks === false) {
+            this.view.displayLinks = false;
         }
     }
 

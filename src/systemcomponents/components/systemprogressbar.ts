@@ -36,6 +36,12 @@ export class SystemProgressBar {
     @Input() private hideText: boolean = false;
 
     /**
+     * if set color the progress bar will be colorized
+     * @private
+     */
+    @Input() private color: string;
+
+    /**
      * The progress of completion.
      */
     @Input() private progress: number = 0;

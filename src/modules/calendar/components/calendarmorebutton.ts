@@ -98,7 +98,7 @@ export class CalendarMoreButton implements OnDestroy {
         this.metadata.addComponent('CalendarMorePopover', this.footer.modalcontainer, this.injector)
             .subscribe(
                 popoverRef => {
-                    popoverRef.instance.events = this.events.slice().sort((a, b) => a.start.isAfter(b.start) ? 1 : -1);
+                    popoverRef.instance.events = this.events;
                     popoverRef.instance.isMobileView = this.isMobileView;
                     popoverRef.instance.sheetDay = this.sheetDay;
                     popoverRef.instance.parentElementRef = this.elementRef;

@@ -59,7 +59,6 @@ class SpiceFTSRESTManager
      */
     function initialize()
     {
-        global $moduleList;
         $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
@@ -85,27 +84,26 @@ class SpiceFTSRESTManager
     {
         $this->checkAdmin();
 
-        $scheduler = BeanFactory::getBean('Schedulers');
-        $scheduler->retrieve_by_string_fields(['job' => 'function::fullTextIndex', 'deleted' => 0]);
-        if($scheduler && isset($scheduler->id)) {
-            $scheduler->status = "Active";
-            $scheduler->date_time_end = "";
+        $job = BeanFactory::getBean('SchedulerJobs');
+        $job->retrieve_by_string_fields(['job' => 'function::fullTextIndex', 'deleted' => 0]);
+        if($job && isset($job->id)) {
+            $job->status = "Active";
+            $job->date_time_end = "";
         }
         else{
             // CR100349 remove methods from install_utils.php that are required from classes in use
             if(!function_exists('create_date')) require_once 'include/utils.php';
-            $scheduler = BeanFactory::newBean('Schedulers');
-            $scheduler->name = (!empty($mod_strings['LBL_OOTB_FTS_INDEX']) ? $mod_strings['LBL_OOTB_FTS_INDEX'] : "SpiceCRM Full Text Indexing");
-            $scheduler->date_time_start = create_date(date('Y'),date('n'),date('d')) . ' ' . create_time(0,0,1);
-            $scheduler->job = "function::fullTextIndex";
-            $scheduler->job_interval = '*/1::*::*::*::*';
-            $scheduler->status = "Active";
-            $scheduler->created_by = '1';
-            $scheduler->modified_user_id = '1';
-            $scheduler->catch_up = '0';
+            $job = BeanFactory::newBean('SchedulerJobs');
+            $job->name = (!empty($mod_strings['LBL_OOTB_FTS_INDEX']) ? $mod_strings['LBL_OOTB_FTS_INDEX'] : "SpiceCRM Full Text Indexing");
+            $job->date_time_start = create_date(date('Y'),date('n'),date('d')) . ' ' . create_time(0,0,1);
+            $job->job = "function::fullTextIndex";
+            $job->job_interval = '*/1::*::*::*::*';
+            $job->status = "Active";
+            $job->created_by = '1';
+            $job->modified_user_id = '1';
         }
-        if(!$scheduler->save())
-            die('could not save scheduler');
+        if(!$job->save())
+            die('could not save job');
 
         return ['status' => 'success'];
 

@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\MediaFiles\api\controllers;
 
 use SpiceCRM\modules\MediaFiles\MediaFile;
@@ -52,6 +54,7 @@ class MediaFilesController
             throw ( new NotFoundException('Media file not found.'))->setLookedFor([ 'id' => $args['id'], 'module' => 'MediaFiles' ]);
         }
         $seed->deliverOriginal();
+        return $res->withJson( null ); # dummy
     }
 
     public function getMediaFileBase64(Request $req, Response $res, array $args): Response {
@@ -86,6 +89,7 @@ class MediaFilesController
             }
         }
         $seed->deliverThumb( $targetSize );
+        return $res->withJson( null ); # dummy
     }
 
     public function getImageWithMaxWidth(Request $req, Response $res, array $args): Response {
@@ -117,6 +121,7 @@ class MediaFilesController
                 $seed->deliverSize( $targetWidth );
             }
         }
+        return $res->withJson( null ); # dummy
     }
 
     public function getImageWithMaxWidthAndHeight(Request $req, Response $res, array $args): Response {
@@ -150,6 +155,7 @@ class MediaFilesController
                 $seed->deliverSize( $targetWidth );
             }
         }
+        return $res->withJson( null ); # dummy
     }
 
 }

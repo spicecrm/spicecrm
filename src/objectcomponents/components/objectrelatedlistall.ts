@@ -122,7 +122,7 @@ export class ObjectRelatedlistAll implements OnInit {
         this.relatedmodels.loaditems = 50;
         if (this.componentconfig.sequencefield) {
             this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
-        } else if (this.model.fields[this.relatedmodels._linkName].sequence_field) {
+        } else if (this.model.fields[this.relatedmodels._linkName]?.sequence_field) {
             this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
         }
         this.relatedmodels.getData();

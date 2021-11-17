@@ -69,7 +69,7 @@ export class GlobalNavigationTabbed implements OnDestroy {
      * @private
      */
     private setParentTab(activeTab) {
-        this.parentTab = activeTab.parentid ? this.navigation.getTabById(activeTab.parentid) : activeTab;
+        this.parentTab = (activeTab && activeTab.parentid) ? this.navigation.getTabById(activeTab.parentid) : activeTab;
     }
 
     /**

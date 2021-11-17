@@ -1,5 +1,5 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -247,7 +247,16 @@ $dictionary['Consumer'] = [
             'module' => 'Inquiries',
             'relationship' => 'consumer_inquiries',
             'source' => 'non-db'
-        ]
+        ],
+        'letters' => [
+            'name' => 'letters',
+            'type' => 'link',
+            'relationship' => 'consumer_letters',
+            'source' => 'non-db',
+            'module' => 'Letters',
+            'bean_name' => 'Letter',
+            'vname' => 'LBL_LETTERS',
+        ],
     ],
     'relationships' => [
         'consumers_email_addresses' => [
@@ -297,7 +306,18 @@ $dictionary['Consumer'] = [
             'rhs_table' => 'leads',
             'rhs_key' => 'consumer_id',
             'relationship_type' => 'one-to-many'
-        ]
+        ],
+        'consumer_letters' => [
+            'lhs_module' => 'Consumers',
+            'lhs_table' => 'consumers',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Letters',
+            'rhs_table' => 'letters',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Consumers'
+        ],
     ],
     //This enables optimistic locking for Saves From EditView
     'optimistic_locking' => true,
@@ -317,7 +337,7 @@ $dictionary['Consumer'] = [
 ];
 //avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
 global $dictionary;
-if (is_file('modules/SalesVouchers/SalesVoucher.php')){
+if (file_exists('extensions/modules/SalesVouchers')){
     $dictionary['Consumer']['fields']['salesvouchers'] = [
         'name'         => 'salesvouchers',
         'type'         => 'link',
@@ -327,7 +347,7 @@ if (is_file('modules/SalesVouchers/SalesVoucher.php')){
         'vname'        => 'LBL_SALESVOUCHERS',
     ];
 }
-if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
+if (file_exists("modules/ServiceTickets")) {
     $dictionary['Consumer']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',

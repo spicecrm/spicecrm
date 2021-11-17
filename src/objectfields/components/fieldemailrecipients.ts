@@ -13,8 +13,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, NgZone, OnInit, Renderer2} from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit, Renderer2, Injector} from '@angular/core';
 import {model} from '../../services/model.service';
+import {modal} from '../../services/modal.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
@@ -80,6 +81,8 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
                 public language: language,
                 public metadata: metadata,
                 public router: Router,
+                private modal: modal,
+                private injector: Injector,
                 private backend: backend,
                 private renderer: Renderer2,
                 private elementRef: ElementRef,
@@ -110,6 +113,41 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     public ngOnInit() {
         super.ngOnInit();
         this.setInitialFieldValue();
+    }
+
+    /**
+     * returns if the model has a parent id
+     */
+    get hasParent() {
+        return !!this.model.getField('parent_id');
+    }
+
+    /**
+     * search for parent eail addresses
+     *
+     * @private
+     */
+    private searchParentEmailAddresses() {
+        this.modal.openModal('EmailParentAddressesModal', true, this.injector).subscribe(
+            modalRef => {
+                modalRef.instance.addAddresses.subscribe(
+                    addresses => {
+                        for (let address of addresses) {
+                            const newEmailAddress = {
+                                id: this.model.generateGuid(),
+                                address_type: this.fieldconfig.addresstype || 'from',
+                                email_address: address.email_address,
+                                email_address_id: address.email_address_id,
+                                parent_type: address.module,
+                                parent_id: address.id
+                            };
+
+                            this.value = [...this.model.data.recipient_addresses, newEmailAddress];
+                        }
+                    }
+                );
+            }
+        );
     }
 
     /**
@@ -244,7 +282,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      */
     private removeLastEmailAddress() {
         if (!this.value || this.value.length == 0) return;
-        this.value = this.model.data.recipient_addresses.slice(0, this.model.data.recipient_addresses.length -1);
+        this.value = this.model.data.recipient_addresses.slice(0, this.model.data.recipient_addresses.length - 1);
     }
 
     /**

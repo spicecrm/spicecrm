@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -49,6 +49,16 @@ $app_list_strings = [
     'customer_type_dom' => [
         'B' => 'Business',
         'C' => 'Consumer',
+    ],
+
+    'dayofweek_dom' => [
+        '0' => 'Sunday',
+        '1' => 'Monday',
+        '2' => 'Tuesday',
+        '3' => 'Wednesday',
+        '4' => 'Thursday',
+        '5' => 'Friday',
+        '6' => 'Saturday'
     ],
 
     //e.g. en franï¿½ais 'Analyst'=>'Analyste',
@@ -502,6 +512,7 @@ $app_list_strings = [
             'RegularUser' => 'Regular User',
             'PortalUser' => 'Portal User',
             'Administrator' => 'Administrator',
+            'APIuser' => 'API User'
         ],
     'user_status_dom' =>
         [
@@ -577,6 +588,14 @@ $app_list_strings = [
         'Medium' => 'Medium',
         'Low' => 'Low',
     ],
+    'projects_plannedactivity_status_dom' => [
+        'planned' => 'planned',
+        'released' => 'released',
+        'active' => 'active',
+        'onhold' => 'on Hold',
+        'completed' => 'completed',
+        'cancelled' => 'cancelled'
+    ],
     'projects_activity_status_dom' => [
         'created' => 'created',
         'settled' => 'settled'
@@ -597,7 +616,6 @@ $app_list_strings = [
             'Sending' => 'Sending',
         ],
     'campaign_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
@@ -609,11 +627,11 @@ $app_list_strings = [
         'NewsLetter' => 'Newsletter',
     ],
     'campaigntask_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
         'Email' => 'Email',
+        'mailmerge' => 'Mail Merge',
         'Feedback' => 'Feedback',
         'Print' => 'Print',
         'Web' => 'Web',
@@ -713,6 +731,10 @@ $app_list_strings = [
         'unread' => 'Unread',
         'bounced' => 'Bounced'
     ],
+    'dom_letter_status' => [
+        'sent' => 'sent',
+        'draft' => 'draft'
+    ],
     'dom_textmessage_status' => [
         'archived' => 'Archived',
         'closed' => 'Closed',
@@ -752,19 +774,19 @@ $app_list_strings = [
     'dom_email_distribution_for_auto_create' => ['roundRobin' => 'Round-Robin',
         'leastBusy' => 'Least-Busy',
     ],
-    'schedulers_times_dom' => ['not run' => 'Past Run Time, Not Executed',
-        'ready' => 'Ready',
-        'in progress' => 'In Progress',
-        'failed' => 'Failed',
-        'completed' => 'Completed',
-        'no curl' => 'Not Run: No cURL available',
+    'jobtask_status_dom' => [
+        'active' => 'active',
+        'running' => 'running',
+        'on_hold' => 'on hold'
     ],
-    'scheduler_status_dom' =>
+    'job_status_dom' =>
         [
             'Active' => 'Active',
             'Inactive' => 'Inactive',
+            'OnHold' => 'On hold',
+            'Running' => 'Running',
         ],
-    'scheduler_period_dom' =>
+    'job_period_dom' =>
         [
             'min' => 'Minutes',
             'hour' => 'Hours',
@@ -1561,13 +1583,17 @@ $app_list_strings['scrum_status_dom'] = [
 
 $app_list_strings['emailschedule_status_dom'] = [
     'queued' => 'queued',
+    'cancelled' => 'cancelled',
     'sent' => 'sent',
 ];
 
 $app_list_strings['email_schedule_status_dom'] = [
     'open' => 'open',
+    'processing' => 'processing',
     'done' => 'done',
+    'cancelled' => 'cancelled',
     'done_with_errors' => 'done with errors',
+    'record_not_loaded' => 'record not loaded',
 ];
 $app_list_strings['moduleList']['KReleasePackages'] = 'K Releasepackages';
 
@@ -1658,6 +1684,12 @@ $app_list_strings['projects_activity_status_dom'] = [
     'billed' => 'billed',
 ];
 
+$app_list_strings['projects_activity_settlement_types_dom'] = [
+    'regular' => 'regular',
+    'goodwill' => 'goodwill',
+    'exclude' => 'exclude'
+];
+
 //ProductAttributes
 $app_list_strings['productattributedatatypes_dom'] = [
     'di' => 'Dropdown',
@@ -1725,7 +1757,7 @@ $app_list_strings['mailboxes_smtp_encryption_dom'] = [
 
 $app_strings = array_merge($app_strings, $addAppStrings);
 
-if (file_exists('modules/ServiceEquipments/ServiceEquipment.php')) {
+if (file_exists('extensions/modules/ServiceEquipments/ServiceEquipment.php')) {
     $app_list_strings['serviceequipment_status_dom'] = [
         'new' => 'new',
         'offsite' => 'off site',
@@ -1744,7 +1776,7 @@ if (file_exists('modules/ServiceEquipments/ServiceEquipment.php')) {
     ];
 }
 
-if (file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
     $app_list_strings['serviceorder_status_dom'] = [
         'new' => 'New',
         'planned' => 'Planned',
@@ -1796,7 +1828,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'Servicetickets';
 
 }
-if (file_exists('modules/ServiceFeedbacks/ServiceFeedback.php')) {
+if (file_exists('extensions/modules/ServiceFeedbacks/ServiceFeedback.php')) {
     $app_list_strings['service_satisfaction_scale_dom'] = [
         1 => '1 - not satisfied',
         2 => '2',
@@ -1880,6 +1912,12 @@ $app_list_strings['product_status_dom'] = [
     'draft' => 'draft',
     'active' => 'active',
     'inactive' => 'inactive',
+];
+
+$app_list_strings['product_tax_categories_dom'] = [
+    '0' => 'tax free',
+    '1' => 'regular taxed',
+    '2' => 'reduced tax',
 ];
 
 $app_list_strings['textmessage_direction'] = [
@@ -2042,6 +2080,10 @@ $app_list_strings['payments_type_dom'] = [
     'ATM_card' => 'ATM card',
     'credit_card' => 'credit card'
 ];
+$app_list_strings['scheduler_callback_on_dom'] = [
+    'success' => 'success',
+    'failure' => 'failure',
+];
 
 $app_list_strings['qualification_type_dom'] = [];
 
@@ -2069,4 +2111,9 @@ $app_list_strings['relationship_type_dom'] = [
     'acquaintance' => 'acquaintance',
     'partner' => 'partner',
     'colleague' => 'colleague'
+];
+
+$app_list_strings['bonuscard_extension_status_enum'] = [
+    'initial' => 'initial',
+    'sent' => 'sent'
 ];

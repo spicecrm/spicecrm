@@ -6,6 +6,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -34,19 +35,32 @@ class ContactsPortalController {
      */
     public function getPortalUser( Request $req, Response $res, $args ): Response {
         $db = DBManagerFactory::getInstance();
+        $spiceConfig = SpiceConfig::getInstance()->config;
+
+        // Old or new ACL?
+        $isOldACL = $spiceConfig['acl']['controller'] === 'modules/ACL/ACLController.php';
 
         $retArray = [
-            'aclRoles' => [],
             'portalRoles' => [],
             'user' => new stdClass()
         ];
 
         $this->loadContact( $args['id'] );
 
-        // get acl roles
-        $roles = $db->query("SELECT id, name FROM acl_roles WHERE deleted = 0 ORDER BY name");
-        while ( $role = $db->fetchByAssoc( $roles )){
-            $retArray['aclRoles'][] = $role;
+        if ( $isOldACL ) {
+            $retArray['aclRoles'] = [];
+            // get acl roles
+            $roles = $db->query( "SELECT id, name FROM acl_roles WHERE deleted = 0 ORDER BY name" );
+            while ( $role = $db->fetchByAssoc( $roles ) ) {
+                $retArray['aclRoles'][] = $role;
+            }
+        } else {
+            // get acl profiles
+            $roles = $db->query( "SELECT id, name FROM spiceaclprofiles WHERE for_portal_users = '1' AND deleted = 0 ORDER BY name" );
+            while ( $profile = $db->fetchByAssoc( $roles ) ) {
+                $aclProfiles[$profile['id']] = $profile;
+            }
+            $retArray['aclProfiles'] = array_values( $aclProfiles );
         }
 
         // get ui roles
@@ -64,11 +78,18 @@ class ContactsPortalController {
                 $retArray['user']->username = $user->user_name;
                 $retArray['user']->status = $user->status == 'Active' ? true : false;
 
-                $roles = $user->get_linked_beans( 'aclroles', 'ACLRole' );
-
-                foreach ( $roles as $role ) {
-                    $retArray['user']->aclRole = $role->id;
-                    break;
+                if ( $isOldACL ) {
+                    $roles = $user->get_linked_beans( 'aclroles', 'ACLRole' );
+                    foreach ( $roles as $role ) {
+                        $retArray['user']->aclRole = $role->id;
+                        break;
+                    }
+                } else {
+                    $profiles = $user->get_linked_beans( 'spiceaclprofiles', 'SpiceACLProfile' );
+                    foreach ( $profiles as $profile ) {
+                        $retArray['user']->aclProfile = $profile->id;
+                        break;
+                    }
                 }
 
                 // portalRole
@@ -77,6 +98,10 @@ class ContactsPortalController {
                 $retArray['user']->portalRole = $portalRole['sysuirole_id'];
 
             }
+        } else {
+            // Send default acl profile for portal users (if configured in config.php/DB)
+            $spiceConfig = SpiceConfig::getInstance()->config;
+            $retArray['defaultPortalUserProfile'] = isset( $aclProfiles[$spiceConfig['acl']['default_portal_user_profile']] ) ? $spiceConfig['acl']['default_portal_user_profile'] : null;
         }
 
         return $res->withJson( $retArray );
@@ -135,8 +160,10 @@ class ContactsPortalController {
      */
     public function createOrUpdatePortalUser( string $action ) {
         $db = DBManagerFactory::getInstance();
+        $spiceConfig = SpiceConfig::getInstance()->config;
 
-        $db->transactionStart();
+        // Old or new ACL?
+        $isOldACL = $spiceConfig['acl']['controller'] === 'modules/ACL/ACLController.php';
 
         $user = BeanFactory::getBean('Users');
 
@@ -186,7 +213,6 @@ class ContactsPortalController {
         try {
             $user->save();
         } catch( Exception $e ) {
-            $db->transactionRollback();
             LoggerManager::getLogger()->fatal( 'Create/Update portal user: Could not save user for contact ' . $this->contact->id . '.' );
             throw ( new Exception( 'Could not save user. '.$e->getMessage() ));
         }
@@ -196,42 +222,48 @@ class ContactsPortalController {
             try {
                 $this->contact->save();
             } catch( Exception $e ) {
-                $db->transactionRollback();
                 LoggerManager::getLogger()->fatal( 'Create/Edit portal user: Could not save contact '.$this->contact->id.'.' );
                 throw ( new Exception( 'Could not save contact. '.$e->getMessage() ));
             }
         }
 
-        // set the acl role
-        $roles = $user->get_linked_beans('aclroles', 'ACLRole');
-        foreach( $roles as $role ) {
-            $user->aclroles->delete( $role->id );
-            break;
-        }
-
-        if ( ! $user->aclroles->add( $this->bodyParams['aclRole'] )) {
-            $db->transactionRollback();
-            LoggerManager::getLogger()->fatal( 'Create/Edit portal user: Error assigning ACL role (ID: ' . $this->bodyParams['aclRole'] . ') for contact ' . $this->contact->id . '.' );
-            throw ( new Exception( 'Could not assign ACL role (ID: ' . $this->bodyParams['aclRole'] . ').' ) );
+        if ( $isOldACL ) {
+            // set the acl role
+            $roles = $user->get_linked_beans( 'aclroles', 'ACLRole' );
+            foreach ( $roles as $role ) {
+                $user->aclroles->delete( $role->id );
+                break;
+            }
+            if ( ! $user->aclroles->add( $this->bodyParams['aclRole'] )) {
+                LoggerManager::getLogger()->fatal( 'Create/Edit portal user: Error assigning ACL role (ID: ' . $this->bodyParams['aclRole'] . ') for contact ' . $this->contact->id . '.' );
+                throw ( new Exception( 'Could not assign ACL role (ID: ' . $this->bodyParams['aclRole'] . ').' ) );
+            }
+        } else {
+            // set the acl profile
+            $profiles = $user->get_linked_beans( 'spiceaclprofiles', 'SpiceACLProfile' );
+            foreach ( $profiles as $profile ) {
+                $user->spiceaclprofiles->delete( $profile->id );
+                break;
+            }
+            if ( ! $user->spiceaclprofiles->add( $this->bodyParams['aclProfile'] )) {
+                LoggerManager::getLogger()->fatal( 'Create/Edit portal user: Error assigning ACL profile (ID: ' . $this->bodyParams['aclProfile'] . ') for contact ' . $this->contact->id . '.' );
+                throw ( new Exception( 'Could not assign ACL role (ID: ' . $this->bodyParams['aclProfile'] . ').' ) );
+            }
         }
 
         // set the portal role
         $sqlResult = $db->query('SELECT id, name FROM sysuiroles ORDER BY name');
         while ( $row = $db->fetchByAssoc( $sqlResult )) $portalRoles[$row['id']] = $row;
         if ( !isset( $portalRoles[$this->bodyParams['portalRole']] )) {
-            $db->transactionRollback();
             LoggerManager::getLogger()->fatal( 'Create/Edit portal user: Unknown portal role (ID: ' . $this->bodyParams['portalRole'] . ') for contact ' . $this->contact->id . '.' );
             throw ( new Exception( 'Unknown portal role (ID: ' . $this->bodyParams['portalRole'] . ').' ) );
         }
         $db->query("DELETE FROM sysuiuserroles WHERE user_id = '$user->id'");
         $sqlResult = $db->query( sprintf('INSERT INTO sysuiuserroles ( id, user_id, sysuirole_id ) VALUES( "%s", "%s", "%s" )', SpiceUtils::createGuid(), $user->id, $db->quote( $this->bodyParams['portalRole'] )));
         if ( $db->getAffectedRowCount( $sqlResult ) != 1 ) {
-            $db->transactionRollback();
             LoggerManager::getLogger()->fatal( 'Create/Edit portal user: Error assigning portal role (ID: ' . $this->bodyParams['portalRole'] . ') for contact ' . $this->contact->id . '.' );
             throw ( new Exception( 'Could not assign portal role (ID: ' . $this->bodyParams['portalRole'] . ').' ) );
         }
-
-        $db->transactionCommit();
 
         if ( @$this->bodyParams['setDateTimePrefsWithSystemDefaults'] ) {
             $userPreference = new UserPreference( $user );

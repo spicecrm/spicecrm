@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 $dictionary['users_qualifications'] = [
     'table' => 'users_qualifications',
     'fields' => [

@@ -1,38 +1,38 @@
 <?php
 /*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ *
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
 
 /**
  * Class SpiceUIConfLoader
@@ -97,8 +97,8 @@ class SpiceUIConfLoader
         // module dictionaries are unknown at that time
         // load them to make sure DBManager will have proper content in global $dictionary
         SpiceModules::getInstance()->loadModules();
-        foreach($_SESSION['modules']['moduleList'] as $idx => $module){
-            VardefManager::loadVardef($module, $_SESSION['modules']['beanList'][$module]);
+        foreach(SpiceModules::getInstance()->getModuleList() as $idx => $module){
+            VardefManager::loadVardef($module, SpiceModules::getInstance()->getBeanName($module));
         }
 
     }
@@ -214,17 +214,6 @@ class SpiceUIConfLoader
         $inserts = [];
         $errors = [];
 
-        $db->transactionStart();
-
-        // make sure we have a full dictionary
-//        \SpiceCRM\includes\SugarObjects\SpiceModules::loadModules();
-//        foreach($_SESSION['modules']['beanFiles'] as $beanClass => $beanFile){
-//            if(file_exists($beanFile)){
-//                require_once $beanFile;
-//            }
-//        }
-        //file_put_contents('dict.log', 'dict EmailTemplate '.print_r($dictionary, true)."\n", FILE_APPEND);
-
         if ($checkopen && $this->loader->hasOpenChangeRequest()) {
             $errormsg = "Open Change Requests found! They would be erased...";
             throw new Exception($errormsg);
@@ -254,23 +243,21 @@ class SpiceUIConfLoader
                             // echo print_r($decodeData, true);
                             //delete before insert
                             $delWhere = ['id' => $decodeData['id']];
-                            if(!$db->deleteQuery($tb, $delWhere)){
+                            if(!$db->deleteQuery('sysmodules', $delWhere)){
                                 LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
                             }
                             if(!$db->insertQuery('sysmodules', $decodeData, true)){
-                                $db->transactionRollback();
-                                die('Error inserting record into sysmodules '.$db->lastDbError());
+                                $errors[] = ('Error inserting record into sysmodules '.$db->lastDbError());
                             }
                         }
                     }
-                    $db->transactionCommit();
-                    die('Please log out, relogin, run repair/ rebuild, then reload this package');
+                    //die('Please log out, relogin, run repair/ rebuild, then reload this package');
                 }
             }
         }
 
         if (!empty($response['nodata'])) {
-            die($response['nodata']);
+            $errors[] = ($response['nodata']);
         }
 
         foreach ($response as $tb => $content) {
@@ -300,15 +287,15 @@ class SpiceUIConfLoader
             $tbColCheck = false;
             foreach ($content as $id => $encoded) {
                 if (!$decodeData = json_decode(base64_decode($encoded), true))
-                    die("Error decoding data: " . json_last_error_msg() .
+                    $errors[] = ("Error decoding data: " . json_last_error_msg() .
                         " Reference table = $tb" .
                         " Action aborted");
 
                 //compare table column names
-                if (!$tbColCheck) {
+                if (!$tbColCheck && is_array($decodeData)) {
                     $referenceCols = array_keys($decodeData);
                     if (!empty(array_diff($referenceCols, $thisCols))) {
-                        die("Table structure for $tb is not up-to-date." .
+                        $errors[] = ("Table structure for $tb is not up-to-date or there is new module. In case of a new module, logout, login, repair, then load core package again." .
                             " Reference table = " . implode(", ", $referenceCols) .
                             " Client table = " . implode(", ", $thisCols) .
                             " Action aborted");
@@ -317,35 +304,33 @@ class SpiceUIConfLoader
                 }
 
                 //prepare values for DB query
-                foreach ($decodeData as $key => $value) {
-                    $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
-                }
-                //delete before insert
-                $delWhere = ['id' => $decodeData['id']];
-                if(!$db->deleteQuery($tb, $delWhere)){
-                    LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
-                }
-
-                //run insert
+                if(is_array($decodeData)){
+                    foreach ($decodeData as $key => $value) {
+                        $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
+                    }
+                    //delete before insert
+                    $delWhere = ['id' => $decodeData['id']];
+                    if(!$db->deleteQuery($tb, $delWhere)){
+                        LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
+                    }
+                    //run insert
 //                if($tb == 'email_templates'){
 //                    file_put_contents('spicecrm.log', 'dict email_templates '.print_r($dictionary['EmailTemplate'], true)."\n", FILE_APPEND);
 //                }
-                if($dbRes = $db->insertQuery($tb, $decodeData, true)){
-                    $tables[$tb]++;
-                    $inserts[] = $dbRes;
-                } else{
-                    $errors[] = $db->lastError();
+                    if($dbRes = $db->insertQuery($tb, $decodeData, true)){
+                        $tables[$tb]++;
+                        $inserts[] = $dbRes;
+                    } else{
+                        $errors[] = $db->lastError();
+                    }
                 }
             }
         }
 
         //if no inserts where created => abort
-        if (count($inserts) < 1) {
-            $db->transactionRollback();
-            throw new Exception("No inserts or no inserts run successfully. Action aborted.");
-        }
-
-        $db->transactionCommit();
+//        if (count($inserts) < 1) {
+//            throw new Exception("No inserts or no inserts run successfully. Action aborted.");
+//        }
 
         $success = true;
         if(count($errors) > 0){
@@ -375,13 +360,11 @@ class SpiceUIConfLoader
         };
 
         // process
-        if (isset($GLOBALS['moduleList'])) {
-            foreach ($sysmodules as $sysmodule) {
-                if (!in_array($sysmodule, $GLOBALS['moduleList'])) {
-                    $delPks = ['module' => $sysmodule];
-                    if(!$db->deleteQuery('sysmodules', $delPks)){
-                        LoggerManager::getLogger()->fatal('error deleting packages '.$db->lastError());
-                    }
+        foreach ($sysmodules as $sysmodule) {
+            if (!in_array($sysmodule, SpiceModules::getInstance()->getModuleList())) {
+                $delPks = ['module' => $sysmodule];
+                if(!$db->deleteQuery('sysmodules', $delPks)){
+                    LoggerManager::getLogger()->fatal('error deleting packages '.$db->lastError());
                 }
             }
         }

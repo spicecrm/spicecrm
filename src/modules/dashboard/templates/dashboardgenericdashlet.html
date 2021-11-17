@@ -10,21 +10,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<div #headercontainer class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
-    <system-icon [module]="dashletModule" [size]="'small'"></system-icon>
-    <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}} <system-label label="LBL_OF"></system-label> {{recordtotal}})</h2>
-</div>
-<!-- the table - hidden if no records have been found and the dashlet is not loading-->
-<div #tablecontainer class="slds-size--1-of-1 slds-scrollable--y" [ngStyle]="tableContainerStyle" (scroll)="onScroll()">
-    <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed">
-        <thead *ngIf="islarge">
+<div class="slds-grid slds-grid--vertical slds-height_full">
+    <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
+        <system-icon [module]="dashletModule" size="small"></system-icon>
+        <h2 class="slds-truncate slds-grow slds-text-heading--medium slds-p-bottom--xx-small"><system-label [label]="this.dashletLabel"></system-label> ({{recordCount}} <system-label label="LBL_OF"></system-label> {{recordTotal}})</h2>
+        <button class="slds-button slds-button--icon slds-button--icon-border slds-m-horizontal--xxx-small" system-title="LBL_RELOAD" (click)="loadRecords()" [disabled]="loading">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+    <div #tableContainer class="slds-scrollable--y slds-grid slds-grid--vertical slds-grow" (scroll)="onScroll(tableContainer)" style="min-height: 0">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed">
+            <thead *ngIf="layout.screenwidth != 'small'">
             <tr class="slds-text-title_caps">
-                <th class="slds-resizable" scope="col" *ngFor="let field of dashletFields; let isFirst = first; trackBy: trackByFn" system-resize [ngClass]="{'slds-is-sortable' : isSortable(field)}">
+                <th scope="col" *ngFor="let field of dashletFields; let isFirst = first; trackBy: trackByFn" system-resize
+                    [ngClass]="{'slds-is-sortable' : field.fieldconfig?.sortable, 'slds-is-sorted': field.field == sortparams.sortfield, 'slds-is-sorted_desc': sortparams.sortdirection == 'DESC', 'slds-is-sorted_asc': sortparams.sortdirection == 'ASC'}" class="slds-resizable">
                     <div class="slds-truncate">
-                        <ng-container *ngIf="isSortable(field); else nosort">
+                        <ng-container *ngIf="field.fieldconfig?.sortable; else nosort">
                             <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(field)">
                                 <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
-                                <system-utility-icon [icon]="getSortIcon()" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
+                                <system-utility-icon icon="arrowdown" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
                             </a>
                         </ng-container>
                         <ng-template #nosort>
@@ -33,19 +37,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     </div>
                 </th>
             </tr>
-        </thead>
-        <tbody >
+            </thead>
+            <tbody >
             <ng-container *ngFor="let record of records; trackBy: trackByFn">
                 <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
                     {{record.summary_text}}
                 </div>
                 <tr dashboard-generic-dashlet-row  [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record"></tr>
             </ng-container>
-        </tbody>
-        <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
-    </table>
-    <!-- if no records are found dispaly a no record message-->
-    <div *ngIf="!loading && records.length == 0" class="slds-align_absolute-center" style="height: calc(100% - 5px);">
-        <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+            </tbody>
+            <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
+        </table>
+        <div *ngIf="!loading && records.length == 0 && !failedToLoad" class="slds-align_absolute-center slds-grow" style="min-height: 0">
+            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+        </div>
+        <div *ngIf="!loading && failedToLoad" class="slds-align_absolute-center slds-grow" style="min-height: 0">
+            <system-illustration-page-not-available><system-label label="ERR_LOADING_RECORDS"></system-label></system-illustration-page-not-available>
+        </div>
     </div>
 </div>

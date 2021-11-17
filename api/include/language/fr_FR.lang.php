@@ -632,7 +632,7 @@ $app_list_strings = [
             'roundRobin' => 'Round-Robin',
             'leastBusy' => 'Moins chargé',
         ],
-    'scheduler_period_dom' =>
+    'job_period_dom' =>
         [
             'min' => 'Minutes',
             'hour' => 'Heures',
@@ -1892,19 +1892,18 @@ $app_list_strings = [
             'html' => 'Email HTML',
             'plain' => 'Email Texte Brut',
         ],
-    'schedulers_times_dom' =>
+    'jobtask_status_dom' =>
         [
-            'not run' => 'Temps d&#39;execution dépassé, Non Executé',
-            'ready' => 'Prêt',
-            'in progress' => 'En cours',
-            'failed' => 'Echec',
-            'completed' => 'Réalisée',
-            'no curl' => 'Non exécuté: cURL non disponible',
+            'active' => 'active',
+            'running' => 'running',
+            'on_hold' => 'on hold'
         ],
-    'scheduler_status_dom' =>
+    'job_status_dom' =>
         [
             'Active' => 'Actif',
             'Inactive' => 'Inactif',
+            'OnHold' => 'On hold',
+            'Running' => 'Running',
         ],
     'forecast_schedule_status_dom' =>
         [
@@ -2533,7 +2532,7 @@ $app_list_strings['comparators_dom'] = [
 
 $app_list_strings['moduleList']['AccountKPIs'] = 'Key Performance Indicators';
 
-if (file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
     $app_list_strings['serviceorder_status_dom'] = [
         'new' => 'Nouvelle',
         'planned' => 'Planifiée',
@@ -2571,7 +2570,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'Service Tickets';
 }
 
-if (file_exists('modules/ServiceFeedbacks/ServiceFeedback.php')) {
+if (file_exists('extensions/modules/ServiceFeedbacks/ServiceFeedback.php')) {
     $app_list_strings['service_satisfaction_scale_dom'] = [
         1 => '1 - insatisfait',
         2 => '2',

@@ -281,8 +281,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
         } catch (\SpiceCRM\includes\ErrorHandlers\UnauthorizedException $e) {
             $error->set_error($e->getMessage());
             LoggerManager::getLogger()->fatal($e->getMessage() . $user_auth['user_name']);
-            LogicHook::initialize();
-            $GLOBALS['logic_hook']->call_custom_logic('Users', 'login_failed');
+            LogicHook::getInstance()->call_custom_logic('Users', 'login_failed');
             self::$helperObject->setFaultObject($error);
             return;
         }
@@ -344,14 +343,8 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
 
     	$modules = [];
         $availModules = array_keys($_SESSION['avail_modules']); //ACL check already performed.
-        switch ($filter) {
-            case 'default':
-                $modules = self::$helperObject->get_visible_modules($availModules);
-                break;
-            case 'all':
-            default:
-                $modules = self::$helperObject->getModulesFromList(array_flip($availModules), $availModules);
-        }
+        $modules = self::$helperObject->getModulesFromList(array_flip($availModules), $availModules);
+
 
         LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_available_modules');
     	return ['modules'=> $modules];

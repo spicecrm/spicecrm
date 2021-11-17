@@ -16,6 +16,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         <strong class="slds-m-right--x-small">{{progressText}} {{lang.getLabel('LBL_COMPLETED')}}</strong>
     </div>
     <div class="slds-progress-bar slds-progress-bar_circular" [ngClass]="sizeClass">
-        <span class="slds-progress-bar__value" [ngStyle]="{'width.%':progressWidth}"></span>
+        <span class="slds-progress-bar__value" [ngStyle]="{'width.%':progressWidth, 'background':color}"></span>
     </div>
 </div>

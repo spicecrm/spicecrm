@@ -13,18 +13,35 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Inject,
+    Injector,
+    OnDestroy,
+    OnInit,
+    Optional,
+    Renderer2,
+    ViewChild
+} from '@angular/core';
 import {language} from '../../services/language.service';
 import {libloader} from '../../services/libloader.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import { model } from '../../services/model.service';
+import { take } from 'rxjs/operators';
+import { systemrichtextservice } from '../services/systemrichtext.service';
+import { modal } from '../../services/modal.service';
+import { DOCUMENT } from '@angular/common';
 
 declare var html_beautify: any;
+declare var _: any;
 
 @Component({
     selector: "system-richtext-sourcemodal",
     templateUrl: "./src/systemcomponents/templates/systemrichtextsourcemodal.html",
+    providers: [ systemrichtextservice ]
 })
-export class SystemRichTextSourceModal implements OnInit {
+export class SystemRichTextSourceModal implements OnInit, OnDestroy {
 
     public self: any = {};
     public _html: string = '';
@@ -32,15 +49,22 @@ export class SystemRichTextSourceModal implements OnInit {
     private foundIndices: number[] = [];
     private currentIndex: number = -1;
     private html: EventEmitter<string> = new EventEmitter<string>();
-
+    private isUserInsideEditor = false;
+    private editorId = _.uniqueId();
+    private eventListener: any[] = [];
     private beautifyenabled: boolean = false;
 
     @ViewChild('sourceeditor', {static: true}) public sourceEditor: any;
 
-    constructor(public language: language, public renderer: Renderer2, public sanitized: DomSanitizer, private libloader: libloader) {
+    constructor(
+        public language: language, public renderer: Renderer2, public sanitized: DomSanitizer,
+        private libloader: libloader, private injector: Injector, @Optional() private model: model,
+        private modal: modal, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any ) {
+
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
         });
+
     }
 
     get nextDisabled() {
@@ -66,6 +90,11 @@ export class SystemRichTextSourceModal implements OnInit {
 
     public ngOnInit() {
         this.renderer.setProperty(this.sourceEditor.nativeElement, 'innerText', this._html);
+        this.eventListener.push( this.renderer.listen('document', 'click', () => this.isUserInsideEditor = this.testIsUserInsideEditor() ));
+        this.eventListener.push( this.renderer.listen('document', 'keyup', () => {
+            this.isUserInsideEditor = this.testIsUserInsideEditor();
+            return true;
+        }));
     }
 
     private keyUp(e): void {
@@ -189,4 +218,50 @@ export class SystemRichTextSourceModal implements OnInit {
         this.html.emit(this._html);
         this.self.destroy();
     }
+
+    /**
+     * Should the TemplateVariableHelper be offered, the button enabled?
+     */
+    private get useTemplateVariableHelper() {
+        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
+    }
+
+    /**
+     * Open the modal with the TemplateVariableHelper
+     */
+    private openTemplateVariableHelper() {
+        this.editorService.saveSelection();
+        this.modal.openModal('OutputTemplatesVariableHelper', null, this.injector )
+            .pipe(take(1))
+            .subscribe(modal => {
+                modal.instance.response
+                    .pipe(take(1))
+                    .subscribe( text => {
+                        this.focusEditor();
+                        this.editorService.restoreSelection();
+                        this._document.execCommand('insertText', false, '{'+text+'}' );
+                    });
+            });
+    }
+
+    private focusEditor() {
+        this.sourceEditor.nativeElement.focus();
+    }
+
+    /**
+     * Determine if the user "is" currently inside the editor.
+     */
+    private testIsUserInsideEditor(): boolean {
+        if ( window.getSelection ) {
+            let userSelection = window.getSelection();
+            let a: any = userSelection.focusNode;
+            while( a && a.id !== this.editorId && a.parentNode ) a = a.parentNode;
+            return a?.id === this.editorId;
+        } else return false;
+    }
+
+    public ngOnDestroy() {
+        this.eventListener.forEach( item => item() );
+    }
+
 }

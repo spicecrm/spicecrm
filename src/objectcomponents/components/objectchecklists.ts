@@ -330,7 +330,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      */
     private loadData() {
         this.model.backend.get(this.model.module, this.model.id).subscribe(data => {
-            if (!data?.[this.fieldName]) return;
+            if (!Array.isArray(data?.[this.fieldName])) return;
             this.checklists = data[this.fieldName];
         });
     }

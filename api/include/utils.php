@@ -12,6 +12,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\TimeDate;
 
 /* * *******************************************************************************
 
@@ -25,7 +26,10 @@ require_once('include/utils/security_utils.php');
 require_once('include/utils/file_utils.php');
 require_once('include/utils/db_utils.php');
 
-
+/**
+ * @deprecated moved to SpiceUtils
+ * @return mixed
+ */
 function get_languages() {
 
     $lang = SpiceConfig::getInstance()->config['languages'];
@@ -39,6 +43,7 @@ function get_languages() {
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * This function retrieves an application language file and returns the array of strings included in the $app_list_strings var.
  *
  * @param string $language specific language to load
@@ -87,6 +92,15 @@ function return_app_list_strings_language($language, $scope = 'all') {
                 include("include/language/$lang.lang.php.override");
                 LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
             }
+            if (file_exists("extensions/include/language/$lang.lang.php")) {
+                include("extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
+            // BWC temporary name of include folder
+            if (file_exists("extensions/include/language/$lang.lang.php")) {
+                include("extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
         }
 
         if($scope == 'all' || $scope == 'custom') {
@@ -102,6 +116,16 @@ function return_app_list_strings_language($language, $scope = 'all') {
             if (file_exists("custom/include/language/$lang.lang.php.override")) {
                 include("custom/include/language/$lang.lang.php.override");
                 LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
+            }
+
+            if (file_exists("custom/extensions/include/language/$lang.lang.php")) {
+                include("custom/extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+            }
+            // BWC temporary name of include folder
+            if (file_exists("custom/extensions/include/language/$lang.lang.php")) {
+                include("custom/extensions/include/language/$lang.lang.php");
+                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
             }
         }
 
@@ -157,6 +181,7 @@ function return_app_list_strings_language($language, $scope = 'all') {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * The dropdown items in custom language files is $app_list_strings['$key']['$second_key'] = $value not
  * $GLOBALS['app_list_strings']['$key'] = $value, so we have to delete the original ones in app_list_strings and relace it with the custom ones.
  * @param file string the language that you want include,
@@ -190,6 +215,7 @@ function _mergeCustomAppListStrings($file, $app_list_strings) {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * This function retrieves an application language file and returns the array of strings included.
  *
  * @param string $language specific language to load
@@ -288,7 +314,6 @@ function return_application_language($language) {
 }
 
 /**
- *
  * @deprecated - Module Language no longer exisats
  *
  * This function retrieves a module's language file and returns the array of strings included.
@@ -303,7 +328,9 @@ function return_module_language($language, $module, $refresh = false) {
     return [];
 }
 
-/** This function retrieves an application language file and returns the array of strings included in the $mod_list_strings var.
+/**
+ * @deprecated moved to SpiceUtils
+ * This function retrieves an application language file and returns the array of strings included in the $mod_list_strings var.
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
@@ -312,7 +339,9 @@ function return_mod_list_strings_language($language, $module) {
     return [];
 }
 
-/** If the session variable is defined and is not equal to "" then return it.  Otherwise, return the default value.
+/**
+ * @deprecated moved to SpiceUtils
+ * If the session variable is defined and is not equal to "" then return it.  Otherwise, return the default value.
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
@@ -326,6 +355,7 @@ function return_session_value_or_default($varname, $default) {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * determines if a passed string matches the criteria for a Sugar GUID
  * @param string $guid
  * @return bool False on failure
@@ -374,14 +404,24 @@ function ensure_length(&$string, $length) {
     SpiceUtils::ensureLength($string, $length);
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $a
+ * @param $b
+ * @return mixed|string
+ */
 function microtime_diff($a, $b) {
     list($a_dec, $a_sec) = explode(" ", $a);
     list($b_dec, $b_sec) = explode(" ", $b);
     return $b_sec - $a_sec + $b_dec - $a_dec;
 }
 
-
-// Check if user is admin for at least one module.
+/**
+ * @deprecated moved to SpiceUtils
+ * Check if user is admin for at least one module.
+ * @param $user
+ * @return bool
+ */
 function is_admin_for_any_module($user) {
     if (!isset($user)) {
         return false;
@@ -394,6 +434,7 @@ function is_admin_for_any_module($user) {
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * Check if user id belongs to a system admin.
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
  * All Rights Reserved.
@@ -421,7 +462,13 @@ function sugar_die($error_message, $exit_code = 1) {
     throw new Exception( $error_message , 500) ;
 }
 
-
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $string
+ * @param string $mod
+ * @param string $selectedValue
+ * @return mixed|string
+ */
 function translate($string, $mod = '', $selectedValue = '') {
 
     global $mod_strings, $app_strings, $app_list_strings, $current_language;
@@ -456,6 +503,7 @@ function translate($string, $mod = '', $selectedValue = '') {
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * Designed to take a string passed in the URL as a parameter and clean all "bad" data from it
  *
  * @param string $str
@@ -502,7 +550,11 @@ function clean_string($str, $filter = "STANDARD", $dieOnBadData = true) {
 }
 
 
-
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $value
+ * @return array|string|string[]
+ */
 function securexss($value) {
     if (is_array($value)) {
         $new = [];
@@ -517,14 +569,30 @@ function securexss($value) {
     return str_replace(array_keys($xss_cleanup), array_values($xss_cleanup), $value);
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $category
+ * @param $name
+ * @param $value
+ */
 function set_register_value($category, $name, $value) {
     return SugarCache::sugar_cache_put("{$category}:{$name}", $value);
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $category
+ * @param $name
+ * @return mixed
+ */
 function get_register_value($category, $name) {
     return SugarCache::sugar_cache_retrieve("{$category}:{$name}");
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param false $msg
+ */
 function display_notice($msg = false) {
     global $error_notice;
     //no error notice - lets just display the error to the user
@@ -543,7 +611,10 @@ function sugar_cleanup($exit = false) {
     SpiceUtils::spiceCleanup($exit);
 }
 
-
+/**
+ * @deprecated moved to SpiceUtils
+ * @param false $textOnly
+ */
 function display_stack_trace($textOnly = false) {
 
     $stack = debug_backtrace();
@@ -603,6 +674,14 @@ function display_stack_trace($textOnly = false) {
     echo $out;
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $errno
+ * @param $errstr
+ * @param $errfile
+ * @param $errline
+ * @param $errcontext
+ */
 function StackTraceErrorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
     $error_msg = " $errstr occurred in <b>$errfile</b> on line $errline [" . date("Y-m-d H:i:s") . ']';
     $halt_script = true;
@@ -658,6 +737,7 @@ if (isset(SpiceConfig::getInstance()->config['stack_trace_errors']) && SpiceConf
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * tries to determine whether the Host machine is a Windows machine
  */
 function is_windows() {
@@ -670,6 +750,7 @@ function is_windows() {
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * This function will take a string that has tokens like {0}, {1} and will replace
  * those tokens with the args provided
  * @param	$format string to format
@@ -704,6 +785,7 @@ require_once('include/utils/db_utils.php');
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * Identical to sugarArrayMerge but with some speed improvements and used specifically to merge
  * language files.  Language file merges do not need to account for null values so we can get some
  * performance increases by using this specialized function. Note this merge function does not properly
@@ -743,6 +825,7 @@ function sugarLangArrayMerge($gimp, $dom) {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * like array_merge() but will handle array elements that are themselves arrays;
  * PHP's version just overwrites the element with the new one.
  *
@@ -784,6 +867,7 @@ function sugarArrayMerge($gimp, $dom) {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * Similiar to sugarArrayMerge except arrays of N depth are merged.
  *
  * @param array gimp the array whose values will be overloaded
@@ -811,8 +895,10 @@ function sugarArrayMergeRecursive($gimp, $dom) {
     return $gimp;
 }
 
-
-
+/**
+ * @deprecated moved to SpiceUtils
+ * @return bool
+ */
 function can_start_session() {
     if (!empty($_GET['PHPSESSID'])) {
         return true;
@@ -821,13 +907,17 @@ function can_start_session() {
     return empty($session_id) ? true : false;
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @return bool
+ */
 function inDeveloperMode() {
     return isset(SpiceConfig::getInstance()->config['developerMode']) && SpiceConfig::getInstance()->config['developerMode'];
 }
 
 
 /**
- *
+ * @deprecated moved to SpiceUtils
  */
 function unencodeMultienum($string) {
     if (is_array($string)) {
@@ -840,6 +930,11 @@ function unencodeMultienum($string) {
     return explode('^,^', $string);
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $arr
+ * @return mixed|string
+ */
 function encodeMultienumValue($arr) {
     if (!is_array($arr))
         return $arr;
@@ -852,6 +947,12 @@ function encodeMultienumValue($arr) {
     return $string;
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $a
+ * @param $b
+ * @return int
+ */
 function cmp_beans($a, $b) {
     global $sugar_web_service_order_by;
     //If the order_by field is not valid, return 0;
@@ -868,6 +969,12 @@ function cmp_beans($a, $b) {
     }
 }
 
+/**
+ * @deprecated moved to SpiceUtils
+ * @param $beans
+ * @param $field_name
+ * @return mixed
+ */
 function order_beans($beans, $field_name) {
     //Since php 5.2 doesn't include closures, we must use a global to pass the order field to cmp_beans.
     global $sugar_web_service_order_by;
@@ -889,6 +996,7 @@ if (file_exists('custom/application/Ext/Utils/custom_utils.ext.php')) {
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * get_language_header
  *
  * This is a utility function for 508 Compliance.  It returns the lang=[Current Language] text string used
@@ -901,6 +1009,7 @@ function get_language_header() {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * get_custom_file_if_exists
  *
  * This function handles the repetitive code we have where we first check if a file exists in the
@@ -916,6 +1025,7 @@ function get_custom_file_if_exists($file) {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * Remove vars marked senstitive from array
  * @param array $defs
  * @param SugarBean|array $data
@@ -936,6 +1046,7 @@ function clean_sensitive_data($defs, $data) {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * Gets the list of "*type_display*".
  * 
  * @return array
@@ -945,6 +1056,7 @@ function getTypeDisplayList() {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * get any Relationship between two modules as raw table rows
  *
  * @param unknown $lhs_module        	
@@ -978,16 +1090,23 @@ function findRelationships($lhs_module, $rhs_module, $name = "", $type = "") {
     return $rels;
 }
 
-
+/**
+ * @deprecated moved to SpiceUtils
+ * @param null $year
+ * @param null $mnth
+ * @param null $day
+ * @return mixed
+ */
 function create_date($year=null,$mnth=null,$day=null)
 {
-    global $timedate;
+    $timedate = TimeDate::getInstance();
     $now = $timedate->getNow();
     if ($day==null) $day=$now->day+mt_rand(0,365);
     return $timedate->asDbDate($now->get_day_begin($day, $mnth, $year));
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * Create a short url and save it in the DB.
  *
  * @param $route The route (long url).
@@ -1022,6 +1141,7 @@ function createShorturl( $route, $active = 1 )
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * Generate a random key for a short url.
  *
  * @param $length The length of the key. Default is 6.
@@ -1050,6 +1170,7 @@ function generateShorturlKey( $length = 6 ) {
  */
 
 /**
+ * @deprecated moved to SpiceUtils
  * currency_format_number
  *
  * This method is a wrapper designed exclusively for formatting currency values
@@ -1085,6 +1206,7 @@ function currency_format_number($amount, $params = []) {
 }
 
 /**
+ * @deprecated moved to SpiceUtils
  * format_number(deprecated)
  *
  * This method accepts an amount and formats it given the user's preferences.
@@ -1217,6 +1339,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * @param $amount
  * @param $symbol
  * @param $symbol_space
@@ -1250,6 +1373,7 @@ function format_place_symbol($amount, $symbol, $symbol_space, $symbol_position =
 
 
 /**
+ * @deprecated moved to SpiceUtils
  * Returns user/system preference for number grouping separator character(default ",") and the decimal separator
  *(default ".").  Special case: when num_grp_sep is ".", it will return NULL as the num_grp_sep.
  * @return array Two element array, first item is num_grp_sep, 2nd item is dec_sep

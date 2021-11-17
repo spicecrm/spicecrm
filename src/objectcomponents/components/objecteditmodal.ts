@@ -44,7 +44,7 @@ export class ObjectEditModal implements OnInit {
     /**
      * the componentconfig that gets passed in when the modal is created
      */
-    private componentconfig: any = {};
+    private componentconfig: any;
     /**
      * the actionset items to be rendered in the modal
      */
@@ -114,7 +114,10 @@ export class ObjectEditModal implements OnInit {
     }
 
     public ngOnInit() {
-        this.componentconfig = this.metadata.getComponentConfig(this.constructor.name, this.model.module);
+        if(!this.componentconfig) {
+            this.componentconfig = this.metadata.getComponentConfig(this.constructor.name, this.model.module);
+        }
+
         this.actionSetItems = this.metadata.getActionSetItems(this.componentconfig.actionset);
 
         // set the reference to self ..

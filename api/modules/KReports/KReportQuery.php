@@ -5,8 +5,9 @@ namespace SpiceCRM\modules\KReports;
 
 use DateInterval;
 use DateTime;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\modules\KReports\KReportUtil;
+
 use SpiceCRM\modules\KReports\KReportQueryArray;
 
 global $dictionary;
@@ -281,7 +282,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         $this->joinSegments['root:' . $this->root_module] = array('alias' => $this->rootGuid, 'level' => 0);
 
         // get ther root Object
-        //require_once($beanFiles[$beanList[$this->root_module]]);
+        //require_once(SpiceModules::getInstance()->getBeanFiles()[$beanList[$this->root_module]]);
         //$this->joinSegments['root:' . $this->root_module]['object'] = new $beanList[$this->root_module]();
         $this->joinSegments['root:' . $this->root_module]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->root_module);
 
@@ -732,7 +733,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         if (!empty($thisWhere['fixedvalue']))
                             $tempWhereString = $this->getWhereOperatorClause($thisWhere['operator'], $fieldArray[1], '\'' . $thisWhere['fixedvalue'] . '\'', $pathName, $thisWhere['value'], $thisWhere['valuekey'], $thisWhere['valueto'], $thisWhere['valuetokey'], $thisWhere['jointype']);
                         elseif (!empty($pathName))
-                            $tempWhereString = $this->getWhereOperatorClause($thisWhere['operator'], $fieldArray[1], $thisWhere['fieldid'], $pathName, $thisWhere['value'], $thisWhere['valuekey'], $thisWhere['valueto'], $thisWhere['valuetokey'], $thisWhere['jointype']);
+                            $tempWhereString = $this->getWhereOperatorClause($thisWhere['operator'], $fieldArray[1], $thisWhere['fieldid'], $pathName, $thisWhere['value'], $thisWhere['valuekey'], $thisWhere['valueto'], $thisWhere['valuetokey'], $thisWhere['jointype'], $thisWhere['customSqlQuery']);
                     } else {
                         // we have a not esists clause
                         $tempWhereString .= 'not exists(';
@@ -913,7 +914,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
      * process the where operator
      */
 
-    function getWhereOperatorClause($operator, $fieldname, $fieldid, $path, $value, $valuekey, $valueto, $valuetokey = '', $jointype = '')
+    function getWhereOperatorClause($operator, $fieldname, $fieldid, $path, $value, $valuekey, $valueto, $valuetokey = '', $jointype = '', $customSql = '')
     {
         $current_user = \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser();
 
@@ -965,13 +966,13 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 if ($valuekey != '')
                     $value = str_replace('T', ' ', $valuekey);
                 else
-                    $value = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$value), false);
+                    $value = TimeDate::getInstance()->to_db_date(str_replace('T', ' ' ,$value), false);
 
 
                 if ($valuetokey != '')
                     $valueto = str_replace('T', ' ' ,$valuetokey);
                 else
-                    $valueto = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$valueto), false);
+                    $valueto = TimeDate::getInstance()->to_db_date(str_replace('T', ' ' ,$valueto), false);
             }
             if ($this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo') {
                 //2011-07-17 .. db formated dtae stroed in key field
@@ -980,7 +981,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 else {
                     // legacy handling ... try to interpret date
                     $timeArray = explode(' ', str_replace('T', ' ', $value));
-                    $value = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
+                    $value = TimeDate::getInstance()->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                 }
 
                 if ($valueto != '' || $valuetokey != '') {
@@ -989,7 +990,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     else {
                         // legacy handling ... try to interpret date
                         $timeArray = explode(' ', str_replace('T', ' ', $valueto));
-                        $valueto = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
+                        $valueto = TimeDate::getInstance()->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                     }
                 }
             }
@@ -1008,7 +1009,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $thisWhereString .= $this->joinSegments[$path]['alias'] . '.id';
                 break;
             default:
-                $thisWhereString .= $this->get_field_name($path, $fieldname, $fieldid);
+                $thisWhereString .= $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
                 break;
         }
         // process the operator
@@ -1032,16 +1033,16 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     switch ($this->fieldNameMap[$fieldid]['type']) {
                         case 'multienum':
                             $thisWhereString .= ' LIKE \'%^' . $value . '^%\'';
-                            $thisWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid);
+                            $thisWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
                             $thisWhereString .= ' LIKE \'' . $value . '^%\'';
-                            $thisWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid);
+                            $thisWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
                             $thisWhereString .= ' LIKE \'%^' . $value . '\'';
-                            $thisWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid);
+                            $thisWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
                             $thisWhereString .= ' = \'' . $value . '\'';
                             break;
                         //		case 'date':
                         //		case 'datetime':
-                        //			$thisWhereString .= ' = \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                        //			$thisWhereString .= ' = \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                         //			break;
                         default:
                             //BEGIN ticket 0001025 maretval 2019-11-26 implement grouping in where clause
@@ -1107,7 +1108,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             case 'after':
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date no handled in client
-                // $thisWhereString .= ' > \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                // $thisWhereString .= ' > \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                 $thisWhereString .= ' > \'' . $value . '\'';
                 break;
             case 'less':
@@ -1116,7 +1117,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             case 'before':
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date no handled in client
-                // $thisWhereString .= ' < \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                // $thisWhereString .= ' < \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                 $thisWhereString .= ' < \'' . $value . '\'';
                 break;
             case 'greaterequal':
@@ -1141,27 +1142,27 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date handling now on client side
                 if ($this->fieldNameMap[$fieldid]['type'] == 'date' || $this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo')
-                    // $thisWhereString .= ' >= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<=\'' . $GLOBALS['timedate']->to_db_date($valueto, false) . '\'';
-                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<=\'' . $valueto . '\'';
+                    // $thisWhereString .= ' >= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . TimeDate::getInstance()->to_db_date($valueto, false) . '\'';
+                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $valueto . '\'';
                 elseif ($this->fieldNameMap[$fieldid]['type'] == 'varchar' || $this->fieldNameMap[$fieldid]['type'] == 'name') {
                     //2012-11-24 change so we increae the last char by one ord numkber and change to a smaller than
                     // this is more in the logic of the user
                     $valueto = substr($valueto, 0, strlen($valueto) - 1) . chr(ord($valueto[strlen($valueto) - 1]) + 1);
-                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<\'' . $valueto . '\'';
+                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<\'' . $valueto . '\'';
                 } else
-                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<=\'' . $valueto . '\'';
+                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $valueto . '\'';
                 break;
             case 'isempty':
                 $thisWhereString .= ' = \'\'';
                 break;
             case 'isemptyornull':
-                $thisWhereString .= ' = \'\' OR ' . $this->get_field_name($path, $fieldname, $fieldid) . ' IS NULL';
+                $thisWhereString .= ' = \'\' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' IS NULL';
                 break;
             case 'isnull':
                 $thisWhereString .= ' IS NULL';
                 break;
             case 'isnotempty':
-                $thisWhereString .= ' <> \'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' is not null';
+                $thisWhereString .= ' <> \'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' is not null';
                 break;
             case 'oneof':
                 if ($this->fieldNameMap[$fieldid]['type'] == 'multienum') {
@@ -1177,7 +1178,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     $multienumWhereString = '';
                     foreach ($valueArray as $thisMultiEnumValue) {
                         if ($multienumWhereString != '')
-                            $multienumWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid);
+                            $multienumWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
 
                         $multienumWhereString .= ' LIKE \'%' . $thisMultiEnumValue . '%\'';
                     }
@@ -1212,7 +1213,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     $multienumWhereString = '';
                     foreach ($valueArray as $thisMultiEnumValue) {
                         if ($multienumWhereString != '')
-                            $multienumWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid);
+                            $multienumWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
 
                         $multienumWhereString .= ' NOT LIKE \'%' . $thisMultiEnumValue . '%\'';
                     }
@@ -1247,11 +1248,11 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     $multienumWhereString = '';
                     foreach ($valueArray as $thisMultiEnumValue) {
                         if ($multienumWhereString != '')
-                            $multienumWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid);
+                            $multienumWhereString .= ' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
 
                         $multienumWhereString .= ' NOT LIKE \'%' . $thisMultiEnumValue . '%\'';
                     }
-                    $thisWhereString .= $multienumWhereString . 'OR ' . $this->get_field_name($path, $fieldname, $fieldid) . ' IS NULL';
+                    $thisWhereString .= $multienumWhereString . 'OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' IS NULL';
                 } else {
                     //BEGIN ticket 0001025 maretval 2019-03-27 implement grouping in where clause
                     if (isset($this->fieldNameMap[$fieldid]['grouping']) && !empty($this->fieldNameMap[$fieldid]['grouping'])) {
@@ -1266,12 +1267,12 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     }
                     else
                         //END
-                        $thisWhereString .= ' NOT IN (\'' . str_replace(',', '\',\'', (is_array($value) ? implode(',', $value) : $value)) . '\') OR ' . $this->get_field_name($path, $fieldname, $fieldid) . ' IS NULL';
+                        $thisWhereString .= ' NOT IN (\'' . str_replace(',', '\',\'', (is_array($value) ? implode(',', $value) : $value)) . '\') OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' IS NULL';
                 }
                 break;
             case 'today':
-                $todayDate = date('Y-m-d', mktime());
-                $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' <= \'' . $todayDate . ' 23:59:59\'';
+                $todayDate = date('Y-m-d', time());
+                $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $todayDate . ' 23:59:59\'';
                 break;
             case 'past':
                 $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time()) . '\'';
@@ -1281,42 +1282,42 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 break;
             case 'lastndays':
                 $date = time();
-                $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'lastnfdays':
                 $date = gmmktime(0, 0, 0, date('m', time()), date('d', time()), date('Y', time()));
-                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $date - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . gmdate('Y-m-d H:i:s', $date) . '\'';
+                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $date - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . gmdate('Y-m-d H:i:s', $date) . '\'';
                 break;
             case 'lastnddays':
                 // if numeric we still have the number of days .. else we have a date
                 if (is_numeric($value)) {
                     $date = time();
-                    $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 } else
                     // 2011-03-25 date handling no on client side
-                    //$thisWhereString .= ' >= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
-                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    //$thisWhereString .= ' >= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'lastnweeks':
                 $date = time();
-                $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 604800) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 604800) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'notlastnweeks':
                 $date = time();
-                $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() - $value * 604800) . '\' OR ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() - $value * 604800) . '\' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'lastnfweeks':
                 $dayofWeek = date('N');
                 $todayMidnight = gmmktime('23', '59', '59', date('n'), date('d'), date('Y'));
                 $endStamp = gmmktime('23', '59', '59', date('n'), date('d'), date('Y')) - (date('N') * 3600 * 24);
-                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $endStamp - $value * 604800 + 1) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . gmdate('Y-m-d H:i:s', $endStamp) . '\'';
+                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $endStamp - $value * 604800 + 1) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . gmdate('Y-m-d H:i:s', $endStamp) . '\'';
                 break;
             case 'lastnmonthDaily':
                 $currentDate = new DateTime(gmdate('Y-m-d'));
                 $toDate = $currentDate->format('Y-m-d');
                 $currentDate->sub(new DateInterval('P'.$value.'M'));
                 $fromDate = $currentDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
 
             case 'lastnfmonth':
@@ -1350,142 +1351,142 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 }
                 $startStamp = gmmktime('0', '0', '0', $startMonth, '1', $startYear);
 
-                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $startStamp) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . gmdate('Y-m-d H:i:s', $endStamp) . '\'';
+                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $startStamp) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . gmdate('Y-m-d H:i:s', $endStamp) . '\'';
                 break;
             case 'thisweek':
                 $dayofWeek = date('N');
                 $todayMidnight = gmmktime('23', '59', '59', date('n'), date('d'), date('Y'));
                 $startStamp = gmmktime('00', '00', '00', date('n'), date('d'), date('Y')) - ((date('N') - 1) * 3600 * 24);
-                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $startStamp) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . gmdate('Y-m-d H:i:s', $startStamp + 604800 - 1) . '\'';
+                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $startStamp) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . gmdate('Y-m-d H:i:s', $startStamp + 604800 - 1) . '\'';
                 break;
             case 'nextndays':
                 $date = time();
-                $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'nextnddays':
                 // if numeric we still have the number of days .. else we have a date
                 if (is_numeric($value)) {
                     $date = time();
-                    $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 } else {
-                    //$conCatAdd = ' <= \'' . $GLOBALS['timedate']->to_db_date($value) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . date('Y-m-d H:i:s') . '\'';
+                    //$conCatAdd = ' <= \'' . TimeDate::getInstance()->to_db_date($value) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s') . '\'';
                     // 2011-03-25 date handling now on client side
-                    // $thisWhereString .= ' <= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
-                    $thisWhereString .= ' <= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    // $thisWhereString .= ' <= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    $thisWhereString .= ' <= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 }
                 break;
             //2011-05-20 added between n days option
             case 'betwndays':
                 $date = gmmktime(0, 0, 0, date('m', time()), date('d', time()), date('Y', time()));
-                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $date + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . gmdate('Y-m-d H:i:s', $date + $valueto * 86400) . '\'';
+                $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $date + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . gmdate('Y-m-d H:i:s', $date + $valueto * 86400) . '\'';
                 break;
                 break;
             case 'betwnddays':
                 if (is_numeric($value)) {
                     $date = gmmktime(0, 0, 0, date('m', time()), date('d', time()), date('Y', time()));
-                    $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $date + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . gmdate('Y-m-d H:i:s', $date + $valueto * 86400) . '\'';
+                    $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $date + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . gmdate('Y-m-d H:i:s', $date + $valueto * 86400) . '\'';
                 } else {
-                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $valueto . '\'';
+                    $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $valueto . '\'';
                 }
                 break;
             case 'nextnweeks':
                 $date = time();
-                $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 604800) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 604800) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'notnextnweeks':
                 $date = time();
-                $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() + $value * 604800) . '\' OR ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() + $value * 604800) . '\' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'firstdayofmonth':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' <= \'' . $fromDate . ' 23:59:59\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $fromDate . ' 23:59:59\'';
                 break;
             case 'firstdaynextmonth':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] == '12' ? 1 : $dateArray['mon'] + 1, 1, $dateArray['mon'] == '12' ? $dateArray['year'] + 1 : $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' <= \'' . $fromDate . ' 23:59:59\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $fromDate . ' 23:59:59\'';
                 break;
             case 'nthdayofmonth':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], $value, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' <= \'' . $fromDate . ' 23:59:59\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $fromDate . ' 23:59:59\'';
                 break;
             case 'thismonth':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
                 $toDate = (($dateArray['mon'] + 1) > 12) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 11, 1, $dateArray['year'] + 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 1, 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'notthismonth':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
                 $toDate = (($dateArray['mon'] + 1) > 12) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 11, 1, $dateArray['year'] + 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 1, 1, $dateArray['year']));
-                $thisWhereString .= ' <= \'' . $fromDate . ' 00:00:00\' OR ' . $this->get_field_name($path, $fieldname, $fieldid) . ' > \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' <= \'' . $fromDate . ' 00:00:00\' OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'nextnmonth':
                 //MySQL way
-                //$thisWhereString .= ' >= \'DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'DATE_ADD(LAST_DAY(DATE_ADD(CURDATE(), INTERVAL '.$value.' MONTH)), INTERVAL 1 DAY)\'';
+                //$thisWhereString .= ' >= \'DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'DATE_ADD(LAST_DAY(DATE_ADD(CURDATE(), INTERVAL '.$value.' MONTH)), INTERVAL 1 DAY)\'';
                 //do it per dates to be comaptible with other databases
                 $calcDate = new DateTime(gmdate('Y-m-d'));
                 $calcDate->add(new DateInterval('P1M')); //Add 1 month
                 $fromDate = $calcDate->format('Y-m-01');   //Get the first day of the next month as string
                 $calcDate->add(new DateInterval('P'.$value.'M'));
                 $toDate = $calcDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnmonthDaily':
                 //MySQL way
-                //$thisWhereString .= ' >= \'CURDATE()\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'DATE_ADD(CURDATE(), INTERVAL '.$value.' MONTH)\'';
+                //$thisWhereString .= ' >= \'CURDATE()\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'DATE_ADD(CURDATE(), INTERVAL '.$value.' MONTH)\'';
                 //do it per dates to be comaptible with other databases
                 $calcDate = new DateTime(gmdate('Y-m-d'));
                 $fromDate = $calcDate->format('Y-m-d');
                 $calcDate->add(new DateInterval('P'.$value.'M'));
                 $toDate = $calcDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
             case 'next3month':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
                 $toDate = (($dateArray['mon'] + 3) > 12) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 8, 1, $dateArray['year'] + 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 3, 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             // added mor where Opertors Bug #486
             case 'next3monthDaily':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
                 $toDate = (($dateArray['mon'] + 3) > 12) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 9, $dateArray['mday'], $dateArray['year'] + 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 3, $dateArray['mday'], $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'next6month':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
                 $toDate = (($dateArray['mon'] + 6) > 12) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 5, 1, $dateArray['year'] + 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 6, 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'next6monthDaily':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
                 $toDate = (($dateArray['mon'] + 6) > 12) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 6, $dateArray['mday'], $dateArray['year'] + 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 6, $dateArray['mday'], $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'last3monthDaily':
                 $dateArray = getdate();
                 $fromDate = (($dateArray['mon'] - 3) < 1) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 9, $dateArray['mday'], $dateArray['year'] - 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 3, $dateArray['mday'], $dateArray['year']));
                 $toDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'last6month':
                 $dateArray = getdate();
                 $fromDate = (($dateArray['mon'] - 6) < 1) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 6, 1, $dateArray['year'] - 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 6, 1, $dateArray['year']));
                 $toDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'last6monthDaily':
                 $dateArray = getdate();
                 $fromDate = (($dateArray['mon'] - 6) < 1) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 6, $dateArray['mday'], $dateArray['year'] - 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 6, $dateArray['mday'], $dateArray['year']));
                 $toDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'lastnfquarter':
                 $calcDate = new DateTime(gmdate('Y-m-d'));
@@ -1508,7 +1509,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $toDate = $calcDate->format('Y-m-01');   //Get the first day of the next month as string
                 $calcDate->sub(new DateInterval('P'.($value*3).'M'));
                 $fromDate = $calcDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnfquarter':
                 $calcDate = new DateTime(gmdate('Y-m-d'));
@@ -1531,21 +1532,21 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $fromDate = $calcDate->format('Y-m-01');   //Get the first day of the next month as string
                 $calcDate->add(new DateInterval('P'.($value*3).'M'));
                 $toDate = $calcDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
 
             case 'thisyear':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, 1, 1, $dateArray['year']));
                 $toDate = date('Y-m-d', mktime(0, 0, 0, 1, 1, $dateArray['year'] + 1));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'lastmonth':
                 $dateArray = getdate();
                 //bug 2011-08-09 removed h:i:s from format
                 $fromDate = (($dateArray['mon'] - 1) < 1) ? date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] + 11, 1, $dateArray['year'] - 1)) : date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'] - 1, 1, $dateArray['year']));
                 $toDate = date('Y-m-d', mktime(0, 0, 0, $dateArray['mon'], 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'last3month':
                 $dateArray = getdate();
@@ -1557,28 +1558,28 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $toDate = $dayStartThisMonth->format('Y-m-d');
                 $dayStart3MonthsBefore = $dayStartThisMonth->sub(new \DateInterval("P3M"));
                 $fromDate = $dayStart3MonthsBefore->format('Y-m-d');
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 // END
                 break;
             case 'lastyear':
                 $dateArray = getdate();
                 $fromDate = date('Y-m-d', mktime(0, 0, 0, 1, 1, $dateArray['year'] - 1));
                 $toDate = date('Y-m-d', mktime(0, 0, 0, 1, 1, $dateArray['year']));
-                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
+                $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'lastnyear':
                 $firstOfYearDate = new DateTime(gmdate('Y-01-01'));
                 $toDate = $firstOfYearDate->format('Y-m-d');
                 $firstOfYearDate->sub(new DateInterval('P'.$value.'Y'));
                 $fromDate = $firstOfYearDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
             case 'lastnyearDaily':
                 $currentDate = new DateTime(gmdate('Y-m-d'));
                 $toDate = $currentDate->format('Y-m-d');
                 $currentDate->sub(new DateInterval('P'.$value.'Y'));
                 $fromDate = $currentDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnyear':
                 $calcDate = new DateTime(gmdate('Y-m-d'));
@@ -1586,22 +1587,22 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $fromDate = $calcDate->format('Y-01-01');   //Get the first day of the next year as string
                 $calcDate->add(new DateInterval('P'.$value.'Y'));
                 $toDate = $calcDate->format('Y-01-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnyearDaily':
                 $calcDate = new DateTime(date('Y-m-d'));
                 $fromDate = $calcDate->format('Y-m-d');   //Get the first day of the next year as string
                 $calcDate->add(new DateInterval('P'.$value.'Y'));
                 $toDate = $calcDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \''.$toDate.'\'';
                 break;
             case 'tyytd':
                 $year = date('Y');
-                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<=\'' . date('Y-m-d') . '\'';
+                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . date('Y-m-d') . '\'';
                 break;
             case 'lyytd':
                 $year = date('Y') - 1;
-                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<=\'' . $year . '-' . date('m-d') . '\'';
+                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $year . '-' . date('m-d') . '\'';
                 break;
         }
 
@@ -1615,7 +1616,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
         //2011-07-20 handle jointype
         if ($jointype == 'optional' && $operator != 'isnull') {
-            $thisWhereString = '( ' . $thisWhereString . ' ) OR ' . $this->get_field_name($path, $fieldname, $fieldid) . ' IS NULL';
+            $thisWhereString = '( ' . $thisWhereString . ' ) OR ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' IS NULL';
         }
 
         return $thisWhereString;
@@ -1880,7 +1881,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
      * Helper function to get the Field name
      */
 
-    function get_field_name($path, $field, $fieldid, $link = false, $sqlFunction = '')
+    function get_field_name($path, $field, $fieldid, $link = false, $sqlFunction = '', $customSql = '')
     {
         // if we do not have a path we have a fixed value field so do not return a name
         if ($path != '') {
@@ -1910,6 +1911,11 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     'fields_name_map_entry' => $this->joinSegments[$path]['object']->field_name_map[$field],
                     'type' => $this->joinSegments[$path]['object']->field_name_map[$field]['kreporttype'] ?: $this->joinSegments[$path]['object']->field_name_map[$field]['type'],
                     'module' => $thisModule);
+
+            if (!empty($customSql)) {
+                $customSql = base64_decode($customSql);
+                return '(' . preg_replace(array('/\$/', '/{t}/'), $thisAlias, $customSql) . ')';
+            }
 
             // check for custom function
             if ($this->joinSegments[$path]['object']->field_name_map[$field]['type'] == 'kreporter') {

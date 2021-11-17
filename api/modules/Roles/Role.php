@@ -2,6 +2,7 @@
 namespace SpiceCRM\modules\Roles;
 
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\Users\User;
 
 /*********************************************************************************
@@ -40,6 +41,7 @@ use SpiceCRM\modules\Users\User;
 ********************************************************************************/
 
 /*********************************************************************************
+ * @deprecated
 
  * Description:
  ********************************************************************************/
@@ -148,12 +150,9 @@ class Role extends SugarBean {
 	
 	function query_user_disallowed_modules($user_id, &$allowed)
 	{
-		global $moduleList;
-		
 		$returnArray = [];
 		
-		foreach($moduleList as $key=>$val)
-		{
+		foreach (SpiceModules::getInstance()->getModuleList() as $key => $val) {
 			if(array_key_exists($val, $allowed))
 				continue;
 			$returnArray[$val] = $val;

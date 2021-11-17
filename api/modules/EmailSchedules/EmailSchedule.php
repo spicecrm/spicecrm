@@ -56,7 +56,7 @@ class EmailSchedule extends SugarBean
         $email->mailbox_id = $emailSchedule->mailbox_id;
         $email->name = $emailSchedule->email_subject;
         $email->body = $parsedTemplate['body_html'];
-        $primaryAddress = $seed->emailAddress->getPrimaryAddress($seed);
+        $primaryAddress = $seed->email1;
 
         if(empty($primaryAddress)) {
             // reset the current user to admin
@@ -64,7 +64,7 @@ class EmailSchedule extends SugarBean
             return false;
         }
 
-        $email->addEmailAddress('to', $seed->emailAddress->getPrimaryAddress($seed));
+        $email->addEmailAddress('to', $seed->email1);
         $mailbox = BeanFactory::getBean('Mailboxes', $emailSchedule->mailbox_id);
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
 
@@ -98,6 +98,7 @@ class EmailSchedule extends SugarBean
     {
         $openEmailSchedules = $this->db->query("SELECT id from emailschedules WHERE email_schedule_status = 'open' AND deleted = 0 ORDER by date_modified DESC");
         while ($openEmailSchedule = $this->db->fetchByAssoc($openEmailSchedules)) {
+            $this->updateEmailScheduleStatus($openEmailSchedule['id'], 'processing');
             $status = $this->sendEmailScheduleEmails($openEmailSchedule['id']);
             $this->updateEmailScheduleStatus($openEmailSchedule['id'], $status);
         }
@@ -111,22 +112,25 @@ class EmailSchedule extends SugarBean
      */
     private function sendEmailScheduleEmails($emailScheduleId)
     {
-        $queuedEmails = $this->db->query("SELECT bean_module, bean_id from emailschedules_beans WHERE emailschedule_status = 'queued' AND emailschedule_id = '$emailScheduleId' AND deleted = 0 ORDER by date_modified DESC");
+        $queuedEmails = $this->db->query("SELECT bean_module, bean_id, id from emailschedules_beans WHERE emailschedule_status = 'queued' AND emailschedule_id = '$emailScheduleId' AND deleted = 0 ORDER by date_modified DESC limit 250");
         $status = 'done';
 
         while ($queuedEmail = $this->db->fetchByAssoc($queuedEmails)) {
             $seed = BeanFactory::getBean($queuedEmail['bean_module'], $queuedEmail['bean_id']);
 
             if (empty($seed)) {
-                $this->updateEmailScheduleBeanStatus($emailScheduleId, 'error');
-                $status = 'done_with_errors';
-            } else {
+                $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
+                $status = 'record_not_loaded';
+            } else if($seed->is_inactive) {
+                $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
+                $status = 'record_inactive';
+            }else {
                 $email = $this->sendEmail($seed, $emailScheduleId, true);
                 if ($email == false) {
-                    $this->updateEmailScheduleBeanStatus($emailScheduleId, 'error');
+                    $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
                     $status = 'done_with_errors';
                 } else {
-                    $this->updateEmailScheduleBeanStatus($emailScheduleId, 'sent', $email->id);
+                    $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'sent', $email->id);
                 }
             }
         }
@@ -139,10 +143,10 @@ class EmailSchedule extends SugarBean
      * @param $status
      * @param null $emailId
      */
-    private function updateEmailScheduleBeanStatus($emailScheduleId, $status, $emailId = null)
+    private function updateEmailScheduleBeanStatus($id, $status, $emailId = null)
     {
         $emailIdSet = $emailId == null ? "" : ", email_id = '$emailId'";
-        $this->db->query("UPDATE emailschedules_beans SET emailschedule_status = '$status' $emailIdSet WHERE emailschedule_id='$emailScheduleId'");
+        $this->db->query("UPDATE emailschedules_beans SET emailschedule_status = '$status' $emailIdSet WHERE id='$id'");
     }
 
     /**

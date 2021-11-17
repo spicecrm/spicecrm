@@ -11,25 +11,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 -->
 
 <div style="height: 100%;">
-    <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small slds-border--bottom">
         <h2 class="slds-text-heading--small"><system-label label="LBL_MODULES"></system-label></h2>
+        <input class="slds-col--bump-left slds-size--1-of-2 slds-input" system-placeholder="LBL_FILTER" [(ngModel)]="filter">
     </div>
-    <div class="slds-scrollable" [ngStyle]="contentStyle">
+    <div class="slds-scrollable" system-to-bottom>
         <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
             <system-spinner></system-spinner>
         </div>
         <ng-template #typesdisplay>
-            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <table class="slds-table slds-table--header-fixed slds-table_bordered slds-table_cell-buffer">
                 <thead>
                 <tr class="slds-text-title_caps">
                     <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+                        <div class="slds-truncate slds-th__action"><system-label label="LBL_MODULE"></system-label></div>
                     </th>
                     <th scope="col" style="width: 3rem;"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let acltype of acltypes" (click)="selectType(acltype)"
+                <tr *ngFor="let acltype of acltypeslist" (click)="selectType(acltype)"
                     [ngClass]="{'slds-theme--shade': acltype.id == activeTypeId}">
                     <td>
                         <div class="slds-truncate"><system-link>{{acltype.module}}</system-link></div>

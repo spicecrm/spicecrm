@@ -1,37 +1,14 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\SpiceACLObjects;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -80,11 +57,10 @@ class SpiceACLObject extends SugarBean
      */
     public function generateTypes()
     {
-        global $beanList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
         if (is_admin($current_user)) {
-            foreach ($beanList as $module => $class) {
+            foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
                 $seed = BeanFactory::getBean($module);
                 if ($seed && method_exists($seed, 'bean_implements') && $seed->bean_implements('ACL')) {
                     $typeRecord = $this->db->fetchByAssoc($this->db->query("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE module = '$module' AND acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE module = '$module' AND acl = 1"));
@@ -168,7 +144,7 @@ class SpiceACLObject extends SugarBean
         foreach ($fieldValues as $fieldValue) {
             // check that the id matches
             if ($fieldValue->spiceaclobject_id == $this->id) {
-                $this->db->query("INSERT INTO spiceaclobjectvalues (id, spiceaclobject_id, spiceaclmodulefield_id, operator, value1, value2) VALUES(uuid(), '$fieldValue->spiceaclobject_id', '$fieldValue->spiceaclmodulefield_id', '$fieldValue->operator', '$fieldValue->value1', '$fieldValue->value2')");
+                $this->db->query("INSERT INTO spiceaclobjectvalues (id, spiceaclobject_id, spiceaclmodulefield_id, operator, value1, value2) VALUES('".SpiceUtils::createGuid()."', '$fieldValue->spiceaclobject_id', '$fieldValue->spiceaclmodulefield_id', '$fieldValue->operator', '$fieldValue->value1', '$fieldValue->value2')");
             }
         }
 
@@ -177,7 +153,7 @@ class SpiceACLObject extends SugarBean
         foreach ($fieldControls as $fieldControl) {
             // check that the id matches
             if ($fieldControl->spiceaclobject_id == $this->id) {
-                $this->db->query("INSERT INTO spiceaclobjectfields (id, spiceaclobject_id, field, control) VALUES(uuid(), '$fieldControl->spiceaclobject_id', '$fieldControl->field', '$fieldControl->control')");
+                $this->db->query("INSERT INTO spiceaclobjectfields (id, spiceaclobject_id, field, control) VALUES('".SpiceUtils::createGuid()."', '$fieldControl->spiceaclobject_id', '$fieldControl->field', '$fieldControl->control')");
             }
         }
 
@@ -186,7 +162,7 @@ class SpiceACLObject extends SugarBean
         foreach ($objectactions as $objectaction) {
             // check that the id matches
             if ($objectaction->spiceaclobject_id == $this->id) {
-                $this->db->query("INSERT INTO spiceaclobjectactions (id, spiceaclobject_id, spiceaclaction_id) VALUES(uuid(), '$objectaction->spiceaclobject_id', '$objectaction->spiceaclaction_id')");
+                $this->db->query("INSERT INTO spiceaclobjectactions (id, spiceaclobject_id, spiceaclaction_id) VALUES('".SpiceUtils::createGuid()."', '$objectaction->spiceaclobject_id', '$objectaction->spiceaclaction_id')");
             }
         }
 
@@ -217,9 +193,8 @@ class SpiceACLObject extends SugarBean
     */
     public function getUserACLObjects($module = null)
     {
-        global  $timedate;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
 
         if (SpiceConfig::getInstance()->config['acl']['disable_cache'] || empty($_SESSION['spiceaclaccess']['aclobjects'])) {
             $this->aclobjects = [];
@@ -249,8 +224,8 @@ $db = DBManagerFactory::getInstance();
             while ($aclobject = $db->fetchByAssoc($aclobjects)) {
                 $this->authObjects[$aclobject['id']] = $aclobject;
 
-                //read the org values
-                if ($territory) {
+                // read the org values - check on method_exists because of SpiceCRM core edition
+                if ($territory && method_exists($territory, 'getAclObjectTerritoryValues')) {
                     $this->authObjects[$aclobject['id']]['objectterritoryvalues'] = $territory->getAclObjectTerritoryValues($aclobject['id']);
                 }
 
@@ -259,7 +234,7 @@ $db = DBManagerFactory::getInstance();
                 while ($objectAction = $db->fetchByAssoc($objectActions))
                     $this->authObjects[$aclobject['id']]['objectactions'][] = $objectAction['spiceaclaction_id'];
 
-                //read the field values
+                // read the field values
                 $objectValues = $db->query("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues INNER JOIN spiceaclmodulefields ON spiceaclmodulefields.id = spiceaclobjectvalues.spiceaclmodulefield_id WHERE spiceaclobject_id='{$aclobject['id']}'");
                 while ($thisObjectValue = $db->fetchByAssoc($objectValues))
                     $this->authObjects[$aclobject['id']]['objectelementvalues'][$thisObjectValue['name']] = [
@@ -760,6 +735,7 @@ $db = DBManagerFactory::getInstance();
                         $authObjectAccess = true;
                     };
                     break;
+                case 'ig':
                 case '':
                     $authObjectAccess = true;
                     break;
@@ -781,14 +757,13 @@ $db = DBManagerFactory::getInstance();
     /*
     private function getKauthObjectRelationship()
     {
-        global $beanList;
-$db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
         if ($this->relationShip != '')
             return;
 
         $link = $db->fetchByAssoc($db->query("SELECT kom.* FROM korgobjecttypes_modules kom INNER JOIN kauthtypes kt ON kt.bean = kom.module WHERE kt.id='" . $this->objDetail['kauthtype_id'] . "'"));
-        $thisBean = \SpiceCRM\data\BeanFactory::getBean(array_search($link['module'], $beanList));
+        $thisBean = \SpiceCRM\data\BeanFactory::getBean(array_search($link['module'], SpiceModules::getInstance()->getBeanList()));
         $this->relationShip = $db->fetchByAssoc($db->query("SELECT * FROM relationships WHERE relationship_name ='" . $thisBean->field_name_map[$link['relatefrom']]['relationship'] . "'"));
 
 

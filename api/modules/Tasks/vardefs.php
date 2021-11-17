@@ -6,6 +6,7 @@ global $dictionary;
 $dictionary['Task'] = ['table' => 'tasks',
     'unified_search'   => true,
     'full_text_search' => true,
+    'audited' => true,
     'fields' => [
         'name' => [
             'name'             => 'name',
@@ -49,6 +50,7 @@ $dictionary['Task'] = ['table' => 'tasks',
             ],
             'enable_range_search' => true,
             'options'             => 'date_range_search_dom',
+            'required' => true
         ],
         'time_due' => [
             'name'       => 'time_due',
@@ -368,7 +370,7 @@ $dictionary['Task'] = ['table' => 'tasks',
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
 global $dictionary;
-if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
+if (file_exists("modules/ServiceTickets")) {
     $dictionary['Task']['fields']['servicetickets'] = [
         'name'         => 'servicetickets',
         'type'         => 'link',
@@ -379,7 +381,7 @@ if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
         'vname'        => 'LBL_SERVICETICKET',
     ];
 }
-if(is_file("modules/ServiceOrders/ServiceOrder.php")) {
+if (file_exists("extensions/modules/ServiceOrders")) {
     $dictionary['Task']['fields']['serviceorders'] = [
         'name'         => 'serviceorders',
         'type'         => 'link',

@@ -1,0 +1,86 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div [ngStyle]="!hasBoxClass ? {'border': 0, 'box-shadow': 'none'} : undefined" class="slds-card slds-card_boundary slds-grid slds-grid--vertical slds-grow slds-height_full" style="min-height: 0">
+    <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <system-icon icon="custom6" sprite="custom" divClass=" " style="transform: rotate(90deg)" class="slds-m-right--small"></system-icon>
+            <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
+                <h2>
+                    <a href="javascript:void(0);" class="slds-text-link--reset">
+                <span class="slds-text-heading--small">
+                    <system-label label="LBL_RUNNING_JOBS"></system-label>
+                    ({{runningJobs.list.length}} <system-label label="LBL_OF"></system-label> {{runningJobs.total}})
+                </span>
+                    </a>
+                </h2>
+            </div>
+        </header>
+        <button (click)="reloadList()" class="slds-button slds-button--icon">
+            <system-button-icon class="slds-p-horizontal--xxx-small" icon="refresh"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-grow slds-grid slds-grid--vertical" style="min-height: 0;">
+        <div class="slds-card__body slds-size--1-of-1 slds-grid slds-grid--vertical slds-grow slds-scrollable--y" style="min-height: 0; flex: initial">
+            <table *ngIf="runningJobs.list.length > 0" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-table--header-fixed" role="grid">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_RUNNING_SINCE"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_INTERVAL"></system-label></div>
+                    </th>
+                    <th class="slds-cell-shrink" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody [system-view-provider]="{displayLabels: false, editable: false}">
+                <tr *ngFor="let job of runningJobs.list; trackBy: trackByFn" [system-model-provider]="{module: 'SchedulerJobs', id: job.id, data: job}" class="slds-hint-parent">
+                    <td>
+                        <field-container field="name" [fieldconfig]="{link: true}" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+                    </td>
+                    <td>
+                        <field-container field="last_run_date" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+                    </td>
+                    <td>
+                        <field-container field="job_interval" [fieldconfig]="{fieldtype: 'croninterval'}" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+                    </td>
+                    <td class="slds-cell-shrink">
+                        <button (click)="killJob(job)" system-title="LBL_KILL" class="slds-button slds-button--icon">
+                            <system-button-icon icon="stop"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!runningJobs.hasError && !runningJobs.isLoading && runningJobs.list.length == 0" class="slds-align_absolute-center slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-label label="MSG_NO_RECORDS_FOUND" class="slds-p-top--small"></system-label>
+            </div>
+            <div *ngIf="!runningJobs.isLoading && runningJobs.hasError" class="slds-align_absolute-center slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-label label="ERR_LOADING_RECORDS" class="slds-p-top--small"></system-label>
+            </div>
+            <div *ngIf="runningJobs.isLoading" class="slds-align_absolute-center slds-p-bottom--small slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-spinner class="slds-p-top--small"></system-spinner>
+            </div>
+        </div>
+    </div>
+    <footer class="slds-card__footer slds-p-around--xx-small">
+        <div class="slds-grid slds-grid--align-center" style="min-height: 32px">
+            <button [disabled]="runningJobs.hasError || runningJobs.isLoading || runningJobs.list.length == runningJobs.total" (click)="loadMore()" class="slds-button">
+                <system-label label="LBL_MORE"></system-label>
+            </button>
+        </div>
+    </footer>
+</div>

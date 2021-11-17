@@ -32,40 +32,40 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * the type of prompt
      */
-    @Input() private type: 'info'|'input'|'confirm';
+    @Input() public type: 'info'|'input'|'input_date'|'confirm';
 
     /**
      * the text that is rendered in the popup
      */
-    @Input() private text: string;
+    @Input() public text: string;
 
     /**
      * the header for the popup in the modal
      */
-    @Input() private headertext: string;
+    @Input() public headertext: string;
 
     /**
      * theme according to lightning design -> https://www.lightningdesignsystem.com/utilities/themes/
      */
-    @Input() private theme: string;
+    @Input() public theme: string;
     /**
      * the value to be set
      */
-    protected radioGroupName: string;
+    public radioGroupName: string;
     /**
      * ???
      */
-    @Input() private value: string|number = null;
+    @Input() public value: string|number = null;
 
     /**
      * an array of options .. if sent rather than an input in the type input a select option is rendered
      */
-    @Input() private options: Array<{value: string, display: string}>;
+    @Input() public options: Array<{value: string, display: string}>;
 
     /**
      * if true display the input options as radio group
      */
-    @Input() private optionsAsRadio: boolean = false;
+    @Input() public optionsAsRadio: boolean = false;
 
     /**
      * the observabkle for the answer
@@ -97,6 +97,11 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      */
     @ViewChild('inputField', {static: false}) private inputField;
 
+    /**
+     * reference to the select field .. allows focussing when the modal is rendered
+     */
+    @ViewChild('selectField', {static: false}) private selectField;
+
     constructor( private language: language ) {
         this.answerSubject = new Subject<any>();
         this.answer = this.answerSubject.asObservable();
@@ -113,14 +118,17 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     public ngAfterViewInit() {
         if ( this.type === 'confirm' ) this.cancelButton.nativeElement.focus();
         else if ( this.type === 'info' ) this.okButton.nativeElement.focus();
-        else if ( this.type === 'input' ) this.inputField.nativeElement.focus();
+        else if ( this.type.startsWith('input') ) {
+            if ( this.inputField ) this.inputField.nativeElement.focus();
+            else if ( this.selectField ) this.selectField.nativeElement.focus();
+        }
     }
 
     /**
      * when ok is clicked
      */
-    private clickOK() {
-        if ( this.type === 'input' ) this.answerSubject.next( this.value );
+    public clickOK() {
+        if (this.type.startsWith('input')) this.answerSubject.next( this.value );
         else this.answerSubject.next( true );
         this.answerSubject.complete();
         this.self.destroy();
@@ -129,7 +137,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * issue cancel and close the modal
      */
-    private clickCancel() {
+    public clickCancel() {
         this.answerSubject.next( false );
         this.answerSubject.complete();
         this.self.destroy();

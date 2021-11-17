@@ -18,9 +18,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                 <div class="slds-media__body">
                     <p class="slds-text-title--caps slds-line-height--reset"><system-label-modulename module="Calendar"></system-label-modulename></p>
                     <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-                        {{getCalendarHeader()}}
+                        {{calendarHeader}}
                         <span *ngIf="calendar.sheetType == 'Week'" class="slds-p-horizontal--x-small slds-p-vertical--xx-small slds-pill slds-text-body--small">
-                            {{getWeekNumberDisplay()}}
+                            {{weekNumberDisplay}}
                         </span>
                     </h1>
                 </div>
@@ -30,7 +30,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <button #pickerbuttoncontainer class="slds-button slds-button--icon-border" (click)="toggleOpenPicker(pickerontainer, pickerbuttoncontainer)">
                 <system-utility-icon icon="event" size="x-small"></system-utility-icon>
             </button>
-            <div class="slds-page-header__title slds-m-horizontal--x-small slds-align-middle slds-truncate">{{getCompactCalendarHeader()}}</div>
+            <div class="slds-page-header__title slds-m-horizontal--x-small slds-align-middle slds-truncate">{{compactCalendarHeader}}</div>
         </div>
         <div class="slds-align-top slds-col slds-grid slds-no-flex slds-col--bump-left">
             <div class="slds-m-right--medium slds-grid">

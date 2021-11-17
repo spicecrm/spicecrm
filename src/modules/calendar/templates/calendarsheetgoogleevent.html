@@ -10,15 +10,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<div [style.background-color]="calendar.sheetType == 'Schedule' ? '0' : calendar.googleColor" class="slds-grid slds-m-around--xxx-small spice-free-drag-preview slds-height_full" style="border-radius: 2px;">
+<div [style.background-color]="calendar.sheetType == 'Schedule' ? '0' : calendar.googleColor"
+     class="slds-grid slds-m-around--xxx-small spice-free-drag-preview slds-height_full" style="border-radius: 2px;">
     <div class="slds-size--1-of-1">
         <div class="slds-grid slds-grid--align-spread slds-p-horizontal--xx-small slds-height_full">
             <div class="slds-truncate slds-grid" style="height: inherit">
-                <span (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [class.spice-calendar-event-has-dark-color]="calendar.sheetType != 'Schedule'" class="slds-text-link--reset slds-truncate">
+                <span (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()"
+                      [class.spice-calendar-event-has-dark-color]="calendar.sheetType != 'Schedule'"
+                      class="slds-text-link--reset slds-truncate">
                     {{event.summary}}
                 </span>
             </div>
-            <!-- currently removed as this removes the participants fromt eh meeting as well -->
+            <!-- currently removed as this removes the participants from the meeting as well -->
             <!--div system-dropdown-trigger class="slds-dropdown-trigger slds-dropdown-trigger--click" style="height: fit-content">
                 <button class="slds-button slds-button--icon-border-filled slds-button--icon-xx-small" aria-haspopup="true">
                     <system-button-icon icon="down" size="xx-small"></system-button-icon>

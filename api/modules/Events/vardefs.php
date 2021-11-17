@@ -1,5 +1,5 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -95,13 +95,41 @@ $dictionary['Event'] = [
             'source' => 'non-db'
         ],
         'location_accounts' => [
-            'name'         => 'location_accounts',
-            'type'         => 'link',
+            'name' => 'location_accounts',
+            'type' => 'link',
             'relationship' => 'account_events',
-            'module'       => 'Accounts',
-            'bean_name'    => 'Account',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_ACCOUNT',
+            'module' => 'Accounts',
+            'bean_name' => 'Account',
+            'source' => 'non-db',
+            'vname' => 'LBL_ACCOUNT',
+        ],
+        'eventblueprint_id' => [
+            'name' => 'eventblueprint_id',
+            'vname' => 'LBL_EVENTBLUEPRINT_ID',
+            'type' => 'varchar',
+            'len' => 36,
+            'reportable' => false,
+        ],
+        'eventblueprint_name' => [
+            'name' => 'eventblueprint_name',
+            'rname' => 'name',
+            'id_name' => 'eventblueprint_id',
+            'vname' => 'LBL_EVENTBLUEPRINT',
+            'type' => 'relate',
+            'table' => 'eventblueprints',
+            'isnull' => 'true',
+            'module' => 'EventBlueprints',
+            'dbType' => 'varchar',
+            'link' => 'eventblueprints',
+            'len' => '255',
+            'source' => 'non-db',
+        ],
+        'eventblueprints' => [
+            'name' => 'eventblueprints',
+            'vname' => 'LBL_EVENTBLUEPRINTS',
+            'type' => 'link',
+            'relationship' => 'eventblueprint_events',
+            'source' => 'non-db',
         ],
         'events_account_role' => [
             'name' => 'events_account_role',

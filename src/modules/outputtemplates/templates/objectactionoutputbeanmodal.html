@@ -14,17 +14,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <system-modal-header (close)="close()">{{modalTitle}}</system-modal-header>
     <system-modal-content margin="none">
         <div class="slds-modal__content" >
-            <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center slds-p-around--small">
-                <label class="slds-col slds-p-right--x-small"><system-label label="LBL_TEMPLATE"></system-label></label>
-                <select class="slds-col slds-select slds-grow" [(ngModel)]="selected_template" [disabled]="templates.length == 0">
-                    <option *ngFor="let templ of templates" [ngValue]="templ">{{templ.name}} ({{templ.language}})</option>
-                </select>
+            <div class="slds-grid slds-p-horizontal--x-small slds-p-top--x-small">
+                <div class="slds-form-element slds-grid slds-grow">
+                    <label class="slds-form-element__label"><system-label label="LBL_TEMPLATE"></system-label></label>
+                    <div class="slds-form-element__control slds-grow">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="selected_template" [disabled]="templates.length == 0">
+                                <option *ngFor="let templ of templates" [ngValue]="templ">{{templ.name}} ({{templ.language}})</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <ng-container *ngIf="!forcedFormat">
-                    <label class="slds-p-left--small slds-col slds-p-right--x-small"><system-label label="LBL_DISPLAY"></system-label></label>
-                    <select class="slds-col slds-select slds-size--1-of-4" [(ngModel)]="selected_format" [disabled]="templates.length == 0">
-                        <option value="html">HTML</option>
-                        <option value="pdf">PDF</option>
-                    </select>
+                    <div class="slds-form-element slds-grid slds-grow slds-m-left--x-small">
+                        <label class="slds-form-element__label"><system-label label="LBL_DISPLAY"></system-label></label>
+                        <div class="slds-form-element__control slds-grow">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="selected_format" [disabled]="templates.length == 0">
+                                    <option value="html">HTML</option>
+                                    <option value="pdf">PDF</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </ng-container>
                 <button *ngIf="this.metadata.checkModuleAcl('Emails', 'create')" [disabled]="!selected_template || loading_output || selected_format === 'html'" class="slds-button slds-button--icon slds-button--icon-border slds-m-left--small" [ngClass]="{'slds-is-selected' : expanded}" (click)="openEmailArea()"><system-button-icon icon="email"></system-button-icon></button>
             </div>
@@ -50,9 +62,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button [disabled]="!selected_template || loading_output" class="slds-button slds-button--neutral" (click)="reload()"><system-label label="LBL_RELOAD"></system-label></button>
-        <button *ngIf="!expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="create()">{{buttonText}}</button>
-        <button *ngIf="expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SENDEMAIL')}}</button>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-end">
+            <div class="slds-button-group"  role="group">
+                <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button [disabled]="!selected_template || loading_output" class="slds-button slds-button--neutral" (click)="reload()"><system-label label="LBL_RELOAD"></system-label></button>
+                <button *ngIf="!expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="create()">{{buttonText}}</button>
+                <button *ngIf="expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SENDEMAIL')}}</button>
+            </div>
+            <object-action-container (actionemitter)="handleAction($event)" containerclass="slds-button-group" [actionset]="customActionsetId" class="slds-m-left--x-small" style="display: inline-flex;"></object-action-container>
+        </div>
     </system-modal-footer>
 </system-modal>

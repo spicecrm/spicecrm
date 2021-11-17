@@ -25,7 +25,7 @@ import {
 import {footer} from "../../services/footer.service";
 
 /**
- * a directive that sets the height of an element to the bottom ov the vioewable viewport, renders the element as scrollable anbd also emits
+ * a directive that sets the height of an element to the bottom ov the vioewable viewport, renders the element as scrollable and also emits
  * an event when the content is close to the bottom so an infinite list can reload automatically
  */
 @Directive({

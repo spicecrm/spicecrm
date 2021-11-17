@@ -41,6 +41,7 @@ require_once('include/Pear/Crypt_Blowfish/Blowfish.php');
 ///////////////////////////////////////////////////////////////////////////////
 ////	BLOWFISH
 /**
+ * @deprecated moved to EncryptionUtils
  * retrives the system's private key; will build one if not found, but anything encrypted before is gone...
  * @param string type
  * @return string key
@@ -69,6 +70,7 @@ function blowfishGetKey($type) {
 }
 
 /**
+ * @deprecated moved to EncryptionUtils
  * Uses blowfish to encrypt data and base 64 encodes it. It stores the iv as part of the data
  * @param STRING key - key to base encoding off of
  * @param STRING data - string to be encrypted and encoded
@@ -81,6 +83,7 @@ function blowfishEncode($key, $data){
 }
 
 /**
+ * @deprecated moved to EncryptionUtils
  * Uses blowfish to decode data assumes data has been base64 encoded with the iv stored as part of the data
  * @param STRING key - key to base decoding off of
  * @param STRING encoded base64 encoded blowfish encrypted data

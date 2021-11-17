@@ -7,31 +7,36 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
-class SpiceDictionaryHandler{
-
+class SpiceDictionaryHandler
+{
     /**
      * loads the metadata files
      */
-    static function loadMetaDataFiles(){
+    public static function loadMetaDataFiles() {
+        $metaDataDirectories = ['metadata', 'extensions/metadata', 'custom/metadata'];
         global $dictionary;
-        $metadatahandle = @opendir('./metadata');
-        while (false !== ($metadatafile = readdir($metadatahandle))) {
-            if (preg_match('/\.php$/', $metadatafile)) {
-                include('metadata/' . $metadatafile);
-            }
-        }
-
-
-        if($cmetadatahandle = @opendir('./custom/metadata')) {
-            while (false !== ($cmetadatafile = readdir($cmetadatahandle))) {
-                if (preg_match('/\.php$/', $cmetadatafile)) {
-                    include('custom/metadata/' . $cmetadatafile);
-                }
-            }
+        foreach ($metaDataDirectories as $metaDataDirectory) {
+            self::loadMetaDataFilesFromDir($metaDataDirectory);
         }
 
         if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
             include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
+        }
+    }
+
+    /**
+     * Loads the metadata files from a particular directory.
+     *
+     * @param string $directory
+     */
+    private static function loadMetaDataFilesFromDir(string $directory): void {
+        global $dictionary;
+        if ($metaDataHandle = @opendir('./' . $directory)) {
+            while (false !== ($metaDataFile = readdir($metaDataHandle))) {
+                if (preg_match('/\.php$/', $metaDataFile)) {
+                    include($directory . '/' . $metaDataFile);
+                }
+            }
         }
     }
 

@@ -21,6 +21,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { RouterModule, Routes, Router } from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {SystemComponents} from '../systemcomponents/systemcomponents';
+import {ObjectComponents} from "../objectcomponents/objectcomponents";
+import {ObjectFields} from "../objectfields/objectfields";
 
 import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service';
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service';
@@ -73,21 +75,34 @@ import /*embed*/ {AdministrationDictRepairACLRoles} from "./components/administr
 import /*embed*/ {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
 import /*embed*/ {AdministrationDictRepairDbColumns} from "./components/administrationdictrepairdbcolumns";
 import /*embed*/ {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
+import /*embed*/ {AdministrationDictRepairConvertDBCharset} from "./components/administrationdictrepairconvertdbcharset";
+import /*embed*/ {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
-import /*embed*/ { AdministrationSchedulerJobsEnum } from './components/administrationschedulerjobsenum';
-import /*embed*/ { AdministrationSchedulerJobLog } from './components/administrationschedulerjoblog';
-import /*embed*/ { AdministrationSchedulerRunButton } from './components/administrationschedulerrunbutton';
-import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/administrationschedulerschedulebutton';
+import /*embed*/ { AdministrationJobMethods } from './components/administrationjobmethods';
+import /*embed*/ { AdministrationJobLog } from './components/administrationjoblog';
+import /*embed*/ { AdministrationJobRunButton } from './components/administrationjobrunbutton';
+import /*embed*/ { AdministrationJobScheduleButton } from './components/administrationjobschedulebutton';
+import /*embed*/ { AdministrationJobKillButton } from './components/administrationjobkillbutton';
+import /*embed*/ { AdministrationJobTaskRunButton } from './components/administrationjobtaskrunbutton';
+import /*embed*/ { AdministrationJobRunningList } from './components/administrationjobrunninglist';
+import /*embed*/ { AdministrationJobFailedList } from './components/administrationjobfailedlist';
+import /*embed*/ { AdministrationJobCockpit } from './components/administrationjobcockpit';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
-import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
+import /*embed*/ {AdministrationUserAccessLogViewer} from './components/administrationuseraccesslogviewer';
 
+import /*embed*/ {AdministrationLoginRestriction} from './components/administrationloginrestriction';
+import /*embed*/ {AdministrationLoginRestrictionIpAddresses} from './components/administrationloginrestrictionipaddresses';
+import /*embed*/ {AdministrationLoginRestrictionIpAddressesRow} from './components/administrationloginrestrictionipaddressesrow';
+import /*embed*/ {AdministrationPasswordConfig} from './components/administrationpasswordconfig';
+import /*embed*/ {AdministrationBlockedUsers} from './components/administrationblockedusers';
+import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
 
-
+import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 
 @NgModule({
     imports: [
@@ -95,7 +110,9 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         FormsModule,
         SystemComponents,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
+        ObjectComponents,
+        ObjectFields
     ],
     declarations: [
         AdministrationAPIInspector,
@@ -104,6 +121,7 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationAPIInspectorDetails,
         AdministrationapiinspectorMethodResponses,
         AdministrationApiInspectorMethodTest,
+        AdministrationGDPRRetentionManager,
         AdministrationMain,
         AdministrationMenu,
         AdministrationMenuRouteItem,
@@ -134,10 +152,15 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDictRepairDbColumns,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
-        AdministrationSchedulerJobsEnum,
-        AdministrationSchedulerJobLog,
-        AdministrationSchedulerRunButton,
-        AdministrationSchedulerScheduleButton,
+        AdministrationJobMethods,
+        AdministrationJobLog,
+        AdministrationJobRunButton,
+        AdministrationJobScheduleButton,
+        AdministrationJobKillButton,
+        AdministrationJobTaskRunButton,
+        AdministrationJobRunningList,
+        AdministrationJobFailedList,
+        AdministrationJobCockpit,
         AdministrationSystemStats,
         AdministrationSystemVersions,
         AdministrationFtsManagerIndexModal,
@@ -147,7 +170,15 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationGeneralSettings,
         AdministrationLanguages,
         AdministrationDefaultPreferences,
-        UserAccessLogViewer
+        AdministrationUserAccessLogViewer,
+        AdministrationDictRepairConvertDBCharset,
+        AdministrationDictRepairConvertDBCharsetModal,
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
     ],
     entryComponents: [
         AdministrationMain,
@@ -159,7 +190,15 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDictionaryManager,
         AdministrationDictionaryManagerItem,
         AdministrationDictionaryManagerItemField,
-        AdministrationDefaultPreferences
+        AdministrationDefaultPreferences,
+        AdministrationJobRunningList,
+        AdministrationJobFailedList,
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
     ],
     exports: [],
 

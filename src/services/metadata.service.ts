@@ -756,6 +756,21 @@ export class metadata {
     }
 
     /**
+     * returns the phone search modules
+     */
+    public getPhoneSearchModules() {
+        let modules = [];
+
+        for (let module in this.moduleDefs) {
+            if (this.moduleDefs[module].ftsphonesearch) {
+                modules.push(module);
+            }
+        }
+
+        return modules;
+    }
+
+    /**
      * gets the module by the sysmoduleid
      *
      * @param sysmoudleid
@@ -826,11 +841,11 @@ export class metadata {
     /**
      * to read module field defs
      */
-    public getModuleFields(module: string) {
+    public getModuleFields(module: string): any {
         try {
-            return this.fieldDefs[module] ? this.fieldDefs[module] : [];
+            return this.fieldDefs[module] ? this.fieldDefs[module] : {};
         } catch (e) {
-            return [];
+            return {};
         }
     }
 
@@ -1321,8 +1336,17 @@ export class metadata {
         return currentRole;
     }
 
+    /**
+     * sets the active role and returns true if successful or false if role was not found
+     *
+     * @param roleid
+     */
     public setActiveRole(roleid) {
-        this.role = roleid;
+        if (this.roles.find(r => r.id == roleid)){
+            this.role = roleid;
+            return true;
+        }
+        return false;
     }
 
     public getRoleModules(menu = false) {
@@ -1344,7 +1368,7 @@ export class metadata {
      * @param from
      * @param to
      */
-    public getCopyRules(from: string, to: string): Array<{fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: object}> {
+    public getCopyRules(from: string, to: string): Array<{ fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: object }> {
         const copyRules = this.copyrules[from] && this.copyrules[from][to] ? this.copyrules[from][to] : [];
 
         copyRules.forEach(copyRule => {
@@ -1743,7 +1767,7 @@ export class aclCheck implements CanActivate {
         // CR1000463: use spiceacl to enable listing and access foreign user records
         // keep BWC for old modules/ACL/ACLController.php
         let _aclcontroller = this.configurationService.getSystemParamater('aclcontroller');
-        if( _aclcontroller && _aclcontroller != 'spiceacl') {
+        if (_aclcontroller && _aclcontroller != 'spiceacl') {
             if (route.params.module === 'Users' && (!route.params.id || route.params.id != this.session.authData.userId) && !this.session.authData.admin) {
                 return false;
             }

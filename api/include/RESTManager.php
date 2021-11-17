@@ -423,24 +423,15 @@ class RESTManager
      */
     private function initExtensions() {
         // check if we have extension in the local path
-        $checkRootPaths = ['include', 'modules', 'custom/modules', 'custom/include'];
+        $checkRootPaths = ['include', 'modules',
+                            'extensions/include', 'extensions/modules',
+                            'custom/modules', 'custom/include'];
         foreach ($checkRootPaths as $checkRootPath) {
             $KRestDirHandle = opendir("./$checkRootPath");
             if ($KRestDirHandle) {
                 while (($KRestNextDir = readdir($KRestDirHandle)) !== false) {
                     if ($KRestNextDir != '.' && $KRestNextDir != '..' && is_dir("./$checkRootPath/$KRestNextDir")) {
-
                         $this->initExtensionsInFolder("./$checkRootPath/$KRestNextDir");
-
-//                        $KRestSubDirHandle = opendir("./$checkRootPath/$KRestNextDir/api/extensions");
-//                        if ($KRestSubDirHandle) {
-//                            while (false !== ($KRestNextFile = readdir($KRestSubDirHandle))) {
-//                                if (preg_match('/.php$/', $KRestNextFile)) {
-//                                    $this->isCustomExtension = (bool) strpos($checkRootPath, 'custom');
-//                                    require_once("./$checkRootPath/$KRestNextDir/api/extensions/$KRestNextFile");
-//                                }
-//                            }
-//                        }
                     }
                 }
             }
@@ -506,19 +497,9 @@ class RESTManager
                         }
                     }
                 }
-
-//                $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
-
-//                if (isset($route['options']['noAuth']) && $route['options']['noAuth'] == true) {
-//                    $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
-//                } else {
-//                    $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']])
-//                        ->add(RequireAuthenticationMiddleware::class);
-//                }
             }
         }
     }
-
 
     public function getRoutes(): array {
         return array_values($this->routes);

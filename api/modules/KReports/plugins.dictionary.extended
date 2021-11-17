@@ -1,0 +1,152 @@
+<?php
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
+
+$plugins['standard'] = array(
+    'id' => 'standard', 
+    'type' => 'presentation', 
+    'directory' => 'standardview',
+    'extension' => false
+); 
+$plugins['grouped'] = array(
+    'id' => 'grouped', 
+    'type' => 'presentation', 
+    'directory' => 'groupedview',
+    'extension' => true
+); 
+$plugins['standardws'] = array(
+    'id' => 'standardws', 
+    'type' => 'presentation', 
+    'directory' => 'standardwsummary',
+    'extension' => true
+); 
+$plugins['standardwp'] = array(
+    'id' => 'standardwp', 
+    'type' => 'presentation', 
+    'directory' => 'standardwpreview',
+    'extension' => true
+); 
+$plugins['tree'] = array(
+    'id' => 'tree', 
+    'type' => 'presentation', 
+    'directory' => 'treeview',
+    'extension' => true
+); 
+$plugins['pivot'] = array(
+    'id' => 'pivot', 
+    'type' => 'presentation', 
+    'directory' => 'pivot',
+    'extension' => true
+); 
+$plugins['googlecharts'] = array(
+    'id' => 'googlecharts', 
+    'type' => 'visualization', 
+    'directory' => 'googlecharts',
+    'extension' => false
+);
+$plugins['googlecharts'] = array(
+    'id' => 'googlecharts', 
+    'type' => 'visualization', 
+    'directory' => 'googlecharts_ext',
+    'extension' => true
+);
+
+$plugins['highcharts'] = array(
+    'id' => 'highcharts', 
+    'type' => 'visualization', 
+    'directory' => 'highcharts',
+    'extension' => true
+);
+$plugins['googlemaps'] = array(
+    'id' => 'googlemaps', 
+    'type' => 'visualization', 
+    'directory' => 'googlemaps',
+    'extension' => true
+);
+$plugins['googlegeo'] = array(
+    'id' => 'googlegeo', 
+    'type' => 'visualization', 
+    'directory' => 'googlegeo',
+    'extension' => true
+);
+$plugins['amcharts'] = array(
+    'id' => 'amcharts', 
+    'type' => 'visualization', 
+    'directory' => 'amcharts',
+    'extension' => true
+);
+/*
+$plugins['ammap'] = array(
+    'id' => 'ammap', 
+    'type' => 'visualization', 
+    'directory' => 'ammap',
+    'extension' => true
+);
+*/
+$plugins['kcsvexport'] = array(
+    'id' => 'kcsvexport', 
+    'type' => 'integration', 
+    'directory' => 'kcsvexport',
+    'extension' => false
+);
+$plugins['ktargetlistexport'] = array(
+    'id' => 'ktargetlistexport', 
+    'type' => 'integration', 
+    'directory' => 'ktargetlistexport_extended',
+    'extension' => true
+);
+/*
+$plugins['ktargetlistexport'] = array(
+    'id' => 'ktargetlistexport', 
+    'type' => 'integration', 
+    'directory' => 'ktargetlistexport_extended',
+    'extension' => true
+);
+ */
+$plugins['ksnapshots'] = array(
+    'id' => 'ksnapshots', 
+    'type' => 'integration', 
+    'directory' => 'ksnapshots',
+    'extension' => true
+); 
+$plugins['kpublishing'] = array(
+    'id' => 'kpublishing', 
+    'type' => 'integration', 
+    'directory' => 'kpublishing',
+    'extension' => true
+);
+$plugins['kscheduling'] = array(
+    'id' => 'kscheduling', 
+    'type' => 'integration', 
+    'directory' => 'kscheduling',
+    'extension' => true
+);
+$plugins['kexcelexport'] = array(
+    'id' => 'kexcelexport', 
+    'type' => 'integration', 
+    'directory' => 'kexcelexport',
+    'extension' => true
+);
+$plugins['kpdfexport'] = array(
+    'id' => 'kpdfexport', 
+    'type' => 'integration', 
+    'directory' => 'kpdfexport',
+    'extension' => true
+);
+$plugins['kqueryanalizer'] = array(
+    'id' => 'kqueryanalizer', 
+    'type' => 'integration', 
+    'directory' => 'kqueryanalizer',
+    'extension' => true
+);
+$plugins['kpdrilldown'] = array(
+    'id' => 'kpdrilldown', 
+    'type' => 'integration', 
+    'directory' => 'kpdrilldown',
+    'extension' => true
+);
+$plugins['ksavedfilters'] = array(
+    'id' => 'ksavedfilters', 
+    'type' => 'integration', 
+    'directory' => 'ksavedfilters',
+    'extension' => true
+); 

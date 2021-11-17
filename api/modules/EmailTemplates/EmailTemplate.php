@@ -85,7 +85,7 @@ class EmailTemplate extends SugarBean {
 
     public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null )
     {
-        $templateCompiler = new Compiler('EmailTemplates', 'body_html');
+        $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues );
         return html_entity_decode($html);
@@ -93,7 +93,7 @@ class EmailTemplate extends SugarBean {
 
     public function parsePlainTextField($field, $parentbean = null, $additionalValues = null )
     {
-        $templateCompiler = new Compiler('EmailTemplates', 'body_html');
+        $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language, $additionalValues );
         return $text;

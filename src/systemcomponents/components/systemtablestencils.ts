@@ -50,6 +50,11 @@ export class SystemTableStencils implements OnInit {
     @Input() private rownumbers: boolean = false;
 
     /**
+     * if set to true expects the table to have a drag handle column
+     */
+    @Input() private dragHandles: boolean = false;
+
+    /**
      * @ignore
      *
      * internal array for the columns

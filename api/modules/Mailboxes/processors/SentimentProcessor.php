@@ -1,8 +1,10 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\processors;
 
 use Exception;
-use SpiceCRM\modules\GoogleLanguage\GoogleLanguageDocument;
+use SpiceCRM\extensions\modules\GoogleLanguage\GoogleLanguageDocument;
 
 class SentimentProcessor extends Processor
 {

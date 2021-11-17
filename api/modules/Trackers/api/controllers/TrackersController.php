@@ -3,6 +3,8 @@ namespace SpiceCRM\modules\Trackers\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -29,11 +31,14 @@ class TrackersController
                 unset($history[$key]);
                 continue;
             }
+            try {
+                $seed = BeanFactory::getBean($row['module_name'], $row['item_id'], ['relationships' => false]);
+                if ($seed) {
+                    $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
+                    $recentItems[] = $row;
+                }
+            } catch(exception $e){
 
-            $seed = BeanFactory::getBean($row['module_name'], $row['item_id'], [ 'relationships' => false ] );
-            if($seed){
-                $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
-                $recentItems[] = $row;
             }
         }
         return $recentItems;

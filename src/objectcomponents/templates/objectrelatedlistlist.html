@@ -10,7 +10,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<object-related-card [componentconfig]="componentconfig">
+<object-related-card [ngClass]="{'slds-hide': hide}" [componentconfig]="componentconfig">
     <ng-container *ngIf="aclAccess; else noaccess">
         <div class="slds-border--top">
             <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset" [sequencefield]="componentconfig.sequencefield" [listitemactionset]="listitemactionset"></object-relatedlist-table>

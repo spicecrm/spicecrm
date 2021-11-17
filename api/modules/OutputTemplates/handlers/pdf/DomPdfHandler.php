@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
 use Dompdf\Dompdf;
@@ -21,8 +23,8 @@ class DomPdfHandler extends LibPdfHandler
         $options->set('isRemoteEnabled', true);
 
         // set cache folder for dompdf fonts
-        //die($this->getFontDirCacheFolder());
         $options->setFontDir($this->getFontDirCacheFolder());
+        $options->setFontCache($this->getFontCacheCacheFolder());
 
         $dompdf = new Dompdf($options);
         $contxt = stream_context_create([
@@ -45,6 +47,17 @@ class DomPdfHandler extends LibPdfHandler
         $fontDir = isset(SpiceConfig::getInstance()->config['dompdf']['fontDir']) ? SpiceConfig::getInstance()->config['dompdf']['fontDir'] : 'dompdf/fonts/';
         return $rootDir.'/'.create_cache_directory($fontDir);
     }
+
+    /**
+     * return real path for dompdf cache fonts directory
+     * @return string
+     */
+    public function getFontCacheCacheFolder(){
+        $rootDir = realpath(__DIR__ . "/../../../../");
+        $fontCache = isset(SpiceConfig::getInstance()->config['dompdf']['fontCache']) ? SpiceConfig::getInstance()->config['dompdf']['fontCache'] : 'dompdf/lib/fonts/';
+        return $rootDir.'/'.create_cache_directory($fontCache);
+    }
+
 
     public function process($html = null, array $options = null)
     {

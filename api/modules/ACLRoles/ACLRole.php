@@ -38,6 +38,7 @@ namespace SpiceCRM\modules\ACLRoles;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\ACLActions\ACLAction;
 
@@ -184,7 +185,6 @@ function getAllRoles($returnAsArray = false){
  * @return array of actions
  */
 function getRoleActions($role_id, $type='module'){
-        global $beanList;
         //if we don't have it loaded then lets check against the db
         $additional_where = '';
         $db = DBManagerFactory::getInstance();
@@ -212,7 +212,7 @@ function getRoleActions($role_id, $type='module'){
 
             }
             //#27877 . If  there is no this module in beanlist , we will not show them in UI, no matter this module was deleted or not in ACL_ACTIONS table.
-            if(empty($beanList[$action->category])){
+            if (empty(SpiceModules::getInstance()->getBeanName($action->category))) {
                 continue;
             }
             //end

@@ -62,6 +62,27 @@ export class fieldText extends fieldGeneric implements OnInit {
         if (window.webkitSpeechRecognition) {
             this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
         }
+
+        this.getFieldLength();
+    }
+
+    /**
+     * determines if the field has a length set
+     *
+     * @private
+     */
+    private getFieldLength() {
+        let field = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        if (field.len) {
+            this.fieldlength = field.len;
+        }
+    }
+
+    /**
+     * gets the max length for the field attribute
+     */
+    get maxLength() {
+        return this.fieldlength > 0 ? this.fieldlength : 65000;
     }
 
     /**

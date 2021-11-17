@@ -14,10 +14,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <div>
         <acl-manager-header displaylabel="LBL_SPICEACLTYPES"></acl-manager-header>
     </div>
-    <div #managercontent class="slds-grid" [ngStyle]="contentStyle">
+    <div #managercontent class="slds-grid" system-to-bottom-noscroll>
         <acltypes-manager-types class="slds-size--1-of-2 slds-border--right" (typeselected)="setType($event)"></acltypes-manager-types>
-        <div class="slds-size--1-of-2">
-            <div style="height: 50%;">
+        <div class="slds-size--1-of-2" system-to-bottom-noscroll>
+            <div style="height: 50%;" class="slds-scrollable--y">
                 <acltypes-manager-types-fields  [authtypemodule]="activeType.authtypemodule" [authtypefields]="activeType.authtypefields" (addfields)="addFields($event)" (deletefield)="deleteField($event)"></acltypes-manager-types-fields>
             </div>
             <div style="height: 50%;">

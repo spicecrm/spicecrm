@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\CompanyCodes;
 
 use SpiceCRM\data\BeanFactory;
@@ -16,7 +18,8 @@ class CompanyCodesLoader{
             $retArray[] = [
                 'id' => $companyCode->id,
                 'name' => $companyCode->name,
-                'companycode' => $companyCode->companycode
+                'companycode' => $companyCode->companycode,
+                'country' => $companyCode->company_address_country
             ];
         }
 
