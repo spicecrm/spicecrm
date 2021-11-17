@@ -24,7 +24,10 @@ import /*embed*/ {fieldProjectActivityEffort} from "./fields/fieldprojectactivit
 import /*embed*/ {fieldProjectPlannedActivityConsumption} from "./fields/fieldprojectplannedactivityconsumption";
 import /*embed*/ {fieldProjectActivityDropdown} from "./fields/fieldprojectactivitydropdown";
 import /*embed*/ {fieldProjectActivityStartdate} from "./fields/fieldprojectactivitystartdate";
+import /*embed*/ {fieldProjectActivityDuration} from "./fields/fieldprojectactivityduration";
+import /*embed*/ {ProjectSettlementLine} from "./components/projectsettlementline";
 
+import /*embed*/ {ProjectWBSQuoteButton} from "./components/projectwbsquotebutton";
 import /*embed*/ {ProjectSettlementButton} from "./components/projectsettlementbutton";
 import /*embed*/ {ProjectSettlement} from "./components/projectsettlement";
 
@@ -50,7 +53,10 @@ import /*embed*/ {ProjectSettlement} from "./components/projectsettlement";
         fieldProjectActivityStartdate,
         ProjectActivityConfirmation,
         ProjectSettlementButton,
-        ProjectSettlement
+        ProjectSettlementLine,
+        ProjectSettlement,
+        fieldProjectActivityDuration,
+        ProjectWBSQuoteButton
     ]
 })
 export class ModuleProjects {}
