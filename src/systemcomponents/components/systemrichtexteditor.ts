@@ -294,7 +294,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     private openSourceEditor() {
-        this.modal.openModal('SystemRichTextSourceModal').subscribe(componentRef => {
+        this.modal.openModal('SystemRichTextSourceModal', null, this.viewContainerRef.injector ).subscribe(componentRef => {
             componentRef.instance._html = this._html;
             componentRef.instance.html.subscribe(newHtml => {
                 // update our internal value

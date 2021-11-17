@@ -1,0 +1,26 @@
+<table class="slds-table slds-table--fixed-layout slds-table_bordered slds-box--border">
+  <thead>
+    <tr class="slds-line-height_reset">
+      <th style="width: 99%" scope="col">
+        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+      </th>
+      <th style="width: 5rem" scope="col">
+        <div class="slds-truncate"><system-label label="LBL_STATUS"></system-label></div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="slds-hint-parent" *ngFor="let bean of beans" [system-model-provider]="{module: bean.module, data: bean.data}">
+      <td>
+        <div class="slds-grid slds-grid--vertical-align-center" system-model-popover>
+          <system-icon [module]="bean.module" size="x-small"></system-icon>
+          <div class="slds-truncate">{{bean.summary_text}}</div>
+        </div>
+      </td>
+      <td>
+        <div class="slds-truncate">{{bean.status}}</div>
+      </td>
+    </tr>
+  </tbody>
+  <tbody system-table-stencils [rows]="10" columns="2" *ngIf="loading"></tbody>
+</table>

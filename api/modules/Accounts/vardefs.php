@@ -812,6 +812,7 @@ if(file_exists('extensions/modules/SystemDeploymentReleases')){
         'bean_name' => 'SystemDeploymentRelease',
         'source' => 'non-db',
         'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
+        'side' => 'left'
     ];
     $dictionary['Account']['relationships']['account_systemdeploymentreleases'] = [
         'lhs_module' => 'Accounts',
