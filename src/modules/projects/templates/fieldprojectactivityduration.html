@@ -1,0 +1,12 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    {{hours}}:{{minutes}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <input type="number" min="0" max="23" maxlength="2" class="slds-input" [(ngModel)]="hours"/>
+        <div class="slds-p-horizontal--xx-small">:</div>
+        <input type="number" min="0" max="59" maxlength="2" class="slds-input" [(ngModel)]="minutes"/>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

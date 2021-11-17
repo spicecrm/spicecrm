@@ -1,0 +1,27 @@
+<td>
+    <system-checkbox [(ngModel)]="projectactivitiy.selected"></system-checkbox>
+</td>
+<td>
+    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="name"></field-container></div>
+</td>
+<td>
+    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="projectplannedactivity_name"></field-container></div>
+</td>
+<td>
+    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="created_by_name" [fieldconfig]="{readonly: true}"></field-container></div>
+</td>
+<td>
+    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="activity_start" [fieldconfig]="{readonly: true}" ></field-container></div>
+</td>
+<td>
+    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="settlement_type"></field-container></div>
+</td>
+<td class="slds-text-align--center">
+    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="activity_duration" [fieldconfig]="{readonly: true, fieldtype: 'projectActivityDuration'}"></field-container></div>
+</td>
+<td class="slds-text-align--center">
+    <div class="slds-truncate"><field-container fielddisplayclass="slds-truncate" field="corrected_duration" [fieldconfig]="{fieldtype: 'projectActivityDuration'}"></field-container></div>
+</td>
+<td class="slds-text-align--right">
+    <button [disabled]="!model.isEditing" (click)="save()" class="slds-button slds-button--icon"><system-button-icon icon="save"></system-button-icon></button>
+</td>

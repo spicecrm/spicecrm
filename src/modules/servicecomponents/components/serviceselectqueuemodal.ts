@@ -34,6 +34,9 @@ export class ServiceSelectQueueModal {
             for (let queue of queues.list) {
                 if (queue.id != this.parentqueue_id) {
                     this.queues.push(queue);
+                    this.queues = this.queues.sort( (a,b) => {
+                        return a.name.localeCompare(b.name);
+                    });
                 }
             }
             this.loading = false;

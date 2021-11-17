@@ -224,8 +224,8 @@ export class salesdocrecord implements OnDestroy {
             data => {
 
                 // check if we have a change in taxdata
-                if (this.salesDocItemCount > 0 && (!this.taxedParty.data || !!this.taxedParty.data?.vat_nr != !!data?.vat_nr || this.taxedCountry() != this.taxedCountry(data))) {
-                    this.modal.prompt('confirm', this.language.getLabel('MSG_RECALC_TAXES', null, 'long') , this.language.getLabel('MSG_RECALC_TAXES')).subscribe(res => {
+                if (this.configuration.getData('salesdoctaxdetermination') && this.salesDocItemCount > 0 && (!this.taxedParty.data || !!this.taxedParty.data?.vat_nr != !!data?.vat_nr || this.taxedCountry() != this.taxedCountry(data))) {
+                    this.modal.prompt('confirm', this.language.getLabel('MSG_RECALC_TAXES', null, 'long'), this.language.getLabel('MSG_RECALC_TAXES')).subscribe(res => {
                         if (res) {
                             this.taxchange.emit(true);
                         }

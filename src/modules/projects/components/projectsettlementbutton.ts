@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleProjects
  */
 import {Component, OnInit, Optional, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';

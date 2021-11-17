@@ -17,7 +17,7 @@ declare var libphonenumber: any;
 @Component({
     selector: 'telephony-call-model-update',
     templateUrl: './src/modules/telephony/templates/telephonycallmodelupdate.html',
-    providers: [model, view]
+    providers: [ view]
 })
 export class TelephonyCallModelUpdate implements OnInit {
 
@@ -66,7 +66,7 @@ export class TelephonyCallModelUpdate implements OnInit {
 
         // initialize the model if we have any phone fields
         if (this.phoneFields.length > 0) {
-            this.initializeModel();
+            this.model.startEdit();
         } else {
             this.close();
         }
@@ -94,6 +94,7 @@ export class TelephonyCallModelUpdate implements OnInit {
         // let await = this.modal.await('LBL_LOADING_DATA');
         this.model.module = this.calldata.relatedmodule;
         this.model.id = this.calldata.relatedid;
+        this.model.initialize();
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.calldata.relateddata);
         this.model.startEdit();
     }
