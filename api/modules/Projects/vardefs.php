@@ -545,7 +545,7 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'source' => 'non-db',
     ];
 
-    $dictionary['Project']['relationships']['companycodes_project'] = [
+    $dictionary['Project']['relationships']['projectsettlementprofiles_project'] = [
         'lhs_module' => 'ProjectSettlementProfiles',
         'lhs_table' => 'projectsettlementprofiles',
         'lhs_key' => 'id',
