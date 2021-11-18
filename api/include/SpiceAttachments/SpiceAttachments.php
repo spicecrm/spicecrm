@@ -14,6 +14,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
 use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachment;
@@ -294,6 +295,20 @@ class SpiceAttachments
         file_put_contents($filepath, $fileContent);
 
         return $md5;
+    }
+
+    public static function saveDocumentRevisionAttachment($beanName, $beanId, DocumentRevision $doc): void {
+        $db          = DBManagerFactory::getInstance();
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $guid        = SpiceUtils::createGuid();
+        $trdate      = gmdate('Y-m-d H:i:s');
+        $fileSize    = (int)$doc->file_size;
+
+        $sql = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5,
+                file_mime_type, deleted) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '{$currentUser->id}',
+                '{$trdate}', '{$doc->file_name}', {$fileSize}, '{$doc->file_md5}', '{$doc->file_mime_type}',
+                '0')";
+        $db->query($sql);
     }
 
     /**
