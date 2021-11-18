@@ -34,7 +34,7 @@ export class QuestionnaireResults implements OnInit {
             // In case the participation/answers had been (re-)saved elsewhere
             // • Reload the questionnaire.
             // • Reload the detail view in case the status/completed field has changed.
-            if ( msg.messagetype == 'questionnaireParticipation.saved' ) {
+            if ( msg.messagetype == 'questionnaireParticipation.filledIn' ) {
                 if ( this.isForParticipation && msg.messagedata.id === this.questionnaireParticipation.participationId ) {
                     this.questionnaireParticipation.isLoaded$.subscribe( () => {
                         if ( this.questionnaireParticipation.isCompleted && this.model.getField('completed') !== true && !this.model.isEditing ) this.model.getData( true, null, true );

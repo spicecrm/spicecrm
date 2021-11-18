@@ -626,7 +626,7 @@ export class questionnaireParticipationService {
                 if ( this.initByQuestionnaire ) this.participationId = response.questionnaireParticipationId;
                 finishedSaving$.emit( true );
                 if ( !this.initByQuestionnaire ) {
-                    this.broadcast.broadcastMessage('questionnaireParticipation.filledOut', {
+                    this.broadcast.broadcastMessage('questionnaireParticipation.filledIn', {
                         id: this.participationId ? this.participationId : undefined,
                         parentId: this.parentId ? this.parentId : undefined,
                         parentType: this.parentType ? this.parentType : undefined
