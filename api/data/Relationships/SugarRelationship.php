@@ -215,7 +215,7 @@ abstract class SugarRelationship
      * @param $values values to insert into row
      * @return resource result of update satatement
      */
-    protected function updateRow($id, $values)
+    public function updateRow($id, $values)
     {
         $newVals = [];
         //Unset the ID since we are using it to update the row
