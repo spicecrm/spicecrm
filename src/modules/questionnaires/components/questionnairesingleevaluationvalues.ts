@@ -44,7 +44,9 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
         }
         this.loadValues();
         this.broadcast.message$.subscribe(msg => {
-            if ( msg.messagetype == 'questionnaireParticipation.saved' && msg.messagedata.parentType === this.model.module && msg.messagedata.parentId === this.model.id ) {
+            if ( msg.messagetype == 'questionnaireParticipation.filledOut' && (
+                ( msg.messagedata.parentType === this.model.module && msg.messagedata.parentId === this.model.id ) || msg.messagedata.id === this.model.id
+            )) {
                 this.reloadValues();
             }
         });

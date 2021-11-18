@@ -625,7 +625,13 @@ export class questionnaireParticipationService {
                 this.isCompleted = !!response.isCompleted;
                 if ( this.initByQuestionnaire ) this.participationId = response.questionnaireParticipationId;
                 finishedSaving$.emit( true );
-                this.broadcast.broadcastMessage('questionnaireParticipation.saved', { id: this.participationId, parentId: this.parentId, parentType: this.parentType });
+                if ( !this.initByQuestionnaire ) {
+                    this.broadcast.broadcastMessage('questionnaireParticipation.filledOut', {
+                        id: this.participationId ? this.participationId : undefined,
+                        parentId: this.parentId ? this.parentId : undefined,
+                        parentType: this.parentType ? this.parentType : undefined
+                    });
+                }
             },
             error => {
                 this.toast.sendToast('Error saving questionnaire answers.', 'error', null, false, 'errorSavingQuestionnaireAnswers');
