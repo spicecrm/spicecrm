@@ -222,7 +222,7 @@ class EmailSchedulesController
             foreach ($links as $module) {
                 $seed = BeanFactory::getBean($module);
                 if($seed->field_defs['is_inactive']){
-                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "{$seed->table_name}.is_inactive = 0");
+                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)");
                 } else {
                     $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0);
                 }
