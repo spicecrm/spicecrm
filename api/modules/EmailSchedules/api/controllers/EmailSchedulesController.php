@@ -185,7 +185,7 @@ class EmailSchedulesController
 
                     $seed = BeanFactory::getBean($related);
                     if($seed->field_defs['is_inactive']){
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "{$seed->table_name}.is_inactive = 0")];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
                     } else {
                         $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
                     }
