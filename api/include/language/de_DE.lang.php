@@ -415,6 +415,7 @@ $app_list_strings = [
     'gender_list' => [
         'male' => 'Männlich',
         'female' => 'Weiblich',
+        'diverse' => 'Divers'
     ],
     //Note:  do not translate case_status_default_key
 //       it is the key for the default case_status_dom value
