@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\UserQuotas\api\controllers;
 
 use SpiceCRM\data\BeanFactory;

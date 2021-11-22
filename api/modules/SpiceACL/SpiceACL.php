@@ -1,5 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceACL;
 
@@ -10,6 +9,33 @@ use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
+/*********************************************************************************
+* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+* You can contact us at info@spicecrm.io
+* 
+* SpiceCRM is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version
+* 
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU Affero General Public License version 3.
+* 
+* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* SugarCRM" logo. If the display of the logo is not reasonably feasible for
+* technical reasons, the Appropriate Legal Notices must display the words
+* "Powered by SugarCRM".
+* 
+* SpiceCRM is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+********************************************************************************/
 class SpiceACL
 {
 
@@ -280,7 +306,7 @@ class SpiceACL
      *
      * our own functions
      */
-    private function getActivityValueByAction($action, $module = null)
+    private function getActivityValueByAction($action)
     {
         switch ($action) {
             case 'index':
@@ -297,13 +323,7 @@ class SpiceACL
             case 'editview':
                 return 'edit';
             default:
-                // check if we have a custom action
-                if($module) {
-                    $db = DBManagerFactory::getInstance();
-                    $moduleId = SpiceModules::getInstance()->getModuleId($module);
-                    $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action'"));
-                }
-                return $customAction['id'] ?: $action;
+                return $action;
             /*
         default:
             if (\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['acl']['disable_cache'] || !isset($_SESSION['spiceaclaccess']['aclmoduleactions'][$module][$action])) {
@@ -363,7 +383,7 @@ class SpiceACL
         $isCustomActivity = false;
 
         // get the activitiy
-        $thisActivity = $this->getActivityValueByAction($view, $bean->_module ?: $bean);
+        $thisActivity = $this->getActivityValueByAction($view);
         // if activitiy is not found return false
         if ($thisActivity === false) {
             return false;
@@ -525,7 +545,7 @@ class SpiceACL
 
             // build the access array
             foreach ($actions as $actionid => $actionname) {
-                $aArray[$actionname] = array_search($actionid, $activitiesAllowed) !== false;
+                $aArray[$actionname] = array_search($actionname, $activitiesAllowed) !== false;
             }
         } else {
             //check if module is under ACL. Useful for modules like Activities, History, Calendar

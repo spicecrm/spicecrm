@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\GoogleCalendar;
 
 use SpiceCRM\extensions\modules\GoogleCalendar\GoogleCalendarEvent;

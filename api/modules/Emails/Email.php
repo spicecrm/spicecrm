@@ -719,19 +719,9 @@ class Email extends SugarBean
      * @return mixed
      * @throws Exception
      */
-    public function sendEmail()
+    public
+    function sendEmail()
     {
-        /*prep for tracking pixel .. ToDo: complete this
-        $key = '2fs5uhnjcnpxcpg9';
-        $method = 'blowfish';
-        $data = $this->_module .':'.$this->id;
-        $encrypted = openssl_encrypt($data, $method, $key);
-
-        // $decrypted = openssl_decrypt($encrypted, $method, $key);
-
-        $this->body .= '<img src="https://softwarecheck.us3.list-manage.com/track/open.php?'.base64_encode($encrypted) .'" height="1" width="1">';
-        */
-
         if ($this->mailbox_id) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
         }
@@ -1014,7 +1004,6 @@ class Email extends SugarBean
 
     function addEmailAddress($type, $address)
     {
-        if (!$address) return null;
         $this->recipient_addresses[] = [
             'address_type' => $type,
             'email_address' => EmailAddress::cleanAddress($address)

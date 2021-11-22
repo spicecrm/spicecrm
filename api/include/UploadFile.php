@@ -122,6 +122,70 @@ class UploadFile
 
 
     /**
+     * Get upload error from system
+     * @return string upload error
+     */
+    public function get_upload_error()
+    {
+        if (isset($this->field_name) && isset($_FILES[$this->field_name]['error'])) {
+            return $_FILES[$this->field_name]['error'];
+        }
+        return false;
+    }
+
+    /**
+     * standard PHP file-upload security measures. all variables accessed in a global context
+     * @return bool True on success
+     */
+    public function confirm_upload()
+    {
+        
+
+        if (empty($this->field_name) || !isset($_FILES[$this->field_name])) {
+            return false;
+        }
+
+        //check to see if there are any errors from upload
+        if ($_FILES[$this->field_name]['error'] != UPLOAD_ERR_OK) {
+            if ($_FILES[$this->field_name]['error'] != UPLOAD_ERR_NO_FILE) {
+                if ($_FILES[$this->field_name]['error'] == UPLOAD_ERR_INI_SIZE) {
+                    //log the error, the string produced will read something like:
+                    //ERROR: There was an error during upload. Error code: 1 - UPLOAD_ERR_INI_SIZE - The uploaded file exceeds the upload_max_filesize directive in php.ini. upload_maxsize is 16
+                    $errMess = string_format($GLOBALS['app_strings']['UPLOAD_ERROR_TEXT_SIZEINFO'], [$_FILES['filename_file']['error'], self::$filesError[$_FILES['filename_file']['error']], SpiceConfig::getInstance()->config['upload_maxsize']]);
+                    LoggerManager::getLogger()->fatal($errMess);
+                } else {
+                    //log the error, the string produced will read something like:
+                    //ERROR: There was an error during upload. Error code: 3 - UPLOAD_ERR_PARTIAL - The uploaded file was only partially uploaded.
+                    $errMess = string_format($GLOBALS['app_strings']['UPLOAD_ERROR_TEXT'], [$_FILES['filename_file']['error'], self::$filesError[$_FILES['filename_file']['error']]]);
+                    LoggerManager::getLogger()->fatal($errMess);
+                }
+            }
+            return false;
+        }
+
+        if ($_FILES[$this->field_name]['proxy'] !== true && !is_uploaded_file($_FILES[$this->field_name]['tmp_name'])) {
+            return false;
+        } elseif (($_FILES[$this->field_name]['size'] > 1048576) && ($_FILES[$this->field_name]['size'] > SpiceConfig::getInstance()->config['upload_maxsize'])) {
+            LoggerManager::getLogger()->fatal("ERROR: uploaded file was too big: max filesize: ". SpiceConfig::getInstance()->config['upload_maxsize']);
+            return false;
+        }
+
+        if (!UploadStream::writable()) {
+            LoggerManager::getLogger()->fatal("ERROR: cannot write to upload directory");
+            return false;
+        }
+
+        $this->mime_type = $this->getMime($_FILES[$this->field_name]);
+        $this->stored_file_name = $this->create_stored_filename();
+        $this->temp_file_location = $_FILES[$this->field_name]['tmp_name'];
+        $this->uploaded_file_name = $_FILES[$this->field_name]['name'];
+        $this->uploaded_file_size = $_FILES[$this->field_name]['size'];
+        $this->uploaded_file_md5 = md5_file($_FILES[$this->field_name]['tmp_name']);
+
+        return true;
+    }
+
+    /**
      * Guess MIME type for file
      * @param string $filename
      * @return string MIME type
@@ -201,6 +265,39 @@ class UploadFile
     }
 
     /**
+     * Get MIME type for uploaded file
+     * @param array $_FILES_element $_FILES element required
+     * @return string MIME type
+     */
+    function getMime($_FILES_element)
+    {
+        $filename = $_FILES_element['name'];
+        $filetype = isset($_FILES_element['type']) ? $_FILES_element['type'] : null;
+        $file_ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+        $is_image = strpos($filetype, 'image/') === 0;
+        // if it's an image, or no file extension is available and the mime is octet-stream
+        // try to determine the mime type
+        $recheckMime = $is_image || (empty($file_ext) && $filetype == 'application/octet-stream');
+
+        $mime = 'application/octet-stream';
+        if ($filetype && !$recheckMime) {
+            $mime = $filetype;
+        } elseif (function_exists('mime_content_type')) {
+            $mime = mime_content_type($_FILES_element['tmp_name']);
+        } elseif ($is_image) {
+            $info = getimagesize($_FILES_element['tmp_name']);
+            if ($info) {
+                $mime = $info['mime'];
+            }
+        } elseif (function_exists('ext2mime')) {
+            $mime = ext2mime($filename);
+        }
+
+        return $mime;
+    }
+
+    /**
      * gets note's filename
      * @return string
      */
@@ -219,6 +316,65 @@ class UploadFile
         return $this->uploaded_file_md5;
     }
 
+    /**
+     * Returns the contents of the uploaded file
+     */
+    public function get_file_contents()
+    {
+
+        // Need to call
+        if (!isset($this->temp_file_location)) {
+            $this->confirm_upload();
+        }
+
+        if (($data = @file_get_contents($this->temp_file_location)) === false) {
+            return false;
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * creates a file's name for preparation for saving
+     * @return string
+     */
+    function create_stored_filename()
+    {
+        
+
+        if (!$this->use_soap) {
+            $stored_file_name = $_FILES[$this->field_name]['name'];
+            $this->original_file_name = $stored_file_name;
+
+            /**
+             * cn: bug 8056 - windows filesystems and IIS do not like utf8.  we are forced to urlencode() to ensure that
+             * the file is linkable from the browser.  this will stay broken until we move to a db-storage system
+             */
+            if (is_windows()) {
+                // create a non UTF-8 name encoding
+                // 176 + 36 char guid = windows' maximum filename length
+                $end = (strlen($stored_file_name) > 176) ? 176 : strlen($stored_file_name);
+                $stored_file_name = substr($stored_file_name, 0, $end);
+                $this->original_file_name = $_FILES[$this->field_name]['name'];
+            }
+            $stored_file_name = str_replace("\\", "", $stored_file_name);
+        } else {
+            $stored_file_name = $this->stored_file_name;
+            $this->original_file_name = $stored_file_name;
+        }
+
+        $this->file_ext = pathinfo($stored_file_name, PATHINFO_EXTENSION);
+        // cn: bug 6347 - fix file extension detection
+        foreach (SpiceConfig::getInstance()->config['upload_badext'] as $badExt) {
+            if (strtolower($this->file_ext) == strtolower($badExt)) {
+                $stored_file_name .= ".txt";
+                $this->file_ext = "txt";
+                break; // no need to look for more
+            }
+        }
+        return $stored_file_name;
+    }
 
     /**
      * moves uploaded temp file to permanent save location
@@ -233,6 +389,9 @@ class UploadFile
         }
 
         if (!$replace && file_exists($destination)) {
+            if ($this->use_proxy)
+                unlink($_FILES[$this->field_name]['tmp_name']);
+
             return true;
         }
 
@@ -244,7 +403,19 @@ class UploadFile
                 return true;
             }
         }
+        if ($this->use_proxy) {
+            if (!file_put_contents($destination, file_get_contents($_FILES[$this->field_name]['tmp_name']))) {
+            // if (!rename($_FILES[$this->field_name]['tmp_name'], $destination)) {
+                LoggerManager::getLogger()->fatal("ERROR: can't save file to $destination");
+                return false;
+            }
+        } else {
 
+                if(!UploadStream::move_uploaded_file($_FILES[$this->field_name]['tmp_name'], $destination)) {
+                    LoggerManager::getLogger()->fatal("ERROR: can't move_uploaded_file to $destination. You should try making the directory writable by the webserver");
+                    return false;
+                }
+        }
         return true;
     }
 

@@ -58,9 +58,24 @@ class SpiceLanguageLoader{
      * @throws Exception
      */
     public function loadLanguage($language){
+        // $route = "referencelanguage";
         $package = '*';
+
         $route = implode("/", [$this->routebase, $language, $package, '*']);
-        return $this->loadDefaultConf($route, ['route' => $this->routebase, 'languages' => $language], false);;
+
+        $results = $this->loadDefaultConf($route, ['route' => $this->routebase, 'languages' => $language], false);
+        //BEGIN CR1000150: set \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['syslanguages']['spiceuisource'] to 'db'
+        if($results['success']){
+            if(!class_exists('Configurator', false)){
+                require_once 'modules/Configurator/Configurator.php';
+            }
+            $configurator = new Configurator();
+            $configurator->loadConfig();
+            $configurator->config['syslanguages']['spiceuisource'] = 'db';
+            $configurator->saveConfig();
+        }
+        //END
+        return $results;
     }
 
     /**

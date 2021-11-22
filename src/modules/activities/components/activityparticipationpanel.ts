@@ -23,7 +23,7 @@ declare var moment: any;
 declare var _: any;
 
 /**
- * renders a panel with the participating users and contacts in the activity
+ * renders a panel with the particopating users and contacts in the activity
  */
 @Component({
     selector: 'activity-participation-panel',
@@ -33,7 +33,7 @@ declare var _: any;
 export class ActivityParticipationPanel{
 
     /**
-     * the participants as input to the field since this is rendered as part of a field
+     * the partcipants as input gtom the field since this is rendered as part of a field
      */
     @Input() private participants: any[] = [];
 

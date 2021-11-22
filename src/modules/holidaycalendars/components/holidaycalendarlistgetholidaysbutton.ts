@@ -24,7 +24,6 @@ import {configurationService} from "../../../services/configuration.service";
  * thgis requires that the api key is set in teh cofnugration then the button will be enabled
  */
 @Component({
-    selector: 'holiday-calendar-list-get-holidays-button',
     templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlistgetholidaysbutton.html',
 })
 export class HolidayCalendarListGetHolidaysButton {
@@ -47,9 +46,9 @@ export class HolidayCalendarListGetHolidaysButton {
      * check the clendarific API setting .. if an PAI key is there
      * @private
      */
-    private enableButton() {
+    private enableButton(){
         let capabilityConfig = this.configuration.getCapabilityConfig('holidaycalendars');
-        if (capabilityConfig?.calendarific) this.disabled = false;
+        if(capabilityConfig?.calendarific) this.disabled = false;
     }
 
     /**

@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
 abstract class ApiPdfHandler extends PdfHandler

@@ -36,12 +36,11 @@ export class spiceinstaller {
      * backend config
      */
     public systemid: string = '000';
-    public systemname: string = 'SpiceCRM';
+    public systemname: string = '';
     public systemurl: string = window.location.href.split('#')[0] + 'api';
-    public systemproxy: number = 0;
+    public systemproxy: number = 1;
     public systemdevmode: boolean = false;
     public systemloginprogressbar: number = 0;
-    public systemloginsidebar: number = 0;
     public systemallowforgotpass: number = 0;
     public frontendUrl: string = window.location.href.split('#')[0];
     /**
@@ -57,14 +56,14 @@ export class spiceinstaller {
     public db_user_name: string = '';
     public db_password: string = '';
     public db_name: string = '';
-    public db_type: string = '';
+    public db_type: string = 'mysqli';
     public db_port: string = '';
     public db_manager: string = '';
     public persistent: boolean = true;
     public autofree: boolean = false;
     public debug: number = 0;
     public ssl: boolean = false;
-    public collation: string = '';
+    public collation: string = 'utf8_general_ci';
     public dbaccessuser: string = 'admin';
     /**
      * existing or new user for database access
@@ -81,6 +80,7 @@ export class spiceinstaller {
     /**
      * oracle additional parameters
      */
+
     public db_schema: string = 'SpiceCRM';
     /**
      * fts
@@ -88,7 +88,7 @@ export class spiceinstaller {
 
     public server: string = '';
     public port: string = '9200';
-    public prefix: string = '';
+    public prefix: string = 'spicecrm_';
     public transferProtocol: string = 'http';
     /**
      * credentials

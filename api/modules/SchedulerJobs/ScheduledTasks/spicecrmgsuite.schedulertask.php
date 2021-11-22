@@ -1,5 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\extensions\modules\GoogleCalendar\GoogleCalendarJobhandler;
 

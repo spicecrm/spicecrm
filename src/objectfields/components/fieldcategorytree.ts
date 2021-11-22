@@ -13,22 +13,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, EventEmitter, Input, Output,} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 
 @Component({
-    selector: 'field-service-category-search',
-    templateUrl: './src/objectfields/templates/fieldservicecategorysearch.html'
+    selector: 'field-service-category-tree',
+    templateUrl: './src/objectfields/templates/fieldcategorytree.html'
 })
-export class fieldServiceCategorySearch
+export class fieldServiceCategoryTree
 {
-    @Input() search:string;
-    categories = [];
+    category_tree = [];
+    // hardcoded till now... maybe evaluate after getting the tree?
+    @Input() maxlevels = 4;
+    // holds the current categories of each level...
+    levels:any[] = [];
     selected_categorys = [];
     @Output('choose') choose_emitter = new EventEmitter();
+
+    // loading indicator
+    private loading: boolean = true;
 
     constructor(
         private model:model,
@@ -37,64 +43,70 @@ export class fieldServiceCategorySearch
         private language:language,
     )
     {
+        this.resetLevels();
+        // getting the category tree...
         if( !this.config.getData('service_category_tree') )
         {
             this.backend.getRequest('configuration/spiceui/core/servicecategories/tree').subscribe(
                 (res:any) => {
                     //console.log(res);
                     this.config.setData('service_category_tree', res);
-                    this.flatteningOutCategoryTree(res);
+                    this.category_tree = res;
+                    this.levels[0] = this.category_tree;
+                    this.loading = false;
                 }
             );
         }
         else {
-            this.flatteningOutCategoryTree(this.config.getData('service_category_tree'));
+            this.category_tree = this.config.getData('service_category_tree');
+            this.levels[0] = this.category_tree;
+            this.loading = false;
         }
     }
 
-    get results()
+    resetLevels(start_lvl = 0)
     {
-        return this.categories.filter((e) => {return e.display_name.includes(this.search)});
-    }
-
-    flatteningOutCategoryTree(tree)
-    {
-        for(let cat of tree)
+        for(let lvl = start_lvl; lvl < this.maxlevels; lvl++)
         {
-            cat.parents = [];
-            this.loopThroughTree(cat);
+            this.levels[lvl] = [];
         }
-        //console.log(this.categories);
+        this.selected_categorys.splice(start_lvl,this.maxlevels - start_lvl);
     }
 
-    private loopThroughTree(cat)
+    /**
+     * triggered on mouseenter, selects a category to go deeper
+     */
+    select(cat)
     {
-        cat.display_name = '';
-        if( cat.parents.length > 0 ) {
-            for (let p of cat.parents) {
-                cat.display_name += this.language.getLabel(p.name) + '\\';
-            }
+        //console.log(cat);
+        this.selected_categorys[cat.level] = cat;
+        if(cat.categories) {
+            this.levels[cat.level + 1] = cat.categories;
+            this.resetLevels(cat.level + 2);
         }
-        cat.display_name += this.language.getLabel(cat.name);
-
-        this.categories.push(cat);
-
-        if(cat.categories)
-        {
-            for(let c of cat.categories)
-            {
-                c.parents = [...cat.parents];
-                c.parents.push(cat);
-
-                this.loopThroughTree(c);
-            }
+        else{
+            this.resetLevels(cat.level+1);
         }
+
+        //console.log(this.levels);
     }
 
+    /**
+     * triggered on click, selects a category finally and emits the 'choose' output
+     */
     choose(cat)
     {
-        let cats = [...cat.parents];
-        cats.push(cat);
-        this.choose_emitter.emit(cats);
+        this.selected_categorys[cat.level] = cat;
+        this.choose_emitter.emit(this.selected_categorys);
+    }
+
+    isCategorySelected(cat):boolean
+    {
+        for(let c of this.selected_categorys)
+        {
+            if( c.id == cat.id )
+                return true;
+        }
+        return false;
     }
 }

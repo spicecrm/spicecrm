@@ -1,39 +1,38 @@
 <?php
 /*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
+* SugarCRM Community Edition is a customer relationship management program developed by
+* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+* 
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU Affero General Public License version 3 as published by the
+* Free Software Foundation with the addition of the following permission added
+* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+* 
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+* details.
+* 
+* You should have received a copy of the GNU Affero General Public License along with
+* this program; if not, see http://www.gnu.org/licenses or write to the Free
+* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+* 02110-1301 USA.
+* 
+* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+* 
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU Affero General Public License version 3.
+* 
+* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* SugarCRM" logo. If the display of the logo is not reasonably feasible for
+* technical reasons, the Appropriate Legal Notices must display the words
+* "Powered by SugarCRM".
+********************************************************************************/
 namespace SpiceCRM\includes\Logger;
 
 
@@ -72,8 +71,8 @@ class SpiceLogger implements LoggerTemplate
     public static $filename_suffix = [
         //bug#50265: Added none option for previous version users
         "" => "None",
-        "%m_%Y" => "Month_Year",
-        "%d_%m" => "Day_Month",
+        "%m_%Y"    => "Month_Year",
+        "%d_%m"    => "Day_Month",
         "%m_%d_%y" => "Month_Day_Year",
     ];
 
@@ -121,17 +120,13 @@ class SpiceLogger implements LoggerTemplate
     {
         $config = SpiceConfig::getInstance();
         $this->ext = $config->get('logger.file.ext', $this->ext);
-
-        // add the '.' if missing
-        if (substr($this->ext, 0, 1) != '.') $this->ext = '.' . $this->ext;
-
         $this->logfile = $config->get('logger.file.name', $this->logfile);
         $this->dateFormat = $config->get('logger.file.dateFormat', $this->dateFormat);
         $this->logSize = $config->get('logger.file.maxSize', $this->logSize);
         $this->maxLogs = $config->get('logger.file.maxLogs', $this->maxLogs);
         $this->filesuffix = $config->get('logger.file.suffix', $this->filesuffix);
-        $log_dir = $config->get('log_dir', $this->log_dir);
-        $this->log_dir = $log_dir . (empty($log_dir) ? '' : '/');
+        $log_dir = $config->get('log_dir' , $this->log_dir);
+        $this->log_dir = $log_dir . (empty($log_dir)?'':'/');
         //unset($config);
         $this->_doInitialization();
         LoggerManager::setLogger('default', SpiceLogger::class);
@@ -139,16 +134,15 @@ class SpiceLogger implements LoggerTemplate
 
     }
 
-    static function getTimestamp()
-    {
-        if (function_exists('hrtime' && 1 == 2)) {
-            return hrtime(true);
+    static function getTimestamp(){
+        if(function_exists('hrtime' && 1 == 2)) {
+            return  hrtime(true);
         } else {
             $thisMS = round(microtime() * 1000);
             while (strlen($thisMS) < 3)
                 $thisMS = '0' . $thisMS;
 
-            return time() . $thisMS;
+            return   time() . $thisMS;
         }
     }
 
@@ -158,7 +152,8 @@ class SpiceLogger implements LoggerTemplate
      */
     protected function _doInitialization()
     {
-        if ($this->filesuffix && array_key_exists($this->filesuffix, self::$filename_suffix)) { //if the global config contains date-format suffix, it will create suffix by parsing datetime
+        if( $this->filesuffix && array_key_exists($this->filesuffix, self::$filename_suffix) )
+        { //if the global config contains date-format suffix, it will create suffix by parsing datetime
             $this->date_suffix = "_" . date(str_replace("%", "", $this->filesuffix));
         }
         $this->full_log_file = $this->log_dir . $this->logfile . $this->date_suffix . $this->ext;
@@ -191,8 +186,7 @@ class SpiceLogger implements LoggerTemplate
     /**
      * see LoggerTemplate::log()
      */
-    public function log($level, $message, $logparams = [])
-    {
+    public function log($level, $message, $logparams = []) {
         if (!$this->initialized) {
             return;
         }
@@ -214,8 +208,7 @@ class SpiceLogger implements LoggerTemplate
      * @param $message
      * @return string
      */
-    private function prepareMessage($message): string
-    {
+    private function prepareMessage($message): string {
         // change to a string if there is just one entry
         if (is_array($message) && count($message) == 1) {
             $message = array_shift($message);
@@ -223,7 +216,7 @@ class SpiceLogger implements LoggerTemplate
 
         // change to a human-readable array output if it's any other array
         if (is_array($message)) {
-            $message = print_r($message, true);
+            $message = print_r($message,true);
         }
 
         return $message;
@@ -235,8 +228,7 @@ class SpiceLogger implements LoggerTemplate
      * @param $level
      * @param $message
      */
-    public function logToFile($level, $message)
-    {
+    public function logToFile($level, $message) {
         //lets get the current user id or default to -none- if it is not set yet
         $userID = '-none-';
         if (is_object(AuthenticationController::getInstance()->getCurrentUser()) && AuthenticationController::getInstance()->getCurrentUser()->id) {
@@ -245,7 +237,7 @@ class SpiceLogger implements LoggerTemplate
 
         //if we haven't opened a file pointer yet let's do that
         if (!$this->fp) {
-            $this->fp = fopen($this->full_log_file, 'a');
+            $this->fp = fopen($this->full_log_file , 'a');
         }
 
         //write out to the file including the time in the dateFormat the process id , the user id , and the log level as well as the message
@@ -267,7 +259,7 @@ class SpiceLogger implements LoggerTemplate
     )
     {
         //do not log on install!
-        if (!empty($GLOBALS['installing'])) return true;
+        if ( !empty( $GLOBALS['installing'] )) return true;
 
         $td = new TimeDate();
         $log = ["id" => SpiceUtils::createGuid(),
@@ -301,11 +293,11 @@ class SpiceLogger implements LoggerTemplate
             'm' => 1024 * 1024,         //MBytes
             'g' => 1024 * 1024 * 1024,  //GBytes
         ];
-        if (preg_match('/^\s*([0-9]+\.[0-9]+|\.?[0-9]+)\s*(k|m|g|b)(b?ytes)?/i', $this->logSize, $match)) {
-            $rollAt = ( int )$match[1] * $units[strtolower($match[2])];
+        if( preg_match('/^\s*([0-9]+\.[0-9]+|\.?[0-9]+)\s*(k|m|g|b)(b?ytes)?/i', $this->logSize, $match) ) {
+            $rollAt = ( int ) $match[1] * $units[strtolower($match[2])];
         }
         //check if our log file is greater than that or if we are forcing the log to roll if and only if roll size assigned the value correctly
-        if ($force || ($rollAt && filesize($this->full_log_file) >= $rollAt)) {
+        if ( $force || ($rollAt && filesize ( $this->full_log_file ) >= $rollAt) ) {
             $temp = tempnam($this->log_dir, 'rot');
             if ($temp) {
                 // warning here is expected in case if log file is opened by another process on Windows
@@ -353,7 +345,7 @@ class SpiceLogger implements LoggerTemplate
     public function __wakeup()
     {
         // clean all properties
-        foreach (get_object_vars($this) as $k => $v) {
+        foreach(get_object_vars($this) as $k => $v) {
             $this->$k = null;
         }
         throw new \Exception("Not a serializable object"); //todo-uebelmar clarify...which expection should be thrown?
@@ -366,7 +358,8 @@ class SpiceLogger implements LoggerTemplate
      */
     public function __destruct()
     {
-        if ($this->fp) {
+        if ($this->fp)
+        {
             fclose($this->fp);
             $this->fp = FALSE;
         }

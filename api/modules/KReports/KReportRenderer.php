@@ -125,13 +125,13 @@ class KReportRenderer
     {
         $timedate = TimeDate::getInstance();
         // 2013-10-03 no Date TZ Conversion Bug#504
-        return ($record[$fieldid] != '' ? $timedate->asUserDate($timedate->fromDbDate($record[$fieldid])) : '');
+        return ($record[$fieldid] != '' ? $timedate->to_display_date($record[$fieldid], false) : '');
     }
 
     public static function kdatetimeRenderer($fieldid, $record)
     {
         $timedate = TimeDate::getInstance();
-        $db = DBManagerFactory::getInstance();
+$db = DBManagerFactory::getInstance();
         return ($record[$fieldid] != '' ? $db->fromConvert($record[$fieldid], 'datetime') : '');
     }
 

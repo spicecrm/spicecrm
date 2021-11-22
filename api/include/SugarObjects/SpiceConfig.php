@@ -97,7 +97,6 @@ class SpiceConfig
             include('config_override.php');
         }
         $this->config = $sugar_config;
-
     }
 
     /**

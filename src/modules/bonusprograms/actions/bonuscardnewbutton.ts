@@ -58,8 +58,7 @@ export class BonusCardNewButton implements OnInit {
         if (this.parentModel.module == 'BonusPrograms' && this.parentModel.id) {
             program = {
                 id: this.parentModel.id,
-                name: this.parentModel.data.summary_text,
-                validity_date_editable: this.parentModel.data.validity_date_editable,
+                name: this.parentModel.data.summary_text
             };
         } else {
             program = await this.promptProgramSelection();
@@ -90,7 +89,7 @@ export class BonusCardNewButton implements OnInit {
     /**
      * add a new card with the program
      */
-    public addNew(program: { id: string, name: string, validity_date_editable: number, date_start: string, date_end: string }) {
+    public addNew(program: { id: string, name: string, date_start: string, date_end: string }) {
         this.model.id = undefined;
         this.model.initialize();
         let presets;
@@ -101,7 +100,6 @@ export class BonusCardNewButton implements OnInit {
                 bonusprogram_name: program.name,
                 purchase_date: this.modelUtilities.backend2spice(this.model.module, 'purchase_date', program.date_start),
                 valid_until: this.modelUtilities.backend2spice(this.model.module, 'valid_until', program.date_end),
-                validity_date_editable: program.validity_date_editable,
             };
         }
 
@@ -111,7 +109,7 @@ export class BonusCardNewButton implements OnInit {
     /**
      * prompt to select a program and then open the add modal.
      */
-    private async promptProgramSelection(): Promise<{ id: string, name: string, validity_date_editable: number }> {
+    private async promptProgramSelection(): Promise<{ id: string, name: string }> {
 
         const params = {
             start: 0,
@@ -131,17 +129,15 @@ export class BonusCardNewButton implements OnInit {
             return undefined;
         }
 
-        const options = programs.list.map(item => ({value: item.id, display: item.summary_text, validity_date_editable: item.validity_date_editable}));
+        const options = programs.list.map(item => ({value: item.id, display: item.summary_text}));
 
         const programId: string | false = await this.modal.prompt('input', 'MSG_SELECT_PROGRAM', 'LBL_BONUSCARD', 'shade', null, options, true).toPromise();
 
         if (!programId) return undefined;
-        const program = options.find(o => o.value == programId);
 
         return {
             id: programId,
-            name: program.display,
-            validity_date_editable: program.validity_date_editable
+            name: options.find(o => o.value == programId).display
         };
     }
 }

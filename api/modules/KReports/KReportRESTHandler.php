@@ -10,6 +10,7 @@ use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\KReports\KReport;
 use SpiceCRM\modules\KReports\KReportPluginManager;
+use SpiceCRM\modules\KReports\KReportUtil;
 use SpiceCRM\modules\KReports\KReportPresentationManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -971,11 +972,20 @@ $db = DBManagerFactory::getInstance();
         // initialize Return Array
         $retData = [];
 
+        //added maretval 2019-05-03
+        //handle reportId
+        if (!KReportUtil::KReportValueIsAnId($reportId)) {
+            return $retData;
+        }
         // get the report and the vizParams
         $thisReport = BeanFactory::getBean('KReports', $reportId);
 
-        $requestParams['start'] = $requestParams['start'] ?: 0;
-        $requestParams['limit'] = $requestParams['limit'] ?: 0;
+        //handle start not set and start content (added maretval 2019-05-03)
+        if (!isset($requestParams['start']) || !KReportUtil::KReportValueIsIntegerOnly((int)$requestParams['start']))
+            $requestParams['start'] = 0;
+        //handle limit not set and limit content (added maretval 2019-05-03)
+        if (!isset($requestParams['limit']) || !KReportUtil::KReportValueIsIntegerOnly((int)$requestParams['limit']))
+            $requestParams['limit'] = 0;
 
         // set request Paramaters
         $reportParams = ['noFormat' => true, 'start' => isset($requestParams['start']) ? $requestParams['start'] : 0, 'limit' => isset($requestParams['limit']) ? $requestParams['limit'] : 0];
@@ -1174,11 +1184,21 @@ $db = DBManagerFactory::getInstance();
 
         $retData = [];
 
+        //added maretval 2019-05-03
+        //handle reportId
+        if (!KReportUtil::KReportValueIsAnId($reportId)) {
+            return $retData;
+        }
+
         // get the report and the vizParams
         $thisReport = BeanFactory::getBean('KReports', $reportId);
 
-        $requestParams['start'] = $requestParams['start'] ?: 0;
-        $requestParams['limit'] = $requestParams['limit'] ?: 1000;
+        //handle start not set and start content (added maretval 2019-05-03)
+        if (!isset($requestParams['start']) || !KReportUtil::KReportValueIsIntegerOnly($requestParams['start']))
+            $requestParams['start'] = 0;
+        //handle limit not set and limit content (added maretval 2019-05-03)
+        if (!isset($requestParams['limit']) || !KReportUtil::KReportValueIsIntegerOnly($requestParams['limit']))
+            $requestParams['limit'] = 1000;
 
         // set request Paramaters
         $reportParams = ['noFormat' => true, 'start' => isset($requestParams['start']) ? $requestParams['start'] : 0, 'limit' => isset($requestParams['limit']) ? $requestParams['limit'] : 0];
@@ -1231,8 +1251,10 @@ $db = DBManagerFactory::getInstance();
 
         // if a filter is set evaluate it .. comes from the dashlet
         if (!empty($requestParams['filter'])) {
-            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '" . $requestParams['filter'] . "'"));
-            $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
+            if (KReportUtil::KReportValueIsAnId($requestParams['filter'])) {
+                $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '" . $requestParams['filter'] . "'"));
+                $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
+            }
         }
 
         //get parent bean
@@ -1443,8 +1465,15 @@ $db = DBManagerFactory::getInstance();
         $fieldname = $params['fieldname'];
         $fieldvalue = $params['fieldvalue'];
 
-        $start = $params['start'] ?: 0;
-        $limit = $params['limit'] ?: 0;
+        $start = $params['start'];
+        $limit = $params['limit'];
+
+        //added maretval 2019-05-03
+        if (isset($params['start']) && !KReportUtil::KReportValueIsIntegerOnly($params['start']))
+            $start = 0;
+        if (isset($params['limit']) && !KReportUtil::KReportValueIsIntegerOnly($params['limit']))
+            $start = 0;
+
 
         //remoteFiter
         if (isset($params['filter'])) {

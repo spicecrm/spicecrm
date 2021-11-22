@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\Mailboxes\api\controllers;
 
 use SpiceCRM\data\BeanFactory;

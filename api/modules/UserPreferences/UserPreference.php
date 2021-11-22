@@ -353,8 +353,9 @@ class UserPreference extends SugarBean
      */
     public function getUserDateTimePreferences()
     {
-        $timedate = TimeDate::getInstance();
+        global   $timedate;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
 
         $user = $this->_userFocus;
 

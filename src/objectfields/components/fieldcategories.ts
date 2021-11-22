@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {Component} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -24,142 +24,78 @@ import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 
 /**
- * renders a field to choose from teh category tree
+ * documentation: https://spicecrm.gitbooks.io/spicecrm-ui/content/component-directory/fields/service-categories.html
+ * created by Sebastian Franz
  */
 @Component({
-    selector: 'field-categories',
+    selector: 'field-service-categories',
     templateUrl: './src/objectfields/templates/fieldcategories.html'
 })
-export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
-
-    /**
-     * the searchterm entered and used in the categories search
-     *
-     * @private
-     */
-    private searchterm: string;
-
-    /**
-     * set to true if favorites shoudl be displayed resp searched
-     *
-     * @private
-     */
-    private searchfavorites: boolean = false;
-
-    /**
-     * the click lisetner that listenes to any click evbent outside of the element
-     */
-    private clickListener: any;
-
-    /**
-     * if the dropwodn is open
-     *
-     * @private
-     */
-    private dropDownOpen: boolean = false;
+export class fieldServiceCategories extends fieldGeneric
+{
+    readonly fields = ['sysservicecategory_id1','sysservicecategory_id2','sysservicecategory_id3','sysservicecategory_id4'];
+    show_tree:boolean = false;
+    show_search:boolean = false;
+    search:string;
+    categories = [];
 
     constructor(
-        public model: model,
-        public view: view,
-        public language: language,
-        public metadata: metadata,
-        public router: Router,
-        private backend: backend,
-        private config: configurationService,
-        private elementRef: ElementRef,
-        private renderer: Renderer2
-    ) {
+        public model:model,
+        public view:view,
+        public language:language,
+        public metadata:metadata,
+        public router:Router,
+        private backend:backend,
+        private config:configurationService,
+    )
+    {
         super(model, view, language, metadata, router);
-    }
 
-    public ngOnInit() {
-        super.ngOnInit();
-
-        // get the categories
-        let categories = this.config.getData('categories');
-
-        if (!categories || !categories[this.fieldconfig.treeid]) {
-            if (!categories) categories = {};
-            // set this in any case so we don't load multiple times
-            categories[this.fieldconfig.treeid] = [];
-            this.config.setData('categories', categories);
-
+        if( !this.config.getData('service_categories') ) {
+            this.config.setData('service_categories', []);
             // load all categories which are needed to display the choosen categories...
-            this.backend.getRequest(`configuration/spiceui/core/categorytrees/${this.fieldconfig.treeid}/categorytreenodes`).subscribe(
+            this.backend.getRequest('configuration/spiceui/core/servicecategories').subscribe(
                 (res: any) => {
-                    categories[this.fieldconfig.treeid] = res;
-                    this.config.setData('categories', categories);
+                    this.categories = res;
+                    this.config.setData('service_categories', res);
                 }
             );
         }
-    }
-
-    public ngOnDestroy() {
-        super.ngOnDestroy();
-        if(this.clickListener) this.clickListener();
-    }
-
-    get categories(){
-        let categories = this.config.getData('categories');
-        return categories ? categories[this.fieldconfig.treeid] : [];
-    }
-
-    get hasFavorites(){
-        return this.categories.filter(c => c.favorite).length > 0;
-    }
-
-    private openDropDown(){
-        if(!this.dropDownOpen){
-            this.dropDownOpen = true;
-            this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
+        else {
+            this.categories = this.config.getData('service_categories');
         }
     }
 
-    /**
-     * handle the click event on the document
-     *
-     * @param event
-     */
-    private onClick(event): void {
-        if (!this.elementRef.nativeElement.contains(event.target)) {
-            this.dropDownOpen = false;
-            this.clickListener();
-        }
-    }
-
-
-    // get the display value
-    get display_value() {
-        let values = [];
-        let lastId;
-        let i = 1;
-        while(i <= 4 && this.fieldconfig['category'+i]){
-            let levelvalue = this.model.getField(this.fieldconfig['category'+i]);
-
-            // if we do not have a value break
-            if(!levelvalue) break;
-
-            // otherwise try to find the category
-            let cat = this.categories.find(c => c.node_key == levelvalue && c.parent_id == lastId);
-            if(cat) {
-                values.push((cat.node_name));
-                lastId = cat.id;
-                i++;
-            } else {
+    get display_value()
+    {
+        let txt = '';
+        for(let field_name of this.fields)
+        {
+            if( this.model.data[field_name] && this.categories[this.model.data[field_name]] )
+                txt += this.language.getLabel(this.categories[this.model.data[field_name]].name)+'\\';
+            else
                 break;
-            }
         }
-
-        // if we do not have any values
-        return values.length == 0 ? undefined : values.join('/');
+        // remove the last slash...
+        txt = txt.substring(0,txt.length -1);
+        return txt;
     }
 
-    private setFavorites(e: MouseEvent){
-        e.stopPropagation();
-        e.preventDefault();
-        this.searchfavorites = !this.searchfavorites;
+    get maxlevels(){
+        return this.fieldconfig.maxlevels ? this.fieldconfig.maxlevels : 3;
+    }
 
-        if(!this.dropDownOpen) this.dropDownOpen = true;
+    checkUserAction(e)
+    {
+        if( !this.search )
+        {
+            this.show_tree = true;
+            this.show_search = false;
+        }
+        else {
+            this.show_tree = false;
+            this.show_search = true;
+        }
     }
 
     /**
@@ -167,45 +103,39 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      * it also looks for the last category with a corresponding queue to set this too
      * @param categories = array of category objects, all lvls from top to lowest
      */
-    private chooseCategories(categories) {
-        let fields: any = {};
-        let i = 1
-        while(i <= 4) {
-            if(this.fieldconfig['category'+i] && categories[i-1]){
-                fields[this.fieldconfig['category'+i]] = this.categories.find(c => c.id == categories[i-1]).node_key;
-            } else {
+    chooseCategories(categories)
+    {
+        this.show_search = false;
+        this.show_tree = false;
+        // setting model.data values
+        for(let i = 0; i < this.fields.length; i++)
+        {
+            if( categories[i] )
+                this.model.setField(this.fields[i], categories[i].id);
+            else
+                this.model.setField(this.fields[i], '');
+        }
+        this.search = null;
+
+        // look from bottom to top and find a queue!
+        for(let i = categories.length-1; i >= 0; i--)
+        {
+            let cat = categories[i];
+            if( cat.servicequeue_id )
+            {
+                this.model.setField('servicequeue_id', cat.servicequeue_id);
+                this.model.setField('servicequeue_name', cat.servicequeue_name);
                 break;
             }
-            i++;
         }
-        this.model.setFields(fields);
-
-        // close the dropdown
-        this.dropDownOpen = false;
-
-        // reset serachterm and fav
-        this.searchterm = undefined;
-        this.searchfavorites = false;
-
-        // kill the listener for the open dropdown
-        if(this.clickListener) this.clickListener();
+        //console.log(this.model.data);
     }
 
-    /**
-     * clears the categories
-     *
-     * @private
-     */
-    private clearCategories() {
-        let i = 1;
-        let fields: any = {};
-        while(i <= 4){
-            if(this.fieldconfig['category'+i]){
-                fields[this.fieldconfig['category'+i]] = undefined;
-            }
-            i++
+    unchooseCategories()
+    {
+        for(let i = 0; i < this.fields.length; i++)
+        {
+            this.model.data[this.fields[i]] = '';
         }
-        this.model.setFields(fields);
     }
-
 }

@@ -42,10 +42,7 @@ export class SpiceInstallerDatabase {
         private http: HttpClient,
         private spiceinstaller: spiceinstaller
     ) {
-        // if we only have one ... set the extension by default
-        if(spiceinstaller.dbdrivers.length == 1){
-            spiceinstaller.db_type = spiceinstaller.dbdrivers[0].extension;
-        }
+
     }
 
     /**

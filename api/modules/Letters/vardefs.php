@@ -1,5 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -120,17 +119,7 @@ $dictionary['Letter'] = [
             'bean_name' => 'Account',
             'source' => 'non-db',
             'vname' => 'LBL_ACCOUNT',
-            'comment'  => 'The link to the account',
-        ],
-        'consumers' => [
-            'name' => 'consumers',
-            'type' => 'link',
-            'relationship' => 'consumer_letters',
-            'module' => 'Consumers',
-            'bean_name' => 'Consumer',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONSUMER',
-            'comment'  => 'The link to the consumer',
+            'comment'  => 'The link to the contact',
         ],
         'consumers' => [
             'name' => 'consumers',
@@ -145,6 +134,7 @@ $dictionary['Letter'] = [
 
     ],
     'relationships' => [
+
         'outputtemplate_letters' => [
             'lhs_module' => 'OutputTemplates',
             'lhs_table' => 'outputtemplates',
@@ -154,9 +144,12 @@ $dictionary['Letter'] = [
             'rhs_key' => 'outputtemplate_id',
             'relationship_type' => 'one-to-many'
         ],
+
+
     ],
     'indices' => [],
     'comment' => 'Contains a record of letters sent to and from the application',
+
 ];
 
 VardefManager::createVardef('Letters', 'Letter', ['default', 'assignable']);

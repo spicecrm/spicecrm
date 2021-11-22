@@ -31,15 +31,6 @@ $app_list_strings = [
         'C' => 'Privatkunde',
     ],
 
-    'dayofweek_dom' => [
-        '0' => 'Sonntag',
-        '1' => 'Montag',
-        '2' => 'Dienstag',
-        '3' => 'Mittwoch',
-        '4' => 'Donnerstag',
-        '5' => 'Freitag',
-        '6' => 'Samstag'
-    ],
     //e.g. en franï¿½ais 'Analyst'=>'Analyste',
     'account_type_dom' => [
         '' => '',
@@ -793,18 +784,7 @@ $app_list_strings = [
     ],
     'emailschedule_status_dom' => [
         'queued' => 'in der Warteschlange',
-        'cancelled' => 'abgebrochen',
-        'sent' => 'gesendet'
-    ],
-
-    'email_schedule_status_dom' => [
-        'open' => 'offen',
-        'processing' => 'in Bearbeitung',
-        'done' => 'abgeschlossen',
-        'cancelled' => 'abgebrochen',
-        'done_with_errors' => 'abgeschlossen mit Fehlern',
-        'record_not_loaded' => 'Datensätze nicht geladen',
-    ],
+        'sent' => 'gesendet'],
 
 // deferred
     /*// QUEUES MODULE DOMs

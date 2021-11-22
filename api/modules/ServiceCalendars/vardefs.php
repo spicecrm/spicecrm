@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -58,15 +58,6 @@ $dictionary['ServiceCalendar'] = [
             'type' => 'link',
             'module' => 'ServiceTicketSLAs',
             'relationship' => 'servicecalendar_serviceticketslas',
-            'link_type' => 'one',
-            'source' => 'non-db'
-        ],
-        'servicecalendartimes' => [
-            'name' => 'servicecalendartimes',
-            'vname' => 'LBL_SERVICECALENDARTIMES',
-            'type' => 'link',
-            'module' => 'ServiceCalendarTimes',
-            'relationship' => 'servicecalendar_servicecalendartimes',
             'link_type' => 'one',
             'source' => 'non-db'
         ]

@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+
 
 use SpiceCRM\data\BeanFactory;
 

@@ -1430,7 +1430,6 @@ EOSQL;
 
     protected function full_text_indexing_enabled($dbname = null)
     {
-        $spice_config = SpiceConfig::getInstance()->config;
         // check to see if we already have install setting in session
         if(!isset($_SESSION['IsFulltextInstalled']))
             $_SESSION['IsFulltextInstalled'] = $this->full_text_indexing_installed();
@@ -1441,7 +1440,8 @@ EOSQL;
 
         // grab the dbname if it was not passed through
         if (empty($dbname)) {
-            $dbname = $spice_config['dbconfig']['db_name'];
+            global $sugar_config;
+            $dbname = $sugar_config['dbconfig']['db_name'];
         }
         //we already know that Indexing service is installed, now check
         //to see if it is enabled

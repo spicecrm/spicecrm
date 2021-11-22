@@ -110,6 +110,20 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 
 
     /**
+     * Examine the application to determine which modules have been enabled..
+     *
+     * @param array $availModules An array of all the modules the user already has access to.
+     * @return array Modules enabled within the application.
+     */
+    function get_visible_modules($availModules)
+    {
+        require_once("modules/MySettings/TabController.php");
+        $controller = new TabController();
+        $tabs = $controller->get_tabs_system();
+        return $this->getModulesFromList($tabs[0], $availModules);
+    }
+
+    /**
      * Generate unifed search fields for a particular module even if the module does not participate in the unified search.
      *
      * @param string $moduleName

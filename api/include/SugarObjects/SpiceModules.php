@@ -58,7 +58,7 @@ class SpiceModules
     public function loadModules($forceReload = false): void {
         if (!isset($_SESSION['modules']) || $forceReload) {
             $this->modules = [];
-            $modules = DBManagerFactory::getInstance()->query("SELECT id, module, bean, beanfile, visible, tagging FROM sysmodules UNION SELECT id, module, bean, beanfile, visible, tagging FROM syscustommodules");
+            $modules = DBManagerFactory::getInstance()->query("SELECT module, bean, beanfile, visible, tagging FROM sysmodules UNION SELECT module, bean, beanfile, visible, tagging FROM syscustommodules");
             while ($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)) {
                 $this->moduleList[$module['module']] = $module['module'];
 
@@ -95,16 +95,6 @@ class SpiceModules
         }
 
         $this->setGlobals();
-    }
-
-    /**
-     * returns the sysmodule id of the module by name
-     *
-     * @param $moduleName
-     * @return mixed
-     */
-    public function getModuleId($moduleName){
-        return $this->modules[$moduleName]['id'];
     }
 
     /**

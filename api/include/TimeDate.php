@@ -127,7 +127,7 @@ class TimeDate
 
     /**
      * Current time
-     * @var DateTime
+     * @var SugarDateTime
      */
     protected $now;
 
@@ -513,7 +513,7 @@ class TimeDate
      * Get DateTime from DB date string
      *
      * @param string $date
-     * @return DateTime
+     * @return SugarDateTime
      */
     public function fromDbDate($date)
     {
@@ -532,7 +532,7 @@ class TimeDate
      *
      * @param string $date
      * @param string $format format to accept
-     * @return DateTime
+     * @return SugarDateTime
      */
     public function fromDbFormat($date, $format)
     {
@@ -549,7 +549,7 @@ class TimeDate
      *
      * @param string $date
      * @param User $user
-     * @return DateTime
+     * @return SugarDateTime
      */
     public function fromUser($date, User $user = null)
     {
@@ -576,7 +576,7 @@ class TimeDate
      *
      * @param string $date
      * @param User $user
-     * @return DateTime
+     * @return SugarDateTime
      */
     public function fromString($date, User $user = null)
     {
@@ -592,7 +592,7 @@ class TimeDate
      * Create DateTime from timestamp
      *
      * @param interger|string $ts
-     * @return DateTime
+     * @return SugarDateTime
      */
     public function fromTimestamp($ts)
     {
@@ -741,7 +741,7 @@ class TimeDate
     /**
      * Get 'now' DateTime object
      * @param bool $userTz return in user timezone?
-     * @return DateTime
+     * @return SugarDateTime
      */
     public function getNow($userTz = false)
     {

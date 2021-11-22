@@ -91,7 +91,6 @@ export class EmailSchedulesRelatedModal {
         this.linkedBeans = this.linkedBeans.map(link => {
             link.disabled = link.count == 0;
             link.selected = false;
-            link.expanded = false;
             return link;
         });
     }
@@ -178,7 +177,6 @@ export class EmailSchedulesRelatedModal {
             link.expanded = true;
             this.backend.getRequest(`module/${this.parentModel.module}/${this.parentModel.id}/related/${link.link}`, {
                 getcount: 0,
-                excludeinactive: 1,
                 offset: 0,
                 limit: 100
             }).subscribe(

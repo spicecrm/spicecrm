@@ -756,21 +756,6 @@ export class metadata {
     }
 
     /**
-     * returns the phone search modules
-     */
-    public getPhoneSearchModules() {
-        let modules = [];
-
-        for (let module in this.moduleDefs) {
-            if (this.moduleDefs[module].ftsphonesearch) {
-                modules.push(module);
-            }
-        }
-
-        return modules;
-    }
-
-    /**
      * gets the module by the sysmoduleid
      *
      * @param sysmoudleid

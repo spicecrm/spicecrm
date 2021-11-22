@@ -136,7 +136,12 @@ class AdminController
      * @throws ForbiddenException
      */
     public function writeGeneralSettings(Request $req, Response $res, array $args): Response {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
+
+        if (!$current_user->is_admin) {
+            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
+        }
 
         $diffArray = [];
 
@@ -148,13 +153,14 @@ class AdminController
                 switch ($itemname) {
                     case 'name':
                         SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
-                        $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
+                        $query = "UPDATE config SET value = '$itemvalue' WHERE categroy = 'system' AND name = '$itemname'";
                         $db->query($query);
                         break;
                     default:
                         SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
                         $diffArray[$itemname] = $itemvalue;
                 }
+
             }
 
             // handle advanced settings
@@ -456,14 +462,15 @@ class AdminController
     public function repairLanguage(Request $req, Response $res, array $args): Response {
         $appListStrings = [];
         $appLang = [];
-        $languages = SpiceConfig::getInstance()->config['languages'];
         $langs = LanguageManager::getLanguages();
-        foreach ($languages as $language => $value) {
 
-            $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-
-            $appListStrings[$language][] = return_app_list_strings_language($language);
-            $appLang[$language][] = $this->loadLanguage($language);
+        foreach ($langs['available'] as $lang) {
+            if($lang['system_language']){
+                $language = $lang['language_code'];
+                $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
+                $appListStrings[$language][] = return_app_list_strings_language($language);
+                $appLang[$language][] = $this->loadLanguage($language);
+            }
         }
 
         if (!empty($appListStrings) && !empty($appLang)) {

@@ -1,9 +1,36 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+* You can contact us at info@spicecrm.io
+* 
+* SpiceCRM is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version
+* 
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU Affero General Public License version 3.
+* 
+* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* SugarCRM" logo. If the display of the logo is not reasonably feasible for
+* technical reasons, the Appropriate Legal Notices must display the words
+* "Powered by SugarCRM".
+* 
+* SpiceCRM is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+********************************************************************************/
 
 namespace SpiceCRM\KREST\handlers;
 
 use LanguageManager;
+use NoteSoap;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -521,8 +548,8 @@ class ModuleHandler
 
     public function export_bean_list($beanModule, $searchParams)
     {
-        global  $app_list_strings, $current_language;
-        $timedate = TimeDate::getInstance();
+        global $dictionary, $app_list_strings, $current_language, $timedate;
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
         $app_list_strings = return_app_list_strings_language($current_language);
@@ -1164,6 +1191,87 @@ class ModuleHandler
         return ['count' => $duplicates['count'], 'records' => $retArray];
     }
 
+
+    public function get_bean_attachment(string $beanModule, string $beanId): array {
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
+            throw (new ForbiddenException("Forbidden to view in for module $beanModule."))->setErrorCode('noModuleView');
+
+        $thisBean = BeanFactory::getBean($beanModule);
+        $thisBean->retrieve($beanId);
+        if (!isset($thisBean->id)) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
+
+        if ($thisBean->file_name || $thisBean->filename) {
+            require_once('modules/Notes/NoteSoap.php');
+            $noteSoap = new NoteSoap();
+            $fileData = $noteSoap->retrieveFile($thisBean->id, $thisBean->file_name ?: $thisBean->filename);
+            // In case the file is a text file:
+            // For a correct display of special characters in the browser, convert the file content to UTF8, if it not already UTF8 encoded.
+            if ($thisBean->file_mime_type === 'text/plain') {
+                $dummy = base64_decode($fileData);
+                $dummy = mb_check_encoding($dummy, 'UTF-8') ? $dummy : utf8_encode($dummy);
+                $fileData = base64_encode($dummy);
+            }
+            if ($fileData >= -1)
+                return [
+                    'filename' => $thisBean->file_name ?: $thisBean->filename,
+                    'file' => $fileData,
+                    'filetype' => $thisBean->file_mime_type
+                ];
+        }
+
+        // if we did not return before we did not find the file
+        throw (new NotFoundException('Attachment/File not found.'));
+    }
+
+    public function set_bean_attachment(string $beanModule, string $beanId, ?array $post) {
+        $upload_file = new UploadFile('file');
+        if ($post['file']) {
+            $decodedFile = base64_decode($post['file']);
+            $upload_file->set_for_soap($beanId, $decodedFile);
+            $upload_file->final_move($beanId, true);
+        }
+
+        return ['filename' => $post['filename'], 'filetype' => $post['filemimetype'], 'filemd5' => 'md5hash'];
+    }
+
+    /**
+     * upload an attachment
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return array
+     */
+    public function uploadFile($params) {
+        $upload_file = new UploadFile('file');
+        $decodedFile = base64_decode($params['file']);
+        $file_md5 = md5($decodedFile);
+        $upload_file->set_for_soap($file_md5, $decodedFile);
+        $upload_file->final_move($file_md5, true);
+
+        return $file_md5;
+    }
+
+    public function download_bean_attachment(string $beanModule, string $beanId): void {
+        $seed = BeanFactory::getBean($beanModule, $beanId);
+        if ($seed) {
+            $download_location = "upload://" . $beanId;
+
+            // make sure to clean the buffer
+            while (ob_get_level() && @ob_end_clean()) ;
+
+            header("Pragma: public");
+            header("Cache-Control: maxage=1, post-check=0, pre-check=0");
+            header('Content-type: application/octet-stream');
+            header("Content-Disposition: attachment; filename=\"" . $seed->filename . "\";");
+            header("X-Content-Type-Options: nosniff");
+            header("Content-Length: " . filesize($download_location));
+            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 2592000));
+            readfile($download_location);
+        }
+    }
+
+
     public function get_related(string $beanModule, string $beanId, string $linkName, array $params): array {
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
@@ -1219,18 +1327,6 @@ class ModuleHandler
 
         if (!SpiceACL::getInstance()->checkAccess($relModule, 'list', true) && !SpiceACL::getInstance()->checkAccess($relModule, 'listrelated', true))
             throw (new ForbiddenException('Forbidden to list in module ' . $relModule . '.'))->setErrorCode('noModuleList');
-
-        // exclude inactive
-        if($params['excludeinactive']){
-            $relSeed = BeanFactory::getBean($relModule);
-            if($relSeed->field_defs['is_inactive']){
-                if ($addWhere != '') {
-                    $addWhere = "($addWhere) AND ({$relSeed->table_name}.is_inactive <> 1)";
-                } else {
-                    $addWhere = "{$relSeed->table_name}.is_inactive <> 1";
-                }
-            }
-        }
 
         // get related beans and related module
         // get_linked_beans($field_name, $bean_name, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
@@ -1611,6 +1707,14 @@ class ModuleHandler
                     $thisBean->user_sync->delete(AuthenticationController::getInstance()->getCurrentUser()->id);
                 }
             }
+        }
+
+        // see if we have an attachement
+        if ($beanModule == 'Notes' && isset($post_params['file']) && isset($post_params['filename'])) {
+            require_once('modules/Notes/NoteSoap.php');
+            $noteSoap = new NoteSoap();
+            $post_params['id'] = $thisBean->id;
+            $noteSoap->newSaveFile($post_params);
         }
 
         // if favorite is set .. update this as well

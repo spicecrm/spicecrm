@@ -5,14 +5,10 @@ namespace SpiceCRM\modules\EmailSchedules\api\controllers;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\KREST\handlers\ModuleHandler;
 
 class EmailSchedulesController
 {
@@ -30,7 +26,7 @@ class EmailSchedulesController
         $emailschedule = BeanFactory::getBean('EmailSchedules');
 
         // if the id is in the body assign it
-        if ($id && !$emailschedule->retrieve($id)) {
+        if ($id) {
             $emailschedule->id = $id;
             $emailschedule->new_with_id = true;
         }
@@ -61,8 +57,7 @@ class EmailSchedulesController
      * @return Response
      * @throws \Exception
      */
-    public function saveSchedule(Request $req, Response $res, array $args): Response
-    {
+    public function saveSchedule(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $postBody = $req->getParsedBody();
 
@@ -75,7 +70,7 @@ class EmailSchedulesController
                 $guid = SpiceUtils::createGuid();
                 $query .= "('$guid', 'queued', '$emailscheduleId', '{$postBody['module']}', '$beanid', now(), 0),";
             }
-            if (!empty($query)) {
+            if(!empty($query)) {
                 $query = substr_replace($query, ";", -1);
                 $db->query($query);
             }
@@ -87,80 +82,6 @@ class EmailSchedulesController
         ]);
     }
 
-
-    /**
-     * cancells a scheduled email
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function cancelSchedule(Request $req, Response $res, array $args): Response
-    {
-        $seed = BeanFactory::getBean('EmailSchedules', $args['id']);
-        if(!$seed){
-            throw new NotFoundException('Email Schedule not found');
-        }
-
-        if(!$seed->ACLAccess('edit')){
-            throw new UnauthorizedException('not authorized to edit the record');
-        }
-
-        if($seed->email_schedule_status != 'open'){
-            throw new BadRequestException('Email Schedule has wrong status');
-        }
-
-        // if we are here we are good to go
-        $seed->email_schedule_status = 'cancelled';
-        $seed->save();
-
-        // cancel all scheudled lines
-        DBManagerFactory::getInstance()->query("UPDATE emailschedules_beans SET emailschedule_status = 'cancelled' WHERE emailschedule_status='queued' AND emailschedule_id='$seed->id'");
-
-        return $res->withJson(['status'=> 'success']);
-    }
-
-
-    /**
-     * returns the list of linked beans for the schedule
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     * @throws BadRequestException
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     */
-    public function getScheduledBeans(Request $req, Response $res, array $args): Response
-    {
-        $seed = BeanFactory::getBean('EmailSchedules', $args['id']);
-        if(!$seed){
-            throw new NotFoundException('Email Schedule not found');
-        }
-
-        // cancel all scheudled lines
-        $moduleHandler = new ModuleHandler();
-
-        $resArray = [];
-        $beans= $seed->db->query("select *FROM emailschedules_beans WHERE emailschedule_id='$seed->id'");
-        while($bean = $seed->db->fetchByAssoc($beans)){
-            $linked = BeanFactory::getBean($bean['bean_module'], $bean['bean_id']);
-            if($linked) {
-                $resArray[] = [
-                    'status' => $bean['emailschedule_status'],
-                    'summary_text' => $linked->get_summary_text(),
-                    'module' => $bean['bean_module'],
-                    'id'=> $bean['bean_id'],
-                    'email_id' => $bean['email_id'],
-                    'data' => $moduleHandler->mapBeanToArray($bean['bean_module'], $linked)
-                ];
-            }
-        }
-
-        return $res->withJson($resArray);
-    }
     /**
      * make a count of each related bean
      *
@@ -169,8 +90,7 @@ class EmailSchedulesController
      * @param array $args
      * @return Response
      */
-    public function checkRelated(Request $req, Response $res, array $args): Response
-    {
+    public function checkRelated(Request $req, Response $res, array $args): Response {
         $beanid = $args['parentid'];
         $module = $args['parentmodule'];
         $linkedBeans = [];
@@ -181,14 +101,8 @@ class EmailSchedulesController
         $bean->load_relationships();
         if (!empty($relatedModules)) {
             foreach ($relatedModules as $related) {
-                if (!empty($related) && isset(SpiceModules::getInstance()->modules[$related])) {
-
-                    $seed = BeanFactory::getBean($related);
-                    if($seed->field_defs['is_inactive']){
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "{$seed->table_name}.is_inactive = 0")];
-                    } else {
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
-                    }
+                if(!empty($related) && isset(SpiceModules::getInstance()->modules[$related])) {
+                    $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
                 }
             }
         }
@@ -209,8 +123,7 @@ class EmailSchedulesController
      * @return Response
      * @throws \Exception
      */
-    public function saveScheduleFromRelated(Request $req, Response $res, array $args): Response
-    {
+    public function saveScheduleFromRelated(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $postBody = $req->getParsedBody();
         $beanId = $args['parentid'];
@@ -220,13 +133,7 @@ class EmailSchedulesController
         $bean->load_relationships();
         if (count($links) > 0) {
             foreach ($links as $module) {
-                $seed = BeanFactory::getBean($module);
-                if($seed->field_defs['is_inactive']){
-                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "{$seed->table_name}.is_inactive = 0");
-                } else {
-                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0);
-                }
-
+                $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module);
             }
         }
 
@@ -246,13 +153,13 @@ class EmailSchedulesController
                     }
                 }
                 if (!empty($query)) {
-                    $query = substr_replace($query, ";", -1);
-                    $db->query($query);
+                $query = substr_replace($query, ";", -1);
+                $db->query($query);
                 }
             }
         }
 
-        if (count($postBody['linkedbeans']) > 0) {
+        if(count($postBody['linkedbeans']) > 0){
             $query = "INSERT INTO emailschedules_beans (id, emailschedule_status, emailschedule_id, bean_module, bean_id, date_modified, deleted) VALUES ";
             if (!empty($emailscheduleId)) {
                 foreach ($postBody['linkedbeans'] as $module => $ids) {
@@ -284,8 +191,7 @@ class EmailSchedulesController
      * @return Response
      * @throws \Exception
      */
-    public function getOwnOpenSchedules(Request $req, Response $res, array $args): Response
-    {
+    public function getOwnOpenSchedules(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 

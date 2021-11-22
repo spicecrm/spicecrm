@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\SpiceImports\schedulerjobtasks;
 
 use SpiceCRM\data\BeanFactory;

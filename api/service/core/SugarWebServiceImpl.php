@@ -711,6 +711,86 @@ class SugarWebServiceImpl
     }
 
     /**
+     * Add or replace the attachment on a Note.
+     * Optionally you can set the relationship of this note to Accounts/Contacts and so on by setting related_module_id, related_module_name
+     *
+     * @param String $session -- Session ID returned by a previous call to login.
+     * @param Array 'note' -- Array String 'id' -- The ID of the Note containing the attachment
+     *                              String 'filename' -- The file name of the attachment
+     *                              Binary 'file' -- The binary contents of the file.
+     *                                String 'related_module_id' -- module id to which this note to related to
+     *                                String 'related_module_name' - module name to which this note to related to
+     *
+     * @return Array 'id' -- String - The ID of the Note
+     * @exception 'SoapFault' -- The SOAP error, if any
+     */
+    function set_note_attachment($session, $note)
+    {
+        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->set_note_attachment');
+        $error = new SoapError();
+        $module_name = '';
+        $module_access = '';
+        $module_id = '';
+        if (!empty($note['related_module_id']) && !empty($note['related_module_name'])) {
+            $module_name = $note['related_module_name'];
+            $module_id = $note['related_module_id'];
+            $module_access = 'read';
+        }
+        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, $module_access, 'no_access', $error)) {
+            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_note_attachment');
+            return;
+        } // if
+
+        require_once('modules/Notes/NoteSoap.php');
+        $ns = new NoteSoap();
+        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_note_attachment');
+	return ['id'=>$ns->newSaveFile($note)];
+    } // fn
+
+    /**
+     * Retrieve an attachment from a note
+     * @param String $session -- Session ID returned by a previous call to login.
+     * @param String $id -- The ID of the appropriate Note.
+     * @return Array 'note_attachment' -- Array String 'id' -- The ID of the Note containing the attachment
+     *                                          String 'filename' -- The file name of the attachment
+     *                                          Binary 'file' -- The binary contents of the file.
+     *                                            String 'related_module_id' -- module id to which this note is related
+     *                                            String 'related_module_name' - module name to which this note is related
+     * @exception 'SoapFault' -- The SOAP error, if any
+     */
+    function get_note_attachment($session, $id)
+    {
+        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_note_attachment');
+        $error = new SoapError();
+        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
+            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_note_attachment');
+            return;
+        } // if
+        require_once('modules/Notes/Note.php');
+        $note = new Note();
+
+        $note->retrieve($id);
+        if (!self::$helperObject->checkACLAccess($note, 'DetailView', $error, 'no_access')) {
+            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_note_attachment');
+            return;
+        } // if
+
+        require_once('modules/Notes/NoteSoap.php');
+        $ns = new NoteSoap();
+        if (!isset($note->filename)) {
+            $note->filename = '';
+        }
+        $file = $ns->retrieveFile($id, $note->filename);
+        if ($file == -1) {
+            $file = '';
+        }
+
+        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_note_attachment');
+	return ['note_attachment'=> ['id'=>$id, 'filename'=>$note->filename, 'file'=>$file, 'related_module_id' => $note->parent_id, 'related_module_name' => $note->parent_type]];
+
+    } // fn
+
+    /**
      * sets a new revision for this document
      *
      * @param String $session -- Session ID returned by a previous call to login.

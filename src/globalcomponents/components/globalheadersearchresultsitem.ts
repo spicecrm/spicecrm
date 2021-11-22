@@ -33,54 +33,23 @@ import {Router} from '@angular/router';
     }
 })
 export class GlobalHeaderSearchResultsItem implements OnInit {
-    /**
-     * the input
-     *
-     * @private
-     */
     @Input() private hit: any = {};
-
-    /**
-     * eits when selected
-     * @private
-     */
     @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 
-    /**
-     * held internally --if set to true the click will not navigate to the record but emit the model
-     *
-     * @private
-     */
-    private _noNavigaton: boolean = false;
-
-    /**
-     * an attribute that can be set to hide the close button
-     *
-     * @param value
-     */
-    @Input('global-header-search-results-item-nonavigation') set noNavigaton(value) {
-        if (value === false) {
-            this._noNavigaton = false;
-        } else {
-            this._noNavigaton = true;
-        }
-    }
-
-    /**
-     * the main fieldset
-     * @private
-     */
     private mainfieldset: string;
-
-    /**
-     * the subfieldset displayed in the second line
-     * @private
-     */
     private subfieldsetfields: any[];
 
     constructor(private model: model, private view: view, private router: Router, private language: language, private metadata: metadata) {
         this.view.displayLabels = false;
-        this.view.displayLinks = false;
+    }
+
+    private navigateTo() {
+        this.selected.emit(true);
+        this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
+    }
+
+    private gethref() {
+        return '#/module/' + this.model.module + '/' + this.model.id;
     }
 
     public ngOnInit() {
@@ -95,20 +64,4 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
 
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.hit._source);
     }
-
-
-    /**
-     * handles te navigation. If enabled navigates to the record, otherwise just emits the model
-     *
-     * @private
-     */
-    private navigateTo() {
-        if(this._noNavigaton) {
-            this.selected.emit(this.model);
-        } else {
-            this.selected.emit(true);
-            this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
-        }
-    }
-
 }

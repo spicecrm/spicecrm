@@ -56,13 +56,9 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-
-        // build the container
-        this.buildContainer();
-
         // check if we are in readonly mode or if the view shpoudl be set as editable
         if (this.readonly === true || this.componentconfig.readonly) {
-            this.view.isEditable = false;
+            this.view.isEditable == false;
         } else {
             this.view.isEditable = true;
 
@@ -77,6 +73,7 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
             }));
         }
 
+        this.buildContainer();
     }
 
     /**
@@ -93,8 +90,8 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
         if (!this.componentSet) {
             // if we do not have a coimponentset from external check the default config
             if (!this.componentconfig.componentset) {
-                this.componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
-                this.componentSet = this.componentconfig.componentset;
+                let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
+                this.componentSet = componentconfig.componentset;
             } else {
                 this.componentSet = this.componentconfig.componentset;
             }

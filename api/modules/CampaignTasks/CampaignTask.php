@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -195,11 +193,7 @@ class CampaignTask extends SugarBean
 
             // load the bean and send the email
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
-            if($seed && $seed->is_inactive) {
-                $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
-                $campaignLog->activity_type = 'inactive';
-                $campaignLog->save();
-            } else if($seed) {
+            if($seed){
                 $email = $this->sendEmail($seed, true);
                 if($email == false){
                     $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);

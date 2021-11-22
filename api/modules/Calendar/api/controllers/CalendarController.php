@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\Calendar\api\controllers;
 
 use SpiceCRM\modules\Calendar\api\handlers\CalendarRestHandler;

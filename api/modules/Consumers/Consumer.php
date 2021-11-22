@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\Consumers;
 
 use SpiceCRM\data\BeanFactory;
@@ -11,6 +9,8 @@ class Consumer extends Person {
     public $object_name = 'Consumer';
     public $table_name = 'consumers';
     public $new_schema = true;
+
+    var $full_name; // l10n localized name
 
     public $additional_column_fields = [];
 

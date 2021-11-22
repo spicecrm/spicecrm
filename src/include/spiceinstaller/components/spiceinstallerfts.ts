@@ -42,7 +42,7 @@ export class SpiceInstallerFTS {
         private http: HttpClient,
         private spiceinstaller: spiceinstaller
     ) {
-        if(!this.spiceinstaller.prefix) this.spiceinstaller.prefix = this.spiceinstaller.db_name + '_';
+
     }
 
     /**

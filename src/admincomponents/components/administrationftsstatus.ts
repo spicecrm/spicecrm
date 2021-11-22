@@ -79,20 +79,18 @@ export class AdministrationFTSStatus {
             response => {
                 this.version = response.version;
 
-                // initialize
-                this.stats.docs = 0;
-                this.stats.size = 0;
-
-                if ( response.stats?._all ) {
-                    // catch when no fts index is set yet
-                    if( response.stats._all.total.docs && response.stats._all.total.docs.count ) {
-                        this.stats.docs = response.stats._all.total.docs.count;
-                    }
-                    // catch when no fts index is set yet
-                    if ( response.stats._all.total?.store && response.stats._all.total.store.size_in_bytes ) {
-                        this.stats.size = this.helper.humanFileSize( response.stats._all.total.store.size_in_bytes );
-                    }
+                this.stats.docs = 0; // initialize
+                // catch when no fts index is set yet
+                if(response.stats._all.total.docs && response.stats._all.total.docs.count) {
+                    this.stats.docs = response.stats._all.total.docs.count;
                 }
+
+                this.stats.size = 0;
+                // catch when no fts index is set yet
+                if(response.stats._all.total.store && response.stats._all.total.store.size_in_bytes) {
+                    this.stats.size = this.helper.humanFileSize(response.stats._all.total.store.size_in_bytes);
+                }
+
 
                 for (let index in response.stats.indices) {
                     this.indices.push({

@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\CompanyFiscalPeriods;
 
 use SpiceCRM\data\SugarBean;

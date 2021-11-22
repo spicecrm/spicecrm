@@ -12,35 +12,36 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div *ngIf="categories.length > 0; else nocategories" [title]="display_value">{{display_value}}</div>
-    <ng-template #nocategories>
-        <system-stencil></system-stencil>
-    </ng-template>
+    {{display_value}}
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
-    <div class="slds-form-element__control">
-        <div class="slds-combobox_container">
-            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': dropDownOpen}">
-                <div *ngIf="!display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-                    <input class="slds-input slds-combobox__input" (focus)="openDropDown()" [disabled]="categories.length == 0" placeholder="{{language.getLabel('LBL_SEARCH')}}" [(ngModel)]="searchterm"/>
-                    <button *ngIf="hasFavorites" class="slds-button slds-button--icon slds-input__icon slds-input__icon_right" (click)="setFavorites($event)">
-                        <system-button-icon [addclasses]="searchfavorites ? '' : 'slds-icon-text-light'" icon="favorite"></system-button-icon>
-                    </button>
-                </div>
-                <div *ngIf="display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-                    <div class="slds-pill_container">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container slds-has-inline-listbox">
+                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-lookup">
+
+                    <div *ngIf="display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                        <div class="slds-pill_container">
                           <span class="slds-pill slds-size--1-of-1">
                             <span class="slds-pill__label">{{display_value}}</span>
-                            <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearCategories()">
+                            <button class="slds-button slds-button--icon slds-pill__remove" (click)="unchooseCategories()">
                               <system-button-icon [icon]="'close'"></system-button-icon>
                             </button>
                           </span>
+                        </div>
                     </div>
-                </div>
-                <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
-                    <field-categories-tree *ngIf="categories.length > 0" [categories]="categories" [searchTerm]="searchterm" [searchFavorites]="searchfavorites" (category)="chooseCategories($event)"></field-categories-tree>
+
+                    <div *ngIf="!display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                        <input class="slds-input slds-combobox__input" type="search" placeholder="{{language.getLabel('LBL_SEARCH')}}" [(ngModel)]="search" (click)="checkUserAction($event)" (keyup)="checkUserAction($event)" />
+                    </div>
+
+                    <div *ngIf="show_tree">
+                        <field-service-category-tree [maxlevels]="maxlevels" (choose)="chooseCategories($event)"></field-service-category-tree>
+                    </div>
+
+                    <div *ngIf="show_search">
+                        <field-service-category-search [search]="search" (choose)="chooseCategories($event)"></field-service-category-search>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </div>

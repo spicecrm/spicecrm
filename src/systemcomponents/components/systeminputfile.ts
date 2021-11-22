@@ -177,13 +177,13 @@ export class SystemInputFile implements ControlValueAccessor {
 
         const fileBody = {
             file: fileContent.substring(fileContent.indexOf('base64,') + 7),
-            filename: this.file.file_name,
-            filemimetype: this.file.file_mime_type
+            file_name: this.file.file_name,
+            file_mime_type: this.file.file_mime_type
         };
 
-        this.backend.postRequestWithProgress('common/spiceattachments', null, fileBody, progressSubscription)
+        this.backend.postRequestWithProgress('common/bean/file/upload', null, fileBody, progressSubscription)
             .subscribe(res => {
-                this.file.file_md5 = res[0].filemd5;
+                this.file.file_md5 = res.file_md5;
                 this.onChange({
                     ...this.file,
                     remove: () => this.removeFile(true)

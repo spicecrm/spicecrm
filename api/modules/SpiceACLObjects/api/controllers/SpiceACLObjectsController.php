@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\SpiceACLObjects\api\controllers;
 
 use Psr\Http\Message\RequestInterface;

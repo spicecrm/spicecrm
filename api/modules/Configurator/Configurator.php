@@ -40,7 +40,6 @@ namespace SpiceCRM\modules\Configurator;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\utils\SpiceFileUtils;
 
 class Configurator {
 	var $config = '';
@@ -173,7 +172,7 @@ class Configurator {
 	        LoggerManager::getLogger()->fatal("Unable to write to the config_override.php file. Check the file permissions");
 	        return;
 	    }
-		$fp = SpiceFileUtils::spiceFopen('config_override.php', 'w');
+		$fp = sugar_fopen('config_override.php', 'w');
 		fwrite($fp, $override);
 		fclose($fp);
 	}

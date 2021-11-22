@@ -260,6 +260,9 @@ class SugarWebServiceImplv3 extends SugarWebServiceImpl
     	$modules = [];
         $availModules = array_keys($_SESSION['avail_modules']); //ACL check already performed.
         switch ($filter) {
+            case 'default':
+                $modules = self::$helperObject->get_visible_modules($availModules);
+                break;
             case 'all':
             default:
                 $modules = $availModules;

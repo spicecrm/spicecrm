@@ -31,14 +31,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                             </button>
                         </div>
                     </div>
-                    <button *ngIf="useTemplateVariableHelper" [disabled]="!isUserInsideEditor" class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral" [title]="language.getLabel('LBL_TEMPLATE_VARIABLE_HELPER')" (click)="openTemplateVariableHelper()">
-                        <system-button-icon icon="variable"></system-button-icon>
-                    </button>
                     <button [disabled]="!beautifyenabled" class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral" (click)="beautify()">
                         <system-button-icon icon="right_align_text"></system-button-icon>
                     </button>
                 </div>
-                <pre #sourceeditor [attr.contenteditable]="true" (input)="onContentChange($event.target['innerText'])" style="height: calc(100% - 36px);"  class="slds-box slds-m-around--none slds-theme--default slds-scrollable_y" [id]="editorId"></pre>
+                <pre #sourceeditor [attr.contenteditable]="true" (input)="onContentChange($event.target['innerText'])" style="height: calc(100% - 36px);"  class="slds-box slds-m-around--none slds-theme--default slds-scrollable_y"></pre>
             </div>
         </div>
     </system-modal-content>

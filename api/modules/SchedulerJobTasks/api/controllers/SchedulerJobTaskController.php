@@ -1,5 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SchedulerJobTasks\api\controllers;
 

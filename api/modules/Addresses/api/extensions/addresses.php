@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+
 
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;

@@ -12,7 +12,6 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\UploadFile;
-use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
@@ -153,7 +152,7 @@ class SpiceAttachments
         }
 
         $filename = $upload_file->get_stored_file_name();
-        $file_mime_type = $file['filemimetype'] ?: SpiceFileUtils::getMimeSoap($filename);
+        $file_mime_type = $file['filemimetype'] ?: $upload_file->getMimeSoap($filename);
         $filesize = strlen($decodedFile);
         $filemd5 = md5($decodedFile);
 
@@ -171,7 +170,7 @@ class SpiceAttachments
             'id' => $guid,
             'user_id' => $current_user->id,
             'user_name' => $current_user->user_name,
-            'date' => TimeDate::getInstance()->nowDb(),
+            'date' => $GLOBALS['timedate']->nowDb(),
             'text' => nl2br($file['text']),
             'filename' => $filename,
             'filesize' => $filesize,

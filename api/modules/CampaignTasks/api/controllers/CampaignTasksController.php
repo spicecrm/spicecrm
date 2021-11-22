@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\CampaignTasks\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;

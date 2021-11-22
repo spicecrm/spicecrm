@@ -185,7 +185,7 @@ $dictionary['Contact'] = [
                 'name' => 'activity_status_date_modified',
                 'type' => 'datetime',
                 'source' => 'non-db',
-                'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
+                'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODFIFIED',
                 'comment' => 'non db field retrieved from the relationship to the meeting call etc'
             ],
             'activity_required' => [

@@ -1,6 +1,4 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
-
 namespace SpiceCRM\modules\MediaFiles\api\controllers;
 
 use SpiceCRM\modules\MediaFiles\MediaFile;

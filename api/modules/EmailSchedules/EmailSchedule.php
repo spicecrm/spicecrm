@@ -98,7 +98,6 @@ class EmailSchedule extends SugarBean
     {
         $openEmailSchedules = $this->db->query("SELECT id from emailschedules WHERE email_schedule_status = 'open' AND deleted = 0 ORDER by date_modified DESC");
         while ($openEmailSchedule = $this->db->fetchByAssoc($openEmailSchedules)) {
-            $this->updateEmailScheduleStatus($openEmailSchedule['id'], 'processing');
             $status = $this->sendEmailScheduleEmails($openEmailSchedule['id']);
             $this->updateEmailScheduleStatus($openEmailSchedule['id'], $status);
         }
@@ -121,10 +120,7 @@ class EmailSchedule extends SugarBean
             if (empty($seed)) {
                 $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
                 $status = 'record_not_loaded';
-            } else if($seed->is_inactive) {
-                $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
-                $status = 'record_inactive';
-            }else {
+            } else {
                 $email = $this->sendEmail($seed, $emailScheduleId, true);
                 if ($email == false) {
                     $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');

@@ -88,13 +88,11 @@ export class BonusCardExtendButton {
                 this.bonusCardModel.setField('valid_until', newUntilDate);
                 this.bonusCardModel.save();
 
-                this.extensionModel.reset();
                 this.extensionModel.module = 'BonusCardExtensions';
                 this.extensionModel.initialize();
                 this.extensionModel.setFields({
                     valid_until: newUntilDate,
-                    bonuscard_id: this.bonusCardModel.id,
-                    name: `${this.bonusCardModel.data.summary_text} - ${newUntilDate.format(this.userpreferences.getDateFormat())}`
+                    bonuscard_id: this.bonusCardModel.id
                 });
                 this.extensionModel.save();
             }

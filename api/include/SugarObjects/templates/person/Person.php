@@ -1,20 +1,49 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+* SugarCRM Community Edition is a customer relationship management program developed by
+* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+* 
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU Affero General Public License version 3 as published by the
+* Free Software Foundation with the addition of the following permission added
+* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+* 
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+* details.
+* 
+* You should have received a copy of the GNU Affero General Public License along with
+* this program; if not, see http://www.gnu.org/licenses or write to the Free
+* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+* 02110-1301 USA.
+* 
+* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+* 
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU Affero General Public License version 3.
+* 
+* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* SugarCRM" logo. If the display of the logo is not reasonably feasible for
+* technical reasons, the Appropriate Legal Notices must display the words
+* "Powered by SugarCRM".
+********************************************************************************/
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
-use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
 use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
 class Person extends Basic
 {
-    // adds the letter salutation functions
-    use letterSalutationTrait;
-
     var $picture;
     /**
      * @var bool controls whether or not to invoke the getLocalFormatttedName method with title and salutation
@@ -124,7 +153,33 @@ class Person extends Basic
         $this->full_name = $full_name; //used by campaigns
     }
 
+    public function getLetterSalutation()
+    {
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $currentLanguage = $currentUser->getPreference('language');
+        $language = $this->communication_language ?: $currentLanguage ?: 'en_us';
+        $app_list_strings = return_app_list_strings_language($language);
+        return $app_list_strings['salutation_letter_dom'][$this->salutation];
+    }
 
+    public function getLetterName()
+    {
+        $nameArray = [];
+        if(!empty($this->degree1)) $nameArray[] =  $this->degree1;
+        if(!empty($this->first_name)) $nameArray[] =  $this->first_name;
+        if(!empty($this->last_name)) $nameArray[] =  $this->last_name;
+        if(!empty($this->degree2)) $nameArray[] =  $this->degree2;
+        return implode(' ', $nameArray);
+    }
+
+    public function getLetterLastName()
+    {
+        $nameArray = [];
+        if(!empty($this->degree1)) $nameArray[] =  $this->degree1;
+        if(!empty($this->last_name)) $nameArray[] =  $this->last_name;
+        if(!empty($this->degree2)) $nameArray[] =  $this->degree2;
+        return implode(' ', $nameArray);
+    }
 
     /**
      * handle saving/adding the primary email address
