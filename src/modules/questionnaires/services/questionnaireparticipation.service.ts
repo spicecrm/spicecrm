@@ -623,7 +623,7 @@ export class questionnaireParticipationService {
                 this.isSaving = false;
                 this.isDirty = false;
                 this.isCompleted = !!response.isCompleted;
-                if ( this.initByQuestionnaire ) this.participationId = response.questionnaireParticipationId;
+                if ( this.initByQuestionnaire || this.initByParent ) this.participationId = response.questionnaireParticipationId;
                 finishedSaving$.emit( true );
                 if ( !this.initByQuestionnaire ) {
                     this.broadcast.broadcastMessage('questionnaireParticipation.filledIn', {
