@@ -11,8 +11,8 @@ import { broadcast } from '../../../services/broadcast.service';
     selector: 'questionnaire-single-evaluation-values',
     templateUrl: './src/modules/questionnaires/templates/questionnairesingleevaluationvalues.html',
     styles: [
-        "span.quest-eval-points { display: inline-block; text-align: center; min-width: 2rem; margin-left:0.33rem; font-weight: normal; border: 1px solid #fff; }",
-        "span.quest-eval-catname { padding-top:0; padding-bottom:0; padding-right:0; font-weight: normal; }"
+        "span.quest-eval-points { display: inline-block; text-align: center; x-min-width: 2rem; margin-left: 0.33rem; font-weight: normal; border: 1px solid #fff; line-height: 1; }",
+        "span.quest-eval-catname { padding-top:0; padding-bottom:0; padding-right:0; font-weight: normal; margin-top: 0.5rem; display: inline-block; margin-left: 0; margin-right: 0.25rem; line-height: 1; }"
     ]
 })
 export class QuestionnaireSingleEvaluationValues implements OnInit {
@@ -44,7 +44,9 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
         }
         this.loadValues();
         this.broadcast.message$.subscribe(msg => {
-            if ( msg.messagetype == 'questionnaireParticipation.saved' && msg.messagedata.parentType === this.model.module && msg.messagedata.parentId === this.model.id ) {
+            if ( msg.messagetype == 'questionnaireParticipation.filledIn' && (
+                ( msg.messagedata.parentType === this.model.module && msg.messagedata.parentId === this.model.id ) || msg.messagedata.id === this.model.id
+            )) {
                 this.reloadValues();
             }
         });
