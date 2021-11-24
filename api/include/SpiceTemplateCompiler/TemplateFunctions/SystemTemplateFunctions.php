@@ -11,11 +11,9 @@ use IntlDateFormatter;
 
 class SystemTemplateFunctions {
 
-    static function dateFormat($inputString, $format, $language = null){
+    static function dateFormat($inputString, $format, $placeHolderForOldLanguageParameter = null){
 
-        # In case a specific language is given, use this format:
-        # https://unicode-org.github.io/icu/userguide/format_parse/datetime/
-        # Otherwise, when no specific language (=English):
+        # For formatting look here:
         # https://www.php.net/manual/de/datetime.format.php
 
         $date = DateTime::createFromFormat(TimeDate::getInstance()->get_db_date_time_format(), $inputString);
@@ -26,12 +24,29 @@ class SystemTemplateFunctions {
             $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
         }
 
-        if ( $language ) {
+        return $date->format( $format );
+
+    }
+
+    static function dateFormatIntl( $inputString, $format, $language = 'en_US'){
+
+        # For formatting look here:
+        # https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+
+        $date = DateTime::createFromFormat(TimeDate::getInstance()->get_db_date_time_format(), $inputString);
+        if(!$date){
+            $date = DateTime::createFromFormat(TimeDate::getInstance()->get_date_time_format(), $inputString);
+        }
+        if(!$date){
+            $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
+        }
+
+        if ( class_exists('IntlDateFormatter')) {
             $formatter = new IntlDateFormatter($language, IntlDateFormatter::SHORT, IntlDateFormatter::SHORT);
             $formatter->setPattern($format);
             return $formatter->format($date);
         } else {
-            return $date->format( $format );
+            return '*** Missing PHP Class IntlDateFormatter ***';
         }
 
     }
