@@ -55,6 +55,7 @@ use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarCleaner;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 
@@ -1332,5 +1333,9 @@ class Email extends SugarBean
         $selector = new DOMXPath($doc);
 
         return $selector->query("//img[contains(@src, 'data:image/png;base64,')]");
+    }
+
+    public function addDocumentAttachment(DocumentRevision $doc): void {
+        SpiceAttachments::saveDocumentRevisionAttachment('Emails', $this->id, $doc);
     }
 }
