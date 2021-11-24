@@ -334,7 +334,7 @@ class CampaignTask extends SugarBean
      */
     private function getProspectBeans($start = 0, $limit = 100){
         $beans = [];
-        $select_query = "SELECT plp.related_id id, plp.related_type module ";
+        $select_query = "SELECT plp.related_id id, max(plp.related_type) module ";
         $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
         $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
         $select_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
