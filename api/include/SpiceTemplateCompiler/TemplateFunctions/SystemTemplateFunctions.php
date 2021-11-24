@@ -10,7 +10,12 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 
 class SystemTemplateFunctions {
 
-    static function dateFormat($inputString, $format){
+    static function dateFormat($inputString, $format, $language = null){
+
+        if($language){
+            setlocale(LC_TIME, $language);
+        }
+
         $date = DateTime::createFromFormat(TimeDate::getInstance()->get_db_date_time_format(), $inputString);
         if(!$date){
             $date = DateTime::createFromFormat(TimeDate::getInstance()->get_date_time_format(), $inputString);
