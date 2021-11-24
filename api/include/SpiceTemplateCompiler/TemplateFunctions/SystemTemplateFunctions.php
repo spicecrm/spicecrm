@@ -7,14 +7,16 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use DateTime;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use IntlDateFormatter;
 
 class SystemTemplateFunctions {
 
     static function dateFormat($inputString, $format, $language = null){
 
-        if($language){
-            setlocale(LC_TIME, $language);
-        }
+        # In case a specific language is given, use this format:
+        # https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+        # Otherwise, when no specific language (=English):
+        # https://www.php.net/manual/de/datetime.format.php
 
         $date = DateTime::createFromFormat(TimeDate::getInstance()->get_db_date_time_format(), $inputString);
         if(!$date){
@@ -24,7 +26,14 @@ class SystemTemplateFunctions {
             $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
         }
 
-        return $date->format( $format );
+        if ( $language ) {
+            $formatter = new IntlDateFormatter($language, IntlDateFormatter::SHORT, IntlDateFormatter::SHORT);
+            $formatter->setPattern($format);
+            return $formatter->format($date);
+        } else {
+            return $date->format( $format );
+        }
+
     }
 
     static function cat( $inputstring, $stringToAdd ) {
