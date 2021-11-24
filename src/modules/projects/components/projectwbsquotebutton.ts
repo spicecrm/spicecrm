@@ -1,21 +1,23 @@
 /**
  * @module ModuleProjects
  */
-import {Component, OnInit, Optional, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, Optional, SkipSelf, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {navigationtab} from '../../../services/navigationtab.service';
+import {backend} from '../../../services/backend.service';
 import {Router} from "@angular/router";
 
 /**
  * renders the button for the Audit log. This is uised in the standard actionsets
  */
 @Component({
-    selector: 'project-settlement-button',
-    templateUrl: './src/modules/projects/templates/projectsettlementbutton.html'
+    selector: 'projectwbs-quote-button',
+    templateUrl: './src/modules/projects/templates/projectwbsquotebutton.html',
+    providers: [model]
 })
-export class ProjectSettlementButton implements OnInit {
+export class ProjectWBSQuoteButton {
 
     /**
      * defautls to true and is set in ngOnInit checking if the module is audit enabled
@@ -30,28 +32,28 @@ export class ProjectSettlementButton implements OnInit {
     constructor(
         private language: language,
         private metadata: metadata,
+        @SkipSelf() private parent: model,
         private model: model,
+        private backend: backend,
         @Optional() private navigationtab: navigationtab,
         private router: Router
     ) {
-    }
-
-    /**
-     * checks if the module is audit enabled and if enables the button
-     */
-    public ngOnInit() {
-
+        // only enable if the user can create Sales Documents
+        this.disabled = !this.metadata.checkModuleAcl('SalesDocs', 'create');
     }
 
     /**
      * the method to execute the button action
      */
     public execute() {
-        let link = `module/Projects/${this.model.id}/settlement`;
-        if (this.navigationtab?.tabid) {
-            link = `/tab/${this.navigationtab.tabid}/${link}`;
-        }
-
-        this.router.navigate([link]);
+        this.backend.postRequest(`module/ProjectWBSs/${this.parent.id}/quote`).subscribe(
+            res => {
+                this.model.module = 'SalesDocs';
+                this.model.id = res.data.id;
+                this.model.startEdit();
+                this.model.data = this.model.utils.backendModel2spice('SalesDocs', res.data);
+                this.model.edit();
+            }
+        )
     }
 }

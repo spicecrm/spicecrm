@@ -1,0 +1,13 @@
+<system-modal size="prompt">
+    <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+    <system-modal-content>
+        <h3 class="slds-text-heading--small slds-p-vertical--small"><system-label label="LBL_SELECT_MODULE"></system-label></h3>
+        <div class="slds-grid slds-grid--vertical">
+            <system-input-radio *ngFor="let module of modules" name="callcreatemodule" [value]="module" [(ngModel)]="selectedModule"><system-label-modulename [module]="module"></system-label-modulename></system-input-radio>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!selectedModule" (click)="create()"><system-label label="LBL_CREATE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

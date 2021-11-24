@@ -148,6 +148,33 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
     }
 
     /**
+     * unsets the related data
+     *
+     * @private
+     */
+    private unsetRelatedData(){
+        this.calldata.relatedid = null;
+        this.calldata.relatedmodule= null;
+        this.calldata.relateddata = {};
+
+        if (this.calldata.relatedmodule == 'Contacts' && this.metadata.getModuleFields(this.model.module).contact_id) {
+            this.model.setFields({
+                contact_id: undefined,
+                contact_name: undefined,
+                parent_type: undefined,
+                parent_id: undefined,
+                parent_name: undefined,
+            });
+        } else {
+            this.model.setFields({
+                parent_type: undefined,
+                parent_id: undefined,
+                parent_name: undefined
+            });
+        }
+    }
+
+    /**
      * gets a formatted MSISDN
      */
     get msisdnFormatted() {
