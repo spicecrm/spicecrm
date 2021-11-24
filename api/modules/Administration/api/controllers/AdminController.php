@@ -456,14 +456,15 @@ class AdminController
     public function repairLanguage(Request $req, Response $res, array $args): Response {
         $appListStrings = [];
         $appLang = [];
-        $languages = SpiceConfig::getInstance()->config['languages'];
         $langs = LanguageManager::getLanguages();
-        foreach ($languages as $language => $value) {
 
-            $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-
-            $appListStrings[$language][] = return_app_list_strings_language($language);
-            $appLang[$language][] = $this->loadLanguage($language);
+        foreach ($langs['available'] as $lang) {
+            if($lang['system_language']){
+                $language = $lang['language_code'];
+                $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
+                $appListStrings[$language][] = return_app_list_strings_language($language);
+                $appLang[$language][] = $this->loadLanguage($language);
+            }
         }
 
         if (!empty($appListStrings) && !empty($appLang)) {

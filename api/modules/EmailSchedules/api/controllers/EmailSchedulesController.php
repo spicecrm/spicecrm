@@ -116,7 +116,7 @@ class EmailSchedulesController
         $seed->save();
 
         // cancel all scheudled lines
-        DBManagerFactory::getInstance()->query("UDPATE emailschedules_beans SET emailschedule_status = 'cancelled' WHERE emailschedule_status='queued' AND emailschedule_id='$seed->id'");
+        DBManagerFactory::getInstance()->query("UPDATE emailschedules_beans SET emailschedule_status = 'cancelled' WHERE emailschedule_status='queued' AND emailschedule_id='$seed->id'");
 
         return $res->withJson(['status'=> 'success']);
     }
@@ -185,7 +185,7 @@ class EmailSchedulesController
 
                     $seed = BeanFactory::getBean($related);
                     if($seed->field_defs['is_inactive']){
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "{$seed->table_name}.is_inactive = 0")];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
                     } else {
                         $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
                     }
@@ -222,7 +222,7 @@ class EmailSchedulesController
             foreach ($links as $module) {
                 $seed = BeanFactory::getBean($module);
                 if($seed->field_defs['is_inactive']){
-                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "{$seed->table_name}.is_inactive = 0");
+                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)");
                 } else {
                     $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0);
                 }

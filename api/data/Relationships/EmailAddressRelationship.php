@@ -4,7 +4,9 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\TimeDate;
 
 
 /**
@@ -50,6 +52,30 @@ class EmailAddressRelationship extends M2MRelationship
             $this->callAfterAdd($lhs, $rhs, $lhsLinkName);
 
         return true;
+    }
+
+    /**
+     * @param $id id of row to update
+     * @param $values values to insert into row
+     * @return resource result of update satatement
+     */
+    public function updateRow($id, $values)
+    {
+        $newVals = [];
+
+        //Unset the ID since we are using it to update the row
+        if (isset($values['id'])) unset($values['id']);
+        foreach ($values as $field => $val) {
+            if($val !== null) {
+                $newVals[] = "$field='$val'";
+            }
+        }
+
+        $newVals = implode(",", $newVals);
+
+        $query = "UPDATE {$this->getRelationshipTable()} set $newVals WHERE id='$id'";
+
+        return DBManagerFactory::getInstance()->query($query);
     }
 
     public function remove($lhs, $rhs)
