@@ -11,6 +11,7 @@ import {
     Input
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
+import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {currency} from '../../../services/currency.service';
@@ -71,14 +72,65 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public currencies: any[] = [];
 
+    public sortfields: any[] = [];
+
     private loadLabel: boolean = false;
 
-    constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
+    constructor(private backend: backend, private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
+        this.loadSortFields();
         this.currencies = this.currency.getCurrencies();
+
     }
 
+    /**
+     * getter for the sortfield
+     */
+    get sortField() {
+        return !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortfield : '';
+    }
+
+    /**
+     * sets the sortfield and pushes it to the sortArray of the modellist
+     * @param field
+     */
+    set sortField(field: string) {
+        this.modellist.sortArray.push({
+            sortfield: field,
+            sortdirection: this.sortDirection
+        });
+    }
+
+    /**
+     * getter for disabling the sortdirection selection if the sortfield is an empty string
+     */
+    get isDisabled() {
+        return this.sortField == '';
+    }
+    /**
+     * getter for the sortfield
+     */
+    get sortDirection() {
+        return !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortdirection : 'ASC';
+    }
+
+    set sortDirection(direction: string) {
+        this.modellist.sortArray[0].sortdirection = direction;
+    }
+
+
+
+    /**
+     * loads the sortfields from the fts configuration
+     * @private
+     */
+    private loadSortFields() {
+        this.backend.getRequest('configuration/elastic/' + this.modellist.module + '/fields').subscribe(fields => {
+            let filtered = fields.filter(field => field.enablesort);
+            this.sortfields = filtered.map(field => field.fieldname);
+        });
+    }
     /**
      * load ths stage data and build the buckts we are searching for to build the kanban board
      */
@@ -135,7 +187,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
                 bucketitems: bucketitems
             };
 
-            this.modellist.getListData();
+            this.modellist.reLoadList();
 
         }
 
