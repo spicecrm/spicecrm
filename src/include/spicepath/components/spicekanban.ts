@@ -79,8 +79,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
     constructor(private backend: backend, private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
-        this.loadSortFields();
         this.currencies = this.currency.getCurrencies();
+        this.loadSortFields();
 
     }
 
@@ -88,7 +88,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * getter for the sortfield
      */
     get sortField() {
-        return !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortfield : '';
+        return !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortfield : 'select';
     }
 
     /**
@@ -96,6 +96,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param field
      */
     set sortField(field: string) {
+        !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortfield = field :
         this.modellist.sortArray.push({
             sortfield: field,
             sortdirection: this.sortDirection
@@ -106,7 +107,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * getter for disabling the sortdirection selection if the sortfield is an empty string
      */
     get isDisabled() {
-        return this.sortField == '';
+        return this.sortField == 'select';
     }
     /**
      * getter for the sortfield
@@ -187,7 +188,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
                 bucketitems: bucketitems
             };
 
-            this.modellist.reLoadList();
+            this.modellist.getListData();
 
         }
 
@@ -200,6 +201,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.modellistsubscribe = this.modellist.listType$.pipe(skip(1)).subscribe(newType =>
             this.handleListTypeChange(newType)
         );
+
     }
 
     /**

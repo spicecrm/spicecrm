@@ -45,7 +45,7 @@
                         <div class="slds-form-element__control slds-col">
                         <div class="slds-select_container">
                             <select class="slds-select" [(ngModel)]="sortField" (ngModelChange)= "modellist.reLoadList()">
-                                <option value="">
+                                <option value="select" [selected]="isDisabled" [hidden]="sortField != ''">
                                     <system-label label="LBL_SELECT"></system-label>
                                 </option>
                                 <option *ngFor="let field of sortfields" [value]="field"><system-label-fieldname [module] = "modellist.module" [field]="field"></system-label-fieldname></option>
