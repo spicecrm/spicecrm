@@ -128,7 +128,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             if(!levelvalue) break;
 
             // otherwise try to find the category
-            let cat = this.categories.find(c => c.node_key == levelvalue && c.parent_id == lastId);
+            let cat = this.categories.find(c => c.node_key == levelvalue && c.parent_id == (lastId ? lastId : ''));
             if(cat) {
                 values.push((cat.node_name));
                 lastId = cat.id;
@@ -167,6 +167,11 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             i++;
         }
         this.model.setFields(fields);
+
+        // set the name field
+        if(this.fieldconfig.setname) {
+            this.model.setField('name', this.display_value);
+        }
 
         // close the dropdown
         this.dropDownOpen = false;
