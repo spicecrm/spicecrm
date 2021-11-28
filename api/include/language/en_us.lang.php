@@ -487,6 +487,7 @@ $app_list_strings = [
         [
             'male' => 'Male',
             'female' => 'Female',
+            'diverse' => 'Divers'
         ],
     //Note:  do not translate case_status_default_key
 //       it is the key for the default case_status_dom value

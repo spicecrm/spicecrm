@@ -72,7 +72,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * the change date comes from the parent
      */
-    @Input() private setDate: any = {};
+    @Input() private setdate: any = {};
     /**
      * holds a boolean of google events visibility
      */
@@ -158,7 +158,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @return startDate: moment
      */
     get startDate() {
-        return new moment(this.setDate).hour(this.calendar.startHour).minute(0).second(0);
+        return new moment(this.setdate).hour(this.calendar.startHour).minute(0).second(0);
     }
 
     /**
@@ -173,7 +173,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      */
     get isTodayStyle() {
         let today = new moment();
-        let isToday = today.year() === this.setDate.year() && today.month() === this.setDate.month() && today.date() == this.setDate.date();
+        let isToday = today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date();
         return {
             color: isToday ? this.calendar.todayColor : 'inherit'
         };
@@ -184,11 +184,11 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param changes
      */
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes.setDate) {
+        if (changes.setdate) {
             this.getOwnerEvents();
             this.getUsersEvents();
         }
-        if (changes.googleIsVisible || changes.setDate) {
+        if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
     }
@@ -374,9 +374,9 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     private displayDate(type) {
         switch (type) {
             case 'day':
-                return this.setDate.format('ddd');
+                return this.setdate.format('ddd');
             case 'date':
-                return this.setDate.format(this.calendar.isDashlet ? 'D, MMMM' : 'D');
+                return this.setdate.format(this.calendar.isDashlet ? 'D, MMMM' : 'D');
         }
     }
 
