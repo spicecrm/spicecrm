@@ -6,24 +6,41 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'field-categories-tree',
-    templateUrl: './src/objectfields/templates/fieldcategoriestree.html'
+    templateUrl: './src/objectfields/templates/fieldcategoriestree.html',
+    animations: [
+        trigger('treeanimation', [
+            state('true', style({'margin-left': '-34%', 'margin-right': '34%'})),
+            state('false', style({'margin-left': '0px', 'margin-right': '0px'})),
+            transition('true => false', [
+                animate('.2s')
+            ]),
+            transition('false => true', [
+                animate('.2s'),
+            ])
+        ])
+    ]
 })
-export class fieldCategoriesTree implements OnInit {
+export class fieldCategoriesTree {
 
     /**
      * the selected levels
      */
-    levels: any[] = [];
+    levels: any[] = [undefined, undefined, undefined, undefined];
 
     /**
      * the emitter for the selected category
      */
     @Output() category: EventEmitter<any> = new EventEmitter<any>();
 
-    // loading indicator
+    /**
+     * indicates that we are loading
+     *
+     * @private
+     */
     private loading: boolean = true;
 
     /**
@@ -47,14 +64,6 @@ export class fieldCategoriesTree implements OnInit {
      */
     @Input() private searchFavorites: boolean = false;
 
-    /**
-     * the depth of the current tree
-     *
-     * @private
-     */
-    private depth: number = 1;
-
-
     constructor(
         private model: model,
         private backend: backend,
@@ -64,32 +73,11 @@ export class fieldCategoriesTree implements OnInit {
 
     }
 
-    public ngOnInit() {
-        this.determineDepth();
-    }
-
-    private determineDepth() {
-        let level0 = this.categories.filter(c => !c.parent_id);
-        for (let level0Node of level0) {
-            let nodeLevel = this.getNodeDepth(level0Node, 1);
-            if (nodeLevel > this.depth) this.depth = nodeLevel;
-        }
-
-        this.levels = Array(this.depth).fill(null);
-    }
-
-    private getNodeDepth(node, level) {
-        let children = this.categories.filter(c => c.parent_id == node.id);
-        if (children.length > 0) {
-            level++;
-            for (let child of children) {
-                let totalLevel = this.getNodeDepth(child, level);
-                if (totalLevel > level) level = totalLevel;
-            }
-            return level;
-        } else {
-            return level;
-        }
+    /**
+     * determine if we shoudl display level 4 and there is a level 4
+     */
+    get shifttree() {
+        return !!this.levels[2] && this.categories.filter(c => c.parent_id == this.levels[2]).length > 0;
     }
 
     /**
@@ -111,10 +99,10 @@ export class fieldCategoriesTree implements OnInit {
     private levelCategories(level) {
         switch (level) {
             case 0:
-                return this.categories.filter(c => !c.parent_id);
+                return this.categories.filter(c => !c.parent_id || c.parent_id == '');
                 break;
             default:
-                return this.categories.filter(c => c.parent_id == this.levels[level - 1]);
+                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]): [];
                 break;
         }
     }
@@ -144,7 +132,7 @@ export class fieldCategoriesTree implements OnInit {
         let cats = this.categories.filter(c => c.favorite);
 
         // if we have a searchterm apply this as well
-        if(this.searchTerm){
+        if (this.searchTerm) {
             cats = cats.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
         }
 
@@ -174,7 +162,7 @@ export class fieldCategoriesTree implements OnInit {
         this.levels[level] = cat.id;
         // reset all selected levels higher than the current depth
         level++;
-        while (level < this.depth) {
+        while (level < 3) {
             this.levels[level] = undefined;
             level++;
         }
@@ -198,7 +186,8 @@ export class fieldCategoriesTree implements OnInit {
      */
     private choose(level, cat) {
         this.select(level, cat);
-        this.category.emit(this.levels);
+        this.category.emit([...this.levels]);
+        this.levels = [undefined, undefined, undefined, undefined];
     }
 
     /**
@@ -207,9 +196,9 @@ export class fieldCategoriesTree implements OnInit {
      * @param node
      * @private
      */
-    private selectNode(node){
+    private selectNode(node) {
         let levels = [];
-        for(let cat of node){
+        for (let cat of node) {
             levels.push(cat.id);
         }
         this.category.emit(levels);
