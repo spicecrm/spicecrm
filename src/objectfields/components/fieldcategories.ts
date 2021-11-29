@@ -128,7 +128,13 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             if(!levelvalue) break;
 
             // otherwise try to find the category
-            let cat = this.categories.find(c => c.node_key == levelvalue && c.parent_id == (lastId ? lastId : ''));
+            let cat = this.categories.find(c => {
+                if(c.node_key != levelvalue) return false;
+
+                if(!lastId && c.parent_id != '' && !!c.parent_id) return false;
+
+                return c.parent_id == lastId;
+            });
             if(cat) {
                 values.push((cat.node_name));
                 lastId = cat.id;
