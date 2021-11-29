@@ -99,10 +99,10 @@ export class fieldCategoriesTree {
     private levelCategories(level) {
         switch (level) {
             case 0:
-                return this.categories.filter(c => !c.parent_id);
+                return this.categories.filter(c => !c.parent_id || c.parent_id == '');
                 break;
             default:
-                return this.categories.filter(c => c.parent_id == this.levels[level - 1]);
+                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]): [];
                 break;
         }
     }
