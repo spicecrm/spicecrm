@@ -2,13 +2,10 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
 $dictionary['ServiceTicket'] = [
     'table' => 'servicetickets',
     'comment' => 'ServiceTickets Module',
     'audited' =>  true,
-    'duplicate_merge' =>  false,
-    'unified_search' =>  false,
 	'fields' => [
         'name' => [
             'name' => 'name',
@@ -90,8 +87,6 @@ $dictionary['ServiceTicket'] = [
             'type'        => 'parent',
             'source'      => 'non-db',
         ],
-
-
         'contacts' => [
             'vname' => 'LBL_CONTACTS',
             'name' => 'contacts',
@@ -99,7 +94,6 @@ $dictionary['ServiceTicket'] = [
             'module' => 'Contacts',
             'relationship' => 'servicetickets_contacts',
             'link_type' => 'one',
-//            'side' => 'right',
             'source' => 'non-db'
         ],
         'consumers' => [
@@ -109,7 +103,6 @@ $dictionary['ServiceTicket'] = [
             'module' => 'Consumers',
             'relationship' => 'servicetickets_consumers',
             'link_type' => 'one',
-//            'side' => 'right',
             'source' => 'non-db'
         ],
         'users' => [
@@ -119,18 +112,13 @@ $dictionary['ServiceTicket'] = [
             'module' => 'Users',
             'relationship' => 'servicetickets_users',
             'link_type' => 'one',
-//            'side' => 'right',
             'source' => 'non-db'
         ],
         'date_closed' => [
             'name' => 'date_closed',
             'vname' => 'LBL_DATE_CLOSED',
-            'type' => 'datetimecombo',
-            'dbType' => 'datetime',
-            'massupdate'=>false,
-            'comment' => 'Date tciket was closed',
-            'enable_range_search' => true,
-            'options' => 'date_range_search_dom',
+            'type' => 'datetime',
+            'comment' => 'Date ticket was closed',
         ],
         'serviceticket_status' => [
             'name' => 'serviceticket_status',
@@ -145,7 +133,7 @@ $dictionary['ServiceTicket'] = [
             'vname' => 'LBL_TYPE',
             'type' => 'enum',
             'len' => 25,
-            'options' => 'servicecall_type_dom'
+            'options' => 'serviceticket_type_dom'
         ],
         'serviceticket_class' => [
             'name' => 'serviceticket_class',
@@ -188,7 +176,6 @@ $dictionary['ServiceTicket'] = [
             'vname' => 'LBL_PROLONGED_UNTIL',
             'type' => 'date'
         ],
-
         //categories
         'sysservicecategory_id1' => [
             'name' => 'sysservicecategory_id1',
@@ -227,7 +214,6 @@ $dictionary['ServiceTicket'] = [
             'vname' => 'LBL_WORKLOG',
             'type' => 'text',
         ],
-
         'costcenter_id' => [
             'name'     => 'costcenter_id',
             'vname'    => 'LBL_COSTCENTER_ID',
@@ -360,8 +346,6 @@ $dictionary['ServiceTicket'] = [
 ];
 
 VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assignable', 'activities']);
-
-global $dictionary;
 
 if(file_exists('extensions/modules/ServiceOrders')) {
     $dictionary['ServiceTicket']['fields']['serviceorders'] = [
