@@ -10,11 +10,20 @@
                 </div>
             </div>
             <div class="slds-grid">
-                <div class="slds-form-element slds-size--1-of-2">
-                    <label class="slds-form-element__label" >
-                        <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_KEY"></system-label></label>
+                <div class="slds-form-element slds-size--1-of-4 slds-p-right--xx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_KEY"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" required="" [(ngModel)]="node.node_key" class="slds-input" />
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-4 slds-p-left--xx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_STATUS"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="node.node_status">
+                            <option value="c"><system-label label="LBL_STATUS_CREATED"></system-label></option>
+                            <option value="a"><system-label label="LBL_STATUS_ACTIVE"></system-label></option>
+                            <option value="i"><system-label label="LBL_STATUS_INACTIVE"></system-label></option>
+                        </select>
                     </div>
                 </div>
                 <div class="slds-form-element slds-size--1-of-4 slds-p-left--xx-small">
@@ -30,6 +39,23 @@
                     </div>
                 </div>
             </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_VALID_FROM"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-input-date [(ngModel)]="node.valid_from"></system-input-date>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_VALID_TO"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-input-date [(ngModel)]="node.valid_to"></system-input-date>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="addParamsComponent">
+            <system-dynamic-component [component]="addParamsComponent" [componentattributes]="{addParams: addParams}"></system-dynamic-component>
         </div>
     </system-modal-content>
     <system-modal-footer>

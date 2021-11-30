@@ -82,6 +82,9 @@ class SystemTenant extends SugarBean
         // switch back to current dabatase
         DBManagerFactory::switchInstance($preserved_db_name, $config);
 
+        $this->initialized = true;
+        $this->save();
+
         return true;
     }
 

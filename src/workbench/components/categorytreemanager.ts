@@ -239,14 +239,26 @@ export class CategoryTreeManager {
     private editNode(node) {
         let upd = {...node};
         this.modal.openModal('CategoryTreeManagerNode').subscribe(modalref => {
+
+            // pass the node
             modalref.instance.node = upd;
+
+            // pass all other nodes
             modalref.instance.nodes = this.activeTreeNodes.filter(n => n.parent_id == upd.parent_id);
+
+            // pass a component if set
+            modalref.instance.addParamsComponent = this.categoryTrees.find(t => t.id == this.activeTree).add_params_component;
+
             modalref.instance.action.subscribe(add => {
                 if (add) {
                     node.node_name = upd.node_name;
                     node.node_key = upd.node_key;
                     node.selectable = upd.selectable;
                     node.favorite = upd.favorite;
+                    node.add_params = upd.add_params;
+                    node.valid_from = upd.valid_from;
+                    node.valid_to = upd.valid_to;
+                    node.node_status = upd.node_status;
                 }
             })
         })
@@ -266,6 +278,7 @@ export class CategoryTreeManager {
             parent_id: level == 0 ? null : this.selectedTreeNodes[level - 1],
             syscategorytree_id: this.activeTree,
             selectable: true,
+            node_status: 'c',
             favorite: false
         }
 
@@ -275,6 +288,9 @@ export class CategoryTreeManager {
 
             // pass through the other nodes
             modalref.instance.nodes = this.activeTreeNodes.filter(n => n.parent_id == node.parent_id);
+
+            // pass a component if set
+            modalref.instance.addParamsComponent = this.categoryTrees.find(t => t.id == this.activeTree).add_params_component;
 
             // wait for the response
             modalref.instance.action.subscribe(add => {
@@ -298,11 +314,13 @@ export class CategoryTreeManager {
     get changedNodes(): any[]{
         // get the delta
         let delta = [];
-        let back = JSON.parse(this.activeTreeNodesBackup);
-        for(let node of this.activeTreeNodes){
-            let backNode = back.find(b => b.id == node.id);
-            if(!backNode || (backNode && !_.isEqual(backNode, node))){
-                delta.push(node);
+        if(this.activeTreeNodesBackup) {
+            let back = JSON.parse(this.activeTreeNodesBackup);
+            for (let node of this.activeTreeNodes) {
+                let backNode = back.find(b => b.id == node.id);
+                if (!backNode || (backNode && !_.isEqual(backNode, node))) {
+                    delta.push(node);
+                }
             }
         }
 

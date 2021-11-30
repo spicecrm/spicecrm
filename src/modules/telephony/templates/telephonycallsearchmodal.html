@@ -9,13 +9,13 @@
         <ul role="listbox">
             <li global-header-search-results-item global-header-search-results-item-nonavigation class="slds-box--border slds-m-vertical--xx-small" *ngFor="let searchResult of searchresults" [hit]="searchResult" (selected)="select(searchResult, $event)"></li>
         </ul>
-        <div class="slds-align--absolute-center" style="height: calc(100% - 50px)" *ngIf="!searchTerm && !searching">
+        <div class="slds-align--absolute-center" style="height: calc(100% - 30px)" *ngIf="!searchTerm && !searching">
             <system-label label="LBL_ENTER_SEARCHTERM"></system-label>
         </div>
-        <div class="slds-align--absolute-center" style="height: calc(100% - 50px)" *ngIf="searchTerm && !searching && searchresults.length ==0">
+        <div class="slds-align--absolute-center" style="height: calc(100% - 30px)" *ngIf="searchTerm && !searching && searchresults.length ==0">
             <system-label label="LBL_NO_RECORDS_FOUND"></system-label>
         </div>
-        <div class="slds-align--absolute-center" style="height: calc(100% - 50px)" *ngIf="searching">
+        <div class="slds-align--absolute-center" style="height: calc(100% - 30px)" *ngIf="searching">
             <div class="slds-grid slds-grid--vertical">
             <system-spinner></system-spinner>
                 <div class="slds-p-vertical--small">
