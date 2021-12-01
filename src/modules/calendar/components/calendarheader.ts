@@ -14,7 +14,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-header',
-    templateUrl: './src/modules/calendar/templates/calendarheader.html',
+    templateUrl: '../templates/calendarheader.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -30,26 +30,26 @@ export class CalendarHeader implements OnDestroy {
     /**
      * holds the click event listener
      */
-    private clickListener: any;
+    public clickListener: any;
     /**
      * show/hide calendar sheet type select menu
      */
-    private showTypeSelector: boolean = false;
+    public showTypeSelector: boolean = false;
     /**
      * holds the calendar fts moduels
      */
-    @Input() private modules: any[] = [];
+    @Input() public modules: any[] = [];
     /**
      * emit when a calendar date is picked
      */
-    @Output() private datePicked: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public datePicked: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language,
-                private navigation: navigation,
-                private elementRef: ElementRef,
-                private renderer: Renderer2,
-                private modelUtils: modelutilities,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public navigation: navigation,
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public modelUtils: modelutilities,
+                public calendar: calendar) {
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
     }
 
@@ -132,7 +132,7 @@ export class CalendarHeader implements OnDestroy {
     /**
      * @return first day of week
      */
-    private getFirstDayOfWeek() {
+    public getFirstDayOfWeek() {
         let focDate = new moment(this.calendar.calendarDate);
         focDate.day(this.calendar.weekStartDay);
         return focDate.format('MMM D');
@@ -141,7 +141,7 @@ export class CalendarHeader implements OnDestroy {
     /**
      * @return last day of week
      */
-    private getLastDayOfWeek() {
+    public getLastDayOfWeek() {
         let focDate = new moment(this.calendar.calendarDate);
         focDate.day(this.calendar.weekDaysCount);
         return focDate.format('MMM D');
@@ -213,7 +213,7 @@ export class CalendarHeader implements OnDestroy {
      * @param picker
      * @param button
      */
-    private onDocumentClick(event: MouseEvent, picker, button) {
+    public onDocumentClick(event: MouseEvent, picker, button) {
         if (this.openPicker && !picker.contains(event.target) && !button.contains(event.target)) {
             this.openPicker = false;
             this.clickListener();

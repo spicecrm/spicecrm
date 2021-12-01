@@ -6,11 +6,11 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-illustration-no-task',
-    templateUrl: './src/systemcomponents/templates/systemillustrationnotask.html'
+    templateUrl: '../templates/systemillustrationnotask.html'
 })
 export class SystemIllustrationNoTask {
 
-    constructor(private language: language) {
+    constructor(public language: language) {
 
     }
 

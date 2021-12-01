@@ -10,13 +10,13 @@ import {backend} from "../../../services/backend.service";
  * displays a quicknote that is read in teh stream
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentstats.html',
+    templateUrl: '../templates/spiceattachmentstats.html',
 })
 export class SpiceAttachmentStats {
 
-    private analysisresults: any[] = [];
+    public analysisresults: any[] = [];
 
-    constructor(private backend: backend) {
+    constructor(public backend: backend) {
         this.analyze();
     }
 
@@ -25,7 +25,7 @@ export class SpiceAttachmentStats {
      *
      * @private
      */
-    private analyze() {
+    public analyze() {
         this.analysisresults = [];
         this.backend.getRequest('common/spiceattachments/admin').subscribe(res => {
             for (let module in res) {
@@ -54,7 +54,7 @@ export class SpiceAttachmentStats {
      *
      * @private
      */
-    private delete() {
+    public delete() {
         this.backend.postRequest('common/spiceattachments/admin/cleanup').subscribe(res => {
             this.analyze();
         });

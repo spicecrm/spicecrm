@@ -24,7 +24,7 @@ import {ObjectRelatedCardFooter} from "./objectrelatedcardfooter";
  */
 @Component({
     selector: "object-related-card",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedcard.html",
+    templateUrl: "../templates/objectrelatedcard.html",
     animations: [
         trigger('displaycard', [
             transition(':enter', [
@@ -44,20 +44,20 @@ export class ObjectRelatedCard {
     /**
      * a selector for the Header in teh card. This will trigger the open or collapsed stated
      */
-    @ViewChild(ObjectRelatedCardHeader, {static: false}) private cardheader: ObjectRelatedCardHeader;
+    @ViewChild(ObjectRelatedCardHeader, {static: false}) public cardheader: ObjectRelatedCardHeader;
 
     /**
      * catches the card footer
      * @private
      */
-    @ViewChild(ObjectRelatedCardFooter, {static: false}) private cardfooter: ObjectRelatedCardFooter;
+    @ViewChild(ObjectRelatedCardFooter, {static: false}) public cardfooter: ObjectRelatedCardFooter;
 
     /**
      * the component config as key paramater into the component
      */
-    @Input() private componentconfig;
+    @Input() public componentconfig;
 
-    constructor(private language: language, private metadata: metadata, private relatedmodels: relatedmodels, private model: model) {
+    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model) {
     }
 
     /**
@@ -124,7 +124,7 @@ export class ObjectRelatedCard {
      */
     public aclAccess() {
         if (this.module) {
-            let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule.toLowerCase();
+            let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule?.toLowerCase();
             return (this.metadata.checkModuleAcl(this.module, "list") || this.metadata.checkModuleAcl(this.module, "listrelated")) && this.model.checkFieldAccess(linkField);
         } else {
             return false;

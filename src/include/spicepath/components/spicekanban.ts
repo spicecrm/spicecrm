@@ -29,51 +29,51 @@ declare var _: any;
  */
 @Component({
     selector: 'spice-kanban',
-    templateUrl: './src/include/spicepath/templates/spicekanban.html',
+    templateUrl: '../templates/spicekanban.html',
     providers: [model]
 })
 export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * reference to the utility bar if one is rendered
      */
-    @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) private kanbanUtilityBar: ViewContainerRef;
+    @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) public kanbanUtilityBar: ViewContainerRef;
 
     /**
      * the component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * subscription to the modellist for type changes
      */
-    private modellistsubscribe: any = undefined;
+    public modellistsubscribe: any = undefined;
 
     /**
      * holds the config data for the beanguides
      */
-    private confdata: any;
+    public confdata: any;
 
     /**
      * holds the info on the stages to be displayed
      */
-    private stages: any[] = [];
+    public stages: any[] = [];
     /**
      * collects all of the fields and their operation type
      */
-    private sumfields: any[] = [];
+    public sumfields: any[] = [];
     /**
      * hidden statges that are rendered in teh utility bar
      */
-    private hiddenstages: any[] = [];
+    public hiddenstages: any[] = [];
 
     /**
      * holds an array of currencies
      */
     public currencies: any[] = [];
 
-    private loadLabel: boolean = false;
+    public loadLabel: boolean = false;
 
-    constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
+    constructor(public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency) {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
         this.currencies = this.currency.getCurrencies();
@@ -167,7 +167,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         if (newType.listcomponent != 'SpiceKanban') return;
         this.modellist.reLoadList();
     }
@@ -185,7 +185,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 
@@ -212,7 +212,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param stagedata
      */
 
-    private getStageCount(stagedata) {
+    public getStageCount(stagedata) {
         try {
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
@@ -228,7 +228,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param stagedata
      * @param aggregatefield
      */
-    private getStageSum(stagedata, aggregatefield) {
+    public getStageSum(stagedata, aggregatefield) {
         try {
             let aggname = "_bucket_agg_" + aggregatefield.name;
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
@@ -249,7 +249,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stage
      */
-    private getStageItems(stage) {
+    public getStageItems(stage) {
         let stageData = this.getStageData(stage);
         let items: any[] = [];
         for (let item of this.modellist.listData.list) {
@@ -265,7 +265,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param amount the amount
      */
-    private getMoney(amount) {
+    public getMoney(amount) {
         return this.userpreferences.formatMoney(parseFloat(amount), 0);
     }
 
@@ -288,7 +288,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * checks if there are more records to load
      */
-    private loadmore() {
+    public loadmore() {
         // no further load if we are loading already
         if (this.modellist.isLoading) return false;
 
@@ -311,7 +311,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stagedata
      */
-    private getStageLabel(stagedata) {
+    public getStageLabel(stagedata) {
         if (stagedata.stage_label) {
             return stagedata.stage_label;
         } else {
@@ -324,7 +324,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * helper to get the currency symbol
      * @param aggregatefield
      */
-    private getCurrencySymbol(aggregatefield): string {
+    public getCurrencySymbol(aggregatefield): string {
         if (this.metadata.getFieldType(this.modellist.module, aggregatefield.name) == 'currency') {
             let currencySymbol: string;
             let currencyid = -99;
@@ -345,7 +345,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param event
      */
-    private handleDrop(event: CdkDragDrop<any>) {
+    public handleDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
             // a little bit of an ugly hack to get the drop information to the item so the item can handle the moel upadet
             event.item.data._KanbanDrop = {
@@ -361,7 +361,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param event
      */
-    private handleHiddenDrop(event: CdkDragDrop<any>) {
+    public handleHiddenDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
             // initialize the model
             this.model.module = this.modellist.module;
@@ -393,7 +393,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param item
      */
-    private allowDrag(item) {
+    public allowDrag(item) {
         return this.draganddropenabled && item.acl.edit;
     }
 
@@ -414,7 +414,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param aggregatefield
      */
-    private getTitle(aggregatefield) {
+    public getTitle(aggregatefield) {
         return this.language.getLabel("LBL_" + aggregatefield.name.toUpperCase());
 
     }

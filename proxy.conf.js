@@ -2,17 +2,15 @@ const PROXY_CONFIG = [
     {
         context: [
             "/config",
-            "/proxy",
-            "/dist",
+            "/api",
             "/vendor",
-            "/sldassets"
         ],
-        target: "http://localhost/spicecrm_fe_factory",
+        target: "http://micro.local",
         secure: false,
-        "bypass": function (req, res, proxyOptions) {
-            req.headers['authorization'] = 'Basic xxx';
-        }
+        changeOrigin: true,
+        logLevel: 'debug'
     }
 ]
+
 
 module.exports = PROXY_CONFIG;

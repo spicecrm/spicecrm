@@ -13,45 +13,45 @@ import {activitiytimeline, activityTimelineOwnerfilter} from '../../../services/
  */
 @Component({
     selector: 'activity-timeline-filter',
-    templateUrl: './src/modules/activities/templates/activitytimelinefilter.html'
+    templateUrl: '../templates/activitytimelinefilter.html'
 })
 export class ActivityTimelineFilter {
 
     /**
      * internal fag if the dropdown is open
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
 
     /**
      * @ignore
      *
      * internal listener for the click outsife of the div
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * internal array with the types and the names
      */
-    private activityTypes: any[] = [];
+    public activityTypes: any[] = [];
 
     /**
      * the filters set for the objects
      */
-    private objectfilters: any[] = [];
+    public objectfilters: any[] = [];
 
     /**
      * the owner filter set
      */
-    private ownerfilter: activityTimelineOwnerfilter = '';
+    public ownerfilter: activityTimelineOwnerfilter = '';
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private metadata: metadata, private activitiytimeline: activitiytimeline) {
+    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language, public metadata: metadata, public activitiytimeline: activitiytimeline) {
         this.setFromService();
     }
 
     /**
      * get teh values from the service
      */
-    private setFromService() {
+    public setFromService() {
         this.objectfilters = JSON.parse(JSON.stringify(this.activitiytimeline.filters.objectfilters));
         this.ownerfilter = this.activitiytimeline.filters.own;
     }
@@ -59,7 +59,7 @@ export class ActivityTimelineFilter {
     /**
      * set the values to the service
      */
-    private setToService() {
+    public setToService() {
         this.activitiytimeline.filters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
         this.activitiytimeline.filters.own = this.ownerfilter;
 
@@ -71,7 +71,7 @@ export class ActivityTimelineFilter {
      *
      * helper to toggle the dropdown open or closed
      */
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
@@ -106,7 +106,7 @@ export class ActivityTimelineFilter {
     /**
      * builds the types
      */
-    private buildTypes() {
+    public buildTypes() {
         this.activityTypes = [];
 
         for (let activityObject of this.activitiytimeline.filterObjects) {
@@ -134,7 +134,7 @@ export class ActivityTimelineFilter {
      * @param event
      * @param filter
      */
-    private setFilter(event, filter) {
+    public setFilter(event, filter) {
         event.preventDefault();
         if (filter == 'all') {
             this.objectfilters = [];
@@ -155,7 +155,7 @@ export class ActivityTimelineFilter {
      *
      * @param filter the filter
      */
-    private getChecked(filter) {
+    public getChecked(filter) {
         if (filter == 'all') {
             return this.objectfilters.length == 0 ? true : false;
         } else {
@@ -170,7 +170,7 @@ export class ActivityTimelineFilter {
      *
      * @param apply if set to true the values are set to the service
      */
-    private closeDialog(apply) {
+    public closeDialog(apply) {
         if (this.clickListener) this.clickListener();
 
         if (apply) {

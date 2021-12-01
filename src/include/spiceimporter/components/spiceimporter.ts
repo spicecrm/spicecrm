@@ -18,27 +18,27 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
 declare var _: any;
 
 @Component({
-    templateUrl: './src/include/spiceimporter/templates/spiceimporter.html',
+    templateUrl: '../templates/spiceimporter.html',
     providers: [model, SpiceImporterService]
 })
 export class SpiceImporter implements OnInit {
-    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) private contentcontainer: ViewContainerRef;
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) public contentcontainer: ViewContainerRef;
 
-    private importSteps: any[] = ['select', 'map', 'fixed', 'check', 'result'];
-    private templatename: string;
-    private importAction: string = 'new';
-    private processing: boolean = false;
-    private modelFields: any[] = undefined;
-    private requiredModelFields: any[] = undefined;
+    public importSteps: any[] = ['select', 'map', 'fixed', 'check', 'result'];
+    public templatename: string;
+    public importAction: string = 'new';
+    public processing: boolean = false;
+    public modelFields: any[] = undefined;
+    public requiredModelFields: any[] = undefined;
 
-    constructor(private spiceImporter: SpiceImporterService,
-                private language: language,
-                private metadata: metadata,
-                private model: model,
-                private navigationtab: navigationtab,
-                private router: Router,
-                private backend: backend,
-                private toast: toast) {
+    constructor(public spiceImporter: SpiceImporterService,
+                public language: language,
+                public metadata: metadata,
+                public model: model,
+                public navigationtab: navigationtab,
+                public router: Router,
+                public backend: backend,
+                public toast: toast) {
 
         // get the bean details
         this.model.module = this.navigationtab.activeRoute.params.module;
@@ -76,7 +76,7 @@ export class SpiceImporter implements OnInit {
 
     }
 
-    private getModuleFields() {
+    public getModuleFields() {
         if (this.model.module !== '') {
             this.modelFields = [];
             let fields = this.metadata.getModuleFields(this.model.module);
@@ -100,7 +100,7 @@ export class SpiceImporter implements OnInit {
         this.requiredModelFields = this.modelFields.filter(field => field.name != 'id' && field.required);
     }
 
-    private setImportAction(action) {
+    public setImportAction(action) {
         this.importAction = action;
         let index;
 
@@ -118,16 +118,16 @@ export class SpiceImporter implements OnInit {
         }
     }
 
-    private getCurrentStep() {
+    public getCurrentStep() {
         return this.language.getLabel(this.spiceImporter.importStepsText[this.spiceImporter.currentImportStep]);
 
     }
 
-    private gotoModule() {
+    public gotoModule() {
         this.router.navigate(['/module/' + this.model.module]);
     }
 
-    private getContainerStyle() {
+    public getContainerStyle() {
         let rect = this.contentcontainer.element.nativeElement.getBoundingClientRect();
         return {
             'height': 'calc(100vh - ' + rect.top + 'px)',
@@ -136,7 +136,7 @@ export class SpiceImporter implements OnInit {
     }
 
 
-    private getStepClass(convertStep) {
+    public getStepClass(convertStep) {
         let thisIndex = this.importSteps.indexOf(convertStep);
         if (thisIndex == this.spiceImporter.currentImportStep) {
             return 'slds-is-active';
@@ -146,19 +146,19 @@ export class SpiceImporter implements OnInit {
         }
     }
 
-    private getStepComplete(convertStep) {
+    public getStepComplete(convertStep) {
         let thisIndex = this.importSteps.indexOf(convertStep);
         return thisIndex < this.spiceImporter.currentImportStep;
 
     }
 
-    private getProgressBarWidth() {
+    public getProgressBarWidth() {
         return {
             width: (this.spiceImporter.currentImportStep / (this.importSteps.length - 1) * 100) + '%'
         };
     }
 
-    private nextStep() {
+    public nextStep() {
         switch (this.spiceImporter.currentImportStep) {
             case 0:
                 if (this.spiceImporter.fileName === '') {
@@ -223,7 +223,7 @@ export class SpiceImporter implements OnInit {
         }
     }
 
-    private checkRequiredMapped() {
+    public checkRequiredMapped() {
         let invertedFileMapping = _.invert(this.spiceImporter.fileMapping),
             foundFieldsCount = 0,
             fixedFields = {};
@@ -246,33 +246,33 @@ export class SpiceImporter implements OnInit {
         return this.requiredModelFields.length == foundFieldsCount;
     }
 
-    private prevStep() {
+    public prevStep() {
         if (this.spiceImporter.currentImportStep > 0) {
             this.spiceImporter.currentImportStep--;
         }
     }
 
-    private showNext() {
+    public showNext() {
 
         return this.spiceImporter.currentImportStep < this.importSteps.length - 2;
 
 
     }
 
-    private showImport() {
+    public showImport() {
 
         return this.spiceImporter.currentImportStep == this.importSteps.length - 2;
 
 
     }
 
-    private showExit() {
+    public showExit() {
         return this.spiceImporter.currentImportStep == this.importSteps.length - 1;
 
 
     }
 
-    private import() {
+    public import() {
 
         let preparedObjectImport = this.prepareObjectImport();
 
@@ -301,7 +301,7 @@ export class SpiceImporter implements OnInit {
         });
     }
 
-    private prepareObjectImport() {
+    public prepareObjectImport() {
 
         let objectImport = _.pick(this.spiceImporter,
             'fileName',

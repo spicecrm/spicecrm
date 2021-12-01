@@ -5,7 +5,7 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-modal-content',
-    templateUrl: './src/systemcomponents/templates/systemmodalcontent.html',
+    templateUrl: '../templates/systemmodalcontent.html',
     host: {
         '[class]': 'this.contentclass',
     },
@@ -16,12 +16,12 @@ export class SystemModalContent {
     /**
      * sets the margin for the content
      */
-    @Input() private margin: 'large'|'medium'|'small'|'x-small'|'xx-small'|'xxx-small'|'none' = 'medium';
+    @Input() public margin: 'large'|'medium'|'small'|'x-small'|'xx-small'|'xxx-small'|'none' = 'medium';
 
     /**
      * if set to true the modal will consume as muchheight as possible
      */
-    @Input() private grow: boolean = false;
+    @Input() public grow: boolean = false;
 
     /**
      * an attribute that can be set and does not require the value true passed in

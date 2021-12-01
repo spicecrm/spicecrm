@@ -22,7 +22,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types-fields',
-    templateUrl: './src/modules/acl/templates/acltypesmanagertypesfields.html',
+    templateUrl: '../templates/acltypesmanagertypesfields.html',
 })
 export class ACLTypesManagerTypesFields {
 
@@ -32,7 +32,7 @@ export class ACLTypesManagerTypesFields {
     @Output() public addfields: EventEmitter<any> = new EventEmitter<any>();
     @Output() public deletefield: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
 
     }
 

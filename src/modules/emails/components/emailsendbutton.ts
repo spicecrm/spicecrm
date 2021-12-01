@@ -13,22 +13,22 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: "email-send-button",
-    templateUrl: "./src/modules/emails/templates/emailsendbutton.html"
+    templateUrl: "../templates/emailsendbutton.html"
 })
 export class EmailSendButton {
-    // private object_module_name: string;
-    private actionconfig; // can be set inside actionsets...
+    // public object_module_name: string;
+    public actionconfig; // can be set inside actionsets...
     @Output() public actionemitter = new EventEmitter();
 
     /**
      * inidcates that we are sending
      */
-    private sending: boolean = false;
+    public sending: boolean = false;
 
     constructor(
-        private model: model,
-        private metadata: metadata,
-        private modal: modal,
+        public model: model,
+        public metadata: metadata,
+        public modal: modal,
     ) {
 
     }

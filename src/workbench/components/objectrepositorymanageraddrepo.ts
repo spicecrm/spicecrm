@@ -15,7 +15,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'objectrepositorymanager-add-repo',
-    templateUrl: './src/workbench/templates/objectrepositorymanageraddrepo.html'
+    templateUrl: '../templates/objectrepositorymanageraddrepo.html'
 })
 export class ObjectRepositoryManagerAddRepo implements OnInit {
     @Output() closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -39,7 +39,7 @@ export class ObjectRepositoryManagerAddRepo implements OnInit {
     moduleFields: Array<any> = [];
     self;
 
-    constructor(private backend: backend, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public language: language, public modelutilities: modelutilities) {
 
     }
 

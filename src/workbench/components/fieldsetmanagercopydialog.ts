@@ -12,7 +12,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'fieldsetmanager-copy-dialog',
-    templateUrl: './src/workbench/templates/fieldsetmanagercopydialog.html'
+    templateUrl: '../templates/fieldsetmanagercopydialog.html'
 })
 export class FieldsetManagerCopyDialog implements OnInit{
 
@@ -29,7 +29,7 @@ export class FieldsetManagerCopyDialog implements OnInit{
 
     self;
 
-    constructor(private language: language) {
+    constructor(public language: language) {
     }
 
     ngOnInit(){

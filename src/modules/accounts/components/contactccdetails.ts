@@ -15,22 +15,22 @@ declare var _;
 
 @Component({
     selector: 'contact-cc-details',
-    templateUrl: './src/modules/accounts/templates/contactccdetails.html',
+    templateUrl: '../templates/contactccdetails.html',
     providers: [view]
 })
 export class ContactCCDetails implements OnInit, OnDestroy {
     public activatedTabs: any[] = [];
-    private companyCodes: any[] = [];
-    private activeTab: number = 0;
-    private contactccdetails: {} = {};
-    private isLoading: boolean = false;
-    private accountsContactsManagerSubscriber: any;
+    public companyCodes: any[] = [];
+    public activeTab: number = 0;
+    public contactccdetails: {} = {};
+    public isLoading: boolean = false;
+    public accountsContactsManagerSubscriber: any;
 
-    constructor(private language: language,
-                private model: model,
-                private acmService: ACManagerService,
-                private backend: backend,
-                private view: view) {
+    constructor(public language: language,
+                public model: model,
+                public acmService: ACManagerService,
+                public backend: backend,
+                public view: view) {
         this.loadCompanyCode();
         this.subscribeContactCCDetailsChanges();
     }
@@ -57,7 +57,7 @@ export class ContactCCDetails implements OnInit, OnDestroy {
     * @param index Tab Index
     * @return void
     * */
-    private setActiveTab(index) {
+    public setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
     }
@@ -66,7 +66,7 @@ export class ContactCCDetails implements OnInit, OnDestroy {
     * @param cc Company Code
     * @return object Account Company Code Details
     * */
-    private getCCDetailsData(cc) {
+    public getCCDetailsData(cc) {
         if (!_.isEmpty(this.contactCCDetails)) {
             for (let CCDetail in this.contactCCDetails) {
                 if (this.contactCCDetails[CCDetail].companycode_id == cc.id) {
@@ -81,7 +81,7 @@ export class ContactCCDetails implements OnInit, OnDestroy {
     * @param tabindex
     * @return object Style
     * */
-    private getContentContainerStyle(tabindex) {
+    public getContentContainerStyle(tabindex) {
         return {
             display: (tabindex !== this.activeTab) ? 'none' : 'block',
             padding: '.25rem',
@@ -92,7 +92,7 @@ export class ContactCCDetails implements OnInit, OnDestroy {
     * Load Company Codes from backend
     * @return void
     * */
-    private loadCompanyCode() {
+    public loadCompanyCode() {
         this.isLoading = true;
         let fields = JSON.stringify(["companycode", "date_modified", "description", "id"]);
         this.backend.getRequest(`module/CompanyCodes`, {fields: fields}).subscribe(CCodes => {
@@ -105,7 +105,7 @@ export class ContactCCDetails implements OnInit, OnDestroy {
     * Subscribe to Contact Company Code Details changes
     * @return void
     * */
-    private subscribeContactCCDetailsChanges() {
+    public subscribeContactCCDetailsChanges() {
         this.accountsContactsManagerSubscriber = this.acmService.contactCCDetails$
             .subscribe(details => {
                 this.activeTab = 0;
@@ -119,7 +119,7 @@ export class ContactCCDetails implements OnInit, OnDestroy {
     * @param item
     * @return index|item
     * */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 

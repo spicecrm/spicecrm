@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: "system-input-module-field",
-    templateUrl: "./src/systemcomponents/templates/systeminputmodulefield.html",
+    templateUrl: "../templates/systeminputmodulefield.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -27,37 +27,37 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnD
     /**
      * input to disable the input
      */
-    @Input() private module: string;
+    @Input() public module: string;
     /**
      * input to disable the input
      */
-    @Input() private disabled = false;
+    @Input() public disabled = false;
 
     /**
      * if set to true also the tecnical name will be displayed
      */
-    @Input() private displaytechnicalname: boolean = true;
+    @Input() public displaytechnicalname: boolean = true;
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * holds the field
      */
-    private _field: string;
+    public _field: string;
 
     /**
      * the available fields
      */
-    private _fields: any[] = [];
+    public _fields: any[] = [];
 
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private configuration: configurationService
+        public language: language,
+        public metadata: metadata,
+        public configuration: configurationService
     ) {
 
     }
@@ -77,7 +77,7 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnD
         });
     }
 
-    private sortFields() {
+    public sortFields() {
         this._fields.sort((a, b) => this.language.getFieldDisplayName(this.module, a).toLowerCase() > this.language.getFieldDisplayName(this.module, b).toLowerCase() ? 1 : -1);
     }
 

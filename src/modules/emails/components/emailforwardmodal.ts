@@ -20,7 +20,7 @@ declare var moment: any;
  * a modal window to forward an email
  */
 @Component({
-    templateUrl: './src/modules/emails/templates/emailreplymodal.html',
+    templateUrl: '../templates/emailreplymodal.html',
     providers: [view, model, modelattachments]
 })
 export class EmailForwardModal extends EmailReplyModal {
@@ -40,8 +40,8 @@ export class EmailForwardModal extends EmailReplyModal {
                 public session: session,
                 public userpreferences: userpreferences,
                 public dockedcomposer: dockedComposer,
-                private modelattachments: modelattachments,
-                private backend: backend
+                public modelattachments: modelattachments,
+                public backend: backend
     ) {
         super(language, metadata, model, parent, view, prefs, modal, session, userpreferences, dockedcomposer);
     }
@@ -65,7 +65,7 @@ export class EmailForwardModal extends EmailReplyModal {
         this.loadParentAttachments();
     }
 
-    private loadParentAttachments() {
+    public loadParentAttachments() {
         this.modelattachments.module = 'Emails';
         this.modelattachments.id = this.model.id;
         this.modelattachments.cloneAttachments(this.parent);

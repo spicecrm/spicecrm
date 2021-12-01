@@ -9,17 +9,17 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-acl-roles',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairaclroles.html'
+    templateUrl: '../templates/administrationdictrepairaclroles.html'
 })
 
 export class AdministrationDictRepairACLRoles {
-    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
+    constructor(public backend: backend, public toast: toast, public language: language, public modal: modal) {
     }
 
     public executeRepairRoles() {
-        let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        let loading = this.modal.await(this.language.getLabel('LBL_LOADING'));
         this.backend.getRequest('admin/repair/aclroles').subscribe(result => {
-            await.emit(true);
+            loading.emit(true);
             if(result) {
                 this.toast.sendToast(this.language.getLabel('LBL_ROLES_REPAIRED'), 'success');
             } else {

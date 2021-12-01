@@ -11,16 +11,16 @@ import {territories} from '../../services/territories.service';
 
 @Component({
     selector: 'object-record-details-tab',
-    templateUrl: './src/objectcomponents/templates/objectrecordadministrationtab.html'
+    templateUrl: '../templates/objectrecordadministrationtab.html'
 })
 export class ObjectRecordAdministrationTab implements OnInit {
 
-    private componentconfig: any = {};
-    private expanded: boolean = true;
-    private hasFieldAssignedUser = false;
-    // private territorymanaged: boolean = false;
+    public componentconfig: any = {};
+    public expanded: boolean = true;
+    public hasFieldAssignedUser = false;
+    // public territorymanaged: boolean = false;
 
-    private fields: any = {
+    public fields: any = {
         spiceacl_primary_territory: {
             field: 'spiceacl_primary_territory',
             fieldconfig: {}
@@ -47,7 +47,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
         }
     };
 
-    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private model: model, private language: language, private territories: territories) {
+    constructor(public activatedRoute: ActivatedRoute, public metadata: metadata, public model: model, public language: language, public territories: territories) {
     }
 
     public ngOnInit() {
@@ -70,7 +70,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
     /**
      * get the type settings for the territory from the territories service for the module
      */
-    private getTypeParameters() {
+    public getTypeParameters() {
         return this.territories.getModuleParamaters(this.model.module);
     }
 

@@ -15,18 +15,18 @@ import {ActivityTimelineAddItem} from "./activitytimelineadditem";
 
 @Component({
     selector: 'activitytimeline-add-email',
-    templateUrl: './src/modules/activities/templates/activitytimelineaddemail.html',
+    templateUrl: '../templates/activitytimelineaddemail.html',
     providers: [model, view]
 })
 export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements OnInit {
     /**
      * holds the fieldset fields
      */
-    protected formFields: any[] = [];
+    public formFields: any[] = [];
     /**
      * holds the fieldset id
      */
-    private formFieldSet: string = '';
+    public formFieldSet: string = '';
 
     constructor(
         public metadata: metadata,
@@ -38,7 +38,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         public dockedComposer: dockedComposer,
         public ViewContainerRef: ViewContainerRef,
         public backend: backend,
-        private session: session
+        public session: session
     ) {
         super(metadata, activitiytimeline, model, view, language, modal, dockedComposer, ViewContainerRef);
     }
@@ -65,7 +65,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     /**
      * initialize email model
      */
-    private initializeEmail() {
+    public initializeEmail() {
 
         this.model.id = this.model.generateGuid();
         this.model.initializeModel();
@@ -84,7 +84,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         this.model.data.from_addr_name = this.session.authData.email;
     }
 
-    private subscribeParent() {
+    public subscribeParent() {
         this.activitiytimeline.parent.data$.subscribe(data => {
             if (this.model.data.recipient_addresses?.length == 0) {
                 this.determineRecipientAddress();
@@ -99,7 +99,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     /**
      * set view edit mode
      */
-    private setEditMode() {
+    public setEditMode() {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -107,7 +107,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     /**
      * get fieldset fields
      */
-    private getFieldsetFields() {
+    public getFieldsetFields() {
         let conf = this.metadata.getComponentConfig('ActivityTimelineAddEmail', this.model.module);
         this.formFieldSet = conf.fieldset;
         this.formFields = this.metadata.getFieldSetItems(conf.fieldset);
@@ -116,7 +116,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     /**
      * expand the panel and initialize the email model
      */
-    private onFocus() {
+    public onFocus() {
         if(!this.isExpanded) {
             this.isExpanded = true;
             this.initializeEmail();
@@ -128,7 +128,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     /**
      * determine recipient address from parent
      */
-    private determineRecipientAddress() {
+    public determineRecipientAddress() {
         if (this.activitiytimeline.parent.data.email1) {
             this.model.data.recipient_addresses = [{
                 parent_type: this.activitiytimeline.parent.module,
@@ -143,7 +143,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     /**
      * attempt to send the email and prompt the user if the subject and body are empty
      */
-    private send() {
+    public send() {
         if (!this.canSend) return;
         if (!this.model.getField('name') && !this.model.getField('body')) {
             this.modal.prompt(
@@ -163,7 +163,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     /**
      * save the email and reinitialize the email model
      */
-    private save() {
+    public save() {
         this.model.data.to_be_sent = true;
         this.model.save().subscribe(() => {
             this.isExpanded = false;

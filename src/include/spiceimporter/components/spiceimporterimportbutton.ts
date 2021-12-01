@@ -13,11 +13,11 @@ import {layout} from '../../../services/layout.service';
  */
 @Component({
     selector: 'spice-importer-import-button',
-    templateUrl: './src/include/spiceimporter/templates/spiceimporterimportbutton.html'
+    templateUrl: '../templates/spiceimporterimportbutton.html'
 })
 export class SpiceImporterImportButton {
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private layout: layout) {}
+    constructor(public language: language, public metadata: metadata, public model: model, public router: Router, public layout: layout) {}
 
     /**
      * navigate to the import route

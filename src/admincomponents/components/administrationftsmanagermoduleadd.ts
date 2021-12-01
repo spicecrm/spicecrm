@@ -10,7 +10,7 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 import {fts} from "../../services/fts.service";
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationftsmanagermoduleadd.html'
+    templateUrl: '../templates/administrationftsmanagermoduleadd.html'
 })
 export class AdministrationFTSManagerModuleAdd implements OnInit {
 
@@ -22,21 +22,21 @@ export class AdministrationFTSManagerModuleAdd implements OnInit {
     /**
      * the modules that can be added
      */
-    private modules: any[] = [];
+    public modules: any[] = [];
 
     /**
      * the module selected
      */
-    private module: string = '';
+    public module: string = '';
 
     /**
      * Event Emtitter for the selected module
      */
     public module$: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata,
-                private language: language,
-                private ftsconfiguration: ftsconfiguration) {
+    constructor(public metadata: metadata,
+                public language: language,
+                public ftsconfiguration: ftsconfiguration) {
     }
 
     /**
@@ -56,7 +56,7 @@ export class AdministrationFTSManagerModuleAdd implements OnInit {
     /**
      * adds teh selected module
      */
-    private add() {
+    public add() {
         this.module$.emit(this.module);
         this.self.destroy();
     }
@@ -64,7 +64,7 @@ export class AdministrationFTSManagerModuleAdd implements OnInit {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.module$.emit(false);
         this.self.destroy();
     }

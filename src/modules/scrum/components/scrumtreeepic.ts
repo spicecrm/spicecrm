@@ -11,7 +11,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: '[scrum-tree-epic]',
-    templateUrl: './src/modules/scrum/templates/scrumtreeepic.html',
+    templateUrl: '../templates/scrumtreeepic.html',
     providers: [model, relatedmodels],
     host:{
         '(click)': "selectEpic($event)",
@@ -23,30 +23,30 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
     /**
      * inidcates if the userstories are laoded
      */
-    private userstoriesloaded: boolean = false;
+    public userstoriesloaded: boolean = false;
 
     /**
      * a check to toggle expansion
      */
-    private expanded: boolean = false;
+    public expanded: boolean = false;
 
     /**
      * a check to hide and disable the expansion button
      */
-    private has_stories: boolean;
+    public has_stories: boolean;
 
     /**
      * acl
      */
-    private disabled: boolean = true;
+    public disabled: boolean = true;
 
     /**
      * input of the epic
      */
-    @Input() private epic: any = {};
+    @Input() public epic: any = {};
 
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrum, private userstories: relatedmodels) {}
+    constructor(public language: language, public metadata: metadata, public model: model, public modellist: modellist, public scrum: scrum, public userstories: relatedmodels) {}
 
     /**
      * initialize the model and the related module
@@ -72,7 +72,7 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
     /**
      * load the related user stories
      */
-    private loadRelatedUserStories() {
+    public loadRelatedUserStories() {
         this.userstories.sort.sortfield = 'sequence';
         this.userstories.loaditems = -99;
         this.userstories.getData().subscribe(loaded => {
@@ -92,7 +92,7 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
     /**
      * expand if the user stories are loaded
      */
-    private toggleExpand() {
+    public toggleExpand() {
         if(!this.userstoriesloaded) {
             this.loadRelatedUserStories();
         }
@@ -104,7 +104,7 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
      * send the current object
      * @param e
      */
-    private selectEpic(e) {
+    public selectEpic(e) {
         e.stopPropagation();
         this.scrum.selectedObject = {id: this.epic.id, type: 'ScrumEpics'};
     }
@@ -114,7 +114,7 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
      * reload the user stories
      * @param event
      */
-    private loadChanges(event) {
+    public loadChanges(event) {
         this.has_stories = true;
         this.loadRelatedUserStories();
     }

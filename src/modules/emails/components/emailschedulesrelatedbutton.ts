@@ -13,7 +13,7 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: "email-schedules-related-button",
-    templateUrl: "./src/modules/emails/templates/emailschedulesrelatedbutton.html",
+    templateUrl: "../templates/emailschedulesrelatedbutton.html",
 })
 export class EmailSchedulesRelatedButton {
     public linkedBeans: any = [];
@@ -21,13 +21,13 @@ export class EmailSchedulesRelatedButton {
     public currentModule: string;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector,
-        private backend: backend,
-        private toast: toast,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector,
+        public backend: backend,
+        public toast: toast,
     ) {
     }
 
@@ -37,9 +37,9 @@ export class EmailSchedulesRelatedButton {
      *  subscribe and save the instances of linkedbeans, modelid and currentmodule to use them in the modal that will open
      */
     public execute() {
-        let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        let loading = this.modal.await(this.language.getLabel('LBL_LOADING'));
         this.checkEmailsLink().subscribe(response => {
-            await.emit(true);
+            loading.emit(true);
             if (response) {
                 this.modal.openModal('EmailSchedulesRelatedModal', true, this.injector).subscribe(modal => {
                     modal.instance.linkedBeans = this.linkedBeans;
@@ -56,7 +56,7 @@ export class EmailSchedulesRelatedButton {
      * pass the object as parameter in the get request
      * return an observable
      */
-    private checkEmailsLink(): Observable<any> {
+    public checkEmailsLink(): Observable<any> {
         let responseSubject = new Subject<any>();
         let arrayOfModules = [];
         // search for fields of type link to get the related modules, proof that each of these is actually a module by looping through the fielddefs of metadata where all the object

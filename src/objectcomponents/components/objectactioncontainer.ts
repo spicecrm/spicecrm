@@ -21,23 +21,23 @@ import {ObjectActionContainerItem} from "./objectactioncontaineritem";
  */
 @Component({
     selector: "object-action-container",
-    templateUrl: "./src/objectcomponents/templates/objectactioncontainer.html"
+    templateUrl: "../templates/objectactioncontainer.html"
 })
 export class ObjectActionContainer implements OnChanges, AfterViewInit {
     /**
      * reference to the container item where the indivvidual components can be rendered into dynamically
      */
-    @ViewChildren(ObjectActionContainerItem) private actionitemlist: QueryList<ObjectActionContainerItem>;
+    @ViewChildren(ObjectActionContainerItem) public actionitemlist: QueryList<ObjectActionContainerItem>;
 
     /**
      * ToDo: ???
      */
-    @Input() private containerclass: string = 'slds-button-group';
+    @Input() public containerclass: string = 'slds-button-group';
 
     /**
      * set to true to display the primary buttons as icons if the item supports this
      */
-    @Input() private displayasicon: boolean = false;
+    @Input() public displayasicon: boolean = false;
 
     /**
      * the id of the actionset to be rendered
@@ -47,12 +47,12 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     /**
      * an array with the main action items. Allothers are rendered in the overflow
      */
-    private mainactionitems: any[] = [];
+    public mainactionitems: any[] = [];
 
     /**
      * the overflow action items
      */
-    private addactionitems: any[] = [];
+    public addactionitems: any[] = [];
 
     /**
      * an event emitter that emits if an action is triggered in the actionset. Tis is usefuly if custom actionitems are used or if you want to subscribe in your application to an event from an actionset and trigger additonal actions once the action has been selected
@@ -62,12 +62,12 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     /**
      * @ignore
      */
-    private stable: boolean = false;
+    public stable: boolean = false;
 
     /**
      * @ignore
      */
-    private stableSub: any;
+    public stableSub: any;
 
     constructor(public language: language, public metadata: metadata, public model: model, public ngZone: NgZone, public cdRef: ChangeDetectorRef) {
     }
@@ -128,7 +128,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
         return this.addactionitems.length > 0;
     }
 
-    private disabledhandler(id, disabled) {
+    public disabledhandler(id, disabled) {
         setTimeout(() => {
             this.mainactionitems.some((actionitem: any) => {
                 if (actionitem.id == id) {
@@ -152,7 +152,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      *
      * @param actionitem the actionitem
      */
-    private addclasses(actionitem) {
+    public addclasses(actionitem) {
         let addclasses = actionitem.actionconfig.addclasses;
         if (this.isHidden(actionitem.id)) {
             addclasses += ' slds-hide';
@@ -165,7 +165,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      *
      * @param actionid the action id
      */
-    private isDisabled(actionid) {
+    public isDisabled(actionid) {
         let disabled = true;
         if (this.actionitemlist) {
             this.actionitemlist.some((actionitem: any) => {
@@ -183,7 +183,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      *
      * @param actionid the action id
      */
-    private isHidden(actionid) {
+    public isHidden(actionid) {
         if (!this.stable) return false;
 
         let hidden = false;
@@ -195,7 +195,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     }
 
 
-    private propagateclick(actionid) {
+    public propagateclick(actionid) {
         this.actionitemlist.some(actionitem => {
             if (actionitem.id == actionid) {
                 if (!actionitem.disabled) actionitem.execute();
@@ -204,7 +204,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
         });
     }
 
-    private emitaction(event) {
+    public emitaction(event) {
         this.actionemitter.emit(event);
     }
 }

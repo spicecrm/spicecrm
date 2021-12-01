@@ -12,16 +12,16 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-vertical-tab-container-item-header',
-    templateUrl: './src/objectcomponents/templates/objectverticaltabcontaineritemheader.html'
+    templateUrl: '../templates/objectverticaltabcontaineritemheader.html'
 })
 export class ObjectVerticalTabContainerItemHeader {
 
     /**
      * the tab to be rendered
      */
-    @Input() private tab: any = [];
+    @Input() public tab: any = [];
 
-    constructor(private language: language) {}
+    constructor(public language: language) {}
 
     /**
      * simple getter if the name is to be displayed

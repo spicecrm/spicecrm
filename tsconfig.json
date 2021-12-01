@@ -1,20 +1,32 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "baseUrl": "./",
     "sourceMap": true,
-    "emitDecoratorMetadata": true,
+    "declaration": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "noImplicitAny": false,
-    "removeComments": true,
-    "lib": ["es2015", "dom"]
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "emitDecoratorMetadata": false,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": [
+      "es2018",
+      "dom"
+    ]
   },
-  "include" :[
-    "src/**/*",
-    "dist/**/*"
-  ],
   "exclude": [
-    "node_modules", "vendor"
-  ]
+    "node_modules",
+    "vendor"
+  ],
+  "include": [
+    "src/**/*",
+    "environments/environment.ts"
+  ],
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "enableIvy": true,
+    "allowEmptyCodegenFiles": true
+  }
 }

@@ -9,7 +9,7 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-service-category-search',
-    templateUrl: './src/objectfields/templates/fieldcategorysearch.html'
+    templateUrl: '../templates/fieldcategorysearch.html'
 })
 export class fieldServiceCategorySearch
 {
@@ -19,10 +19,10 @@ export class fieldServiceCategorySearch
     @Output('choose') choose_emitter = new EventEmitter();
 
     constructor(
-        private model:model,
-        private backend:backend,
-        private config:configurationService,
-        private language:language,
+        public model:model,
+        public backend:backend,
+        public config:configurationService,
+        public language:language,
     )
     {
         if( !this.config.getData('service_category_tree') )
@@ -55,7 +55,7 @@ export class fieldServiceCategorySearch
         //console.log(this.categories);
     }
 
-    private loopThroughTree(cat)
+    public loopThroughTree(cat)
     {
         cat.display_name = '';
         if( cat.parents.length > 0 ) {

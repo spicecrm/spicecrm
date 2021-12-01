@@ -13,16 +13,16 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-filter-item-date',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemdate.html'
+    templateUrl: '../templates/reporterfilteritemdate.html'
 })
 export class ReporterFilterItemDate implements OnInit {
 
-    @Input() private field: string = '';
-    @Input() private wherecondition: any = {};
+    @Input() public field: string = '';
+    @Input() public wherecondition: any = {};
 
-    private fieldDate: any = new moment();
+    public fieldDate: any = new moment();
 
-    constructor(private language: language, private model: model, private reporterconfig: reporterconfig) {
+    constructor(public language: language, public model: model, public reporterconfig: reporterconfig) {
 
     }
 

@@ -12,19 +12,19 @@ import {domainmanager} from '../services/domainmanager.service';
  * a modal component to alow the user to add a new Domain Definition. Called from teh Domain Manager
  */
 @Component({
-    templateUrl: './src/workbench/templates/domainmanageradddefinitionmodal.html',
+    templateUrl: '../templates/domainmanageradddefinitionmodal.html',
 })
 export class DomainManagerAddDefinitionModal {
 
     /**
      * reference to the modal self
      */
-    private self: any;
+    public self: any;
 
     /**
      * the domain definition
      */
-    private domaindefinition: any = {
+    public domaindefinition: any = {
         name: '',
         fieldtype: '',
         scope: 'g',
@@ -32,14 +32,14 @@ export class DomainManagerAddDefinitionModal {
         status: 'd'
     };
 
-    constructor(private domainmanager: domainmanager, private metadata: metadata, private modelutilities: modelutilities) {
+    constructor(public domainmanager: domainmanager, public metadata: metadata, public modelutilities: modelutilities) {
 
     }
 
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -56,7 +56,7 @@ export class DomainManagerAddDefinitionModal {
     /**
      * saves the modal
      */
-    private save() {
+    public save() {
         if(this.canSave) {
             this.domaindefinition.id = this.modelutilities.generateGuid();
             this.domainmanager.domaindefinitions.push(this.domaindefinition);

@@ -7,7 +7,7 @@ import {modellist} from '../../../services/modellist.service';
 
 @Component({
     selector: 'object-merge-modal-data-field',
-    templateUrl: './src/include/spicemerge/templates/objectmergemodaldatafield.html',
+    templateUrl: '../templates/objectmergemodaldatafield.html',
     providers: [model]
 })
 export class ObjectMergeModalDataField implements OnInit {
@@ -16,15 +16,15 @@ export class ObjectMergeModalDataField implements OnInit {
      * the name of the field
      * @private
      */
-    @Input() private fieldname: string = '';
+    @Input() public fieldname: string = '';
 
     /**
      * the data of the field
      * @private
      */
-    @Input() private fielddata: any = {};
+    @Input() public fielddata: any = {};
 
-    constructor(private model: model, private modellist: modellist) {
+    constructor(public model: model, public modellist: modellist) {
         this.model.module = this.modellist.module;
     }
 

@@ -13,7 +13,7 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
  */
 @Component({
     selector: 'spice-page-builder-element-text',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementtext.html',
+    templateUrl: '../templates/spicepagebuilderelementtext.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementText extends SpicePageBuilderElement implements OnInit {
@@ -42,7 +42,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     /**
      * hold the sanitized content html
      */
-    private sanitizedContent: SafeHtml = '';
+    public sanitizedContent: SafeHtml = '';
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -73,7 +73,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     /**
      * sanitize the html content
      */
-    private sanitizeContent() {
+    public sanitizeContent() {
         this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
     }
 

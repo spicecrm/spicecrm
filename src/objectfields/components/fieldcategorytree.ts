@@ -9,7 +9,7 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-service-category-tree',
-    templateUrl: './src/objectfields/templates/fieldcategorytree.html'
+    templateUrl: '../templates/fieldcategorytree.html'
 })
 export class fieldServiceCategoryTree
 {
@@ -22,13 +22,13 @@ export class fieldServiceCategoryTree
     @Output('choose') choose_emitter = new EventEmitter();
 
     // loading indicator
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     constructor(
-        private model:model,
-        private backend:backend,
-        private config:configurationService,
-        private language:language,
+        public model:model,
+        public backend:backend,
+        public config:configurationService,
+        public language:language,
     )
     {
         this.resetLevels();

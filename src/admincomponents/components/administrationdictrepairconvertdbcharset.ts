@@ -6,12 +6,12 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-convert-db-charset',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairconvertdbcharset.html'
+    templateUrl: '../templates/administrationdictrepairconvertdbcharset.html'
 })
 
 export class AdministrationDictRepairConvertDBCharset {
 
-    constructor(private modal: modal, private injector: Injector) {
+    constructor(public modal: modal, public injector: Injector) {
     }
 
     /**

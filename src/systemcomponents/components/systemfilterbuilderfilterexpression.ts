@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-filter-builder-expression',
-    templateUrl: './src/systemcomponents/templates/systemfilterbuilderfilterexpression.html',
+    templateUrl: '../templates/systemfilterbuilderfilterexpression.html',
 })
 export class SystemFilterBuilderFilterExpression implements OnInit {
 
@@ -22,14 +22,14 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
     /**
      * the durrect set filter expression
      */
-    @Input() private filterexpression: any = {};
+    @Input() public filterexpression: any = {};
 
     /**
      * the selected operator type .. this is determined by the field definitions
      */
     public operatortype = 'default';
 
-    @Output() private expressionDeleted: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public expressionDeleted: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the operators available also grouped by type
@@ -321,7 +321,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
      *
      * @param field
      */
-    private determineOperatorType(field) {
+    public determineOperatorType(field) {
         let fieldtype = this.metadata.getFieldDefs(this.module, field);
         if (!fieldtype) {
             this.operatortype = 'default';
@@ -366,7 +366,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
     /**
      * delete the filter expression
      */
-    private delete() {
+    public delete() {
         this.filterexpression.deleted = true;
         this.expressionDeleted.emit(true);
     }
@@ -377,7 +377,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
      * @param i
      * @param item
      */
-    private trackByFn(i, item) {
+    public trackByFn(i, item) {
         return item.value;
     }
 }

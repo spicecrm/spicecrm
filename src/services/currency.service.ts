@@ -10,8 +10,8 @@ import {backend} from "./backend.service";
 export class currency {
     public currenciesFromBackend: any = [];
     constructor(
-        private configuration: configurationService,
-        private backend: backend
+        public configuration: configurationService,
+        public backend: backend
     ) {
     }
 

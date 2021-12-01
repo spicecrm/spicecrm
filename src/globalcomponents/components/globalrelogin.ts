@@ -14,7 +14,7 @@ import {session} from '../../services/session.service';
  */
 @Component({
     selector: 'global-re-login',
-    templateUrl: './src/globalcomponents/templates/globalrelogin.html',
+    templateUrl: '../templates/globalrelogin.html',
 })
 export class GlobalReLogin {
 
@@ -23,33 +23,33 @@ export class GlobalReLogin {
      *
      * @private
      */
-    private self: any;
+   public self: any;
 
     /**
      * the password for the user
      *
      * @private
      */
-    private password: string;
+   public password: string;
 
     /**
      * emits if the user logged in successfully
      *
      * @private
      */
-    @Output() private loggedin: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output()public loggedin: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * indicator that a relogin is running
      *
      * @private
      */
-    private loggingIn: boolean = false;
+   public loggingIn: boolean = false;
 
-    constructor(private login: loginService, private session: session) {
+    constructor(public login: loginService,public session: session) {
     }
 
-    private tokenLogin(token) {
+   public tokenLogin(token) {
         this.loggingIn = true;
         this.login.relogin(null, token).subscribe(
             res => {
@@ -62,7 +62,7 @@ export class GlobalReLogin {
         );
     }
 
-    private relogin() {
+   public relogin() {
         this.loggingIn = true;
         this.login.relogin(this.password, null).subscribe(
             res => {
@@ -80,7 +80,7 @@ export class GlobalReLogin {
      *
      * @private
      */
-    private logout() {
+   public logout() {
         this.login.logout(true);
         this.close();
     }
@@ -89,7 +89,7 @@ export class GlobalReLogin {
      * closes the modal
      * @private
      */
-    private close() {
+   public close() {
         this.self.destroy();
     }
 }

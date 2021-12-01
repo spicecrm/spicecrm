@@ -9,7 +9,7 @@ import {model} from '../../services/model.service';
  * renders a popover with some field specific data when rightclicked on a label
  */
 @Component({
-    templateUrl: './src/objectfields/templates/fieldlabelpopover.html'
+    templateUrl: '../templates/fieldlabelpopover.html'
 })
 export class fieldLabelPopover implements OnInit, OnDestroy {
 
@@ -26,28 +26,28 @@ export class fieldLabelPopover implements OnInit, OnDestroy {
     /**
      * the click listener
      */
-    private clickListener: any;
-    private contextmenulistener: any;
+    public clickListener: any;
+    public contextmenulistener: any;
 
-    private fieldlabel: string = '';
-    private fieldname: string = '';
-    private fieldconfig: any = {};
+    public fieldlabel: string = '';
+    public fieldname: string = '';
+    public fieldconfig: any = {};
 
     /**
      * the offset from the top
      */
-    private top = '0px';
+    public top = '0px';
 
     /**
      * the offset from left
      */
-    private left = '0px';
+    public left = '0px';
 
     constructor(
-        private language: language,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        @Optional() private model: model
+        public language: language,
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        @Optional() public model: model
     ) {
     }
 
@@ -77,7 +77,7 @@ export class fieldLabelPopover implements OnInit, OnDestroy {
      *
      * @param event
      */
-    private onClick(event): void {
+    public onClick(event): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             if(this.clickListener) this.clickListener();
             if(this.contextmenulistener) this.contextmenulistener();
@@ -95,7 +95,7 @@ export class fieldLabelPopover implements OnInit, OnDestroy {
     /**
      * close the popover
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

@@ -12,18 +12,18 @@ import {broadcast} from './broadcast.service';
 
 @Injectable()
 export class loader {
-    private module: string = '';
-    private id: string = '';
-    private data: any = {};
-    private loaderHandler: Subject<string> = new Subject<string>();
-    private loadComplete: Subject<boolean>;
-    private start: any = '';
-    private counterCompleted = 0;
-    private progress = 0;
-    private activeLoader: string = '';
-    private loadPhase: string = 'system';
+    public module: string = '';
+    public id: string = '';
+    public data: any = {};
+    public loaderHandler: Subject<string> = new Subject<string>();
+    public loadComplete: Subject<boolean>;
+    public start: any = '';
+    public counterCompleted = 0;
+    public progress = 0;
+    public activeLoader: string = '';
+    public loadPhase: string = 'system';
 
-    private loadElements: any = {
+    public loadElements: any = {
         system: [
             {
                 name: 'getLanguage',
@@ -40,11 +40,11 @@ export class loader {
     };
 
     constructor(
-        private http: HttpClient,
-        private broadcast: broadcast,
-        private configuration: configurationService,
-        private session: session,
-        private language: language
+        public http: HttpClient,
+        public broadcast: broadcast,
+        public configuration: configurationService,
+        public session: session,
+        public language: language
     ) {
         this.loaderHandler.subscribe(val => this.handleLoaderHandler());
     }
@@ -52,7 +52,7 @@ export class loader {
     /**
      * gets the set tasks from teh backend
      */
-    private getLoadTasks(): Observable<boolean> {
+    public getLoadTasks(): Observable<boolean> {
         let retSubject = new Subject<boolean>();
         this.http.get(
             this.configuration.getBackendUrl() + "/system/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
@@ -120,7 +120,7 @@ export class loader {
         return this.loadComplete.asObservable();
     }
 
-    private resetLoader() {
+    public resetLoader() {
         // reset the progress
         this.counterCompleted = 0;
         this.progress = 0;
@@ -150,7 +150,7 @@ export class loader {
     }
 
 
-    private setComplete() {
+    public setComplete() {
         let t1 = performance.now();
         if (t1 - this.start > 500) {
             this.complete();
@@ -159,13 +159,13 @@ export class loader {
         }
     }
 
-    private complete() {
+    public complete() {
         // emit true
         this.loadComplete.next(true);
         this.loadComplete.complete();
     }
 
-    private handleLoaderHandler() {
+    public handleLoaderHandler() {
         let loadActive = false;
 
         for (let loadElement of this.loadElements[this.loadPhase]) {
@@ -206,7 +206,7 @@ export class loader {
 
     }
 
-    private handleRouteElement(loadElement) {
+    public handleRouteElement(loadElement) {
         let loadroute = loadElement.route ? loadElement.route : '/system/spiceui/core/loadtasks/'+loadElement.id;
         this.http.get(
             this.configuration.getBackendUrl() + loadroute,

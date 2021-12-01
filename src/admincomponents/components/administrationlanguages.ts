@@ -10,23 +10,23 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'administration-languages',
-    templateUrl: './src/admincomponents/templates/administrationlanguages.html',
+    templateUrl: '../templates/administrationlanguages.html',
 })
 
 export class AdministrationLanguages implements OnInit {
     /**
      * array to catch the languages
      */
-    private languages: any = [];
+    public languages: any = [];
 
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private modal: modal,
-        private toast: toast,
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public modal: modal,
+        public toast: toast,
     ) {
 
     }

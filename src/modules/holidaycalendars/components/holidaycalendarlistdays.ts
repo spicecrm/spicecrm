@@ -9,21 +9,21 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'holiday-calendar-list-days',
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlistdays.html',
+    templateUrl: '../templates/holidaycalendarlistdays.html',
     providers: [relatedmodels, model]
 })
 export class HolidayCalendarListDays implements OnChanges {
 
-    @Input() private calendarid: string;
+    @Input() public calendarid: string;
 
-    private componentconfig: any;
-    private listfields: any[];
+    public componentconfig: any;
+    public listfields: any[];
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata,
-        private relatedmodels: relatedmodels
+        public language: language,
+        public model: model,
+        public metadata: metadata,
+        public relatedmodels: relatedmodels
     ) {
         this.relatedmodels.module = 'SystemHolidayCalendars';
         this.relatedmodels.relatedModule = 'SystemHolidayCalendarDays';

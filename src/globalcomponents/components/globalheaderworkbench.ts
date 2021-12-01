@@ -9,19 +9,19 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-header-workbench',
-    templateUrl: './src/globalcomponents/templates/globalheaderworkbench.html'
+    templateUrl: '../templates/globalheaderworkbench.html'
 })
 export class GlobalHeaderWorkbench {
 
-    constructor( private session: session, private router: Router, private language: language) {
+    constructor(public session: session,public router: Router,public language: language) {
 
     }
 
-    private isAdmin(){
+   public isAdmin(){
         return this.session.isAdmin;
     }
 
-    private goAdmin(){
+   public goAdmin(){
         this.router.navigate(['/admin']);
     }
 

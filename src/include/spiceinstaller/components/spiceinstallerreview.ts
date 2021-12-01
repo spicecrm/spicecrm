@@ -12,18 +12,18 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-review',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallerreview.html',
+    templateUrl: '../templates/spiceinstallerreview.html',
 })
 
 export class SpiceInstallerReview implements AfterViewInit {
-    private loading: boolean = false;
-    private mapped: any;
+    public loading: boolean = false;
+    public mapped: any;
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public router: Router,
+        public configurationService: configurationService,
+        public spiceinstaller: spiceinstaller
     ) {
 
     }
@@ -36,7 +36,7 @@ export class SpiceInstallerReview implements AfterViewInit {
     /**
      * sends the configuration data to the backend, sets the site data and redirects to the login
      */
-    private install() {
+    public install() {
         this.loading = true;
         this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/process`, this.spiceinstaller.configObject).subscribe(
             (response: any) => {

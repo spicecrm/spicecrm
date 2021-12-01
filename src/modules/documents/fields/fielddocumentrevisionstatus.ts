@@ -18,12 +18,12 @@ import {navigation} from "../../../services/navigation.service";
 
 
 @Component({
-    templateUrl: './src/modules/documents/templates/fielddocumentrevisionstatus.html'
+    templateUrl: '../templates/fielddocumentrevisionstatus.html'
 })
 
 export class fieldDocumentRevisionStatus extends fieldGeneric {
-    private parent:any;
-    constructor(public model: model, private navigation: navigation, view: view, public language: language, public metadata: metadata, public router: Router, public modal: modal, public relatedmodels: relatedmodels, public backend: backend) {
+    public parent:any;
+    constructor(public model: model, public navigation: navigation, view: view, public language: language, public metadata: metadata, public router: Router, public modal: modal, public relatedmodels: relatedmodels, public backend: backend) {
         super(model, view, language, metadata, router);
 
 

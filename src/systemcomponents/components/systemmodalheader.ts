@@ -11,25 +11,25 @@ import { DomSanitizer } from '@angular/platform-browser';
  */
 @Component({
     selector: 'system-modal-header',
-    templateUrl: './src/systemcomponents/templates/systemmodalheader.html'
+    templateUrl: '../templates/systemmodalheader.html'
 })
 export class SystemModalHeader {
     /**
      * if a module name is specified the header will render a module icon on the left side of the modal header
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * if set to true no close icon will be rendered in the upper right corner
      */
-    @Input() private hiddenCloseButton = false;
+    @Input() public hiddenCloseButton = false;
 
     /**
      * an event emitter that indicates that the modal shoudl close. Subscribe to this in your implementation of a modal handling the close event
      */
-    @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private language: language, private layout: layout) {
+    constructor(public language: language, public layout: layout) {
 
     }
 

@@ -6,14 +6,14 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-action-icon',
-    templateUrl: './src/systemcomponents/templates/systemactionicon.html'
+    templateUrl: '../templates/systemactionicon.html'
 })
 export class SystemActionIcon {
-    @Input() private icon: string = '';
-    @Input() private size: ''|'large'|'small'|'x-small'|'xx-small' = '';
-    @Input() private title: string = undefined;
+    @Input() public icon: string = '';
+    @Input() public size: ''|'large'|'small'|'x-small'|'xx-small' = '';
+    @Input() public title: string = undefined;
 
-    constructor(private metadata: metadata) {}
+    constructor(public metadata: metadata) {}
 
     get svgHRef() {
         return './vendor/sldassets/icons/action-sprite/svg/symbols.svg#' + this.icon;

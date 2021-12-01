@@ -9,12 +9,12 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: 'administration-dict-repair',
-    templateUrl: './src/admincomponents/templates/administrationdictrepair.html'
+    templateUrl: '../templates/administrationdictrepair.html'
 })
 export class AdministrationDictRepair {
 
 
-    constructor(private backend: backend, private toast: toast, private language: language) {
+    constructor(public backend: backend, public toast: toast, public language: language) {
     }
 
 
