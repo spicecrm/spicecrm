@@ -12,13 +12,13 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'global-navigation-tabbed-browser-modal-tab-actions',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedbrowsermodaltabactions.html'
+    templateUrl: '../templates/globalnavigationtabbedbrowsermodaltabactions.html'
 })
 export class GlobalNavigationTabbedBrowserModalTabActions {
 
-    @Input() private tab: objectTab;
+    @Input()public tab: objectTab;
 
-    constructor(private navigation: navigation, private language: language) {
+    constructor(public navigation: navigation,public language: language) {
 
     }
 
@@ -27,14 +27,14 @@ export class GlobalNavigationTabbedBrowserModalTabActions {
      *
      * @param tabid
      */
-    private closetab(tabid) {
+   public closetab(tabid) {
         this.navigation.closeObjectTab(tabid);
     }
 
     /**
      * close the tab
      */
-    private pintab(tab: objectTab) {
+   public pintab(tab: objectTab) {
         tab.pinned = !tab.pinned;
     }
 
@@ -43,7 +43,7 @@ export class GlobalNavigationTabbedBrowserModalTabActions {
      *
      * @param tab
      */
-    private clonetab(tab: objectTab) {
+   public clonetab(tab: objectTab) {
         this.navigation.cloneTab(tab.id);
     }
 

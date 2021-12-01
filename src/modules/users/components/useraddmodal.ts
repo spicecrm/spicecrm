@@ -18,7 +18,7 @@ import {configurationService} from "../../../services/configuration.service";
 declare var moment: any;
 
 @Component({
-    templateUrl: "./src/modules/users/templates/useraddmodal.html",
+    templateUrl: "../templates/useraddmodal.html",
     providers: [model, view]
 })
 export class UserAddModal implements OnInit {
@@ -26,31 +26,31 @@ export class UserAddModal implements OnInit {
     public self: any;
     public informationFieldset: any[] = [];
     public profileFieldset: any[] = [];
-    private response: Observable<object> = null;
-    private responseSubject: Subject<any> = null;
+    public response: Observable<object> = null;
+    public responseSubject: Subject<any> = null;
 
-    private password: string;
-    private repeatPassword: string;
-    private pwdCheck: RegExp = new RegExp("//");
-    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
-    private pwdGuideline: string;
-    private autogenerate: boolean = false;
-    private sendByEmail: boolean = false;
-    private showPassword: boolean = false;
-    private saveTriggered: boolean = false;
-    private canSendByEmail: boolean = true;
+    public password: string;
+    public repeatPassword: string;
+    public pwdCheck: RegExp = new RegExp("//");
+    public userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
+    public pwdGuideline: string;
+    public autogenerate: boolean = false;
+    public sendByEmail: boolean = false;
+    public showPassword: boolean = false;
+    public saveTriggered: boolean = false;
+    public canSendByEmail: boolean = true;
 
     constructor(
-        private language: language,
-        private model: model,
-        @SkipSelf() private parent: model,
-        private modelutilities: modelutilities,
-        private toast: toast,
-        private backend: backend,
-        private view: view,
-        private cdr: ChangeDetectorRef,
-        private metadata: metadata,
-        private configuration: configurationService
+        public language: language,
+        public model: model,
+        @SkipSelf() public parent: model,
+        public modelutilities: modelutilities,
+        public toast: toast,
+        public backend: backend,
+        public view: view,
+        public cdr: ChangeDetectorRef,
+        public metadata: metadata,
+        public configuration: configurationService
     ) {
         this.model.module = "Users";
         this.view.isEditable = true;
@@ -149,18 +149,18 @@ export class UserAddModal implements OnInit {
         this.getPassInfo();
     }
 
-    private getFieldSets() {
+    public getFieldSets() {
         let conf = this.metadata.getComponentConfig("UserAddModal", "Users");
         this.profileFieldset = conf && conf.profile ? conf.profile : this.profileFieldset;
         this.informationFieldset = conf && conf.information ? conf.information : this.informationFieldset;
     }
 
 
-    private toggleShowPassword() {
+    public toggleShowPassword() {
         this.showPassword = !this.showPassword;
     }
 
-    private getPassInfo() {
+    public getPassInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheck = new RegExp(extConf.regex);
 
@@ -175,7 +175,7 @@ export class UserAddModal implements OnInit {
 
     }
 
-    private copyPassword() {
+    public copyPassword() {
         let selBox = document.createElement('textarea');
         selBox.style.position = 'fixed';
         selBox.style.left = '0';
@@ -191,13 +191,13 @@ export class UserAddModal implements OnInit {
         document.body.removeChild(selBox);
     }
 
-    private cancel() {
+    public cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private save(goDetail: boolean = false) {
+    public save(goDetail: boolean = false) {
         this.saveTriggered = true;
         if (this.hasError) {
             return;
@@ -226,7 +226,7 @@ export class UserAddModal implements OnInit {
                 });
     }
 
-    private savePassword(goDetail) {
+    public savePassword(goDetail) {
         let body = {
             newPassword: this.password,
             forceReset: this.autoGenerate,

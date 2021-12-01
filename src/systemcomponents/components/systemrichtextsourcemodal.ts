@@ -10,22 +10,22 @@ declare var html_beautify: any;
 
 @Component({
     selector: "system-richtext-sourcemodal",
-    templateUrl: "./src/systemcomponents/templates/systemrichtextsourcemodal.html",
+    templateUrl: "../templates/systemrichtextsourcemodal.html",
 })
 export class SystemRichTextSourceModal implements OnInit {
 
     public self: any = {};
     public _html: string = '';
     public searchtext: string = '';
-    private foundIndices: number[] = [];
-    private currentIndex: number = -1;
-    private html: EventEmitter<string> = new EventEmitter<string>();
+    public foundIndices: number[] = [];
+    public currentIndex: number = -1;
+    public html: EventEmitter<string> = new EventEmitter<string>();
 
-    private beautifyenabled: boolean = false;
+    public beautifyenabled: boolean = false;
 
     @ViewChild('sourceeditor', {static: true}) public sourceEditor: any;
 
-    constructor(public language: language, public renderer: Renderer2, public sanitized: DomSanitizer, private libloader: libloader) {
+    constructor(public language: language, public renderer: Renderer2, public sanitized: DomSanitizer, public libloader: libloader) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
         });
@@ -56,14 +56,14 @@ export class SystemRichTextSourceModal implements OnInit {
         this.renderer.setProperty(this.sourceEditor.nativeElement, 'innerText', this._html);
     }
 
-    private keyUp(e): void {
+    public keyUp(e): void {
         if (e.which == 13 || e.keyCode == 13 && this.searchText.length > 0) {
             this.currentIndex = 0;
             this.selectFoundText();
         }
     }
 
-    private findTextIndices(searchText: string, text: string): void {
+    public findTextIndices(searchText: string, text: string): void {
         this.foundIndices = [];
         searchText = searchText.toLowerCase();
         let startIndex = 0;
@@ -79,7 +79,7 @@ export class SystemRichTextSourceModal implements OnInit {
         }
     }
 
-    private getTextNodesIn(node: Node): any[] {
+    public getTextNodesIn(node: Node): any[] {
         let textNodes = [];
         let isTextNode = node.nodeType == 3;
         if (isTextNode) {
@@ -94,7 +94,7 @@ export class SystemRichTextSourceModal implements OnInit {
         return textNodes;
     }
 
-    private selectFoundText(): void {
+    public selectFoundText(): void {
         let sourceEditor = this.sourceEditor.nativeElement;
 
         if (document.createRange && window.getSelection) {
@@ -131,7 +131,7 @@ export class SystemRichTextSourceModal implements OnInit {
         }
     }
 
-    private beautify() {
+    public beautify() {
         this.renderer.setProperty(this.sourceEditor.nativeElement, 'innerText', html_beautify(this.sourceEditor.nativeElement.innerText, {
             indent_size: 4,
             indent_char:  " ",
@@ -155,25 +155,25 @@ export class SystemRichTextSourceModal implements OnInit {
         }));
     }
 
-    private nextResult() {
+    public nextResult() {
         if (this.currentIndex < this.foundIndices.length) {
             this.currentIndex++;
             this.selectFoundText();
         }
     }
 
-    private previewResult() {
+    public previewResult() {
         if (this.currentIndex > 0) {
             this.currentIndex--;
             this.selectFoundText();
         }
     }
 
-    private onContentChange(html) {
+    public onContentChange(html) {
         this._html = html;
     }
 
-    private close() {
+    public close() {
         this.html.emit(this._html);
         this.self.destroy();
     }

@@ -9,7 +9,7 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-present-item-tree-view',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorepresentitemtreeview.html'
+    templateUrl: '../templates/reportsdesignermorepresentitemtreeview.html'
 })
 export class ReportsDesignerMorePresentItemTreeView extends ReportsDesignerPresentItemStandard {
 

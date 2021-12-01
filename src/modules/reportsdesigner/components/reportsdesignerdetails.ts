@@ -14,16 +14,16 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'reports-designer-details',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerdetails.html'
+    templateUrl: '../templates/reportsdesignerdetails.html'
 })
 export class ReportsDesignerDetails implements OnInit {
 
     /**
      * the fieldset
      */
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private language: language, private model: model, private backend: backend, private metadata: metadata) {
+    constructor(public language: language, public model: model, public backend: backend, public metadata: metadata) {
 
     }
 

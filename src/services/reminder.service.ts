@@ -23,11 +23,11 @@ export class reminder {
     public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
-    constructor(private backend: backend, private broadcast: broadcast, private configuration: configurationService, private session: session) {
+    constructor(public backend: backend, public broadcast: broadcast, public configuration: configurationService, public session: session) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         switch (message.messagetype) {
             case "loader.completed":
                 if (message.messagedata == 'loadUserDataStep2') {
@@ -64,7 +64,7 @@ export class reminder {
         return reminderDate;
     }
 
-    public getReminders() {
+    public getReminders(module) {
         let retArr = [];
         for (let reminder of this.reminders) {
             if (reminder.module_name === module) {

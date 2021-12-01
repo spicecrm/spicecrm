@@ -10,19 +10,19 @@ export class helper {
 
     public dialog: any = null;
 
-    private _base64_keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    public _base64_keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-    constructor(private modalservice: modal) {
-    } // private metadata: metadata, private footer: footer
+    constructor(public modalservice: modal) {
+    } // public metadata: metadata, public footer: footer
 
     /*
      * for the GUID Generation
      */
-    private getRand() {
+    public getRand() {
         return Math.random();
     }
 
-    private S4() {
+    public S4() {
         /* tslint:disable:no-bitwise */
         return (((1 + this.getRand()) * 0x10000) | 0).toString(16).substring(1);
         /* tslint:enable:no-bitwise */
@@ -130,7 +130,7 @@ export class helper {
         return t;
     }
 
-    private _utf8_encodeBase64(e) {
+    public _utf8_encodeBase64(e) {
         let t = '';
         e = e.replace(/\r\n/g, "\n");
         for (let n = 0; n < e.length; n++) {
@@ -151,7 +151,7 @@ export class helper {
         return t;
     }
 
-    private _utf8_decodeBase64(e) {
+    public _utf8_decodeBase64(e) {
         let t = '', n = 0, r = 0, c1 = 0, c2 = 0, c3 = 0;
         while (n < e.length) {
             r = e.charCodeAt(n);

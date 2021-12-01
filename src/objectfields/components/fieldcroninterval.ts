@@ -18,7 +18,7 @@ declare var moment;
  */
 @Component({
     selector: 'field-cron-interval',
-    templateUrl: './src/objectfields/templates/fieldcroninterval.html'
+    templateUrl: '../templates/fieldcroninterval.html'
 })
 export class fieldCronInterval extends fieldGeneric {
     /**
@@ -49,7 +49,7 @@ export class fieldCronInterval extends fieldGeneric {
      * holds the every labels for display value
      * @private
      */
-    private everyLabels = {
+    public everyLabels = {
         minutes: 'LBL_MINUTE{s}',
         hours: 'LBL_HOUR{s}',
         days: 'LBL_DAY{s}',
@@ -62,7 +62,7 @@ export class fieldCronInterval extends fieldGeneric {
      * holds the recurrence labels for display value
      * @private
      */
-    private recurrenceLabels = {
+    public recurrenceLabels = {
         daily: 'LBL_DAILY',
         weekly: 'LBL_WEEKLY',
         monthly: 'LBL_MONTHLY',
@@ -73,7 +73,7 @@ export class fieldCronInterval extends fieldGeneric {
     constructor(public model: model,
                 public view: view,
                 public language: language,
-                private userPreferences: userpreferences,
+                public userPreferences: userpreferences,
                 public metadata: metadata,
                 public router: Router) {
         super(model, view, language, metadata, router);
@@ -145,7 +145,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the default recurrence every at value
      * @private
      */
-    private setDefaultRecurrenceEveryAtValue() {
+    public setDefaultRecurrenceEveryAtValue() {
 
         switch (this.expression.recurrence) {
             case 'daily':
@@ -167,7 +167,7 @@ export class fieldCronInterval extends fieldGeneric {
      * subscribe to language changes to reset the labels
      * @private
      */
-    private subscribeToLanguageChanges() {
+    public subscribeToLanguageChanges() {
         this.subscriptions.add(
             this.language.currentlanguage$.subscribe(() => {
                 this.setSelectOptionsFromMoment();
@@ -180,7 +180,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the weekdays from moment
      * @private
      */
-    private setSelectOptionsFromMoment() {
+    public setSelectOptionsFromMoment() {
         this.weekdays = moment.weekdays();
         this.months = moment.months();
     }
@@ -189,7 +189,7 @@ export class fieldCronInterval extends fieldGeneric {
      * subscribe to field changes to set the local value
      * @private
      */
-    private subscribeToFieldChanges() {
+    public subscribeToFieldChanges() {
         this.subscriptions.add(
             this.model.observeFieldChanges(this.fieldname).subscribe(val =>
                 this.setLocalValue(val)
@@ -206,7 +206,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the field value from the local value
      * @private
      */
-    private setFieldValue() {
+    public setFieldValue() {
 
         this.resetExpressionProperties();
 
@@ -233,7 +233,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the expression values from the custom input values
      * @private
      */
-    private setCustomExpression() {
+    public setCustomExpression() {
 
         if (isNaN(this.expression.everyQuantity) && this.expression.every != 'weekdays') {
             return;
@@ -294,7 +294,7 @@ export class fieldCronInterval extends fieldGeneric {
      * reset the expression properties to *
      * @private
      */
-    private resetExpressionProperties() {
+    public resetExpressionProperties() {
         this.expression.minutes = '*';
         this.expression.hours = '*';
         this.expression.monthDay = '*';
@@ -306,7 +306,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the expression properties by the recurrence unit
      * @private
      */
-    private setExpressionByRecurrenceUnit() {
+    public setExpressionByRecurrenceUnit() {
 
         switch (this.expression.recurrence) {
             case 'daily':
@@ -341,7 +341,7 @@ export class fieldCronInterval extends fieldGeneric {
      * initialize the value if the model is new
      * @private
      */
-    private initializeValue() {
+    public initializeValue() {
         if (!this.model.isNew) return;
         this.value = '*::*::*::*::*';
     }
@@ -350,7 +350,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the local cron expression value from the field value
      * @private
      */
-    private setLocalValue(val: string) {
+    public setLocalValue(val: string) {
         if (!val || val == this.expression?.stringValue) return;
         const valArray = val.split('::');
         if (valArray.length != 5) return;
@@ -364,7 +364,7 @@ export class fieldCronInterval extends fieldGeneric {
      * @param val
      * @private
      */
-    private parseExpressionFromString(val: string) {
+    public parseExpressionFromString(val: string) {
 
         if (!!this.expression) {
             this.expression.every = undefined;
@@ -395,7 +395,7 @@ export class fieldCronInterval extends fieldGeneric {
      * @param val
      * @private
      */
-    private setRecurrenceAtFromInput(val: string) {
+    public setRecurrenceAtFromInput(val: string) {
 
         const isDaily = !isNaN(+(this.expression.minutes + this.expression.hours)) && val.endsWith('::*::*::*');
         const isWeekly = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.weekDay)) && this.expression.month == '*' && this.expression.monthDay == '*';
@@ -431,7 +431,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set every value from the expression used in set local value
      * @private
      */
-    private setEveryValueFromExpression() {
+    public setEveryValueFromExpression() {
 
         const min = this.expression.minutes;
         const hour = this.expression.hours;
@@ -483,7 +483,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the display value
      * @private
      */
-    private setDisplayValue() {
+    public setDisplayValue() {
 
         if (this.expression.recurrence == 'cron') {
             return this.expression.displayValue = this.expression.stringValue;

@@ -6,7 +6,7 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 
 @Component({
     selector: 'administration-api-inspector-details',
-    templateUrl: './src/admincomponents/templates/administrationapiinspectordetails.html',
+    templateUrl: '../templates/administrationapiinspectordetails.html',
     providers:[administrationapiinspectorService]
 })
 
@@ -16,14 +16,14 @@ export class AdministrationAPIInspectorDetails {
      * reference to the modal self
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the reference to the endpoint we are displaying
      */
     public endpoint: any = {};
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

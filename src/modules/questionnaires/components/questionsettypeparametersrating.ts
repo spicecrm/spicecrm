@@ -10,16 +10,16 @@ import {helper} from "../../../services/helper.service";
 
 @Component({
     selector: 'questionset-type-parameters-rating',
-    templateUrl: './src/modules/questionnaires/templates/questionsettypeparametersrating.html',
+    templateUrl: '../templates/questionsettypeparametersrating.html',
     providers: [helper]
 })
 export class QuestionsetTypeParametersRating implements OnInit {
 
-    private numEntries = 5;
-    private fieldNumEntries: number;
-    private entriesTable: any[] = [];
+    public numEntries = 5;
+    public fieldNumEntries: number;
+    public entriesTable: any[] = [];
 
-    constructor( private language: language, private model: model, private view: view, private toast: toast, private helper: helper ) { }
+    constructor( public language: language, public model: model, public view: view, public toast: toast, public helper: helper ) { }
 
     get editing(): boolean {
         return this.view.isEditMode();
@@ -30,7 +30,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
         this.model.data$.subscribe( () => this.parseParams() );
     }
 
-    private parseParams(): void {
+    public parseParams(): void {
         if ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ) {
             let config = JSON.parse(this.model.data.questiontypeparameter);
             if ( config.rating ) {
@@ -41,7 +41,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
         this.fieldNumEntries = this.numEntries;
     }
 
-    private setNumEntries( event ): void {
+    public setNumEntries( event ): void {
 
         if ( this.questionsetHasQuestions() ) {
             this.toast.sendToast( this.language.getLabel('MSG_CANTCHANGE_QUESTIONSEXISTS'),'warning',null,true );
@@ -82,7 +82,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
 
     }
 
-    private questionsetHasQuestions(): boolean {
+    public questionsetHasQuestions(): boolean {
         let questionsExists = false;
         if ( this.model && this.model.data && this.model.data.questions ) {
             questionsExists = (Object.keys( this.model.data.questions.beans ).length !== 0);
@@ -90,7 +90,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
         return questionsExists;
     }
 
-    private buildTable(): void {
+    public buildTable(): void {
         let i = this.entriesTable.length;
         if ( this.entriesTable.length > this.numEntries ) {
             // The user wants to shorten the table. -> Cut off rows from the end.
@@ -107,7 +107,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
         }
     }
 
-    private writeSettings(): void {
+    public writeSettings(): void {
         let config =  ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ? JSON.parse( this.model.data.questiontypeparameter ):{});
         for ( let entry of this.entriesTable ) {
             entry.value = typeof entry.value === 'string' ? entry.value.trim() : entry.value;
@@ -120,7 +120,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
         this.model.data.questiontypeparameter = JSON.stringify(config);
     }
 
-    private fillRange( from: number, to: number ): void {
+    public fillRange( from: number, to: number ): void {
         for ( let up = from<to, i=0, v=from; ( up && v <= to ) || ( !up && v >= to ); up ? v++:v-- ) {
             this.entriesTable[i++].value = v;
         }

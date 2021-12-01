@@ -17,14 +17,14 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-record-fieldset-container',
-    templateUrl: './src/objectcomponents/templates/objectrecordfieldsetcontainer.html'
+    templateUrl: '../templates/objectrecordfieldsetcontainer.html'
 })
 export class ObjectRecordFieldsetContainer {
 
     /**
      * the id of the fieldset to be rendered
      */
-    @Input() private componentconfig: any = {};
+    @Input() public componentconfig: any = {};
 
     get fieldset() {
         return this.componentconfig.fieldset;

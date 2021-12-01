@@ -18,26 +18,26 @@ declare var moment: any;
 
 @Component({
     selector: 'tele-sales-cockpit-add-attempt-modal',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitaddattemptmodal.html',
+    templateUrl: '../templates/telesalescockpitaddattemptmodal.html',
     providers: [model, view]
 })
 export class TeleSalesCockpitAddAttemptModal implements OnInit {
 
     public response: Observable<object> = null;
     public responseSubject: Subject<any> = null;
-    @Input() private selectedListItem: any;
-    @Input() private maxAttempts: any;
-    private self: any;
-    private fieldset: string = '';
+    @Input() public selectedListItem: any;
+    @Input() public maxAttempts: any;
+    public self: any;
+    public fieldset: string = '';
 
     constructor(
-        private language: language,
-        private model: model,
-        private modelutilities: modelutilities,
-        private toast: toast,
-        private backend: backend,
-        private view: view,
-        private metadata: metadata,
+        public language: language,
+        public model: model,
+        public modelutilities: modelutilities,
+        public toast: toast,
+        public backend: backend,
+        public view: view,
+        public metadata: metadata,
     ) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
@@ -49,7 +49,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         this.setEditMode();
     }
 
-    private initializeModel() {
+    public initializeModel() {
         this.model.module = 'CampaignLog';
         this.model.id = this.selectedListItem.id;
         this.model.data = {
@@ -60,23 +60,23 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         };
     }
 
-    private loadFieldset() {
+    public loadFieldset() {
         let componentConf = this.metadata.getComponentConfig('TeleSalesCockpitAddAttemptModal');
         this.fieldset = componentConf && componentConf.fieldset ? componentConf.fieldset : '';
     }
 
-    private setEditMode() {
+    public setEditMode() {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    private cancel() {
+    public cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private save() {
+    public save() {
         let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.data.planned_activity_date);
         let params = {planned_activity_date: planned_activity_date};
 
@@ -97,7 +97,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
                 err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
     }
 
-    private remove() {
+    public remove() {
         this.backend.postRequest(`module/CampaignLog/${this.model.id}/completed`)
             .subscribe(
                 status => {

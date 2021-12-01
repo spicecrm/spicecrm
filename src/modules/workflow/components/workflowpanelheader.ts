@@ -10,7 +10,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-panel-header',
-    templateUrl: './src/modules/workflow/templates/workflowpanelheader.html'
+    templateUrl: '../templates/workflowpanelheader.html'
 
 })
 export class WorkflowPanelHeader implements OnDestroy {
@@ -18,14 +18,14 @@ export class WorkflowPanelHeader implements OnDestroy {
     /**
      * subscroibe to the broadcast to catch when the panel issues the number
      */
-    private broadcastSubscription: any = {};
+    public broadcastSubscription: any = {};
 
     /**
      * the count recieved
      */
-    private workflowcount: number = 0;
+    public workflowcount: number = 0;
 
-    constructor(private model: model, private language: language, private broadcast: broadcast) {
+    constructor(public model: model, public language: language, public broadcast: broadcast) {
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -43,7 +43,7 @@ export class WorkflowPanelHeader implements OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagedata.module !== this.model.module && message.messagedata.id !== this.model.id){
             return;

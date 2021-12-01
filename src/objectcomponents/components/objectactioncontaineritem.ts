@@ -23,7 +23,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: "object-action-container-item",
-    templateUrl: "./src/objectcomponents/templates/objectactioncontaineritem.html"
+    templateUrl: "../templates/objectactioncontaineritem.html"
 })
 export class ObjectActionContainerItem implements AfterViewInit {
     /**
@@ -44,20 +44,20 @@ export class ObjectActionContainerItem implements AfterViewInit {
     /**
      * a viewcontainer ref to the container itself so the action set item can render the component from the config in this element
      */
-    @ViewChild("actioncontainer", {read: ViewContainerRef, static: true}) private actioncontainer: ViewContainerRef;
+    @ViewChild("actioncontainer", {read: ViewContainerRef, static: true}) public actioncontainer: ViewContainerRef;
 
     /**
      * a reference to the individual component that was rendered in the conatinerrf as part of the actionset item config
      */
-    private componentref: any;
+    public componentref: any;
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
 
     /**
      * defines standrd actions and their compoenntes that can be used in actionset items
      */
-    private standardActions = {
+    public standardActions = {
         NEW: "ObjectActionNewButton",
         DUPLICATE: "ObjectActionDuplicateButton",
         NEWRELATED: "ObjectActionNewrelatedButton",
@@ -76,19 +76,19 @@ export class ObjectActionContainerItem implements AfterViewInit {
     /**
      * @ignore
      */
-    private stable: boolean = false;
+    public stable: boolean = false;
 
     /**
      * @ignore
      */
-    private stableSub: any;
+    public stableSub: any;
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model,
-                private ngZone: NgZone,
-                private injector: Injector,
-                private cdr: ChangeDetectorRef) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model,
+                public ngZone: NgZone,
+                public injector: Injector,
+                public cdr: ChangeDetectorRef) {
     }
 
     get id() {

@@ -11,14 +11,14 @@ import {ObjectActionNewButton} from "../../../objectcomponents/components/object
 declare var _: any;
 
 @Component({
-    templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html",
+    templateUrl: "../../../objectcomponents/templates/objectactionnewbutton.html",
     providers: [model]
 })
 export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit {
 
     public actionconfig: any = {};
 
-    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, private injector: Injector) {
+    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, public injector: Injector) {
         super(language, metadata, model, parentmodel);
 
         this.model.module = 'SalesDocs';

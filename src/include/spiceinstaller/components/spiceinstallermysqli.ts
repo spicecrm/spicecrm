@@ -8,19 +8,19 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-mysqli',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallermysqli.html'
+    templateUrl: '../templates/spiceinstallermysqli.html'
 })
 
 export class SpiceinstallerMySQLi {
     /**
      * inputs from the parent component
      */
-    @Input() private hostNameCondition: boolean;
-    @Input() private userNameCondition: boolean;
-    @Input() private dbNameCondition: boolean;
+    @Input() public hostNameCondition: boolean;
+    @Input() public userNameCondition: boolean;
+    @Input() public dbNameCondition: boolean;
 
     constructor(
-        private spiceinstaller: spiceinstaller
+        public spiceinstaller: spiceinstaller
     ) {
 
     }

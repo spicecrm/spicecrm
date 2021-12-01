@@ -10,7 +10,7 @@ import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasi
 declare var _: any;
 @Component({
     selector: 'questions-manager-edit-rating',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditrating.html'
+    templateUrl: '../templates/questionsmanagereditrating.html'
 })
 export class QuestionsManagerEditRating extends QuestionsManagerEditBasicWithOptions implements OnInit {
 

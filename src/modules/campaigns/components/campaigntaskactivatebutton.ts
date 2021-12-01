@@ -10,14 +10,14 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
-    templateUrl: './src/modules/campaigns/templates/campaigntaskactivatebutton.html'
+    templateUrl: '../templates/campaigntaskactivatebutton.html'
 })
 export class CampaignTaskActivateButton {
 
-    private activating: boolean = false;
+    public activating: boolean = false;
     public disabled: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private toast: toast, private backend: backend) {
+    constructor(public language: language, public metadata: metadata, public model: model, public toast: toast, public backend: backend) {
         this.model.mode$.subscribe(mode => {
             this.handleDisabled();
         });
@@ -35,7 +35,7 @@ export class CampaignTaskActivateButton {
     }
 
 
-    private handleDisabled() {
+    public handleDisabled() {
 
         // not for email
         if (this.model.getFieldValue('campaigntask_type') == 'Email'){

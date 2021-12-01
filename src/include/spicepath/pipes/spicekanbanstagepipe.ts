@@ -10,7 +10,7 @@ import {configurationService} from '../../../services/configuration.service';
 
 @Pipe({name: 'spicekanbanstagepipe', pure: false})
 export class SpiceKanbanStagePipe {
-    constructor(private configuration: configurationService, private modellist: modellist) {
+    constructor(public configuration: configurationService, public modellist: modellist) {
     }
 
     public transform(values, stage) {
@@ -29,7 +29,7 @@ export class SpiceKanbanStagePipe {
         return this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.modellist.module].stages : [];
     }
 
-    private getStageData(stage): any {
+    public getStageData(stage): any {
         let stagedata = [];
         this.stages.some(thisStage => {
             if (stage == thisStage.stage) {

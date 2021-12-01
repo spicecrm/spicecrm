@@ -14,7 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: "user-reset-password-modal",
-    templateUrl: "./src/modules/users/templates/userresetpasswordmodal.html"
+    templateUrl: "../templates/userresetpasswordmodal.html"
 })
 export class UserResetPasswordModal {
 
@@ -28,73 +28,73 @@ export class UserResetPasswordModal {
      *
      * @private
      */
-    private password: string = undefined;
+    public password: string = undefined;
 
     /**
      * the password again to ensure it has been properly enterewd
      * @private
      */
-    private repeatPassword: string = undefined;
+    public repeatPassword: string = undefined;
 
     /**
      * the regex to check the password
      *
      * @private
      */
-    private pwdCheck: RegExp = new RegExp("//");
+    public pwdCheck: RegExp = new RegExp("//");
 
     /**
      * the composed text for the pwd guideline
      * @private
      */
-    private pwdGuideline: string = undefined;
+    public pwdGuideline: string = undefined;
 
     /**
      * holds the info if the password is auto generated
      *
      * @private
      */
-    private autogenerate: boolean = false;
+    public autogenerate: boolean = false;
 
     /**
      * set if the password shpudl be sent via email
      * @private
      */
-    private sendByEmail: boolean = false;
+    public sendByEmail: boolean = false;
 
     /**
      * toggle to show the password
      *
      * @private
      */
-    private showPassword: boolean = false;
+    public showPassword: boolean = false;
 
     /**
      * force reset on the next login
      */
-    private forceReset: boolean = true;
+    public forceReset: boolean = true;
 
     /**
      * a string to break the autocomplete
      *
      * @private
      */
-    private autocompletebreaker: string = '';
+    public autocompletebreaker: string = '';
 
     /**
      * set to know we are in the update process
      *
      * @private
      */
-    private updating: boolean = false;
+    public updating: boolean = false;
 
     constructor(
-        private model: model,
-        private language: language,
-        private toast: toast,
-        private session: session,
-        private backend: backend,
-        private configuration: configurationService
+        public model: model,
+        public language: language,
+        public toast: toast,
+        public session: session,
+        public backend: backend,
+        public configuration: configurationService
     ) {
 
         this.getInfo();
@@ -134,7 +134,7 @@ export class UserResetPasswordModal {
      * toggles if the password is human readable
      * @private
      */
-    private toggleShowPassword() {
+    public toggleShowPassword() {
         this.showPassword = !this.showPassword;
     }
 
@@ -142,7 +142,7 @@ export class UserResetPasswordModal {
      * copies the password to the clipboard
      * @private
      */
-    private copyPassword() {
+    public copyPassword() {
         if (!this.autoGenerate) {
             return;
         }
@@ -167,7 +167,7 @@ export class UserResetPasswordModal {
      *
      * @private
      */
-    private getInfo() {
+    public getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheck = new RegExp(extConf.regex);
 
@@ -187,7 +187,7 @@ export class UserResetPasswordModal {
      *
      * @private
      */
-    private generatePassword() {
+    public generatePassword() {
         let passwordChars: string[] = [];
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         if (extConf.onelower) passwordChars.push(this.randomLower());
@@ -209,7 +209,7 @@ export class UserResetPasswordModal {
      * @param array
      * @private
      */
-    private shuffle(arr) {
+    public shuffle(arr) {
         let currentIndex = arr.length, temporaryValue, randomIndex;
 
         // While there remain elements to shuffle...
@@ -232,7 +232,7 @@ export class UserResetPasswordModal {
      * returns a radnom upper character
      * @private
      */
-    private randomUpper() {
+    public randomUpper() {
         return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
     }
 
@@ -240,7 +240,7 @@ export class UserResetPasswordModal {
      * returns a random lower character
      * @private
      */
-    private randomLower() {
+    public randomLower() {
         return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
     }
 
@@ -248,7 +248,7 @@ export class UserResetPasswordModal {
      * returns a random special character
      * @private
      */
-    private randomSpecial() {
+    public randomSpecial() {
         let pool = '!"#$%&\'()*+,-./:;<=>?@[\\]^_{|}~';
         return pool.charAt( Math.floor(Math.random() * pool.length ));
     }
@@ -258,7 +258,7 @@ export class UserResetPasswordModal {
      *
      * @private
      */
-    private randomNumber() {
+    public randomNumber() {
         return String.fromCharCode((Math.floor(Math.random() * 10) + 48));
     }
 
@@ -277,7 +277,7 @@ export class UserResetPasswordModal {
      *
      * @private
      */
-    private setPassword() {
+    public setPassword() {
         if (this.canSave) {
             this.updating = true;
             this.backend.postRequest(`module/Users/${this.model.id}/password/reset`, {}, {
@@ -299,7 +299,7 @@ export class UserResetPasswordModal {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 }

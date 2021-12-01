@@ -9,12 +9,12 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-action-duplicate-button',
-    templateUrl: './src/objectcomponents/templates/objectactionduplicatebutton.html',
+    templateUrl: '../templates/objectactionduplicatebutton.html',
     providers: [model]
 })
 export class ObjectActionDuplicateButton {
 
-    constructor(@SkipSelf() private parent: model, private language: language, private metadata: metadata, private model: model, private session: session) {
+    constructor(@SkipSelf() public parent: model, public language: language, public metadata: metadata, public model: model, public session: session) {
 
     }
     /**

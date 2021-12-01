@@ -15,7 +15,7 @@ import {Router} from '@angular/router';
  * field to manage recipients email addresses
  */
 @Component({
-    templateUrl: './src/objectfields/templates/fieldemailrecipients.html',
+    templateUrl: '../templates/fieldemailrecipients.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
 export class fieldEmailRecipients extends fieldGeneric implements OnInit {
@@ -26,55 +26,55 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * filtered array of emails to be displayed for user
      */
-    protected displayValue: any[] = [];
+    public displayValue: any[] = [];
     /**
      * hold the show/hide input boolean
      */
-    private isInputTextVisible: boolean = false;
+    public isInputTextVisible: boolean = false;
     /**
      * hold the is show/hide search boolean
      */
-    private isDropdownVisible: boolean = false;
+    public isDropdownVisible: boolean = false;
     /**
      * hold the temporary input text value for the email address to be added
      */
-    private inputTextValue: string = '';
+    public inputTextValue: string = '';
     /**
      * hold the temporary previous input text value to compare
      */
-    private previousInputTextValue: string = '';
+    public previousInputTextValue: string = '';
     /**
      * holds the timeout for the search key up
      */
-    private searchTimeOut: any = undefined;
+    public searchTimeOut: any = undefined;
     /**
      * true when searching for results
      */
-    private searchResultsLoading: boolean = false;
+    public searchResultsLoading: boolean = false;
     /**
      * true when the input text value does not contain @ and has more than 3 letters
      */
-    private searchAllowed: boolean = false;
+    public searchAllowed: boolean = false;
     /**
      * true if the input text email address is correct
      */
-    private isValidEmailAddress: boolean = false;
+    public isValidEmailAddress: boolean = false;
     /**
      * holds the click listener to remove it later
      */
-    private clickListener: any;
+    public clickListener: any;
 
     constructor(public model: model,
                 public view: view,
                 public language: language,
                 public metadata: metadata,
                 public router: Router,
-                private modal: modal,
-                private injector: Injector,
-                private backend: backend,
-                private renderer: Renderer2,
-                private elementRef: ElementRef,
-                private zone: NgZone) {
+                public modal: modal,
+                public injector: Injector,
+                public backend: backend,
+                public renderer: Renderer2,
+                public elementRef: ElementRef,
+                public zone: NgZone) {
         super(model, view, language, metadata, router);
         this.subscribeToDataChanges();
     }
@@ -115,7 +115,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      *
      * @private
      */
-    private searchParentEmailAddresses() {
+    public searchParentEmailAddresses() {
         this.modal.openModal('EmailParentAddressesModal', true, this.injector).subscribe(
             modalRef => {
                 modalRef.instance.addAddresses.subscribe(
@@ -142,7 +142,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * validate email by regex
      * @param emailAddress
      */
-    protected validateEmail(emailAddress: string) {
+    public validateEmail(emailAddress: string) {
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         this.isValidEmailAddress = re.test(String(emailAddress).toLowerCase());
     }
@@ -150,7 +150,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * subscribe to model data change and set the value and the display value
      */
-    private subscribeToDataChanges() {
+    public subscribeToDataChanges() {
 
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
@@ -170,7 +170,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * set the initial field value from recipient_addresses
      */
-    private setInitialFieldValue() {
+    public setInitialFieldValue() {
 
         if (!this.model.data.recipient_addresses) {
             this.model.data.recipient_addresses = [];
@@ -196,7 +196,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
         });
     }
 
-    private setDisplayValue() {
+    public setDisplayValue() {
         this.displayValue = this.model.data.recipient_addresses
             .filter(address => address.address_type == (this.fieldconfig.addresstype || 'from'));
     }
@@ -204,14 +204,14 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * hide input field on blur
      */
-    private onBlur() {
+    public onBlur() {
         if (!(!!this.inputTextValue)) this.isInputTextVisible = false;
     }
 
     /**
      * show input field on focus
      */
-    private onFieldClick() {
+    public onFieldClick() {
         this.isInputTextVisible = true;
         this.showDropdown();
     }
@@ -221,7 +221,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * @param e
      * @param removeId
      */
-    private removeEmailAddress(e: MouseEvent, removeId) {
+    public removeEmailAddress(e: MouseEvent, removeId) {
 
         if (!this.model.data.recipient_addresses || this.model.data.recipient_addresses.length == 0) return;
 
@@ -237,7 +237,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * handle key press to submit or search the email
      * @param event
      */
-    private onKeyUp(event) {
+    public onKeyUp(event) {
 
         this.searchAllowed = this.inputTextValue.length > 2 && this.inputTextValue.indexOf('@') == -1;
         this.validateEmail(this.inputTextValue);
@@ -268,7 +268,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * remove the last email address when the backspace pressed
      */
-    private removeLastEmailAddress() {
+    public removeLastEmailAddress() {
         if (!this.value || this.value.length == 0) return;
         this.value = this.model.data.recipient_addresses.slice(0, this.model.data.recipient_addresses.length - 1);
     }
@@ -276,7 +276,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * add email to field value
      */
-    private addEmailAddressFromInput() {
+    public addEmailAddressFromInput() {
 
         if (!this.isValidEmailAddress) return;
 
@@ -298,7 +298,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * search for matching email in the database
      */
-    private doSearch() {
+    public doSearch() {
 
         if (!this.searchAllowed || this.previousInputTextValue == this.inputTextValue) return;
 
@@ -335,7 +335,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * push the email address to the field value
      * @param emailAddress
      */
-    private selectEmailAddress(emailAddress) {
+    public selectEmailAddress(emailAddress) {
 
         const newEmailAddress = {
             id: this.model.generateGuid(),
@@ -352,7 +352,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
         this.hideDropdown();
     }
 
-    private resetInputTextValue() {
+    public resetInputTextValue() {
         this.inputTextValue = '';
         this.previousInputTextValue = '';
     }
@@ -360,7 +360,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * handle the document click to check for click outside the search box and hide it
      */
-    private addDocumentClickListener() {
+    public addDocumentClickListener() {
 
         this.clickListener = this.renderer.listen('document', 'click', (event: MouseEvent) => {
 
@@ -373,7 +373,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * show the search box and add click outside listener
      */
-    private showDropdown() {
+    public showDropdown() {
         if (this.inputTextValue.length < 3) return;
         this.isDropdownVisible = true;
         if (!this.clickListener) this.addDocumentClickListener();
@@ -382,7 +382,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
      * hide the search box and reset
      */
-    private hideDropdown() {
+    public hideDropdown() {
         this.isDropdownVisible = false;
         if (!this.inputTextValue || this.inputTextValue.length < 3) {
             this.searchResults = [];

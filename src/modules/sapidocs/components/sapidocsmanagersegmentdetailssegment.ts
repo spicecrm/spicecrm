@@ -10,21 +10,21 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'sapidocs-manager-segment-details-segment',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetailssegment.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetailssegment.html'
 })
 export class SAPIDOCsManagerSegmentDetailsSegment implements OnInit, OnDestroy {
 
     /**
      * subscriptions for the component, unsubscribed in OnDestroy Lifecycle Hook
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * the current selected segment
      */
-    private segment: any;
+    public segment: any;
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private sapIdocsManager: sapIdocsManager, private cdRef: ChangeDetectorRef) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public sapIdocsManager: sapIdocsManager, public cdRef: ChangeDetectorRef) {
 
     }
 
@@ -57,7 +57,7 @@ export class SAPIDOCsManagerSegmentDetailsSegment implements OnInit, OnDestroy {
      *
      * @param segmentid
      */
-    private loadSegment(segmentid) {
+    public loadSegment(segmentid) {
         if (segmentid) {
             this.segment = this.sapIdocsManager.getSegmentById(segmentid);
         } else {
@@ -67,11 +67,11 @@ export class SAPIDOCsManagerSegmentDetailsSegment implements OnInit, OnDestroy {
 
     /**
      * sets the bool value to the field
-     * 
+     *
      * @param fieldname
      * @param fieldvalue
      */
-    private setboolfield(fieldname, fieldvalue){
+    public setboolfield(fieldname, fieldvalue){
         this.segment[fieldname] = fieldvalue ? '1' : '0';
     }
 

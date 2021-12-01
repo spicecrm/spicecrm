@@ -20,7 +20,7 @@ declare var _: any;
  */
 @Component({
     selector: 'system-number-spinner',
-    templateUrl: './src/systemcomponents/templates/systemnumberspinner.html',
+    templateUrl: '../templates/systemnumberspinner.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemNumberSpinner implements OnChanges {
@@ -28,24 +28,24 @@ export class SystemNumberSpinner implements OnChanges {
     /**
      * the internal held value
      */
-    private _value: number = 0;
+    public _value: number = 0;
 
     /**
      * the number to be displayed
      */
-    @Input() private value: any;
+    @Input() public value: any;
 
     /**
      * the steps this is running by
      */
-    @Input() private steps: number = 20;
+    @Input() public steps: number = 20;
 
     /**
      * the animation duration in ms
      */
-    @Input() private duration: number = 300;
+    @Input() public duration: number = 300;
 
-    constructor(private userpreferences: userpreferences, private cdref: ChangeDetectorRef) {
+    constructor(public userpreferences: userpreferences, public cdref: ChangeDetectorRef) {
     }
 
     /**

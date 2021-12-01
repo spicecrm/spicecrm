@@ -10,13 +10,13 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "pipl-container",
-    templateUrl: "./src/include/pipl/templates/piplcontainer.html"
+    templateUrl: "../templates/piplcontainer.html"
 })
 export class PiplContainer {
 
     public self: any = {};
 
-    constructor(private language: language, private backend: backend, private metadata: metadata, private model: model) {
+    constructor(public language: language, public backend: backend, public metadata: metadata, public model: model) {
 
     }
 

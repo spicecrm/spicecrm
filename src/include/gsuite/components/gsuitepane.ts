@@ -18,7 +18,7 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'gsuite-pane',
-    templateUrl: './src/include/gsuite/templates/gsuitepane.html'
+    templateUrl: '../templates/gsuitepane.html'
 })
 export class GSuitePane implements OnInit {
 
@@ -27,19 +27,19 @@ export class GSuitePane implements OnInit {
      */
     public displayBottomBar: boolean = true;
 
-    constructor(@Inject(GroupwareService) private groupware: GSuiteGroupware,
-                private gSuiteBrokerService: GSuiteBrokerService,
-                private router: Router,
-                private broadcast: broadcast,
-                private model: model,
-                private metadata: metadata,
+    constructor(@Inject(GroupwareService) public groupware: GSuiteGroupware,
+                public gSuiteBrokerService: GSuiteBrokerService,
+                public router: Router,
+                public broadcast: broadcast,
+                public model: model,
+                public metadata: metadata,
                 public session: session) {
     }
 
     /**
      * get the threadId from GSuite and navigate if it is set
      */
-    private handleNavigation() {
+    public handleNavigation() {
 
         this.groupware.getThreadId().subscribe(res => {
             if (!res) return;

@@ -11,21 +11,21 @@ import {sapIDOCSegmentI} from "../../../modules/sapidocs/interfaces/moudesapidoc
 
 @Component({
     selector: 'sapidocs-manager-segment-details',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetails.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetails.html'
 })
 export class SAPIDOCsManagerSegmentDetails implements OnInit, OnDestroy {
 
     /**
      * subscriptions for the component, unsubscribed in OnDestroy Lifecycle Hook
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * the current selected segment
      */
-    private segment: sapIDOCSegmentI;
+    public segment: sapIDOCSegmentI;
 
-    constructor(private language: language, private backend: backend, private modal: modal, private sapIdocsManager: sapIdocsManager, private cdRef: ChangeDetectorRef) {
+    constructor(public language: language, public backend: backend, public modal: modal, public sapIdocsManager: sapIdocsManager, public cdRef: ChangeDetectorRef) {
 
     }
 
@@ -49,7 +49,7 @@ export class SAPIDOCsManagerSegmentDetails implements OnInit, OnDestroy {
      *
      * @param segmentid
      */
-    private loadSegment(segmentid) {
+    public loadSegment(segmentid) {
         if (segmentid) {
             this.segment = this.sapIdocsManager.getSegmentById(segmentid);
         } else {
@@ -63,7 +63,7 @@ export class SAPIDOCsManagerSegmentDetails implements OnInit, OnDestroy {
     /**
      * deletes the segment
      */
-    private delete(e: MouseEvent) {
+    public delete(e: MouseEvent) {
         e.stopPropagation();
         this.modal.confirm(this.language.getLabel('MSG_SAPIDOC_DELETE_SEGMENT', '', 'long'), this.language.getLabel('MSG_SAPIDOC_DELETE_SEGMENT')).subscribe(confirm => {
             if (confirm) {

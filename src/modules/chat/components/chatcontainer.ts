@@ -12,16 +12,16 @@ import {backend} from "../../../services/backend.service";
 declare var socketIo: any;
 
 @Component({
-    templateUrl: './src/modules/chat/templates/chatcontainer.html'
+    templateUrl: '../templates/chatcontainer.html'
 })
 export class ChatContainer implements OnDestroy {
 
-    private socket: any;
-    private status: string = 'initial';
-    private message: string = '';
-    private messages: string[] = [];
+    public socket: any;
+    public status: string = 'initial';
+    public message: string = '';
+    public messages: string[] = [];
 
-    constructor(private language: language, private model: model, private backend: backend, private toast: toast) {
+    constructor(public language: language, public model: model, public backend: backend, public toast: toast) {
         this.socket = socketIo('http://localhost:3000?room=' + this.model.id);
 
         this.socket.on('connect', (socket) => {
@@ -44,7 +44,7 @@ export class ChatContainer implements OnDestroy {
         }
     }
 
-    private toggleconnect() {
+    public toggleconnect() {
         if (this.status == 'connected') {
             this.socket.disconnect();
         } else {
@@ -52,13 +52,13 @@ export class ChatContainer implements OnDestroy {
         }
     }
 
-    private send() {
+    public send() {
         this.socket.emit('message', {room: this.model.id, message: this.message}, (ack) => {
             console.log(ack);
         });
     }
 
-    private addMessage(message) {
+    public addMessage(message) {
         let messageString = message.callId + ' ' + message.event + ' ' + message.relatedData;
         this.messages.push(messageString);
     }

@@ -9,7 +9,7 @@ import {ReportsDesignerVisualizeItemChartDataPanel} from "./reportsdesignervisua
 
 @Component({
     selector: 'reports-designer-visualize-item-chart-data-panel-single-series',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignervisualizeitemchartdatapanelsingleseries.html'
+    templateUrl: '../templates/reportsdesignervisualizeitemchartdatapanelsingleseries.html'
 })
 export class ReportsDesignerVisualizeItemChartDataPanelSingleSeries extends ReportsDesignerVisualizeItemChartDataPanel {
 

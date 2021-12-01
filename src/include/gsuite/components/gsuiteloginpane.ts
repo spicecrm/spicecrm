@@ -16,7 +16,7 @@ import {Md5} from "ts-md5";
  */
 @Component({
     selector: 'gsuite-login-pane',
-    templateUrl: './src/include/gsuite/templates/gsuiteloginpane.html'
+    templateUrl: '../templates/gsuiteloginpane.html'
 })
 export class GSuiteLoginPane {
 
@@ -36,15 +36,15 @@ export class GSuiteLoginPane {
     /**
      * save the backend url
      */
-    private selectedsite: string = '';
+    public selectedsite: string = '';
     /**
      * Previously used UI language.
      */
-    private lastSelectedLanguage: string = null;
+    public lastSelectedLanguage: string = null;
     /**
      * holds the google login scope
      */
-    private scope = [
+    public scope = [
         "profile",
         "email",
         "https://www.googleapis.com/auth/plus.me",
@@ -60,19 +60,19 @@ export class GSuiteLoginPane {
     /**
      * boolean to enable/disable the google login button
      */
-    private disabled: boolean = true;
+    public disabled: boolean = true;
     /**
      * boolean to show/hide google login button
      */
-    private googleLoginVisible: boolean = false;
+    public googleLoginVisible: boolean = false;
 
     constructor(
-        private router: Router,
+        public router: Router,
         public loginService: loginService,
-        private http: HttpClient,
-        private configuration: configurationService,
-        private session: session,
-        private libloader: libloader
+        public http: HttpClient,
+        public configuration: configurationService,
+        public session: session,
+        public libloader: libloader
     ) {
         this.configuration.loaded$.subscribe(loaded => {
             if(loaded) this.googleInit();
@@ -171,7 +171,7 @@ export class GSuiteLoginPane {
     /**
      * go to setting
      */
-    private goToSettings() {
+    public goToSettings() {
         this.promptUser = true;
 
         let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();

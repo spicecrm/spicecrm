@@ -11,7 +11,7 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'telephony-call-panel-create-contact-button',
-    templateUrl: './src/modules/telephony/templates/telephonycallcreatecontactbutton.html',
+    templateUrl: '../templates/telephonycallcreatecontactbutton.html',
     providers: [model]
 })
 export class TelephonyCallCreateContactButton {
@@ -21,21 +21,21 @@ export class TelephonyCallCreateContactButton {
      *
      * @private
      */
-    @Input() private calldata: any;
+    @Input() public calldata: any;
 
     /**
      * emits if the obejct has been selected
      */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private modal: modal) {
+    constructor(public model: model, public modal: modal) {
         this.model.module = 'Contacts';
     }
 
     /**
      * save the call in the model history
      */
-    private execute() {
+    public execute() {
         this.model.initialize();
         this.model.addModel(null, null, {phone_mobile: this.calldata.msisdn}).subscribe(
             contact => {
@@ -50,7 +50,7 @@ export class TelephonyCallCreateContactButton {
      * @param contacts
      * @private
      */
-    private setContact(contact) {
+    public setContact(contact) {
         this.calldata.relatedid = contact.id;
         this.calldata.relatedmodule = 'Contacts';
         this.calldata.relateddata = contact;

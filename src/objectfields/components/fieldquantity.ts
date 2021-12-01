@@ -13,16 +13,16 @@ import {configurationService} from "../../services/configuration.service";
 import {fieldFloat} from "./fieldfloat";
 
 @Component({
-    templateUrl: './src/objectfields/templates/fieldquantity.html'
+    templateUrl: '../templates/fieldquantity.html'
 })
 export class fieldQuantity extends fieldFloat implements OnInit {
 
     /**
      * the uniots of measure Array
      */
-    private uoms: any[] = [];
+    public uoms: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences: userpreferences, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences: userpreferences, public configuration: configurationService) {
         super(model, view, language, metadata, router, userpreferences);
 
         this.uoms = this.configuration.getData('uomunits');

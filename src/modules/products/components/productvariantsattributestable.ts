@@ -7,18 +7,18 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'product-variants-attributes-table',
-    templateUrl: './src/modules/products/templates/productvariantsattributestable.html'
+    templateUrl: '../templates/productvariantsattributestable.html'
 })
 export class ProductVariantsAttributesTable implements OnChanges {
 
     @Input() public attributes: any[] = [];
-    private displaygroups: any[] = [];
-    private displaygroup: string = 'all';
-    private showrequired: boolean = true;
-    private showoptional: boolean = true;
-    private showreadonly: boolean = true;
+    public displaygroups: any[] = [];
+    public displaygroup: string = 'all';
+    public showrequired: boolean = true;
+    public showoptional: boolean = true;
+    public showreadonly: boolean = true;
 
-    constructor(private language: language, private elementRef: ElementRef, private view: view) {
+    constructor(public language: language, public elementRef: ElementRef, public view: view) {
     }
 
     get displayAttributes() {
@@ -33,7 +33,7 @@ export class ProductVariantsAttributesTable implements OnChanges {
         this.setDisplayGroups();
     }
 
-    private setDisplayGroups() {
+    public setDisplayGroups() {
         this.displaygroups = [];
         if (!this.attributes) return;
         this.attributes.forEach(attr => {
@@ -43,11 +43,11 @@ export class ProductVariantsAttributesTable implements OnChanges {
         });
     }
 
-    private required(attribute) {
+    public required(attribute) {
         return this.view.isEditMode() && attribute.attr_usage == 'required';
     }
 
-    private displayAttribute(attribute) {
+    public displayAttribute(attribute) {
 
         switch (attribute.attr_usage) {
             case 'none':

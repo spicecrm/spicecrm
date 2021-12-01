@@ -10,7 +10,7 @@ import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
 
 @Component({
     selector: 'questions-manager',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanager.html'
+    templateUrl: '../templates/questionsmanager.html'
 })
 export class QuestionsManager implements OnInit {
 
@@ -18,13 +18,13 @@ export class QuestionsManager implements OnInit {
     @Input() public categorypool: any;
     @Output() public questionsetAction: EventEmitter<string> = new EventEmitter();
 
-    private questions: any[] = [];
-    private currentQuestionId = '';
-    private isLoading = true;
-    private questiontypes = ['single','multi','binary','rating','nps','ist','text'];
-    private questiontypes_dom: any;
+    public questions: any[] = [];
+    public currentQuestionId = '';
+    public isLoading = true;
+    public questiontypes = ['single','multi','binary','rating','nps','ist','text'];
+    public questiontypes_dom: any;
 
-    constructor( private language: language, private model: model, private backend: backend, private modalservice: modal ) { }
+    constructor( public language: language, public model: model, public backend: backend, public modalservice: modal ) { }
 
     public ngOnInit(): void {
         this.questiontypes_dom = this.language.getDisplayOptions('questionstypes_dom');
@@ -43,18 +43,18 @@ export class QuestionsManager implements OnInit {
         });
     }
 
-    private addQuestion( questiontype, event ): void {
+    public addQuestion( questiontype, event ): void {
         event.preventDefault();
         this.currentQuestionId = '';
         this.openForm( questiontype );
     }
 
-    private editQuestion(questionId): void {
+    public editQuestion(questionId): void {
         this.currentQuestionId = questionId;
         this.openForm();
     }
 
-    private openForm( questiontype: string = null ): void {
+    public openForm( questiontype: string = null ): void {
         this.modalservice.openModal('QuestionsManagerAddModal' ).subscribe( form => {
             form.instance.questionset = this.model;
             form.instance.questionid = this.currentQuestionId;
@@ -66,7 +66,7 @@ export class QuestionsManager implements OnInit {
         });
     }
 
-    private getIndexOfQuestion( questionId: string ): number {
+    public getIndexOfQuestion( questionId: string ): number {
         let indexOfQuestion: number;
         this.questions.some((question, index) => {
             if (question.id === questionId) {
@@ -77,7 +77,7 @@ export class QuestionsManager implements OnInit {
         return indexOfQuestion;
     }
 
-    private deleteQuestion( questionId ): void {
+    public deleteQuestion( questionId ): void {
         // First get the index position of the question. Because we only know the id of the question.
         let indexOfQuestion: number = this.getIndexOfQuestion(questionId);
         this.modalservice.confirm(
@@ -90,7 +90,7 @@ export class QuestionsManager implements OnInit {
         });
     }
 
-    private handleFormResponse( event ): void {
+    public handleFormResponse( event ): void {
         if (event !== false) {
             if ( this.currentQuestionId === '' ) {
                 this.questions.push( event );
@@ -105,7 +105,7 @@ export class QuestionsManager implements OnInit {
         }
     }
 
-    private drop(event) {
+    public drop(event) {
         let previousItem = this.questions.splice( event.previousIndex, 1 );
         this.questions.splice( event.currentIndex, 0, previousItem[0] );
         let updateArray = [];
@@ -118,11 +118,11 @@ export class QuestionsManager implements OnInit {
         this.backend.postRequest( 'module/Questions', {}, updateArray );
     }
 
-    private dragStarted(e) {
+    public dragStarted(e) {
         e.source.element.nativeElement.classList.add('slds-is-selected');
     }
 
-    private dragEnded(e) {
+    public dragEnded(e) {
         e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 

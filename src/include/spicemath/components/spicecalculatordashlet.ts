@@ -21,20 +21,20 @@ import { view } from "../../../services/view.service";
  */
 @Component({
     selector: 'spice-calculator-dashlet',
-    templateUrl: './src/include/spicemath/templates/spicecalculatordashlet.html',
+    templateUrl: '../templates/spicecalculatordashlet.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceCalculatorDashlet implements AfterViewInit{
 
     @ViewChild('spiceCalculator') spiceCalculator: any;
 
-    constructor(private el: ElementRef,
-                private view: view) {
+    constructor(public el: ElementRef,
+                public view: view) {
     }
 
     public value: string;
 
-    private sizeCheck(): void {
+    public sizeCheck(): void {
         if (this.view.getMode() === 'edit') {
             this.spiceCalculator.sizeCheck();
             setTimeout(() => this.sizeCheck(), 1000);

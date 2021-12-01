@@ -9,17 +9,17 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'lead-openleads-dashlet',
-    templateUrl: './src/modules/leads/templates/leadopenleadsdashlet.html',
+    templateUrl: '../templates/leadopenleadsdashlet.html',
     providers: [model]
 })
 export class LeadOpenLeadsDashlet implements OnInit {
-    private myLeads: any[] = [];
-    private myLeadsCount: number = 0;
+    public myLeads: any[] = [];
+    public myLeadsCount: number = 0;
 
-    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
-    @ViewChild('dashletcontainer', {read: ViewContainerRef, static: true}) private dashletcontainer: ViewContainerRef;
+    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) public tableheader: ViewContainerRef;
+    @ViewChild('dashletcontainer', {read: ViewContainerRef, static: true}) public dashletcontainer: ViewContainerRef;
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public model: model, public elementRef: ElementRef) {
 
     }
 

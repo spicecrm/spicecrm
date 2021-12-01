@@ -14,24 +14,24 @@ import {navigation} from '../../../services/navigation.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/products/templates/productgroupslongtextcodeassignments.html',
+    templateUrl: '../templates/productgroupslongtextcodeassignments.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '[style.display]': 'getDisplay()'
     },
     styles: [
-        ':host >>> span {cursor:pointer;}'
+        ':host  span {cursor:pointer;}'
     ]
 })
 export class ProductGroupsLongtextCodeAssignments {
 
-    private dialogvisible: boolean = false;
-    private assignedAttributes: any[] = [];
+    public dialogvisible: boolean = false;
+    public assignedAttributes: any[] = [];
     public allAttributes: any[] = [];
-    private selectedAttribute: string = '';
-    private isLoading: boolean = false;
+    public selectedAttribute: string = '';
+    public isLoading: boolean = false;
 
-    constructor(private language: language, private model: model, private navigation: navigation, private backend: backend, private toast: toast) {
+    constructor(public language: language, public model: model, public navigation: navigation, public backend: backend, public toast: toast) {
 
     }
 
@@ -51,7 +51,7 @@ export class ProductGroupsLongtextCodeAssignments {
         return attribfound;
     }
 
-    private getDisplay() {
+    public getDisplay() {
         if (this.model.data.acl && !this.model.data.acl.edit) {
             return 'none';
         }
@@ -59,11 +59,11 @@ export class ProductGroupsLongtextCodeAssignments {
         return this.model.isEditing ? 'none' : 'inherit';
     }
 
-    private editDisable(productgroup_id) {
+    public editDisable(productgroup_id) {
         return productgroup_id != this.model.id;
     }
 
-    private showDialog() {
+    public showDialog() {
         // get the attributes
         this.assignedAttributes = [];
         this.isLoading = true;
@@ -92,11 +92,11 @@ export class ProductGroupsLongtextCodeAssignments {
         this.dialogvisible = true;
     }
 
-    private hideDialog() {
+    public hideDialog() {
         this.dialogvisible = false;
     }
 
-    private save() {
+    public save() {
         this.isLoading = true;
         let attributes = [];
         for (let attribute of this.assignedAttributes) {
@@ -117,7 +117,7 @@ export class ProductGroupsLongtextCodeAssignments {
         });
     }
 
-    private addAttribute() {
+    public addAttribute() {
         this.allAttributes.some(attribute => {
             if (attribute.id == this.selectedAttribute) {
                 this.assignedAttributes.push({
@@ -134,7 +134,7 @@ export class ProductGroupsLongtextCodeAssignments {
         });
     }
 
-    private removeAttribute(attribute) {
+    public removeAttribute(attribute) {
         let foundindex = 0;
 
         this.assignedAttributes.some(thisAttribute => {

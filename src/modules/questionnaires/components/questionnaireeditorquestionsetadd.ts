@@ -7,7 +7,7 @@ import { language } from '../../../services/language.service';
 
 @Component({
     selector: 'questionnaire-editor-questionset-add',
-    templateUrl: "./src/modules/questionnaires/templates/questionnaireeditorquestionsetadd.html",
+    templateUrl: "../templates/questionnaireeditorquestionsetadd.html",
     providers: [model]
 })
 export class QuestionnaireEditorQuestionsetAdd {
@@ -16,11 +16,11 @@ export class QuestionnaireEditorQuestionsetAdd {
     @Input() public disabled = false;
     @Output() public newQuestionset: EventEmitter<any> = new EventEmitter();
 
-    constructor( private model: model, private lang: language ) {
+    constructor( public model: model, public lang: language ) {
         this.model.module = 'QuestionSets';
     }
 
-    private addQuestionset(): void {
+    public addQuestionset(): void {
         this.model.id = ''; // we want addModel() to generate a new bean
         this.model.addModel('', this.questionnaire, null, true )
             .subscribe( newQuestionset => this.newQuestionset.emit( newQuestionset ));

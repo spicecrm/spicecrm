@@ -11,14 +11,14 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 import { broadcast } from '../../../services/broadcast.service';
 
 @Component({
-    templateUrl: './src/modules/questionnaires/templates/questionnaireresults.html',
+    templateUrl: '../templates/questionnaireresults.html',
     providers: [questionnaireParticipationService]
 })
 export class QuestionnaireResults implements OnInit {
 
-    private questionnaireParticipation: questionnaireParticipationService;
+    public questionnaireParticipation: questionnaireParticipationService;
 
-    constructor( private model: model, private metadata: metadata, private language: language, private backend: backend, private modal: modal, private injector: Injector, private broadcast: broadcast ) { }
+    constructor( public model: model, public metadata: metadata, public language: language, public backend: backend, public modal: modal, public injector: Injector, public broadcast: broadcast ) { }
 
     public ngOnInit() {
         this.broadcast.message$.subscribe(msg => {
@@ -33,7 +33,7 @@ export class QuestionnaireResults implements OnInit {
      * Is there a participation?
      * @private
      */
-    private get noParticipation() {
+    public get noParticipation() {
         return this.questionnaireParticipation && this.questionnaireParticipation.isLoaded && !this.questionnaireParticipation.participationId;
     }
 
@@ -41,7 +41,7 @@ export class QuestionnaireResults implements OnInit {
      * Reload the rendered questionnaire.
      * @private
      */
-    private reload(): void {
+    public reload(): void {
         this.questionnaireParticipation.reload();
     }
 
@@ -49,7 +49,7 @@ export class QuestionnaireResults implements OnInit {
      * Open the modal to fill out the questionnaire.
      * @private
      */
-    private fillOut(): void {
+    public fillOut(): void {
         this.modal.openModal('QuestionnaireFillOutModal').subscribe(modal => {
             modal.instance.parentId = this.model.id;
             modal.instance.parentType = this.model.module;
@@ -60,7 +60,7 @@ export class QuestionnaireResults implements OnInit {
      * In case we know it (parent ist ServiceFeedbacks): Is the Questionnaire completed (filled out)?
      * @private
      */
-    private get questionnaireIsCompleted(): boolean {
+    public get questionnaireIsCompleted(): boolean {
         return this.model.module === 'ServiceFeedbacks' && this.model.getField('servicefeedback_status') === 'completed';
     }
 

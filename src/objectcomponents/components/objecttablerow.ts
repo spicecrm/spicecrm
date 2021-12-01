@@ -16,7 +16,7 @@ declare var _;
 
 @Component({
     selector: '[object-table-row]',
-    templateUrl: './src/objectcomponents/templates/objecttablerow.html',
+    templateUrl: '../templates/objecttablerow.html',
     providers: [view],
     host: {
         'class': 'slds-hint-parent',
@@ -28,13 +28,13 @@ export class ObjectTableRow
     @Input() public selected = false;
     @Output('select') public select$ = new EventEmitter();
     @Output('unselect') public unselect$ = new EventEmitter();
-    private selectable: boolean = false;
+    public selectable: boolean = false;
     @Input('selectable') public attr_selectable: string;
 
     constructor(
-        private language: language,
-        private model: model,
-        private view: view,
+        public language: language,
+        public model: model,
+        public view: view,
     ) {
         this.view.isEditable = false;
 

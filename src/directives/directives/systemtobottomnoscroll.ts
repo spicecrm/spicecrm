@@ -16,9 +16,9 @@ import {footer} from "../../services/footer.service";
 })
 export class SystemToBottomNoScrollDirective implements DoCheck {
 
-    @Input('system-to-bottom-noscroll') private toBottomNoScroll: boolean = true;
+    @Input('system-to-bottom-noscroll') public toBottomNoScroll: boolean = true;
 
-    constructor(private element: ElementRef, private renderer: Renderer2, private footer: footer) {
+    constructor(public element: ElementRef, public renderer: Renderer2, public footer: footer) {
     }
 
     public ngDoCheck() {

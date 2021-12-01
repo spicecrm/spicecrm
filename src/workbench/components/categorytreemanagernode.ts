@@ -16,7 +16,7 @@ import {SelectTreeAddDialog} from "./selecttreeadddialog";
 
 @Component({
     selector: 'categgory-tree-manager-node',
-    templateUrl: './src/workbench/templates/categorytreemanagernode.html',
+    templateUrl: '../templates/categorytreemanagernode.html',
 })
 export class CategoryTreeManagerNode {
 
@@ -26,23 +26,23 @@ export class CategoryTreeManagerNode {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the node
      *
      * @private
      */
-    private node: any = {};
+    public node: any = {};
 
     /**
      * an array of all current nodes to ensure it is unique
      *
      * @private
      */
-    private nodes: any[] = [];
+    public nodes: any[] = [];
 
-    private action: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public action: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * checks that we can save
@@ -63,7 +63,7 @@ export class CategoryTreeManagerNode {
      *
      * @private
      */
-    private save(){
+    public save(){
         this.action.emit(true);
         this.self.destroy();
     }
@@ -73,7 +73,7 @@ export class CategoryTreeManagerNode {
      *
      * @private
      */
-    private close(){
+    public close(){
         this.action.emit(false);
         this.self.destroy();
     }

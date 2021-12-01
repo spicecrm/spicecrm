@@ -19,7 +19,7 @@ declare var _: any;
 
 @Component({
     selector: 'global-docked-composer',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposer.html',
+    templateUrl: '../templates/globaldockedcomposer.html',
     providers: [model, view]
 })
 export class GlobalDockedComposer implements OnInit {
@@ -27,7 +27,7 @@ export class GlobalDockedComposer implements OnInit {
     /**
      * refernce to the container content
      */
-    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: true})public containercontent: ViewContainerRef;
 
     @Input() public composerdata: any = {};
     @Input() public composerindex: number;
@@ -37,16 +37,16 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private isClosed: boolean = false;
+   public isClosed: boolean = false;
 
     /**
      * the actionset to be rendered in teh composer
      *
      * @private
      */
-    private actionset: string;
+   public actionset: string;
 
-    constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, private model: model, private view: view, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+    constructor(public metadata: metadata,public dockedComposer: dockedComposer,public language: language,public model: model,public view: view,public modal: modal,public ViewContainerRef: ViewContainerRef) {
         // set the view to editable and to editmode
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -110,7 +110,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private toggleClosed() {
+   public toggleClosed() {
         this.isClosed = !this.isClosed;
     }
 
@@ -133,7 +133,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private expand() {
+   public expand() {
         this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
     }
 
@@ -143,7 +143,7 @@ export class GlobalDockedComposer implements OnInit {
      * @param action
      * @private
      */
-    private handleaction(action) {
+   public handleaction(action) {
         switch (action) {
             case 'savegodetail':
                 this.model.goDetail();
@@ -159,7 +159,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private promptClose() {
+   public promptClose() {
         this.modal.prompt('confirm', this.language.getLabel('MSG_CANCEL', '', 'long'), this.language.getLabel('MSG_CANCEL')).subscribe(answer => {
             if (answer) {
                 this.closeComposer();
@@ -173,7 +173,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private closeComposer() {
+   public closeComposer() {
         for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
             if (this.dockedComposer.composers[i].id === this.composerdata.id) {
                 this.dockedComposer.composers.splice(i, 1);

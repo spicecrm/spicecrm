@@ -8,23 +8,23 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-header-actions',
-    templateUrl: './src/globalcomponents/templates/globalheaderactions.html'
+    templateUrl: '../templates/globalheaderactions.html'
 })
 export class GlobalHeaderActions implements AfterViewInit {
 
     @ViewChild('actioncontainerheader', {
         read: ViewContainerRef,
         static: true
-    }) private actioncontainerheader: ViewContainerRef;
+    })public actioncontainerheader: ViewContainerRef;
 
     /**
      * the open boolean indicator
      *
      * @private
      */
-    private isOpen: boolean = false;
+   public isOpen: boolean = false;
 
-    private clickListener: any;
+   public clickListener: any;
 
     /**
      * indicates that the add is visible
@@ -32,9 +32,9 @@ export class GlobalHeaderActions implements AfterViewInit {
      *
      * @private
      */
-    private isVisible: boolean = false;
+   public isVisible: boolean = false;
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private session: session, private metadata: metadata, private language: language) {
+    constructor(public renderer: Renderer2,public elementRef: ElementRef,public session: session,public metadata: metadata,public language: language) {
 
     }
 
@@ -65,7 +65,7 @@ export class GlobalHeaderActions implements AfterViewInit {
         }
     }
 
-    private toggleOpen() {
+   public toggleOpen() {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
@@ -74,7 +74,7 @@ export class GlobalHeaderActions implements AfterViewInit {
         }
     }
 
-    private onClick(event: MouseEvent): void {
+   public onClick(event: MouseEvent): void {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.isOpen = false;

@@ -13,7 +13,7 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
  */
 @Component({
     selector: 'spice-page-builder-element-button',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementbutton.html',
+    templateUrl: '../templates/spicepagebuilderelementbutton.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementButton extends SpicePageBuilderElement {

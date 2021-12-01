@@ -9,7 +9,7 @@ import {model} from "../../../services/model.service";
 declare var _: any;
 
 @Component({
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsconvertmodal.html",
+    templateUrl: "../templates/salesdocsconvertmodal.html",
     providers: [model]
 })
 export class SalesDocsConvertModal {
@@ -18,21 +18,21 @@ export class SalesDocsConvertModal {
      * referenec to self added from teh modal service
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the targetdata loaded from the backend that is supposed to be created as new salesdoc
      */
     public targetData: any;
 
-    constructor(public model: model, @SkipSelf() private parent: model, public modal: modal, private backend: backend) {
+    constructor(public model: model, @SkipSelf() public parent: model, public modal: modal, public backend: backend) {
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private convert() {
+    public convert() {
         this.model.module = 'SalesDocs';
         let newdata = {};
         for(let field in this.targetData.SalesDoc){

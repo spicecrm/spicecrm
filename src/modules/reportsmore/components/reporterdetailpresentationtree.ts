@@ -16,7 +16,7 @@ import {ReporterDetailPresentationStandard} from "../../../modules/reports/compo
  */
 @Component({
     selector: 'reporter-detail-presentation-tree',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationtree.html',
+    templateUrl: '../templates/reporterdetailpresentationtree.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationTree extends ReporterDetailPresentationStandard {
@@ -25,19 +25,19 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
      * the array of fields to be displayed for the report
      * this is loaded initially with all feilds and then limited to one for all in the tree and then all the others
      */
-    protected treeDisplayFields: any[] = [];
+    public treeDisplayFields: any[] = [];
     /**
      * the fields the tree is grouped by
      */
-    protected groupFields: any[] = [];
+    public groupFields: any[] = [];
     /**
      * the field to be displayed
      */
-    private fields: any[] = [];
+    public fields: any[] = [];
     /**
      * holds the report data
      */
-    private reportRecords: any[] = [];
+    public reportRecords: any[] = [];
 
     constructor(public language: language,
                 public model: model,
@@ -103,7 +103,7 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
      * function to get the node when the node is expanded
      * @param node
      */
-    private getNode(node) {
+    public getNode(node) {
         let depth = 0;
         if (node != 'root') {
             let depthArray = node.split('::');

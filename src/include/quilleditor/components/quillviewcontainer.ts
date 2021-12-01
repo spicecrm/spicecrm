@@ -27,40 +27,40 @@ declare var Quill: any;
 @Component({
     encapsulation: ViewEncapsulation.None,
     selector: 'quill-view',
-    templateUrl: './src/include/quilleditor/templates/quillviewcontainer.html'
+    templateUrl: '../templates/quillviewcontainer.html'
 })
 export class QuillViewContainer implements AfterViewInit, OnChanges {
     /**
      * save the content to be displayed in the editor view mode
      */
-    @Input() protected readonly content: string;
+    @Input() public readonly content: string;
     /**
      * holds the disabled value to handle the editor disabled
      */
-    @Input() protected readonly heightStyle: string = '300px';
+    @Input() public readonly heightStyle: string = '300px';
     /**
      * save the full height boolean
      */
-    @Input() protected readonly fullHeight: boolean = false;
+    @Input() public readonly fullHeight: boolean = false;
     /**
      * to render the quill editor inside
      */
-    @ViewChild('editorContainer', {read: ViewContainerRef, static: false}) private editorContainer: ViewContainerRef;
+    @ViewChild('editorContainer', {read: ViewContainerRef, static: false}) public editorContainer: ViewContainerRef;
     /**
      * to save the quill editor instance
      */
-    private quillEditor: any;
+    public quillEditor: any;
     /**
      * to help encoding/decoding html
      */
-    private textarea: HTMLElement;
+    public textarea: HTMLElement;
 
     constructor(
-        @Inject(PLATFORM_ID) private platformId: any,
-        private renderer: Renderer2,
-        private elementRef: ElementRef,
-        private libLoader: libloader,
-        private zone: NgZone
+        @Inject(PLATFORM_ID) public platformId: any,
+        public renderer: Renderer2,
+        public elementRef: ElementRef,
+        public libLoader: libloader,
+        public zone: NgZone
     ) {
         this.textarea = document.createElement('textarea');
     }
@@ -86,7 +86,7 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
     /**
      * render the quill editor with the defined options and toolbar and pass the content
      */
-    private renderQuillEditor() {
+    public renderQuillEditor() {
         this.libLoader.loadLib('QuillEditor').subscribe(() => {
             this.zone.runOutsideAngular(() => {
                 this.quillEditor = new Quill(this.editorContainer.element.nativeElement, {
@@ -104,7 +104,7 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
     /**
      * set the editor content
      */
-    private setEditorContent(): any {
+    public setEditorContent(): any {
 
         if (!this.quillEditor) return;
         this.quillEditor.setContents(
@@ -116,7 +116,7 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
     /**
      * get clean html value by ensuring the encode/decode the code snippets
      */
-    private getCleanHtml() {
+    public getCleanHtml() {
         if (!this.content) return '';
         const regexp = /(?<=<pre class="ql-syntax" spellcheck="false">)[\s\S]*?(?=<\/pre>)/g;
         const match = regexp.exec(
@@ -126,12 +126,12 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
         return this.content.replace(match.toString(), this.encodeHTMLEntities(match.toString()));
     }
 
-    private decodeHTMLEntities(text) {
+    public decodeHTMLEntities(text) {
         this.textarea.innerHTML = text;
         return this.textarea.innerText;
     }
 
-    private encodeHTMLEntities(text) {
+    public encodeHTMLEntities(text) {
         this.textarea.innerText = text;
         return this.textarea.innerHTML;
     }

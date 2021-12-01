@@ -18,13 +18,13 @@ declare var _: any;
 
 @Component({
     selector: 'object-page-header',
-    templateUrl: './src/objectcomponents/templates/objectpageheader.html',
+    templateUrl: '../templates/objectpageheader.html',
     providers: [view]
 })
 export class ObjectPageHeader implements OnInit {
 
     public componentconfig: any = {};
-    private actionSet: string = '';
+    public actionSet: string = '';
     public fieldset: string = '';
 
     get moduleName() {

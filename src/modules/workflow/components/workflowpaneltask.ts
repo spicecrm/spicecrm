@@ -14,21 +14,21 @@ import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: 'workflow-panel-task',
-    templateUrl: './src/modules/workflow/templates/workflowpaneltask.html'
+    templateUrl: '../templates/workflowpaneltask.html'
 
 })
 export class WorkflowPanelTask {
 
-    @Input() private workflowtask: any = {};
-    @Input() private workflow: any = {};
-    private comment: string = '';
-    private posting: boolean = false;
+    @Input() public workflowtask: any = {};
+    @Input() public workflow: any = {};
+    public comment: string = '';
+    public posting: boolean = false;
 
-    constructor(private model: model, private workflowservice: workflow, private language: language, private broadcast: broadcast, private toast: toast, private modelutilities: modelutilities) {
+    constructor(public model: model, public workflowservice: workflow, public language: language, public broadcast: broadcast, public toast: toast, public modelutilities: modelutilities) {
 
     }
 
-    private addComment() {
+    public addComment() {
         this.posting = true;
         this.workflowservice.addComment(this.workflowtask.id, this.comment).subscribe(result => {
             this.posting = false;
@@ -37,7 +37,7 @@ export class WorkflowPanelTask {
         });
     }
 
-    private doAction(action) {
+    public doAction(action) {
         this.posting = true;
         this.workflowservice.doTaskAction(this.workflowtask.id, action, this.comment).subscribe(parent => {
 

@@ -12,7 +12,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "bonus-cards-new-button",
-    templateUrl: "./src/modules/bonusprograms/templates/bonuscardnewbutton.html",
+    templateUrl: "../templates/bonuscardnewbutton.html",
     providers: [model]
 })
 export class BonusCardNewButton implements OnInit {
@@ -94,7 +94,7 @@ export class BonusCardNewButton implements OnInit {
     /**
      * prompt to select a program and then open the add modal.
      */
-    private async promptProgramSelection(): Promise<{ id: string, name: string }> {
+    public async promptProgramSelection(): Promise<{ id: string, name: string }> {
 
         const params = {
             start: 0,

@@ -12,13 +12,13 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 @Component({
     providers: [mailboxesEmails],
     selector: 'mailbox-manager',
-    templateUrl: './src/modules/mailboxes/templates/mailboxmanager.html',
+    templateUrl: '../templates/mailboxmanager.html',
 })
 export class MailboxManager {
     constructor(
-        private navigation: navigation,
-        private navigationtab: navigationtab,
-        private mailboxesEmails: mailboxesEmails,
+        public navigation: navigation,
+        public navigationtab: navigationtab,
+        public mailboxesEmails: mailboxesEmails,
     ) {
         this.navigationtab.setTabInfo({displayname: 'Mailboxes', displaymodule: 'Mailboxes'});
 

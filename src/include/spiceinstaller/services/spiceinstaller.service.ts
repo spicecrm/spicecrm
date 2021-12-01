@@ -162,7 +162,7 @@ export class spiceinstaller {
     /**
      * the selected step object and its event emitter for tracking the change
      */
-    private _selectedStep: stepObject;
+    public _selectedStep: stepObject;
 
     /**
      * getter for the selected step object

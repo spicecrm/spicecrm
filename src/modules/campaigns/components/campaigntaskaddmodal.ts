@@ -10,14 +10,14 @@ declare var moment: any;
 
 @Component({
     selector: 'campaigntask-add-modal',
-    templateUrl: './src/modules/campaigns/templates/campaigntaskaddmodal.html',
+    templateUrl: '../templates/campaigntaskaddmodal.html',
     providers: [model, view]
 })
 export class CampaignTaskAddModal {
 
-    private self: any;
+    public self: any;
 
-    constructor(@SkipSelf() private parent: model, private model: model, private view: view, private modal: modal) {
+    constructor(@SkipSelf() public parent: model, public model: model, public view: view, public modal: modal) {
         this.model.module = 'CampaignTasks';
         this.model.initialize(parent);
 
@@ -27,7 +27,7 @@ export class CampaignTaskAddModal {
 
     }
 
-    private save() {
+    public save() {
         if(this.model.validate()) {
             this.model.save().subscribe(() => {
                 this.self.destroy();
@@ -35,7 +35,7 @@ export class CampaignTaskAddModal {
         }
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

@@ -10,7 +10,7 @@ import {SectionI} from "../interfaces/spicepagebuilder.interfaces";
  */
 @Component({
     selector: 'spice-page-builder-element-section',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementsection.html',
+    templateUrl: '../templates/spicepagebuilderelementsection.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementSection implements OnInit {
@@ -18,17 +18,17 @@ export class SpicePageBuilderElementSection implements OnInit {
     /**
      * containers to be rendered
      */
-    @Input() protected readonly section: SectionI;
+    @Input() public readonly section: SectionI;
     /**
      * emit when delete button clicked
      */
-    @Output() private delete$: EventEmitter<void> = new EventEmitter();
+    @Output() public delete$: EventEmitter<void> = new EventEmitter();
     /**
      * hold the style object for the element
      */
-    private style = {};
+    public style = {};
 
-    constructor(private spicePageBuilderService: SpicePageBuilderService) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -45,14 +45,14 @@ export class SpicePageBuilderElementSection implements OnInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /**
      * generate body style object
      */
-    private generateStyle() {
+    public generateStyle() {
         this.style = {
             'background-color': this.section.attributes['background-color'],
             'border': this.section.attributes.border,
@@ -70,7 +70,7 @@ export class SpicePageBuilderElementSection implements OnInit {
      * set the hovered element level
      * @param value
      */
-    private setIsMouseIn(value) {
+    public setIsMouseIn(value) {
         this.spicePageBuilderService.isMouseIn = value ? 'section' : undefined;
     }
 }

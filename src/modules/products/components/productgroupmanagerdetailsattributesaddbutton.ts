@@ -9,18 +9,18 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'product-group-manager-details-attributes-add-button',
-    templateUrl: './src/modules/products/templates/productgroupmanagerdetailsattributesaddbutton.html',
+    templateUrl: '../templates/productgroupmanagerdetailsattributesaddbutton.html',
     providers: [model]
 
 })
 export class ProductGroupManagerDetailsAttributesAddButton {
-    @Output() private changes: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public changes: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language, private backend: backend, private metadata: metadata, private model: model) {
+    constructor(public language: language, public backend: backend, public metadata: metadata, public model: model) {
         this.model.module = 'ProductAttributes';
     }
 
-    private addItem() {
+    public addItem() {
         this.model.id = '';
         this.model.addModel().subscribe(res => {
             if (typeof res == 'object') {

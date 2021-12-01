@@ -9,7 +9,7 @@ import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasi
 
 @Component({
     selector: 'questions-manager-edit-ist',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditist.html'
+    templateUrl: '../templates/questionsmanagereditist.html'
 })
 export class QuestionsManagerEditIst extends QuestionsManagerEditBasicWithOptions implements OnInit {
 

@@ -15,7 +15,7 @@ declare var _: any;
  * a modal to dsiplay an API Log entry record
  */
 @Component({
-    templateUrl: './src/workbench/templates/apilogviewermodal.html',
+    templateUrl: '../templates/apilogviewermodal.html',
 })
 export class APIlogViewerModal {
 
@@ -23,48 +23,48 @@ export class APIlogViewerModal {
      * reference to itself for closing the modal
      * @private
      */
-    private self;
+    public self;
 
     /**
      * the entry
      * @private
      */
-    @Input() private entry: any;
+    @Input() public entry: any;
 
-    private record: any = {};
+    public record: any = {};
 
     /**
      * the request headers
      *
      * @private
      */
-    private _requestheaders: any = {};
+    public _requestheaders: any = {};
 
     /**
      * the response headers
      *
      * @private
      */
-    private _responseheaders: any = {};
+    public _responseheaders: any = {};
 
     /**
      * indicates we are loading
      *
      * @private
      */
-    private isLoading = true;
+    public isLoading = true;
 
-    private beautifyenabled: boolean = false;
+    public beautifyenabled: boolean = false;
 
-    private activeTab: 'record' | 'headers' | 'post' | 'response' = 'record';
+    public activeTab: 'record' | 'headers' | 'post' | 'response' = 'record';
 
-    constructor(private language: language, private backend: backend, private toast: toast, private libloader: libloader) {
+    constructor(public language: language, public backend: backend, public toast: toast, public libloader: libloader) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
         });
     }
 
-    private ngOnInit() {
+    public ngOnInit() {
         this.loadFullData();
     }
 
@@ -73,7 +73,7 @@ export class APIlogViewerModal {
      *
      * @private
      */
-    private loadFullData() {
+    public loadFullData() {
         this.isLoading = true;
         this.backend.getRequest(`admin/apilog/${this.entry.id}`).subscribe(
             response => {
@@ -96,7 +96,7 @@ export class APIlogViewerModal {
      *
      * @private
      */
-    private setRequestHeaders() {
+    public setRequestHeaders() {
         try {
             let headers = JSON.parse(this.record.request_headers);
             if (headers) {
@@ -113,7 +113,7 @@ export class APIlogViewerModal {
      *
      * @private
      */
-    private setResponseHeaders() {
+    public setResponseHeaders() {
         try {
             let headers = JSON.parse(this.record.response_headers);
             if (headers) {
@@ -228,11 +228,11 @@ export class APIlogViewerModal {
     }
 
     // Close the modal.
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private determineContentType(headers: any) {
+    public determineContentType(headers: any) {
         let ct = 'application/json';
         for (let h in headers) {
             if (h.toLowerCase() == 'content-type') {
@@ -245,15 +245,15 @@ export class APIlogViewerModal {
         return ct;
     }
 
-    private formattedResponse() {
+    public formattedResponse() {
         return this.getFormattedBody(this.determineContentType(this._responseheaders), this.record.response_body);
     }
 
-    private formattedRequest() {
+    public formattedRequest() {
         return this.getFormattedBody(this.determineContentType(this._requestheaders), this.record.request_body);
     }
 
-    private getFormattedBody(contentType, content) {
+    public getFormattedBody(contentType, content) {
         switch (contentType) {
             case 'application/json':
                 return JSON.stringify(JSON.parse(content), null, '\t');
@@ -310,7 +310,7 @@ export class APIlogViewerModal {
     /**
      * get the headers formatted
      */
-    private formatted(param) {
+    public formatted(param) {
         try {
             return JSON.stringify(JSON.parse(this.record[param]), null, '\t');
         } catch (e) {

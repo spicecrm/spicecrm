@@ -9,18 +9,18 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'package-loader-packages',
-    templateUrl: './src/systemcomponents/templates/packageloaderpackages.html',
+    templateUrl: '../templates/packageloaderpackages.html',
 })
 export class PackageLoaderPackages {
 
-    @Input() private packagescope = '';
-    private packagefilterterm: string = '';
+    @Input() public packagescope = '';
+    public packagefilterterm: string = '';
 
-    @Input() private packages = [];
-    @Input() private repository: any;
+    @Input() public packages = [];
+    @Input() public repository: any;
 
     constructor(
-        private language: language
+        public language: language
     ) {
 
     }

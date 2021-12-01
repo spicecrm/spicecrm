@@ -19,27 +19,27 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'workflow-manager-detail',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetail.html',
+    templateUrl: '../templates/workflowmanagerdetail.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetail implements OnChanges {
 
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
-    @Input() private modeldata: any = {};
+    @Input() public modeldata: any = {};
 
-    private activeTab: string = 'D';
+    public activeTab: string = 'D';
 
-    private fieldset: string = '';
+    public fieldset: string = '';
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private model: model,
-        private view: view,
-        private language: language,
-        private utils: modelutilities,
-        private toast: toast
+        public backend: backend,
+        public metadata: metadata,
+        public model: model,
+        public view: view,
+        public language: language,
+        public utils: modelutilities,
+        public toast: toast
     ) {
 
         this.view.isEditable = true;

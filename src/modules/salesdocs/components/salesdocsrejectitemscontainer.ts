@@ -20,7 +20,7 @@ import {SalesDocsItemsContainer} from "./salesdocsitemscontainer";
 
 @Component({
     selector: 'salesdocs-reject-items-container',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsrejectitemscontainer.html'
+    templateUrl: '../templates/salesdocsrejectitemscontainer.html'
 })
 export class SalesDocsRejectItemsContainer extends SalesDocsItemsContainer {
 

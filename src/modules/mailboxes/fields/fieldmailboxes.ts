@@ -20,7 +20,7 @@ declare var _: any;
  * list all available mailboxes
  */
 @Component({
-    templateUrl: './src/modules/mailboxes/templates/fieldmailboxes.html'
+    templateUrl: '../templates/fieldmailboxes.html'
 })
 export class fieldMailboxes extends fieldGeneric implements OnInit {
     /**
@@ -34,10 +34,10 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private configuration: configurationService,
-        private userpreferences: userpreferences,
-        private cdRef: ChangeDetectorRef
+        public backend: backend,
+        public configuration: configurationService,
+        public userpreferences: userpreferences,
+        public cdRef: ChangeDetectorRef
     ) {
         super(model, view, language, metadata, router);
     }
@@ -109,7 +109,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * @param item
      * @return item.value
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.value;
     }
 
@@ -117,7 +117,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * loads teh default value from the preferences and sets it
      * @private
      */
-    private setValueFromPreferences() {
+    public setValueFromPreferences() {
 
         if (!!this.value || !!this.fieldconfig.disableCache) return;
 
@@ -130,7 +130,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * @param value
      * @private
      */
-    private setToPreferences(value: string) {
+    public setToPreferences(value: string) {
 
         if (!!this.fieldconfig.disableCache) return;
 

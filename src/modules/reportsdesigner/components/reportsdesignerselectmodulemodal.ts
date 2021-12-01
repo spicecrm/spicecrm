@@ -13,7 +13,7 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: 'reports-designer-select-module-modal',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerselectmodulemodal.html',
+    templateUrl: '../templates/reportsdesignerselectmodulemodal.html',
 })
 export class ReportsDesignerSelectModuleModal implements OnInit {
 
@@ -25,15 +25,15 @@ export class ReportsDesignerSelectModuleModal implements OnInit {
     /**
      * the list of modules, retrieved on Init and then potentially filtered
      */
-    protected moduleList: any[] = [];
+    public moduleList: any[] = [];
 
     /**
      * the filtered module list
      */
-    protected filteredModuleList: any[] = [];
+    public filteredModuleList: any[] = [];
 
 
-    private subject: Subject<any> = new Subject<any>();
+    public subject: Subject<any> = new Subject<any>();
     /**
      * @observable response: {name: string, module: string}
      */
@@ -42,29 +42,29 @@ export class ReportsDesignerSelectModuleModal implements OnInit {
     /**
      * reference to self as the widnwo to enable the modal to close itself
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the name of the report
      */
-    private reportName: string = '';
+    public reportName: string = '';
 
     /**
      * the selected module
      */
-    private selectedModule: string = '';
+    public selectedModule: string = '';
 
     /**
      * the search term held internally
      */
-    private _searchTerm: string = '';
+    public _searchTerm: string = '';
 
     /**
      * the fieldset from the config to be rendered
      */
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view) {
 
         // set the view to editable and set the name field as default focus field
         this.view.isEditable = true;
@@ -107,7 +107,7 @@ export class ReportsDesignerSelectModuleModal implements OnInit {
     /**
      * get modules from metadata and filter them
      */
-    private loadModuleList() {
+    public loadModuleList() {
         this.moduleList = this.metadata.getModules()
             .map(module => ({name: module, display: this.language.getModuleName(module)}))
             .sort((a, b) => a.display > b.display ? 1 : -1);
@@ -119,7 +119,7 @@ export class ReportsDesignerSelectModuleModal implements OnInit {
      * set module value
      * @param module: string
      */
-    private setSelectedModule(module) {
+    public setSelectedModule(module) {
         this.selectedModule = module;
         if (!this.createmode) {
             this.confirm();
@@ -129,7 +129,7 @@ export class ReportsDesignerSelectModuleModal implements OnInit {
     /**
      * destroy the modal
      */
-    private close() {
+    public close() {
         this.subject.next(false);
         this.subject.complete();
         this.self.destroy();
@@ -141,7 +141,7 @@ export class ReportsDesignerSelectModuleModal implements OnInit {
      *
      * @param module
      */
-    private confirm(module?) {
+    public confirm(module?) {
         if (module) {
             this.setSelectedModule(module);
         }
@@ -162,7 +162,7 @@ export class ReportsDesignerSelectModuleModal implements OnInit {
      * @param item
      * @return item
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item;
     }
 

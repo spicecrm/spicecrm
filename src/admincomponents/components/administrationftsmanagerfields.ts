@@ -11,7 +11,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-ftsmanager-fields',
-    templateUrl: './src/admincomponents/templates/administrationftsmanagerfields.html'
+    templateUrl: '../templates/administrationftsmanagerfields.html'
 })
 export class AdministrationFTSManagerFields {
 
@@ -19,11 +19,11 @@ export class AdministrationFTSManagerFields {
     public fieldDetails: any = {};
     public displayAddFieldModal: boolean = false;
 
-    constructor(private metadata: metadata,
-                private language: language,
-                private modal: modal,
-                private injector: Injector,
-                private ftsconfiguration: ftsconfiguration) {
+    constructor(public metadata: metadata,
+                public language: language,
+                public modal: modal,
+                public injector: Injector,
+                public ftsconfiguration: ftsconfiguration) {
         // if the module is changed reset the current field
         this.ftsconfiguration.module$.subscribe(module => {
             this.currentfield = '';

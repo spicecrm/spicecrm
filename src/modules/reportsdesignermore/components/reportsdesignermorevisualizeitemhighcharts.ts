@@ -8,13 +8,13 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-visualize-item-high-charts',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorevisualizeitemhighcharts.html'
+    templateUrl: '../templates/reportsdesignermorevisualizeitemhighcharts.html'
 })
 export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
 
-    protected contextOptions: any[] = [];
+    public contextOptions: any[] = [];
 
-    protected typeOptions = [
+    public typeOptions = [
         {
             dimensions: ['111','10N','221','21N'],
             value: 'area',
@@ -154,7 +154,7 @@ export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
         }
     ];
 
-    protected dimensionsOptions: any[] = [
+    public dimensionsOptions: any[] = [
         {
             value: '111',
             name: `1 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
@@ -171,7 +171,7 @@ export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
         }
     ];
 
-    constructor(private language: language, private model: model, private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
 
     }
 
@@ -189,7 +189,7 @@ export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
     /**
      * set the initial plugin properties data
      */
-    private initializeProperties() {
+    public initializeProperties() {
         this.contextOptions = this.model.getField('whereconditions')
             .filter(condition => !!condition.context)
             .map(condition => condition.context);
@@ -218,7 +218,7 @@ export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
      * @param name: string
      * @param bool: boolean
      */
-    private setPropertiesOption(name, bool) {
+    public setPropertiesOption(name, bool) {
         this.properties.highcharts.options[name] = bool ? 'on' : 'off';
     }
 }

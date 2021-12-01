@@ -13,7 +13,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
  */
 @Component({
     selector: 'global-navigation-tabbed-browser',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedbrowser.html',
+    templateUrl: '../templates/globalnavigationtabbedbrowser.html',
     host: {
         '[class.slds-context-bar__item]': '1',
         '(click)': 'openModal()'
@@ -32,7 +32,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 })
 export class GlobalNavigationTabbedBrowser {
 
-    constructor(private navigation: navigation, private modal: modal, public elementRef: ElementRef) {
+    constructor(public navigation: navigation,public modal: modal, public elementRef: ElementRef) {
 
     }
 
@@ -53,7 +53,7 @@ export class GlobalNavigationTabbedBrowser {
     /**
      * opens the browser modal window
      */
-    private openModal() {
+   public openModal() {
         this.modal.openModal('GlobalNavigationTabbedBrowserModal')
     }
 

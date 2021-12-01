@@ -14,7 +14,7 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: "lead-convert-item-duplicate",
-    templateUrl: "./src/modules/leads/templates/leadconvertitemduplicate.html",
+    templateUrl: "../templates/leadconvertitemduplicate.html",
     providers: [view]
 })
 export class LeadConvertItemDuplicate {
@@ -25,14 +25,14 @@ export class LeadConvertItemDuplicate {
      *
      * ToD: Check if we shoudl add a separate configuration for the fieldsets used here
      */
-    private fieldset: string;
+    public fieldset: string;
 
     /**
      * an eventemitter when an item is selected
      */
-    @Output() private itemselected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public itemselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private view: view, private model: model, private metadata: metadata) {
+    constructor(public view: view, public model: model, public metadata: metadata) {
 
         // initialize the view
         this.view.isEditable = false;
@@ -53,14 +53,14 @@ export class LeadConvertItemDuplicate {
     /**
      * returns the fields
      */
-    private getFields() {
+    public getFields() {
         return this.metadata.getFieldSetFields(this.fieldset);
     }
 
     /**
      * selects the account for usage in the lead
      */
-    private useaccount() {
+    public useaccount() {
         this.itemselected.emit(this.model.data);
     }
 }

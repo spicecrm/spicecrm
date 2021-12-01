@@ -63,6 +63,7 @@ export interface ColumnI extends TagElementI {
  * content element to be rendered in the view
  */
 export interface ContentElementI {
+    label: string,
     tagName: string;
     attributes: any;
 }

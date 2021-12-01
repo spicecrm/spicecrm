@@ -11,21 +11,21 @@ import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
 
 @Component({
-    templateUrl: './src/include/spicebcardreader/templates/spicebcardreaderbutton.html',
+    templateUrl: '../templates/spicebcardreaderbutton.html',
     providers: [modelattachments, model],
 })
 
 export class SpiceBCardReaderButton {
 
-    @ViewChild("fileupload", {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
+    @ViewChild("fileupload", {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
 
-    constructor(private modelattachments: modelattachments,
-                private language: language,
-                private metadata: metadata,
-                private modal: modal,
-                @Self() private newModel: model,
-                @SkipSelf() private model: model,
-                private backend: backend) {
+    constructor(public modelattachments: modelattachments,
+                public language: language,
+                public metadata: metadata,
+                public modal: modal,
+                @Self() public newModel: model,
+                @SkipSelf() public model: model,
+                public backend: backend) {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }
@@ -40,7 +40,7 @@ export class SpiceBCardReaderButton {
      * @param fields
      * @return phones: object
      */
-    protected getNewModelPhone(fields) {
+    public getNewModelPhone(fields) {
         let phones: any = {};
         phones.phone_work = fields.tel[0].value[0];
         phones.phone_home = fields.tel[1] ? fields.tel[1].value[0] : '';
@@ -54,7 +54,7 @@ export class SpiceBCardReaderButton {
      * @param fields
      * @return fullName: object
      */
-    protected getNewModelFullName(fields) {
+    public getNewModelFullName(fields) {
         let fullName: any = {};
         fullName.last_name = fields.n[0].value[0] || '';
         fullName.first_name = fields.n[0].value[1] || '';
@@ -69,7 +69,7 @@ export class SpiceBCardReaderButton {
      * @param fields
      * @return addresses: object
      */
-    protected getNewModelAddresses(fields) {
+    public getNewModelAddresses(fields) {
         let addresses: any = {};
         if (fields.adr && fields.adr[0]) {
             addresses.primary_address_pobox = fields.adr[0].value[0] || '';
@@ -93,7 +93,7 @@ export class SpiceBCardReaderButton {
     /*
      * does the upload of the files
      */
-    private uploadFile() {
+    public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         if (files.length == 1) this.doUpload(files[0]);
         this.fileupload.element.nativeElement.value = '';
@@ -103,7 +103,7 @@ export class SpiceBCardReaderButton {
      * stop propagation on the field clicl
      * @param event
      */
-    private uploadclick(event) {
+    public uploadclick(event) {
         event.stopPropagation();
     }
 
@@ -111,7 +111,7 @@ export class SpiceBCardReaderButton {
      * the upload itself
      * @param file
      */
-    private doUpload(file) {
+    public doUpload(file) {
         this.newModel.module = this.model.module;
         this.newModel.id = this.newModel.generateGuid();
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
@@ -137,7 +137,7 @@ export class SpiceBCardReaderButton {
      * @set newModel.presets from vcard
      * @param vcard: string
      */
-    private getNewModelPresets(vcard) {
+    public getNewModelPresets(vcard) {
         let fields = this.parseVCard(vcard);
         let newModelPresets: any = {};
         let newModelFields = this.metadata.getModuleFields(this.newModel.module);
@@ -165,7 +165,7 @@ export class SpiceBCardReaderButton {
      * @param fields
      * @return emailAddresses: object
      */
-    private getNewModelEmailAddresses(fields) {
+    public getNewModelEmailAddresses(fields) {
         let emailAddresses = [];
         fields.email.forEach(email => {
             let counter = 0;
@@ -190,7 +190,7 @@ export class SpiceBCardReaderButton {
      * @param file
      * @return observable: fileContentBase64
      */
-    private getFileContent(file): Observable<any> {
+    public getFileContent(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader: any = new FileReader();
         reader.file = file;
@@ -209,7 +209,7 @@ export class SpiceBCardReaderButton {
      * @param input: string
      * @return fields: object
      */
-    private parseVCard(input) {
+    public parseVCard(input) {
         let Re1 = /^(version|fn|title|org):(.+)$/i;
         let Re2 = /^([^:;]+);([^:]+):(.+)$/;
         let ReKey = /item\d{1,2}\./;

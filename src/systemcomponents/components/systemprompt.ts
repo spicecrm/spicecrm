@@ -13,7 +13,7 @@ declare var _;
  */
 @Component({
     selector: 'system-prompt',
-    templateUrl: './src/systemcomponents/templates/systemprompt.html'
+    templateUrl: '../templates/systemprompt.html'
 })
 export class SystemPrompt implements OnInit, AfterViewInit {
 
@@ -58,39 +58,39 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * the observabkle for the answer
      */
-    private answer: Observable<boolean> = null;
+    public answer: Observable<boolean> = null;
 
     /**
      * the subject for the answer
      */
-    private answerSubject: Subject<any> = null;
+    public answerSubject: Subject<any> = null;
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
     /**
      * reference to the cancel button .. allows focussing when the modal is rendered
      */
-    @ViewChild('cancelButton', {static: false}) private cancelButton;
+    @ViewChild('cancelButton', {static: false}) public cancelButton;
 
     /**
      * reference to the ok button .. allows focussing when the modal is rendered
      */
-    @ViewChild('okButton', {static: false}) private okButton;
+    @ViewChild('okButton', {static: false}) public okButton;
 
     /**
      * reference to the input field .. allows focussing when the modal is rendered
      */
-    @ViewChild('inputField', {static: false}) private inputField;
+    @ViewChild('inputField', {static: false}) public inputField;
 
     /**
      * reference to the select field .. allows focussing when the modal is rendered
      */
-    @ViewChild('selectField', {static: false}) private selectField;
+    @ViewChild('selectField', {static: false}) public selectField;
 
-    constructor( private language: language ) {
+    constructor( public language: language ) {
         this.answerSubject = new Subject<any>();
         this.answer = this.answerSubject.asObservable();
         this.radioGroupName = _.uniqueId('system-prompt-group-name-');

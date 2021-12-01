@@ -18,7 +18,7 @@ declare var moment: any;
 
 @Component({
     selector: "project-activity-dashlet-activity",
-    templateUrl: "./src/modules/projects/templates/projectactivitydashletactivity.html",
+    templateUrl: "../templates/projectactivitydashletactivity.html",
     providers: [model, view]
 })
 export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
@@ -28,30 +28,30 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private plannedActivities: any = [];
-    private selected_wbs = null;
-    private wbs_search_term = "";
-    private show_wbs_results = false;
+    public plannedActivities: any = [];
+    public selected_wbs = null;
+    public wbs_search_term = "";
+    public show_wbs_results = false;
 
     // the current set minutes
-    private activityminutes: number = 15;
+    public activityminutes: number = 15;
 
     // the currrent set hours
-    private activitiyhours: number = 0;
+    public activitiyhours: number = 0;
 
-    private activitiyDateStart: any;
-    private activitiyDateEnd: any;
+    public activitiyDateStart: any;
+    public activitiyDateEnd: any;
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private view: view,
-        private backend: backend,
-        private toast: toast,
-        private modellist: modellist
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public view: view,
+        public backend: backend,
+        public toast: toast,
+        public modellist: modellist
     ) {
         this.view.displayLabels = false;
         this.model.module = "ProjectActivities";
@@ -105,7 +105,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      * @param data
      * @private
      */
-    private modelchanged(data) {
+    public modelchanged(data) {
         if (this.activityminutes != data.duration_minutes || this.activitiyhours != data.duration_hours) {
             // set the new values
             this.activityminutes = data.duration_minutes;
@@ -156,7 +156,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private validate() {
+    public validate() {
         if (!this.selected_wbs) {
             return false;
         }
@@ -187,7 +187,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private save() {
+    public save() {
         if (!this.validate()) {
             return false;
         }
@@ -213,7 +213,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private reset() {
+    public reset() {
         this.model.id = "";
         this.model.initializeModel();
 

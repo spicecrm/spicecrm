@@ -32,20 +32,20 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
 
     @HostBinding('class.slds-is-open') public dropDownOpen: boolean = false;
     public hasTriggerButton = false;
-    private clickListener: any;
-    private triggerClickListener: any;
-    private previousTriggerRect: any;
-    private dropdownElement: HTMLElement;
+    public clickListener: any;
+    public triggerClickListener: any;
+    public previousTriggerRect: any;
+    public dropdownElement: HTMLElement;
     /*
     * @input dropdowntrigger: boolean = false
     */
-    @Input('system-dropdown-trigger') private dropdowntriggerdisabled: boolean = false;
+    @Input('system-dropdown-trigger') public dropdowntriggerdisabled: boolean = false;
 
     constructor(
-        private renderer: Renderer2,
-        private elementRef: ElementRef,
-        private footer: footer,
-        private cdRef: ChangeDetectorRef
+        public renderer: Renderer2,
+        public elementRef: ElementRef,
+        public footer: footer,
+        public cdRef: ChangeDetectorRef
     ) {
 
     }
@@ -103,7 +103,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
      * @private
      */
     @HostListener('click', ['$event'])
-    private hostClick(event) {
+    public hostClick(event) {
 
         if (this.hasTriggerButton) return;
 
@@ -114,7 +114,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @remove the dropdown element from origin
     * @append the dropdown element to the footer
     */
-    private moveDropdownToFooter() {
+    public moveDropdownToFooter() {
         this.renderer.removeChild(this.elementRef.nativeElement, this.dropdownElement);
         this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
     }
@@ -123,7 +123,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @remove the dropdown element from origin
     * @append the dropdown element to the footer
     */
-    private removeDropdownFromFooter() {
+    public removeDropdownFromFooter() {
         if (this.dropdownElement && this.footer.footercontainer.element.nativeElement.contains(this.dropdownElement)) {
             this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
         }
@@ -134,7 +134,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @set dropdown style.right
     * @set dropdown style.z-index
     */
-    private resetDropdownStyles() {
+    public resetDropdownStyles() {
         this.renderer.setStyle(this.dropdownElement, 'transform', 'initial');
         this.renderer.setStyle(this.dropdownElement, 'right', 'initial');
         this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
@@ -143,7 +143,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     /*
     * @set dropdownElement from origin children
     */
-    private setDropdownElement() {
+    public setDropdownElement() {
         if (!this.dropdownElement) {
             for (let child of this.elementRef.nativeElement.children) {
                 if (child.classList.contains('slds-dropdown')) {
@@ -157,7 +157,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     /*
     * @set dropDownOpen
     */
-    private toggleOpenDropdown() {
+    public toggleOpenDropdown() {
         this.dropDownOpen = !this.dropDownOpen;
     }
 
@@ -166,7 +166,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @set dropdown style.top
     * @set dropdown style.left
     */
-    private setDropdownElementPosition() {
+    public setDropdownElementPosition() {
         let triggerRect = this.elementRef.nativeElement.getBoundingClientRect();
         let dropdownRect = this.dropdownElement.getBoundingClientRect();
         if (this.previousTriggerRect && this.previousTriggerRect.bottom == triggerRect.bottom && this.previousTriggerRect.right == triggerRect.right) return;
@@ -184,7 +184,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @append dropdown to origin
     * @remove global click listener
     */
-    private onClick(event): void {
+    public onClick(event): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             this.dropDownOpen = false;
             this.removeDropdownFromFooter();

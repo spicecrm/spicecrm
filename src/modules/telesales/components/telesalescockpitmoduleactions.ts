@@ -7,16 +7,16 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'tele-sales-cockpit-module-actions',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitmoduleactions.html',
+    templateUrl: '../templates/telesalescockpitmoduleactions.html',
 })
 export class TeleSalesCockpitModuleActions implements OnChanges {
 
-    @ViewChild('moduleactionscontainer', {read: ViewContainerRef, static: true}) private moduleactionscontainer: ViewContainerRef;
-    @Input() private module: string;
+    @ViewChild('moduleactionscontainer', {read: ViewContainerRef, static: true}) public moduleactionscontainer: ViewContainerRef;
+    @Input() public module: string;
 
-    private actionset: string = '';
+    public actionset: string = '';
 
-    constructor(private language: language, private metadata: metadata) {
+    constructor(public language: language, public metadata: metadata) {
     }
 
     public ngOnChanges() {
@@ -25,7 +25,7 @@ export class TeleSalesCockpitModuleActions implements OnChanges {
         }
     }
 
-    private loadActionset(module) {
+    public loadActionset(module) {
         let conf = this.metadata.getComponentConfig('TeleSalesCockpitModuleActions', module);
         this.actionset = conf && conf.actionset ? conf.actionset : '';
     }

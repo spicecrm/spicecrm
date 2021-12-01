@@ -14,7 +14,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "bonus-cards-new-related-button",
-    templateUrl: "./src/modules/bonusprograms/templates/bonuscardnewrelatedbutton.html",
+    templateUrl: "../templates/bonuscardnewrelatedbutton.html",
     providers: [model]
 })
 export class BonusCardNewRelatedButton extends BonusCardNewButton {
@@ -32,7 +32,7 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
                 public model: model,
                 @SkipSelf() public parentModel: model,
                 public modelUtilities: modelutilities,
-                private relatedModels: relatedmodels) {
+                public relatedModels: relatedmodels) {
         super(language, metadata, modal, toast, backend, model, parentModel, modelUtilities);
 
     }

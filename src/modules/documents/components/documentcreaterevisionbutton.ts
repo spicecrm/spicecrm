@@ -14,20 +14,20 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'document-create-revision-button',
-    templateUrl: './src/modules/documents/templates/documentcreaterevisionbutton.html'
+    templateUrl: '../templates/documentcreaterevisionbutton.html'
 })
 export class DocumentCreateRevisionButton extends ObjectActionOutputBeanButton implements OnDestroy{
 
-    private subscriptions = new Subscription();
+    public subscriptions = new Subscription();
 
     constructor(
-        protected language: language,
-        protected model: model,
-        protected modal: modal,
-        protected backend: backend,
-        protected configuration: configurationService,
-        protected viewContainerRef: ViewContainerRef,
-        protected relatedmodels: relatedmodels
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public configuration: configurationService,
+        public viewContainerRef: ViewContainerRef,
+        public relatedmodels: relatedmodels
     ) {
         super(language, model, modal, backend, configuration, viewContainerRef);
     }

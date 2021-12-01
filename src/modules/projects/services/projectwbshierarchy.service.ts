@@ -28,7 +28,7 @@ export class projectwbsHierarchy {
      */
     public isloading: boolean = false;
 
-    constructor(private backend: backend, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modelutilities: modelutilities) {
     }
 
     /**

@@ -13,7 +13,7 @@ declare var moment;
 
 @Component({
     selector: 'tele-sales-cockpit-list-item',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitlistitem.html',
+    templateUrl: '../templates/telesalescockpitlistitem.html',
     providers: [model, view]
 })
 export class TeleSalesCockpitListItem implements OnInit {
@@ -22,12 +22,12 @@ export class TeleSalesCockpitListItem implements OnInit {
     public componentFields: any[] = [];
     public isSelected: boolean = false;
 
-    constructor(private language: language,
-                private model: model,
-                private view: view,
-                private metadata: metadata,
-                private telecockpitservice: telecockpitservice,
-                private userpreferences: userpreferences
+    constructor(public language: language,
+                public model: model,
+                public view: view,
+                public metadata: metadata,
+                public telecockpitservice: telecockpitservice,
+                public userpreferences: userpreferences
     ) {
 
         this.view.displayLabels = false;
@@ -56,22 +56,22 @@ export class TeleSalesCockpitListItem implements OnInit {
         this.loadComponentFields();
     }
 
-    private initializeModel() {
+    public initializeModel() {
         this.model.module = this.item.target_type;
         this.model.id = this.item.id;
         this.model.data = this.item.data;
     }
 
-    private loadComponentFields() {
+    public loadComponentFields() {
         let componentConf = this.metadata.getComponentConfig('TeleSalesCockpitListItem', this.model.module);
         this.componentFields = componentConf && componentConf.fieldset ? this.metadata.getFieldSetFields(componentConf.fieldset) : [];
     }
 
-    private setSelectedListItem() {
+    public setSelectedListItem() {
         this.telecockpitservice.selectedListItem$ = this.item;
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.item_id;
     }
 }
