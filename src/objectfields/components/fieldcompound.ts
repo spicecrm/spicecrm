@@ -10,11 +10,11 @@ import {ObjectRecordFieldset} from '../../objectcomponents/components/objectreco
  */
 @Component({
     selector: 'field-compound',
-    templateUrl: './src/objectfields/templates/fieldcompound.html'
+    templateUrl: '../templates/fieldcompound.html'
 })
 export class fieldCompound extends fieldGeneric implements OnInit {
 
-    @ViewChild('compound', {read: ViewContainerRef, static: true}) private compound: ViewContainerRef;
+    @ViewChild('compound', {read: ViewContainerRef, static: true}) public compound: ViewContainerRef;
 
     public ngOnInit() {
         super.ngOnInit();

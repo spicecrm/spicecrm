@@ -17,24 +17,24 @@ declare var _;
 
 @Component({
     selector: 'package-loader-package',
-    templateUrl: './src/systemcomponents/templates/packageloaderpackage.html',
+    templateUrl: '../templates/packageloaderpackage.html',
 })
 export class PackageLoaderPackage implements OnInit {
 
-    @Input() private package: any;
-    @Input() private packages: any[] = [];
-    @Input() private repository: any;
-    private extensions: any[] = [];
-    private requiredpackages: any[] = [];
-    // private disabled: boolean = true;
-    private loading: string = '';
+    @Input() public package: any;
+    @Input() public packages: any[] = [];
+    @Input() public repository: any;
+    public extensions: any[] = [];
+    public requiredpackages: any[] = [];
+    // public disabled: boolean = true;
+    public loading: string = '';
 
     constructor(
-        private language: language,
-        protected backend: backend,
-        private configurationService: configurationService,
-        private loader: loader,
-        private broadcast: broadcast
+        public language: language,
+        public backend: backend,
+        public configurationService: configurationService,
+        public loader: loader,
+        public broadcast: broadcast
     ) {
 
     }
@@ -75,7 +75,7 @@ export class PackageLoaderPackage implements OnInit {
         }
     }
 
-    private loadPackage(packagename) {
+    public loadPackage(packagename) {
         this.loading = 'package';
         this.backend.getRequest('configuration/packages/package/' + packagename + this.repositoryaddurl).subscribe(
             response => {
@@ -91,7 +91,7 @@ export class PackageLoaderPackage implements OnInit {
             });
     }
 
-    private deletePackage(packagename) {
+    public deletePackage(packagename) {
         this.loading = 'package';
         this.backend.deleteRequest('configuration/packages/package/' + packagename).subscribe(response => {
             this.loading = 'configuration';

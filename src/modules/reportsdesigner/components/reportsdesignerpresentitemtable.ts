@@ -9,15 +9,15 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present-item-table',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerpresentitemtable.html'
+    templateUrl: '../templates/reportsdesignerpresentitemtable.html'
 })
 export class ReportsDesignerPresentItemTable {
     /**
      * show/hide function field
      */
-    @Input() private showFunction: boolean = false;
+    @Input() public showFunction: boolean = false;
 
-    constructor(public language: language, public model: model, private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -34,7 +34,7 @@ export class ReportsDesignerPresentItemTable {
      * @param item
      * @return index
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.fieldid;
     }
 
@@ -43,7 +43,7 @@ export class ReportsDesignerPresentItemTable {
      * @set listfield.sortpriority
      * @set listfields
      */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
+    public onDrop(dragEvent: CdkDragDrop<any>) {
         moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
         dragEvent.container.data = dragEvent.container.data.map((item, index) => {
             item.sortpriority = index;
@@ -55,7 +55,7 @@ export class ReportsDesignerPresentItemTable {
     /**
      * @set field.link: string
      */
-    protected setFieldLink(field, value) {
+    public setFieldLink(field, value) {
         field.link = value ? 'yes' : 'no';
     }
 }

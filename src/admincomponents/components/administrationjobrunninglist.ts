@@ -10,7 +10,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-job-running-list',
-    templateUrl: './src/admincomponents/templates/administrationjobrunninglist.html'
+    templateUrl: '../templates/administrationjobrunninglist.html'
 })
 export class AdministrationJobRunningList implements OnInit {
     /**
@@ -26,10 +26,10 @@ export class AdministrationJobRunningList implements OnInit {
         isLoading: false
     };
 
-    constructor(private metadata: metadata,
-                private toast: toast,
-                private modal: modal,
-                private language: language,
+    constructor(public metadata: metadata,
+                public toast: toast,
+                public modal: modal,
+                public language: language,
                 public backend: backend) {
     }
 
@@ -150,7 +150,7 @@ export class AdministrationJobRunningList implements OnInit {
      * @param item
      * @return item.id
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

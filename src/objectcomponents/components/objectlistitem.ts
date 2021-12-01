@@ -14,11 +14,11 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: '[object-list-item]',
-    templateUrl: './src/objectcomponents/templates/objectlistitem.html',
+    templateUrl: '../templates/objectlistitem.html',
     providers: [model, view],
     styles: [
-        ':host /deep/ field-container global-button-icon {display:none;}',
-        ':host:hover /deep/ field-container global-button-icon {display:inline;}',
+        ':host  field-container global-button-icon {display:none;}',
+        ':host:hover  field-container global-button-icon {display:inline;}',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -27,58 +27,58 @@ export class ObjectListItem implements OnInit, OnDestroy {
     /**
      * set to true if the rowselect checkboy should be displayed
      */
-    @Input() private rowselect: boolean = false;
+    @Input() public rowselect: boolean = false;
 
     /**
      * set to true if row numbers shoudl be displayed
      */
-    @Input() private rownumbers: boolean = false;
+    @Input() public rownumbers: boolean = false;
 
     /**
      * set to true if drag handles should be displayed
      */
-    @Input() private dragHandles: boolean = false;
+    @Input() public dragHandles: boolean = false;
 
     /**
      * if the select ois to be displayed but disabled
      */
-    @Input() private rowselectdisabled: boolean = false;
+    @Input() public rowselectdisabled: boolean = false;
 
     /**
      * the item
      */
-    @Input() private listItem: any = {};
+    @Input() public listItem: any = {};
 
     /**
      * set to true to enable inline editing
      * set from the list from the config
      */
-    @Input() private inlineedit: boolean = false;
+    @Input() public inlineedit: boolean = false;
 
     /**
      * by default links are dislayed. But in some views the links hsoudl be disabled
      */
-    @Input() private displaylinks: boolean = true;
+    @Input() public displaylinks: boolean = true;
 
     /**
      * set to true to display line numbers
      *
      * @private
      */
-    @Input() private rowNumber: number;
+    @Input() public rowNumber: number;
 
     /**
      * if set to true an action item is rendered
      */
-    @Input() private showActionMenu: boolean = true;
+    @Input() public showActionMenu: boolean = true;
 
     /**
      * an array of subscriptions
      */
-    private subscriptions: any[] = [];
+    public subscriptions: any[] = [];
 
 
-    constructor(private model: model, private modelutilities: modelutilities, private modellist: modellist, private view: view, private router: Router, private language: language, private cdref: ChangeDetectorRef) {
+    constructor(public model: model, public modelutilities: modelutilities, public modellist: modellist, public view: view, public router: Router, public language: language, public cdref: ChangeDetectorRef) {
         this.view.displayLabels = false;
     }
 
@@ -120,7 +120,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
         }
     }
 
-    private navigateDetail() {
+    public navigateDetail() {
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
     }
 }

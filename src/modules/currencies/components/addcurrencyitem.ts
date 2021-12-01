@@ -10,21 +10,21 @@ import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: 'add-currency-item',
-    templateUrl: './src/modules/currencies/templates/addcurrencyitem.html'
+    templateUrl: '../templates/addcurrencyitem.html'
 })
 
 export class AddCurrencyItem {
-    @Output() private new: EventEmitter<any> = new EventEmitter<any>();
-    private name: string;
-    private iso: string;
-    private symbol: string;
-    private show: boolean = false;
+    @Output() public new: EventEmitter<any> = new EventEmitter<any>();
+    public name: string;
+    public iso: string;
+    public symbol: string;
+    public show: boolean = false;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private toast: toast,
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public toast: toast,
     ) {
 
     }
@@ -32,13 +32,13 @@ export class AddCurrencyItem {
     /**
      * hide or show the form part of the component
      */
-    private toggleShow() {
+    public toggleShow() {
         this.show = !this.show;
     }
     /**
      * post a currency to the backend and emit true if the request was successful
      */
-    private addCurrencyItem() {
+    public addCurrencyItem() {
         let body = {
             name: this.name,
             iso: this.iso,

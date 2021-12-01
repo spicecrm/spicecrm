@@ -19,7 +19,7 @@ declare var _;
  */
 @Component({
     selector: 'object-relatedlist-all',
-    templateUrl: './src/objectcomponents/templates/objectrelatedlistall.html',
+    templateUrl: '../templates/objectrelatedlistall.html',
     providers: [model, relatedmodels]
 })
 export class ObjectRelatedlistAll implements OnInit {
@@ -27,44 +27,44 @@ export class ObjectRelatedlistAll implements OnInit {
     /**
      * the content container required to load more when scrolled
      */
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) public tablecontent: ViewContainerRef;
 
     /**
      * the module
      */
-    private module = '';
+    public module = '';
 
     /**
      * the id of the record
      */
-    private id = '';
+    public id = '';
 
     /**
      * a linkname if a specific link is to be used
      */
-    private link = '';
+    public link = '';
 
     /**
      * the related module
      */
-    private related = '';
+    public related = '';
 
     /**
      * the fieldset to be used
      */
-    private fieldset: string = undefined;
+    public fieldset: string = undefined;
 
     /**
      * the component configuration
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * the fields to be used
      */
-    private listfields: any[] = [];
+    public listfields: any[] = [];
 
-    constructor(private navigationtab: navigationtab, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
+    constructor(public navigationtab: navigationtab, public language: language, public metadata: metadata, public model: model, public relatedmodels: relatedmodels) {
 
     }
 
@@ -121,14 +121,14 @@ export class ObjectRelatedlistAll implements OnInit {
      *
      * used in the breadcrumbs
      */
-    private goModule() {
+    public goModule() {
         this.model.goModule();
     }
 
     /**
      * navigates to the model
      */
-    private goModel() {
+    public goModel() {
         this.model.goDetail();
     }
 
@@ -144,7 +144,7 @@ export class ObjectRelatedlistAll implements OnInit {
      * triggered on scroll to handle infinite scrolling when the user scrolls and more items can be loaded
      * @param e
      */
-    private onScroll(e) {
+    public onScroll(e) {
         if(this.relatedmodels.canloadmore) {
             let element = this.tablecontent.element.nativeElement;
             if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {

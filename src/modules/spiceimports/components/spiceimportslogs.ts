@@ -11,7 +11,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 
 @Component({
     selector: 'spice-imports-logs',
-    templateUrl: './src/modules/spiceimports/templates/spiceimportslogs.html',
+    templateUrl: '../templates/spiceimportslogs.html',
 })
 export class Spiceimportslogs {
     @ViewChild('logscontainer', {read: ViewContainerRef, static: true}) logscontainer: ViewContainerRef;
@@ -21,11 +21,11 @@ export class Spiceimportslogs {
     activelogname: string = undefined;
     opened: boolean = false;
 
-    constructor(private language: language,
-                private modal: modal,
-                private backend: backend,
-                private toast: toast,
-                private spiceimportsservice: spiceimportsservice) {
+    constructor(public language: language,
+                public modal: modal,
+                public backend: backend,
+                public toast: toast,
+                public spiceimportsservice: spiceimportsservice) {
         this.spiceimportsservice.activeimportdata$.subscribe(data => {
             if (data) {
                 this.activeLogName = data.name;

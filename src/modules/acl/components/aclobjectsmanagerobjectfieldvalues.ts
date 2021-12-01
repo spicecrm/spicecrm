@@ -13,16 +13,16 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'aclobjects-manager-object-fieldvalues',
-    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobjectfieldvalues.html',
+    templateUrl: '../templates/aclobjectsmanagerobjectfieldvalues.html',
     providers: [view]
 })
 export class ACLObjectsManagerObjectFieldvalues {
 
-    private fields: any[] = [];
-    private fieldset: string = '';
-    private loadedtype: string = '';
+    public fields: any[] = [];
+    public fieldset: string = '';
+    public loadedtype: string = '';
 
-    constructor(private backend: backend, private view: view, private metadata: metadata, private model: model, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public view: view, public metadata: metadata, public model: model, public language: language, public modelutilities: modelutilities) {
         this.view.isEditable = true;
         this.view.setEditMode();
 
@@ -33,7 +33,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         this.fieldset = componentconfig.fieldset;
     }
 
-    private handleType() {
+    public handleType() {
         let aclTypeId = this.model.getFieldValue('sysmodule_id');
         if (aclTypeId && this.loadedtype != aclTypeId) {
             this.loadedtype = aclTypeId;
@@ -44,7 +44,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         }
     }
 
-    private getFieldValue(field, valueid) {
+    public getFieldValue(field, valueid) {
         let fieldValues = this.model.getFieldValue('fieldvalues');
         if (fieldValues && fieldValues.length > 0) {
             for (let fieldvalue of fieldValues) {
@@ -57,7 +57,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         return '';
     }
 
-    private setFieldValue(field, valueid, eventtype, event) {
+    public setFieldValue(field, valueid, eventtype, event) {
         let fieldValues = this.model.getFieldValue('fieldvalues');
         if (fieldValues && fieldValues.length > 0) {
             for (let fieldvalue of fieldValues) {
@@ -80,7 +80,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         fieldValues.push(newObject);
     }
 
-    private resetid(valueid) {
+    public resetid(valueid) {
         let i = 0;
         let fieldValues = this.model.getFieldValue('fieldvalues');
         if (fieldValues && fieldValues.length > 0) {

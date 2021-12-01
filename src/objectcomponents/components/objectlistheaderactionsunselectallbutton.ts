@@ -11,7 +11,7 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'object-list-header-actions-unselect-all-button',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsunselectallbutton.html',
+    templateUrl: '../templates/objectlistheaderactionsunselectallbutton.html',
 })
 export class ObjectListHeaderActionsUnselectAllButton {
 
@@ -21,11 +21,11 @@ export class ObjectListHeaderActionsUnselectAllButton {
     public disabled: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal
     ) {
     }
 

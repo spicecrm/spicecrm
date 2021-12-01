@@ -14,32 +14,32 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: "[object-related-list-item]",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedlistitem.html",
+    templateUrl: "../templates/objectrelatedlistitem.html",
     providers: [model, view]
 })
 export class ObjectRelatedListItem implements OnInit {
-    @Input() private listfields: any[] = [];
-    @Input() private listitem: any = {};
-    @Input() private module: string = "";
-    @Input() private editable: boolean = false;
-    @Input() private editcomponentset: string = "";
+    @Input() public listfields: any[] = [];
+    @Input() public listitem: any = {};
+    @Input() public module: string = "";
+    @Input() public editable: boolean = false;
+    @Input() public editcomponentset: string = "";
 
     /**
      * an oiptional list item actionset that can be passed through
      */
-    @Input() private listitemactionset: string;
+    @Input() public listitemactionset: string;
 
     /**
      * set to true to hide the actionset menu item being display
      */
-    @Input() private hideActions: boolean = false;
+    @Input() public hideActions: boolean = false;
 
-    private customEditActions: any[] = [];
-    private customActions: any[] = [];
-    private expanded: boolean = false;
+    public customEditActions: any[] = [];
+    public customActions: any[] = [];
+    public expanded: boolean = false;
     public componentconfig: any = {};
 
-    constructor(private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal) {
+    constructor(public metadata: metadata, public footer: footer, public model: model, public relatedmodels: relatedmodels, public view: view, public router: Router, public language: language, public layout: layout, public modalservice: modal) {
     }
 
     /**
@@ -69,7 +69,7 @@ export class ObjectRelatedListItem implements OnInit {
     /**
      * go to the detail voie for the model
      */
-    private navigateDetail() {
+    public navigateDetail() {
         this.router.navigate(["/module/" + this.model.module + "/" + this.model.id]);
     }
 
@@ -80,7 +80,7 @@ export class ObjectRelatedListItem implements OnInit {
      *
      * @param action
      */
-    private handleAction(action) {
+    public handleAction(action) {
         switch (action) {
             case "canceledit":
                 this.model.cancelEdit();
@@ -129,7 +129,7 @@ export class ObjectRelatedListItem implements OnInit {
         }
     }
 
-    private toggleexpanded(e: MouseEvent) {
+    public toggleexpanded(e: MouseEvent) {
         e.stopPropagation();
         this.expanded = !this.expanded;
     }

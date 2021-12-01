@@ -11,7 +11,7 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'spice-google-maps-direction-modal',
-    templateUrl: './src/include/spicemap/templates/spicegooglemapsdirectionmodal.html',
+    templateUrl: '../templates/spicegooglemapsdirectionmodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -27,12 +27,12 @@ export class SpiceGoogleMapsDirectionModal implements OnInit {
     /**
      * to be passed to the child to activate the direction mode only
      */
-    private useMapOptions = {
+    public useMapOptions = {
         direction: true,
         search: false
     };
 
-    constructor(private cdRef: ChangeDetectorRef, private metadata: metadata, private model: model) {
+    constructor(public cdRef: ChangeDetectorRef, public metadata: metadata, public model: model) {
     }
 
     /**
@@ -64,7 +64,7 @@ export class SpiceGoogleMapsDirectionModal implements OnInit {
         }
     }
 
-    private close() {
+    public close() {
         this.cdRef.detach();
         this.self.destroy();
     }

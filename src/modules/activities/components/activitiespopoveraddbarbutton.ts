@@ -19,7 +19,7 @@ import {relatedmodels} from '../../../services/relatedmodels.service';
  */
 @Component({
     selector: 'activities-popover-addbar-button',
-    templateUrl: './src/modules/activities/templates/activitiespopoveraddbarbutton.html',
+    templateUrl: '../templates/activitiespopoveraddbarbutton.html',
     providers: [model]
 })
 export class ActivitiesPopoverAddBarButton {
@@ -27,20 +27,20 @@ export class ActivitiesPopoverAddBarButton {
     /**
      * the module we are creating here
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * the parent element
      */
-    @Input() private parent: any;
+    @Input() public parent: any;
 
-    constructor(private model: model, private language: language, private metadata: metadata, @Optional() private relatedmodels: relatedmodels) {
+    constructor(public model: model, public language: language, public metadata: metadata, @Optional() public relatedmodels: relatedmodels) {
     }
 
     /**
      * handle the click and create the model
      */
-    private addModel() {
+    public addModel() {
         this.model.module = this.module;
 
         // set the parents

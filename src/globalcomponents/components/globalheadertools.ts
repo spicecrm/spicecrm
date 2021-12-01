@@ -10,14 +10,14 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'global-header-tools',
-    templateUrl: './src/globalcomponents/templates/globalheadertools.html'
+    templateUrl: '../templates/globalheadertools.html'
 })
 export class GlobalHeaderTools implements AfterViewInit {
 
-    @ViewChild('toolcontainer', {read: ViewContainerRef, static: true}) private toolcontainer: ViewContainerRef;
-    private containerItems: any[] = [];
+    @ViewChild('toolcontainer', {read: ViewContainerRef, static: true})public toolcontainer: ViewContainerRef;
+   public containerItems: any[] = [];
 
-    constructor(private session: session, private metadata: metadata, private router: Router, private language: language, private broadcast: broadcast) {
+    constructor(public session: session,public metadata: metadata,public router: Router,public language: language,public broadcast: broadcast) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -27,7 +27,7 @@ export class GlobalHeaderTools implements AfterViewInit {
         this.buildTools();
     }
 
-    private handleMessage(message) {
+   public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':
@@ -37,7 +37,7 @@ export class GlobalHeaderTools implements AfterViewInit {
         }
     }
 
-    private buildTools() {
+   public buildTools() {
 
         // destrioy the current container
         this.containerItems.forEach(item => {

@@ -14,14 +14,14 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'account-vatid-field',
-    templateUrl: './src/modules/accounts/templates/accountvatidfield.html',
+    templateUrl: '../templates/accountvatidfield.html',
 })
 
 export class AccountVATIDField extends fieldGeneric implements OnInit {
     isvalidating: boolean = false;
     options: any = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private toast: toast) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend, public toast: toast) {
         super(model, view, language, metadata, router);
         // for the language options
         this.subscriptions.add(
@@ -141,7 +141,7 @@ export class AccountVATIDField extends fieldGeneric implements OnInit {
      * @return boolean
      * @private
      */
-    private canCheck(vat_id) {
+    public canCheck(vat_id) {
         return vat_id.length > 3;
     }
 
@@ -149,7 +149,7 @@ export class AccountVATIDField extends fieldGeneric implements OnInit {
      * adds a new entry to the accountvatids beans and reloads the vatids array
      *
      */
-    private add() {
+    public add() {
         let id = this.model.generateGuid();
         this.model.getField('accountvatids').beans[id] = {
             id: id,
@@ -168,7 +168,7 @@ export class AccountVATIDField extends fieldGeneric implements OnInit {
      * @param beanid string
      * @private
      */
-    private delete(beanid) {
+    public delete(beanid) {
         this.model.getField('accountvatids').beans[beanid].deleted = 1;
         this.getAccountVATIDs();
     }
@@ -178,7 +178,7 @@ export class AccountVATIDField extends fieldGeneric implements OnInit {
      * @param beanid string
      * @private
      */
-    private isvalid(beanid) {
+    public isvalid(beanid) {
         if (this.model.getField('accountvatids').beans[beanid]['vatid_status'] == 'valid') {
             return true;
         } else {
@@ -193,7 +193,7 @@ export class AccountVATIDField extends fieldGeneric implements OnInit {
      * @return string
      * @private
      */
-    private vatInfo(beanid) {
+    public vatInfo(beanid) {
         let vatInfo = JSON.parse(this.model.getField('accountvatids').beans[beanid].verification_details);
         return vatInfo.name + '\n' + vatInfo.address;
     }

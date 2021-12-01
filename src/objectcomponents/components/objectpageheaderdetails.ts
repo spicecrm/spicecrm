@@ -14,7 +14,7 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-page-header-details',
-    templateUrl: './src/objectcomponents/templates/objectpageheaderdetails.html',
+    templateUrl: '../templates/objectpageheaderdetails.html',
 
 })
 export class ObjectPageHeaderDetails implements OnInit {
@@ -23,11 +23,11 @@ export class ObjectPageHeaderDetails implements OnInit {
      */
     public componentconfig: any = {};
 
-    private collapsed: boolean = false;
+    public collapsed: boolean = false;
 
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private elementref: ElementRef, private activatedRoute: ActivatedRoute, private router: Router, private model: model, private metadata: metadata) {
+    constructor(public elementref: ElementRef, public activatedRoute: ActivatedRoute, public router: Router, public model: model, public metadata: metadata) {
 
     }
 

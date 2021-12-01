@@ -18,7 +18,7 @@ import {ObjectRecordDetailsTab} from "./objectrecorddetailstab";
  */
 @Component({
     selector: 'object-record-details-modelstate-tab',
-    templateUrl: './src/objectcomponents/templates/objectrecorddetailsmodelstatetab.html',
+    templateUrl: '../templates/objectrecorddetailsmodelstatetab.html',
     animations: [
         trigger('displayanimation', [
             transition(':enter', [

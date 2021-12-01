@@ -16,7 +16,7 @@ import {administration} from '../services/administration.service';
 
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationmain.html',
+    templateUrl: '../templates/administrationmain.html',
     providers: [administration]
 })
 export class AdministrationMain implements AfterViewInit {
@@ -27,19 +27,19 @@ export class AdministrationMain implements AfterViewInit {
     @ViewChild('admincontentcontainer', {
         read: ViewContainerRef,
         static: true
-    }) private admincontentcontainer: ViewContainerRef;
+    }) public admincontentcontainer: ViewContainerRef;
 
     /**
      * the currently opened and renders Object
      */
-    private admincontentObject: any = null;
+    public admincontentObject: any = null;
 
     constructor(
-        private administration: administration,
-        private metadata: metadata,
-        private language: language,
-        private navigation: navigation,
-        private navigationtab: navigationtab,
+        public administration: administration,
+        public metadata: metadata,
+        public language: language,
+        public navigation: navigation,
+        public navigationtab: navigationtab,
     ) {
         // this.navigation.setActiveModule('Administration');
         this.navigationtab.setTabInfo({
@@ -63,7 +63,7 @@ export class AdministrationMain implements AfterViewInit {
      *
      * @param event
      */
-    private openContent(admincomponent) {
+    public openContent(admincomponent) {
 
         if (this.admincontentObject) {
             this.admincontentObject.destroy();

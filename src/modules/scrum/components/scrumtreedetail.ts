@@ -11,7 +11,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'scrum-tree-detail',
-    templateUrl: './src/modules/scrum/templates/scrumtreedetail.html',
+    templateUrl: '../templates/scrumtreedetail.html',
     providers: [model, view]
 })
 export class ScrumTreeDetail implements OnChanges {
@@ -19,16 +19,16 @@ export class ScrumTreeDetail implements OnChanges {
     /**
      * inputs of the id and the type of the focused object
      */
-    @Input() private focusid: string = '';
-    @Input() private focustype: string = '';
+    @Input() public focusid: string = '';
+    @Input() public focustype: string = '';
 
 
     /**
      * the componentset to be rendered
      */
-    private componentset: string;
+    public componentset: string;
 
-    constructor(private scrum: scrum, private metadata: metadata, private model: model, private view: view, private modal: modal, private language: language) {
+    constructor(public scrum: scrum, public metadata: metadata, public model: model, public view: view, public modal: modal, public language: language) {
 
     }
 
@@ -62,7 +62,7 @@ export class ScrumTreeDetail implements OnChanges {
     /**
      * render the component for the corresponding id
      */
-    private renderComponent(id) {
+    public renderComponent(id) {
         this.model.id = id;
         this.model.module = this.focustype;
         this.model.getData();
@@ -73,7 +73,7 @@ export class ScrumTreeDetail implements OnChanges {
     /**
      * destroy the componentset and reset the model
      */
-    private destroyContainer() {
+    public destroyContainer() {
         if (this.componentset) {
             this.componentset = null;
             this.model.reset();

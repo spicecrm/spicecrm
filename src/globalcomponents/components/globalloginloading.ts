@@ -11,7 +11,7 @@ import {
  */
 @Component({
     selector: 'global-login-loading',
-    templateUrl: './src/globalcomponents/templates/globalloginloading.html',
+    templateUrl: '../templates/globalloginloading.html',
 })
 export class GlobalLoginLoading {
 

@@ -11,17 +11,17 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailboxes-processors",
-    templateUrl: "./src/workbench/templates/mailboxesprocessors.html",
+    templateUrl: "../templates/mailboxesprocessors.html",
 })
 export class MailboxesProcessors {
     public processors: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private model: model,
-        private view: view,
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public model: model,
+        public view: view,
     ) {
         this.model.module = "Mailboxes";
         this.view.isEditable = true;
@@ -65,7 +65,7 @@ export class MailboxesProcessors {
         return [];
     }
 
-    private getProcessors(): Observable<any> {
+    public getProcessors(): Observable<any> {
         let responseSubject = new Subject<Array<any>>();
 
         this.backend.getRequest("module/Mailboxes/processors")

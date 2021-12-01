@@ -16,7 +16,7 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
  * renders a modal to add a one to many relationship
  */
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipaddmanytomany.html',
+    templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomany.html',
 })
 export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
 
@@ -25,16 +25,16 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the relationship
      *
      * @private
      */
-    private relationship: Relationship;
+    public relationship: Relationship;
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
         this.relationship = {
             id: this.modelutilities.generateGuid(),
             name: '',
@@ -69,7 +69,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * set various default values
      * @private
      */
-    private setDefaults() {
+    public setDefaults() {
         // build default name and relationship name
         this.relationship.relationship_name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase() + '_' + this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename.toLowerCase();
         this.relationship.name = this.relationship.relationship_name;
@@ -90,7 +90,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -99,7 +99,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      *
      * @private
      */
-    private add() {
+    public add() {
         this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
         this.close();
     }

@@ -12,14 +12,14 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepane.html',
+    templateUrl: '../templates/groupwareemailarchivepane.html',
     providers: [view]
 })
 export class GroupwareEmailArchivePane implements OnInit {
     /**
      * Currently active tab.
      */
-    private activetab: number = 0;
+    public activetab: number = 0;
 
     /**
      * the component config
@@ -27,9 +27,9 @@ export class GroupwareEmailArchivePane implements OnInit {
     public componentconfig: any;
 
     constructor(
-        private metadata: metadata,
-        private view: view,
-        private groupware: GroupwareService,
+        public metadata: metadata,
+        public view: view,
+        public groupware: GroupwareService,
     ) {
         this.groupware.getEmailFromSpice();
     }
@@ -67,7 +67,7 @@ export class GroupwareEmailArchivePane implements OnInit {
     /**
      * a simple getter to see if the tabs are defined
      */
-    private getTabs() {
+    public getTabs() {
         try {
             return this.componentconfig ? this.componentconfig : [];
         } catch (e) {
@@ -75,7 +75,7 @@ export class GroupwareEmailArchivePane implements OnInit {
         }
     }
 
-    private setActiveTabIndex(index){
+    public setActiveTabIndex(index){
         this.activetab = index;
     }
 
@@ -83,7 +83,7 @@ export class GroupwareEmailArchivePane implements OnInit {
      * Sets a tab as open and displays its content.
      * @param tab
      */
-    private open(tab) {
+    public open(tab) {
         this.activetab = tab;
     }
 

@@ -10,21 +10,21 @@ import {footer} from "../../../services/footer.service";
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: "./src/modules/emails/templates/emailtoleadmodal.html",
+    templateUrl: "../templates/emailtoleadmodal.html",
     providers: [model, view]
 })
 export class EmailToLeadModal implements OnInit, AfterViewInit {
 
-    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private  detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) public  detailcontainer: ViewContainerRef;
 
-    private email: any = null;
-    private self: any = null;
+    public email: any = null;
+    public self: any = null;
 
-    private componentRefs: Array<any> = [];
+    public componentRefs: any[] = [];
 
-    private leadFields: Array<string> = ["first_name", "last_name", "department", "account_name", "phone_mobile", "phone_work", "email1", "primary_address_street", "primary_address_city", "primary_address_postalcode", "primary_address_country", "description"];
+    public leadFields: string[] = ["first_name", "last_name", "department", "account_name", "phone_mobile", "phone_work", "email1", "primary_address_street", "primary_address_city", "primary_address_postalcode", "primary_address_country", "description"];
 
-    constructor(private language: language, private metadata: metadata, private view: view, private model: model, private footer: footer, private toast: toast) {
+    constructor(public language: language, public metadata: metadata, public view: view, public model: model, public footer: footer, public toast: toast) {
         this.model.module = "Leads";
 
     }
@@ -40,11 +40,11 @@ export class EmailToLeadModal implements OnInit, AfterViewInit {
         this.buildContainer();
     }
 
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
-    private buildContainer() {
+    public buildContainer() {
         // reset any rendered component
         for (let component of this.componentRefs) {
             component.destroy();
@@ -60,11 +60,11 @@ export class EmailToLeadModal implements OnInit, AfterViewInit {
         }
     }
 
-    private setField(fieldData) {
+    public setField(fieldData) {
         this.model.data[fieldData.field] = fieldData.value;
     }
 
-    private saveLead() {
+    public saveLead() {
         this.model.save().subscribe(lead => {
             this.closeModal();
         });

@@ -18,15 +18,15 @@ declare var SignaturePad: any;
  */
 @Component({
     selector: 'field-signature',
-    templateUrl: './src/objectfields/templates/fieldsignature.html'
+    templateUrl: '../templates/fieldsignature.html'
 })
 export class FieldSignatureComponent extends fieldGeneric implements AfterViewInit {
-    @ViewChild('canvas', {static: true}) private canvas: ElementRef;
-    private pad: any;
+    @ViewChild('canvas', {static: true}) public canvas: ElementRef;
+    public pad: any;
 
-    private display_name_field: string;
-    private signature_height: number = 200;
-    private signature_width: number = 400;
+    public display_name_field: string;
+    public signature_height: number = 200;
+    public signature_width: number = 400;
 
     constructor(
         public model: model,
@@ -85,7 +85,7 @@ export class FieldSignatureComponent extends fieldGeneric implements AfterViewIn
         }
     }
 
-    private undo() {
+    public undo() {
         let data = this.pad.toData();
         if (data) {
             data.pop(); // remove the last dot or line
@@ -94,12 +94,12 @@ export class FieldSignatureComponent extends fieldGeneric implements AfterViewIn
         }
     }
 
-    private clear() {
+    public clear() {
         this.pad.clear();
         this.convert();
     }
 
-    private convert() {
+    public convert() {
         let data = this.pad.toDataURL('image/jpeg');
         let parts = data.split("base64,"); // split to only save the part with the base64 coded image...
         if (this.pad.isEmpty()) {

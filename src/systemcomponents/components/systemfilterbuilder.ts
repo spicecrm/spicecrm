@@ -13,7 +13,7 @@ declare var _: any;
 
 @Component({
     selector: 'system-filter-builder',
-    templateUrl: './src/systemcomponents/templates/systemfilterbuilder.html',
+    templateUrl: '../templates/systemfilterbuilder.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -27,19 +27,19 @@ export class SystemFilterBuilder implements ControlValueAccessor {
     /**
      * the module for the filter
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * for the cvalue accessor
      */
-    private onChange: (value: any) => void;
+    public onChange: (value: any) => void;
 
     /**
      * for the cvalue accessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
 
-    private _conditions = {
+    public _conditions = {
         logicaloperator: 'and',
         groupscope: 'all',
         conditions: []
@@ -81,7 +81,7 @@ export class SystemFilterBuilder implements ControlValueAccessor {
         }
     }
 
-    private expressionChanged() {
+    public expressionChanged() {
         let newFilterGroupCondition = [];
         for (let filterGroupCondition of this._conditions.conditions) {
             if (filterGroupCondition.deleted !== true) {

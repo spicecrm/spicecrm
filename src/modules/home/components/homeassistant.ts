@@ -8,15 +8,15 @@ import {assistant} from '../../../services/assistant.service';
 
 @Component({
     selector: 'home-assistant',
-    templateUrl: './src/modules/home/templates/homeassistant.html'
+    templateUrl: '../templates/homeassistant.html'
 })
 export class HomeAssistant {
 
-    constructor(private assistant: assistant, private navigationtab: navigationtab, private language: language) {
+    constructor(public assistant: assistant, public navigationtab: navigationtab, public language: language) {
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_ASSISTANT'), displaymodule: 'Home'});
     }
 
-    private reload(e: MouseEvent) {
+    public reload(e: MouseEvent) {
         e.stopPropagation();
         this.assistant.loadItems();
     }
@@ -29,7 +29,7 @@ export class HomeAssistant {
         return !this.assistant.loading && this.assistant.assitantItems.length == 0;
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

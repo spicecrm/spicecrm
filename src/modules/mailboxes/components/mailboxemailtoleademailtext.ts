@@ -16,7 +16,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "mailbox-email-to-lead-emailtext",
-    templateUrl: "./src/modules/mailboxes/templates/mailboxemailtoleademailtext.html",
+    templateUrl: "../templates/mailboxemailtoleademailtext.html",
 })
 export class MailboxEmailToLeadEmailText implements OnDestroy {
 
@@ -33,7 +33,7 @@ export class MailboxEmailToLeadEmailText implements OnDestroy {
     public displayContextMenu: boolean = false;
     public displayContextCoordinates: any = {top: 0, left: 0};
 
-    constructor(private elementRef: ElementRef, private renderer: Renderer2, private language: language) {
+    constructor(public elementRef: ElementRef, public renderer: Renderer2, public language: language) {
     }
 
     get content() {

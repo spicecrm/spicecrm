@@ -28,7 +28,7 @@ export class SystemModelProviderDirective implements OnDestroy {
      * holds subscription to unsubscribe
      * @private
      */
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
     constructor(
         public model: model

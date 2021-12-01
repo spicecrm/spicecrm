@@ -14,7 +14,7 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'administration-default-preferences',
-    templateUrl: './src/admincomponents/templates/administrationdefaultpreferences.html',
+    templateUrl: '../templates/administrationdefaultpreferences.html',
     providers: [view]
 })
 export class AdministrationDefaultPreferences implements OnInit {
@@ -22,14 +22,14 @@ export class AdministrationDefaultPreferences implements OnInit {
      * holds the loaded preferences
      * @private
      */
-    private preferences: any = {};
+    public preferences: any = {};
 
-    constructor(private backend: backend,
-                private toast: toast,
-                private language: language,
-                private configuration: configurationService,
-                private view: view,
-                private modal: modal) {
+    constructor(public backend: backend,
+                public toast: toast,
+                public language: language,
+                public configuration: configurationService,
+                public view: view,
+                public modal: modal) {
     }
 
     public ngOnInit() {
@@ -40,7 +40,7 @@ export class AdministrationDefaultPreferences implements OnInit {
      * load default preferences from backeend
      * @private
      */
-    private loadPreferences() {
+    public loadPreferences() {
         const loadingModal = this.modal.await('LBL_LOADING');
 
         this.backend.getRequest('configuration/configurator/editor/default_preferences').subscribe(data => {
@@ -54,7 +54,7 @@ export class AdministrationDefaultPreferences implements OnInit {
      * save changes
      * @private
      */
-    private save() {
+    public save() {
         const loadingModal = this.modal.await('LBL_SAVING_DATA');
 
         this.backend.postRequest('configuration/configurator/editor/default_preferences', [], { config: this.preferences }).subscribe(data => {

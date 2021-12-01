@@ -11,24 +11,24 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[reports-designer-manipulate-table-row]',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignermanipulatetablerow.html'
+    templateUrl: '../templates/reportsdesignermanipulatetablerow.html'
 })
 export class ReportsDesignerManipulateTableRow {
 
     /**
     * @input listItem: any
     */
-    @Input() private listItem: any = {};
+    @Input() public listItem: any = {};
     /**
     * @output onDelete: EventEmitter<void>
     */
-    @Output() private onDelete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() public onDelete: EventEmitter<void> = new EventEmitter<void>();
 
-    constructor(private language: language,
-                private modelUtilities: modelutilities,
-                private modal: modal,
-                private model: model,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public modelUtilities: modelutilities,
+                public modal: modal,
+                public model: model,
+                public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -93,14 +93,14 @@ export class ReportsDesignerManipulateTableRow {
     * @param fieldId: string
      * @delete the record with the given index
      */
-    private deleteField() {
+    public deleteField() {
         this.onDelete.emit();
     }
 
     /**
     * @set expandedItemId = fieldId | ''
      */
-    private toggleExpand(e: MouseEvent) {
+    public toggleExpand(e: MouseEvent) {
         e.stopPropagation();
 
         if (!this.reportsDesignerService.expertMode) return;

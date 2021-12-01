@@ -13,24 +13,24 @@ import {view} from '../../../services/view.service';
 
 @Component({
     selector: 'currency-manager',
-    templateUrl: './src/modules/currencies/templates/currencymanager.html',
+    templateUrl: '../templates/currencymanager.html',
     providers: [view, model]
 })
 
 export class CurrencyManager implements OnInit {
-    private currencies: any = [];
-    private loading: boolean = true;
+    public currencies: any = [];
+    public loading: boolean = true;
 
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private currency: currency,
-        private model: model,
-        private modal: modal,
-        private toast: toast,
-        private view: view
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public currency: currency,
+        public model: model,
+        public modal: modal,
+        public toast: toast,
+        public view: view
     ) {
 
     }
@@ -65,7 +65,7 @@ export class CurrencyManager implements OnInit {
      * reload the currencies when the event emitter has been emitted
      * @param event: boolean
      */
-    private reload(event) {
+    public reload(event) {
         if(event) {
             this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
                 this.backend.getRequest('module/Currencies').subscribe(data => {

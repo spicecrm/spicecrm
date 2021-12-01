@@ -19,42 +19,42 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     providers: [modellist, model, view],
     selector: "mailboxes-manager",
-    templateUrl: "./src/workbench/templates/mailboxesmanager.html",
+    templateUrl: "../templates/mailboxesmanager.html",
 })
 export class MailboxesManager {
 
     /**
      * the container with the view .. gets rendered daynamically
      */
-    @ViewChild("viewcontainer", {read: ViewContainerRef, static: true}) private viewcontainer: ViewContainerRef;
+    @ViewChild("viewcontainer", {read: ViewContainerRef, static: true}) public viewcontainer: ViewContainerRef;
 
     /**
      * the currently selected mailbox id
      */
-    private _selected_mailbox;
+    public _selected_mailbox;
 
     /**
      * any component reference that is rendered
      */
-    private renderedview: any[] = [];
+    public renderedview: any[] = [];
 
     /**
      * the actionset to be rendered in the header
      */
-    private headeractionset: string;
+    public headeractionset: string;
 
     constructor(
-        private modellist: modellist,
-        private backend: backend,
-        private footer: footer,
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modelutils: modelutilities,
-        private modelutilities: modelutilities,
-        private toast: toast,
-        private view: view,
-        private configuration: configurationService
+        public modellist: modellist,
+        public backend: backend,
+        public footer: footer,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modelutils: modelutilities,
+        public modelutilities: modelutilities,
+        public toast: toast,
+        public view: view,
+        public configuration: configurationService
     ) {
         // initialize the modellist service
         this.modellist.initialize('Mailboxes');
@@ -124,7 +124,7 @@ export class MailboxesManager {
     /**
      * cleans the current view
      */
-    private cleanView() {
+    public cleanView() {
         // destroy what we have rendered thus far
         for (let thisview of this.renderedview) {
             thisview.destroy();
@@ -135,7 +135,7 @@ export class MailboxesManager {
     /**
      * resets the view and removes all currently rendered components
      */
-    private reset() {
+    public reset() {
         this.view.setViewMode();
         this.model.reset();
         this.model.module = "Mailboxes";
@@ -144,7 +144,7 @@ export class MailboxesManager {
     /**
      *
      */
-    private setAsDefault() {
+    public setAsDefault() {
         this.backend.postRequest("module/Mailboxes/default", null, {mailbox_id: this.model.data.id})
             .subscribe(
                 (res) => {

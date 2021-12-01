@@ -20,11 +20,11 @@ import {DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.i
  */
 @Component({
     selector: 'dictionary-manager-indexes',
-    templateUrl: './src/workbench/templates/dictionarymanagerindexes.html',
+    templateUrl: '../templates/dictionarymanagerindexes.html',
 })
 export class DictionaryManagerIndexes {
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
     }
 
     /**
@@ -60,7 +60,7 @@ export class DictionaryManagerIndexes {
     /**
      * react to the click to add a new dictionary definition
      */
-    private addIndex(event: MouseEvent) {
+    public addIndex(event: MouseEvent) {
         event.stopPropagation();
         this.modal.openModal('DictionaryManagerIndexAdd', true, this.injector);
     }
@@ -71,7 +71,7 @@ export class DictionaryManagerIndexes {
      * @param event
      * @param id
      */
-    private deleteIndex(event: MouseEvent, id: string) {
+    public deleteIndex(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
@@ -85,7 +85,7 @@ export class DictionaryManagerIndexes {
      * @param indexid
      * @private
      */
-    private getIndexFields(indexid: string): string {
+    public getIndexFields(indexid: string): string {
         let indexfields = [];
 
         for (let field of this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == indexid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
@@ -101,7 +101,7 @@ export class DictionaryManagerIndexes {
      *
      * @param id
      */
-    private setActiveId(id) {
+    public setActiveId(id) {
         this.dictionarymanager.currentDictionaryIndex = id;
     }
 }

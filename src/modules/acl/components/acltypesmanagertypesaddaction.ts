@@ -23,7 +23,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types-add-action',
-    templateUrl: './src/modules/acl/templates/acltypesmanagertypesaddaction.html',
+    templateUrl: '../templates/acltypesmanagertypesaddaction.html',
 })
 export class ACLTypesManagerTypesAddAction implements OnInit{
 
@@ -33,7 +33,7 @@ export class ACLTypesManagerTypesAddAction implements OnInit{
     action: string = '';
     addaction: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
 
     }
 

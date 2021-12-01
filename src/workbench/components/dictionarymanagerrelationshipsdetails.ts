@@ -10,13 +10,13 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
     selector: 'dictionary-manager-relationships-details',
-    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipsdetails.html',
+    templateUrl: '../templates/dictionarymanagerrelationshipsdetails.html',
 })
 export class DictionaryManagerRelationshipsDetails {
 
-    @Input() private dictionaryRelationship: Relationship;
+    @Input() public dictionaryRelationship: Relationship;
 
-    constructor(private dictionarymanager: dictionarymanager) {
+    constructor(public dictionarymanager: dictionarymanager) {
 
     }
 

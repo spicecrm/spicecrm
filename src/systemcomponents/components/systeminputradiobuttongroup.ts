@@ -21,7 +21,7 @@ declare var _;
  */
 @Component({
     selector: 'system-input-radio-button-group',
-    templateUrl: './src/systemcomponents/templates/systeminputradiobuttongroup.html',
+    templateUrl: '../templates/systeminputradiobuttongroup.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
@@ -36,35 +36,35 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
     /**
      * the value to be set
      */
-    @Input() protected inputOptions: InputRadioOptionI[] = [];
+    @Input() public inputOptions: InputRadioOptionI[] = [];
     /**
      * the value to be set
      */
-    @Input() protected readonly disabled: boolean = false;
+    @Input() public readonly disabled: boolean = false;
     /**
      * the value to be set
      */
-    protected groupName: string;
+    public groupName: string;
     /**
      * save on change function for ControlValueAccessor
      */
-    private onChange: (value: string) => void;
+    public onChange: (value: string) => void;
     /**
      * save on touched function for ControlValueAccessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
 
     /**
      * set group name for dom
      */
-    constructor(private cdRef: ChangeDetectorRef) {
+    constructor(public cdRef: ChangeDetectorRef) {
         this.groupName = _.uniqueId('group-name-');
     }
 
     /**
      * internal value checked
      */
-    private _modelValue: string;
+    public _modelValue: string;
 
     /**
      * @return ng model value
@@ -126,7 +126,7 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
     /**
      * set items initial value
      */
-    private setItemsInitialValues() {
+    public setItemsInitialValues() {
 
         this.inputOptions.forEach(inputOption => {
 
@@ -148,7 +148,7 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

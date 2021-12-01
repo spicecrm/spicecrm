@@ -9,21 +9,21 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 
 @Component({
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemactionroute.html'
+    templateUrl: '../templates/globalnavigationmenuitemactionroute.html'
 })
 export class GlobalNavigationMenuItemActionRoute {
 
     /**
      * the action config passed in from teh container
      */
-    private actionconfig: any = {};
+   public actionconfig: any = {};
 
     /**
      * if the item is disabled
      */
     public disabled: boolean = false;
 
-    constructor(private language: language, private model: model, private router: Router) {
+    constructor(public language: language,public model: model,public router: Router) {
     }
 
     /**

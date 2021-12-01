@@ -8,7 +8,7 @@ import {metadata} from '../../../services/metadata.service';
 import {modellist} from "../../../services/modellist.service";
 
 @Component({
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlist.html',
+    templateUrl: '../templates/holidaycalendarlist.html',
     providers: [modellist, model]
 })
 export class HolidayCalendarList implements OnInit {
@@ -17,19 +17,19 @@ export class HolidayCalendarList implements OnInit {
      * the active calendar id
      * @private
      */
-    private _activeCalendarID: string;
+    public _activeCalendarID: string;
 
     /**
      * the actionset
      * @private
      */
-    private actionset: string;
+    public actionset: string;
 
     constructor(
-        private language: language,
-        private modellist: modellist,
-        private model: model,
-        private metadata: metadata,
+        public language: language,
+        public modellist: modellist,
+        public model: model,
+        public metadata: metadata,
     ) {
         let componentconfig = this.metadata.getComponentConfig('HolidayCalendarList', 'SystemHolidayCalendars');
         this.actionset = componentconfig.actionset;
@@ -43,7 +43,7 @@ export class HolidayCalendarList implements OnInit {
      * reloads the calendar list
      * @private
      */
-    private refresh() {
+    public refresh() {
         this.activeCalendar = undefined;
         this.modellist.reLoadList();
     }
@@ -67,7 +67,7 @@ export class HolidayCalendarList implements OnInit {
      * adds a new calendar
      * @private
      */
-    private addCalendar() {
+    public addCalendar() {
         this.model.module = 'SystemHolidayCalendars';
         this.model.initialize();
         this.model.addModel();
@@ -77,7 +77,7 @@ export class HolidayCalendarList implements OnInit {
      * adds a new calendar
      * @private
      */
-    private addDay() {
+    public addDay() {
         this.model.module = 'SystemHolidayCalendarDays';
         this.model.initialize();
         this.model.addModel(null,null, {systemholidaycalendar_id: this.activeCalendar});

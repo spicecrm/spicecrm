@@ -15,7 +15,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-record-details',
-    templateUrl: './src/objectcomponents/templates/objectrecorddetails.html',
+    templateUrl: '../templates/objectrecorddetails.html',
     providers: [view]
 })
 export class ObjectRecordDetails implements OnInit, OnDestroy {
@@ -23,24 +23,24 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
     /**
      * the componentset to be rendered
      */
-    @Input() private componentSet: string;
+    @Input() public componentSet: string;
 
     /**
      * optional to force the view to be readonly
      */
-    @Input() private readonly: boolean;
+    @Input() public readonly: boolean;
 
     /**
      * the component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * any subscriptions the component might have
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2) {
+    constructor(public view: view, public metadata: metadata, public componentFactoryResolver: ComponentFactoryResolver, public model: model, public language: language, public renderer: Renderer2) {
     }
 
     public ngOnInit() {
@@ -74,7 +74,7 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
     /**
      * trys to get the compoenntset if it is not set and renders the container
      */
-    private buildContainer() {
+    public buildContainer() {
         if (!this.componentSet) {
             // if we do not have a coimponentset from external check the default config
             if (!this.componentconfig.componentset) {
@@ -89,7 +89,7 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
     /**
      * adds the shadow for the editing style
      */
-    private getBoxStyle() {
+    public getBoxStyle() {
         if (this.view.isEditMode()) {
             return {
                 'box-shadow': '0 2px 4px 4px rgba(0,0,0,.16)',

@@ -27,7 +27,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'object-modal-module-lookup-header',
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookupheader.html',
+    templateUrl: '../templates/objectmodalmodulelookupheader.html',
 })
 export class ObjectModalModuleLookupHeader {
 
@@ -50,14 +50,14 @@ export class ObjectModalModuleLookupHeader {
     /**
      * a guid to kill the autocomplete
      */
-    private autoCompleteKiller: string;
+    public autoCompleteKiller: string;
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * emits the used search term
      */
-    @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public language: language, public modellist: modellist, public modelutilities: modelutilities, public metadata: metadata, public element: ElementRef) {
 
@@ -107,7 +107,7 @@ export class ObjectModalModuleLookupHeader {
     /**
      * tigger the search
      */
-    private doSearch() {
+    public doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
         this.modellist.getListData();
@@ -118,7 +118,7 @@ export class ObjectModalModuleLookupHeader {
      *
      * @param _e
      */
-    private triggerSearch(_e) {
+    public triggerSearch(_e) {
         if (this.searchTerm === this.searchTermOld) return;
         // handle the key pressed
         switch (_e.key) {

@@ -15,18 +15,18 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
-    templateUrl: "./src/workbench/templates/mailboxesimapsmtptrafficmanager.html",
+    templateUrl: "../templates/mailboxesimapsmtptrafficmanager.html",
 })
 export class MailboxesImapSmtpTrafficManager {
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private model: model,
-        private modal: modal,
-        private toast: toast,
-        private view: view,
-        private injector: Injector
+        public backend: backend,
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public toast: toast,
+        public view: view,
+        public injector: Injector
     ) {
         let settings = this.model.getField('settings')
         if (!settings || (settings && settings.length == 0)) {
@@ -73,7 +73,7 @@ export class MailboxesImapSmtpTrafficManager {
     /**
      * retirves the mailbox folders from the backend via the connection
      */
-    private getMailboxes(): Observable<any> {
+    public getMailboxes(): Observable<any> {
         let responseSubject = new Subject<any>();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
         this.backend.postRequest("module/Mailboxes/imap/folders",{}, {data: modelData})
@@ -93,7 +93,7 @@ export class MailboxesImapSmtpTrafficManager {
     /**
      * opens the modal for the seldection of the IMAP folders
      */
-    private displayFoldersModal() {
+    public displayFoldersModal() {
         let waitingmodal = this.modal.await('loading folders');
         this.getMailboxes().subscribe(
             (response) => {

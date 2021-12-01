@@ -8,6 +8,6 @@ import {Component} from '@angular/core';
  */
 @Component({
     selector: 'system-modal-header-tagline',
-    templateUrl: './src/systemcomponents/templates/systemmodalheadertagline.html',
+    templateUrl: '../templates/systemmodalheadertagline.html',
 })
 export class SystemModalHeaderTagline {}

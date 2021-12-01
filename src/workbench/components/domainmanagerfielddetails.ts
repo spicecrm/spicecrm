@@ -15,16 +15,16 @@ import {domainmanager} from '../services/domainmanager.service';
  */
 @Component({
     selector: 'domainmanager-field-details',
-    templateUrl: './src/workbench/templates/domainmanagerfielddetails.html'
+    templateUrl: '../templates/domainmanagerfielddetails.html'
 })
 export class DomainManagerFieldDetails {
 
     /**
      * the field itself
      */
-    @Input() private field: any = {};
+    @Input() public field: any = {};
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private domainmanager: domainmanager) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public domainmanager: domainmanager) {
 
     }
 

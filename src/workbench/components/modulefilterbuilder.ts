@@ -4,8 +4,8 @@
 import {Component} from '@angular/core';
 
 @Component({
-    templateUrl: './src/workbench/templates/modulefilterbuilder.html',
+    templateUrl: '../templates/modulefilterbuilder.html',
 })
 export class ModuleFilterBuilder {
-    private filter: any;
+    public filter: any;
 }

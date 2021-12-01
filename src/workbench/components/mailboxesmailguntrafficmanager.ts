@@ -12,16 +12,16 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: "mailboxes-mailgun-traffic-manager",
-    templateUrl: "./src/workbench/templates/mailboxesmailguntrafficmanager.html",
+    templateUrl: "../templates/mailboxesmailguntrafficmanager.html",
 })
 export class MailboxesMailgunTrafficManager {
 
     constructor(
-        private language: language,
-        private injector: Injector,
-        private model: model,
-        private modal: modal,
-        private view: view
+        public language: language,
+        public injector: Injector,
+        public model: model,
+        public modal: modal,
+        public view: view
     ) {
         let settings = this.model.getField('settings')
         if (!settings || (settings && settings.length == 0)) {

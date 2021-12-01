@@ -6,7 +6,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-set',
-    templateUrl: './src/objectfields/templates/fieldset.html',
+    templateUrl: '../templates/fieldset.html',
     host:{
         '[class.slds-form-element]' : 'true'
     }
@@ -16,7 +16,7 @@ export class fieldSet implements OnInit{
     @Input() fieldsetconfig: any = {};
     fieldsetItems: Array<any> = [];
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
     }
 
     ngOnInit(){

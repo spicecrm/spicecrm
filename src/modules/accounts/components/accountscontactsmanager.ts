@@ -10,7 +10,7 @@ import {ACManagerService} from "../services/acmanager.service";
 
 @Component({
     selector: 'accounts-contacts-manager',
-    templateUrl: './src/modules/accounts/templates/accountscontactsmanager.html',
+    templateUrl: '../templates/accountscontactsmanager.html',
     providers: [relatedmodels, ACManagerService]
 })
 export class AccountsContactsManager implements AfterViewInit, OnDestroy {
@@ -20,11 +20,11 @@ export class AccountsContactsManager implements AfterViewInit, OnDestroy {
     displayitems: number = 5;
     activeContactId: string = undefined;
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private relatedmodels: relatedmodels,
-                private acmService: ACManagerService,
-                private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public relatedmodels: relatedmodels,
+                public acmService: ACManagerService,
+                public model: model) {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
     }

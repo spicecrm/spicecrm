@@ -18,46 +18,46 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'system-dynamic-component',
-    templateUrl: './src/systemcomponents/templates/systemdynamiccomponent.html'
+    templateUrl: '../templates/systemdynamiccomponent.html'
 })
 export class SystemDynamicComponent implements AfterViewInit, OnChanges {
 
     /**
      * the reference to the container in the template
      */
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
     /**
      * the component to be rendered
      */
-    @Input() private component: string = '';
+    @Input() public component: string = '';
 
     /**
      * the componentconfig
      */
-    @Input() private componentconfig: any;
+    @Input() public componentconfig: any;
 
     /**
      * componentparameters to be set to the instance
      */
-    @Input() private componentattributes: any;
+    @Input() public componentattributes: any;
 
     /**
      * the componentref that is created. The component will emit that
      */
-    @Output() private componentref: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public componentref: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the component that is rendered
      */
-    private _component: any;
+    public _component: any;
 
     /**
      *
      */
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
     }
 
     /**
@@ -87,7 +87,7 @@ export class SystemDynamicComponent implements AfterViewInit, OnChanges {
         }
     }
 
-    private renderComponent() {
+    public renderComponent() {
         if (this.component) {
             this.metadata.addComponent(this.component, this.container).subscribe(componentref => {
                 this.componentref.emit(componentref);

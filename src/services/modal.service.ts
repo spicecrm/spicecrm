@@ -17,14 +17,14 @@ export class modal {
     /**
      * keeps an array of modals that are currently open
      */
-    private modalsArray: any[] = [];
+    public modalsArray: any[] = [];
 
     /**
      * keeps an array of the objects rendered as modals
      */
-    private modalsObject = {};
+    public modalsObject = {};
 
-    constructor(private metadata: metadata, private footer: footer, private toast: toast, private language: language) {
+    constructor(public metadata: metadata, public footer: footer, public toast: toast, public language: language) {
         window.addEventListener("keyup", (event) => {
             if (event.keyCode === 27 && this.modalsArray.length) {
                 event.stopImmediatePropagation();
@@ -82,7 +82,7 @@ export class modal {
      *
      * @param componentName the name of the component hat was intended to be rendered in the modal
      */
-    private sendError(componentName) {
+    public sendError(componentName) {
         this.toast.sendToast('Component "' + componentName + '" not found.', "error", "Misconfiguration on the system as the component should have been opened in a modal but is not avilable. Please contact your system administrator.");
     }
 

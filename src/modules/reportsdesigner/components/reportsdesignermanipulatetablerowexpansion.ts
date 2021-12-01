@@ -11,19 +11,19 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[reports-designer-manipulate-table-row-expansion]',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignermanipulatetablerowexpansion.html'
+    templateUrl: '../templates/reportsdesignermanipulatetablerowexpansion.html'
 })
 export class ReportsDesignerManipulateTableRowExpansion {
 
     /**
     * @input listItem: any
     */
-    @Input() private listItem: any = {};
+    @Input() public listItem: any = {};
 
-    constructor(private language: language,
-                private modelUtilities: modelutilities,
-                private modal: modal,
-                private model: model,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public modelUtilities: modelutilities,
+                public modal: modal,
+                public model: model,
+                public reportsDesignerService: ReportsDesignerService) {
     }
 }
