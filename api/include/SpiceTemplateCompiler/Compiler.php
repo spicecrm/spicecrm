@@ -13,6 +13,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 // CR1000360
 
@@ -97,7 +98,7 @@ class Compiler
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
-        $this->app_list_strings = return_app_list_strings_language($lang); // get doms corresponding to template language
+        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
         $dom = new DOMDocument();
 
