@@ -191,7 +191,7 @@ class Mailbox extends SugarBean {
      *
      * @return void
      */
-    private function initializeSettings() {
+    public function initializeSettings() {
         $settings = json_decode(html_entity_decode($this->settings, ENT_QUOTES));
 
         foreach ($settings as $key => $value) {
