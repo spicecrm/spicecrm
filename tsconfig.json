@@ -20,7 +20,7 @@
     "vendor"
   ],
   "include": [
-    "src/**/*",
+    "src/spiceui.ts",
     "environments/environment.ts"
   ],
   "angularCompilerOptions": {
