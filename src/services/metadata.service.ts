@@ -235,6 +235,7 @@ export class metadata {
 
         return import(
             /*
+               webpackChunkName: "[request]",
                webpackInclude: /^\.\\[^\\]+\\?\\[^\\]+?$|\\(addcomponents|admincomponents|globalcomponents|objectcomponents|objectfields|portalcomponents|systemcomponents|workbench)\\[^\\]+\\?$|\\(modules|include|custom)\\[^\\]+\\?\\[^\\]+?$/
              */
             `src/${moduleMetadata.path}.ts`)

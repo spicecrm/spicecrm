@@ -11,15 +11,20 @@ const aacService = `© 2015 -  ${moment().format('YYYY')} aac services k.s. All 
 const generateOptions = (file) => ({
     filename: file.name,
     template: file.template,
-    publicPath: 'app/',
     hash: true,
+    minify: false,
     aacServices: aacService,
     buildNumber: `${global.build.releaseNumber}.${now}`,
     chunksSortMode: (a) => a === 'scripts' ? -1 : 1
 });
 
 module.exports = {
+    mode: "production",
+    output: {
+        publicPath: "app/",
+    },
     optimization: {
+        chunkIds: 'named',
         minimize: true,
         minimizer: [
             new TerserPlugin({
@@ -43,7 +48,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin(
-            generateOptions({name: "../index.html", template: "index-master.html"})
+            generateOptions({name: "../index.html", template: "assets/index.html"})
         ),
         new HtmlWebpackPlugin(
             generateOptions({name: "../outlook.html", template: "assets/outlook/outlook.html"})
