@@ -75,6 +75,7 @@
     "gulp-typedoc": "^2.2.2",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify": "~3.0.2",
+    "html-webpack-plugin": "^5.5.0",
     "moment": "~2.24.0",
     "ngx-build-plus": "^13.0.1",
     "object-assign": "~4.1.1",
@@ -82,6 +83,13 @@
     "serve": "^11.3.2",
     "terser-webpack-plugin": "^5.2.5",
     "tslint": "~6.1.0",
-    "typescript": "~4.4.2"
+    "typescript": "~4.4.2",
+    "webpack": "^5.64.4",
+    "webpack-auto-inject-version": "^1.2.2"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve -o",
+    "build": "ng build --configuration production"
   }
 }
