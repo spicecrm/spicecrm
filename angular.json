@@ -11,12 +11,6 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "customWebpackConfig": {
-              "path": "./webpack.config.js",
-              "mergeRules": {
-                "externals": "replace"
-              }
-            },
             "outputPath": "dev",
             "index": "index-dev.html",
             "main": "src/spiceui.ts",
@@ -41,6 +35,12 @@
           },
           "configurations": {
             "production": {
+              "customWebpackConfig": {
+                "path": "./webpack.config.js",
+                "mergeRules": {
+                  "externals": "replace"
+                }
+              },
               "index": "",
               "outputPath": "app",
               "fileReplacements": [
