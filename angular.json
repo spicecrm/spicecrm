@@ -17,8 +17,8 @@
                 "externals": "replace"
               }
             },
-            "outputPath": "app",
-            "index": "index-master.html",
+            "outputPath": "dev",
+            "index": "index-dev.html",
             "main": "src/spiceui.ts",
             "tsConfig": "tsconfig.json",
             "aot": true,
@@ -42,6 +42,7 @@
           "configurations": {
             "production": {
               "index": "",
+              "outputPath": "app",
               "fileReplacements": [
                 {
                   "replace": "environments/environment.ts",
@@ -49,41 +50,7 @@
                 }
               ],
               "optimization": false,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": true,
-              "extractLicenses": true,
-              "vendorChunk": true,
-              "buildOptimizer": true
-            },
-            "outlook": {
-              "index": "",
-              "main": "src/include/outlook/outlook.ts",
-              "fileReplacements": [
-                {
-                  "replace": "environments/environment.ts",
-                  "with": "environments/environment.prod.ts"
-                }
-              ],
-              "optimization": false,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": true,
-              "extractLicenses": true,
-              "vendorChunk": true,
-              "buildOptimizer": true
-            },
-            "gsuite": {
-              "index": "",
-              "main": "src/include/gsuite/gsuite.ts",
-              "fileReplacements": [
-                {
-                  "replace": "environments/environment.ts",
-                  "with": "environments/environment.prod.ts"
-                }
-              ],
-              "optimization": false,
-              "outputHashing": "all",
+              "outputHashing": "none",
               "sourceMap": false,
               "namedChunks": true,
               "extractLicenses": true,
