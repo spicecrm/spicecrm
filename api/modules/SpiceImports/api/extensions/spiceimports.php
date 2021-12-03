@@ -47,7 +47,7 @@ $routes = [
             'enclosure' => [
                 'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_ENUM,
-                'options'     => ['single', 'double'],
+                'options'     => ['single', 'double', 'none'],
                 'required'    => true,
                 'description' => ''
             ],

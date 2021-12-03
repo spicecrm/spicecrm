@@ -8,6 +8,7 @@ import {metadata} from '../../../services/metadata.service';
 import {modellist} from "../../../services/modellist.service";
 
 @Component({
+    selector: 'holiday-calendar-list',
     templateUrl: '../templates/holidaycalendarlist.html',
     providers: [modellist, model]
 })
@@ -37,6 +38,7 @@ export class HolidayCalendarList implements OnInit {
 
     public ngOnInit() {
         this.modellist.initialize('SystemHolidayCalendars');
+        this.modellist.getListData();
     }
 
     /**
@@ -68,7 +70,8 @@ export class HolidayCalendarList implements OnInit {
      * @private
      */
     public addCalendar() {
-        this.model.module = 'SystemHolidayCalendars';
+        this.model.module = 'ServiceCalendars';
+        this.model.id = '';
         this.model.initialize();
         this.model.addModel();
     }
@@ -78,9 +81,10 @@ export class HolidayCalendarList implements OnInit {
      * @private
      */
     public addDay() {
-        this.model.module = 'SystemHolidayCalendarDays';
+        this.model.module = 'ServiceCalendarTimes';
+        this.model.id = '';
         this.model.initialize();
-        this.model.addModel(null,null, {systemholidaycalendar_id: this.activeCalendar});
+        this.model.addModel(null, null, {servicecalendar_id: this.activeCalendar});
     }
 
 }

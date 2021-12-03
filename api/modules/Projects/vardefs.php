@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 global $dictionary;
@@ -540,11 +540,12 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'name' => 'projectsettlementprofiles',
         'type' => 'link',
         'vname' => 'LBL_PROJECTSETTLEMENTPROFILES',
+        'module' => 'ProjectSettlementProfiles',
         'relationship' => 'projectsettlementprofiles_project',
         'source' => 'non-db',
     ];
 
-    $dictionary['Project']['relationships']['companycodes_project'] = [
+    $dictionary['Project']['relationships']['projectsettlementprofiles_project'] = [
         'lhs_module' => 'ProjectSettlementProfiles',
         'lhs_table' => 'projectsettlementprofiles',
         'lhs_key' => 'id',

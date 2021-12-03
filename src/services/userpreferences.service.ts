@@ -50,7 +50,7 @@ export class userpreferences {
         default_currency_significant_digits: 2,
         default_locale_name_format: 'l, f',
         week_day_start: 0,
-        navigation_paradigm: 'simple',
+        navigation_paradigm: 'subtabbed',
         distance_unit_system: 'METRIC'
     };
 

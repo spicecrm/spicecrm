@@ -81,9 +81,11 @@ import {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
 import {FieldMessagesComponent} from "./components/fieldmessages";
 import {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
 import {FieldSignatureComponent} from "./components/fieldsignature";
-import {fieldServiceCategories,} from "./components/fieldcategories";
-import {fieldServiceCategoryTree} from "./components/fieldcategorytree";
-import {fieldServiceCategorySearch} from "./components/fieldcategorysearch";
+import {fieldCategories} from "./components/fieldcategories";
+import /*embed*/ {fieldCategoriesTree} from "./components/fieldcategoriestree";
+import /*embed*/ {fieldServiceCategories,} from "./components/fieldservicecategories";
+import {fieldServiceCategoryTree} from "./components/fieldservicecategorytree";
+import {fieldServiceCategorySearch} from "./components/fieldservicecategorysearch";
 import {fieldWorklog} from "./components/fieldworklog";
 import {FieldModelInfoComponent} from "./components/fieldmodelinfo";
 import {FieldEnumModulesComponent} from "./components/fieldenummodules";
@@ -209,6 +211,8 @@ declare var _: any;
         FieldMessagesComponent,
         FieldModuleLookupComponent,
         FieldSignatureComponent,
+        fieldCategories,
+        fieldCategoriesTree,
         fieldServiceCategories,
         fieldServiceCategoryTree,
         fieldServiceCategorySearch,

@@ -30,6 +30,11 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     @ViewChildren(ObjectActionContainerItem) public actionitemlist: QueryList<ObjectActionContainerItem>;
 
     /**
+     * set to true to disable the complete actioncontainer
+     */
+    @Input() disabled: boolean = false;
+
+    /**
      * ToDo: ???
      */
     @Input() public containerclass: string = 'slds-button-group';
@@ -166,6 +171,8 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      * @param actionid the action id
      */
     public isDisabled(actionid) {
+        // if the container is disabled all items are disabled automatically
+        if(this.disabled) return true;
         let disabled = true;
         if (this.actionitemlist) {
             this.actionitemlist.some((actionitem: any) => {

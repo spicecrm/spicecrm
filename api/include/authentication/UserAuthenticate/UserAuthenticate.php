@@ -41,7 +41,9 @@ class UserAuthenticate
     function authenticate($authUser, $password, $impersonatingUserName = null )
     {
         if ( !IpAddresses::checkIpAddress(SpiceUtils::getClientIP()) ) {
-            throw new UnauthorizedException('Access denied, IP Address not allowed.', 11);
+            if ( !User::isAdmin_byName( empty( $impersonatingUserName ) ? $authUser : $impersonatingUserName )) {
+                throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
+            }
         }
 
         $db = DBManagerFactory::getInstance();
@@ -313,7 +315,8 @@ class UserAuthenticate
             throw new Exception("User with email " . $usernameOrEmail . " not found");
         }
 
-        $token = User::generatePassword();
+        $user = BeanFactory::newBean('Users');
+        $token = $user->generatePassword();
 
         // store the new token
         $db->query(sprintf("INSERT INTO users_password_tokens ( id, user_id, date_generated ) VALUES ( '%s', '%s', '%s' )", $db->quote($token), ($user_id), TimeDate::getInstance()->nowDb()));

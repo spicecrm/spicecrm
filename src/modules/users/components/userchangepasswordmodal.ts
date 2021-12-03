@@ -121,7 +121,7 @@ export class UserChangePasswordModal {
                 newPassword: this.newPassword
             }).subscribe(
                 (res) => {
-                    this.toast.sendToast(this.language.getLabel("MSG_PWD_CHANGED_SUCCESSFULLY"), 'info');
+                    this.toast.sendToast(this.language.getLabel("MSG_PWD_CHANGED_SUCCESSFULLY"), 'success');
                     this.close();
                 },
                 (err: any) => {

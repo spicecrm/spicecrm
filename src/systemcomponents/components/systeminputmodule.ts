@@ -43,6 +43,11 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     public onChange: (value: string) => void;
     public onTouched: () => void;
 
+    /**
+     * holds all subscriptions
+     *
+     * @private
+     */
     public subscription: Subscription = new Subscription();
     /**
      * holds the companycoded
@@ -73,7 +78,11 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     }
 
     public sortModules() {
-        this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+        if(this.displaytechnicalname){
+            this._modules.sort((a, b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1);
+        } else {
+            this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+        }
     }
 
     /**

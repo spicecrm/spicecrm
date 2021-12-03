@@ -16,6 +16,9 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 
+/**
+ * @deprecated replaced by fieldModelAttachment
+ */
 @Component({
     selector: 'field-file',
     templateUrl: '../templates/fieldfile.html'

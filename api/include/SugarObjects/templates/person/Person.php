@@ -6,11 +6,15 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
+use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
 use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
 class Person extends Basic
 {
+    // adds the letter salutation functions
+    use letterSalutationTrait;
+
     var $picture;
     /**
      * @var bool controls whether or not to invoke the getLocalFormatttedName method with title and salutation
@@ -120,33 +124,7 @@ class Person extends Basic
         $this->full_name = $full_name; //used by campaigns
     }
 
-    public function getLetterSalutation()
-    {
-        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
-        $currentLanguage = $currentUser->getPreference('language');
-        $language = $this->communication_language ?: $currentLanguage ?: 'en_us';
-        $app_list_strings = return_app_list_strings_language($language);
-        return $app_list_strings['salutation_letter_dom'][$this->salutation];
-    }
 
-    public function getLetterName()
-    {
-        $nameArray = [];
-        if(!empty($this->degree1)) $nameArray[] =  $this->degree1;
-        if(!empty($this->first_name)) $nameArray[] =  $this->first_name;
-        if(!empty($this->last_name)) $nameArray[] =  $this->last_name;
-        if(!empty($this->degree2)) $nameArray[] =  $this->degree2;
-        return implode(' ', $nameArray);
-    }
-
-    public function getLetterLastName()
-    {
-        $nameArray = [];
-        if(!empty($this->degree1)) $nameArray[] =  $this->degree1;
-        if(!empty($this->last_name)) $nameArray[] =  $this->last_name;
-        if(!empty($this->degree2)) $nameArray[] =  $this->degree2;
-        return implode(' ', $nameArray);
-    }
 
     /**
      * handle saving/adding the primary email address

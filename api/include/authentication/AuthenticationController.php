@@ -164,16 +164,20 @@ class AuthenticationController
     {
         $config = SpiceConfig::getInstance()->config;
 
-        if ( !IpAddresses::checkIpAddress() ) {
-            throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
-        }
-
         try {
             /** @var User $userObj */
-            $userObj = null;
+
             if ($token) {
                 $userObj = $this->handleTokenAuth($token, $tokenIssuer);
+                if ( !IpAddresses::checkIpAddress() ) {
+                    if ( !User::isAdmin_byName( $userObj->user_name )) # don´t block the admin
+                        throw ( new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked( true );
+                }
             } elseif ($username && $password) {
+                if ( !IpAddresses::checkIpAddress() ) {
+                    if ( !User::isAdmin_byName( $username )) # don´t block the admin
+                        throw ( new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked( true );
+                }
                 $userObj = $this->handleUserPassAuth($username, $password, $impersonationUser );
             } else {
                 throw new UnauthorizedException("Invalid authentication method", 6);
@@ -197,27 +201,31 @@ class AuthenticationController
             $this->handleTenants();
 
         } catch (UnauthorizedException $e) {
-            //log login attempt
             /** @var UserAccessLog $userAccessLogObj */
 
-            if ( UserAccessLog::getNumberLoginAttemptsByIp() > $config['login_attempt_restriction']['ip_number_attempts'] and !IpAddresses::ipAddressIsWhite() ) {
-                IpAddresses::addIpAddress('b');
-            };
-
-            # "loginBlocked" is set in case the login or password check has not happened, because the user is (temporary) blocked.
-            if ( !$e->isLoginBlocked() ) {
+            # isUserBlocked() in case the login or password check has not happened, because the user is already blocked (temporary or permanent).
+            # Otherwise the check has happened and failed, so log the failed attempt:
+            if ( !$e->isUserBlocked() and !empty( $username )) {
                 $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
                 $userAccessLogObj->addRecord("loginfail", empty($impersonationUser) ? $username : $impersonationUser . '#as#' . $username);
-                if ( $username ) {#and !IpAddresses::ipAddressIsWhite() ) {
-                    if ( isset( $config['login_attempt_restriction']['user_number_attempts'] )) { # attempt restriction is configured
-                        $amountFailedLogins = UserAccessLog::getAmountFailedLoginsWithinByUsername( $username, $config['login_attempt_restriction']['user_monitored_period'] );
-                        if ( $amountFailedLogins >= $config['login_attempt_restriction']['user_number_attempts'] ) {
-                            User::blockUserByName( $username, $config['login_attempt_restriction']['user_blocking_duration'] );
-                        }
+                unset($userAccessLogObj);
+                if ( $config['login_attempt_restriction']['user_enabled'] ) {
+                    $amountFailedLogins = UserAccessLog::getAmountFailedLoginsWithinByUsername( $username, $config['login_attempt_restriction']['user_monitored_period'] );
+                    if ( $amountFailedLogins >= $config['login_attempt_restriction']['user_number_attempts'] ) {
+                        User::blockUserByName( $username, $config['login_attempt_restriction']['user_blocking_duration'] );
                     }
                 }
-                unset($userAccessLogObj);
             }
+
+            # In case the max. failed login attempts are reached, black list the IP address.
+            # ( But only if IP restriction is enabled and the IP address is not white listed and the IP address has not been black listed just before (isIPblocked). )
+            if ( $config['login_attempt_restriction']['ip_enabled']
+                and UserAccessLog::getNumberLoginAttemptsByIp() >= (int)$config['login_attempt_restriction']['ip_number_attempts']
+                and !IpAddresses::ipAddressIsWhite()
+                and !$e->isIPblocked() ) {
+                IpAddresses::addIpAddress('b');
+                $e->setIPblocked( true );
+            };
 
             $this->errorReason = $e->getMessage();
             $this->errorCode = $e->getErrorCode();
@@ -235,15 +243,13 @@ class AuthenticationController
 
     private function handleTokenAuth($token, $tokenIssuer)
     {
-        $userObj = null;
         $authenticationClass = "SpiceCRM\includes\authentication\\{$tokenIssuer}Authenticate\\{$tokenIssuer}Authenticate";
         if (class_exists($authenticationClass, true)) {
             $authenticationController = new $authenticationClass();
-            $userObj = $authenticationController->authenticate($token);
+            return $authenticationController->authenticate($token);
         } else {
             throw new \Exception("AuthenticationClass {$authenticationClass} not found");
         }
-        return $userObj;
     }
 
     private function logSuccessfulLogin(User $userObj)
@@ -295,11 +301,11 @@ class AuthenticationController
 
             # Check if the user is blocked (after too many login attempts with wrong passwords).
             # This check must happen BEFORE checking the password. No password check (and answer to the user) in case the user is blocked!
-            $isBlocked = User::isBlockedByName(isset($impersonationUser) ? $impersonationUser : $authUser);
+            $isBlocked = User::isBlocked(isset($impersonationUser) ? $impersonationUser : $authUser);
             if ($isBlocked === true) {
-                throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 4))->setLoginBlocked(true);
+                throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 3))->setUserBlocked(true);
             } elseif ($isBlocked !== false) {
-                throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 4))->setLoginBlocked(true);
+                throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 3))->setUserBlocked(true);
             }
 
             $sugarAuthenticationController = new UserAuthenticate();
@@ -311,7 +317,7 @@ class AuthenticationController
             }
 
         } catch (UnauthorizedException $e) {
-            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))->setLoginBlocked( $e->isLoginBlocked() );
+            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))->setUserBlocked( $e->isUserBlocked() );
         }
         return $userObj;
     }

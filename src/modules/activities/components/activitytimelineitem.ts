@@ -79,7 +79,17 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      */
     public subscriptions: Subscription = new Subscription();
 
-    constructor(public model: model, public modelattachments: modelattachments, public metadata: metadata, public view: view, public userpreferences: userpreferences, public session: session, public language: language, @Optional() public activitiytimeline: activitiytimeline, public cdref: ChangeDetectorRef) {
+    constructor(
+        public model: model,
+        public modelattachments: modelattachments,
+        public metadata: metadata,
+        public view: view,
+        public userpreferences: userpreferences,
+        public session: session,
+        public language: language,
+        @Optional() public activitiytimeline: activitiytimeline,
+        public cdref: ChangeDetectorRef
+    ) {
         this.view.isEditable = false;
         this.view.displayLabels = true;
 
@@ -237,6 +247,15 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      */
     get enableDetail() {
         return this.model.checkAccess('detail');
+    }
+
+    /**
+     * run change detection after the action fired
+     *
+     * @param action
+     */
+    public handleAction(action) {
+        this.cdref.detectChanges();
     }
 
     /**
