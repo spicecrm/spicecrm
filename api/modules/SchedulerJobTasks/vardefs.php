@@ -1,10 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
 
-$dictionary['SchedulerJobTask'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJobTask'] = [
     'table' => 'schedulerjobtasks',
     'comment' => 'store the scheduler job tasks',
 	'fields' => [
