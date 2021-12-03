@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -80,36 +81,33 @@ class SpiceDictionaryVardefs  {
     /**
      * get load all dictionary definitions and populate global $dictionary
      *
-     * @param array $dictionary
      * @param string $dictionaryType all | metadata | module | template
      */
     public static function loadDictionaries($dictionaryType = 'all'){
-        global $dictionary;
-
         // get definitions
         $dictionaryDefinitions = self::getDictionaryDefinitions($dictionaryType);
 
         // loop and build raw dictionaries (only fields defined in dictionary itself)
         foreach($dictionaryDefinitions as $dictionaryId => $row){
-            $dictionary[$row['dictionaryname']] = self::loadRawDictionary($row['dictionaryid']);
+            SpiceDictionaryHandler::getInstance()->dictionary[$row['dictionaryname']] = self::loadRawDictionary($row['dictionaryid']);
         }
 
         // add fields from templates to each dictionary
-        foreach($dictionary as $dictionaryName => $definition){
+        foreach(SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $definition){
             if(in_array($definition['type'], ['module', 'metadata'])){
                 foreach($definition['fields'] as $fieldId => $fieldDef){
                     if(isset($fieldDef['sysdictionary_ref_id']) && isset($dictionaryDefinitions[$fieldDef['sysdictionary_ref_id']])){
-                        $dictionary[$dictionaryName]['fields'] = array_merge($dictionary[$dictionaryName]['fields'], $dictionary[$dictionaryDefinitions[$fieldDef['sysdictionary_ref_id']]['dictionaryname']]['fields']);
-                        unset($dictionary[$dictionaryName]['fields'][$fieldDef['sysdictionary_ref_id']]);
+                        SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'], SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryDefinitions[$fieldDef['sysdictionary_ref_id']]['dictionaryname']]['fields']);
+                        unset(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'][$fieldDef['sysdictionary_ref_id']]);
                     }
                 }
             }
         }
 
         // remove non module and non metadata dictionaries
-        foreach($dictionary as $dictionaryName => $definition){
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $definition) {
             if(!in_array($definition['type'], ['module', 'metadata'])){
-                unset($dictionary[$dictionaryName]);
+                unset(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]);
             }
         }
 
@@ -117,9 +115,9 @@ class SpiceDictionaryVardefs  {
         $relationships = self::loadRelationships();
 
         // add links
-        foreach($dictionary as $dictionaryName => $definition){
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $definition) {
             if($definition['type'] == 'module'){
-                self::loadLinksForDictionary($dictionary[$dictionaryName], $definition['module'], $relationships);
+                self::loadLinksForDictionary(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName], $definition['module'], $relationships);
             }
         }
     }
@@ -279,7 +277,7 @@ class SpiceDictionaryVardefs  {
                     $dict['fields'] = array_merge($dict['fields'], $dictRef['fields']);
                 }
                 unset($dict['fields'][$fieldDef['sysdictionary_ref_id']]);
-//              die(__FUNCTION__.__LINE__.print_r($dictionary[$dictionaryName]['fields'], true));
+//              die(__FUNCTION__.__LINE__.print_r(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'], true));
             }
         }
 
@@ -308,7 +306,7 @@ class SpiceDictionaryVardefs  {
                     $dict['fields'] = array_merge($dict['fields'], $dictRef['fields']);
                 }
                 unset($dict['fields'][$fieldDef['sysdictionary_ref_id']]);
-//              die(__FUNCTION__.__LINE__.print_r($dictionary[$dictionaryName]['fields'], true));
+//              die(__FUNCTION__.__LINE__.print_r(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'], true));
             }
         }
 
@@ -450,7 +448,7 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
      * @return array|void
      */
     public static function loadRelationshipsFromDictionary(){
-        global $dictionary, $buildingRelCache;
+        global $buildingRelCache;
 
         if ($buildingRelCache)
             return;
@@ -467,7 +465,7 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
         $relationships = [];
 
         //Grab all the relationships from the dictionary.
-        foreach ($dictionary as $key => $def)
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $key => $def)
         {
             if (!empty($def['relationships']))
             {
@@ -478,8 +476,8 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
                     else {
                         $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
                         if(!empty($relationships[$relKey]['join_table']) && empty($relationships[$relKey]['fields'])
-                            && isset($dictionary[$relationships[$relKey]['join_table']]['fields'])) {
-                            $relationships[$relKey]['fields'] = $dictionary[$relationships[$relKey]['join_table']]['fields'];
+                            && isset(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$relKey]['join_table']]['fields'])) {
+                            $relationships[$relKey]['fields'] = SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$relKey]['join_table']]['fields'];
                         }
                     }
                     $relationships[$relKey]['relationship_name'] = $relKey;
@@ -511,7 +509,6 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
      * @throws \Exception
      */
     public static function loadRelationshipFromRelationshipsTable($module = null){
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $relationships = [];
 
@@ -524,8 +521,8 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
             while ($row = $db->fetchByAssoc($res)) {
                 $relationships[$row['relationship_name']] = $row;
                 if($row['relationship_type'] == 'many-to-many'){
-                    if(isset($dictionary[$relationships[$row['relationship_name']]['join_table']]) && !empty($dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'])){
-                        $relationships[$row['relationship_name']]['fields'] = $dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'];
+                    if(isset(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'])){
+                        $relationships[$row['relationship_name']]['fields'] = SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'];
                     }
                 }
             }
@@ -1063,7 +1060,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                 'fieldtype' => $fieldDef['type'],
                 'fielddefinition' => json_encode($fieldDef)
             ];
-            //file_put_contents('spicecrm.log', 'calling '.__FUNCTION__.print_r($GLOBALS['dictionary']['name'], true)."\n", FILE_APPEND);
+            //file_put_contents('spicecrm.log', 'calling '.__FUNCTION__.print_r(SpiceDictionaryHandler::getInstance()->dictionary['name'], true)."\n", FILE_APPEND);
 
             if(!$db->insertQuery('sysdictionaryfields', $insertParams, true)){
                 $GLOBALS['log']->fatal('error insert to sysdictionaryfields cached entry with dictionary id '.$dict['id'].' '.$db->lastError());

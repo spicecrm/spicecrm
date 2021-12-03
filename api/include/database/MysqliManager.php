@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SugarBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
@@ -878,10 +879,9 @@ class MysqliManager extends DBManager
 
     protected function getEngine($bean)
     {
-        global $dictionary;
         $engine = null;
-        if (isset($dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = $dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
         }
         return $engine;
     }
