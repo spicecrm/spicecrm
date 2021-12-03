@@ -33,10 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['ProspectList'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
     'table' => 'prospect_lists',
     'unified_search' => true,
     'full_text_search' => true,

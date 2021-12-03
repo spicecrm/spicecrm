@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['MediaFile'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['MediaFile'] = [
     'table' => 'mediafiles',
     'comment' => 'Media Files: Images, Audios, Videos, …',
     'fields' => [

@@ -1,8 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-$dictionary['ServiceTicket'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
     'table' => 'servicetickets',
     'comment' => 'ServiceTickets Module',
     'audited' =>  true,
@@ -348,7 +349,7 @@ $dictionary['ServiceTicket'] = [
 VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assignable', 'activities']);
 
 if(file_exists('extensions/modules/ServiceOrders')) {
-    $dictionary['ServiceTicket']['fields']['serviceorders'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceorders'] = [
         'vname' => 'LBL_SERVICEORDERS',
         'name' => 'serviceorders',
         'type' => 'link',
@@ -359,12 +360,12 @@ if(file_exists('extensions/modules/ServiceOrders')) {
     ];
 }
 if(file_exists('extensions/modules/ServiceQueues')) {
-    $dictionary['ServiceTicket']['fields']['servicequeue_id'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicequeue_id'] = [
         'name' => 'servicequeue_id',
         'vname' => 'LBL_SERVICEQUEUE_ID',
         'type' => 'id',
     ];
-    $dictionary['ServiceTicket']['fields']['servicequeue_name'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicequeue_name'] = [
         'name' => 'servicequeue_name',
         'vname' => 'LBL_SERVICEQUEUE',
         'type' => 'relate',
@@ -377,7 +378,7 @@ if(file_exists('extensions/modules/ServiceQueues')) {
         'join_name' => 'servicequeues',
         'required'=> false,
     ];
-    $dictionary['ServiceTicket']['fields']['servicequeues'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicequeues'] = [
         'vname' => 'LBL_SERVICEQUEUES',
         'name' => 'servicequeues',
         'type' => 'link',
@@ -385,7 +386,7 @@ if(file_exists('extensions/modules/ServiceQueues')) {
         'relationship' => 'servicetickets_servicequeues',
         'source' => 'non-db'
     ];
-    $dictionary['ServiceTicket']['relationships']['servicetickets_servicequeues'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['relationships']['servicetickets_servicequeues'] = [
         'lhs_module' => 'ServiceQueues',
         'lhs_table' => 'servicequeues',
         'lhs_key' => 'id',
@@ -398,12 +399,12 @@ if(file_exists('extensions/modules/ServiceQueues')) {
 }
 
 if(file_exists('extensions/modules/ServiceCalls')) {
-    $dictionary['ServiceTicket']['fields']['servicecall_id'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicecall_id'] = [
         'name' => 'servicecall_id',
         'vname' => 'LBL_SERVICECALL_ID',
         'type' => 'id',
     ];
-    $dictionary['ServiceTicket']['fields']['servicecall_name'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicecall_name'] = [
         'name' => 'servicecall_name',
         'vname' => 'LBL_SERVICECALL',
         'type' => 'relate',
@@ -417,7 +418,7 @@ if(file_exists('extensions/modules/ServiceCalls')) {
         'join_name' => 'servicecalls',
         'required'=> false,
     ];
-    $dictionary['ServiceTicket']['fields']['servicecalls'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicecalls'] = [
         'vname' => 'LBL_SERVICECALLS',
         'name' => 'servicecalls',
         'type' => 'link',
@@ -425,7 +426,7 @@ if(file_exists('extensions/modules/ServiceCalls')) {
         'relationship' => 'servicetickets_servicecalls',
         'source' => 'non-db'
     ];
-    $dictionary['ServiceTicket']['relationships']['servicetickets_servicecalls'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['relationships']['servicetickets_servicecalls'] = [
         'lhs_module' => 'ServiceCalls',
         'lhs_table' => 'servicecalls',
         'lhs_key' => 'id',
@@ -438,7 +439,7 @@ if(file_exists('extensions/modules/ServiceCalls')) {
 
 if(file_exists('extensions/modules/ServiceFeedbacks')) {
     //servicefeedbacks
-    $dictionary['ServiceTicket']['fields']['servicefeedbacks'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicefeedbacks'] = [
         'vname' => 'LBL_SERVICEFEEDBACKS',
         'name' => 'servicefeedbacks',
         'type' => 'link',
@@ -451,12 +452,12 @@ if(file_exists('extensions/modules/ServiceFeedbacks')) {
 
 if(file_exists('extensions/modules/ServiceEquipments')) {
     //serviceequipment
-    $dictionary['ServiceTicket']['fields']['serviceequipment_id'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceequipment_id'] = [
         'name' => 'serviceequipment_id',
         'vname' => 'LBL_SERVICEEQUIPMENT_ID',
         'type' => 'id',
     ];
-    $dictionary['ServiceTicket']['fields']['serviceequipment_name'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceequipment_name'] = [
         'name' => 'serviceequipment_name',
         'vname' => 'LBL_SERVICEEQUIPMENT',
         'type' => 'relate',
@@ -468,7 +469,7 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
         'link' => 'serviceequipment',
         'join_name' => 'serviceequipments',
     ];
-    $dictionary['ServiceTicket']['fields']['serviceequipment'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceequipment'] = [
         'vname' => 'LBL_SERVICEEQUIPMENT',
         'name' => 'serviceequipment',
         'type' => 'link',
@@ -477,7 +478,7 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
         'link_type' => 'one',
         'source' => 'non-db'
     ];
-    $dictionary['ServiceTicket']['relationships']['serviceequipments_servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['relationships']['serviceequipments_servicetickets'] = [
         'lhs_module' => 'ServiceEquipments',
         'lhs_table' => 'serviceequipments',
         'lhs_key' => 'id',
@@ -490,12 +491,12 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
 
 if(file_exists('extensions/modules/ServiceEquipments')) {
 //servicelocation
-    $dictionary['ServiceTicket']['fields']['servicelocation_id'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicelocation_id'] = [
         'name' => 'servicelocation_id',
         'vname' => 'LBL_SERVICELOCATION_ID',
         'type' => 'id',
     ];
-    $dictionary['ServiceTicket']['fields']['servicelocation_name'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicelocation_name'] = [
         'name' => 'servicelocation_name',
         'vname' => 'LBL_SERVICELOCATION',
         'type' => 'relate',
@@ -507,7 +508,7 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
         'link' => 'servicelocation',
         'join_name' => 'servicelocations',
     ];
-    $dictionary['ServiceTicket']['fields']['servicelocation'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicelocation'] = [
         'vname' => 'LBL_SERVICELOCATION',
         'name' => 'servicelocation',
         'type' => 'link',
@@ -516,7 +517,7 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
         'link_type' => 'one',
         'source' => 'non-db'
     ];
-    $dictionary['ServiceTicket']['relationships']['servicetickets_servicelocation'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['relationships']['servicetickets_servicelocation'] = [
         'lhs_module' => 'ServiceLocations',
         'lhs_table' => 'servicelocations',
         'lhs_key' => 'id',
@@ -530,13 +531,13 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
 
 if(file_exists('extensions/modules/ServiceTicketSLAs')) {
     //serviceslas
-    $dictionary['ServiceTicket']['fields']['serviceticketsla_id'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketsla_id'] = [
         'name' => 'serviceticketsla_id',
         'vname' => 'LBL_SERVICETICKETSLA_ID',
         'type' => 'id',
     ];
 
-    $dictionary['ServiceTicket']['fields']['serviceticketsla_name'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketsla_name'] = [
         'name' => 'serviceticketsla_name',
         'vname' => 'LBL_SERVICETICKETSLA',
         'type' => 'relate',
@@ -549,7 +550,7 @@ if(file_exists('extensions/modules/ServiceTicketSLAs')) {
         'join_name' => 'serviceticketsla',
     ];
 
-    $dictionary['ServiceTicket']['fields']['serviceticketsla'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketsla'] = [
         'vname' => 'LBL_SERVICETICKETSLA',
         'name' => 'serviceticketsla',
         'type' => 'link',
@@ -561,7 +562,7 @@ if(file_exists('extensions/modules/ServiceTicketSLAs')) {
 }
 
 if(file_exists('extensions/modules/ServiceTicketNotes')) {
-    $dictionary['ServiceTicket']['fields']['serviceticketnotes'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketnotes'] = [
         'vname' => 'LBL_SERVICETICKETNOTES',
         'name' => 'serviceticketnotes',
         'type' => 'link',
@@ -573,7 +574,7 @@ if(file_exists('extensions/modules/ServiceTicketNotes')) {
 }
 if(file_exists('extensions/modules/ServiceTicketStages')) {
 
-    $dictionary['ServiceTicket']['fields']['serviceticketstages'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketstages'] = [
         'name' => 'serviceticketstages',
         'module' => 'ServiceTicketStages',
         'type' => 'link',
