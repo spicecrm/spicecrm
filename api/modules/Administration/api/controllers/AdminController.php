@@ -7,6 +7,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -181,14 +182,13 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
         if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
             SpiceDictionaryVardefs::loadDictionaries();
             // save cache to DB
-            foreach ($dictionary as $dict) {
+            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -208,7 +208,7 @@ class AdminController
             }
         }
 
-        foreach ($dictionary as $meta) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
             $tablename = $meta['table'];
@@ -235,14 +235,13 @@ class AdminController
      * @throws \Exception
      */
     public function buildSQLArray(Request $req, Response $res, array $args): Response {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
         if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
             SpiceDictionaryVardefs::loadDictionaries();
             // save cache to DB
-            foreach ($dictionary as $dict) {
+            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -263,7 +262,7 @@ class AdminController
             }
         }
 
-        foreach ($dictionary as $meta) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
             $tablename = $meta['table'];
@@ -391,7 +390,6 @@ class AdminController
      */
     public function rebuildRelationships()
     {
-//        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
         $this->rebuildDictionaryRelationships();
@@ -403,7 +401,7 @@ class AdminController
 //            foreach ($GLOBALS['moduleList'] as $module) {
 //                $focus = BeanFactory::getBean($module);
 //                if (!$focus) continue;
-//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => $dictionary[$focus->object_name]], $focus->module_dir);
+//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => SpiceDictionaryHandler::getInstance()->dictionary[$focus->object_name]], $focus->module_dir);
 //            }
 //
 //            // rebuild the metadata relationships as well
@@ -435,10 +433,9 @@ class AdminController
      */
     private function rebuildMetadataRelationships()
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
-        $rel_dictionary = $dictionary;
+        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
         foreach ($rel_dictionary as $rel_name => $rel_data) {
             $table = isset($rel_data ['table']) ? $rel_data ['table'] : "";
             SugarBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
