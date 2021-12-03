@@ -285,7 +285,7 @@ export class helper {
      * for passwords: returns a random character of a specific type (lower, upper, digit, special).
      * @private
      */
-    private pwRandomChar( type: string ): string {
+    public pwRandomChar( type: string ): string {
         let specialChars = '!"#$%&\'()*+,-./:;<=>?@[\\]^_{|}~';
         switch( type ) {
             case 'upper':   return String.fromCharCode( Math.floor( Math.random() * 26 ) + 65 );

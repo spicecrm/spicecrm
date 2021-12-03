@@ -25,26 +25,26 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      *
      * @private
      */
-    private searchterm: string;
+    public searchterm: string;
 
     /**
      * set to true if favorites shoudl be displayed resp searched
      *
      * @private
      */
-    private searchfavorites: boolean = false;
+    public searchfavorites: boolean = false;
 
     /**
      * the click lisetner that listenes to any click evbent outside of the element
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * if the dropwodn is open
      *
      * @private
      */
-    private dropDownOpen: boolean = false;
+    public dropDownOpen: boolean = false;
 
     constructor(
         public model: model,
@@ -54,8 +54,8 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         public router: Router,
         public backend: backend,
         public config: configurationService,
-        private elementRef: ElementRef,
-        private renderer: Renderer2
+        public elementRef: ElementRef,
+        public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);
     }
@@ -96,7 +96,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         return this.categories.filter(c => c.favorite).length > 0;
     }
 
-    private openDropDown(){
+    public openDropDown(){
         if(!this.dropDownOpen){
             this.dropDownOpen = true;
             this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
@@ -108,7 +108,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      *
      * @param event
      */
-    private onClick(event): void {
+    public onClick(event): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             this.dropDownOpen = false;
             this.clickListener();
@@ -148,7 +148,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         return values.length == 0 ? undefined : values.join('/');
     }
 
-    private setFavorites(e: MouseEvent){
+    public setFavorites(e: MouseEvent){
         e.stopPropagation();
         e.preventDefault();
         this.searchfavorites = !this.searchfavorites;
@@ -161,7 +161,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      * it also looks for the last category with a corresponding queue to set this too
      * @param categories = array of category objects, all lvls from top to lowest
      */
-    private chooseCategories(categories) {
+    public chooseCategories(categories) {
         let fields: any = {};
         let i = 1
         while(i <= 4) {
@@ -195,7 +195,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      *
      * @private
      */
-    private clearCategories() {
+    public clearCategories() {
         let i = 1;
         let fields: any = {};
         while(i <= 4){

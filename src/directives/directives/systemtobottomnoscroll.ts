@@ -22,7 +22,7 @@ export class SystemToBottomNoScrollDirective implements DoCheck {
      * a margin in pixels fromt he bottom
      * @private
      */
-    @Input() private marginBottom = 0;
+    @Input() public marginBottom = 0;
 
     constructor(public element: ElementRef, public renderer: Renderer2, public footer: footer) {
     }
