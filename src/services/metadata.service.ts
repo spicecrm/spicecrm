@@ -248,7 +248,7 @@ export class metadata {
      * @param componentName
      * @private
      */
-    private loadComponentFactory(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentFactory<any>> {
+    public loadComponentFactory(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentFactory<any>> {
 
         if (this.componentFactories[moduleMetadata.name]) {
             return of(
@@ -325,7 +325,7 @@ export class metadata {
      * @return ViewContainerRef of SystemComponentContainer
      * @private
      */
-    private loadComponentContainer(component: string, vcr: ViewContainerRef, injector: Injector): ComponentRef<SystemComponentContainer> {
+    public loadComponentContainer(component: string, vcr: ViewContainerRef, injector: Injector): ComponentRef<SystemComponentContainer> {
 
         const systemComponentContainerFactory = this.componentFactoryResolver.resolveComponentFactory(SystemComponentContainer);
         const systemComponentContainer = vcr.createComponent(systemComponentContainerFactory, undefined, injector);

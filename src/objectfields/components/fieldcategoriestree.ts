@@ -10,7 +10,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'field-categories-tree',
-    templateUrl: './src/objectfields/templates/fieldcategoriestree.html',
+    templateUrl: '../templates/fieldcategoriestree.html',
     animations: [
         trigger('treeanimation', [
             state('true', style({'margin-left': '-34%', 'margin-right': '34%'})),
@@ -41,34 +41,34 @@ export class fieldCategoriesTree {
      *
      * @private
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     /**
      * the categories
      *
      * @private
      */
-    @Input() private categories: any[] = [];
+    @Input() public categories: any[] = [];
 
     /**
      * a searchterm
      *
      * @private
      */
-    @Input() private searchTerm: string;
+    @Input() public searchTerm: string;
 
     /**
      * set to true to display the favorites and allow searching there
      *
      * @private
      */
-    @Input() private searchFavorites: boolean = false;
+    @Input() public searchFavorites: boolean = false;
 
     constructor(
-        private model: model,
-        private backend: backend,
-        private config: configurationService,
-        private language: language,
+        public model: model,
+        public backend: backend,
+        public config: configurationService,
+        public language: language,
     ) {
 
     }
@@ -86,7 +86,7 @@ export class fieldCategoriesTree {
      * @param node
      * @private
      */
-    private hasChildren(node) {
+    public hasChildren(node) {
         return this.categories.filter(c => c.parent_id == node.id).length > 0;
     }
 
@@ -96,7 +96,7 @@ export class fieldCategoriesTree {
      * @param level
      * @private
      */
-    private levelCategories(level) {
+    public levelCategories(level) {
         switch (level) {
             case 0:
                 return this.categories.filter(c => !c.parent_id || c.parent_id == '');
@@ -112,7 +112,7 @@ export class fieldCategoriesTree {
      *
      * @private
      */
-    private getMatchedNodes() {
+    public getMatchedNodes() {
         let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
 
         let fullcategories = []
@@ -127,7 +127,7 @@ export class fieldCategoriesTree {
      *
      * @private
      */
-    private getFavoriteNodes() {
+    public getFavoriteNodes() {
         // let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
         let cats = this.categories.filter(c => c.favorite);
 
@@ -143,7 +143,7 @@ export class fieldCategoriesTree {
         return fullcategories;
     }
 
-    private buildFullCategories(category, subnodes: boolean = false) {
+    public buildFullCategories(category, subnodes: boolean = false) {
         let thisCategory = category;
         let item: any[] = [{id: thisCategory.id, node_name: thisCategory.node_name}];
 
@@ -158,7 +158,7 @@ export class fieldCategoriesTree {
     /**
      * triggered on mouseenter, selects a category to go deeper
      */
-    private select(level, cat) {
+    public select(level, cat) {
         this.levels[level] = cat.id;
         // reset all selected levels higher than the current depth
         level++;
@@ -174,7 +174,7 @@ export class fieldCategoriesTree {
      * @param level
      * @param cat
      */
-    private isCategorySelected(level, cat): boolean {
+    public isCategorySelected(level, cat): boolean {
         return this.levels[level] == cat.id;
     }
 
@@ -184,7 +184,7 @@ export class fieldCategoriesTree {
      * @param cat
      * @private
      */
-    private choose(level, cat) {
+    public choose(level, cat) {
         this.select(level, cat);
         this.category.emit([...this.levels]);
         this.levels = [undefined, undefined, undefined, undefined];
@@ -196,7 +196,7 @@ export class fieldCategoriesTree {
      * @param node
      * @private
      */
-    private selectNode(node) {
+    public selectNode(node) {
         let levels = [];
         for (let cat of node) {
             levels.push(cat.id);
