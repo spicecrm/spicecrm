@@ -11,6 +11,7 @@ import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
+import {helper} from '../../../services/helper.service';
 
 /**
  * @ignore
@@ -36,6 +37,7 @@ export class UserAddModal implements OnInit {
     public pwdGuideline: string;
     public autogenerate: boolean = false;
     public sendByEmail: boolean = false;
+    public forceReset: boolean = true;
     public showPassword: boolean = false;
     public saveTriggered: boolean = false;
     public canSendByEmail: boolean = true;
@@ -50,7 +52,8 @@ export class UserAddModal implements OnInit {
         public view: view,
         public cdr: ChangeDetectorRef,
         public metadata: metadata,
-        public configuration: configurationService
+        public configuration: configurationService,
+        public helper: helper
     ) {
         this.model.module = "Users";
         this.view.isEditable = true;
@@ -137,8 +140,10 @@ export class UserAddModal implements OnInit {
 
     set autoGenerate(value) {
         this.autogenerate = value;
-        this.password = value ? Math.random().toString(36).slice(-8) : '';
-        this.repeatPassword = this.password;
+        if ( value ) {
+            this.password = this.helper.generatePassword(this.configuration.getCapabilityConfig('userpassword'));
+            this.repeatPassword = this.password;
+        }
     }
 
     public ngOnInit() {
@@ -229,7 +234,7 @@ export class UserAddModal implements OnInit {
     public savePassword(goDetail) {
         let body = {
             newPassword: this.password,
-            forceReset: this.autoGenerate,
+            forceReset: this.forceReset,
             sendEmail: this.canSendByEmail ? this.sendByEmail : false
         };
         this.backend.postRequest("module/Users/"+this.model.id+"/password/reset", {}, body).subscribe(res => {

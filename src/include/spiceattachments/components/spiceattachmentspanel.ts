@@ -18,6 +18,7 @@ import {
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
+import {view} from "../../../services/view.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
@@ -75,7 +76,19 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * @param metadata
      * @param modalservice
      */
-    constructor(public _modelattachments: modelattachments, @Optional() @SkipSelf() public parentmodelattachments: modelattachments, public language: language, public modal: modal, public model: model, public renderer: Renderer2, public toast: toast, public metadata: metadata, public modalservice: modal, public injector: Injector) {
+    constructor(
+        public _modelattachments: modelattachments,
+        @Optional() @SkipSelf() public parentmodelattachments: modelattachments,
+        public language: language,
+        public modal: modal,
+        public model: model,
+        @Optional() public view: view,
+        public renderer: Renderer2,
+        public toast: toast,
+        public metadata: metadata,
+        public modalservice: modal,
+        public injector: Injector
+    ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
     }
@@ -98,7 +111,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * returns if the model is editing
      */
     get editing() {
-        return this.model.isEditing;
+        return this.model.isEditing && (!this.view || this.view.isEditable);
     }
 
     /**

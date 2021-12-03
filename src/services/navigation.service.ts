@@ -101,7 +101,7 @@ export class navigation {
     /**
      * determines the navigatioon paradigm if set to tabbed or simple
      */
-    public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'tabbed';
+    public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'subtabbed';
 
     /**
      * determines the navigatioon paradigm if set to tabbed or simple

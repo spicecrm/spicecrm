@@ -121,11 +121,11 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
             })
         );
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-            if (calendar.id == 'owner') {
-                this.getOwnerEvents();
-            } else {
-                this.getUserEvents(calendar);
-            }
+                if (calendar.id == 'owner') {
+                    this.getOwnerEvents();
+                } else {
+                    this.getUserEvents(calendar);
+                }
             })
         );
         this.resizeListener = this.renderer.listen('window', 'resize', () =>

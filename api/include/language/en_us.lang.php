@@ -51,6 +51,16 @@ $app_list_strings = [
         'C' => 'Consumer',
     ],
 
+    'dayofweek_dom' => [
+        '0' => 'Sunday',
+        '1' => 'Monday',
+        '2' => 'Tuesday',
+        '3' => 'Wednesday',
+        '4' => 'Thursday',
+        '5' => 'Friday',
+        '6' => 'Saturday'
+    ],
+
     //e.g. en franï¿½ais 'Analyst'=>'Analyste',
     'account_type_dom' => [
         '' => '',
@@ -477,6 +487,7 @@ $app_list_strings = [
         [
             'male' => 'Male',
             'female' => 'Female',
+            'diverse' => 'Divers'
         ],
     //Note:  do not translate case_status_default_key
 //       it is the key for the default case_status_dom value
@@ -1573,12 +1584,15 @@ $app_list_strings['scrum_status_dom'] = [
 
 $app_list_strings['emailschedule_status_dom'] = [
     'queued' => 'queued',
+    'cancelled' => 'cancelled',
     'sent' => 'sent',
 ];
 
 $app_list_strings['email_schedule_status_dom'] = [
     'open' => 'open',
+    'processing' => 'processing',
     'done' => 'done',
+    'cancelled' => 'cancelled',
     'done_with_errors' => 'done with errors',
     'record_not_loaded' => 'record not loaded',
 ];

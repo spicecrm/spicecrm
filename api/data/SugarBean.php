@@ -2484,7 +2484,7 @@ class SugarBean
             }
         }
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         if (isset($_SESSION['show_deleted'])) {
             $this->mark_undeleted($id);
         } else {
@@ -2538,7 +2538,7 @@ class SugarBean
         $custom_logic_arguments['id'] = $id;
         $this->call_custom_logic("before_restore", $custom_logic_arguments);
 
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         $query = "UPDATE $this->table_name set deleted=0 , date_modified = '$date_modified' where id='$id'";
         $this->db->query($query, true, "Error marking record undeleted: ");
 
@@ -2882,7 +2882,7 @@ class SugarBean
         $where = '';
 
         // make sure there is a date modified
-        $date_modified = $this->db->convert("'" . $GLOBALS['timedate']->nowDb() . "'", 'datetime');
+        $date_modified = $this->db->convert("'" . TimeDate::getInstance()->nowDb() . "'", 'datetime');
 
         $row = null;
         if ($check_duplicates) {
@@ -3157,7 +3157,7 @@ class SugarBean
         $clone->cloningData['count']++;
         $clone->new_with_id = true;
         $clone->update_date_entered = true;
-        $clone->date_entered = $GLOBALS['timedate']->nowDb();
+        $clone->date_entered = TimeDate::getInstance()->nowDb();
         $clone->onClone();
         $clone->save();
 

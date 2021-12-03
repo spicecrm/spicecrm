@@ -31,7 +31,8 @@ export class AdministrationLoginRestriction implements OnInit {
             enabled: false,
             number_attempts: 0,
             monitored_period: 0,
-            blocking_duration: 0
+            blocking_duration: 0,
+            blocking_type: 'permanent'
         },
         ip: {
             enabled: false,
@@ -57,19 +58,20 @@ export class AdministrationLoginRestriction implements OnInit {
 
     public saveConfig() {
         let config = {
-            ip_enabled: this.restrictions.ip.enabled ? '1':'0',
+            ip_enabled: this.restrictions.ip.enabled ? 1:0,
             ip_number_attempts: this.restrictions.ip.number_attempts,
             ip_monitored_period: this.restrictions.ip.monitored_period,
-            user_enabled: this.restrictions.user.enabled ? '1':'0',
+            user_enabled: this.restrictions.user.enabled ? 1:0,
             user_number_attempts: this.restrictions.user.number_attempts,
             user_monitored_period: this.restrictions.user.monitored_period,
-            user_blocking_duration: this.restrictions.user.blocking_duration
+            user_blocking_duration: this.restrictions.user.blocking_type === 'time' ? this.restrictions.user.blocking_duration : '0',
         };
         this.isLoading = true;
         this.backend.postRequest('configuration/configurator/editor/login_attempt_restriction', null, { config: config })
             .pipe(take(1))
             .subscribe( response => {
                 this.restrictionsBackup = JSON.parse(JSON.stringify( this.restrictions ));
+                this.toast.sendToast( 'Login Restriction Configuration successfully saved.', 'success' );
                 this.isLoading = false;
             });
     }
@@ -80,12 +82,13 @@ export class AdministrationLoginRestriction implements OnInit {
             .pipe(take(1))
             .subscribe(response => {
                 this.restrictions.ip.enabled = response.ip_enabled === '1' || false;
-                this.restrictions.ip.number_attempts = response.ip_number_attempts || 0,
-                this.restrictions.ip.monitored_period = response.ip_monitored_period || 0,
+                this.restrictions.ip.number_attempts = response.ip_number_attempts*1 || 0,
+                this.restrictions.ip.monitored_period = response.ip_monitored_period*1 || 0,
                 this.restrictions.user.enabled = response.user_enabled === '1' || false;
-                this.restrictions.user.number_attempts = response.user_number_attempts || 0,
-                this.restrictions.user.monitored_period = response.user_monitored_period || 0,
-                this.restrictions.user.blocking_duration = response.user_blocking_duration || 0;
+                this.restrictions.user.number_attempts = response.user_number_attempts*1 || 0,
+                this.restrictions.user.monitored_period = response.user_monitored_period*1 || 0,
+                this.restrictions.user.blocking_duration = response.user_blocking_duration*1 || 0;
+                this.restrictions.user.blocking_type = this.restrictions.user.blocking_duration ? 'time':'permanent';
                 this.restrictionsBackup = JSON.parse( JSON.stringify( this.restrictions ) );
                 this.isLoading = false;
             },
