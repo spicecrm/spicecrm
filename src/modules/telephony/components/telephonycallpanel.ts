@@ -152,7 +152,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      *
      * @private
      */
-    private unsetRelatedData(){
+    public unsetRelatedData(){
         this.calldata.relatedid = null;
         this.calldata.relatedmodule= null;
         this.calldata.relateddata = {};

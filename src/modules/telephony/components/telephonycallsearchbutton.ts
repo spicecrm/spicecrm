@@ -11,7 +11,7 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'telephony-call-panel-search-button',
-    templateUrl: './src/modules/telephony/templates/telephonycallsearchbutton.html',
+    templateUrl: '../templates/telephonycallsearchbutton.html',
     providers:[model]
 })
 export class TelephonyCallSearchButton {
@@ -21,21 +21,21 @@ export class TelephonyCallSearchButton {
      *
      * @private
      */
-    @Input() private calldata: any;
+    @Input() public calldata: any;
 
     /**
      * emits if the obejct has been selected
      */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private modal: modal, private injector: Injector) {
+    constructor(public model: model, public modal: modal, public injector: Injector) {
 
     }
 
     /**
      * save the call in the model history
      */
-    private execute() {
+    public execute() {
         this.modal.openModal('TelephonyCallSearchModal').subscribe(
             componentref => {
                 componentref.instance.selected.subscribe(selectedModel => {
@@ -46,7 +46,7 @@ export class TelephonyCallSearchButton {
 
     }
 
-    private updateRelated(model) {
+    public updateRelated(model) {
         this.calldata.relatedid = model.id;
         this.calldata.relatedmodule = model.module
 

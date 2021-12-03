@@ -25,7 +25,7 @@ declare var moment: any;
  */
 @Component({
     selector: '[project-settlement-line]',
-    templateUrl: './src/modules/projects/templates/projectsettlementline.html',
+    templateUrl: '../templates/projectsettlementline.html',
     providers: [model, view]
 })
 export class ProjectSettlementLine implements OnInit, OnDestroy {
@@ -40,11 +40,11 @@ export class ProjectSettlementLine implements OnInit, OnDestroy {
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private model: model,
-        private view: view
+        public model: model,
+        public view: view
     ) {
         this.view.isEditable = true;
         this.view.displayLabels = false;

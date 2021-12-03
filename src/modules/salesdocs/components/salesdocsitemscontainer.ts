@@ -44,7 +44,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
     /**
      * the columns to be displayed
      */
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
     constructor(
         public userpreferences: userpreferences,
@@ -57,7 +57,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         public view: view,
         public configuration: configurationService,
         public metadata: metadata,
-        private broadcast: broadcast,
+        public broadcast: broadcast,
     ) {
         // build in any case if the items had already been passed in
         this.buildItems();

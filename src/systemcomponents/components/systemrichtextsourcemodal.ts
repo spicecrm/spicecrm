@@ -37,17 +37,17 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
     public foundIndices: number[] = [];
     public currentIndex: number = -1;
     public html: EventEmitter<string> = new EventEmitter<string>();
-    private isUserInsideEditor = false;
-    private editorId = _.uniqueId();
-    private eventListener: any[] = [];
+    public isUserInsideEditor = false;
+    public editorId = _.uniqueId();
+    public eventListener: any[] = [];
     public beautifyenabled: boolean = false;
 
     @ViewChild('sourceeditor', {static: true}) public sourceEditor: any;
 
     constructor(
         public language: language, public renderer: Renderer2, public sanitized: DomSanitizer,
-        public libloader: libloader, private injector: Injector, @Optional() private model: model,
-        private modal: modal, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any ) {
+        public libloader: libloader, public injector: Injector, @Optional() public model: model,
+        public modal: modal, public editorService: systemrichtextservice, @Inject(DOCUMENT) public _document: any ) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
         });
@@ -209,14 +209,14 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
     /**
      * Should the TemplateVariableHelper be offered, the button enabled?
      */
-    private get useTemplateVariableHelper() {
+    public get useTemplateVariableHelper() {
         return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
     }
 
     /**
      * Open the modal with the TemplateVariableHelper
      */
-    private openTemplateVariableHelper() {
+    public openTemplateVariableHelper() {
         this.editorService.saveSelection();
         this.modal.openModal('OutputTemplatesVariableHelper', null, this.injector )
             .pipe(take(1))
@@ -231,14 +231,14 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
             });
     }
 
-    private focusEditor() {
+    public focusEditor() {
         this.sourceEditor.nativeElement.focus();
     }
 
     /**
      * Determine if the user "is" currently inside the editor.
      */
-    private testIsUserInsideEditor(): boolean {
+    public testIsUserInsideEditor(): boolean {
         if ( window.getSelection ) {
             let userSelection = window.getSelection();
             let a: any = userSelection.focusNode;

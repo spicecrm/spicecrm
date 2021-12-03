@@ -25,7 +25,7 @@ export class SystemModalHeaderEmpty {
     /**
      * if set to true no close icon will be rendered in the upper right corner
      */
-    @Input() private hiddenCloseButton = false;
+    @Input() public hiddenCloseButton = false;
 
     /**
      * an attribute that can be set to hide the close button
@@ -33,11 +33,7 @@ export class SystemModalHeaderEmpty {
      * @param value
      */
     @Input('system-modal-header-noclose') set hideClose(value) {
-        if (value === false) {
-            this.hiddenCloseButton = false;
-        } else {
-            this.hiddenCloseButton = true;
-        }
+        this.hiddenCloseButton = value !== false;
     }
 
     constructor(public language: language, public layout: layout) {

@@ -39,7 +39,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
                 public model: model,
                 public metadata: metadata,
                 public broadcast: broadcast,
-                private router: Router) {
+                public router: Router) {
 
         super(backend, model, broadcast);
         this.subscribeToGSuiteChanges();
