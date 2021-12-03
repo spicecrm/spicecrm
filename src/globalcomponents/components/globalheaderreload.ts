@@ -9,7 +9,6 @@ import {metadata} from '../../services/metadata.service';
 import {loader} from '../../services/loader.service';
 import {toast} from "../../services/toast.service";
 import {configurationService} from "../../services/configuration.service";
-import {ɵResourceLoaderImpl} from "@angular/platform-browser-dynamic";
 
 @Component({
     selector: 'global-header-reload',
