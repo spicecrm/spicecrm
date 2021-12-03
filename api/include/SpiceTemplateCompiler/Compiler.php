@@ -293,7 +293,7 @@ class Compiler
      */
     private function getLinkedBeans($locator, $obj = NULL, $beans = [], $params = [])
     {
-        $parts = explode('.', $locator);
+         $parts = explode('.', $locator);
 
         // if we do not have an object we try to resolve it
         if (!$obj) {
@@ -349,7 +349,8 @@ class Compiler
         if (count($parts) > 2) {
             $deepLinkedBeans = [];
             foreach ($linkedBeans as $linkedBean) {
-                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode('.', array_shift($parts)), $linkedBean));
+                array_shift($parts);
+                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode(".", $parts),$linkedBean) );
             }
             return $deepLinkedBeans;
         } else {
