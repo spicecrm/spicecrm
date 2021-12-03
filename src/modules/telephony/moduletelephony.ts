@@ -18,11 +18,14 @@ import /*embed*/ {TelephonyCallPanelRelated} from "./components/telephonycallpan
 import /*embed*/ {TelephonyCallPanelRelatedCompact} from "./components/telephonycallpanelrelatedcompact";
 import /*embed*/ {TelephonyCallPanelSaveButton} from "./components/telephonycallpanelsavebutton";
 import /*embed*/ {TelephonyCallLogAttemptButton} from "./components/telephonycalllogattemptbutton";
-import /*embed*/ {TelephonyCallSearchContactButton} from "./components/telephonycallsearchcontactbutton";
-import /*embed*/ {TelephonyCallCreateContactButton} from "./components/telephonycallcreatecontactbutton";
+import /*embed*/ {TelephonyCallSearchModal} from "./components/telephonycallsearchmodal";
+import /*embed*/ {TelephonyCallSearchButton} from "./components/telephonycallsearchbutton";
+import /*embed*/ {TelephonyCallCreateRelatedModal} from "./components/telephonycallcreaterelatedmodal";
+import /*embed*/ {TelephonyCallCreateRelatedButton} from "./components/telephonycallcreaterelatedbutton";
 import /*embed*/ {TelephonyCallPanel} from "./components/telephonycallpanel";
 import /*embed*/ {TelephonyCallModelUpdate} from "./components/telephonycallmodelupdate";
 import /*embed*/ {TelephonyToolbarIndicator} from "./components/telephonytoolbarindicator";
+
 
 @NgModule({
     imports: [
@@ -43,8 +46,10 @@ import /*embed*/ {TelephonyToolbarIndicator} from "./components/telephonytoolbar
         TelephonyCallPanelRelatedCompact,
         TelephonyCallPanelSaveButton,
         TelephonyCallLogAttemptButton,
-        TelephonyCallSearchContactButton,
-        TelephonyCallCreateContactButton,
+        TelephonyCallSearchButton,
+        TelephonyCallSearchModal,
+        TelephonyCallCreateRelatedButton,
+        TelephonyCallCreateRelatedModal,
         TelephonyCallModelUpdate,
         TelephonyToolbarIndicator
     ]

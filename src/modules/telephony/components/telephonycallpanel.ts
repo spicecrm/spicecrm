@@ -88,7 +88,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      */
     public handleBroadcast(event) {
         // check that we have a related id and that we also have the proper eventes and model in scope
-        if(this.calldata.relatedid && event.messagetype == 'model.save' && event.messagedata.module == this.calldata.relatedmodule && event.messagedata.id == this.calldata.relatedid){
+        if (this.calldata.relatedid && event.messagetype == 'model.save' && event.messagedata.module == this.calldata.relatedmodule && event.messagedata.id == this.calldata.relatedid) {
             this.calldata.relateddata = event.messagedata.data;
             this.setReletadeData();
         }
@@ -107,6 +107,11 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
 
             // set the related data
             this.setReletadeData();
+
+            // specific handling for Calls where we also have a direction
+            if (this.model.getField('direction')) {
+                this.model.setField('direction', this.calldata.direction == 'inbound' ? 'Inbound' : 'Outbound');
+            }
 
             // start the edit ont he model
             this.model.startEdit();
@@ -139,6 +144,33 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
                     parent_name: this.calldata.relateddata.summary_text
                 });
             }
+        }
+    }
+
+    /**
+     * unsets the related data
+     *
+     * @private
+     */
+    private unsetRelatedData(){
+        this.calldata.relatedid = null;
+        this.calldata.relatedmodule= null;
+        this.calldata.relateddata = {};
+
+        if (this.calldata.relatedmodule == 'Contacts' && this.metadata.getModuleFields(this.model.module).contact_id) {
+            this.model.setFields({
+                contact_id: undefined,
+                contact_name: undefined,
+                parent_type: undefined,
+                parent_id: undefined,
+                parent_name: undefined,
+            });
+        } else {
+            this.model.setFields({
+                parent_type: undefined,
+                parent_id: undefined,
+                parent_name: undefined
+            });
         }
     }
 

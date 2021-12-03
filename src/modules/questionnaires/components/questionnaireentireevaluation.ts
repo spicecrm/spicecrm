@@ -76,7 +76,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         if ( this.isLoadingQuestionsets ) return;
         this.isLoadingQuestionsets = true;
         this.questionsets = [];
-        this.backend.getRequest('module/Questionnaires/'+this.questionnaireId+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
+        this.backend.getRequest('module/Questionnaires/'+this.questionnaireId+'/related/questionsets', { limit: 999, forceResolveLinks: 1 }).subscribe( questionsets => {
 
             for ( let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
             this.questionsets.sort(( a, b ) => a.position - b.position );

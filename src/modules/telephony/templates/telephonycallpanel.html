@@ -10,8 +10,8 @@
         </div>
         <div class="slds-box slds-m-around--x-small slds-theme--shade slds-align--absolute-center">
             <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
-                <li class="slds-item "><telephony-call-panel-search-contact-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-search-contact-button></li>
-                <li class="slds-item "><telephony-call-panel-create-contact-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-create-contact-button></li>
+                <li class="slds-item "><telephony-call-panel-search-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-search-button></li>
+                <li class="slds-item "><telephony-call-panel-create-related-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-create-related-button></li>
             </ul>
         </div>
     </div>
@@ -21,7 +21,7 @@
             <!-- exactly one match-->
             <ng-container *ngIf="calldata.relatedid">
                 <div class="slds-height_full slds-align_absolute-center" [system-model-provider]="{module: calldata.relatedmodule, id: calldata.relatedid, data: calldata.relateddata}">
-                    <div class="slds-text-align_center slds-align-middle">
+                    <div class="slds-text-align_center slds-align-middle slds-size--1-of-1">
                         <system-icon [module]="calldata.relatedmodule"></system-icon>
                         <telephony-call-panel-related></telephony-call-panel-related>
                     </div>
@@ -39,24 +39,24 @@
         </div>
         <ng-template #callconnected>
             <div class="slds-docked-composer__lead" [ngClass]="{'slds-theme--shade': fieldset }" [system-model-provider]="{module: calldata.relatedmodule, id: calldata.relatedid, data: calldata.relateddata}">
-                <div class="slds-media">
-                    <system-icon [module]="calldata.relatedmodule ? calldata.relatedmodule : 'Calls'"></system-icon>
+                <div class="slds-media" style="width: calc(100% - 90px);">
+                    <system-icon class="slds-p-top--xx-small" [module]="calldata.relatedmodule ? calldata.relatedmodule : 'Calls'"></system-icon>
                     <div class="slds-media__body">
                         <ng-container *ngIf="calldata.relatedid; else nocalldata">
-                            <telephony-call-panel-related-compact *ngIf="calldata.relatedid"></telephony-call-panel-related-compact>
+                            <telephony-call-panel-related-compact [canClear]="true" (unlink)="unsetRelatedData()"></telephony-call-panel-related-compact>
                         </ng-container>
                         <ng-template #nocalldata>
                             <p class="slds-text-heading_medium">{{msisdnFormatted}}</p>
                             <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
-                                <li class="slds-item "><telephony-call-panel-search-contact-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-search-contact-button></li>
-                                <li class="slds-item "><telephony-call-panel-create-contact-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-create-contact-button></li>
+                                <li class="slds-item "><telephony-call-panel-search-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-search-button></li>
+                                <li class="slds-item "><telephony-call-panel-create-related-button [calldata]="calldata" (actionemitter)="setReletadeData()"></telephony-call-panel-create-related-button></li>
                             </ul>
                         </ng-template>
                     </div>
                 </div>
-                <p class="slds-col_bump-left slds-text-heading_large">
+                <div class="slds-col_bump-left slds-text-heading_large">
                     <telephony-call-duration [calldata]="calldata"></telephony-call-duration>
-                </p>
+                </div>
             </div>
             <!-- render the fieldset if we have an embedded object otherwise remain backwards compatible with the legacy approach-->
             <div system-to-bottom [marginBottom]="50" *ngIf="fieldset; else noembeddedobject">

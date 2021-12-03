@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef,
-    Injector,
+    Injector, OnDestroy,
     OnInit
 } from '@angular/core';
 import {model} from '../../../services/model.service';
@@ -13,9 +13,10 @@ import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {currency} from '../../../services/currency.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {Subscription} from "rxjs";
+import {broadcast} from "../../../services/broadcast.service";
 
 declare var moment: any;
 
@@ -23,7 +24,7 @@ declare var moment: any;
     selector: 'salesdocs-items-container',
     templateUrl: '../templates/salesdocsitemscontainer.html'
 })
-export class SalesDocsItemsContainer implements OnInit {
+export class SalesDocsItemsContainer implements OnInit, OnDestroy {
 
     /**
      * the items on the sales Document
@@ -40,6 +41,11 @@ export class SalesDocsItemsContainer implements OnInit {
      */
     public fieldsetItems: any[] = [];
 
+    /**
+     * the columns to be displayed
+     */
+    private subscription = new Subscription();
+
     constructor(
         public userpreferences: userpreferences,
         public injector: Injector,
@@ -50,13 +56,21 @@ export class SalesDocsItemsContainer implements OnInit {
         public modal: modal,
         public view: view,
         public configuration: configurationService,
-        public metadata: metadata
+        public metadata: metadata,
+        private broadcast: broadcast,
     ) {
-        let itemSubscription = this.model.data$.subscribe(data => {
-            if (this.buildItems()) {
-                if (itemSubscription) itemSubscription.unsubscribe();
-            }
-        });
+        // build in any case if the items had already been passed in
+        this.buildItems();
+
+        // add the subscriber
+        this.subscription.add(
+            this.broadcast.message$.subscribe(msg => {
+                    if (msg.messagetype == 'model.save' || msg.messagetype == 'model.loaded' && msg.messagedata.module === this.model.module) {
+                        this.buildItems();
+                    }
+                }
+            )
+        );
 
         // determine the list fieldset
         let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
@@ -70,6 +84,13 @@ export class SalesDocsItemsContainer implements OnInit {
      */
     public ngOnInit() {
         this.recalculate();
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**
@@ -120,7 +141,7 @@ export class SalesDocsItemsContainer implements OnInit {
      * build the items and render them in the container
      */
     public buildItems(): boolean {
-        if (!this.model.data.salesdocitems) return false;
+        if (!this.model.data?.salesdocitems) return false;
 
         this.items = [];
         for (let itemid in this.model.data.salesdocitems.beans) {

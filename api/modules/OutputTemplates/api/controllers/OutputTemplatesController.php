@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maretval
- * Date: 07.05.2019
- * Time: 13:20
- */
+/***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;

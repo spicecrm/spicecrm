@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -193,7 +195,11 @@ class CampaignTask extends SugarBean
 
             // load the bean and send the email
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
-            if($seed){
+            if($seed && $seed->is_inactive) {
+                $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
+                $campaignLog->activity_type = 'inactive';
+                $campaignLog->save();
+            } else if($seed) {
                 $email = $this->sendEmail($seed, true);
                 if($email == false){
                     $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
@@ -328,7 +334,7 @@ class CampaignTask extends SugarBean
      */
     private function getProspectBeans($start = 0, $limit = 100){
         $beans = [];
-        $select_query = "SELECT plp.related_id id, plp.related_type module ";
+        $select_query = "SELECT plp.related_id id, max(plp.related_type) module ";
         $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
         $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
         $select_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";

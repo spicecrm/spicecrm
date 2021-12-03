@@ -66,17 +66,17 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     get displayModuleIcon() {
-        return this.fieldconfig.hidemoduleicon ? false : true;
+        return !this.fieldconfig.hidemoduleicon;
     }
 
     public ngOnInit() {
         // determine the valid types
         this.determineParentTypes();
-
         // initialize the parenttype
-        if (!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
+      if (!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
             this.model.data[this.parentTypeField] = this.parentTypes[0];
-        }
+       }
+
     }
 
     /**
@@ -84,11 +84,10 @@ export class fieldParent extends fieldGeneric implements OnInit {
      */
     public determineParentTypes() {
         let parenttypes = [];
-
-        if(this.field_defs.parent_modules){
-            parenttypes = this.field_defs.parent_modules;
-        } else if (this.fieldconfig.parenttypes) {
+        if (this.fieldconfig.parenttypes) {
             parenttypes = this.fieldconfig.parenttypes.replace(/\s/g, '').split(',');
+        } else if(this.field_defs.parent_modules){
+            parenttypes = this.field_defs.parent_modules;
         }
 
         parenttypes.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);

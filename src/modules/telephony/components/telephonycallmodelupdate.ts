@@ -7,6 +7,9 @@ import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
+import {session} from "../../../services/session.service";
+
+declare var libphonenumber: any;
 
 /**
  * renders a modal to update the phone fields on a module
@@ -14,7 +17,7 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'telephony-call-model-update',
     templateUrl: '../templates/telephonycallmodelupdate.html',
-    providers: [model, view]
+    providers: [ view]
 })
 export class TelephonyCallModelUpdate implements OnInit {
 
@@ -49,6 +52,7 @@ export class TelephonyCallModelUpdate implements OnInit {
         public modal: modal,
         public model: model,
         public view: view,
+        public session: session,
         public metadata: metadata
     ) {
         this.view.displayLabels = false;
@@ -62,7 +66,7 @@ export class TelephonyCallModelUpdate implements OnInit {
 
         // initialize the model if we have any phone fields
         if (this.phoneFields.length > 0) {
-            this.initializeModel();
+            this.model.startEdit();
         } else {
             this.close();
         }
@@ -90,7 +94,21 @@ export class TelephonyCallModelUpdate implements OnInit {
         // let await = this.modal.await('LBL_LOADING_DATA');
         this.model.module = this.calldata.relatedmodule;
         this.model.id = this.calldata.relatedid;
+        this.model.initialize();
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.calldata.relateddata);
         this.model.startEdit();
+    }
+
+    /**
+     * gets a formatted MSISDN
+     */
+    get msisdnFormatted() {
+        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.session.authData.address_country && this.calldata.msisdn.length > 5) {
+            let msisdn = this.calldata.msisdn;
+            return libphonenumber.parsePhoneNumberFromString(msisdn, this.session.authData.address_country).formatInternational();
+        } else {
+            return this.calldata.msisdn;
+        }
     }
 
     /**
@@ -101,7 +119,7 @@ export class TelephonyCallModelUpdate implements OnInit {
     }
 
     public copy2Field(field) {
-        this.model.setField(field, this.calldata.msisdn);
+        this.model.setField(field, this.msisdnFormatted);
     }
 
     /**

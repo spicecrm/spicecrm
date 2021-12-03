@@ -29,7 +29,7 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
 
     public clickListener: any;
 
-    @ViewChild('inputField', {read: ViewContainerRef, static: true}) public inputField: ViewContainerRef;
+    @ViewChild('inputField', {read: ViewContainerRef, static: false}) public inputField: ViewContainerRef;
 
     constructor( public language: language, public model: model, public view: view, public backend: backend, public renderer: Renderer2 ) { }
 
