@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
@@ -1461,12 +1462,11 @@ class OCI8Manager extends DBManager
      */
     public function insertQuery($table, array $data, $execute = true)
     {
-        global $dictionary;
         $copy = array_merge([], $data);
         $lob_fields = [];
         $lob_dataType = [];
         // find the dictionary table
-        foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
                     if ($this->type_map[$vardef['type']] == 'clob') {
@@ -1501,14 +1501,13 @@ class OCI8Manager extends DBManager
      */
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
-        global $dictionary;
         $retVal = false;
 
         $copy = array_merge([], $data);
         $lob_fields = [];
         $lob_dataType = [];
 
-        foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
 
 
