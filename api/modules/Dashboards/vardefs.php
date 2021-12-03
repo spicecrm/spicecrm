@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Dashboard'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Dashboard'] = [
     'table' => 'dashboards',
     'audited' => true,
     'fields' =>
