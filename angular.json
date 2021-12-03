@@ -63,7 +63,7 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "core:build",
-            "port": 3000,
+            "port": 3333,
             "proxyConfig": "proxy.conf.js"
           }
         }
