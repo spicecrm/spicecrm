@@ -33,27 +33,27 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-global $dictionary;
-if(empty($dictionary['User'])){
+if(empty(SpiceDictionaryHandler::getInstance()->dictionary['User'])){
 	include('modules/Users/vardefs.php');
 }
-$dictionary['Employee']=$dictionary['User'];
+SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = SpiceDictionaryHandler::getInstance()->dictionary['User'];
 //users of employees modules are not allowed to change the employee/user status.
-$dictionary['Employee']['fields']['status']['massupdate']=false;
-$dictionary['Employee']['fields']['is_admin']['massupdate']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['status']['massupdate']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['is_admin']['massupdate']=false;
 //begin bug 48033
-$dictionary['Employee']['fields']['UserType']['massupdate']=false;
-$dictionary['Employee']['fields']['messenger_type']['massupdate']=false;
-$dictionary['Employee']['fields']['email_link_type']['massupdate']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['UserType']['massupdate']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['messenger_type']['massupdate']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email_link_type']['massupdate']=false;
 //end bug 48033
-$dictionary['Employee']['fields']['email1']['required']=false;
-$dictionary['Employee']['fields']['email_addresses']['required']=false;
-$dictionary['Employee']['fields']['email_addresses_primary']['required']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email1']['required']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email_addresses']['required']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email_addresses_primary']['required']=false;
 // bugs 47553 & 49716
-$dictionary['Employee']['fields']['status']['studio']=false;
-$dictionary['Employee']['fields']['status']['required']=false;
-$dictionary['Employee']['fields']['bonuscards'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['status']['studio']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['status']['required']=false;
+SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['bonuscards'] = [
 	'name' => 'bonuscards',
 	'type' => 'link',
 	'relationship' => 'bonuscards_employees',
@@ -62,4 +62,3 @@ $dictionary['Employee']['fields']['bonuscards'] = [
 	'source' => 'non-db',
 	'vname' => 'LBL_BONUSCARDS',
 ];
-?>

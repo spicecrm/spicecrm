@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\SpiceACL;
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 
 /**
@@ -46,7 +47,7 @@ class SpiceACLHooks
 
     public function hook_create_vardefs(&$bean, $event, $arguments)
     {
-        if(!isset($GLOBALS['dictionary'][$bean->object_name]['templates']['spiceaclusers'])) {
+        if (!isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->object_name]['templates']['spiceaclusers'])) {
             $loader = new SpiceUIModulesController();
             $modules = $loader->geUnfilteredModules();
             if ($modules[$bean->module_dir]['acl_multipleusers'] == 1){

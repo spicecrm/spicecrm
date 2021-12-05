@@ -34,6 +34,7 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -99,7 +100,7 @@ class RepairAndClear
 
 	public function repairDatabase()
 	{
-		global $dictionary, $mod_strings;
+		global $mod_strings;
 		if(false == $this->show_output)
 			$_REQUEST['repair_silent']='1';
 		$_REQUEST['execute']=$this->execute;
@@ -110,7 +111,7 @@ class RepairAndClear
 
 	public function repairDatabaseSelectModules()
 	{
-		global $mod_strings, $dictionary;
+		global $mod_strings;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		set_time_limit(3600);
 
@@ -127,7 +128,7 @@ class RepairAndClear
 	    	$sql = '';
 			if($this->module_list && !in_array($mod_strings['LBL_ALL_MODULES'],$this->module_list))
 			{
-				$repair_related_modules = array_keys($dictionary);
+				$repair_related_modules = array_keys(SpiceDictionaryHandler::getInstance()->dictionary);
 				//repair DB
 				$dm = inDeveloperMode();
 				SpiceConfig::getInstance()->config['developerMode'] = true;

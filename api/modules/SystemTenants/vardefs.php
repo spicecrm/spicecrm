@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['SystemTenant'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
     'table' => 'systemtenants',
     'comment' => 'SystemTenants Module',
     'fields' => [

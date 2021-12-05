@@ -33,10 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-$dictionary['Opportunity'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
     'table' => 'opportunities',
     'audited' => true,
     'unified_search' => true,
@@ -609,9 +609,8 @@ $dictionary['Opportunity'] = [
 
 VardefManager::createVardef('Opportunities', 'Opportunity', ['default', 'assignable']);
 
-global $dictionary;
 if(file_exists('extensions/modules/SalesDocs')) {
-    $dictionary['Opportunity']['fields']['salesdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['salesdocs'] = [
         'name' => 'salesdocs',
         'type' => 'link',
         'relationship' => 'salesdocs_opportunities_parent',
@@ -624,7 +623,7 @@ if(file_exists('extensions/modules/SalesDocs')) {
 
 // CR1000661
 if(file_exists('extensions/modules/PartnerAgreements')) {
-    $dictionary['Opportunity']['fields']['partneragreements'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['partneragreements'] = [
         'name' => 'partneragreements',
         'vname' => 'LBL_PARTNERAGREEMENTS',
         'type' => 'link',
