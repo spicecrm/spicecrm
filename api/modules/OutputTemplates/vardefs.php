@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['OutputTemplate'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
     'table' => 'outputtemplates',
     'comment' => 'Templates used to output something to .pdf or so...',
     'fields' => [

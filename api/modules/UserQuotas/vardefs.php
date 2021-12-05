@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-$GLOBALS['dictionary']['UserQuota'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['UserQuota'] = [
     'table' => 'userquotas',
     'fields' => [
         'period' => [
