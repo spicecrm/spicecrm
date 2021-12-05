@@ -180,22 +180,33 @@ $dictionary['ServiceTicket'] = [
         'sysservicecategory_id1' => [
             'name' => 'sysservicecategory_id1',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID1',
-            'type' => 'id',
+            'type' => 'varchar',
+            'len' => 32
         ],
         'sysservicecategory_id2' => [
             'name' => 'sysservicecategory_id2',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID2',
-            'type' => 'id',
+            'type' => 'varchar',
+            'len' => 32
         ],
         'sysservicecategory_id3' => [
             'name' => 'sysservicecategory_id3',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID3',
-            'type' => 'id',
+            'type' => 'varchar',
+            'len' => 32
         ],
         'sysservicecategory_id4' => [
             'name' => 'sysservicecategory_id4',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID4',
-            'type' => 'id',
+            'type' => 'varchar',
+            'len' => 32
+        ],
+        'add_params' => [
+            'name' => 'add_params',
+            'vname' => 'LBL_ADD_PARAMS',
+            'type' => 'json',
+            'dbType' => 'shorttext',
+            'comment' => 'the addparams collected from the categorytree'
         ],
         'solution' => [
             'name' => 'solution',
