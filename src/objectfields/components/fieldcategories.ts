@@ -52,10 +52,10 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private config: configurationService,
-        private elementRef: ElementRef,
-        private renderer: Renderer2
+        public backend: backend,
+        public config: configurationService,
+        public elementRef: ElementRef,
+        public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);
     }
@@ -133,7 +133,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
                 if(!lastId && c.parent_id != '' && !!c.parent_id) return false;
 
-                return c.parent_id == lastId;
+                return !lastId || c.parent_id == lastId;
             });
             if(cat) {
                 values.push((cat.node_name));
@@ -161,7 +161,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      * it also looks for the last category with a corresponding queue to set this too
      * @param categories = array of category objects, all lvls from top to lowest
      */
-    private chooseCategories(categories) {
+    public chooseCategories(categories) {
         let fields: any = {};
         let i = 1
         while(i <= 4) {
