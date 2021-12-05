@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {AfterViewInit, Component, ViewChild, ViewContainerRef, Renderer2, ElementRef} from '@angular/core';
+import {Component, ViewChild, ViewContainerRef, Renderer2, ElementRef} from '@angular/core';
 import {session} from '../../services/session.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
@@ -10,7 +10,7 @@ import {metadata} from '../../services/metadata.service';
     selector: 'global-header-actions',
     templateUrl: './src/globalcomponents/templates/globalheaderactions.html'
 })
-export class GlobalHeaderActions implements AfterViewInit {
+export class GlobalHeaderActions  {
 
     @ViewChild('actioncontainerheader', {
         read: ViewContainerRef,
@@ -34,11 +34,21 @@ export class GlobalHeaderActions implements AfterViewInit {
      */
     private isVisible: boolean = false;
 
+    /**
+     * holds if we are initialized
+     *
+     * @private
+     */
+    private isInitialized: boolean = false;
+
     constructor(private renderer: Renderer2, private elementRef: ElementRef, private session: session, private metadata: metadata, private language: language) {
 
     }
 
-    public ngAfterViewInit() {
+    /**
+     * initializte the component and load all elements
+     */
+    public initialize() {
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderActions');
         if (componentconfig && componentconfig.actionset) {
             let actionsetitems = this.metadata.getActionSetItems(componentconfig.actionset);
@@ -63,17 +73,31 @@ export class GlobalHeaderActions implements AfterViewInit {
                 });
             }
         }
+        this.isInitialized = true;
     }
 
+    /**
+     * toggle the open space
+     *
+     * @private
+     */
     private toggleOpen() {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
+            if(!this.isInitialized) this.initialize();
+
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
         } else if (this.clickListener) {
             this.clickListener();
         }
     }
 
+    /**
+     * clock event handler
+     *
+     * @param event
+     * @private
+     */
     private onClick(event: MouseEvent): void {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
