@@ -24,7 +24,7 @@ class SpiceNumberRanges
     {
         $db = DBManagerFactory::getInstance();
 
-        $numberRange = $db->fetchByAssoc($db->query(sprintf('SELECT * FROM sysnumberranges WHERE id = "%s"', $db->quote($range))));
+        $numberRange = $db->fetchByAssoc($db->query(sprintf('SELECT * FROM sysnumberranges WHERE id = "%s" FOR UPDATE', $db->quote($range))));
         if (!$numberRange) {
             LoggerManager::getLogger()->error('Number range (ID: ' . $range . ' not found');
             return false;
@@ -68,7 +68,7 @@ class SpiceNumberRanges
     {
         $db = DBManagerFactory::getInstance();
 
-        $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field'"));
+        $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field' FOR UPDATE"));
         if (!$numberRange) {
             LoggerManager::getLogger()->error('Number range (module: ' . $module . ', field: ' . $field . ' not found.');
             return false;
