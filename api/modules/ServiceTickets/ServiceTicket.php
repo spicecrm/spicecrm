@@ -10,6 +10,7 @@ use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\extensions\modules\QuestionAnswers\QuestionAnsweringHandler;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class ServiceTicket extends SugarBean
 {
@@ -17,7 +18,17 @@ class ServiceTicket extends SugarBean
     public $object_name = 'ServiceTicket';
     public $table_name = 'servicetickets';
 
-    private $stageFields = ['assigned_user_id', 'serviceticket_status', 'serviceticket_class', 'servicequeue_id', 'sysservicecategory_id1', 'sysservicecategory_id2', 'sysservicecategory_id3', 'sysservicecategory_id4'];
+    private $stageFields = [
+        'assigned_user_id' => 'st_assigned_user_id',
+        'serviceticket_status' =>'serviceticket_status',
+        'serviceticket_class' =>'serviceticket_class',
+        'servicequeue_id' => 'servicequeue_id',
+        'sysservicecategory_id1' => 'sysservicecategory_id1',
+        'sysservicecategory_id2' => 'sysservicecategory_id2',
+        'sysservicecategory_id3' => 'sysservicecategory_id3',
+        'sysservicecategory_id4' => 'sysservicecategory_id4',
+        'resolve_date' => 'resolve_date'
+    ];
 
     public $sysnumberranges = true; //entries in table sysnumberranges required!
 
@@ -26,21 +37,21 @@ class ServiceTicket extends SugarBean
         return $this->serviceticket_number . '/' . $this->name;
     }
 
-    public function bean_implements($interface)
+    /**
+     * chekcs changed fields and returns them or false if no changes are detectzed
+     *
+     * @return array|false
+     */
+    private function detectStageChange()
     {
-        switch ($interface) {
-            case 'ACL':
-                return true;
+        $changedFields = [];
+        foreach ($this->stageFields as $ticketField => $stageField) {
+            if ($this->$ticketField != $this->fetched_row[$ticketField]){
+                $changedFields[] = $ticketField;
+            }
         }
-        return false;
-    }
 
-    private function detetctStageChange()
-    {
-        foreach ($this->stageFields as $stageField) {
-            if ($this->$stageField != $this->fetched_row[$stageField])
-                return true;
-        }
+        return count($changedFields) > 0 ? $changedFields : false;
     }
 
     /**
@@ -64,6 +75,13 @@ class ServiceTicket extends SugarBean
         return $bean;
     }
 
+    /**
+     * overrides save generating a ticket number
+     *
+     * @param false $check_notify
+     * @param bool $fts_index_bean
+     * @return int|string
+     */
     public function save($check_notify = false, $fts_index_bean = true)
     {
         $timedate = TimeDate::getInstance();
@@ -79,6 +97,7 @@ class ServiceTicket extends SugarBean
             $this->date_closed = gmdate($sdt->get_db_date_time_format());
         }
 
+        // set a default ticekt status if no other is set
         if (empty($this->serviceticket_status)) $this->serviceticket_status = 'New';
 
         if ($this->serviceticket_status != $this->fetched_row['serviceticket_status']) {
@@ -96,17 +115,17 @@ class ServiceTicket extends SugarBean
             }
         }
 
-
-        if (!$this->in_save && $this->detetctStageChange()) {
+        $changedFields = $this->detectStageChange();
+        if (!$this->new_with_id && !$this->in_save && $changedFields !== false) {
             $ticketStage = BeanFactory::getBean('ServiceTicketStages');
             if ($ticketStage) {
                 if (empty($this->id)) {
-                    $this->id = create_guid();
+                    $this->id = SpiceUtils::createGuid();
                     $this->new_with_id = true;
                 }
 
-                foreach ($this->stageFields as $stageField) {
-                    $ticketStage->$stageField = $this->$stageField;
+                foreach ($changedFields as $stageField) {
+                    $ticketStage->{$this->stageFields[$stageField]} = $this->$stageField;
                 }
 
                 $ticketStage->name = $this->serviceticket_number . ' ' . $timedate->nowDb();
