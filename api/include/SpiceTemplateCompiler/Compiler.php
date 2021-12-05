@@ -13,6 +13,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 // CR1000360
 
@@ -97,7 +98,7 @@ class Compiler
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
-        $this->app_list_strings = return_app_list_strings_language($lang); // get doms corresponding to template language
+        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
         $dom = new DOMDocument();
 
@@ -292,7 +293,7 @@ class Compiler
      */
     private function getLinkedBeans($locator, $obj = NULL, $beans = [], $params = [])
     {
-        $parts = explode('.', $locator);
+         $parts = explode('.', $locator);
 
         // if we do not have an object we try to resolve it
         if (!$obj) {
@@ -348,7 +349,8 @@ class Compiler
         if (count($parts) > 2) {
             $deepLinkedBeans = [];
             foreach ($linkedBeans as $linkedBean) {
-                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode('.', array_shift($parts)), $linkedBean));
+                array_shift($parts);
+                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode(".", $parts),$linkedBean) );
             }
             return $deepLinkedBeans;
         } else {

@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Mailbox'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
     'table' => 'mailboxes',
     'audited' => false,
     'unified_search' => true,

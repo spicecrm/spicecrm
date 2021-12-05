@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Project'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
     'table' => 'projects',
     'unified_search' => true,
     'full_text_search' => true,
@@ -448,9 +448,8 @@ $dictionary['Project'] = [
 
 // CE version has not all projects modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if(file_exists('extensions/modules/ProjectActivities')) {
-    $dictionary['Project']['fields']['projectactivities'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['projectactivities'] = [
         'name' => 'projectactivities',
         'vname' => 'LBL_PROJECTACTIVITIES',
         'type' => 'link',
@@ -460,7 +459,7 @@ if(file_exists('extensions/modules/ProjectActivities')) {
     ];
 }
 if(file_exists('extensions/modules/ProjectWBSs')) {
-    $dictionary['Project']['fields']['projectwbss'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['projectwbss'] = [
         'name' => 'projectwbss',
         'vname' => 'LBL_PROJECTWBSS',
         'type' => 'link',
@@ -470,7 +469,7 @@ if(file_exists('extensions/modules/ProjectWBSs')) {
     ];
 }
 if(file_exists('extensions/modules/Products')) {
-    $dictionary['Project']['fields']['products'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['products'] = [
         'name' => 'products',
         'vname' => 'LBL_PRODUCTS',
         'type' => 'link',
@@ -483,16 +482,15 @@ if(file_exists('extensions/modules/Products')) {
 
 VardefManager::createVardef('Projects', 'Project', ['default', 'assignable']);
 
-global $dictionary;
 // CR1000336
 if (file_exists('extensions/modules/SystemDeploymentReleases')) {
-    $dictionary['Project']['relationships']['account_systemdeploymentreleases'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['relationships']['account_systemdeploymentreleases'] = [
         'lhs_module' => 'Projects', 'lhs_table' => 'projects', 'lhs_key' => 'id',
         'rhs_module' => 'SystemDeploymentReleases', 'rhs_table' => 'systemdeploymentreleases', 'rhs_key' => 'parent_id',
         'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
         'relationship_role_column_value' => 'Projects'
     ];
-//    $dictionary['Project']['fields']['systemdeploymentreleases'] = array(
+//    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['systemdeploymentreleases'] = array(
 //        'name' => 'systemdeploymentreleases',
 //        'type' => 'link',
 //        'relationship' => 'project_systemdeploymentreleases',
@@ -504,7 +502,7 @@ if (file_exists('extensions/modules/SystemDeploymentReleases')) {
 }
 
 if (file_exists('extensions/modules/SalesDocs')) {
-    $dictionary['Project']['fields']['salesdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['salesdocs'] = [
         'name' => 'salesdocs',
         'type' => 'link',
         'relationship' => 'salesdocs_projects_parent',
@@ -516,14 +514,14 @@ if (file_exists('extensions/modules/SalesDocs')) {
 }
 
 if(file_exists('extensions/modules/ProjectSettlementProfiles')){
-    $dictionary['Project']['fields']['projectsettlementprofile_id'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['projectsettlementprofile_id'] = [
         'name' => 'projectsettlementprofile_id',
         'vname' => 'LBL_PROJECTSETTLEMENT',
         'type' => 'id',
         'comment' => 'ID of the project settlement profile'
     ];
 
-    $dictionary['Project']['fields']['projectsettlementprofile_name'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['projectsettlementprofile_name'] = [
         'name' => 'projectsettlementprofile_name',
         'rname' => 'name',
         'id_name' => 'projectsettlementprofile_id',
@@ -536,7 +534,7 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'source' => 'non-db',
         'comment' => 'Name of the project settlement profile'
     ];
-    $dictionary['Project']['fields']['projectsettlementprofiles'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['projectsettlementprofiles'] = [
         'name' => 'projectsettlementprofiles',
         'type' => 'link',
         'vname' => 'LBL_PROJECTSETTLEMENTPROFILES',
@@ -545,7 +543,7 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'source' => 'non-db',
     ];
 
-    $dictionary['Project']['relationships']['projectsettlementprofiles_project'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Project']['relationships']['projectsettlementprofiles_project'] = [
         'lhs_module' => 'ProjectSettlementProfiles',
         'lhs_table' => 'projectsettlementprofiles',
         'lhs_key' => 'id',
@@ -555,4 +553,3 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'relationship_type' => 'one-to-many'
     ];
 }
-

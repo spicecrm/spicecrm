@@ -8,6 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
@@ -360,7 +361,6 @@ class EmailAddress extends SugarBean
      */
     public static function writeRelationshipAudit(array $dataBefore, array $dataAfter)
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $transactionId = LoggerManager::getLogger()->getTransactionId();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
@@ -369,7 +369,7 @@ class EmailAddress extends SugarBean
 
             if ($fieldName == 'date_modified' || $fieldName != 'opt_in_status' && $dataBefore[$fieldName] == $valueAfter) continue;
 
-            $fieldType = $dictionary['email_addr_bean_rel']['fields'][$fieldName]['type'];
+            $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields'][$fieldName]['type'];
             $insertData = [
                 'id' => SpiceUtils::createGuid(),
                 'parent_id' => $dataBefore['id'],

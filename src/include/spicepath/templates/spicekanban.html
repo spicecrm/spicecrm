@@ -41,7 +41,26 @@
         <div *ngIf="hiddenstages.length > 0" class="slds-utility-bar_container" aria-label="Utility Bar">
             <div #kanbanUtilityBar class="slds-utility-bar" style="height: 3rem;">
                 <div class="slds-grid slds-size--1-of-1 slds-grid--align-spread">
-                    <div></div>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
+                        <div class="slds-form-element__control slds-col">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="sortField" (ngModelChange)= "modellist.reLoadList()">
+                                <option value="select" [selected]="isDisabled" [hidden]="sortField != ''">
+                                    <system-label label="LBL_SELECT"></system-label>
+                                </option>
+                                <option *ngFor="let field of sortfields" [value]="field"><system-label-fieldname [module] = "modellist.module" [field]="field"></system-label-fieldname></option>
+                            </select>
+                        </div>
+                    </div>
+                            <div class="slds-form-element__control slds-col slds-p-left--x-small">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [disabled]="isDisabled" [(ngModel)]="sortDirection" (ngModelChange)= "modellist.reLoadList()">
+                                        <option value="ASC"><system-label label="LBL_ASCENDING"></system-label></option>
+                                        <option value="DESC"><system-label label="LBL_DESCENDING"></system-label></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     <div class="slds-utility-bar__item slds-p-horizontal--x-small ">
                         <div *ngFor="let stage of hiddenstages" class="slds-box--border slds-m-around--xxx-small slds-align--absolute-center slds-theme--info" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage">
                             <div class="slds-p-horizontal--medium slds-p-vertical--small slds-grid">
