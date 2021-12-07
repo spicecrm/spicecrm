@@ -69,7 +69,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'relationship' => 'systemtenant_users',
             'module' => 'Users',
             'source' => 'non-db'
-        ]
+        ],
+        'deploymentpackages' => [
+            'name'         => 'deploymentpackages',
+            'vname'        => 'LBL_SYSTEMDEPLOYMENTPACKAGES',
+            'type'         => 'link',
+            'module'       => 'SystemDeploymentPackages',
+            'source'       => 'non-db',
+            'relationship' => 'tenants_deploymentpackages',
+        ],
     ],
     'indices' => [],
     'relationships' => [
