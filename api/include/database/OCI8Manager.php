@@ -192,7 +192,7 @@ class OCI8Manager extends DBManager
             $size = $this->fetchByAssoc($this->query("SELECT segment_name,sum(bytes) bytes FROM user_segments WHERE segment_type='TABLE' AND segment_name=upper('{$table['table_name']}') GROUP BY segment_name"));
 
             $tablesArray[] = [
-                'name' => $table['table_name'],
+                'name' => strtolower($table['table_name']),
                 'records' => (int)$table['num_rows'],
                 'size' => (int)$size['bytes']
             ];
