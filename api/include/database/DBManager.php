@@ -300,6 +300,20 @@ abstract class DBManager
 		return $this;
 	}
 
+    /**
+     * returns database stats
+     * to be if supported implemented in the DB driver
+     *
+     * @return array
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $statsArray = [];
+
+        return ['size' => $dbSize, 'count' => $dbCount, 'table' => $statsArray];
+    }
+
 	/**
 	 * Checks for error happening in the database
 	 *
