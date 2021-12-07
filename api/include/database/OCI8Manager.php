@@ -176,6 +176,31 @@ class OCI8Manager extends DBManager
 
     public $transactional = false;
 
+    /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SELECT table_name, num_rows FROM user_tables ORDER BY table_name");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $size = $this->fetchByAssoc($this->query("SELECT segment_name,sum(bytes) bytes FROM user_segments WHERE segment_type='TABLE' AND segment_name=upper('{$table['table_name']}') GROUP BY segment_name"));
+
+            $tablesArray[] = [
+                'name' => $table['table_name'],
+                'records' => (int)$table['num_rows'],
+                'size' => (int)$size['bytes']
+            ];
+            $dbCount += (int)$table['num_rows'];
+            $dbSize += (int)$size['bytes'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
 
     //--------------------------------------------------------------------------
     //   Extended the functionality of implemented functions in DB Manager
