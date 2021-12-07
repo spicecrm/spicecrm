@@ -44,20 +44,8 @@ class AdminController
 
         $dbSize = 0;
         $dbCount = 0;
-        $stats = $db->query("SHOW TABLE STATUS");
-        while ($stat = $db->fetchByAssoc($stats)) {
-
-            $recordCount = $db->fetchByAssoc($db->query("SELECT count(*) records FROM {$stat['Name']}"));
-
-            $statsArray['database'][] = [
-                'name' => $stat['Name'],
-                'records' => (int)$recordCount['records'],
-                'size' => $stat['Data_length'] + $stat['Index_length']
-            ];
-            $dbCount += (int)$recordCount['records'];
-            $dbSize += (int)$stat['Data_length'] + (int)$stat['Index_length'];
-        }
-
+        $dbStats = $db->getStats();
+        $statsArray['database'] = $dbStats['tables'];
         // get the fts stats
         $statsArray['elastic'] = SpiceFTSHandler::getInstance()->getStats();
 
@@ -66,7 +54,7 @@ class AdminController
         $params = $req->getQueryParams();
         if ($params['summary']) {
             return $res->withJson([
-                'database' => ['size' => $dbSize, 'count' => $dbCount],
+                'database' => ['size' => $dbStats['size'], 'count' => $dbStats['count']],
                 'uploadfiles' => $statsArray['uploadfiles'],
                 'elastic' => ['size' => $statsArray['elastic']['_all']['total']['store']['size_in_bytes'], 'count' => $statsArray['elastic']['_all']['total']['docs']['count']],
                 'users' => $db->fetchByAssoc($db->fetchByAssoc("SELECT count(id) usercount FROM users WHERE status='Active'"))['usercount']
