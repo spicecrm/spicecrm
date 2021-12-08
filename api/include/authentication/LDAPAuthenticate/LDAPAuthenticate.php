@@ -216,23 +216,31 @@ class LDAPAuthenticate
             throw new Exception("unable to query ldap: " . $error);
         }
         $entries = ldap_get_entries($this->ldapConn, $result);
+
         if (is_array($entries) && $entries['count'] === 0) {
             //todo log username not found?
             LoggerManager::getLogger()->warn("Username ".$name." not found in ldap");
             throw new UnauthorizedException("Invalid username/password combination ", 10);
         }
-        if ($this->bindAttr) {
-            if (isset($entries[0]) && $entries[0][$this->bindAttr]) {
-                $this->userDn = $entries[0][$this->bindAttr][0];
-            }
+        if ($this->bindAttr && isset($entries[0]) && $entries[0][$this->bindAttr]) {
+            $this->userDn = $entries[0][$this->bindAttr][0];
         } else {
-            if (isset($entries[0]) && $entries[0][$this->bindAttr]) {
-                $this->userDn = $entries[0]['dn'][0];
-            }
+            $this->userDn = $entries[0]['dn'];
+        }
+
+        if(empty($this->userDn)){
+            LoggerManager::getLogger()->warn("User DN ".$name." not found in ldap");
+            throw new UnauthorizedException("Invalid username/password combination ", 10);
         }
 
         //bind with username & password in order to check password
         $bind = ldap_bind($this->ldapConn, $this->userDn, $password);
+
+
+
+        if ($bind === false) {
+            throw new UnauthorizedException("Invalid username/password combination ", 10);
+        }
 
         //bind back with admin credentials if available
         if ($this->adminUser && $this->adminPassword) {
@@ -243,10 +251,6 @@ class LDAPAuthenticate
                 $this->logLdapError();
                 throw new Exception($message);
             }
-        }
-
-        if ($bind === false) {
-            throw new UnauthorizedException("Invalid username/password combination ", 10);
         }
 
     }
