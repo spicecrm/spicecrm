@@ -591,5 +591,21 @@ class SpiceDictionaryHandler extends SpiceSingleton
         }
     }
 
+    /**
+     * Returns table names that have a certain content type set in the vardefs.
+     *
+     * @param string $contentType
+     * @return array
+     */
+    public function getAllTablesOfType(string $contentType): array {
+        $tables = [];
 
+        foreach ($this->dictionary as $item) {
+            if (strtolower($item['contenttype']) == strtolower($contentType)) {
+                $tables[] = $item['table'];
+            }
+        }
+
+        return $tables;
+    }
 }
