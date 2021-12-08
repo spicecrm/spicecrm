@@ -235,7 +235,7 @@ export class metadata {
 
         return import(
             /*
-               webpackInclude: /^\.\\[^\\]+\\?\\[^\\]+?$|\\(addcomponents|admincomponents|globalcomponents|objectcomponents|objectfields|portalcomponents|systemcomponents|workbench)\\[^\\]+\\?$|\\(modules|include|custom)\\[^\\]+\\?\\[^\\]+?$/
+               webpackInclude: /^\.(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$|(\\|\/)(addcomponents|admincomponents|globalcomponents|objectcomponents|objectfields|portalcomponents|systemcomponents|workbench)(\\|\/)[^\\|\/]+?$|(\\|\/)(modules|include|custom)(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$/
              */
             `src/${moduleMetadata.path}.ts`)
             .then(m => m[moduleMetadata.name]);
