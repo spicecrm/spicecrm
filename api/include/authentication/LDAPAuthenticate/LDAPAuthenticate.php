@@ -236,14 +236,15 @@ class LDAPAuthenticate
 
         //bind back with admin credentials if available
         if ($this->adminUser && $this->adminPassword) {
-            $bind = ldap_bind($this->ldapConn, $this->adminUser, $this->adminPassword);
-            if ($bind === false) {
+            $adminbind = ldap_bind($this->ldapConn, $this->adminUser, $this->adminPassword);
+            if ($adminbind === false) {
                 $message = "unable to bind back with admin credentials";
                 LoggerManager::getLogger()->error($message);
                 $this->logLdapError();
                 throw new Exception($message);
             }
         }
+
         if ($bind === false) {
             throw new UnauthorizedException("Invalid username/password combination ", 10);
         }
