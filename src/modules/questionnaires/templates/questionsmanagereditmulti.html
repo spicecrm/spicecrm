@@ -58,7 +58,7 @@
 </table>
 
 <div *ngIf="!model.isLoading" class="slds-text-align_right slds-m-top--medium">
-    <button class="slds-button slds-button--neutral" (click)="addOptions()">
+    <button class="slds-button slds-button--neutral" (click)="addOptions()" [disabled]="!canAddOption">
         <system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>
         <system-label label="LBL_ADD_ANSWER_OPTION"></system-label>
     </button>

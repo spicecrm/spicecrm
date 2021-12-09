@@ -46,4 +46,8 @@ export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
         this.dataChanged.emit(true);
     }
 
+    public get canEditOption(): boolean {
+        return this.model.data.new_with_id || this.model.checkAccess('edit');
+    }
+
 }

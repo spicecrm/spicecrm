@@ -6,6 +6,7 @@ import { model } from '../../../services/model.service';
 import { language } from '../../../services/language.service';
 import { view } from '../../../services/view.service';
 import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
+import { metadata } from '../../../services/metadata.service';
 
 /**
  * @ignore
@@ -28,7 +29,7 @@ export class QuestionsManagerEditBasicWithOptions extends QuestionsManagerEditBa
      */
     public isBuilt = false;
 
-    constructor( public language: language, public model: model, public view: view ) {
+    constructor( public language: language, public model: model, public view: view, public metadata: metadata ) {
         super( language, model, view );
     }
 
@@ -113,6 +114,10 @@ export class QuestionsManagerEditBasicWithOptions extends QuestionsManagerEditBa
         if ( type === 'delete' ) this.deleteOption( index );
         else if ( type === 'up' ) this.optionUp( index );
         else if ( type === 'down' ) this.optionDown( index );
+    }
+
+    public get canAddOption(): boolean {
+        return this.metadata.checkModuleAcl('QuestionOptions', 'create');
     }
 
 }

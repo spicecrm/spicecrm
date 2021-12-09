@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaire
  */
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, SkipSelf } from "@angular/core";
 import {model} from "../../../services/model.service";
 import { language } from '../../../services/language.service';
 import { modal } from '../../../services/modal.service';
@@ -20,7 +20,7 @@ export class QuestionsetManager implements OnInit {
 
     private currentPosition: number;
 
-    constructor( private model: model, private lang: language, private modalservice: modal ) { }
+    constructor( @SkipSelf() private questionnaire: model, private model: model, private lang: language, private modalservice: modal ) { }
 
     public ngOnInit(): void {
         this.model.module = 'QuestionSets';
@@ -46,7 +46,6 @@ export class QuestionsetManager implements OnInit {
                 });
         }
     }
-
 
     private dragStarted(e) {
         e.source.element.nativeElement.classList.add('slds-is-selected');

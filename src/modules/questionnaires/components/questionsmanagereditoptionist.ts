@@ -43,4 +43,12 @@ export class QuestionsManagerEditOptionIst implements OnInit {
         null;
     }
 
+    public get canEditOption(): boolean {
+        return this.model.data.new_with_id || this.model.checkAccess('edit');
+    }
+
+    public get canDeleteOption(): boolean {
+        return this.model.data.new_with_id || this.model.checkAccess('delete');
+    }
+
 }
