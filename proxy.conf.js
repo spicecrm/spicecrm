@@ -1,3 +1,6 @@
+const fs = require('fs');
+const devTarget = fs.readFileSync('dev_server.url', 'utf8');
+
 const PROXY_CONFIG = [
     {
         context: [
@@ -5,7 +8,7 @@ const PROXY_CONFIG = [
             "/api",
             "/vendor",
         ],
-        target: "http://micro.local",
+        target: devTarget.toString(),
         secure: false,
         changeOrigin: true,
         logLevel: 'debug'
