@@ -11,7 +11,7 @@
                 <th scope="col">
                     Object
                 </th>
-                <th scope="col">
+                <th class="slds-text-align--right slds-p-horizontal--xx-small" scope="col">
                     Records
                 </th>
                 <th scope="col">
@@ -25,7 +25,7 @@
                     <div class="slds-truncate" >Database</div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{totaldbrecords}}</div>
+                    <div class="slds-truncate slds-text-align--right"><system-display-number system-display-number-nodigits [number]="totaldbrecords" ></system-display-number></div>
                 </td>
                 <td>
                     <div class="slds-truncate" >{{humanReadableSize(totaldbsize)}}</div>
@@ -36,7 +36,7 @@
                     <div class="slds-truncate" >Elasticsearch</div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{totalelasticrecords}}</div>
+                    <div class="slds-truncate slds-text-align--right" ><system-display-number system-display-number-nodigits [number]="totalelasticrecords" ></system-display-number></div>
                 </td>
                 <td>
                     <div class="slds-truncate" >{{humanReadableSize(totalelasticsize)}}</div>
@@ -47,7 +47,7 @@
                     <div class="slds-truncate" >Uploadfiles</div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{uploadcount}}</div>
+                    <div class="slds-truncate slds-text-align--right" ><system-display-number system-display-number-nodigits [number]="uploadcount" ></system-display-number></div>
                 </td>
                 <td>
                     <div class="slds-truncate" >{{humanReadableSize(uploadsize)}}</div>
@@ -77,13 +77,13 @@
                         <div class="slds-truncate" (click)="sortby('name', false)">Table</div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate" (click)="sortby('records')">Records</div>
+                        <div class="slds-truncate slds-p-horizontal--xx-small slds-text-align--right" (click)="sortby('records')">Records</div>
                     </th>
                     <th scope="col">
                         <div class="slds-truncate" (click)="sortby('size')">Size</div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate">indexed Records</div>
+                        <div class="slds-truncate slds-p-horizontal--xx-small slds-text-align--right">indexed Records</div>
                     </th>
                     <th scope="col">
                         <div class="slds-truncate">Index Size</div>
@@ -96,13 +96,13 @@
                         <div class="slds-truncate" >{{table.name}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate" >{{table.records}}</div>
+                        <div class="slds-truncate slds-text-align--right"><system-display-number [number]="table.records" system-display-number-nodigits></system-display-number></div>
                     </td>
                     <td>
                         <div class="slds-truncate" >{{humanReadableSize(table.size)}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate" >{{ftsDocumentCount(table.name)}}</div>
+                        <div class="slds-truncate slds-text-align--right"><system-display-number [number]="ftsDocumentCount(table.name)" system-display-number-nodigits></system-display-number></div>
                     </td>
                     <td>
                         <div class="slds-truncate" >{{ftsIndexSize(table.name)}}</div>
