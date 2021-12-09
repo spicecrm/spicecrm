@@ -12,7 +12,7 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'document-create-revision-button',
-    templateUrl: '../templates/documentcreaterevisionbutton.html'
+    templateUrl: './src/modules/documents/templates/documentcreaterevisionbutton.html'
 })
 export class DocumentCreateRevisionButton implements OnDestroy{
 
