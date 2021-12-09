@@ -130,7 +130,7 @@ export class QuestionnaireEditor implements OnInit {
             updateArray.push({ id: item.id, position: i });
             i++;
         }
-        this.backend.postRequest( 'module/QuestionSets', {}, updateArray );
+        this.backend.putRequest('module/Questionnaires/'+this.model.id+'/related/beans/questionsets', null,{ beans: updateArray });
     }
 
     private dragStarted(e) {
