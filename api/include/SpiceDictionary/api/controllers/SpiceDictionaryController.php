@@ -55,7 +55,7 @@ class SpiceDictionaryController
      */
     public function getDomains(Request $req, Response $res, array $args): Response
     {
-        $handler = new SpiceDictionaryHandler();
+        $handler = SpiceDictionaryHandler::getInstance();
         $results = [
             'domaindefinitions' => $handler->getDomainDefinitions(),
             'domainfields' => $handler->getDomainFields(),
@@ -82,7 +82,7 @@ class SpiceDictionaryController
             throw new UnauthorizedException('Admin Access Only');
         }
 
-        $handler = new SpiceDictionaryHandler();
+        $handler =  SpiceDictionaryHandler::getInstance();
 
         // get the body
         $body = $req->getParsedBody();
@@ -116,7 +116,7 @@ class SpiceDictionaryController
 
     public function getDefinitions(Request $req, Response $res, array $args): Response
     {
-        $handler = new SpiceDictionaryHandler();
+        $handler =  SpiceDictionaryHandler::getInstance();
         $results = [
             'domaindefinitions' => $handler->getDomainDefinitions(),
             'domainfields' => $handler->getDomainFields(),
@@ -149,7 +149,7 @@ class SpiceDictionaryController
 //            throw new UnauthorizedException('Admin Access Only');
 //        }
 
-        $handler = new SpiceDictionaryHandler();
+        $handler =  SpiceDictionaryHandler::getInstance();
 
         // get the body
         $body = $req->getParsedBody();

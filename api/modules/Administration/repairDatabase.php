@@ -37,6 +37,7 @@
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -145,12 +146,12 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 //				}
 
 
-        $olddictionary = $dictionary;
+        $olddictionary = SpiceDictionaryHandler::getInstance()->dictionary;
 
-		unset ($dictionary);
+		unset (SpiceDictionaryHandler::getInstance()->dictionary);
 		include ('modules/TableDictionary.php');
 
-		foreach ($dictionary as $meta) {
+		foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
 
 			if ( !isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
@@ -163,7 +164,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 			$repairedTables[$tablename] = true;
 		}
 
-		$dictionary = $olddictionary;
+		SpiceDictionaryHandler::getInstance()->dictionary = $olddictionary;
 
 
 

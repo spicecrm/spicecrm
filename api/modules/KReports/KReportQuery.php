@@ -10,8 +10,6 @@ use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 use SpiceCRM\modules\KReports\KReportQueryArray;
 
-global $dictionary;
-
 
 // require_once('modules/ACL/ACLController.php');
 

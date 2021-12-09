@@ -19,6 +19,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
     @Input() public option: any; // {}
     @Output() public change = new EventEmitter();
     @Input() public showLabel = false;
+    @Input() public disabled = false;
 
     public selectedCategories = [];
 
@@ -75,6 +76,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         if ( this.clickListener ) this.clickListener();
     }
     public openList() {
+        if ( this.disabled ) return;
         this.listIsExpanded = true;
         this.clickListener = this.renderer.listen( 'document', 'click', event => this.onClick( event ));
     }
@@ -87,6 +89,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
     }
 
     public toggleCategory( i: number ): void {
+        if ( this.disabled ) return;
         if ( this.hasCategory(i) ) this.removeCategory(this.categorypool.list[i].id);
         else this.addCategory(i);
     }

@@ -6,6 +6,7 @@ import { model } from '../../../services/model.service';
 import { language } from '../../../services/language.service';
 import { view } from '../../../services/view.service';
 import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasicwithoptions';
+import { metadata } from '../../../services/metadata.service';
 
 declare var _: any;
 
@@ -16,8 +17,8 @@ declare var _: any;
 })
 export class QuestionsManagerEditBinary extends QuestionsManagerEditBasicWithOptions implements OnInit {
 
-    constructor( public language: language, public model: model, public view: view ) {
-        super( language, model, view );
+    constructor( public language: language, public model: model, public view: view, public metadata: metadata ) {
+        super( language, model, view, metadata );
     }
 
     public ngOnInit(): void {
@@ -85,4 +86,11 @@ export class QuestionsManagerEditBinary extends QuestionsManagerEditBasicWithOpt
         }
     }
 
+    public get canEditBothOptions(): boolean {
+        return this.options[0].acl?.edit && this.options[1].acl?.edit;
+    }
+
+    public canEditQuestion(): boolean {
+        return this.model.checkAccess('edit');
+    }
 }

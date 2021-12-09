@@ -44,6 +44,7 @@ namespace SpiceCRM\includes\SpiceUI;
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -90,7 +91,6 @@ class SpiceUIConfLoader
      */
     public function __construct($endpoint = null)
     {
-        global $dictionary;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $this->loader = new SpiceUILoader($endpoint);
 
@@ -208,7 +208,6 @@ class SpiceUIConfLoader
      */
     public function loadDefaultConf($routeparams, $params, $checkopen = true)
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $tables = [];
         $inserts = [];
@@ -315,7 +314,7 @@ class SpiceUIConfLoader
                     }
                     //run insert
 //                if($tb == 'email_templates'){
-//                    file_put_contents('spicecrm.log', 'dict email_templates '.print_r($dictionary['EmailTemplate'], true)."\n", FILE_APPEND);
+//                    file_put_contents('spicecrm.log', 'dict email_templates '.print_r(SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'], true)."\n", FILE_APPEND);
 //                }
                     if($dbRes = $db->insertQuery($tb, $decodeData, true)){
                         $tables[$tb]++;

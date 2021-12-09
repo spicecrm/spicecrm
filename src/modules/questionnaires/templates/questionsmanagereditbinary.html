@@ -39,7 +39,7 @@
             <tr class="no-hover">
                 <td colspan="5" style="padding:0;border:none"></td>
                 <td rowspan="3">
-                    <button class="slds-button slds-button_icon slds-button_icon-border slds-m-left--x-small" (click)="exchangeOptions()">
+                    <button class="slds-button slds-button_icon slds-button_icon-border slds-m-left--x-small" (click)="exchangeOptions()" [disabled]="!canEditQuestion || !canEditBothOptions">
                         <system-button-icon [icon]="'replace'"></system-button-icon>
                         <span class="slds-assistive-text"><system-label label="LBL_EXCHANGE"></system-label></span>
                     </button>

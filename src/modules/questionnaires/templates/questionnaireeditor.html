@@ -3,7 +3,7 @@
     <div class="slds-size--1-of-2 slds-m-left--x-small">
 
         <div class="slds-grid slds-grid--align-spread slds-m-bottom--medium">
-            <questionnaire-editor-questionset-add [questionnaire]="this.model" (newQuestionset)="addQuestionset($event)"></questionnaire-editor-questionset-add>
+            <questionnaire-editor-questionset-add (newQuestionset)="addQuestionset($event)"></questionnaire-editor-questionset-add><!-- [questionnaire]="this.model" -->
         </div>
 
         <div system-to-bottom class="slds-p-right--medium slds-m-bottom--medium dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
