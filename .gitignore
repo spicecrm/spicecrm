@@ -10,3 +10,4 @@ package-lock.json
 documentation
 docs
 .angular
+dev_server.url
