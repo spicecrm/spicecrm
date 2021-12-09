@@ -144,6 +144,32 @@ class MysqliManager extends DBManager
     ];
 
     /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SHOW TABLE STATUS");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $recordCount = $this->fetchByAssoc($this->query("SELECT count(*) records FROM {$table['Name']}"));
+
+            $tablesArray[] = [
+                'name' => $table['Name'],
+                'records' => (int)$recordCount['records'],
+                'size' => $table['Data_length'] + $table['Index_length']
+            ];
+            $dbCount += (int)$recordCount['records'];
+            $dbSize += (int)$table['Data_length'] + (int)$table['Index_length'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
+
+    /**
      * @see MysqlManager::query()
      */
     
