@@ -18,8 +18,6 @@ class One2MRelationship extends M2MRelationship
 
     public function __construct($def)
     {
-        global $dictionary;
-
         $this->def = $def;
         $this->name = (!empty($def['name']) ? $def['name'] : $def['relationship_name']); // BWC
 

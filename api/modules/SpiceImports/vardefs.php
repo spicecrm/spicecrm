@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['SpiceImport'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['SpiceImport'] = [
     'table' => 'spiceimports',
     'fields' => [
         'id' => [
@@ -96,6 +96,5 @@ $dictionary['SpiceImport'] = [
         'id' => ['name' => 'spiceimports_pk', 'type' => 'primary', 'fields' => ['id']],
     ]
 ];
-
 
 VardefManager::createVardef('SpiceImports', 'SpiceImport', ['default', 'assignable']);

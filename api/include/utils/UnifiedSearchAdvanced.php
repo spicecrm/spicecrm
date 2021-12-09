@@ -37,6 +37,7 @@
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -298,8 +299,6 @@ class UnifiedSearchAdvanced {
 
 	function buildCache()
 	{
-		global $dictionary;
-
 		$supported_modules = [];
 
 		foreach (SpiceModules::getInstance()->getBeanList() as $moduleName => $beanName) {
@@ -342,10 +341,10 @@ class UnifiedSearchAdvanced {
 			$isCustomModule = preg_match('/^([a-z0-9]{1,5})_([a-z0-9_]+)$/i' , $moduleName);
 
 			//If the bean supports unified search or if it's a custom module bean and unified search is not defined
-			if(!empty($dictionary[$beanName]['unified_search']) || $isCustomModule)
+			if(!empty(SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['unified_search']) || $isCustomModule)
 			{
 				$fields = [];
-				foreach ( $dictionary [ $beanName ][ 'fields' ] as $field => $def )
+				foreach (SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['fields'] as $field => $def)
 				{
 					// We cannot enable or disable unified_search for email in the vardefs as we don't actually have a vardef entry for 'email'
 					// the searchFields entry for 'email' doesn't correspond to any vardef entry. Instead it contains SQL to directly perform the search.
@@ -381,8 +380,7 @@ class UnifiedSearchAdvanced {
 
 				if(count($fields) > 0) {
 					$supported_modules [$moduleName] ['fields'] = $fields;
-					if (isset($dictionary[$beanName]['unified_search_default_enabled']) && $dictionary[$beanName]['unified_search_default_enabled'] === TRUE)
-					{
+					if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['unified_search_default_enabled']) && SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['unified_search_default_enabled'] === TRUE) {
                         $supported_modules [$moduleName]['default'] = true;
                     } else {
                         $supported_modules [$moduleName]['default'] = false;

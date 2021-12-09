@@ -213,6 +213,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         // reset buckets
         this.modellist.buckets = {};
+        this.modellist.setToSession();
 
     }
 
