@@ -89,6 +89,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'type' => 'varchar',
             'comment' => 'Catch All address for debugging',
         ],
+        'track_mailbox' => [
+            'name' => 'track_mailbox',
+            'vname' => 'LBL_TRACK_MAILBOX',
+            'type' => 'bool',
+            'default' => false,
+            'comment' => 'Flag to enable tracking',
+        ],
+        'tracking_url' => [
+            'name' => 'tracking_url',
+            'vname' => 'LBL_TRACKING_URL',
+            'type' => 'varchar',
+            'len' => 255,
+            'comment' => 'tracking url of the Mailbox',
+        ],
         'emails' => [
             'name' => 'emails',
             'vname' => 'LBL_EMAILS_LINK',
