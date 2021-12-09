@@ -1,6 +1,7 @@
 # Dependency directories
 node_modules
 .idea
+/**/.DS_Store
 src/**/*.js.map
 src/**/*.js
 config.json

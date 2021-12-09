@@ -33,10 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['EmailTemplate'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
     'table' => 'email_templates', 'comment' => 'Templates used in email processing',
     'fields' => [
         'id' => [
@@ -320,9 +320,8 @@ $dictionary['EmailTemplate'] = [
     ],
 ];
 //BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 //END
-$dictionary['EmailTemplate']['relationships']['emailtemplates_emails'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate']['relationships']['emailtemplates_emails'] = [
     'lhs_module' => 'EmailTemplates',
     'lhs_table' => 'email_templates',
     'lhs_key' => 'id',
@@ -332,7 +331,7 @@ $dictionary['EmailTemplate']['relationships']['emailtemplates_emails'] = [
     'relationship_type' => 'one-to-many'
 ];
 
-$dictionary['EmailTemplate']['fields']['emails'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate']['fields']['emails'] = [
     'name' => 'emails',
     'type' => 'link',
     'relationship' => 'emailtemplates_emails',

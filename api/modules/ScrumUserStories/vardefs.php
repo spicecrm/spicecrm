@@ -1,10 +1,10 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
 //dictionary global variable => class name als key
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['ScrumUserStory'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['ScrumUserStory'] = [
     'table' => 'scrumuserstories',
     'comment' => 'SCRUM User Stories Module',
     'audited' =>  true,
@@ -146,5 +146,3 @@ $dictionary['ScrumUserStory'] = [
 ];
 // default (Basic) fields & assignable (implements->assigned fields)
 VardefManager::createVardef('ScrumUserStories', 'ScrumUserStory', ['default', 'assignable']);
-
-
