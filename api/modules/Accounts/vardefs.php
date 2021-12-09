@@ -33,10 +33,16 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
+    'table' => 'accounts',
+    'audited' => true,
+    'unified_search' => true,
+    'full_text_search' => true,
+    'unified_search_default_enabled' => true,
+    'duplicate_merge' => true,
     'comment' => 'Accounts are organizations or entities that are the target of selling, support, and marketing activities, or have already purchased products or services',
     'fields' => [
         'parent_id' =>
@@ -665,9 +671,8 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
 
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if (file_exists("extensions/modules/SalesDocs")) {
-    $dictionary['Account']['fields']['salesdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['salesdocs'] = [
         'name' => 'salesdocs',
         'type' => 'link',
         'vname' => 'LBL_SALESDOCS',
@@ -675,7 +680,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'module' => 'SalesDocs',
         'source' => 'non-db',
     ];
-    $dictionary['Account']['fields']['salesdocs_accountrp'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['salesdocs_accountrp'] = [
         'name' => 'salesdocs_accountrp',
         'type' => 'link',
         'vname' => 'LBL_SALESDOCS_AS_RP',
@@ -684,7 +689,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'source' => 'non-db',
         'comment' => 'SalesDocs as recipient party'
     ];
-    $dictionary['Account']['fields']['salesdocs_accountpp'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['salesdocs_accountpp'] = [
         'name' => 'salesdocs_accountpp',
         'type' => 'link',
         'vname' => 'LBL_SALESDOCS_AS_PP',
@@ -693,7 +698,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'source' => 'non-db',
         'comment' => 'SalesDocs as payer'
     ];
-    $dictionary['Account']['fields']['salesdocs_accountir'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['salesdocs_accountir'] = [
         'name' => 'salesdocs_accountir',
         'type' => 'link',
         'vname' => 'LBL_SALESDOCS_AS_IR',
@@ -704,7 +709,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
     ];
 }
 if (file_exists("modules/Addresses")) {
-    $dictionary['Account']['fields']['addresses'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['addresses'] = [
         'name' => 'addresses',
         'type' => 'link',
         'relationship' => 'account_addresses',
@@ -715,7 +720,7 @@ if (file_exists("modules/Addresses")) {
     ];
 }
 if (file_exists("extensions/modules/ServiceOrders")) {
-    $dictionary['Account']['fields']['serviceorders'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceorders'] = [
         'name' => 'serviceorders',
         'type' => 'link',
         'relationship' => 'serviceorders_accounts',
@@ -724,7 +729,7 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'module' => 'ServiceOrders',
         'default' => false
     ];
-    $dictionary['Account']['fields']['serviceorders_add'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceorders_add'] = [
         'name' => 'serviceorders_add',
         'type' => 'link',
         'relationship' => 'serviceorders_accounts_add',
@@ -733,7 +738,7 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'module' => 'ServiceOrders',
         'default' => false
     ];
-    $dictionary['Account']['fields']['serviceorder_role'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceorder_role'] = [
         'name' => 'serviceorder_role',
         'type' => 'enum',
         'options' => 'serviceorders_accounts_roles_dom',
@@ -742,7 +747,7 @@ if (file_exists("extensions/modules/ServiceOrders")) {
     ];
 }
 if (file_exists("modules/ServiceTickets")) {
-    $dictionary['Account']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
         'relationship' => 'servicetickets_accounts',
@@ -753,7 +758,7 @@ if (file_exists("modules/ServiceTickets")) {
     ];
 }
 if (file_exists("extensions/modules/ServiceEquipments")) {
-    $dictionary['Account']['fields']['serviceequipments'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceequipments'] = [
         'name' => 'serviceequipments',
         'type' => 'link',
         'relationship' => 'serviceequipments_accounts',
@@ -764,7 +769,7 @@ if (file_exists("extensions/modules/ServiceEquipments")) {
     ];
 }
 if (file_exists("extensions/modules/ServiceLocations")) { // CR1000239
-    $dictionary['Account']['fields']['servicelocations'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['servicelocations'] = [
         'name' => 'servicelocations',
         'module' => 'ServiceLocations',
         'type' => 'link',
@@ -775,7 +780,7 @@ if (file_exists("extensions/modules/ServiceLocations")) { // CR1000239
     ];
 }
 if (file_exists("extensions/modules/ProductVariants")) {
-    $dictionary['Account']['fields']['manufactures'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactures'] = [
         'name' => 'manufactures',
         'vname' => 'LBL_PRODUCTVARIANT',
         'type' => 'link',
@@ -783,7 +788,7 @@ if (file_exists("extensions/modules/ProductVariants")) {
         'relationship' => 'productvariant_manufacturer',
         'source' => 'non-db'
     ];
-    $dictionary['Account']['fields']['resells'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resells'] = [
         'name' => 'resells',
         'vname' => 'LBL_PRODUCTVARIANT',
         'type' => 'link',
@@ -797,14 +802,13 @@ VardefManager::createVardef('Accounts', 'Account', ['default', 'assignable', 'co
 //jc - adding for refactor for import to not use the required_fields array
 //defined in the field_arrays.php file
 //BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 //END
-$dictionary['Account']['fields']['name']['importable'] = 'required';
+SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['name']['importable'] = 'required';
 
 // CR1000336
-if(file_exists('extensions/modules/SystemDeploymentReleases')){
+if (file_exists('extensions/modules/SystemDeploymentReleases')) {
 
-    $dictionary['Account']['fields']['systemdeploymentreleases'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['systemdeploymentreleases'] = [
         'name' => 'systemdeploymentreleases',
         'type' => 'link',
         'relationship' => 'account_systemdeploymentreleases',
@@ -814,7 +818,7 @@ if(file_exists('extensions/modules/SystemDeploymentReleases')){
         'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
         'side' => 'left'
     ];
-    $dictionary['Account']['relationships']['account_systemdeploymentreleases'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['relationships']['account_systemdeploymentreleases'] = [
         'lhs_module' => 'Accounts',
         'lhs_table' => 'accounts',
         'lhs_key' => 'id',
@@ -829,7 +833,7 @@ if(file_exists('extensions/modules/SystemDeploymentReleases')){
 
 if (file_exists('extensions/modules/Potentials')) {
 
-    $dictionary['Account']['fields']['potentials'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['potentials'] = [
         'name' => 'potentials',
         'vname' => 'LBL_POTENTIALS',
         'type' => 'link',
@@ -837,7 +841,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'module' => 'Accounts',
         'source' => 'non-db'
     ];
-    $dictionary['Account']['fields']['resellerpotentials'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resellerpotentials'] = [
         'name' => 'resellerpotentials',
         'vname' => 'LBL_RESELLERPOTENTIALS',
         'type' => 'link',
@@ -845,7 +849,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'module' => 'Accounts',
         'source' => 'non-db'
     ];
-    $dictionary['Account']['fields']['maincompetitorpotentials'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['maincompetitorpotentials'] = [
         'name' => 'maincompetitorpotentials',
         'vname' => 'LBL_MAINCOMPETITORPOTENTIALS',
         'type' => 'link',
@@ -853,7 +857,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'module' => 'Accounts',
         'source' => 'non-db'
     ];
-    $dictionary['Account']['fields']['ompetitorpotentials'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['ompetitorpotentials'] = [
         'name' => 'ompetitorpotentials',
         'vname' => 'LBL_COMPETITORPOTENTIALS',
         'type' => 'link',
@@ -864,8 +868,8 @@ if (file_exists('extensions/modules/Potentials')) {
 
 }
 
-if(file_exists('extensions/modules/BonusCards')){
-    $dictionary['Account']['fields']['bonuscards'] = [
+if (file_exists('extensions/modules/BonusCards')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['bonuscards'] = [
         'name' => 'bonuscards',
         'type' => 'link',
         'relationship' => 'bonuscards_accounts',
@@ -876,8 +880,8 @@ if(file_exists('extensions/modules/BonusCards')){
     ];
 }
 
-if(file_exists('extensions/modules/Products')){
-    $dictionary['Account']['fields']['manufactured_products'] = [
+if (file_exists('extensions/modules/Products')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactured_products'] = [
         'vname' => 'LBL_MANUFACTURED_PRODUCTS',
         'name' => 'manufactured_products',
         'type' => 'link',
@@ -886,7 +890,7 @@ if(file_exists('extensions/modules/Products')){
         'source' => 'non-db'
     ];
 
-    $dictionary['Account']['relationships']['manufacturer_products'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['relationships']['manufacturer_products'] = [
         'lhs_module' => 'Accounts',
         'lhs_table' => 'accounts',
         'lhs_key' => 'id',
@@ -897,8 +901,8 @@ if(file_exists('extensions/modules/Products')){
     ];
 }
 
-if(file_exists('extensions/modules/ServiceCalls')){
-    $dictionary['Account']['fields']['servicecalls'] = [
+if (file_exists('extensions/modules/ServiceCalls')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['servicecalls'] = [
         'vname' => 'LBL_SERVICECALLS',
         'name' => 'servicecalls',
         'type' => 'link',

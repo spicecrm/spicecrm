@@ -86,7 +86,7 @@ class Link2
         $this->relationship_fields = (!empty($this->def['rel_fields'])) ? $this->def['rel_fields'] : array();
 
         if (!$this->loadedSuccesfully()) {
-            LoggerManager::getLogger()->fatal("{$this->name} for {$this->def['relationship']} failed to load\n");
+            LoggerManager::getLogger()->debug("{$this->name} for {$this->def['relationship']} failed to load\n");
         }
         //Following behavior is tied to a property(ignore_role) value in the vardef. It alters the values of 2 properties, ignore_role_filter and add_distinct.
         //the property values can be altered again before any requests are made.

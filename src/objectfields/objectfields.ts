@@ -270,6 +270,8 @@ declare var _: any;
         fieldLookupSearch,
         fieldLookupSearchAdd,
         fieldTags,
+        fieldCategories,
+        fieldCategoriesTree
     ]
 })
 export class ObjectFields {}
