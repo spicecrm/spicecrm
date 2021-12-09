@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Mailbox'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
     'table' => 'mailboxes',
     'audited' => false,
     'unified_search' => true,
@@ -88,6 +88,20 @@ $dictionary['Mailbox'] = [
             'vname' => 'LBL_CATCH_ALL_ADDRESS',
             'type' => 'varchar',
             'comment' => 'Catch All address for debugging',
+        ],
+        'track_mailbox' => [
+            'name' => 'track_mailbox',
+            'vname' => 'LBL_TRACK_MAILBOX',
+            'type' => 'bool',
+            'default' => false,
+            'comment' => 'Flag to enable tracking',
+        ],
+        'tracking_url' => [
+            'name' => 'tracking_url',
+            'vname' => 'LBL_TRACKING_URL',
+            'type' => 'varchar',
+            'len' => 255,
+            'comment' => 'tracking url of the Mailbox',
         ],
         'emails' => [
             'name' => 'emails',

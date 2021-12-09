@@ -29,7 +29,7 @@
             <div class="slds-m-horizontal_xx-small" [system-view-provider]="{displayLabels: false}">
                 <object-record-fieldset-horizontal-list *ngIf="subheaderFieldSet" [fieldset]="subheaderFieldSet"></object-record-fieldset-horizontal-list>
             </div>
-            <article *ngIf="isopen" class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small">
+            <article *ngIf="isopen && !cantexpand" class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small">
                 <object-record-fieldset [fieldset]="formFieldSet" direction="vertical" fielddisplayclass="slds-truncate" fieldpadding="none"></object-record-fieldset>
                 <system-dynamic-component *ngIf="hasattachments" component="SpiceAttachmentsList"></system-dynamic-component>
             </article>
