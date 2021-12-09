@@ -117,7 +117,7 @@ export class QuestionsManager implements OnInit {
             updateArray.push({ id: item.id, position: i });
             i++;
         }
-        this.backend.postRequest( 'module/Questions', {}, updateArray );
+        this.backend.putRequest('module/QuestionSets/'+this.model.id+'/related/beans/questions', null, { beans: updateArray });
     }
 
     private dragStarted(e) {
