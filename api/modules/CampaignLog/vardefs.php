@@ -33,8 +33,9 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-global $dictionary;
-$dictionary['CampaignLog'] = ['audited'=>false,
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>false,
 	'comment' => 'Tracks items of interest that occurred after you send an email campaign',
 	'table' => 'campaign_log',
 
