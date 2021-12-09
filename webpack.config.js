@@ -22,6 +22,13 @@ module.exports = {
     mode: "production",
     output: {
         publicPath: "app/",
+        chunkFilename: (pathData) => {
+            const path = pathData.chunk.id.split('_');
+            if (path[0] === 'default-src') {
+                return pathData.chunk.id.replace(/_ts$/, '') + '.js';
+            }
+            return path[['include', 'modules', 'custom'].indexOf(path[1]) > -1 ? 3 : 2] + '.js';
+        }
     },
     optimization: {
         chunkIds: 'named',
