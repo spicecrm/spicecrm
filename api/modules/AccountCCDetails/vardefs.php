@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['AccountCCDetail'] = [
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
     'table' => 'accountccdetails',
     'audited' => false,
     'fields' => [
@@ -137,6 +137,5 @@ $dictionary['AccountCCDetail'] = [
         ],
     ],
 ];
-
 
 VardefManager::createVardef('AccountCCDetails', 'AccountCCDetail', ['default', 'assignable']);

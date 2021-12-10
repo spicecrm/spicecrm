@@ -36,6 +36,7 @@
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\data\BeanFactory;
 
@@ -112,7 +113,7 @@ $add_index=[];
 $drop_index=[];
 $change_index=[];
 
-global $dictionary,  $mod_strings;;
+global $mod_strings;;
 $current_user = AuthenticationController::getInstance()->getCurrentUser();
 include_once ('include/database/DBManager.php');
 
@@ -122,7 +123,7 @@ $processed_tables=[];
 ///////////////////////////////////////////////////////////////////////////////
 ////	PROCESS MODULE BEANS
 (function_exists('logThis')) ? logThis("found ".count(SpiceModules::getInstance()->getBeanClasses())." Beans to process") : "";
-(function_exists('logThis')) ? logThis("found ".count($dictionary)." Dictionary entries to process") : "";
+(function_exists('logThis')) ? logThis("found ".count(SpiceDictionaryHandler::getInstance()->dictionary)." Dictionary entries to process") : "";
 
 foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
 	$focus= new $beanClass();
@@ -134,8 +135,8 @@ foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass)
 		$processed_tables[$focus->table_name]=$focus->table_name;
 	}
 
-	if (!empty($dictionary[$focus->object_name]['indices'])) {
-		$indices=$dictionary[$focus->object_name]['indices'];
+	if (!empty(SpiceDictionaryHandler::getInstance()->dictionary[$focus->object_name]['indices'])) {
+		$indices=SpiceDictionaryHandler::getInstance()->dictionary[$focus->object_name]['indices'];
 	} else {
 		$indices=[];
 	}
@@ -164,7 +165,7 @@ foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass)
 ///////////////////////////////////////////////////////////////////////////////
 ////	PROCESS RELATIONSHIP METADATA - run thru many to many relationship files too...
 include('modules/TableDictionary.php');
-foreach ($dictionary as $rel=>$rel_def) {
+foreach (SpiceDictionaryHandler::getInstance()->dictionary as $rel=>$rel_def) {
 	if(!empty($rel_def['indices'])) {
 		$indices=$rel_def['indices'];
 	} else {

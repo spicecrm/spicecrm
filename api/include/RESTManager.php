@@ -286,7 +286,7 @@ class RESTManager
          */
         if($user || $token) {
             $authController = AuthenticationController::getInstance();
-            $impersonationUser = @SpiceConfig::getInstance()->config['system']['impersonation_enabled'] === true ? $_GET['impersonationuser'] : null;
+            $impersonationUser = @SpiceConfig::getInstance()->config['system']['impersonation_enabled'] == true ? $_GET['impersonationuser'] : null;
             return $authController->authenticate($user, $pass, $token, $tokenIssuer, $impersonationUser);
         }
     }

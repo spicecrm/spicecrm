@@ -7,15 +7,11 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use DateTime;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use IntlDateFormatter;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SystemTemplateFunctions {
 
-    static function dateFormat($inputString, $format, $placeHolderForOldLanguageParameter = null){
-
-        # For formatting look here:
-        # https://www.php.net/manual/de/datetime.format.php
-
+    static function dateFormat($inputString, $format){
         $date = DateTime::createFromFormat(TimeDate::getInstance()->get_db_date_time_format(), $inputString);
         if(!$date){
             $date = DateTime::createFromFormat(TimeDate::getInstance()->get_date_time_format(), $inputString);
@@ -25,30 +21,6 @@ class SystemTemplateFunctions {
         }
 
         return $date->format( $format );
-
-    }
-
-    static function dateFormatIntl( $inputString, $format, $language = 'en_US'){
-
-        # For formatting look here:
-        # https://unicode-org.github.io/icu/userguide/format_parse/datetime/
-
-        $date = DateTime::createFromFormat(TimeDate::getInstance()->get_db_date_time_format(), $inputString);
-        if(!$date){
-            $date = DateTime::createFromFormat(TimeDate::getInstance()->get_date_time_format(), $inputString);
-        }
-        if(!$date){
-            $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
-        }
-
-        if ( class_exists('IntlDateFormatter')) {
-            $formatter = new IntlDateFormatter($language, IntlDateFormatter::SHORT, IntlDateFormatter::SHORT);
-            $formatter->setPattern($format);
-            return $formatter->format($date);
-        } else {
-            return '*** Missing PHP Class IntlDateFormatter ***';
-        }
-
     }
 
     static function cat( $inputstring, $stringToAdd ) {
@@ -139,5 +111,11 @@ class SystemTemplateFunctions {
         $now = new DateTime();
         return $now->format( $format );
     }
+
+    /*
+    static function shorturl( $longUrl ) {
+        return SpiceUtils::createShortUrl( $longUrl );
+    }
+    */
 
 }

@@ -33,8 +33,9 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-global $dictionary;
-$dictionary['User'] = [
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
     'table' => 'users',
     'audited' => true,
     'fields' => [
@@ -1113,9 +1114,8 @@ $dictionary['User'] = [
 ];
 
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
-    $dictionary['User']['fields']['servicequeues'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicequeues'] = [
         'vname' => 'LBL_SERVICEQUEUES',
         'name' => 'servicequeues',
         'type' => 'link',
@@ -1128,7 +1128,7 @@ if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
 }
 // CR1000333
 if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
-    $dictionary['User']['fields']['systemdeploymentreleases'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentreleases'] = [
         'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
         'name' => 'systemdeploymentreleases',
         'type' => 'link',
@@ -1139,7 +1139,7 @@ if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRel
     ];
 }
 if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
-    $dictionary['User']['fields']['cr_user_role'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['cr_user_role'] = [
         'vname' => 'LBL_ROLE',
         'name' => 'cr_user_role',
         'type' => 'multienum',
@@ -1147,7 +1147,7 @@ if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')
         'source' => 'non-db',
         'comment' => 'representation of user_role column in join table systemdeploymentcrs_users'
     ];
-    $dictionary['User']['fields']['systemdeploymentcrs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentcrs'] = [
         'name' => 'systemdeploymentcrs',
         'type' => 'link',
         'relationship' => 'systemdeploymentcrs_users',
@@ -1160,7 +1160,7 @@ if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')
 
 }
 if (file_exists("modules/ServiceTickets")) {
-    $dictionary['User']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
         'relationship' => 'servicetickets_users',
@@ -1172,7 +1172,7 @@ if (file_exists("modules/ServiceTickets")) {
 }
 // Not sure we need this at all.... commented for now
 //if (file_exists("extensions/modules/ServiceEquipments")) {
-//    $dictionary['User']['fields']['serviceequipments'] = array(
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['serviceequipments'] = array(
 //        'name' => 'serviceequipments',
 //        'type' => 'link',
 //        'relationship' => 'serviceequipments_users',
@@ -1183,7 +1183,7 @@ if (file_exists("modules/ServiceTickets")) {
 //    );
 //}
 if (file_exists("extensions/modules/Shops")) {
-    $dictionary['User']['fields']['shops'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['shops'] = [
         'name' => 'shops',
         'type' => 'link',
         'vname' => 'LBL_SHOP',
@@ -1195,7 +1195,7 @@ if (file_exists("extensions/modules/Shops")) {
 }
 
 if (file_exists("modules/DistributionLists")) {
-    $dictionary['User']['fields']['distributionlists'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['distributionlists'] = [
         'name' => 'distributionlists',
         'vname' => 'LBL_DISTRIBUTIONLISTS',
         'type' => 'link',
@@ -1206,4 +1206,3 @@ if (file_exists("modules/DistributionLists")) {
         'comment' => 'DistributionLists the user is allocated to'
     ];
 }
-

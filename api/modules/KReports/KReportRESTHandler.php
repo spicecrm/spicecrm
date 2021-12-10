@@ -5,6 +5,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\modules\Contacts\Contact;
@@ -726,9 +727,9 @@ $db = DBManagerFactory::getInstance();
         $nodeModule = BeanFactory::getBean($module);
 
         $nodeModule->load_relationships();
-        // print_r($GLOBALS['dictionary']);//
+        // print_r(SpiceDictionaryHandler::getInstance()->dictionary);//
         // 2011-07-21 add audit table
-        if (isset($GLOBALS['dictionary'][$nodeModule->object_name]['audited']) && $GLOBALS['dictionary'] [$nodeModule->object_name]['audited'])
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->object_name]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->object_name]['audited'])
             $functionsArray[] = [
                 'path' => /* ($requester != '' ? $requester. '#': '') . */
                     'audit:' . $module . ':audit',
