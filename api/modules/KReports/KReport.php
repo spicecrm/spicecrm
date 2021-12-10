@@ -13,8 +13,6 @@ use SpiceCRM\modules\ProspectLists\ProspectList;
 
 require_once('modules/KReports/utils.php');
 
-global $dictionary;
-
 //2013-05-14 include files with custom functions .. Bug #478
 //2013-10-19 check if file exists before .. Bug #507
 if (file_exists('./custom/modules/KReports/includes')) {

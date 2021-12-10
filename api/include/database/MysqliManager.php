@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SugarBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
@@ -141,6 +142,32 @@ class MysqliManager extends DBManager
         'row_count' => 'mysqli_num_rows',
         'affected_row_count' => 'mysqli_affected_rows',
     ];
+
+    /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SHOW TABLE STATUS");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $recordCount = $this->fetchByAssoc($this->query("SELECT count(*) records FROM {$table['Name']}"));
+
+            $tablesArray[] = [
+                'name' => $table['Name'],
+                'records' => (int)$recordCount['records'],
+                'size' => $table['Data_length'] + $table['Index_length']
+            ];
+            $dbCount += (int)$recordCount['records'];
+            $dbSize += (int)$table['Data_length'] + (int)$table['Index_length'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
 
     /**
      * @see MysqlManager::query()
@@ -878,10 +905,9 @@ class MysqliManager extends DBManager
 
     protected function getEngine($bean)
     {
-        global $dictionary;
         $engine = null;
-        if (isset($dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = $dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
         }
         return $engine;
     }

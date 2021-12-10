@@ -33,10 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Call'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
     'table'                          => 'calls',
     'comment'                        => 'A Call is an activity representing a phone call',
     'unified_search'                 => true,
@@ -643,9 +643,8 @@ $dictionary['Call'] = [
 
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if (file_exists("modules/ServiceTickets")) {
-    $dictionary['Call']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Call']['fields']['servicetickets'] = [
         'name'         => 'servicetickets',
         'type'         => 'link',
         'relationship' => 'servicetickets_calls',
@@ -656,7 +655,7 @@ if (file_exists("modules/ServiceTickets")) {
     ];
 }
 if (file_exists("extensions/modules/ServiceOrders")) {
-    $dictionary['Call']['fields']['serviceorders'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Call']['fields']['serviceorders'] = [
         'name'         => 'serviceorders',
         'type'         => 'link',
         'relationship' => 'serviceorders_calls',
