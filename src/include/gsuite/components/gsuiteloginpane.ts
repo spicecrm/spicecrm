@@ -194,6 +194,7 @@ export class GSuiteLoginPane {
                 let user_token = googleUser.getAuthResponse().id_token;
                 let access_token = googleUser.getAuthResponse().access_token;
                 this.loginService.oauthToken = user_token;
+                this.loginService.oauthIssuer = 'Google';
                 this.loginService.authData.userName = "";
                 this.loginService.authData.password = "";
                 // this.session.authData.sessionId = user_token;

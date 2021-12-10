@@ -133,7 +133,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
                 if(!lastId && c.parent_id != '' && !!c.parent_id) return false;
 
-                return c.parent_id == lastId;
+                return !lastId || c.parent_id == lastId;
             });
             if(cat) {
                 values.push((cat.node_name));

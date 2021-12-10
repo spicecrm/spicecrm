@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Product'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
     'table' => 'products',
     'fields' => [
         'ext_id' => [
@@ -349,7 +349,7 @@ $dictionary['Product'] = [
 VardefManager::createVardef('Products', 'Product', ['default', 'assignable']);
 
 if(file_exists('extensions/modules/ProjectWBSs')) {
-    $dictionary['Product']['fields']['projectwbss'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Product']['fields']['projectwbss'] = [
         'name' => 'projectwbss',
         'type' => 'link',
         'relationship' => 'projectwbss_products',

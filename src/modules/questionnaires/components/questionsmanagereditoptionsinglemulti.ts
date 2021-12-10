@@ -66,4 +66,16 @@ export class QuestionsManagerEditOptionSingleMulti implements OnInit {
         if ( this.option.name.length > 50 ) this.option.name = this.option.name.substring( 0, 49 )+'…';
     }
 
+    public get canEditOption(): boolean {
+        return this.model.data.new_with_id || this.model.checkAccess('edit');
+    }
+
+    public get canDeleteOption(): boolean {
+        return this.model.data.new_with_id || this.model.checkAccess('delete');
+    }
+
+    public get canMoveOption(): boolean {
+        return this.canEditOption;
+    }
+
 }

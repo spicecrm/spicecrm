@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaire
  */
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, SkipSelf } from "@angular/core";
 import {model} from "../../../services/model.service";
 import { language } from '../../../services/language.service';
 import { modal } from '../../../services/modal.service';
@@ -20,7 +20,7 @@ export class QuestionsetManager implements OnInit {
 
     public currentPosition: number;
 
-    constructor( public model: model, public lang: language, public modalservice: modal ) { }
+    constructor( @SkipSelf() public questionnaire: model, public model: model, public lang: language, public modalservice: modal ) { }
 
     public ngOnInit(): void {
         this.model.module = 'QuestionSets';

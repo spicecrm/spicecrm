@@ -7,6 +7,7 @@ import { language } from '../../../services/language.service';
 import { backend } from '../../../services/backend.service';
 import { modal } from '../../../services/modal.service';
 import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
+import { metadata } from '../../../services/metadata.service';
 
 @Component({
     selector: 'questions-manager',
@@ -17,6 +18,7 @@ export class QuestionsManager implements OnInit {
     @Input() public showQuestionsetButtons = false;
     @Input() public categorypool: any;
     @Output() public questionsetAction: EventEmitter<string> = new EventEmitter();
+    @Input() public questionnaire: model;
 
     public questions: any[] = [];
     public currentQuestionId = '';
@@ -24,7 +26,7 @@ export class QuestionsManager implements OnInit {
     public questiontypes = ['single','multi','binary','rating','nps','ist','text'];
     public questiontypes_dom: any;
 
-    constructor( public language: language, public model: model, public backend: backend, public modalservice: modal ) { }
+    constructor( public language: language, public model: model, public backend: backend, public modalservice: modal, public metadata: metadata ) { }
 
     public ngOnInit(): void {
         this.questiontypes_dom = this.language.getDisplayOptions('questionstypes_dom');
@@ -115,7 +117,7 @@ export class QuestionsManager implements OnInit {
             updateArray.push({ id: item.id, position: i });
             i++;
         }
-        this.backend.postRequest( 'module/Questions', {}, updateArray );
+        this.backend.putRequest('module/QuestionSets/'+this.model.id+'/related/beans/questions', null, { beans: updateArray });
     }
 
     public dragStarted(e) {
@@ -124,6 +126,38 @@ export class QuestionsManager implements OnInit {
 
     public dragEnded(e) {
         e.source.element.nativeElement.classList.remove('slds-is-selected');
+    }
+
+    private get canEditQuestionnaire(): boolean {
+        return this.questionnaire?.checkAccess('edit');
+    }
+
+    private get canMoveQuestionset(): boolean {
+        return this.canEditQuestionnaire && this.canEditQuestionset;
+    }
+
+    private get canEditQuestionset(): boolean {
+        return this.model.checkAccess('edit');
+    }
+
+    public canEditQuestion( question ): boolean {
+        return !!question.acl?.edit;
+    }
+
+    public canDeleteQuestion( question ): boolean {
+        return !!question.acl?.delete && this.canEditQuestionset;
+    }
+
+    public get canDeleteQuestionset(): boolean {
+        return this.canEditQuestionnaire && this.model.checkAccess('delete');
+    }
+
+    public get canAddQuestions(): boolean {
+        return this.canEditQuestionset && this.metadata.checkModuleAcl('Questions', 'create');
+    }
+
+    public canMoveQuestion( question ): boolean {
+        return this.canEditQuestionset && this.canEditQuestion( question );
     }
 
 }

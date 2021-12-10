@@ -157,4 +157,8 @@ export class QuestionnaireCategoryPool implements OnInit, OnDestroy {
         }
     }
 
+    private get canEdit(): boolean {
+        return this.model.checkAccess('edit');
+    }
+
 }
