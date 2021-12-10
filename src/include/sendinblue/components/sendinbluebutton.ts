@@ -38,10 +38,10 @@ export class SendinBlueButton {
      * calls the backend route to syncronize targets with Sendinblue, if any are found, passes them to the modal
      */
     public execute() {
-        let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
 
             this.backend.getRequest(`channels/emarketing/sendinblue/${this.model.module}/${this.model.id}`).subscribe(result => {
-                await.emit(true);
+                loadingModal.emit(true);
                 if (result) {
                     this.modal.openModal('SendinBlueModal', true, this.injector).subscribe(
                         modal => {

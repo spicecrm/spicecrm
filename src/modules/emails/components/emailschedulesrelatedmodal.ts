@@ -161,7 +161,7 @@ export class EmailSchedulesRelatedModal {
      */
     public expandRelated(link) {
         if (!link.expanded) {
-            let loading = this.modal.await('LBL_LOADING');
+            let loadingModal = this.modal.await('LBL_LOADING');
             link.selected= false;
             link.expanded = true;
             this.backend.getRequest(`module/${this.parentModel.module}/${this.parentModel.id}/related/${link.link}`, {
@@ -179,11 +179,11 @@ export class EmailSchedulesRelatedModal {
                         link.linkedbeans.push(beans[id]);
                     }
                     this.sortLinkedBeans(link);
-                    loading.emit(true);
+                    loadingModal.emit(true);
                 },
                 () => {
                     this.toast.sendToast('LBL_ERROR', 'error');
-                    loading.emit(true);
+                    loadingModal.emit(true);
                 }
             );
         } else {
