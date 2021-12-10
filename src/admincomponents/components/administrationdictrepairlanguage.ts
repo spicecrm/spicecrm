@@ -23,9 +23,9 @@ export class AdministrationDictRepairLanguage {
      * calls the repair method in backend, then loads the language from the language service
      */
     public executeLG() {
-        let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
         this.backend.getRequest('admin/repair/language').subscribe(result => {
-            await.emit(true);
+            loadingModal.emit(true);
             if(result.response) {
                 this.language.getLanguage(this.loaderHandler);
                 this.toast.sendToast(this.language.getLabel('LBL_LANGUAGES_REPAIRED'), 'success');
