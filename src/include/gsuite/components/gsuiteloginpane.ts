@@ -10,6 +10,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {libloader} from "../../../services/libloader.service";
 import {Md5} from "ts-md5";
 
+declare var gapi;
 /**
  * A component that handles the display of the SpiceCRM login form in the GSuite add-in
  * and the communication with SpiceCRM to confirm the login credentials.

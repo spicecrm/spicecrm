@@ -11,6 +11,7 @@
     "emitDecoratorMetadata": false,
     "target": "es2015",
     "module": "esnext",
+    "types": ["node"],
     "lib": [
       "es2018",
       "dom"
