@@ -1,6 +1,7 @@
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 require('./gulpfile_globals.js');
 const moment = require("moment");
@@ -50,7 +51,8 @@ module.exports = {
                     build: ${global.build.releaseNumber}.${now}
                     `;
                 },
-            })
+            }),
+            new CssMinimizerPlugin()
         ],
     },
     plugins: [

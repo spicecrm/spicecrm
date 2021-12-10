@@ -22,7 +22,7 @@
             "optimization": false,
             "styles": [
               "vendor/sldassets/styles/salesforce-lightning-design-system.min.css",
-              "assets/css/spicecrm.min.css"
+              "assets/css/spicecrm.css"
             ],
             "scripts": [
               "vendor/zone.js/zone.umd.min.js",
