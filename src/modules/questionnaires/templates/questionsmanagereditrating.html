@@ -31,9 +31,9 @@
     </button>
     <ng-container *ngIf="options.length > 0">
         <span><system-label [label]="'LBL_SET_VALUES'"></system-label>:&nbsp;</span>
-        <button class="slds-button slds-button_neutral" (click)="fillRange(1,options.length)" [disabled]="!canEditAllOptions">1 … {{options.length}}</button>
-        <button class="slds-button slds-button_neutral" (click)="fillRange(options.length,1)" [disabled]="!canEditAllOptions">{{options.length}} … 1</button>
-        <button class="slds-button slds-button_neutral" (click)="fillRange((options.length-1)/-2,(options.length-1)/2)" [disabled]="!canEditAllOptions">-{{(options.length-1)/2}} … +{{(options.length-1)/2}}</button>
+        <button class="slds-button slds-button_neutral" (click)="fillRange(1,options.length)">1 … {{options.length}}</button>
+        <button class="slds-button slds-button_neutral" (click)="fillRange(options.length,1)">{{options.length}} … 1</button>
+        <button class="slds-button slds-button_neutral" (click)="fillRange((options.length-1)/-2,(options.length-1)/2)">-{{(options.length-1)/2}} … +{{(options.length-1)/2}}</button>
     </ng-container>
 </div>
 
@@ -75,7 +75,7 @@
             <div><questions-manager-edit-categories [option]="option" [categorypool]="categorypool" [disabled]="!canEditOption(option)"></questions-manager-edit-categories></div>
         </td>
         <td>
-            <div><input type="text" class="slds-input slds-text-align_right" style="width:unset" [(ngModel)]="option.points" size="4" [disabled]="!canEditOption(option)"></div>
+            <div><input type="text" class="slds-input slds-text-align_right" style="width:unset" [(ngModel)]="option['points']" size="4" [disabled]="!canEditOption(option)"></div>
         </td>
         <td>
             <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionUp(i)" title="{{language.getLabel('LBL_UP')}}" [disabled]="isFirstRow || !canEditOption(option)">

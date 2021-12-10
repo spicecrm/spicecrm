@@ -128,15 +128,15 @@ export class QuestionsManager implements OnInit {
         e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 
-    private get canEditQuestionnaire(): boolean {
+    get canEditQuestionnaire(): boolean {
         return this.questionnaire?.checkAccess('edit');
     }
 
-    private get canMoveQuestionset(): boolean {
+    get canMoveQuestionset(): boolean {
         return this.canEditQuestionnaire && this.canEditQuestionset;
     }
 
-    private get canEditQuestionset(): boolean {
+    get canEditQuestionset(): boolean {
         return this.model.checkAccess('edit');
     }
 
