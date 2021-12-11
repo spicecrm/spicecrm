@@ -17,16 +17,16 @@ declare var moment: any;
  */
 @Component({
     selector: 'output-templates-preview-selector',
-    templateUrl: "./src/modules/outputtemplates/templates/outputtemplatespreviewselector.html"
+    templateUrl: "../templates/outputtemplatespreviewselector.html"
 })
 export class OutputTemplatesPreviewSelector implements OnDestroy {
 
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    private selectedItem: any;
+    public selectedItem: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal) {
 
     }
 
@@ -44,7 +44,7 @@ export class OutputTemplatesPreviewSelector implements OnDestroy {
         return this.language.getModuleCombinedLabel('LBL_SEARCH', this.module);
     }
 
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.module;
             selectModal.instance.multiselect = false;
@@ -59,7 +59,7 @@ export class OutputTemplatesPreviewSelector implements OnDestroy {
         });
     }
 
-    private clearField(){
+    public clearField(){
         this.selectedItem = undefined;
     }
 

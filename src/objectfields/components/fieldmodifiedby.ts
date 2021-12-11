@@ -15,11 +15,11 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-generic',
-    templateUrl: './src/objectfields/templates/fieldmodifiedby.html'
+    templateUrl: '../templates/fieldmodifiedby.html'
 })
 export class fieldModifiedBy extends fieldRelate {
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public modal: modal, public backend: backend, public toast: toast, private userpreferences: userpreferences) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public modal: modal, public backend: backend, public toast: toast, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router, elementRef, modal, backend, toast);
     }
 

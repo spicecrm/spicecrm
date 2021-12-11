@@ -10,7 +10,7 @@ import {navigation, objectTab} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-navigation-tabbed-subtab-item',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedsubtabitem.html'
+    templateUrl: '../templates/globalnavigationtabbedsubtabitem.html'
 })
 export class GlobalNavigationTabbedSubtabItem {
 
@@ -24,7 +24,7 @@ export class GlobalNavigationTabbedSubtabItem {
      */
     @Input() public ismain: boolean = false;
 
-    constructor(private metadata: metadata, private language: language, private navigation: navigation, public elementRef: ElementRef) {
+    constructor(public metadata: metadata,public language: language,public navigation: navigation, public elementRef: ElementRef) {
 
     }
 
@@ -60,14 +60,14 @@ export class GlobalNavigationTabbedSubtabItem {
     /**
      * sets the current tab as the active tab
      */
-    private setActive() {
+   public setActive() {
         this.navigation.setActiveTab(this.object.id);
     }
 
     /**
      * close the subtab
      */
-    private closeSubTab() {
+   public closeSubTab() {
         this.navigation.closeObjectTab(this.object.id);
     }
 
@@ -81,7 +81,7 @@ export class GlobalNavigationTabbedSubtabItem {
     /**
      * close the tab
      */
-    private pintab() {
+   public pintab() {
         this.object.pinned = !this.object.pinned;
     }
 

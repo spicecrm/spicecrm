@@ -14,7 +14,7 @@ declare var _: any;
 
 @Component({
     selector: "system-module-tree-item",
-    templateUrl: "./src/systemcomponents/templates/systemmoduletreeitem.html"
+    templateUrl: "../templates/systemmoduletreeitem.html"
 })
 
 export class SystemModuleTreeItem {
@@ -52,34 +52,34 @@ export class SystemModuleTreeItem {
     /**
      * if the node is expanded
      */
-    private expanded: boolean = false;
+    public expanded: boolean = false;
 
     /**
      * the items
      */
-    private nodeitems: any[] = [];
+    public nodeitems: any[] = [];
 
     /**
      *  indicates if the treeitem is loading
      */
-    private isLoaded: boolean = false;
+    public isLoaded: boolean = false;
 
     /**
      *  indicates if the treeitem is loading
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
 
     /**
      * set the button to disabled
      */
-    private disabled = false;
+    public disabled = false;
 
     /**
      * event emitter when an item is selected
      */
-    @Output() private itemSelected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public itemSelected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private language: language, private modelUtilities: modelutilities) {
+    constructor(public backend: backend, public language: language, public modelUtilities: modelutilities) {
 
     }
 
@@ -94,7 +94,7 @@ export class SystemModuleTreeItem {
     /**
      * load the data from the backend
      */
-    private loadItems() {
+    public loadItems() {
         this.isLoading = true;
         this.backend.getRequest('dictionary/browser/' + this.module + '/nodes').subscribe(items => {
             if (items) {
@@ -120,7 +120,7 @@ export class SystemModuleTreeItem {
     /**
      * toggle the treeitem open
      */
-    private expandItem() {
+    public expandItem() {
         // if is loading do nothing
         if (this.isLoading) return;
 
@@ -135,7 +135,7 @@ export class SystemModuleTreeItem {
     /**
      * handler to emit when a node is selected
      */
-    private nodeSelected() {
+    public nodeSelected() {
         this.itemSelected.emit({
             path: this.path,
             module: this.module,
@@ -143,7 +143,7 @@ export class SystemModuleTreeItem {
         });
     }
 
-    private emitSelected(data) {
+    public emitSelected(data) {
         // enrich the path
         data.path = this.path + '::' + data.path;
 
@@ -158,7 +158,7 @@ export class SystemModuleTreeItem {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.nodeId;
     }
 

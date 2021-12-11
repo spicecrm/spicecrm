@@ -24,13 +24,13 @@ export class subscription {
     public subscriptions: {[key: string]: SubscriptionI} = {};
     public auditedModules: {};
 
-    constructor(private backend: backend,
-                private broadcast: broadcast,
-                private configuration: configurationService,
-                private toast: toast,
-                private session: session,
-                private metadata: metadata,
-                private language: language) {
+    constructor(public backend: backend,
+                public broadcast: broadcast,
+                public configuration: configurationService,
+                public toast: toast,
+                public session: session,
+                public metadata: metadata,
+                public language: language) {
         this.loadSubscriptions();
     }
 

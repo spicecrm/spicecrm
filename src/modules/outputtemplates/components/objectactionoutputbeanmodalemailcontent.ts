@@ -11,7 +11,7 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'object-action-output-bean-modal-email-content',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodalemailcontent.html',
+    templateUrl: '../templates/objectactionoutputbeanmodalemailcontent.html',
     providers: [view, model]
 })
 export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
@@ -46,20 +46,20 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
      *
      * @private
      */
-    private attachmentsPanelRef: any;
+    public attachmentsPanelRef: any;
 
     /**
      * inidcates that we are sending
      */
-    private sending: boolean = false;
+    public sending: boolean = false;
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata,
-        private modal: modal,
-        private view: view,
-        private session: session
+        public language: language,
+        public model: model,
+        public metadata: metadata,
+        public modal: modal,
+        public view: view,
+        public session: session
     ) {
     }
 
@@ -80,7 +80,7 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
      * set all email-model data
      * set copy rules from parent
      */
-    private setModelData() {
+    public setModelData() {
         this.model.module = "Emails";
 
         this.model.initialize(this.parent);
@@ -100,7 +100,7 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
     /**
      * if it is allowed: go to edit mode
      */
-    private setViewData() {
+    public setViewData() {
         this.view.setEditMode();
         this.view.isEditable = true;
     }

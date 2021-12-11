@@ -11,11 +11,11 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-full-name',
-    templateUrl: './src/objectfields/templates/fieldfullname.html'
+    templateUrl: '../templates/fieldfullname.html'
 })
 export class fieldFullName extends fieldGeneric {
-    private isValid: boolean = true;
-    private errorMessage: string = '';
+    public isValid: boolean = true;
+    public errorMessage: string = '';
 
     get fieldsalutation() {
         return this.fieldconfig.field_salutation ? this.fieldconfig.field_salutation : 'salutation';
@@ -86,7 +86,7 @@ export class fieldFullName extends fieldGeneric {
         this.model.setField(this.fieldlasttitle, value);
     }
 
-    private filterUndefined(value) {
+    public filterUndefined(value) {
         return value ? value : '';
     }
 
@@ -108,7 +108,7 @@ export class fieldFullName extends fieldGeneric {
      * @param fieldname
      * @private
      */
-    private getClassesForSubField(fieldname: string) {
+    public getClassesForSubField(fieldname: string) {
 
         let fieldClass = '';
 
@@ -139,7 +139,7 @@ export class fieldFullName extends fieldGeneric {
 
     }
 
-    private getSalutations(): any[] {
+    public getSalutations(): any[] {
         let retArray = [];
         let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldconfig.field_salutation ? this.fieldconfig.field_salutation : 'salutation');
         for (let optionVal in options) {

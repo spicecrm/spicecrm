@@ -10,17 +10,17 @@ import {Router} from "@angular/router";
 
 @Component({
     selector: 'field-lookup-recent-item',
-    templateUrl: './src/objectfields/templates/fieldlookuprecentitem.html',
+    templateUrl: '../templates/fieldlookuprecentitem.html',
     providers: [model, view]
 })
 export class fieldLookupRecentItem implements OnInit {
 
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
-    private mainfieldsetfields: any[];
-    private subfieldsetfields: any[];
+    public mainfieldsetfields: any[];
+    public subfieldsetfields: any[];
 
-    constructor(private model: model, private router: Router, private language: language, private metadata: metadata, private view: view) {
+    constructor(public model: model, public router: Router, public language: language, public metadata: metadata, public view: view) {
         this.view.displayLabels = false;
     }
 

@@ -11,7 +11,7 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-manipulate-union',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignermanipulateunion.html',
+    templateUrl: '../templates/reportsdesignermanipulateunion.html',
     styles: ['.cdk-drop-list-dragging {background-color: #ddd !important}']
 })
 export class ReportsDesignerManipulateUnion {
@@ -19,17 +19,17 @@ export class ReportsDesignerManipulateUnion {
     /**
     * @input module: {module: string, unionid: string}
     */
-    @Input() private module: any = {};
+    @Input() public module: any = {};
     /**
     * @input currentUnionListFields: object[]
     */
-    @Input() protected currentUnionListFields: any[] = [];
+    @Input() public currentUnionListFields: any[] = [];
 
-    constructor(private language: language,
-                private modelUtilities: modelutilities,
-                private modal: modal,
-                private model: model,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public modelUtilities: modelutilities,
+                public modal: modal,
+                public model: model,
+                public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -46,14 +46,14 @@ export class ReportsDesignerManipulateUnion {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.fieldid;
     }
 
     /**
     * link union field and remove PlaceHolderElement
     */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
+    public onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
 
         if (dragEvent.previousContainer !== dragEvent.container) {
@@ -72,7 +72,7 @@ export class ReportsDesignerManipulateUnion {
      * @set displaypath
      * @set joinid
      */
-    private linkUnionField(unionField, dragField) {
+    public linkUnionField(unionField, dragField) {
         const rootPath = this.reportsDesignerService.getCurrentPath().indexOf('link') < 0 ? 'unionroot::' : '';
         const unionPath = this.reportsDesignerService.getCurrentPath().replace('root:' , '');
         unionField.unionfieldname = dragField.name;
@@ -86,7 +86,7 @@ export class ReportsDesignerManipulateUnion {
     /**
     * @reset unionField union key values
      */
-    protected resetUnionField(unionField) {
+    public resetUnionField(unionField) {
         unionField.unionfieldname = '';
         unionField.unionfielddisplayname = '';
         unionField.unionfielddisplaypath = '';
@@ -98,7 +98,7 @@ export class ReportsDesignerManipulateUnion {
     * @param fieldId: string
      * @delete the record with the given index
      */
-    private unlinkField(fieldId) {
+    public unlinkField(fieldId) {
         this.modal.confirm(this.language.getLabel('LBL_UNLINK'), this.language.getLabel('LBL_UNLINK'))
             .subscribe(response => {
                 if (response) {
@@ -116,7 +116,7 @@ export class ReportsDesignerManipulateUnion {
     * @param dragEvent: CDKDragDrop
      * move the placeholder element inside its container to prevent overflow
      */
-    private onDropEntered(dragEvent) {
+    public onDropEntered(dragEvent) {
         const placeholder = dragEvent.item.getPlaceholderElement();
         dragEvent.container.element.nativeElement.removeChild(placeholder);
         placeholder.style.display = 'block';

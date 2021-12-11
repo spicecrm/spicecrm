@@ -28,7 +28,7 @@ declare var moment;
 
 @Component({
     selector: 'object-timeline-item-module',
-    templateUrl: './src/objectcomponents/templates/objecttimelineitemmodule.html',
+    templateUrl: '../templates/objecttimelineitemmodule.html',
     styles: ['.objecttimeline-item { width: calc(100% - 86px); border: 1px solid var(--color-grey-5); background-color: var(--color-white); box-shadow: 0 2px 3px 0 rgb(0 0 16%); border-radius: 0.25rem }',
         '.objecttimeline-item-nubbin-right { height:  20px;width: 20px; margin-right: -10px; background-color: var(--color-white); transform: rotate(45deg); border-bottom: 1px solid var(--color-grey-5); border-left: 1px solid var(--color-grey-5)}',
         '.objecttimeline-item-nubbin-left { height:  20px;width: 20px; margin-left: -10px; background-color: var(--color-white); transform: rotate(-135deg); border-bottom: 1px solid var(--color-grey-5); border-left: 1px solid var(--color-grey-5)}'],
@@ -63,7 +63,7 @@ export class ObjectTimelineItemModule {
 
     public headerDescription: string = 'Someone edited this';
 
-    constructor(public timeline: timeline, private view: view, private modelattachments: modelattachments, public model: model, private language: language, private metadata: metadata, private userpreferences: userpreferences, private session: session) {
+    constructor(public timeline: timeline, public view: view, public modelattachments: modelattachments, public model: model, public language: language, public metadata: metadata, public userpreferences: userpreferences, public session: session) {
     }
 
     /**

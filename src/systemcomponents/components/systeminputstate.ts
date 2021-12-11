@@ -11,7 +11,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-input-state',
-    templateUrl: './src/systemcomponents/templates/systeminputstate.html',
+    templateUrl: '../templates/systeminputstate.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -25,30 +25,30 @@ export class SystemInputState implements OnChanges, ControlValueAccessor {
     /**
      * the country for the state
      */
-    @Input() private country: string;
+    @Input() public country: string;
 
     /**
      * the options from the enum
      */
-    private states: any[] = [];
+    public states: any[] = [];
 
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * the value
      */
-    private _value: string;
+    public _value: string;
 
     /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
-    private strict: boolean = false;
+    public strict: boolean = false;
 
-    constructor(private metadata: metadata, private language: language, private configuration: configurationService) {
+    constructor(public metadata: metadata, public language: language, public configuration: configurationService) {
         let addressmode = this.configuration.getCapabilityConfig('spiceui').addressmode;
         if(addressmode == 'strict') this.strict = true;
     }

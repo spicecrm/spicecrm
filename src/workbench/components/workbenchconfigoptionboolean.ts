@@ -7,15 +7,15 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'workbench-config-option-boolean',
-    templateUrl: './src/workbench/templates/workbenchconfigoptionboolean.html'
+    templateUrl: '../templates/workbenchconfigoptionboolean.html'
 })
 export class WorkbenchConfigOptionBoolean {
 
     public configValues: any = [];
     public option: any = {};
     public objtype: string = "";
-    private showInfo: boolean = false;
+    public showInfo: boolean = false;
 
-    constructor(private view: view) {
+    constructor(public view: view) {
     }
 }

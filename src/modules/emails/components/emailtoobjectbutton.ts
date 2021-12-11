@@ -17,25 +17,25 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
  */
 @Component({
     selector: "email-to-object-button",
-    templateUrl: "./src/modules/emails/templates/emailtoobjectbutton.html",
+    templateUrl: "../templates/emailtoobjectbutton.html",
     providers: [relatedmodels]
 })
 export class EmailToObjectButton implements OnDestroy {
-    private object_module_name: string;
-    private actionconfig; // can be set inside actionsets...
-    private relation_subscription; // can be set inside actionsets...
+    public object_module_name: string;
+    public actionconfig; // can be set inside actionsets...
+    public relation_subscription; // can be set inside actionsets...
     @Output() public actionemitter = new EventEmitter();
     /**
      * subscription to the model data
      */
-    private subscription: any;
+    public subscription: any;
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata,
-        private modal: modal,
-        private relatedmodels: relatedmodels
+        public language: language,
+        public model: model,
+        public metadata: metadata,
+        public modal: modal,
+        public relatedmodels: relatedmodels
     ) {
 
     }

@@ -8,7 +8,7 @@ import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'administration-job-methods',
-    templateUrl: './src/admincomponents/templates/administrationjobmethods.html',
+    templateUrl: '../templates/administrationjobmethods.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdministrationJobMethods implements OnInit {
@@ -23,15 +23,15 @@ export class AdministrationJobMethods implements OnInit {
     /**
      * holds the concatenated value
      */
-    private _value: string;
+    public _value: string;
     /**
      * the current class
      */
-    private _class: string = '';
+    public _class: string = '';
     /**
      * the current method
      */
-    private _method: string = '';
+    public _method: string = '';
     public className: {id, name, group?};
     /**
      * whether the class exists or not
@@ -86,7 +86,7 @@ export class AdministrationJobMethods implements OnInit {
      * force detect changes on view change
      * @private
      */
-    private subscribeToView() {
+    public subscribeToView() {
         this.view.mode$.subscribe(() => this.cdRef.detectChanges());
     }
 
@@ -94,7 +94,7 @@ export class AdministrationJobMethods implements OnInit {
      * load the available classes
      * @private
      */
-    private loadAvailableClasses() {
+    public loadAvailableClasses() {
         this.backend.getRequest('module/SchedulerJobTasks/classes').subscribe(list => {
             this.availableClasses = list.map(i => ({id: i, name: i})).sort();
         });
@@ -104,7 +104,7 @@ export class AdministrationJobMethods implements OnInit {
      * subscribe to field changes to split the value
      * @private
      */
-    private subscribeToFieldChanges() {
+    public subscribeToFieldChanges() {
         this.model.observeFieldChanges('method').subscribe(() =>
             this.splitValue()
         );
@@ -113,7 +113,7 @@ export class AdministrationJobMethods implements OnInit {
     /**
      * checks whether the class is valid and if public methods exist
      */
-    private validateNamespace() {
+    public validateNamespace() {
         this.backend.getRequest('system/checkclass/' + btoa(this._class)).subscribe(res => {
             this.classExists = res.classexists;
             this._methods = res.methods;
@@ -124,7 +124,7 @@ export class AdministrationJobMethods implements OnInit {
     /**
      * splits the value
      */
-    private splitValue() {
+    public splitValue() {
         if (this._value) {
             let elements = this._value.split('->');
             this._class = elements[0];
@@ -134,7 +134,7 @@ export class AdministrationJobMethods implements OnInit {
         }
     }
 
-    private joinValue() {
+    public joinValue() {
         if (this._class != '') {
             this._value = this._class + '->' + this._method;
         } else {

@@ -19,16 +19,16 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-record-details-footer',
-    templateUrl: './src/objectcomponents/templates/objectrecorddetailsfooter.html'
+    templateUrl: '../templates/objectrecorddetailsfooter.html'
 })
 export class ObjectRecordDetailsFooter implements OnInit{
 
     /**
      * the actionset to be rendered
      */
-    private actionset: string;
+    public actionset: string;
 
-    constructor(private view: view, private model: model, private language: language, private metadata: metadata) {
+    constructor(public view: view, public model: model, public language: language, public metadata: metadata) {
     }
 
     public ngOnInit(): void {
@@ -39,7 +39,7 @@ export class ObjectRecordDetailsFooter implements OnInit{
     /**
      * cancels editing and sets the view back to viewMode
      */
-    private cancel() {
+    public cancel() {
         this.model.cancelEdit();
         this.view.setViewMode();
     }
@@ -47,7 +47,7 @@ export class ObjectRecordDetailsFooter implements OnInit{
     /**
      * saves the model and sets the view back to view mode
      */
-    private save() {
+    public save() {
         if (this.model.validate()) {
             this.model.save(true);
             this.view.setViewMode();

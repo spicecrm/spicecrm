@@ -20,21 +20,21 @@ declare var gapi: any;
  */
 @Component({
     selector: "global-login-google",
-    templateUrl: "./src/globalcomponents/templates/globallogingoogle.html"
+    templateUrl: "../templates/globallogingoogle.html"
 })
 export class GlobalLoginGoogle {
 
-    @Input() private authenticatedUser: string;
+    @Input()public authenticatedUser: string;
 
     /**
      * determines if the buitton is rendered or not
      */
-    private visible: boolean = false;
+   public visible: boolean = false;
 
     /**
      * if the button is disabled .. while the libraries are loading
      */
-    private disabled: boolean = true;
+   public disabled: boolean = true;
 
     /**
      * the google auth object
@@ -46,16 +46,16 @@ export class GlobalLoginGoogle {
      *
      * @private
      */
-    @Output() private token: EventEmitter<string> = new EventEmitter<string>();
+    @Output()public token: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(
-        private backend: backend,
-        private configuration: configurationService,
-        private http: HttpClient,
-        private loginService: loginService,
-        private session: session,
-        private libloader: libloader,
-        private toast: toast
+       public backend: backend,
+       public configuration: configurationService,
+       public http: HttpClient,
+       public loginService: loginService,
+       public session: session,
+       public libloader: libloader,
+       public toast: toast
     ) {
         // listen to config changes and trigger the initialization
         this.configuration.loaded$.subscribe((loaded) => {

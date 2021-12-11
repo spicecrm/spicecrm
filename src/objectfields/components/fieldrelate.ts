@@ -16,21 +16,21 @@ import {relateFilter} from "../../services/interfaces.service";
 
 @Component({
     selector: 'field-relate',
-    templateUrl: './src/objectfields/templates/fieldrelate.html',
+    templateUrl: '../templates/fieldrelate.html',
     providers: [popup]
 })
 export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
-    private relateIdField: string = '';
-    private relateNameField: string = '';
-    private relateType: string = '';
-    private relateSearchOpen: boolean = false;
-    private relateSearchTerm: string = '';
-    private isAuthorized: boolean = true;
+    public relateIdField: string = '';
+    public relateNameField: string = '';
+    public relateType: string = '';
+    public relateSearchOpen: boolean = false;
+    public relateSearchTerm: string = '';
+    public isAuthorized: boolean = true;
 
     /**
      * a relateFilter
      */
-    private relateFilter: relateFilter;
+    public relateFilter: relateFilter;
 
     constructor(
         public model: model,
@@ -80,7 +80,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * checks if we have a relate filter field and if yes sets the filter accordingly
      */
-    private handleRelateFIlterField() {
+    public handleRelateFIlterField() {
         // check if we have a relate filter in the fieldconfig
         if (this.fieldconfig.relatefilterfield) {
             this.createRelateFilter();
@@ -95,7 +95,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * creates the relate filter for the list service
      */
-    private createRelateFilter() {
+    public createRelateFilter() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
         if (fieldDefs) {
             this.relateFilter = {
@@ -147,7 +147,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * updates the relate filter
      */
-    private updateRelateFilter() {
+    public updateRelateFilter() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
         this.relateFilter.id = this.model.getField(fieldDefs.id_name);
         this.relateFilter.display = this.model.getField(this.fieldconfig.relatefilterfield);
@@ -164,7 +164,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * closes all dropdowns that might be oipen and clears the searchterm
      */
-    private closePopups() {
+    public closePopups() {
         if (this.model.getField(this.relateIdField)) {
             this.relateSearchTerm = '';
         }
@@ -174,7 +174,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * resets the field on the  model
      */
-    private clearField() {
+    public clearField() {
         if (this.fieldconfig.promptondelete) {
             this.modal.confirm(
                 this.language.getLabelFormatted('LBL_PROMPT_DELETE_RELATIONSHIP', [this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig)], 'long'),
@@ -192,7 +192,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * removes the related field
      */
-    private removeRelated() {
+    public removeRelated() {
         let fields = {};
         fields[this.relateNameField] = '';
         fields[this.relateIdField] = '';
@@ -202,7 +202,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * open the recent items when the feld recievs the focus
      */
-    private onFocus() {
+    public onFocus() {
         this.relateSearchOpen = true;
     }
 
@@ -211,7 +211,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
      *
      * @param related the related record
      */
-    private setRelated(related) {
+    public setRelated(related) {
         let newFields = {};
         newFields[this.relateIdField] = related.id;
         newFields[this.relateNameField] = related.text;
@@ -229,7 +229,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
      *
      * @param idRelated the related id
      */
-    private executeCopyRules(idRelated) {
+    public executeCopyRules(idRelated) {
         let awaitStopper = this.modal.await('LBL_LOADING');
         this.backend.get(this.relateType, idRelated).subscribe(
             (response: any) => {
@@ -250,7 +250,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * navigates to the related record
      */
-    private goRelated() {
+    public goRelated() {
         // go to the record
         this.router.navigate(['/module/' + this.relateType + '/' + this.model.getField(this.relateIdField)]);
     }
@@ -258,7 +258,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     /**
      * opens a search modal
      */
-    private searchWithModal() {
+    public searchWithModal() {
         this.relateSearchOpen = false;
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.relateType;

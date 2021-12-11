@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-enum',
-    templateUrl: './src/objectfields/templates/fieldenum.html'
+    templateUrl: '../templates/fieldenum.html'
 })
 export class fieldEnum extends fieldGeneric {
 

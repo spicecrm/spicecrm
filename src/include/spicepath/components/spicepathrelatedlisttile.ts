@@ -15,7 +15,7 @@ import {metadata} from '../../../services/metadata.service';
  */
 @Component({
     selector: 'spice-path-related-list-tile',
-    templateUrl: './src/include/spicepath/templates/spicepathrelatedlisttile.html',
+    templateUrl: '../templates/spicepathrelatedlisttile.html',
     providers: [model, view]
 })
 export class SpicePathRelatedListTile implements OnInit {
@@ -23,24 +23,24 @@ export class SpicePathRelatedListTile implements OnInit {
     /**
      * the module
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * the data for the
      */
-    @Input() private data: any = {};
+    @Input() public data: any = {};
 
     /**
      * the componentset to be rendered
      */
-    @Input() private componentset: string = '';
+    @Input() public componentset: string = '';
 
     /**
      * the componentconfig
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private model: model, private relatedmodels: relatedmodels, private view: view, private language: language, private metadata: metadata) {
+    constructor(public model: model, public relatedmodels: relatedmodels, public view: view, public language: language, public metadata: metadata) {
     }
 
     /**

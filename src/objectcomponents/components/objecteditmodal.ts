@@ -21,27 +21,27 @@ import {navigationtab} from "../../services/navigationtab.service";
  * renders a modal window to add or edit an object record
  */
 @Component({
-    templateUrl: './src/objectcomponents/templates/objecteditmodal.html',
+    templateUrl: '../templates/objecteditmodal.html',
     providers: [view, modalwindow]
 })
 export class ObjectEditModal implements OnInit {
     /**
      * a reference to the modal content to have a reference to scrolling
      */
-    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) private modalContent: ViewContainerRef;
+    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) public modalContent: ViewContainerRef;
     /**
      * the componentconfig that gets passed in when the modal is created
      */
-    private componentconfig: any;
+    public componentconfig: any;
     /**
      * the actionset items to be rendered in the modal
      */
-    private actionSetItems: any = [];
+    public actionSetItems: any = [];
 
     /**
      * ToDo: add documentation what we need this for
      */
-    private actionSubject: Subject<any> = new Subject<any>();
+    public actionSubject: Subject<any> = new Subject<any>();
 
     /**
      * this emits the data ... is referenced from the modal save button that handles this
@@ -52,39 +52,39 @@ export class ObjectEditModal implements OnInit {
      * set to true (default) to have the modal check for duplicates
      * ToDo: implement this as config paramater
      */
-    private doDuplicateCheck: boolean = true;
+    public doDuplicateCheck: boolean = true;
 
     /**
      * local copy of the dfuplicates from the model
      */
-    private duplicates: any[] = [];
+    public duplicates: any[] = [];
 
     /**
      * indicates if the user has chosen to display duplicates.
      */
-    private showDuplicates: boolean = false;
+    public showDuplicates: boolean = false;
 
     /**
      * set if the known duplicates table should be shown
      */
-    private showDuplicatesTable: boolean = false;
+    public showDuplicatesTable: boolean = false;
 
     @Input() public preventGoingToRecord = false;
 
     /**
      * a reference to the modal itself so the modal cann close itself
      */
-    private self: any = {};
+    public self: any = {};
 
     constructor(
-        private router: Router,
-        private language: language,
-        private model: model,
-        private view: view,
-        private metadata: metadata,
-        private modal: modal,
-        private modalwindow: modalwindow,
-        @Optional() private navigationtab: navigationtab,
+        public router: Router,
+        public language: language,
+        public model: model,
+        public view: view,
+        public metadata: metadata,
+        public modal: modal,
+        public modalwindow: modalwindow,
+        @Optional() public navigationtab: navigationtab,
     ) {
         // view is editable
         this.view.isEditable = true;
@@ -117,7 +117,7 @@ export class ObjectEditModal implements OnInit {
         return this.componentconfig.actionset;
     }
 
-    private closeModal() {
+    public closeModal() {
         // cancel Edit
         this.model.cancelEdit();
 
@@ -148,7 +148,7 @@ export class ObjectEditModal implements OnInit {
      *
      * @param event
      */
-    private handleAction(event) {
+    public handleAction(event) {
         switch (event) {
             case 'savegodetail':
                 this.actionSubject.next(event);

@@ -16,7 +16,7 @@ import {toast} from '../../services/toast.service';
  */
 @Component({
     selector: 'object-list-header-actions-delete-button',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsdeletebutton.html',
+    templateUrl: '../templates/objectlistheaderactionsdeletebutton.html',
 })
 export class ObjectListHeaderActionsDeleteButton {
 
@@ -31,14 +31,14 @@ export class ObjectListHeaderActionsDeleteButton {
     public hidden: boolean = true;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal,
-        private backend: backend,
-        private broadcast: broadcast,
-        private toast: toast
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal,
+        public backend: backend,
+        public broadcast: broadcast,
+        public toast: toast
     ) {
         // set to hidden if we do not have delete right
         if(this.metadata.checkModuleAcl(this.model.module, 'delete')) this.hidden = false;

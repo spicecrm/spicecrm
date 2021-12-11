@@ -33,16 +33,16 @@ export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit 
     /**
      * save on change function for ControlValueAccessor
      */
-    private onChange: (value: string[]) => void;
+    public onChange: (value: string[]) => void;
     /**
      * save on touched function for ControlValueAccessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
 
-    constructor(private cdRef: ChangeDetectorRef) {
+    constructor(public cdRef: ChangeDetectorRef) {
     }
 
-    private _value: string[] = [];
+    public _value: string[] = [];
 
     /**
      * @return ng model value

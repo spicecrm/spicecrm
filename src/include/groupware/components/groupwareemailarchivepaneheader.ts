@@ -11,20 +11,20 @@ import {language} from "../../../services/language.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane-header',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepaneheader.html'
+    templateUrl: '../templates/groupwareemailarchivepaneheader.html'
 })
 export class GroupwareEmailArchivePaneHeader {
 
     constructor(
-        private language: language,
-        private groupware: GroupwareService,
-        private cdRef: ChangeDetectorRef
+        public language: language,
+        public groupware: GroupwareService,
+        public cdRef: ChangeDetectorRef
     ) {}
 
     /**
      * Archives an email in SpiceCRM.
      */
-    private archive() {
+    public archive() {
         this.groupware.archiveEmail().subscribe(
             next => {
                 // update message

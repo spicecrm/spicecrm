@@ -7,17 +7,17 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 
 @Component({
     selector: 'global-compose-button',
-    templateUrl: './src/globalcomponents/templates/globalcomposebutton.html'
+    templateUrl: '../templates/globalcomposebutton.html'
 })
 export class GlobalComposeButton {
 
-    @Input() private module: string = '';
+    @Input()public module: string = '';
 
-    constructor(private dockedComposer: dockedComposer) {
+    constructor(public dockedComposer: dockedComposer) {
 
     }
 
-    private showComposer(){
+   public showComposer(){
         this.dockedComposer.addComposer(this.module);
     }
 

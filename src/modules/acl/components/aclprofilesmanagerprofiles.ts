@@ -15,23 +15,23 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'aclprofiles-manager-profiles',
-    templateUrl: './src/modules/acl/templates/aclprofilesmanagerprofiles.html',
+    templateUrl: '../templates/aclprofilesmanagerprofiles.html',
 })
 export class ACLProfilesManagerProfiles {
 
-    private loading: boolean = false;
-    private aclprofiles: any[] = [];
-    private activeProfile: any = {};
-    private activeProfileId: string = '';
-    private searchterm: string = '';
+    public loading: boolean = false;
+    public aclprofiles: any[] = [];
+    public activeProfile: any = {};
+    public activeProfileId: string = '';
+    public searchterm: string = '';
 
-    @Output() private profileselected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public profileselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
         this.getProfiles();
     }
 
-    private keyUp(_e) {
+    public keyUp(_e) {
         switch (_e.key) {
             case 'Enter':
                 this.getProfiles();
@@ -39,7 +39,7 @@ export class ACLProfilesManagerProfiles {
         }
     }
 
-    private getProfiles() {
+    public getProfiles() {
         this.loading = true;
         this.aclprofiles = [];
 
@@ -65,7 +65,7 @@ export class ACLProfilesManagerProfiles {
         });
     }
 
-    private addProfile() {
+    public addProfile() {
         this.modal.openModal('ACLProfilesManagerAddProfileModal').subscribe(modalRef => {
 
             modalRef.instance.newObjectData.subscribe(modelData => {
@@ -77,13 +77,13 @@ export class ACLProfilesManagerProfiles {
         });
     }
 
-    private selectProfile(aclprofile) {
+    public selectProfile(aclprofile) {
         this.activeProfile = aclprofile;
         this.activeProfileId = aclprofile.id;
         this.profileselected.emit(this.activeProfile);
     }
 
-    private activateProfile(profileid) {
+    public activateProfile(profileid) {
         this.backend.postRequest('module/SpiceACLProfiles/' + profileid + '/activation').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
                 if (profile.id == profileid) {
@@ -94,7 +94,7 @@ export class ACLProfilesManagerProfiles {
         });
     }
 
-    private deactivateProfile(profileid) {
+    public deactivateProfile(profileid) {
         this.backend.deleteRequest('module/SpiceACLProfiles/' + profileid + '/activation').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
                 if (profile.id == profileid) {

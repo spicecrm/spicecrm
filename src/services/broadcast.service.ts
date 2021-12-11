@@ -18,7 +18,7 @@ export class broadcast {
      * an event emitter that a component can subscribe to to receive events
      *
      * ```typescript
-     * constructor(private broadcast: broadcast) {
+     * constructor(public broadcast: broadcast) {
      *   // subscribe to the broadcast service
      *   this.broadcast.message$.subscribe(message => {
      *       this.handleMessage(message);

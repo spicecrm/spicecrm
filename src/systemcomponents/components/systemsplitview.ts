@@ -8,7 +8,7 @@ import {Component, Input} from "@angular/core";
  */
 @Component({
     selector: "system-split-view",
-    templateUrl: "./src/systemcomponents/templates/systemsplitview.html"
+    templateUrl: "../templates/systemsplitview.html"
 })
 export class SystemSplitView {
     @Input() public componentconfig: any = {};

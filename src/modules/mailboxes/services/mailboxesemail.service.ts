@@ -29,7 +29,7 @@ export class mailboxesEmails implements OnDestroy {
     /**
      * the default limit for the emails to be loaded at once
      */
-    private limit = 30;
+    public limit = 30;
 
     /**
      * the list of mailboxes
@@ -54,12 +54,12 @@ export class mailboxesEmails implements OnDestroy {
     /**
      * the active mailbox object
      */
-    private _activeMailBox: any;
+    public _activeMailBox: any;
 
     /**
      * eht active email object
      */
-    private _activeMessage: any;
+    public _activeMessage: any;
 
     /**
      * an event emitter when the active email selected is changed
@@ -86,11 +86,11 @@ export class mailboxesEmails implements OnDestroy {
      *
      * @private
      */
-    private serviceSubscriptions: Subscription = new Subscription();
+    public serviceSubscriptions: Subscription = new Subscription();
 
     constructor(
-        private backend: backend,
-        private broadcast: broadcast
+        public backend: backend,
+        public broadcast: broadcast
     ) {
         this.mailboxesLoaded$ = new BehaviorSubject<boolean>(false);
 
@@ -162,7 +162,7 @@ export class mailboxesEmails implements OnDestroy {
         this.loadMessages();
     }
 
-    private getMailboxes() {
+    public getMailboxes() {
 
         this.backend.getRequest("module/Mailboxes/scope", {scope: 'inbound'}).subscribe(
             (results: any) => {
@@ -241,7 +241,7 @@ export class mailboxesEmails implements OnDestroy {
     /**
      * generates the filters for the query
      */
-    private generateFilters() {
+    public generateFilters() {
         let filter = {
             logicaloperator: 'and',
             groupscope: 'all',

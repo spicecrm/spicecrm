@@ -17,7 +17,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-google-event',
-    templateUrl: './src/modules/calendar/templates/calendarsheetgoogleevent.html',
+    templateUrl: '../templates/calendarsheetgoogleevent.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [model]
 })
@@ -25,28 +25,28 @@ export class CalendarSheetGoogleEvent {
     /**
      * holds the google event data
      */
-    @Input() private event;
+    @Input() public event;
     /**
      * @input event: object
      */
-    @Input() private sheetContainer: any = {};
+    @Input() public sheetContainer: any = {};
     /**
      * the popover that is rendered
      */
-    private popoverComponentRef = null;
+    public popoverComponentRef = null;
     /**
      * holds the popover hide timeout
      */
-    private showPopoverTimeout: any = {};
+    public showPopoverTimeout: any = {};
 
-    constructor(private calendar: calendar,
-                private footer: footer,
-                private metadata: metadata,
-                private zone: NgZone,
-                private model: model,
-                private modal: modal,
-                private injector: Injector,
-                private elementRef: ElementRef) {
+    constructor(public calendar: calendar,
+                public footer: footer,
+                public metadata: metadata,
+                public zone: NgZone,
+                public model: model,
+                public modal: modal,
+                public injector: Injector,
+                public elementRef: ElementRef) {
     }
 
     /**
@@ -65,7 +65,7 @@ export class CalendarSheetGoogleEvent {
     /**
      * set a timeout to render the popover
      */
-    private onMouseEnter() {
+    public onMouseEnter() {
         this.zone.runOutsideAngular(() => {
             this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
         });
@@ -74,7 +74,7 @@ export class CalendarSheetGoogleEvent {
     /**
      * close the popover and clear the timeout
      */
-    private onMouseLeave() {
+    public onMouseLeave() {
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
         }
@@ -87,7 +87,7 @@ export class CalendarSheetGoogleEvent {
     /**
      * renders the popover if a footer container if in the footer service
      */
-    private renderPopover() {
+    public renderPopover() {
         if (this.footer.footercontainer) {
             this.zone.run(() => {
                 this.metadata.addComponent('CalendarGoogleEventPopover', this.footer.footercontainer, this.injector).subscribe(
@@ -101,7 +101,7 @@ export class CalendarSheetGoogleEvent {
         }
     }
 
-    private onActionClick() {
+    public onActionClick() {
         this.model.reset();
         this.modal.openModal('CalendarAddModulesModal', true, this.injector)
             .subscribe(modalRef => {

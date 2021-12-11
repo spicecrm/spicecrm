@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: '[global-header-search-results-item]',
-    templateUrl: './src/globalcomponents/templates/globalheadersearchresultsitem.html',
+    templateUrl: '../templates/globalheadersearchresultsitem.html',
     providers: [model, view],
     host: {
         "(click)": "navigateTo()"
@@ -24,22 +24,19 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
     /**
      * the input
      *
-     * @private
      */
-    @Input() private hit: any = {};
+    @Input()public hit: any = {};
 
     /**
      * eits when selected
-     * @private
      */
-    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
+    @Output()public selected: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * held internally --if set to true the click will not navigate to the record but emit the model
      *
-     * @private
      */
-    private _noNavigaton: boolean = false;
+    public _noNavigaton: boolean = false;
 
     /**
      * an attribute that can be set to hide the close button
@@ -56,17 +53,15 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
 
     /**
      * the main fieldset
-     * @private
      */
-    private mainfieldset: string;
+    public mainfieldset: string;
 
     /**
      * the subfieldset displayed in the second line
-     * @private
      */
-    private subfieldsetfields: any[];
+    public subfieldsetfields: any[];
 
-    constructor(private model: model, private view: view, private router: Router, private language: language, private metadata: metadata) {
+    constructor(public model: model,public view: view,public router: Router,public language: language,public metadata: metadata) {
         this.view.displayLabels = false;
         this.view.displayLinks = false;
     }
@@ -88,9 +83,8 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
     /**
      * handles te navigation. If enabled navigates to the record, otherwise just emits the model
      *
-     * @private
      */
-    private navigateTo() {
+    public navigateTo() {
         if(this._noNavigaton) {
             this.selected.emit(this.model);
         } else {

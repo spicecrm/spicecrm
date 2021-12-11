@@ -15,26 +15,26 @@ declare var _: any;
 
 @Component({
     selector: 'administration-blocked-users',
-    templateUrl: './src/admincomponents/templates/administrationblockedusers.html'
+    templateUrl: '../templates/administrationblockedusers.html'
 })
 export class AdministrationBlockedUsers implements OnInit {
 
-    private blockedUsers = [];
+    public blockedUsers = [];
 
     /**
      * inidcates that we are loading
      * @private
      */
-    private isLoading = false;
-    private isUnblocking = {};
+    public isLoading = false;
+    public isUnblocking = {};
 
-    constructor( private backend: backend, private modal: modal, private toast: toast, private metadata: metadata ) { }
+    constructor( public backend: backend, public modal: modal, public toast: toast, public metadata: metadata ) { }
 
     public ngOnInit() {
         this.loadBlockedUsers();
     }
 
-    private loadBlockedUsers() {
+    public loadBlockedUsers() {
         this.isLoading = true;
         let conf = this.metadata.getComponentConfig('LoginRestriction');
         let modulefilter = conf && conf.modulefilter ? conf.modulefilter : {};
@@ -59,7 +59,7 @@ export class AdministrationBlockedUsers implements OnInit {
             });
     }
 
-    private unBlockUser( userId, username ) {
+    public unBlockUser( userId, username ) {
         this.isUnblocking[userId] = true;
         this.backend.postRequest('module/Users/'+userId, null, { login_blocked: '0', login_blocked_until: '' })
             .pipe(take(1))

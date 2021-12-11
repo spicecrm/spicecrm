@@ -6,10 +6,10 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-model-popover-header',
-    templateUrl: './src/objectcomponents/templates/objectmodelpopoverheader.html',
+    templateUrl: '../templates/objectmodelpopoverheader.html',
 })
 export class ObjectModelPopoverHeader {
 
-    constructor(private model: model) {}
+    constructor(public model: model) {}
 
 }

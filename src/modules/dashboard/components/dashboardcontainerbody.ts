@@ -10,17 +10,17 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'dashboard-container-body',
-    templateUrl: './src/modules/dashboard/templates/dashboardcontainerbody.html'
+    templateUrl: '../templates/dashboardcontainerbody.html'
 })
 export class DashboardContainerBody implements OnDestroy {
-    @ViewChild('bodycontainer', {read: ViewContainerRef, static: true}) private bodycontainer: ViewContainerRef;
-    private resizeListener: any;
+    @ViewChild('bodycontainer', {read: ViewContainerRef, static: true}) public bodycontainer: ViewContainerRef;
+    public resizeListener: any;
 
-    constructor(private dashboardlayout: dashboardlayout,
-                private language: language,
-                private renderer: Renderer2,
-                private view: view,
-                private model: model) {
+    constructor(public dashboardlayout: dashboardlayout,
+                public language: language,
+                public renderer: Renderer2,
+                public view: view,
+                public model: model) {
         this.resizeListener = this.renderer.listen('window', 'resize', () => this.calculateGrid());
     }
 
@@ -63,7 +63,7 @@ export class DashboardContainerBody implements OnDestroy {
     * @param item
     * @return index | item
     */
-    private trackByGridFn(index, item) {
+    public trackByGridFn(index, item) {
         return index;
     }
 
@@ -73,7 +73,7 @@ export class DashboardContainerBody implements OnDestroy {
     * @param item
     * @return index | item
     */
-    private trackByItemFn(index, item) {
+    public trackByItemFn(index, item) {
         return item.id;
     }
 
@@ -81,7 +81,7 @@ export class DashboardContainerBody implements OnDestroy {
     * prevent editing in mobile view
     * @return void
     */
-    private calculateGrid() {
+    public calculateGrid() {
         if (window.innerWidth < 1024) {
             this.view.setViewMode();
             this.model.cancelEdit();
@@ -93,7 +93,7 @@ export class DashboardContainerBody implements OnDestroy {
     * @param column
     * @return void
     */
-    private addDashlet(column) {
+    public addDashlet(column) {
         this.dashboardlayout.addDashlet(column);
     }
 }

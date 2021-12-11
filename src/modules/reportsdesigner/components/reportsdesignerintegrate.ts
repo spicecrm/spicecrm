@@ -9,14 +9,14 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-integrate',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrate.html'
+    templateUrl: '../templates/reportsdesignerintegrate.html'
 })
 export class ReportsDesignerIntegrate {
 
-    protected plugins: any[] = [];
-    private selectedItemId: string = '';
+    public plugins: any[] = [];
+    public selectedItemId: string = '';
 
-    constructor(private language: language, private metadata: metadata, private model: model, private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language, public metadata: metadata, public model: model, public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -38,7 +38,7 @@ export class ReportsDesignerIntegrate {
      * set the initial integration params data
      * @param plugin?: string
      */
-    private initializeIntegrationParams(plugin?) {
+    public initializeIntegrationParams(plugin?) {
         let integrationParams = this.model.getField('integration_params');
         if (!integrationParams) integrationParams = {};
         if (!integrationParams.activePlugins) {
@@ -51,7 +51,7 @@ export class ReportsDesignerIntegrate {
     * @param itemId: string
     * @set selectedItemId
     */
-    private setSelectedItemId(itemId) {
+    public setSelectedItemId(itemId) {
         this.selectedItemId = itemId;
     }
 
@@ -62,7 +62,7 @@ export class ReportsDesignerIntegrate {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -71,7 +71,7 @@ export class ReportsDesignerIntegrate {
      * @param plugin: string
      * @param bool: boolean
      */
-    private setActivePlugins(plugin, bool) {
+    public setActivePlugins(plugin, bool) {
         const integrationParams = this.model.getField('integration_params');
         integrationParams.activePlugins[plugin] = bool ? 1 : 0;
         this.model.setField('integration_params', integrationParams);

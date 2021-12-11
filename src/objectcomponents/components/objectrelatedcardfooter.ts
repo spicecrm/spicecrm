@@ -15,40 +15,40 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'object-related-card-footer',
-    templateUrl: './src/objectcomponents/templates/objectrelatedcardfooter.html'
+    templateUrl: '../templates/objectrelatedcardfooter.html'
 })
 export class ObjectRelatedCardFooter implements OnInit {
 
     /**
      * the component config as key paramater into the component
      */
-    @Input() private componentconfig;
+    @Input() public componentconfig;
 
     /**
      * @ignore
      *
      * the module of the card: set in ngOnInit from the config
      */
-    private module: string = '';
+    public module: string = '';
 
     /**
      * @ignore
      *
      * the fieldset of the card: set in ngOnInit from the config. This is used to feed the related model route
      */
-    private fieldset: string = undefined;
+    public fieldset: string = undefined;
 
     /**
      * qignore
      *
      * currently not used .. to be implemented to allow showing more record
      */
-    private _displayitems = 5;
+    public _displayitems = 5;
 
     /**
      * internal guid to issue an id and name for the radiogroup to select the list size
      */
-    private componentid: string;
+    public componentid: string;
 
     /**
      * indicates that we are paginating and the service is loading
@@ -57,7 +57,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     public paginating: boolean = false;
 
-    constructor(private language: language, private relatedmodels: relatedmodels, private model: model, private router: Router, private navigationtab: navigationtab) {
+    constructor(public language: language, public relatedmodels: relatedmodels, public model: model, public router: Router, public navigationtab: navigationtab) {
         this.componentid = this.model.utils.generateGuid();
     }
 
@@ -102,14 +102,14 @@ export class ObjectRelatedCardFooter implements OnInit {
         return this.relatedmodels.count > 0 && this.relatedmodels.count > this.relatedmodels.items.length; // this.relatedmodels.items.length;
     }
 
-    private canSetCount() {
+    public canSetCount() {
         return this.relatedmodels.count > this.relatedmodels.items.length;
     }
 
     /**
      * navigates to the route to show all related mndels
      */
-    private showAll() {
+    public showAll() {
         let routePrefix = '';
         if (this.navigationtab?.tabid) {
             routePrefix = '/tab/' + this.navigationtab.tabid;
@@ -125,7 +125,7 @@ export class ObjectRelatedCardFooter implements OnInit {
     /**
      * triggers the reload of the related models service
      */
-    private reload() {
+    public reload() {
         this.relatedmodels.offset = 0;
         this.paginating = true;
         this.relatedmodels.getData().subscribe(() => this.paginating = false);
@@ -143,7 +143,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      *
      * @private
      */
-    private nextPage() {
+    public nextPage() {
         if (!this.nextDisabled) {
             this.relatedmodels.offset = this.relatedmodels.offset + this.relatedmodels.loaditems;
             this.paginating = true;
@@ -156,7 +156,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      *
      * @private
      */
-    private lastPage() {
+    public lastPage() {
         if (!this.nextDisabled) {
             let lastOffset = Math.floor(this.relatedmodels.count / this.relatedmodels.loaditems) * this.relatedmodels.loaditems;
             this.relatedmodels.offset = lastOffset;
@@ -177,7 +177,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      *
      * @private
      */
-    private previousPage() {
+    public previousPage() {
         if (!this.previousDisabled) {
             this.relatedmodels.offset = this.relatedmodels.offset - this.relatedmodels.loaditems;
             if (this.relatedmodels.offset < 0) this.relatedmodels.offset = 0;
@@ -191,7 +191,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      *
      * @private
      */
-    private firstPage() {
+    public firstPage() {
         if (!this.previousDisabled) {
             this.relatedmodels.offset = 0;
             this.paginating = true;

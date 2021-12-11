@@ -9,7 +9,7 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'object-list-header-actions-select-range-button',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsselectrangebutton.html',
+    templateUrl: '../templates/objectlistheaderactionsselectrangebutton.html',
 })
 export class ObjectListHeaderActionsSelectRangeButton {
 
@@ -19,10 +19,10 @@ export class ObjectListHeaderActionsSelectRangeButton {
     public hidden: boolean = false;
 
     constructor(
-        private model: model,
-        private modellist: modellist,
-        private modal: modal,
-        private injector: Injector
+        public model: model,
+        public modellist: modellist,
+        public modal: modal,
+        public injector: Injector
     ) {
     }
 

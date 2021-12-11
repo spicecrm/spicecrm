@@ -15,26 +15,26 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclobjects-manager-object',
-    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobject.html',
+    templateUrl: '../templates/aclobjectsmanagerobject.html',
     providers: [model]
 })
 export class ACLObjectsManagerObject implements OnChanges {
 
-    @Input() private objectid: string = '';
-    @Input() private typeid: string = '';
-    private loaded: boolean = false;
+    @Input() public objectid: string = '';
+    @Input() public typeid: string = '';
+    public loaded: boolean = false;
 
-    private tabs: any[] = [
+    public tabs: any[] = [
         // {tab: 'details', label: 'LBL_DETAILS', component: 'ACLObjectsManagerObjectDetails'},
         // {tab: 'fieldvalues', label: 'LBL_FIELDVALUES', component: 'ACLObjectsManagerObjectFieldvalues'},
         // {tab: 'fieldcontrols', label: 'LBL_FIELDCONTROLS', component: 'ACLObjectsManagerObjectFields'},
         // {tab: 'territory', label: 'LBL_SPICEACLTERRITORY'}
     ];
-    private activeTab: string = '';
+    public activeTab: string = '';
 
-    @ViewChild('header', {read: ViewContainerRef, static: true}) private header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: true}) public header: ViewContainerRef;
 
-    constructor(private metadata: metadata, private backend: backend, private model: model, private language: language) {
+    constructor(public metadata: metadata, public backend: backend, public model: model, public language: language) {
         this.model.module = 'SpiceACLObjects';
 
         // get config
@@ -56,7 +56,7 @@ export class ACLObjectsManagerObject implements OnChanges {
         }
     }
 
-    private switchTab(tab) {
+    public switchTab(tab) {
         this.activeTab = tab;
     }
 
@@ -70,7 +70,7 @@ export class ACLObjectsManagerObject implements OnChanges {
         }
     }
 
-    private save() {
+    public save() {
         this.model.save(true);
     }
 
