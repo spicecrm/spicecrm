@@ -9,7 +9,7 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'select-tree-search',
-    templateUrl: './src/objectfields/templates/fieldselecttreesearch.html'
+    templateUrl: '../templates/fieldselecttreesearch.html'
 })
 export class fieldSelectTreeSearch
 {
@@ -20,10 +20,10 @@ export class fieldSelectTreeSearch
     @Output('choose') choose_emitter = new EventEmitter();
 
     constructor(
-        private model:model,
-        private backend:backend,
-        private config:configurationService,
-        private language:language,
+        public model:model,
+        public backend:backend,
+        public config:configurationService,
+        public language:language,
     )
     {
 
@@ -59,7 +59,7 @@ export class fieldSelectTreeSearch
         }
     }
 
-    private loopThroughTree(cat)
+    public loopThroughTree(cat)
     {
         cat.display_name = '';
         if( cat.parents.length > 0 ) {

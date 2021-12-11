@@ -5,25 +5,25 @@ import {Component, EventEmitter, Input, OnChanges, Output, Pipe} from '@angular/
 
 @Component({
     selector: 'pagination-controls',
-    templateUrl: './src/systemcomponents/templates/pagination.html'
+    templateUrl: '../templates/pagination.html'
 })
 export class PaginationControlsComponent implements OnChanges {
 
-    @Input('page') private _page = 1;
-    @Input() private limit = 1;
-    @Input() private total_records = 0;
-    @Input() private variation = 'default';
-    @Output('pageChange') private page$ = new EventEmitter<number>(); // angular takes by default the Input value with a 'Change' Suffix when using two way binding: [(page)]
-    @Output('leftPage') private oldPage$ = new EventEmitter<number>();
-    @Input() private canSwitch = true;
-    private offset = 0;
-    private max_page = 0;
+    @Input('page') public _page = 1;
+    @Input() public limit = 1;
+    @Input() public total_records = 0;
+    @Input() public variation = 'default';
+    @Output('pageChange') public page$ = new EventEmitter<number>(); // angular takes by default the Input value with a 'Change' Suffix when using two way binding: [(page)]
+    @Output('leftPage') public oldPage$ = new EventEmitter<number>();
+    @Input() public canSwitch = true;
+    public offset = 0;
+    public max_page = 0;
 
-    private get page() {
+    public get page() {
         return this._page;
     }
 
-    private set page( val: number ) {
+    public set page( val: number ) {
         if ( this._page === val ) return;
         this.oldPage$.emit(this._page);
         this._page = val;
@@ -37,12 +37,12 @@ export class PaginationControlsComponent implements OnChanges {
         } else this.max_page = 0;
     }
 
-    private pageUp() {
+    public pageUp() {
         if( !this.canSwitch || this.page >= this.max_page ) return false;
         this.page += 1;
     }
 
-    private pageDown() {
+    public pageDown() {
         if( !this.canSwitch || this.page <= 1 ) return false;
         this.page -= 1;
     }

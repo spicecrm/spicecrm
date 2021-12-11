@@ -11,21 +11,21 @@ import {modal} from '../../../services/modal.service';
  * renders a subpanel with the Database entries associated with a CR
  */
 @Component({
-    templateUrl: './src/modules/deployment/templates/deploymentcrdbentries.html',
+    templateUrl: '../templates/deploymentcrdbentries.html',
 })
 export class DeploymentCRDBEntries implements OnInit {
 
     /**
      * the entries loaded
      */
-    private dbEntries: any[] = [];
+    public dbEntries: any[] = [];
 
     /**
      * loading indicatopr
      */
-    private loading = true;
+    public loading = true;
 
-    constructor(private model: model, private backend: backend, private language: language, private modal: modal, private injector: Injector) {
+    constructor(public model: model, public backend: backend, public language: language, public modal: modal, public injector: Injector) {
 
     }
 
@@ -42,7 +42,7 @@ export class DeploymentCRDBEntries implements OnInit {
     /**
      * opens a modal with the SQL for copy & paste
      */
-    private getSQL() {
+    public getSQL() {
         this.modal.openModal('DeploymentCRDBSQL', true, this.injector)
     }
 

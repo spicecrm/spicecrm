@@ -9,7 +9,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'workflow-panel',
-    templateUrl: './src/modules/workflow/templates/workflowpanel.html',
+    templateUrl: '../templates/workflowpanel.html',
     providers: [workflow]
 })
 export class WorkflowPanel implements OnInit, OnDestroy {
@@ -17,12 +17,12 @@ export class WorkflowPanel implements OnInit, OnDestroy {
     /**
      * pointer to the subscription on teh broiadcast service
      */
-    private broadcastSubscription: any = {};
+    public broadcastSubscription: any = {};
 
     /**
      * @ignore
      */
-    constructor(private model: model, private workflow: workflow, private language: language, private broadcast: broadcast) {
+    constructor(public model: model, public workflow: workflow, public language: language, public broadcast: broadcast) {
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -53,7 +53,7 @@ export class WorkflowPanel implements OnInit, OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagedata.module !== this.model.module && message.messagedata.id !== this.model.id) return;
 

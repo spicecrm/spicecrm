@@ -28,7 +28,7 @@ export class productfinder {
     public searchfocus: any = {type: '', object: {}};
 
 
-    constructor(private backend: backend, private session: session, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public session: session, public modelutilities: modelutilities) {
     }
 
     get hasSearchFilters() {

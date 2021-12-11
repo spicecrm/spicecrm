@@ -20,27 +20,27 @@ import {modal} from '../../services/modal.service';
  * per componentconfig also all fields can be enabled or a specific fieldset
  */
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsexportcsvselectfields.html',
+    templateUrl: '../templates/objectlistheaderactionsexportcsvselectfields.html',
 })
 export class ObjectListHeaderActionsExportCSVSelectFields {
 
     /**
      * reference to the modal itself
      */
-    private self: any;
+    public self: any;
 
-    private multiselect: boolean = true;
-    private selectedAvailableFields: any[] = [];
-    private selectedListFields: any[] = [];
-    private availableFields: any[] = [];
-    private exportFields: any[] = [];
+    public multiselect: boolean = true;
+    public selectedAvailableFields: any[] = [];
+    public selectedListFields: any[] = [];
+    public availableFields: any[] = [];
+    public exportFields: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal
     ) {
 
         // get the current last fields
@@ -81,7 +81,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
      *
      * @param field the fieldmetadata
      */
-    private isExportable(field) {
+    public isExportable(field) {
         return field.type != 'link';
     }
 
@@ -90,7 +90,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
      *
      * @param event
      */
-    private onFieldDrop(event) {
+    public onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }
@@ -98,7 +98,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
     /*
      select the field whenc lciked int he container
      */
-    private selectField(container, field) {
+    public selectField(container, field) {
         switch (container) {
             case 'available':
                 if (this.multiselect === false) {
@@ -128,7 +128,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
     /*
      function to set the aria-selected attr on a field
      */
-    private isSelected(container, field) {
+    public isSelected(container, field) {
         switch (container) {
             case 'available':
                 return this.selectedAvailableFields.indexOf(field) >= 0;
@@ -140,7 +140,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
     /*
      move selected field to the othe container
      */
-    private moveFields(fromContainer) {
+    public moveFields(fromContainer) {
         switch (fromContainer) {
             case 'available':
                 this.selectedAvailableFields.forEach((item) => {
@@ -168,7 +168,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
         }
     }
 
-    private sortAvailableFields() {
+    public sortAvailableFields() {
         this.availableFields = this.availableFields.sort((a, b) => {
             return this.language.getFieldDisplayName(this.model.module, a).toLowerCase() > this.language.getFieldDisplayName(this.model.module, b).toLowerCase() ? 1 : -1;
         });

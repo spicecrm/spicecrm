@@ -8,16 +8,16 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
  */
 @Component({
     selector: 'reporter-field-standard',
-    templateUrl: './src/modules/reports/templates/reporterfieldstandard.html',
+    templateUrl: '../templates/reporterfieldstandard.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldStandard {
     /**
      * the complete record
      */
-    private record: any = {};
+    public record: any = {};
     /**
      * the field
      */
-    private field: any = {};
+    public field: any = {};
 }

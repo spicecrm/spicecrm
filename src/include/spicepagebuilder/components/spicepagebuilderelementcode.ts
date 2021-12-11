@@ -17,7 +17,7 @@ declare var html_beautify: any;
  */
 @Component({
     selector: 'spice-page-builder-element-code',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementcode.html',
+    templateUrl: '../templates/spicepagebuilderelementcode.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementCode extends SpicePageBuilderElement implements OnInit {
@@ -32,17 +32,17 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
     /**
      * is true when the beatify library is loaded
      */
-    private beautifyLoaded: boolean = false;
+    public beautifyLoaded: boolean = false;
     /**
      * hold the sanitized content html
      */
-    private sanitizedContent: SafeHtml = '';
+    public sanitizedContent: SafeHtml = '';
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
                 public injector: Injector,
                 public cdRef: ChangeDetectorRef,
-                private libloader: libloader,
+                public libloader: libloader,
                 public spicePageBuilderService: SpicePageBuilderService) {
         super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
     }
@@ -70,7 +70,7 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
     /**
      * load beatify library
      */
-    private loadBeatifyLibrary() {
+    public loadBeatifyLibrary() {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyLoaded = true;
             this.cdRef.detectChanges();
@@ -80,14 +80,14 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
     /**
      * sanitize the html content
      */
-    private sanitizeContent() {
+    public sanitizeContent() {
         this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
     }
 
     /**
      * beatify html code
      */
-    private beautify() {
+    public beautify() {
         this.element.content = html_beautify(this.element.content, {
             indent_size: 4,
             indent_char: " ",

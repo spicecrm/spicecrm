@@ -11,16 +11,16 @@ import {backend} from '../../../services/backend.service';
  */
 @Component({
     selector: "email-schedules-cancel-button",
-    templateUrl: "./src/modules/emails/templates/emailschedulescancelbutton.html",
+    templateUrl: "../templates/emailschedulescancelbutton.html",
 })
 export class EmailSchedulesCancelButton {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
-        private model: model,
-        private modal: modal,
-        private backend: backend
+        public model: model,
+        public modal: modal,
+        public backend: backend
     ) {
     }
 

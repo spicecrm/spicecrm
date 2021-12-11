@@ -12,7 +12,7 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'telephony-call-panel-search-modal',
-    templateUrl: './src/modules/telephony/templates/telephonycallsearchmodal.html'
+    templateUrl: '../templates/telephonycallsearchmodal.html'
 })
 export class TelephonyCallSearchModal implements OnInit {
 
@@ -20,59 +20,59 @@ export class TelephonyCallSearchModal implements OnInit {
      * the reference to the modal itself
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the timeout to react to the search field
      *
      * @private
      */
-    private searchTimeOut: any = undefined;
+    public searchTimeOut: any = undefined;
 
     /**
      * the searchterm
      * @private
      */
-    private searchTerm: string = '';
+    public searchTerm: string = '';
 
     /**
      * a trimmed version of the serachterm to cater fortrailing and leading whitespaces
      * @private
      */
-    private searchTermUntrimmed: string = '';
+    public searchTermUntrimmed: string = '';
 
     /**
      * the returned results
      *
      * @private
      */
-    private searchresults: any[] = [];
+    public searchresults: any[] = [];
 
     /**
      * the modules to search in
      *
      * @private
      */
-    private searchmodules: string[] = [];
+    public searchmodules: string[] = [];
 
     /**
      * indicates that we are searching
      *
      * @private
      */
-    private searching: boolean = false;
+    public searching: boolean = false;
 
     /**
      * an event emitter when a record is selected
      *
      * @private
      */
-    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selected: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
-        private metadata: metadata,
-        private fts: fts,
-        private configuration: configurationService
+        public metadata: metadata,
+        public fts: fts,
+        public configuration: configurationService
     ) {
 
     }
@@ -86,7 +86,7 @@ export class TelephonyCallSearchModal implements OnInit {
         this.close();
     }
 
-    private doSearch() {
+    public doSearch() {
         this.searchTerm = this.searchTermUntrimmed.trim();
         if (this.searchTerm.length && this.searchTerm !== this.fts.searchTerm) {
             // start the search
@@ -94,7 +94,7 @@ export class TelephonyCallSearchModal implements OnInit {
         }
     }
 
-    private executeSearch() {
+    public executeSearch() {
 
         this.searchresults = [];
         this.searching = true;
@@ -114,7 +114,7 @@ export class TelephonyCallSearchModal implements OnInit {
         // this.broadcast.broadcastMessage('fts.search', this.searchTerm);
     }
 
-    private clearSearchTerm() {
+    public clearSearchTerm() {
         // cancel any ongoing search
         if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
@@ -124,7 +124,7 @@ export class TelephonyCallSearchModal implements OnInit {
         this.fts.searchTerm = '';
     }
 
-    private search(_e) {
+    public search(_e) {
         // handle the key pressed
         switch (_e.key) {
             case 'Enter':
@@ -154,7 +154,7 @@ export class TelephonyCallSearchModal implements OnInit {
      * @param searchTerm
      * @private
      */
-    private searchTermsValid(searchTerm) {
+    public searchTermsValid(searchTerm) {
         let config = this.configuration.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
         let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;

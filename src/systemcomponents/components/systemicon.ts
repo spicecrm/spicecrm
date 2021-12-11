@@ -6,21 +6,21 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-icon",
-    templateUrl: "./src/systemcomponents/templates/systemicon.html"
+    templateUrl: "../templates/systemicon.html"
 })
 export class SystemIcon {
-    @Input() private module: string = "";
-    @Input() private icon: string = "";
-    @Input() private size: ''|'large' | 'small' | 'x-small' | 'xx-small' = '';
-    @Input() private sprite: string = "standard";
-    @Input() private addclasses: string = "";
-    @Input() private divClass = "slds-media__figure";
+    @Input() public module: string = "";
+    @Input() public icon: string = "";
+    @Input() public size: ''|'large' | 'small' | 'x-small' | 'xx-small' = '';
+    @Input() public sprite: string = "standard";
+    @Input() public addclasses: string = "";
+    @Input() public divClass = "slds-media__figure";
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
 
     }
 
-    private getSizeClass() {
+    public getSizeClass() {
         if (this.size) {
             return "slds-icon--" + this.size;
         } else {
@@ -28,11 +28,11 @@ export class SystemIcon {
         }
     }
 
-    private getSvgHRef() {
+    public getSvgHRef() {
         return "./vendor/sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
     }
 
-    private getIconClass() {
+    public getIconClass() {
         switch (this.sprite) {
             case "standard":
             case "action":
@@ -44,7 +44,7 @@ export class SystemIcon {
     }
 
 
-    private getIcon() {
+    public getIcon() {
         if(this.icon) {
             return this.icon.indexOf(":") > 0 ? this.icon.split(":")[1] : this.icon;
         }
@@ -57,7 +57,7 @@ export class SystemIcon {
         return "empty";
     }
 
-    private getSprite() {
+    public getSprite() {
         if(this.icon && this.icon.indexOf(":") > 0) {
             return this.icon.split(":")[0];
         }

@@ -8,7 +8,6 @@ import {
     OnInit,
     ChangeDetectorRef,
     enableProdMode,
-    SystemJsNgModuleLoader
 } from '@angular/core';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NgModule} from '@angular/core';
@@ -152,7 +151,7 @@ declare var Office: any;
     ]
 })
 export class Outlook {
-    constructor(private navigation: navigation) {
+    constructor(public navigation: navigation) {
         this.navigation.enforceNavigationParadigm('simple');
     }
 }

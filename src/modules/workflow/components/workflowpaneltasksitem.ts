@@ -13,13 +13,13 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: '[workflow-panel-tasks-item]',
-    templateUrl: './src/modules/workflow/templates/workflowpaneltasksitem.html',
+    templateUrl: '../templates/workflowpaneltasksitem.html',
     providers:[view]
 
 })
 export class WorkflowPanelTasksItem implements OnInit{
 
-    constructor(private model: model, private language: language, private view: view) {
+    constructor(public model: model, public language: language, public view: view) {
         this.view.displayLabels = false;
     }
 
@@ -27,7 +27,7 @@ export class WorkflowPanelTasksItem implements OnInit{
         this.model.data._displayComments = false;
     }
 
-    private toggleComments(){
+    public toggleComments(){
         this.model.data._displayComments = !this.model.data._displayComments;
     }
 

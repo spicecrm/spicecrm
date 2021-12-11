@@ -12,19 +12,19 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "sign-serviceorder-modal-button",
-    templateUrl: "./src/modules/servicecomponents/templates/signserviceordermodalbutton.html"
+    templateUrl: "../templates/signserviceordermodalbutton.html"
 })
 export class SignServiceOrderModalButtonComponent {
     constructor(
-        private model: model,
-        private metadata: metadata,
-        private language: language,
-        private footer: footer,
-        private modalservice: modal
+        public model: model,
+        public metadata: metadata,
+        public language: language,
+        public footer: footer,
+        public modalservice: modal
     ) {
     }
 
-    private execute() {
+    public execute() {
         this.modalservice.openModal("SignServiceOrderModalComponent").subscribe(
             cmp => {
                 cmp.instance.setModel(this.model);

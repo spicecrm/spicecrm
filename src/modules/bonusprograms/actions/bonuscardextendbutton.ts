@@ -19,7 +19,7 @@ declare var moment;
  * a button to display an extend modal for the bonus card
  */
 @Component({
-    templateUrl: './src/modules/bonusprograms/templates/bonuscardextendbutton.html',
+    templateUrl: '../templates/bonuscardextendbutton.html',
     providers: [model]
 })
 export class BonusCardExtendButton {

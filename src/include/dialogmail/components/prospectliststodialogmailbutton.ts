@@ -13,16 +13,16 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     selector: 'prospectlists-to-dialogmail-button',
-    templateUrl: './src/include/dialogmail/templates/prospectliststodialogmailbutton.html',
+    templateUrl: '../templates/prospectliststodialogmailbutton.html',
 })
 export class ProspectListsToDialogMailButton {
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector
     ) {}
 
     public execute() {

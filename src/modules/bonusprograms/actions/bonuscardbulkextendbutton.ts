@@ -18,7 +18,7 @@ import {modellist} from "../../../services/modellist.service";
  * a button to display an extend modal for the bonus card
  */
 @Component({
-    templateUrl: './src/modules/bonusprograms/templates/bonuscardbulkextendbutton.html',
+    templateUrl: '../templates/bonuscardbulkextendbutton.html',
     providers: [model]
 })
 export class BonusCardBulkExtendButton {

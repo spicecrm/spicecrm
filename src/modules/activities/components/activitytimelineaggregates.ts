@@ -18,14 +18,14 @@ declare var moment: any;
  */
 @Component({
     selector: 'activity-timeline-aggregates',
-    templateUrl: './src/modules/activities/templates/activitytimelineaggregates.html',
+    templateUrl: '../templates/activitytimelineaggregates.html',
 })
 export class ActivityTimelineAggregates {
 
-    @Input() private module: activityTimeLineModules;
-    @Input() private labellength: string = 'default';
+    @Input() public module: activityTimeLineModules;
+    @Input() public labellength: string = 'default';
 
-    constructor(private metadata: metadata, private language: language, private activitiytimeline: activitiytimeline) {
+    constructor(public metadata: metadata, public language: language, public activitiytimeline: activitiytimeline) {
     }
 
     /**
@@ -46,7 +46,7 @@ export class ActivityTimelineAggregates {
      * gets a style for the icon to grey it out and set 50% opacity
      * @param module
      */
-    private getElementStyle(module) {
+    public getElementStyle(module) {
         if (!this.activitiytimeline.checkModuleActive(module)) {
             return {
                 filter: 'grayscale(100%)',
@@ -60,7 +60,7 @@ export class ActivityTimelineAggregates {
      *
      * @param module the module that is being toggled
      */
-    private toggleModuleFilter(module) {
+    public toggleModuleFilter(module) {
         this.activitiytimeline.toggleModuleFilter(module);
         if (this.metadata.getModuleDefs(module).ftsactivities.Activities) this.activitiytimeline.getTimeLineData('Activities');
         if (this.metadata.getModuleDefs(module).ftsactivities.History) this.activitiytimeline.getTimeLineData('History');

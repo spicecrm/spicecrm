@@ -21,7 +21,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'service-planner-maps-model-popover-direction',
-    templateUrl: './src/modules/servicecomponents/templates/serviceplannermapsmodelpopoverdirection.html'
+    templateUrl: '../templates/serviceplannermapsmodelpopoverdirection.html'
 })
 export class ServicePlannerMapsModelPopoverDirection {
     /**
@@ -43,21 +43,21 @@ export class ServicePlannerMapsModelPopoverDirection {
     /**
      * save the unit system for the distance measuring
      */
-    private unitSystem: 'IMPERIAL' | 'METRIC' = 'METRIC';
+    public unitSystem: 'IMPERIAL' | 'METRIC' = 'METRIC';
     /**
      * holds the component config
      */
     public componentconfig: any;
 
-    constructor(private model: model,
-                private language: language,
-                private renderer: Renderer2,
-                private broadcast: broadcast,
-                private userpreferences: userpreferences,
-                private metadata: metadata,
-                private cdRef: ChangeDetectorRef,
-                private modal: modal,
-                private servicePlannerService: ServicePlannerService) {
+    constructor(public model: model,
+                public language: language,
+                public renderer: Renderer2,
+                public broadcast: broadcast,
+                public userpreferences: userpreferences,
+                public metadata: metadata,
+                public cdRef: ChangeDetectorRef,
+                public modal: modal,
+                public servicePlannerService: ServicePlannerService) {
         this.subscribeToBroadcast();
         this.loadFieldset();
     }
@@ -66,7 +66,7 @@ export class ServicePlannerMapsModelPopoverDirection {
      * convert distance to string with the unit on measure
      * @param distance
      */
-    protected convertDistanceToString(distance: number) {
+    public convertDistanceToString(distance: number) {
 
         if (this.unitSystem == 'IMPERIAL') {
             const feetDistance = distance * 3.2808;
@@ -86,7 +86,7 @@ export class ServicePlannerMapsModelPopoverDirection {
     /**
      * subscribe to broadcast message to reset the distance unit system and recenter the map
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype !== 'userpreferences.save') return;
             this.unitSystem = this.userpreferences.toUse.distance_unit_system || 'METRIC';
@@ -99,7 +99,7 @@ export class ServicePlannerMapsModelPopoverDirection {
     /**
      * loads the fieldset for the model data
      */
-    private loadFieldset() {
+    public loadFieldset() {
         let config = this.metadata.getComponentConfig('SpiceTimeline', 'ServiceOrders');
         if (!config || !config.fieldset) return;
         this.fieldset = config.fieldset;
@@ -108,7 +108,7 @@ export class ServicePlannerMapsModelPopoverDirection {
     /**
      * calculate the direction data
      */
-    private calculateRoute() {
+    public calculateRoute() {
 
         if (!(window as any).google) return;
 
@@ -147,7 +147,7 @@ export class ServicePlannerMapsModelPopoverDirection {
      * calculate Direction object from direction result
      * @param routes: DirectionResult
      */
-    private calculateDirectionData(routes) {
+    public calculateDirectionData(routes) {
         let distance = {value: 0, text: ''};
         let duration = 0;
         routes.forEach(route => {
@@ -176,7 +176,7 @@ export class ServicePlannerMapsModelPopoverDirection {
      * subtract the direction duration from the actual start date
      * open edit modal
      */
-    private plan() {
+    public plan() {
         this.model.startEdit();
 
         let userFieldPrefix = this.componentconfig && this.componentconfig.planningUserFieldNamePrefix? this.componentconfig.planningUserFieldNamePrefix : undefined;

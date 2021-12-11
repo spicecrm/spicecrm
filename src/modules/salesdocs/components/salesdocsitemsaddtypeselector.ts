@@ -13,7 +13,7 @@ import {configurationService} from '../../../services/configuration.service';
 import {model} from '../../../services/model.service';
 
 @Component({
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsaddtypeselector.html'
+    templateUrl: '../templates/salesdocsitemsaddtypeselector.html'
 })
 export class SalesDocsItemsAddTypeSelector implements OnInit {
 
@@ -22,26 +22,26 @@ export class SalesDocsItemsAddTypeSelector implements OnInit {
      *
      * @type {undefined}
      */
-    private self: any = undefined;
+    public self: any = undefined;
 
     /**
      * an eventEmitter for the selcted item type
      */
-    @Output() private itemTypeSelected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public itemTypeSelected: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the types that match the model available types
      *
      * @type {Array}
      */
-    private availableItemTypes: any[] = [];
+    public availableItemTypes: any[] = [];
 
     /**
      * the selected item type
      */
-    private itemType: string = '';
+    public itemType: string = '';
 
-    constructor(private metadata: metadata, private language: language, private model: model, private configuration: configurationService) {
+    constructor(public metadata: metadata, public language: language, public model: model, public configuration: configurationService) {
 
     }
 
@@ -72,7 +72,7 @@ export class SalesDocsItemsAddTypeSelector implements OnInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.itemTypeSelected.emit(false);
         this.self.destroy();
     }
@@ -80,7 +80,7 @@ export class SalesDocsItemsAddTypeSelector implements OnInit {
     /**
      * add the item type
      */
-    private add() {
+    public add() {
         this.itemTypeSelected.emit(this.itemType);
         this.self.destroy();
     }

@@ -11,18 +11,18 @@ import {TeleSalesCockpitListItem} from "./telesalescockpitlistitem";
 
 @Component({
     selector: 'tele-sales-cockpit-list',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitlist.html',
+    templateUrl: '../templates/telesalescockpitlist.html',
     providers: [view, model, modellist]
 })
 export class TeleSalesCockpitList {
 
-    @ViewChild('listcontainer', {read: ViewContainerRef, static: true}) private listcontainer: ViewContainerRef;
-    @ViewChild('itemscontainer', {read: ViewContainerRef, static: true}) private itemscontainer: ViewContainerRef;
-    @ViewChildren(TeleSalesCockpitListItem) private itemsComponents: QueryList<TeleSalesCockpitListItem>;
-    @Input() private selectedListItemId: string;
+    @ViewChild('listcontainer', {read: ViewContainerRef, static: true}) public listcontainer: ViewContainerRef;
+    @ViewChild('itemscontainer', {read: ViewContainerRef, static: true}) public itemscontainer: ViewContainerRef;
+    @ViewChildren(TeleSalesCockpitListItem) public itemsComponents: QueryList<TeleSalesCockpitListItem>;
+    @Input() public selectedListItemId: string;
 
-    constructor(private language: language,
-                private telecockpitservice: telecockpitservice) {
+    constructor(public language: language,
+                public telecockpitservice: telecockpitservice) {
     }
 
     get isLoading() {
@@ -44,20 +44,20 @@ export class TeleSalesCockpitList {
         this.setSelectedItem();
     }
 
-    private setSelectedItem() {
+    public setSelectedItem() {
         if (this.selectedListItemId) {
             this.itemsComponents.forEach(listItem => listItem.isSelected = listItem.item.data.id == this.selectedListItemId);
         }
     }
 
-    private onScroll(e) {
+    public onScroll(e) {
         let element = this.listcontainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.telecockpitservice.loadMoreData();
         }
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

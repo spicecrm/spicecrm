@@ -27,7 +27,7 @@ import {modal} from "../../services/modal.service";
 })
 export class SystemCalculatorTriggerDirective {
 
-    constructor(private modal: modal, private elementRef: ElementRef) {
+    constructor(public modal: modal, public elementRef: ElementRef) {
     }
     /**
      * open the calculator modal and handle emitting the response value

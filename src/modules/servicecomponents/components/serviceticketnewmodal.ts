@@ -12,7 +12,7 @@ import {backend} from '../../../services/backend.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketnewmodal.html'
+    templateUrl: '../templates/serviceticketnewmodal.html'
 })
 export class ServiceTicketNewModal implements OnInit{
 
@@ -24,7 +24,7 @@ export class ServiceTicketNewModal implements OnInit{
     /**
      * reference to self to close the modal
      */
-    private self: any;
+    public self: any;
 
     /**
      * needs to be passed in by the button and cannot be determined by skipself since we are in the hierarchy of calls already
@@ -34,12 +34,12 @@ export class ServiceTicketNewModal implements OnInit{
     /**
      * the current servicelocation
      */
-    private servicelocation_id: string;
+    public servicelocation_id: string;
 
     /**
      * the current serviceequipment
      */
-    private serviceequipment_id: string;
+    public serviceequipment_id: string;
 
     constructor(public language: language, public metadata: metadata, public backend: backend, public model: model, public relatedmodels: relatedmodels) {
 
@@ -78,7 +78,7 @@ export class ServiceTicketNewModal implements OnInit{
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

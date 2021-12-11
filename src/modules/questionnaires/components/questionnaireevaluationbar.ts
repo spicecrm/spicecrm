@@ -10,19 +10,19 @@ declare var Highcharts: any;
 
 @Component({
     selector: 'questionnaire-evaluation-bar',
-    templateUrl: './src/modules/questionnaires/templates/questionnaireevaluationbar.html',
+    templateUrl: '../templates/questionnaireevaluationbar.html',
 })
 export class QuestionnaireEvaluationBar implements AfterViewInit, OnInit {
 
     @Input() public values: any[];
-    private valuesForChart: any[] = [];
-    private readonly chartid: string = '';
+    public valuesForChart: any[] = [];
+    public readonly chartid: string = '';
     @Input() public usagePrint = false;
-    private _individualHeight: number;
-    private defaultHeight = 70;
-    private chart: any;
+    public _individualHeight: number;
+    public defaultHeight = 70;
+    public chart: any;
 
-    constructor( private language: language , private modelutilities: modelutilities, private metadata: metadata) {
+    constructor( public language: language , public modelutilities: modelutilities, public metadata: metadata) {
         this.chartid = this.modelutilities.generateGuid();
     }
 
@@ -35,12 +35,12 @@ export class QuestionnaireEvaluationBar implements AfterViewInit, OnInit {
         }
     }
 
-    private get height(): number {
+    public get height(): number {
         if ( this._individualHeight ) return this._individualHeight;
         else return this.defaultHeight;
     }
 
-    private get divid(): string {
+    public get divid(): string {
         return 'questionnaire-eval-chart' + this.chartid;
     }
 
@@ -48,7 +48,7 @@ export class QuestionnaireEvaluationBar implements AfterViewInit, OnInit {
         for ( let i=0; i < this.values.length; i++ ) this.valuesForChart[i] = [ this.values[i].name, this.values[i].points ];
     }
 
-    private get chartDivStyles(): object {
+    public get chartDivStyles(): object {
         if ( this.usagePrint ) {
             return { 'max-width': '650px', 'margin': 'auto' };
         } else return null;

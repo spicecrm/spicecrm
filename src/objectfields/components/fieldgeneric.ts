@@ -11,7 +11,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'field-generic',
-    templateUrl: './src/objectfields/templates/fieldgeneric.html'
+    templateUrl: '../templates/fieldgeneric.html'
 })
 export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     /**
@@ -78,7 +78,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     /**
      * the field defs from teh metadata
      */
-    private _field_defs;
+    public _field_defs;
 
     /**
      * gets the field defs from the metadata service
@@ -93,7 +93,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     /**
      * additonal css classes uised internally for e.g. error handling
      */
-    private _css_classes: any[string] = [];
+    public _css_classes: any[string] = [];
 
     /**
      * a getter to return the additonal css classes

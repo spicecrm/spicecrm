@@ -16,7 +16,7 @@ declare var moment;
  * a compo date field for validity
  */
 @Component({
-    templateUrl: './src/modules/bonusprograms/templates/bonuscardvaliditydatefield.html'
+    templateUrl: '../templates/bonuscardvaliditydatefield.html'
 })
 export class BonusCardValidityDateField extends fieldDateSpan {
 

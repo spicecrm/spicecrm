@@ -12,31 +12,31 @@ import {language} from '../../../services/language.service';
  * renders a tab panel with open and closed tickets summary
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketrelatedtickets.html'
+    templateUrl: '../templates/serviceticketrelatedtickets.html'
 })
 export class ServiceTicketRelatedTickets {
 
     /**
      * defines the current scope opf the tabes shwoing the open or the closed items
      */
-    private scope: 'open' | 'closed' = 'open';
+    public scope: 'open' | 'closed' = 'open';
 
     /**
      * the config loaded when the component is rendered
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * the count of open tickets, set from teh child component
      */
-    private opencount: number = 0;
+    public opencount: number = 0;
 
     /**
      * the count of closed tickets, set from teh child component
      */
-    private closedcount: number = 0;
+    public closedcount: number = 0;
 
-    constructor(private model: model, private metadata: metadata, private language: language) {}
+    constructor(public model: model, public metadata: metadata, public language: language) {}
 
     /**
      * returns the filter for the open tickets

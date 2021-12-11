@@ -22,18 +22,18 @@ declare var moment: any;
  */
 @Component({
     selector: 'reporter-integration-xlsexport-button',
-    templateUrl: './src/modules/reportsmore/templates/reporterintegrationxlsexportbutton.html'
+    templateUrl: '../templates/reporterintegrationxlsexportbutton.html'
 })
 export class ReporterIntegrationXLSexportButton {
 
     /**
      * a reference to a download link button as helper for the ajax loader
      */
-    @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) private downloadlink: ViewContainerRef;
+    @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) public downloadlink: ViewContainerRef;
 
-    private fileName: string = 'file.xls';
+    public fileName: string = 'file.xls';
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private modal: modal, private footer: footer, private reporterconfig: reporterconfig, private toast: toast) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public model: model, public modal: modal, public footer: footer, public reporterconfig: reporterconfig, public toast: toast) {
     }
 
     /**
@@ -46,7 +46,7 @@ export class ReporterIntegrationXLSexportButton {
     /**
      * the export itself
      */
-    private exportXLS() {
+    public exportXLS() {
         // check if user has export right
         if (!this.canExport) return;
 

@@ -11,18 +11,18 @@ import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
-    templateUrl: './src/modules/acl/templates/aclprofilesmanager.html',
+    templateUrl: '../templates/aclprofilesmanager.html',
 })
 export class ACLProfilesManager {
 
-    private activeprofileid: string = '';
-    private activeprofile: any;
+    public activeprofileid: string = '';
+    public activeprofile: any;
 
-    constructor(private backend: backend, private modelutilities: modelutilities, private elementRef: ElementRef) {
+    constructor(public backend: backend, public modelutilities: modelutilities, public elementRef: ElementRef) {
 
     }
 
-    private setProfile(profile: any) {
+    public setProfile(profile: any) {
         this.activeprofile = profile;
         this.activeprofileid = profile.id;
     }

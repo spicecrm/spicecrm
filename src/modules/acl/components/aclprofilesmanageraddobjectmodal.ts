@@ -21,7 +21,7 @@ import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
-    templateUrl: './src/modules/acl/templates/aclprofilesmanageraddobjectmodal.html',
+    templateUrl: '../templates/aclprofilesmanageraddobjectmodal.html',
     providers: [model]
 })
 export class ACLProfilesManagerAddObjectModal {
@@ -38,7 +38,7 @@ export class ACLProfilesManagerAddObjectModal {
 
     @Output() public aclobject: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language, private backend: backend) {
+    constructor(public language: language, public backend: backend) {
         this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
             this.acltypes = acltypes;
 

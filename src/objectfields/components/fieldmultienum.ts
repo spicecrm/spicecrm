@@ -11,10 +11,10 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-multienum',
-    templateUrl: './src/objectfields/templates/fieldmultienum.html'
+    templateUrl: '../templates/fieldmultienum.html'
 })
 export class fieldMultienum extends fieldGeneric implements OnInit {
-    private options: any[] = [];
+    public options: any[] = [];
 
     constructor(
         public model: model,
@@ -41,7 +41,7 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         return this.fieldconfig.displaycheckboxes ? true : false;
     }
 
-    private getValue(): string {
+    public getValue(): string {
         let retArray = [];
         let values = this.getValueArray();
         for (let value of values) {
@@ -52,7 +52,7 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         return retArray.join(', ');
     }
 
-    private getValueArray(): any[] {
+    public getValueArray(): any[] {
         try {
             let value = this.model.getFieldValue(this.fieldname);
             // delete leading and trailing ^ if there is any
@@ -63,7 +63,7 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         }
     }
 
-    private buildOptions() {
+    public buildOptions() {
         // reset the options
         this.options = [];
 

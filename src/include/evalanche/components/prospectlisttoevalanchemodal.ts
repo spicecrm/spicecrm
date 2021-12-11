@@ -13,24 +13,24 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'prospectlists-to-evalanche-modal',
-    templateUrl: './src/include/evalanche/templates/prospectlisttoevalanchemodal.html'
+    templateUrl: '../templates/prospectlisttoevalanchemodal.html'
 })
 export class ProspectListsToEvalancheModal{
 
-    private self: any = {};
-    private evalanche: any[] = [];
-    private spice: any[] = [];
-    private difference: any[] = [];
-    private loading: boolean = false;
+    public self: any = {};
+    public evalanche: any[] = [];
+    public spice: any[] = [];
+    public difference: any[] = [];
+    public loading: boolean = false;
 
     constructor(
-        private language: language,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast
+        public language: language,
+        public router: Router,
+        public metadata: metadata,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast
     ) {
     }
 
@@ -38,7 +38,7 @@ export class ProspectListsToEvalancheModal{
      * post request synchronizes contacts with evalanche
      */
 
-    private exportToEvalanche() {
+    public exportToEvalanche() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
             let body = {
@@ -60,7 +60,7 @@ export class ProspectListsToEvalancheModal{
      * modal instance self destroys when clicking the close button
      */
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

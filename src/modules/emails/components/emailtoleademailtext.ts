@@ -16,24 +16,24 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "email-to-lead-emailtext",
-    templateUrl: "./src/modules/emails/templates/emailtoleademailtext.html"
+    templateUrl: "../templates/emailtoleademailtext.html"
 })
 export class EmailToLeadEmailText implements OnDestroy {
 
     @ViewChild("contextMenu", {read: ViewContainerRef, static: true}) public contextMenu: ViewContainerRef;
 
-    @Input() private emailtext: string = "";
-    @Input() private emailhtml: string = "";
-    @Input() private emailmodule: string = "";
-    @Input() private emailfields: Array<string> = ["first_name", "last_name"];
+    @Input() public emailtext: string = "";
+    @Input() public emailhtml: string = "";
+    @Input() public emailmodule: string = "";
+    @Input() public emailfields: string[] = ["first_name", "last_name"];
 
-    @Output() private setfield: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public setfield: EventEmitter<any> = new EventEmitter<any>();
 
-    private clickListener: any = null;
-    private displayContextMenu: boolean = false;
-    private displayContextCoordinates: any = {top: 0, left: 0};
+    public clickListener: any = null;
+    public displayContextMenu: boolean = false;
+    public displayContextCoordinates: any = {top: 0, left: 0};
 
-    constructor(private elementRef: ElementRef, private renderer: Renderer2, private language: language) {
+    constructor(public elementRef: ElementRef, public renderer: Renderer2, public language: language) {
     }
 
     get content() {
@@ -46,7 +46,7 @@ export class EmailToLeadEmailText implements OnDestroy {
         }
     }
 
-    private showContextMenu(event) {
+    public showContextMenu(event) {
         if (this.selectedText) {
             // prevent the browser context Menu
             event.preventDefault();
@@ -76,7 +76,7 @@ export class EmailToLeadEmailText implements OnDestroy {
         return stylecoords;
     }
 
-    private onClick(event: MouseEvent): void {
+    public onClick(event: MouseEvent): void {
         if (!this.contextMenu.element.nativeElement.contains(event.target)) {
             this.displayContextMenu = false;
             if (this.clickListener) {
@@ -86,7 +86,7 @@ export class EmailToLeadEmailText implements OnDestroy {
         }
     }
 
-    private setField(field) {
+    public setField(field) {
         this.displayContextMenu = false;
         if (this.clickListener) {
             this.clickListener();

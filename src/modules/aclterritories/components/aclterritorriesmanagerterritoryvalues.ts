@@ -18,21 +18,21 @@ import {modelutilities} from '../../../services/modelutilities.service';
  */
 @Component({
     selector: 'aclterritorries-manager-territory-values',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritoryvalues.html'
+    templateUrl: '../templates/aclterritorriesmanagerterritoryvalues.html'
 })
 export class ACLTerritorriesManagerTerritoryValues implements OnChanges{
 
     /**
      * the territory detail definitions
      */
-    @Input() private territorrytypedetails: any = {};
+    @Input() public territorrytypedetails: any = {};
 
     /**
      * define if this is editable or not
      */
-    @Input() private editable: boolean = true;
+    @Input() public editable: boolean = true;
 
-    constructor(private backend: backend, private modal: modal, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
     }
 
 
@@ -46,7 +46,7 @@ export class ACLTerritorriesManagerTerritoryValues implements OnChanges{
      * returns the elkementvalues for a given element
      * @param elementId
      */
-    private elementValues(elementId) {
+    public elementValues(elementId) {
         let retValues = [];
         for (let elementvalue of this.territorrytypedetails.elementvalues) {
             if (elementvalue.spiceaclterritoryelement_id == elementId) {

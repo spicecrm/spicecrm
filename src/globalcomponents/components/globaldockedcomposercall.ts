@@ -16,17 +16,17 @@ import {telephonyCallI} from "../../services/interfaces.service";
 
 @Component({
     selector: 'global-docked-composer-call',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposercall.html'
+    templateUrl: '../templates/globaldockedcomposercall.html'
 })
 export class GlobalDockedComposerCall {
 
-    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: true})public containercontent: ViewContainerRef;
 
     @Input() public calldata: telephonyCallI;
 
-    private isClosed: boolean = false;
+   public isClosed: boolean = false;
 
-    constructor(private backend: backend, private dockedComposer: dockedComposer, private telephony: telephony, private language: language, private ViewContainerRef: ViewContainerRef) {
+    constructor(public backend: backend,public dockedComposer: dockedComposer,public telephony: telephony,public language: language,public ViewContainerRef: ViewContainerRef) {
 
     }
 
@@ -49,21 +49,21 @@ export class GlobalDockedComposerCall {
     /**
      * close the composer and remove the call
      */
-    private closeComposer() {
+   public closeComposer() {
         this.telephony.removeCallById(this.calldata.id);
     }
 
     /**
      * end the call
      */
-    private endCall() {
+   public endCall() {
         this.telephony.terminateCall(this.calldata.id);
     }
 
     /**
      * toggles the closed state for the composer
      */
-    private toggleClosed() {
+   public toggleClosed() {
         this.isClosed = !this.isClosed;
     }
 

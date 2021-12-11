@@ -22,7 +22,7 @@ import {
  */
 @Component({
     selector: 'dictionary-manager-relationship-container-manytomany',
-    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipcontainermanytomany.html',
+    templateUrl: '../templates/dictionarymanagerrelationshipcontainermanytomany.html',
 })
 export class DictionaryManagerRelationshipContainerManyToMany implements OnInit {
 
@@ -30,28 +30,28 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit 
      * the items for the left hand side
      * @private
      */
-    private lhs_items: DictionaryItem[] = [];
+    public lhs_items: DictionaryItem[] = [];
 
     /**
      * the items for the right hand side
      * @private
      */
-    private rhs_items: DictionaryItem[] = [];
+    public rhs_items: DictionaryItem[] = [];
 
     /**
      * the items for the right hand side
      * @private
      */
-    private join_items: DictionaryItem[] = [];
+    public join_items: DictionaryItem[] = [];
 
     /**
      * the reltionship itself
      *
      * @private
      */
-    @Input() private relationship: Relationship;
+    @Input() public relationship: Relationship;
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -94,7 +94,7 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit 
      *
      * @private
      */
-    private loadJoinItems(){
+    public loadJoinItems(){
         if(this.relationship.join_sysdictionarydefinition_id){
             // determine the fields of the join table
             this.join_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.join_sysdictionarydefinition_id);
@@ -107,7 +107,7 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit 
      * loads items for left and right definitions
      * @private
      */
-    private loadItems() {
+    public loadItems() {
         // build the left hand and right hand items
         this.lhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id);
         this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);

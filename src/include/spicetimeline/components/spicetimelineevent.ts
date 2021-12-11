@@ -7,21 +7,21 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'spice-timeline-event',
-    templateUrl: './src/include/spicetimeline/templates/spicetimelineevent.html',
+    templateUrl: '../templates/spicetimelineevent.html',
     providers: [model]
 })
 export class SpiceTimelineEvent implements OnChanges, OnInit {
     /**
      * holds the records main module
      */
-    @Input() protected event: any;
+    @Input() public event: any;
     /**
      * a fieldset id for loading a body fieldset in the event
      */
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private metadata: metadata,
-                private model: model) {
+    constructor(public metadata: metadata,
+                public model: model) {
     }
 
     /**
@@ -41,7 +41,7 @@ export class SpiceTimelineEvent implements OnChanges, OnInit {
     /**
      * load event fieldsets
      */
-    private loadFieldset() {
+    public loadFieldset() {
         let config = this.metadata.getComponentConfig('SpiceTimelineEvent', this.model.module);
         if (config && config.fieldset) {
             this.fieldset = config.fieldset;
@@ -51,7 +51,7 @@ export class SpiceTimelineEvent implements OnChanges, OnInit {
     /**
      * set model data from event
      */
-    private setModelData() {
+    public setModelData() {
         this.model.id = this.event.id;
         this.model.module = this.event.module;
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.event.data);

@@ -27,7 +27,7 @@ declare var moment;
 
 @Component({
     selector: 'object-timeline-item-audit',
-    templateUrl: './src/objectcomponents/templates/objecttimelineitemaudit.html',
+    templateUrl: '../templates/objecttimelineitemaudit.html',
     styles: ['.objecttimeline-item { width: calc(100% - 86px); border: 1px solid var(--color-grey-5); background-color: var(--color-white); box-shadow: 0 2px 3px 0 rgb(0 0 16%); border-radius: 0.25rem }',
         '.objecttimeline-item-nubbin-right { height:  20px; width: 20px; margin-right: -10px; background-color: var(--color-white); transform: rotate(45deg); border-bottom: 1px solid var(--color-grey-5); border-left: 1px solid var(--color-grey-5)}',
         '.objecttimeline-item-nubbin-left { height:  20px; width: 20px; margin-left: -10px; background-color: var(--color-white); transform: rotate(-135deg); border-bottom: 1px solid var(--color-grey-5); border-left: 1px solid var(--color-grey-5)}'],
@@ -62,8 +62,8 @@ export class ObjectTimelineItemAudit implements OnInit {
      */
     public date = '';
 
-    constructor(public timeline: timeline, public model: model, private language: language, private metadata: metadata,
-                private userpreferences: userpreferences, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+    constructor(public timeline: timeline, public model: model, public language: language, public metadata: metadata,
+                public userpreferences: userpreferences, public modal: modal, public ViewContainerRef: ViewContainerRef) {
     }
 
     get fieldCount() {
@@ -109,7 +109,7 @@ export class ObjectTimelineItemAudit implements OnInit {
         });
     }
 
-    private calculateDate() {
+    public calculateDate() {
         const date = moment.utc(this.record.date);
 
         const isToday = moment.utc(date.format('YYYY M D')).isSame(new moment().format('YYYY M D'));

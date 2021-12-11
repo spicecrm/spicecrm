@@ -10,11 +10,11 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     selector: 'campaigntask-mailmerge-button',
-    templateUrl: './src/modules/campaigns/templates/campaigntaskmailmergebutton.html'
+    templateUrl: '../templates/campaigntaskmailmergebutton.html'
 })
 export class CampaignTaskMailergeButton {
 
-    constructor(private model: model, private injector: Injector, private modal: modal) {
+    constructor(public model: model, public injector: Injector, public modal: modal) {
 
     }
 

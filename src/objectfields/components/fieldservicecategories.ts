@@ -17,7 +17,7 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'field-service-categories',
-    templateUrl: './src/objectfields/templates/fieldservicecategories.html'
+    templateUrl: '../templates/fieldservicecategories.html'
 })
 export class fieldServiceCategories extends fieldGeneric
 {
@@ -33,8 +33,8 @@ export class fieldServiceCategories extends fieldGeneric
         public language:language,
         public metadata:metadata,
         public router:Router,
-        private backend:backend,
-        private config:configurationService,
+        public backend:backend,
+        public config:configurationService,
     )
     {
         super(model, view, language, metadata, router);

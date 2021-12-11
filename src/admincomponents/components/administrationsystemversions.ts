@@ -10,7 +10,7 @@ import {backend} from '../../services/backend.service';
 import {helper} from '../../services/helper.service';
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationsystemversions.html'
+    templateUrl: '../templates/administrationsystemversions.html'
 })
 export class AdministrationSystemVersions {
 
@@ -19,19 +19,19 @@ export class AdministrationSystemVersions {
      *
      * otherwise a spinner is rendered for the user
      */
-    private loaded: boolean = false;
+    public loaded: boolean = false;
 
     /**
      * holds the stats
      */
-    private versions: any = {};
+    public versions: any = {};
 
-    private vendorpackages: any[] = [];
+    public vendorpackages: any[] = [];
 
     constructor(
-        private http: HttpClient,
-        private language: language,
-        private backend: backend
+        public http: HttpClient,
+        public language: language,
+        public backend: backend
     ) {
         this.loadVersions();
     }
@@ -39,7 +39,7 @@ export class AdministrationSystemVersions {
     /**
      * loads the stats from the backend
      */
-    private loadVersions() {
+    public loadVersions() {
         this.loaded = false;
         this.http.get('config/systemdetails/').subscribe(
             (data: any) => {

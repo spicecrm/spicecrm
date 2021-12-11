@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'reporter-detail-presentation-pivot',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationpivot.html',
+    templateUrl: '../templates/reporterdetailpresentationpivot.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, OnDestroy {
@@ -20,49 +20,49 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
     /**
      * array for pivot total count
      */
-    protected totalCountArray: any[] = [];
+    public totalCountArray: any[] = [];
     /**
      * save the presentation params
      */
-    private presParams: any = {};
+    public presParams: any = {};
     /**
      * save the presentation data
      */
-    private presData: any = {};
+    public presData: any = {};
     /**
      * save loading value on backend retrieve
      */
-    private isLoading: boolean = true;
+    public isLoading: boolean = true;
     /**
      * pivot data array
      */
-    private pivotArray: any[] = [];
+    public pivotArray: any[] = [];
     /**
      * values of the pivot row
      */
-    private rowValues: any[] = [];
+    public rowValues: any[] = [];
     /**
      * holds the pivot header table set (rows)
      */
-    protected headerTableSet: any[] = [];
+    public headerTableSet: any[] = [];
     /**
      * columns of the pivot row
      */
-    private rowValueColumns: any = {};
+    public rowValueColumns: any = {};
     /**
      * holds any subscription
      */
-    private subscriptions = new Subscription();
+    public subscriptions = new Subscription();
     /**
      * holds any subscription
      */
-    private pivotNameField: string = 'LBL_DATA';
+    public pivotNameField: string = 'LBL_DATA';
 
 
-    constructor(private model: model,
-                private backend: backend,
-                private cdRef: ChangeDetectorRef,
-                private reporterconfig: reporterconfig) {
+    constructor(public model: model,
+                public backend: backend,
+                public cdRef: ChangeDetectorRef,
+                public reporterconfig: reporterconfig) {
         // subscribe to the refresh .. happen when e.g. the filters are applied and the report items should reload themselves
         this.subscriptions.add(
             this.reporterconfig.refresh$.subscribe(() => {
@@ -99,14 +99,14 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
     /**
      * generates an array that can be rendered as header for the pivot table in the view
      */
-    private setHeaderTableSet() {
+    public setHeaderTableSet() {
 
         if (this.pivotArray.length == 0) return;
 
@@ -120,7 +120,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
     /**
      * set pivot name field label
      */
-    private setPivotNameField() {
+    public setPivotNameField() {
         if (!!this.presData.reportmetadata) {
             const nameField = this.presData.reportmetadata.fields.find(record => record.fieldid == this.presParams.pluginData.rowData);
             this.pivotNameField = !!nameField ? nameField.name : 'LBL_DATA';
@@ -130,7 +130,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
     /**
      * set total count array
      */
-    private setTotalCountArray() {
+    public setTotalCountArray() {
         let totalColumns = 0;
         for (let itemData of this.pivotArray) {
             totalColumns += this.getColumns(itemData);
@@ -142,7 +142,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
     /**
      * get presentation fields and build the pivot
      */
-    private getPresentation() {
+    public getPresentation() {
         this.isLoading = true;
         this.cdRef.detectChanges();
 
@@ -179,7 +179,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
      * builds a header array based on teh records and the pivot settings
      * set the total count array
      */
-    private buildPivot() {
+    public buildPivot() {
         this.pivotArray = [];
         this.rowValues = [];
         this.cdRef.detectChanges();
@@ -248,7 +248,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
      *
      * @param item the item
      */
-    private getColumns(item): number {
+    public getColumns(item): number {
         let columns: number = 0;
         if (item.columns.length > 0) {
             for (let column of item.columns) {
@@ -265,7 +265,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
      * @param fieldid
      * @param columns
      */
-    private getColumnsForId(fieldid, columns?) {
+    public getColumnsForId(fieldid, columns?) {
         let columnArray = [];
         if (!columns) columns = this.pivotArray;
         for (let column of columns) {
@@ -286,7 +286,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
      * @param valuekey
      * @param columns
      */
-    private getValues(valuekey, columns?) {
+    public getValues(valuekey, columns?) {
         let valueArray = [];
         if (!columns) columns = this.pivotArray;
         for (let column of columns) {

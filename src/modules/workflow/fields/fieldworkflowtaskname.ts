@@ -16,13 +16,13 @@ import {Subscription} from 'rxjs';
  */
 @Component({
     selector: 'field-wokflowtask-name',
-    templateUrl: './src/modules/workflow/templates/fieldworkflowtaskname.html'
+    templateUrl: '../templates/fieldworkflowtaskname.html'
 })
 export class fieldWorkflowTaskName extends fieldGeneric implements OnInit {
 
-    private noLinkFieldConfig: any = {};
+    public noLinkFieldConfig: any = {};
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public configuration: configurationService) {
         super(model, view, language, metadata, router);
 
     }

@@ -10,20 +10,20 @@ import {KnowledgeService} from "../services/knowledge.service";
 
 @Component({
     selector: "knowledge-manager-details",
-    templateUrl: "./src/modules/knowledge/templates/knowledgemanagerdetails.html",
+    templateUrl: "../templates/knowledgemanagerdetails.html",
     providers: [model, view]
 })
 export class KnowledgeManagerDetails implements OnDestroy {
 
-    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) private detailsContent: ViewContainerRef;
-    @Input("selectedDoc") private docId: string = "";
-    private renderedComponents: any[] = [];
+    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) public detailsContent: ViewContainerRef;
+    @Input("selectedDoc") public docId: string = "";
+    public renderedComponents: any[] = [];
 
-    constructor(private language: language,
-                private model: model,
-                private view: view,
-                private knowledgeService: KnowledgeService,
-                private metadata: metadata) {
+    constructor(public language: language,
+                public model: model,
+                public view: view,
+                public knowledgeService: KnowledgeService,
+                public metadata: metadata) {
         this.model.module = "KnowledgeDocuments";
     }
 
@@ -48,14 +48,14 @@ export class KnowledgeManagerDetails implements OnDestroy {
         this.resetView();
     }
 
-    private resetView() {
+    public resetView() {
         for (let renderedComponent of this.renderedComponents) {
             renderedComponent.destroy();
         }
         this.renderedComponents = [];
     }
 
-    private renderView() {
+    public renderView() {
         let componentconfig = this.metadata.getComponentConfig("KnowledgeManagerDetails", "KnowledgeDocuments");
         let componentSet = componentconfig.componentset;
 

@@ -22,25 +22,25 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-timestream-embedded',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestreamembedded.html'
+    templateUrl: '../templates/spicetimestreamembedded.html'
 })
 export class SpiceTimestreamEmbedded implements OnDestroy {
 
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * the items
      *
      * @private
      */
-    @Input() private items: any = {};
+    @Input() public items: any = {};
 
     /**
      * the timestream object
      *
      * @private
      */
-    private timestream: any = {
+    public timestream: any = {
         period: 'y',
         dateStart: null,
         dateEnd: null,
@@ -51,9 +51,9 @@ export class SpiceTimestreamEmbedded implements OnDestroy {
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language, private userpreferences: userpreferences, private modelutilities: modelutilities, private metadata: metadata) {
+    constructor(public language: language, public userpreferences: userpreferences, public modelutilities: modelutilities, public metadata: metadata) {
 
     }
 

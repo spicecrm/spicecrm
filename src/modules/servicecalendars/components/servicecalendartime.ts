@@ -9,21 +9,21 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'service-calendar-time',
-    templateUrl: './src/modules/servicecalendars/templates/servicecalendartime.html',
+    templateUrl: '../templates/servicecalendartime.html',
     providers: [relatedmodels]
 })
 export class ServiceCalendarTime implements OnChanges {
 
-    @Input() private calendarid: string;
+    @Input() public calendarid: string;
 
     public componentconfig: any;
     public listfields: any[];
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata,
-        private relatedmodels: relatedmodels
+        public language: language,
+        public model: model,
+        public metadata: metadata,
+        public relatedmodels: relatedmodels
     ) {
         this.relatedmodels.module = 'ServiceCalendars';
         this.relatedmodels.relatedModule = 'ServiceCalendarTimes';

@@ -13,7 +13,7 @@ declare var _;
 
 @Component({
     selector: 'spice-texts-add-button',
-    templateUrl: './src/include/spicetexts/templates/spicetextsaddbutton.html',
+    templateUrl: '../templates/spicetextsaddbutton.html',
     providers: [model]
 })
 
@@ -22,12 +22,12 @@ export class SpiceTextsAddButton {
     @Input() public parent: any;
     @Input() public spiceTexts: any[] = [];
 
-    constructor(private model: model,
-                private modal: modal,
-                private configurationService: configurationService,
-                private language: language,
-                private metadata: metadata,
-                private relatedModels: relatedmodels) {
+    constructor(public model: model,
+                public modal: modal,
+                public configurationService: configurationService,
+                public language: language,
+                public metadata: metadata,
+                public relatedModels: relatedmodels) {
         this.model.module = 'SpiceTexts';
     }
 
@@ -45,7 +45,7 @@ export class SpiceTextsAddButton {
             (this.spiceTexts.length >= (this.sysTextIds.length * this.language.getAvialableLanguages().length));
     }
 
-    private addModel() {
+    public addModel() {
         if (!this.parent || this.allTranslated) {
             return;
         }

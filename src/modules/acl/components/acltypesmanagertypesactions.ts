@@ -21,7 +21,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types-actions',
-    templateUrl: './src/modules/acl/templates/acltypesmanagertypesactions.html',
+    templateUrl: '../templates/acltypesmanagertypesactions.html',
 })
 export class ACLTypesManagerTypesActions {
 
@@ -30,7 +30,7 @@ export class ACLTypesManagerTypesActions {
     @Output() public addaction: EventEmitter<string> = new EventEmitter<string>();
     @Output() public deleteaction: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
 
     }
 

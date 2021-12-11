@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 declare var window: any;
 
 @Component({
-    templateUrl: './src/systemcomponents/templates/systemtinymcemodal.html'
+    templateUrl: '../templates/systemtinymcemodal.html'
 })
 export class SystemTinyMCEModal implements OnInit {
 
@@ -20,7 +20,7 @@ export class SystemTinyMCEModal implements OnInit {
     updateContent: EventEmitter<any> = new EventEmitter<any>();
     title: string = '';
 
-    constructor( private language: language ) { }
+    constructor( public language: language ) { }
 
     ngOnInit() {
         if ( this.title.length === 0 ) this.title = this.language.getLabel('LBL_EDITOR');

@@ -11,7 +11,7 @@ export class view {
     /**
      * the mode of the view
      */
-    private mode: 'view' | 'edit' = 'view';
+    public mode: 'view' | 'edit' = 'view';
 
     /**
      * an event emitter that fires when the mode changes
@@ -68,7 +68,7 @@ export class view {
      */
     public isLoading: boolean = false;
 
-    constructor(@Optional() private model: model, private layout: layout) {
+    constructor(@Optional() public model: model, public layout: layout) {
         this.mode$ = new BehaviorSubject<'view'|'edit'>(this.mode);
 
         if (this.model) {

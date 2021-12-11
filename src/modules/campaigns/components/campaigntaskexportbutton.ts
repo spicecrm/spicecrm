@@ -13,21 +13,21 @@ import {backend} from '../../../services/backend.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/campaigns/templates/campaigntaskexportbutton.html'
+    templateUrl: '../templates/campaigntaskexportbutton.html'
 })
 export class CampaignTaskExportButton {
 
     /**
      * inidctaes if the export is running
      */
-    private exporting: boolean = false;
+    public exporting: boolean = false;
 
     /**
      * grabbed by the container if the button shoudl be disabled
      */
     public disabled: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private toast: toast, private backend: backend, private domsanitizer: DomSanitizer) {
+    constructor(public language: language, public metadata: metadata, public model: model, public toast: toast, public backend: backend, public domsanitizer: DomSanitizer) {
         this.model.mode$.subscribe(mode => {
             this.handleDisabled();
         });
@@ -49,7 +49,7 @@ export class CampaignTaskExportButton {
     /**
      * handles the disbaled check
      */
-    private handleDisabled() {
+    public handleDisabled() {
 
         // not if activated
         if (this.model.getFieldValue('activated')) {

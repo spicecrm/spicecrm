@@ -10,7 +10,7 @@ declare var moment: any;
 
 @Component({
     selector: 'telephony-call-panel-save-button',
-    templateUrl: './src/modules/telephony/templates/telephonycallpanelsavebutton.html',
+    templateUrl: '../templates/telephonycallpanelsavebutton.html',
     providers: [model, view]
 })
 export class TelephonyCallPanelSaveButton {
@@ -18,10 +18,10 @@ export class TelephonyCallPanelSaveButton {
     /**
      * the call data reference
      */
-    @Input() private calldata: any;
+    @Input() public calldata: any;
 
 
-    constructor(@SkipSelf() private parent: model, private model: model, private view: view) {
+    constructor(@SkipSelf() public parent: model, public model: model, public view: view) {
 
     }
 
@@ -35,7 +35,7 @@ export class TelephonyCallPanelSaveButton {
     /**
      * save the call in the model history
      */
-    private saveCall() {
+    public saveCall() {
         this.model.module = 'Calls';
         this.model.initialize(this.parent);
 

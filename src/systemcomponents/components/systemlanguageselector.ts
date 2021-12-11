@@ -8,31 +8,31 @@ declare var _: any;
 
 @Component({
     selector: "system-language-selector",
-    templateUrl: "./src/systemcomponents/templates/systemlanguageselector.html"
+    templateUrl: "../templates/systemlanguageselector.html"
 })
 export class SystemLanguageSelector implements OnInit{
 
     /**
      * unique id to match the label
      */
-    private compId: string;
+    public compId: string;
 
     /**
      * the available languages
      */
-    private availableLanguages: any[] = [];
+    public availableLanguages: any[] = [];
 
     /**
      * emitter for changes on teh language
      */
-    private selected: EventEmitter<boolean> = new EventEmitter();
+    public selected: EventEmitter<boolean> = new EventEmitter();
 
     /**
      * set to false if no label shoudl be displayed
      */
-    @Input() private displaylabel: boolean = true;
+    @Input() public displaylabel: boolean = true;
 
-    constructor(private language: language) {
+    constructor(public language: language) {
         this.compId = _.uniqueId();
     }
 
@@ -43,7 +43,7 @@ export class SystemLanguageSelector implements OnInit{
     /**
      * returns the avialable languages
      */
-    private getAvialableLanguages() {
+    public getAvialableLanguages() {
         this.availableLanguages = this.language.getAvialableLanguages(true);
     }
 

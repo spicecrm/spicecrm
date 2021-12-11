@@ -15,7 +15,7 @@ declare var moment: any;
 
 @Component({
     selector: 'service-myqueues-tickets-dashlet-item',
-    templateUrl: './src/modules/servicecomponents/templates/servicemyqueuesticketsdashletitem.html',
+    templateUrl: '../templates/servicemyqueuesticketsdashletitem.html',
     providers: [model, view]
 })
 export class ServiceMyQueuesTicketsDashletItem implements OnInit {
@@ -24,7 +24,7 @@ export class ServiceMyQueuesTicketsDashletItem implements OnInit {
     headerfieldset: string = '';
     detailfieldset: string = '';
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modelutilities: modelutilities) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modelutilities: modelutilities) {
         this.model.module = 'ServiceTickets';
         let componentconfig = this.metadata.getComponentConfig('ServiceMyQueuesTicketsDashletItem');
         this.headerfieldset = componentconfig.headerfieldset;

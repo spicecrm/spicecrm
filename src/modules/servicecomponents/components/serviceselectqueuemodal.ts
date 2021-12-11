@@ -5,11 +5,10 @@ import {Component, EventEmitter, SkipSelf} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
-import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'service-select-queue-modal',
-    templateUrl: './src/modules/servicecomponents/templates/serviceselectqueuemodal.html',
+    templateUrl: '../templates/serviceselectqueuemodal.html',
     providers: [model]
 })
 export class ServiceSelectQueueModal {

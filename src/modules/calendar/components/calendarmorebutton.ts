@@ -11,7 +11,7 @@ import {language} from "../../../services/language.service";
  */
 @Component({
     selector: 'calendar-more-button',
-    templateUrl: './src/modules/calendar/templates/calendarmorebutton.html'
+    templateUrl: '../templates/calendarmorebutton.html'
 
 })
 
@@ -23,20 +23,20 @@ export class CalendarMoreButton implements OnDestroy {
     /*
     * @input ismobileview: boolean = false
     */
-    @Input("ismobileview") private isMobileView: boolean = false;
+    @Input("ismobileview") public isMobileView: boolean = false;
     /*
     * @input sheetday: any
     */
-    @Input("sheetday") private sheetDay: any = {};
+    @Input("sheetday") public sheetDay: any = {};
 
-    private popoverComponentRef = null;
-    private showPopoverTimeout: any = {};
+    public popoverComponentRef = null;
+    public showPopoverTimeout: any = {};
 
-    constructor(private elementRef: ElementRef,
-                private language: language,
-                private footer: footer,
-                private injector: Injector,
-                private metadata: metadata) {
+    constructor(public elementRef: ElementRef,
+                public language: language,
+                public footer: footer,
+                public injector: Injector,
+                public metadata: metadata) {
     }
 
     /*
@@ -54,7 +54,7 @@ export class CalendarMoreButton implements OnDestroy {
     * @renderPopover
     */
     @HostListener('mouseenter')
-    private onMouseOver() {
+    public onMouseOver() {
         this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
     }
 
@@ -64,7 +64,7 @@ export class CalendarMoreButton implements OnDestroy {
     * @closePopover
     */
     @HostListener('mouseleave')
-    private onMouseOut() {
+    public onMouseOut() {
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
         }
@@ -82,7 +82,7 @@ export class CalendarMoreButton implements OnDestroy {
     * @pass parentElementRef
     * @set popoverComponentRef
     */
-    private renderPopover() {
+    public renderPopover() {
         this.metadata.addComponent('CalendarMorePopover', this.footer.modalcontainer, this.injector)
             .subscribe(
                 popoverRef => {

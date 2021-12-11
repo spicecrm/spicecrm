@@ -10,19 +10,19 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'product-group-manager-details-attributes-validation',
-    templateUrl: './src/modules/products/templates/productgroupmanagerdetailsattributesvalidation.html',
+    templateUrl: '../templates/productgroupmanagerdetailsattributesvalidation.html',
     providers: [model]
 })
 export class ProductGroupManagerDetailsAttributesValidation implements OnInit, OnDestroy {
-    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) private buttonContainer: ViewContainerRef;
-    @Input() private parent: any = {};
+    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) public buttonContainer: ViewContainerRef;
+    @Input() public parent: any = {};
     public listFields: any[] = [];
 
-    constructor(private language: language,
-                private backend: backend,
-                private model: model,
-                private metadata: metadata,
-                private relatedmodels: relatedmodels) {
+    constructor(public language: language,
+                public backend: backend,
+                public model: model,
+                public metadata: metadata,
+                public relatedmodels: relatedmodels) {
 
         // set the module
         this.model.module = 'ProductAttributeValueValidations';
@@ -54,7 +54,7 @@ export class ProductGroupManagerDetailsAttributesValidation implements OnInit, O
         });
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 

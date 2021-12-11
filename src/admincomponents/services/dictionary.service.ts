@@ -17,10 +17,10 @@ export class dictionary {
     dictionaryfields: Array<any> = [];
 
     constructor(
-        private http: HttpClient,
-        private configurationService: configurationService,
-        private session: session,
-        private metadata: metadata,
+        public http: HttpClient,
+        public configurationService: configurationService,
+        public session: session,
+        public metadata: metadata,
     ) {}
 
     load(dictionaryitem: string): Observable<Array<any>> {

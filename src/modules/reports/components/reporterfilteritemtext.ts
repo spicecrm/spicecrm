@@ -12,14 +12,14 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-item-text',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemtext.html'
+    templateUrl: '../templates/reporterfilteritemtext.html'
 })
 export class ReporterFilterItemText {
 
-    @Input() private field : string = '';
-    @Input() private wherecondition : any = {};
+    @Input() public field : string = '';
+    @Input() public wherecondition : any = {};
 
-    constructor(private language: language, private model: model, private reporterconfig: reporterconfig) {
+    constructor(public language: language, public model: model, public reporterconfig: reporterconfig) {
 
     }
 

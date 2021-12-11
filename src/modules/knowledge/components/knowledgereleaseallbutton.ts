@@ -11,18 +11,18 @@ import {KnowledgeService} from "../services/knowledge.service";
 
 @Component({
     selector: 'knowledge-browser',
-    templateUrl: "./src/modules/knowledge/templates/knowledgereleaseallbutton.html"
+    templateUrl: "../templates/knowledgereleaseallbutton.html"
 })
 export class KnowledgeReleaseAllButton {
 
     public disabled: boolean = true;
 
-    constructor(private language: language,
-                private model: model,
-                private modal: modal,
-                private toast: toast,
-                private knowledgeService: KnowledgeService,
-                private backend: backend) {
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public toast: toast,
+                public knowledgeService: KnowledgeService,
+                public backend: backend) {
     }
 
     public ngOnInit() {
@@ -57,7 +57,7 @@ export class KnowledgeReleaseAllButton {
         });
     }
 
-    private handleDisabled(mode) {
+    public handleDisabled(mode) {
         if (this.model.getFieldValue('status') != 'Draft') {
             return this.disabled = true;
         }

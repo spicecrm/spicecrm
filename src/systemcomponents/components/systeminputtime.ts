@@ -21,7 +21,7 @@ declare var moment: any;
 
 @Component({
     selector: "system-input-time",
-    templateUrl: "./src/systemcomponents/templates/systeminputtime.html",
+    templateUrl: "../templates/systeminputtime.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -32,26 +32,26 @@ declare var moment: any;
 })
 export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
-    private _time: any = {
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
+    public _time: any = {
         display: '',
         moment: null,
         offset: 0,
         valid: true
     };
-    private dropdownValues: any[] = [];
+    public dropdownValues: any[] = [];
 
     // for the dropdown
-    private isOpen: boolean = false;
-    // private clickListener: any;
-    private readonly minutes_interval = 30;
+    public isOpen: boolean = false;
+    // public clickListener: any;
+    public readonly minutes_interval = 30;
 
     constructor(
-        private elementref: ElementRef,
-        private renderer: Renderer2,
-        private userpreferences: userpreferences,
-        private language: language
+        public elementref: ElementRef,
+        public renderer: Renderer2,
+        public userpreferences: userpreferences,
+        public language: language
     ) {
         this.dropdownValues = this.getDropdownValues();
     }
@@ -66,7 +66,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         return this._time.valid;
     }
 
-    private getDropdownValues() {
+    public getDropdownValues() {
         let addMinutes = 0;
         let retArray = [];
         while (addMinutes <= 1440) {
@@ -145,7 +145,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         return this._time.display ? true : false;
     }
 
-    private clear(broadcast = true) {
+    public clear(broadcast = true) {
         if (!this._time.moment) {
             this._time.moment = new moment();
         }
@@ -160,7 +160,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private toggleDropDown() {
+    public toggleDropDown() {
 
         this.isOpen = !this.isOpen;
         // check if we are active already
@@ -170,7 +170,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private closeDropDown() {
+    public closeDropDown() {
         // close the dropdown
         this.isOpen = false;
         /*if (this.clickListener) {
@@ -179,7 +179,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     }
 
     /*
-        private onDocumentClick(event: MouseEvent) {
+        public onDocumentClick(event: MouseEvent) {
             if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
                 this.isOpen = false;
                 this.clickListener();
@@ -252,7 +252,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
      * @param date
      * @returns {any}
      */
-    private calculateOffset(date) {
+    public calculateOffset(date) {
         let mins = date.hour() * 60 + date.minute();
         return Math.floor(mins / this.minutes_interval) * this.minutes_interval;
     }

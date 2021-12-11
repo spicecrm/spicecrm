@@ -24,14 +24,14 @@ import {modal} from '../../../services/modal.service';
 import {ACLObjectsManagerObjectTerritoriesModal} from "./aclobjectsmanagerobjectterritoriesmodal";
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclobjectsmanagerobjectterritories.html'
+    templateUrl: '../templates/aclobjectsmanagerobjectterritories.html'
 })
 export class ACLObjectsManagerObjectTerritories {
 
     public elements: any[] = [];
     public elementvalues: any[] = [];
 
-    constructor(private backend: backend, private metadata: metadata, private model: model, private language: language, private modal: modal) {
+    constructor(public backend: backend, public metadata: metadata, public model: model, public language: language, public modal: modal) {
         this.loadTerritories();
     }
 

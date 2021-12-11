@@ -11,7 +11,7 @@ import {EditorAttributeI} from "../interfaces/spicepagebuilder.interfaces";
  */
 @Component({
     selector: 'spice-page-builder-input-sides',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderinputsides.html',
+    templateUrl: '../templates/spicepagebuilderinputsides.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
@@ -25,22 +25,22 @@ export class SpicePageBuilderInputSides implements ControlValueAccessor {
     /**
      * name of the style attribute
      */
-    @Input() private label: string = '';
+    @Input() public label: string = '';
     /**
      * holds the sides value
      */
-    private value: { top, right, bottom, left } = {top: 0, right: 0, bottom: 0, left: 0};
+    public value: { top, right, bottom, left } = {top: 0, right: 0, bottom: 0, left: 0};
 
     /**
      * save on touched function for ControlValueAccessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
     /**
      * save on change function for ControlValueAccessor
      */
-    private onChange: (modelValue: any) => void;
+    public onChange: (modelValue: any) => void;
 
-    constructor(private cdRef: ChangeDetectorRef, private spicePageBuilderService: SpicePageBuilderService) {
+    constructor(public cdRef: ChangeDetectorRef, public spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -83,7 +83,7 @@ export class SpicePageBuilderInputSides implements ControlValueAccessor {
     /**
      * emit joined value
      */
-    private emitJoinedValue() {
+    public emitJoinedValue() {
         const suffix = this.spicePageBuilderService.defaultSuffix;
         this.onChange(
             `${this.value.top + suffix} ${this.value.right + suffix} ${this.value.bottom + suffix} ${this.value.left + suffix}`

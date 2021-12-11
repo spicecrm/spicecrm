@@ -17,58 +17,58 @@ import {ACLTerritoryTypeI} from "../../../modules/aclterritories/interfaces/modu
  */
 @Component({
     selector: 'aclterritorries-manager-territories',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritories.html',
+    templateUrl: '../templates/aclterritorriesmanagerterritories.html',
 })
 export class ACLTerritorriesManagerTerritories {
 
     /**
      * indicator when the territories list is loading
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     /**
      * the list of territory types
      */
-    private types: ACLTerritoryTypeI[] = [];
+    public types: ACLTerritoryTypeI[] = [];
 
     /**
      * the currently active type id
      */
-    private activeType: string = '';
+    public activeType: string = '';
 
     /**
      * the currently selected territory id
      */
-    private activeTerritoryId: string = '';
+    public activeTerritoryId: string = '';
 
     /**
      * searchterm for the territory search
      */
-    private searchterm: string = '';
+    public searchterm: string = '';
 
     /**
      * the list of loaded territories
      */
-    private territorieslist: any[] = [];
+    public territorieslist: any[] = [];
 
     /**
      * emits when a territory is selected
      */
-    @Output() private territoryselected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public territoryselected: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * emits when the type has changed
      */
-    @Output() private typeselected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
         this.loadTypes();
     }
 
     /**
      * loads the territory types
      */
-    private loadTypes() {
+    public loadTypes() {
         this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes').subscribe(types => {
             this.types = types;
 
@@ -81,7 +81,7 @@ export class ACLTerritorriesManagerTerritories {
     /**
      * loads the territories for a selected type
      */
-    private loadTerritories() {
+    public loadTerritories() {
         this.loading = true;
 
         this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes/' + this.activeType + '/territories', {
@@ -96,7 +96,7 @@ export class ACLTerritorriesManagerTerritories {
      * catches the enter key on the serach field and triogger a search
      * @param event
      */
-    private onKeyUp(event) {
+    public onKeyUp(event) {
         switch (event.key) {
             case 'Enter':
                 this.loadTerritories();
@@ -107,7 +107,7 @@ export class ACLTerritorriesManagerTerritories {
     /**
      * renders an add modal window
      */
-    private addTerritory() {
+    public addTerritory() {
         this.modal.openModal('ACLTerritorriesManagerTerritoryAddModal').subscribe(modalref => {
             modalref.instance.territorytype = this.activeType;
             modalref.instance.newterritory.subscribe(newterritory => {
@@ -121,7 +121,7 @@ export class ACLTerritorriesManagerTerritories {
      * fires when the type has changed resetting the selected terriottry and reloading the list
      * @param event
      */
-    private typeChanged(event) {
+    public typeChanged(event) {
         // rteset the active one
         this.activeTerritoryId = '';
         this.territoryselected.emit({});
@@ -135,7 +135,7 @@ export class ACLTerritorriesManagerTerritories {
      * fired when a territory is selected rendering it in teh second view
      * @param territory
      */
-    private selectTerritory(territory) {
+    public selectTerritory(territory) {
         this.activeTerritoryId = territory.id;
         this.territoryselected.emit(territory);
     }
@@ -145,7 +145,7 @@ export class ACLTerritorriesManagerTerritories {
      *
      * @param territory
      */
-    private deleteTerritory(territory) {
+    public deleteTerritory(territory) {
         this.modal.prompt("confirm", this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(response => {
             if(response) {
                 this.backend.deleteRequest('module/SpiceACLTerritories/' + this.activeTerritoryId).subscribe(response => {

@@ -10,7 +10,7 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'outlook-calendaritem-edit-container',
-    templateUrl: './src/include/outlook/templates/outlookcalendaritemeditcontainer.html',
+    templateUrl: '../templates/outlookcalendaritemeditcontainer.html',
     providers: [model, view]
 })
 export class OutlookCalendarItemEditContainer implements OnInit {
@@ -18,27 +18,27 @@ export class OutlookCalendarItemEditContainer implements OnInit {
     /**
      * the custom properties of the object
      */
-    @Input() private customProperties: any;
+    @Input() public customProperties: any;
 
     /**
      * the module of the item
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * the id of the item
      */
-    @Input() private id: string;
+    @Input() public id: string;
 
     /**
      * the componentset
      */
-    private componentset: string;
+    public componentset: string;
 
     constructor(
-        private metadata: metadata,
-        private view: view,
-        private model: model
+        public metadata: metadata,
+        public view: view,
+        public model: model
     ) {
     }
 
@@ -51,7 +51,7 @@ export class OutlookCalendarItemEditContainer implements OnInit {
         this.loadModel();
     }
 
-    private getConfiguration() {
+    public getConfiguration() {
         let componentconfig = this.metadata.getComponentConfig('OutlookCalendarItemEditContainer', this.module);
         this.componentset = componentconfig.componentset;
     }
@@ -60,7 +60,7 @@ export class OutlookCalendarItemEditContainer implements OnInit {
     /**
      * initialöizes and oads the model
      */
-    private loadModel() {
+    public loadModel() {
         this.model.module = this.module;
         this.model.id = this.id;
         this.model.getData();

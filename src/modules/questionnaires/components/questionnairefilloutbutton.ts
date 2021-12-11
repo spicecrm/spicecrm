@@ -5,13 +5,13 @@ import { language } from '../../../services/language.service';
 
 @Component({
     selector: 'questionnaire-fill-out-button',
-    templateUrl: './src/modules/questionnaires/templates/questionnairefilloutbutton.html'
+    templateUrl: '../templates/questionnairefilloutbutton.html'
 })
 export class QuestionnaireFillOutButton {
 
     public disabled = false;
 
-    constructor( private language: language, private model: model, private modal: modal ) { }
+    constructor( public language: language, public model: model, public modal: modal ) { }
 
     public execute() {
         this.modal.openModal('QuestionnaireFillOutModal').subscribe(modal => {

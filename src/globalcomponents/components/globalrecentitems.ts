@@ -12,15 +12,15 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'global-recent-items',
-    templateUrl: './src/globalcomponents/templates/globalrecentitems.html'
+    templateUrl: '../templates/globalrecentitems.html'
 })
 export class GlobalRecentItems {
-    constructor(private language: language, navigationtab: navigationtab, private router: Router, private recent: recent) {
+    constructor(public language: language, navigationtab: navigationtab,public router: Router,public recent: recent) {
         // set the navigationtab title
         navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_RECENTLYVIEWED'), displayicon: 'breadcrumbs'});
     }
 
-    private goRecent(module, id) {
+   public goRecent(module, id) {
         this.router.navigate(['/module/' + module + '/' + id]);
     }
 }

@@ -19,36 +19,36 @@ import {view} from '../../services/view.service';
 import {configurationService} from '../../services/configuration.service';
 
 @Component({
-    templateUrl: './src/workbench/templates/componentsetmanager.html',
+    templateUrl: '../templates/componentsetmanager.html',
     providers: [view]
 })
 export class ComponentsetManager {
 
-    private edit_mode: string = "custom";
-    private allowBarButtons: boolean = true;
+    public edit_mode: string = "custom";
+    public allowBarButtons: boolean = true;
     // crNoneActive: boolean = false;
 
-    private change_request_required: boolean = false;
+    public change_request_required: boolean = false;
 
-    private sysModules: any[] = [];
-    private currentModule: string = '*';
-    private currentComponentSet: string = '';
-    private currentComponentSetItems: any[] = [];
-    private selectedId: string = '';
-    private selectedComponent: any = {};
+    public sysModules: any[] = [];
+    public currentModule: string = '*';
+    public currentComponentSet: string = '';
+    public currentComponentSetItems: any[] = [];
+    public selectedId: string = '';
+    public selectedComponent: any = {};
 
-    private showAddDialog: boolean = false;
-    private showComponentsetDetails: boolean = false;
+    public showAddDialog: boolean = false;
+    public showComponentsetDetails: boolean = false;
 
-    constructor(private backend: backend,
-                private metadata: metadata,
-                private language: language,
-                private modelutilities: modelutilities,
-                private broadcast: broadcast,
-                private toast: toast,
-                private modalservice: modal,
-                private view: view,
-                private configurationService: configurationService) {
+    constructor(public backend: backend,
+                public metadata: metadata,
+                public language: language,
+                public modelutilities: modelutilities,
+                public broadcast: broadcast,
+                public toast: toast,
+                public modalservice: modal,
+                public view: view,
+                public configurationService: configurationService) {
 
         this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
@@ -61,7 +61,7 @@ export class ComponentsetManager {
     }
 
 
-    private checkMode() {
+    public checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
 
@@ -98,12 +98,12 @@ export class ComponentsetManager {
         }
     }
 
-    private setNoneMode() {
+    public setNoneMode() {
         this.view.setViewMode();
         this.allowBarButtons = false;
     }
 
-    private setCustomMode() {
+    public setCustomMode() {
         if (this.componentSetType == "custom") {
             this.view.setEditMode();
         } else {
@@ -111,7 +111,7 @@ export class ComponentsetManager {
         }
     }
 
-    private setAllMode() {
+    public setAllMode() {
         this.view.setEditMode();
     }
 
@@ -120,7 +120,7 @@ export class ComponentsetManager {
         return this.showComponentsetDetails ? 'chevronup' : 'chevrondown';
     }
 
-    private toggleDetail() {
+    public toggleDetail() {
         this.showComponentsetDetails = !this.showComponentsetDetails;
     }
 
@@ -150,7 +150,7 @@ export class ComponentsetManager {
         componentset.name = newName;
     }
 
-    private componentDeprecated(component) {
+    public componentDeprecated(component) {
         let object = this.metadata.getSystemComponents(component.module).find(x => x.component === component.component);
         if (object.deprecated == '1') {
             return true;
@@ -159,7 +159,7 @@ export class ComponentsetManager {
         }
     }
 
-    private getComponentSetItemName(componentsetItem) {
+    public getComponentSetItemName(componentsetItem) {
         if (componentsetItem.componentconfig.name) {
             return `(${this.language.getLabel(componentsetItem.componentconfig.name)})`;
         }
@@ -169,7 +169,7 @@ export class ComponentsetManager {
         }
     }
 
-    private getComponentSets(type?) {
+    public getComponentSets(type?) {
         if (!type) {
             return this.metadata.getComponentSets(this.currentModule);
         } else {
@@ -186,38 +186,38 @@ export class ComponentsetManager {
         }
     }
 
-    private getComponentSetItems() {
+    public getComponentSetItems() {
         return this.currentComponentSet ? this.metadata.getComponentSetObjects(this.currentComponentSet) : [];
     }
 
-    private selectItem(item) {
+    public selectItem(item) {
         this.selectedId = item.id;
         this.selectedComponent = item;
     }
 
-    private isSelected(id) {
+    public isSelected(id) {
         return id == this.selectedId;
     }
 
-    private getComponentsetConfig() {
+    public getComponentsetConfig() {
         if (this.selectedComponent.componentconfig) {
             return JSON.stringify(this.selectedComponent.componentconfig);
         }
     }
 
-    private reset() {
+    public reset() {
         this.selectedId = '';
         this.selectedComponent = {};
         this.currentComponentSet = '';
     }
 
-    private selectComponentSet() {
+    public selectComponentSet() {
         this.checkMode();
         this.selectedId = '';
         this.selectedComponent = {};
     }
 
-    private addComponent() {
+    public addComponent() {
         this.showAddDialog = true;
         this.modalservice.openModal('ComponentsetManagerAddDialog').subscribe(modal => {
             modal.instance.module = this.currentModule;
@@ -225,12 +225,12 @@ export class ComponentsetManager {
         });
     }
 
-    private addComponentset() {
+    public addComponentset() {
         this.reset();
         this.editComponentset();
     }
 
-    private editComponentset() {
+    public editComponentset() {
         this.modalservice.openModal('ComponentsetManagerEditDialog').subscribe(modal => {
             modal.instance.componentset = this.currentComponentSet;
             modal.instance.edit_mode = this.edit_mode;
@@ -254,7 +254,7 @@ export class ComponentsetManager {
      * deletes a componentset item by the id
      * @param item
      */
-    private deleteComponent(item) {
+    public deleteComponent(item) {
         let componentsetItems = this.metadata.getComponentSetObjects(this.currentComponentSet);
         componentsetItems.splice(componentsetItems.findIndex(c => c.id == item.id), 1);
     }
@@ -263,7 +263,7 @@ export class ComponentsetManager {
      * handles the drop event and rearranges the array
      * @param event
      */
-    private drop(event) {
+    public drop(event) {
         let componentsetItems = this.metadata.getComponentSetObjects(this.currentComponentSet);
         componentsetItems.splice(event.currentIndex, 0, componentsetItems.splice(event.previousIndex, 1)[0]);
 
@@ -277,7 +277,7 @@ export class ComponentsetManager {
     }
 
 
-    private saveChanges() {
+    public saveChanges() {
 
         this.backend.getRequest('configuration/spiceui/core/components').subscribe((res: any) => {
 

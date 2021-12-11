@@ -14,7 +14,7 @@ import {view} from "../../../services/view.service";
  * additonal fields might be added
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketclosemodal.html',
+    templateUrl: '../templates/serviceticketclosemodal.html',
     providers: [view]
 })
 export class ServiceTicketCloseModal {
@@ -22,19 +22,19 @@ export class ServiceTicketCloseModal {
     /**
      * the status network item record
      */
-    private self: any;
+    public self: any;
 
     /**
      * the fieldset to be rendered according to the componentconfig
      */
-    private fieldset: string;
+    public fieldset: string;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private view: view
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public view: view
     ) {
         // set the view to edit mode
         this.view.isEditable = true;
@@ -48,7 +48,7 @@ export class ServiceTicketCloseModal {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -62,7 +62,7 @@ export class ServiceTicketCloseModal {
     /**
      * set the status and closes the modal
      */
-    private setStatus() {
+    public setStatus() {
         if(!this.canSave) return;
 
         // start editing the model and set the status

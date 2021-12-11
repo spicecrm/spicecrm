@@ -10,18 +10,18 @@ import {backend} from '../../services/backend.service';
 
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationftsstats.html'
+    templateUrl: '../templates/administrationftsstats.html'
 })
 export class AdministrationFTSStats {
 
-    private stats: any = {};
+    public stats: any = {};
 
     public indices: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend
+        public metadata: metadata,
+        public language: language,
+        public backend: backend
 
     ) {
         this.backend.getRequest('admin/elastic/stats').subscribe(stats => {

@@ -10,26 +10,26 @@ import {backend} from "../../../services/backend.service";
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/campaigns/templates/campaignexportmodal.html'
+    templateUrl: '../templates/campaignexportmodal.html'
 })
 export class CampaignExportModal {
 
-    private self: any;
+    public self: any;
 
-    private exportReports: any[] = [];
+    public exportReports: any[] = [];
 
-    constructor(private language: language, private model: model, private backend: backend, private modal: modal) {
+    constructor(public language: language, public model: model, public backend: backend, public modal: modal) {
         this.backend.getRequest('module/CampaignTasks/export/reports').subscribe(reports => {
             this.exportReports = reports;
         });
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private downloadCSV(reportid) {
-        let await = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
+    public downloadCSV(reportid) {
+        let loading = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
         this.backend.getDownloadPostRequestFile('module/KReports/plugins/action/kcsvexport/export', {
             record: reportid,
             parentbeanId: this.model.id,
@@ -37,16 +37,16 @@ export class CampaignExportModal {
         }).subscribe(
             url => {
                 this.downloadURL(url, 'csv');
-                await.emit(true);
+                loading.emit(true);
                 this.close();
             },
             error => {
-                await.emit(true);
+                loading.emit(true);
             });
     }
 
-    private downloadXLS(reportid) {
-        let await = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
+    public downloadXLS(reportid) {
+        let loading = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
         this.backend.getDownloadPostRequestFile('module/KReports/plugins/action/kexcelexport/export', {
             record: reportid,
             parentbeanId: this.model.id,
@@ -54,11 +54,11 @@ export class CampaignExportModal {
         }).subscribe(
             url => {
                 this.downloadURL(url, 'xlsx');
-                await.emit(true);
+                loading.emit(true);
                 this.close();
             },
             error => {
-                await.emit(true);
+                loading.emit(true);
             });
     }
 
@@ -67,7 +67,7 @@ export class CampaignExportModal {
      * @param url
      * @param extension
      */
-    private downloadURL(url, extension) {
+    public downloadURL(url, extension) {
         // create a link on the document and click for the download
         let downloadLink = document.createElement('a');
         downloadLink.href = url;

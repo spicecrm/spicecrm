@@ -11,21 +11,21 @@ import {productfinder} from "../services/productfinder.service";
 
 @Component({
     selector: 'product-group-manager-details-attributes-item',
-    templateUrl: './src/modules/products/templates/productgroupmanagerdetailsattributesitem.html',
+    templateUrl: '../templates/productgroupmanagerdetailsattributesitem.html',
     providers: [model, relatedmodels]
 })
 export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterViewInit {
     public detailsItems: any[] = [];
-    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) private detailsContainer: ViewContainerRef;
-    @Input() private attribute: any;
-    private isOpen: boolean = false;
+    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) public detailsContainer: ViewContainerRef;
+    @Input() public attribute: any;
+    public isOpen: boolean = false;
 
-    constructor(private language: language,
-                private model: model,
-                private metadata: metadata,
-                private router: Router,
-                private relatedmodels: relatedmodels,
-                private productFinder: productfinder
+    constructor(public language: language,
+                public model: model,
+                public metadata: metadata,
+                public router: Router,
+                public relatedmodels: relatedmodels,
+                public productFinder: productfinder
     ) {
     }
 
@@ -61,11 +61,11 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
         }
     }
 
-    private goDetails() {
+    public goDetails() {
         this.router.navigate(["module/ProductAttributes/" + this.attribute.id]);
     }
 
-    private toggleOpen(event: MouseEvent) {
+    public toggleOpen(event: MouseEvent) {
         this.isOpen = !this.isOpen;
         if (this.isOpen) this.relatedmodels.getData();
         event.stopPropagation();

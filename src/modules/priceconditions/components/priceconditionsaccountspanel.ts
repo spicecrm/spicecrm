@@ -15,7 +15,7 @@ import {priceconditonsconfiguration} from '../services/priceconditonsconfigurati
 declare var _: any;
 
 @Component({
-    templateUrl: './src/modules/priceconditions/templates/priceconditionsaccountspanel.html',
+    templateUrl: '../templates/priceconditionsaccountspanel.html',
     providers: [priceconditonsconfiguration],
     animations: [
         trigger('conditionscard', [
@@ -46,36 +46,36 @@ export class PriceConditionsAccountsPanel implements OnInit {
     /**
      *  a componentconfig passed in
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * inidcates that the panel is loading
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     /**
      * all loaded conditions
      */
-    private conditions: any[] = [];
+    public conditions: any[] = [];
 
     /**
      * the list of conditiontypes
      */
-    private conditiontypes: any[] = [];
+    public conditiontypes: any[] = [];
 
     /**
      * the current active condition type
      */
-    private activeconditiontype: string;
+    public activeconditiontype: string;
 
     /**
      * for the collapsible panel if the panel is open
      */
-    private _isopen: boolean = true;
+    public _isopen: boolean = true;
 
-    private activeView: 'condition' | 'determination' = 'determination';
+    public activeView: 'condition' | 'determination' = 'determination';
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private backend: backend, private configuration: configurationService, private priceconditonsconfiguration: priceconditonsconfiguration) {
+    constructor(public language: language, public metadata: metadata, public model: model, public router: Router, public backend: backend, public configuration: configurationService, public priceconditonsconfiguration: priceconditonsconfiguration) {
         this.priceconditonsconfiguration.loaded$.subscribe(loaded => {
             if (loaded) {
                 this.loadConditions();
@@ -97,7 +97,7 @@ export class PriceConditionsAccountsPanel implements OnInit {
     /**
      * toggle Open or Close the panel
      */
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this._isopen = !this._isopen;
     }
@@ -106,7 +106,7 @@ export class PriceConditionsAccountsPanel implements OnInit {
     /**
      * loads the conditions for the accounnt on the backend
      */
-    private loadConditions() {
+    public loadConditions() {
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/related/priceconditions`).subscribe(conditions => {
             this.conditions = conditions.sort((a, b) => a.valid_from > b.valid_from ? -1 : 1);
 
@@ -115,7 +115,7 @@ export class PriceConditionsAccountsPanel implements OnInit {
         });
     }
 
-    private setConditionType(conditiontypeid) {
+    public setConditionType(conditiontypeid) {
         this.activeconditiontype = conditiontypeid;
     }
 

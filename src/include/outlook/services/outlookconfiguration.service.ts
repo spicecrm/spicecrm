@@ -12,13 +12,13 @@ declare var Office: any;
  */
 @Injectable()
 export class OutlookConfiguration {
-    private settings = Office.context.roamingSettings;
+    public settings = Office.context.roamingSettings;
 
     public username: string;
     public password: string;
 
     constructor(
-        private backend: backend,
+        public backend: backend,
     ) {
         this.loadSettings();
     }

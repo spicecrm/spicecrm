@@ -9,19 +9,19 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele-sales-cockpit-header',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitheader.html'
+    templateUrl: '../templates/telesalescockpitheader.html'
 })
 
 export class TeleSalesCockpitHeader implements OnInit {
 
     public fieldsetItems: any[] = [];
-    private actionset: string = '';
-    private fieldset: string;
+    public actionset: string = '';
+    public fieldset: string;
 
-    constructor(private language: language,
-                private model: model,
-                private metadata: metadata,
-                private telecockpitservice: telecockpitservice) {
+    constructor(public language: language,
+                public model: model,
+                public metadata: metadata,
+                public telecockpitservice: telecockpitservice) {
     }
 
     get campaignTasks(): any[] {
@@ -36,7 +36,7 @@ export class TeleSalesCockpitHeader implements OnInit {
         this.loadComponentConfigs();
     }
 
-    private loadComponentConfigs() {
+    public loadComponentConfigs() {
         let conf = this.metadata.getComponentConfig('TeleSalesCockpitHeader');
         this.actionset = conf && conf.actionset ? conf.actionset : '';
         this.fieldset = conf && conf.fieldset ? conf.fieldset : undefined;
@@ -45,17 +45,17 @@ export class TeleSalesCockpitHeader implements OnInit {
         }
     }
 
-    private selectCampaignTask(value) {
+    public selectCampaignTask(value) {
         this.telecockpitservice.selectedCampaignTask = value;
         this.telecockpitservice.resetMainView();
     }
 
-    private getCampaigntaskDisplay(campaignTask) {
+    public getCampaigntaskDisplay(campaignTask) {
         let campaignName = campaignTask.campaign_name && campaignTask.campaign_name.length > 0 ? (campaignTask.campaign_name + ' / ') : '';
         return campaignName + campaignTask.name;
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.item_id;
     }
 }

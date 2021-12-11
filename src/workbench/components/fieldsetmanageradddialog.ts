@@ -16,23 +16,23 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'fieldsetmanager-add-dialog',
-    templateUrl: './src/workbench/templates/fieldsetmanageradddialog.html'
+    templateUrl: '../templates/fieldsetmanageradddialog.html'
 })
 export class FieldsetManagerAddDialog implements OnInit {
-    @Output() private closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Input() private module: string = '*';
-    @Input() private parent: string = '';
-    @Input() private edit_mode: string = '';
+    @Output() public closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() public module: string = '*';
+    @Input() public parent: string = '';
+    @Input() public edit_mode: string = '';
 
 
-    private addType: string = 'fieldsetadd';
-    private addName: string = '';
-    private addFieldset: string = '';
-    private fieldsettype: string = 'custom';
-    private moduleFields: any[] = [];
-    private self: any;
+    public addType: string = 'fieldsetadd';
+    public addName: string = '';
+    public addFieldset: string = '';
+    public fieldsettype: string = 'custom';
+    public moduleFields: any[] = [];
+    public self: any;
 
-    constructor(private backend: backend, private language: language, private modelutilities: modelutilities, private metadata: metadata) {
+    constructor(public backend: backend, public language: language, public modelutilities: modelutilities, public metadata: metadata) {
 
     }
 
@@ -42,15 +42,15 @@ export class FieldsetManagerAddDialog implements OnInit {
         }
     }
 
-    private closeDialog() {
+    public closeDialog() {
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.closeDialog();
     }
 
-    private add() {
+    public add() {
         switch (this.addType) {
             case 'fieldsetadd':
                 let fieldsetid = this.modelutilities.generateGuid();
@@ -69,7 +69,7 @@ export class FieldsetManagerAddDialog implements OnInit {
         this.self.destroy();
     }
 
-    private getFieldNames() {
+    public getFieldNames() {
         let fieldnames = [];
 
         for (let fieldname in this.moduleFields) {

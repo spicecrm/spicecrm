@@ -25,7 +25,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'service-planner',
-    templateUrl: './src/modules/servicecomponents/templates/serviceplanner.html',
+    templateUrl: '../templates/serviceplanner.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [ServicePlannerService, modellist, model, view]
 })
@@ -38,40 +38,40 @@ export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * holds the records that will be passed to the timeline component
      */
-    protected timelineRecords: ServicePlannerRecordI[] = [];
+    public timelineRecords: ServicePlannerRecordI[] = [];
     /**
      * holds the module filters
      */
-    private moduleFilters = {timelineUsers: null, timelineOrders: null, mapOrders: null};
+    public moduleFilters = {timelineUsers: null, timelineOrders: null, mapOrders: null};
     /**
      * subscription to handle unsubscribe
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
     /**
      * holds the end date
      */
-    private endDate: any = moment();
+    public endDate: any = moment();
     /**
      * holds the start date
      */
-    private startDate: any = moment();
+    public startDate: any = moment();
     /**
      * holds the start date
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
 
-    constructor(private language: language,
-                private cdRef: ChangeDetectorRef,
-                private renderer: Renderer2,
-                private broadcast: broadcast,
-                private metadata: metadata,
-                private navigationtab: navigationtab,
-                private backend: backend,
-                private session: session,
-                private navigation: navigation,
-                private view: view,
-                private servicePlannerService: ServicePlannerService,
-                private modellist: modellist) {
+    constructor(public language: language,
+                public cdRef: ChangeDetectorRef,
+                public renderer: Renderer2,
+                public broadcast: broadcast,
+                public metadata: metadata,
+                public navigationtab: navigationtab,
+                public backend: backend,
+                public session: session,
+                public navigation: navigation,
+                public view: view,
+                public servicePlannerService: ServicePlannerService,
+                public modellist: modellist) {
         this.subscribeToChanges();
         this.setTabInfo();
         this.view.displayLabels = false;
@@ -90,7 +90,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * set the module for the module list service and disable cache
      */
-    private initializeModelList() {
+    public initializeModelList() {
         // set the module in an embedded mode so not the full list is loaded
         this.modellist.initialize('ServiceOrders', 'SpiceGoogleMapsList');
         this.modellist.getListData();
@@ -99,7 +99,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * loads the module filters for the records
      */
-    private loadModuleFilters() {
+    public loadModuleFilters() {
         const config = this.metadata.getComponentConfig('ServicePlanner', 'ServiceOrders');
         if (!config) return;
         this.moduleFilters.timelineUsers = !config.timelineUsersFilter ? null : config.timelineUsersFilter;
@@ -118,7 +118,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * set the navigation tab info
      */
-    private setTabInfo() {
+    public setTabInfo() {
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SERVICE_PLANNER'), displayicon: 'date_input'});
     }
 
@@ -126,7 +126,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
      * set the date range from the timeline component
      * @param dateRange
      */
-    private setDateRange(dateRange) {
+    public setDateRange(dateRange) {
         this.startDate = new moment(dateRange.start.format());
         this.endDate = new moment(dateRange.end.format());
         this.getUsersServiceOrders();
@@ -135,7 +135,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * subscribe to model and timezone changes and apply the changes in the calendar
      */
-    private subscribeToChanges() {
+    public subscribeToChanges() {
         let subscriber = this.broadcast.message$.subscribe(message => {
             const module = message.messagedata.module;
             const data = message.messagedata.data;
@@ -166,7 +166,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * load events from backend
      */
-    private getUsersServiceOrders() {
+    public getUsersServiceOrders() {
 
         this.timelineRecords = [];
         this.isLoading = true;
@@ -204,7 +204,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
      * handle the event click
      * @param event
      */
-    private handleEventClick(data: {record: ServicePlannerRecordI, event?: ServicePlannerEventI}) {
+    public handleEventClick(data: {record: ServicePlannerRecordI, event?: ServicePlannerEventI}) {
         // defocus the map
         this.broadcast.broadcastMessage('map.defocus', {tabId: this.navigation.activeTabObject.id, record: {}});
 

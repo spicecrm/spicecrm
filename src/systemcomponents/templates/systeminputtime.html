@@ -4,7 +4,7 @@
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-picklist slds-timepicker" [ngClass]="{'slds-is-open':isOpen}" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                     <input class="slds-input slds-combobox__input" aria-controls="listbox-unique-id" autocomplete="off" role="textbox" type="text" [ngModelOptions]="{updateOn: 'blur'}" [(ngModel)]="display" (keyup.arrowup)="setDisplayToNextDropDownValue()" (keyup.arrowdown)="setDisplayToPreviousDropDownValue()" />
-                    <div class="slds-input__icon-group slds-input__icon-group_right">
+                    <div class="slds-input__icon-group slds-input__icon-group_right slds-height_full">
                         <button *ngIf="canclear" class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="clear()">
                             <system-button-icon icon="clear"></system-button-icon>
                         </button>

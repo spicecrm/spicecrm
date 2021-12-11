@@ -30,7 +30,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar',
-    templateUrl: './src/modules/calendar/templates/calendar.html',
+    templateUrl: '../templates/calendar.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [calendar, model]
 })
@@ -47,54 +47,54 @@ export class Calendar implements AfterViewInit, OnDestroy {
     /**
      * dom reference to the calendar main container div
      */
-    @ViewChild('calendarContainer', {read: ViewContainerRef, static: true}) private calendarContainer: ViewContainerRef;
+    @ViewChild('calendarContainer', {read: ViewContainerRef, static: true}) public calendarContainer: ViewContainerRef;
     /**
      * element reference to the calendar header component
      */
-    @ViewChild(CalendarHeader, {static: true}) private calendarHeader: CalendarHeader;
+    @ViewChild(CalendarHeader, {static: true}) public calendarHeader: CalendarHeader;
     /**
      * holds the subscriptions to unsubscribe on destroy
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
     /**
      * holds the touch start listener
      */
-    private touchStartListener: any;
+    public touchStartListener: any;
     /**
      * holds the touch move listener
      */
-    private touchMoveListener: any;
+    public touchMoveListener: any;
     /**
      * holds the resize listener
      */
-    private resizeListener: any;
+    public resizeListener: any;
     /**
      * holds the touch down x position
      */
-    private xDown: number = null;
+    public xDown: number = null;
     /**
      * holds the calendar main container class
      */
-    private mainContainerClass: string = 'slds-theme--default';
+    public mainContainerClass: string = 'slds-theme--default';
     /**
      * holds the touch down y position
      */
-    private yDown: number = null;
+    public yDown: number = null;
     /**
      * reference to this component to destroy
      */
-    private self: any = {};
+    public self: any = {};
 
-    constructor(private language: language,
-                private navigation: navigation,
-                private elementRef: ElementRef,
-                private renderer: Renderer2,
-                private modal: modal,
-                private cdr: ChangeDetectorRef,
-                private model: model,
-                private metadata: metadata,
-                private injector: Injector,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public navigation: navigation,
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public modal: modal,
+                public cdr: ChangeDetectorRef,
+                public model: model,
+                public metadata: metadata,
+                public injector: Injector,
+                public calendar: calendar) {
 
         this.navigation.setActiveModule('Calendar');
     }
@@ -150,7 +150,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
     /**
      * add resize listener to set the mobile view boolean
      */
-    private handleMobileView() {
+    public handleMobileView() {
         this.resizeListener = this.renderer.listen('window', 'resize', () => {
             this.calendar.setIsMobileView(this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768);
         });
@@ -161,7 +161,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
      * set the schedule until date in the calendar header
      * @param event
      */
-    private handleUntilDate(event) {
+    public handleUntilDate(event) {
         this.calendarHeader.scheduleUntilDate = event;
     }
 
@@ -169,7 +169,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
      * close the date picker in the calendar header and refresh
      * @param event
      */
-    private setDateChanged(event) {
+    public setDateChanged(event) {
         this.calendarHeader.toggleClosed();
         this.calendar.refresh(event);
     }
@@ -178,14 +178,14 @@ export class Calendar implements AfterViewInit, OnDestroy {
      * set google is visible boolean value
      * @param value
      */
-    private handleGoogleIsVisible(value) {
+    public handleGoogleIsVisible(value) {
         this.googleIsVisible = value;
     }
 
     /**
      * close the modal when the calendar is used a picker
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
@@ -193,7 +193,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
      * handle calendar touch start to register a touch move listener
      * @param evt
      */
-    private handleTouchStart(evt) {
+    public handleTouchStart(evt) {
         const touches = evt.touches || evt.originalEvent.touches;
         this.xDown = touches[0].clientX;
         this.yDown = touches[0].clientY;
@@ -204,7 +204,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
      * shift the calendar date by the touch move direction
      * @param evt
      */
-    private handleTouchMove(evt) {
+    public handleTouchMove(evt) {
         this.touchMoveListener();
 
         if (!this.xDown || !this.yDown) {
@@ -227,7 +227,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
      * open the add modules modal when the click event is emitted from the drop target
      * @param event
      */
-    private addEvent(event) {
+    public addEvent(event) {
         this.model.reset();
         this.modal.openModal('CalendarAddModulesModal', true, this.injector)
             .subscribe(modalRef => {

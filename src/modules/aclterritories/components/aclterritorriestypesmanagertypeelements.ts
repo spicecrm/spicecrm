@@ -10,7 +10,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclterritorries-typesmanager-type-elements',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriestypesmanagertypeelements.html',
+    templateUrl: '../templates/aclterritorriestypesmanagertypeelements.html',
 })
 export class ACLTerritorriesTypesmanagerTypeElements implements OnChanges {
 
@@ -19,7 +19,7 @@ export class ACLTerritorriesTypesmanagerTypeElements implements OnChanges {
 
     @Input() public activeType: string = '';
 
-    constructor(private backend: backend, private modal: modal, private language: language) {
+    constructor(public backend: backend, public modal: modal, public language: language) {
     }
 
     public ngOnChanges() {

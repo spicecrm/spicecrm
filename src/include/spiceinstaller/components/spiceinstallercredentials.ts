@@ -8,7 +8,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-credentials',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallercredentials.html'
+    templateUrl: '../templates/spiceinstallercredentials.html'
 })
 
 export class SpiceInstallerCredentials {
@@ -16,26 +16,26 @@ export class SpiceInstallerCredentials {
     /**
      * condition booleans
      */
-    private usernameCondition: boolean = true;
-    private passwordCondition: boolean = true;
-    private rpPasswordCondition: boolean = true;
-    private surnameCondition: boolean = true;
-    private emailCondition: boolean = true;
+    public usernameCondition: boolean = true;
+    public passwordCondition: boolean = true;
+    public rpPasswordCondition: boolean = true;
+    public surnameCondition: boolean = true;
+    public emailCondition: boolean = true;
     /**
      * repeated password variable holder and Regexp for password
      */
-    private rpPassword: string = '';
-    private pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
+    public rpPassword: string = '';
+    public pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
 
     constructor(
-        private spiceinstaller: spiceinstaller
+        public spiceinstaller: spiceinstaller
     ) {
     }
 
     /**
      * set user with provided inputs
      */
-    private saveUser() {
+    public saveUser() {
         this.usernameCondition = this.spiceinstaller.username.length > 0;
         this.passwordCondition = this.spiceinstaller.password.length > 0 && this.pwRegexp.test(this.spiceinstaller.password);
         this.rpPasswordCondition = this.rpPassword == this.spiceinstaller.password;

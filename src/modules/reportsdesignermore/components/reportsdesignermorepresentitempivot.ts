@@ -9,7 +9,7 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-present-item-pivot',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorepresentitempivot.html',
+    templateUrl: '../templates/reportsdesignermorepresentitempivot.html',
     styles: ['.reports-designer-table-adjust-drag-placeholder .cdk-drag-placeholder {width: max-content; display: block;}']
 })
 export class ReportsDesignerMorePresentItemPivot {
@@ -93,7 +93,7 @@ export class ReportsDesignerMorePresentItemPivot {
      * reset listFields sort priority as in the list
      * @param dragEvent: CdkDragDrop<any>
      */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
+    public onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
 
         if (dragEvent.previousContainer === dragEvent.container) {
@@ -119,7 +119,7 @@ export class ReportsDesignerMorePresentItemPivot {
      * @param item
      * @return index
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.fieldid;
     }
 
@@ -128,7 +128,7 @@ export class ReportsDesignerMorePresentItemPivot {
      * @param arrayName: string
      * @param id: string
      */
-    private deleteItem(arrayName, id) {
+    public deleteItem(arrayName, id) {
         const presentationParams = this.model.getField('presentation_params');
         if (arrayName == 'rowData') {
             presentationParams.pluginData.rowData = '';

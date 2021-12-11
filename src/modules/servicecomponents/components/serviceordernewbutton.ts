@@ -15,7 +15,7 @@ declare var moment: any;
  * renders a new button as part of the actionset in the serviceticket aallowing to create a serviceorder with some related information from the ticekt
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceordernewbutton.html',
+    templateUrl: '../templates/serviceordernewbutton.html',
     providers: [model]
 })
 export class ServiceOrderNewButton {
@@ -30,7 +30,7 @@ export class ServiceOrderNewButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(private injector: Injector, public language: language, public metadata: metadata, public backend: backend, public modal: modal, public model: model, public relatedmodels: relatedmodels, @SkipSelf() public parentmodel: model) {
+    constructor(public injector: Injector, public language: language, public metadata: metadata, public backend: backend, public modal: modal, public model: model, public relatedmodels: relatedmodels, @SkipSelf() public parentmodel: model) {
 
     }
 

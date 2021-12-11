@@ -10,16 +10,16 @@ import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
 declare var _: any;
 @Component({
     selector: 'questions-manager-edit-rating-group',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditratinggroup.html'
+    templateUrl: '../templates/questionsmanagereditratinggroup.html'
 })
 export class QuestionsManagerEditRatingGroup extends QuestionsManagerEditBasic implements OnInit {
 
     @Input() public questionset: any = {};
     @Input() public categorypool;
 
-    private entries: any[] = [];
-    private options: any[] = [];
-    private isBuilt = false;
+    public entries: any[] = [];
+    public options: any[] = [];
+    public isBuilt = false;
 
     constructor( public language: language, public model: model, public view: view ) {
         super( language, model, view );
@@ -74,6 +74,6 @@ export class QuestionsManagerEditRatingGroup extends QuestionsManagerEditBasic i
         }
     }
 
-    private change(): void { null; }
+    public change(): void { null; }
 
 }

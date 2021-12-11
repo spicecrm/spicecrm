@@ -12,23 +12,23 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'global-navigation-tabbed-browser-modal-tab',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedbrowsermodaltab.html'
+    templateUrl: '../templates/globalnavigationtabbedbrowsermodaltab.html'
 })
 export class GlobalNavigationTabbedBrowserModalTab {
 
     /**
      * reference to the modal component
      */
-    @Input() private tab: objectTab;
+    @Input()public tab: objectTab;
 
     /**
      * inicates that this is a subtab and shoudl be indented
      */
-    @Input() private subtab: boolean = false;
+    @Input()public subtab: boolean = false;
 
-    @Output() private activate: EventEmitter<string> = new EventEmitter<string>();
+    @Output()public activate: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private navigation: navigation, private language: language) {
+    constructor(public navigation: navigation,public language: language) {
 
     }
 
@@ -37,14 +37,14 @@ export class GlobalNavigationTabbedBrowserModalTab {
      *
      * @param tabid
      */
-    private modelCount() {
+   public modelCount() {
         return this.navigation.modelregister.filter(m => m.tabid == this.tab.id).length;
     }
 
     /**
      * activate the current tab
      */
-    private activateTab() {
+   public activateTab() {
         this.activate.emit(this.tab.id);
     }
 

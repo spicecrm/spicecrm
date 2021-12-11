@@ -13,18 +13,18 @@ import {backend} from "../../../services/backend.service";
  * gets the statistics of a  mailchimp campaign / campaigntask
  */
 @Component({
-    templateUrl: './src/include/mailchimp/templates/mailchimpcampaignstatspanel.html',
+    templateUrl: '../templates/mailchimpcampaignstatspanel.html',
 })
 export class MailChimpCampaignStatsPanel implements OnInit {
     public res: any = {};
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
 
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private backend: backend,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public backend: backend,
     ) {
 
     }

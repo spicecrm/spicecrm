@@ -10,11 +10,11 @@ import {AdministrationDictRepairDbColumnsModal} from "./administrationdictrepair
 
 @Component({
     selector: 'administration-dict-repair-db-columns',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairdbcolumns.html'
+    templateUrl: '../templates/administrationdictrepairdbcolumns.html'
 })
 
 export class AdministrationDictRepairDbColumns {
-    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal, private injector: Injector) {
+    constructor(public backend: backend, public toast: toast, public language: language, public modal: modal, public injector: Injector) {
     }
 
     public executeRepairDbColumns() {

@@ -29,34 +29,34 @@ const REPORTERFILTERPANELANIMATIONS = [
  */
 @Component({
     selector: 'reporter-filter-panel',
-    templateUrl: './src/modules/reports/templates/reporterfilterpanel.html',
+    templateUrl: '../templates/reporterfilterpanel.html',
     animations: REPORTERFILTERPANELANIMATIONS
 })
 export class ReporterFilterPanel {
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
-    @ViewChild('savedFiltersContainer', {static: false}) private savedFiltersComponent;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
+    @ViewChild('savedFiltersContainer', {static: false}) public savedFiltersComponent;
 
     /**
      * an event emitter that emits when the filter is applied
      */
-    @Output() private filterapplied: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public filterapplied: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the integration params
      */
-    @Input() private integrationparams: any = {};
+    @Input() public integrationparams: any = {};
 
-    private selectedFilterId: any;
-    private showPopover: boolean = false;
-    private filter: any = {};
+    public selectedFilterId: any;
+    public showPopover: boolean = false;
+    public filter: any = {};
 
-    constructor(private model: model,
-                private language: language,
-                private elementRef: ElementRef,
-                private toast: toast,
-                private backend: backend,
-                private session: session,
-                private reporterconfig: reporterconfig) {
+    constructor(public model: model,
+                public language: language,
+                public elementRef: ElementRef,
+                public toast: toast,
+                public backend: backend,
+                public session: session,
+                public reporterconfig: reporterconfig) {
 
     }
 
@@ -97,7 +97,7 @@ export class ReporterFilterPanel {
     /**
      * open new filter data popover
      */
-    private openPopover() {
+    public openPopover() {
         this.showPopover = true;
         this.initializeFilter();
     }
@@ -105,7 +105,7 @@ export class ReporterFilterPanel {
     /**
      * close popover and initialize new filter
      */
-    private closePopover() {
+    public closePopover() {
         this.showPopover = false;
         this.initializeFilter();
     }
@@ -113,7 +113,7 @@ export class ReporterFilterPanel {
     /**
      * initialize new filter
      */
-    private initializeFilter() {
+    public initializeFilter() {
         this.filter = {
             savedfilter_id: this.model.generateGuid(),
             name: '',
@@ -125,7 +125,7 @@ export class ReporterFilterPanel {
     /**
      * when the filter is to be applied
      */
-    private applyFilter() {
+    public applyFilter() {
         this.filterapplied.emit(true);
         this.reporterconfig.refresh();
     }
@@ -133,14 +133,14 @@ export class ReporterFilterPanel {
     /**
      * @param filterId
      */
-    private setSelectedFilterId(filterId) {
+    public setSelectedFilterId(filterId) {
         this.selectedFilterId = filterId;
     }
 
     /**
      * save the filter changes or create and save a new filter
      */
-    private handleSave() {
+    public handleSave() {
 
         if (!this.selectedFilterId) {
             return this.openPopover();
@@ -155,7 +155,7 @@ export class ReporterFilterPanel {
      * @param id: string
      * @param newFilter: object
      */
-    private saveFilter(id, newFilter?) {
+    public saveFilter(id, newFilter?) {
         let data = {
             selectedfilters: {...this.reporterconfig.userFilters}
         };
@@ -184,7 +184,7 @@ export class ReporterFilterPanel {
     /**
      * open popover to fill in new filter data
      */
-    private saveFilterAs() {
+    public saveFilterAs() {
         if (!this.selectedFilterId) return;
         this.openPopover();
     }
@@ -193,7 +193,7 @@ export class ReporterFilterPanel {
      * reset selectedFilterId and save the new filter
      * close the popover
      */
-    private confirmSave() {
+    public confirmSave() {
         this.selectedFilterId = undefined;
         this.saveFilter(this.filter.savedfilter_id, this.filter);
         this.closePopover();

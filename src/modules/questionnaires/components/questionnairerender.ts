@@ -7,7 +7,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
     selector: 'questionnaire-render',
-    templateUrl: './src/modules/questionnaires/templates/questionnairerender.html',
+    templateUrl: '../templates/questionnairerender.html',
     styles: [
         '::ng-deep .questionnaire-some-words p { margin: 0.5rem 0; }',
         '::ng-deep .questionnaire-some-words p:first-child { margin-top: 0; }',
@@ -20,32 +20,32 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     /**
      * Either questionnaireId, parentId/parentType or participationId has to be set.
      */
-    @Input() private questionnaireId: string;
-    @Input() private parentId: string;
-    @Input() private parentType: string;
-    @Input() private participationId: string;
+    @Input() public questionnaireId: string;
+    @Input() public parentId: string;
+    @Input() public parentType: string;
+    @Input() public participationId: string;
 
-    @Input() private editMode: 'off'|'preview'|'postview'|'questionnaire'|'questionoption' = 'questionnaire';
+    @Input() public editMode: 'off'|'preview'|'postview'|'questionnaire'|'questionoption' = 'questionnaire';
 
-    @Input() private showQuestionnaireTitle = true;
-    @Input() private showQuestionnaireTextBefore = true;
-    @Input() private showQuestionnaireTextAfter = true;
-    @Input() private showProgress = false;
-    @Input() private hideFinishedQuestions = false;
-    @Input() private inModal = true;
-    @Input() private imageWidthQuestion = 200;
-    @Input() private imageWidthOption = 200;
+    @Input() public showQuestionnaireTitle = true;
+    @Input() public showQuestionnaireTextBefore = true;
+    @Input() public showQuestionnaireTextAfter = true;
+    @Input() public showProgress = false;
+    @Input() public hideFinishedQuestions = false;
+    @Input() public inModal = true;
+    @Input() public imageWidthQuestion = 200;
+    @Input() public imageWidthOption = 200;
 
-    @Output() private isDirty$ = new BehaviorSubject( false );
-    @Output() private isSaving$ = new BehaviorSubject( false );
-    @Output() private isLoaded$ = new BehaviorSubject( false );
+    @Output() public isDirty$ = new BehaviorSubject( false );
+    @Output() public isSaving$ = new BehaviorSubject( false );
+    @Output() public isLoaded$ = new BehaviorSubject( false );
 
-    @Output() private questionnaireParticipation$ = new EventEmitter<questionnaireParticipationService>();
-    private qp: questionnaireParticipationService;
+    @Output() public questionnaireParticipation$ = new EventEmitter<questionnaireParticipationService>();
+    public qp: questionnaireParticipationService;
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    @Output() private answersChanged$ = new EventEmitter();
+    @Output() public answersChanged$ = new EventEmitter();
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         this.qp = questionnaireParticipation;
@@ -74,7 +74,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
      * Is the questionnaire to be displayed or not?
      * @private
      */
-    private questionnaireIsToBeDisplayed(): boolean {
+    public questionnaireIsToBeDisplayed(): boolean {
         if ( this.qp.isLoaded ) {
             if ( this.qp.participationId ) return true;
             if ( this.qp.questionnaireId && this.qp.editMode !== 'postview') return true; // this.qp.editMode !== 'off' &&

@@ -5,23 +5,19 @@ import { Component, ViewChild, OnInit, EventEmitter } from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
-import {QuestionnaireRender} from '../components/questionnairerender';
+import {QuestionnaireRender} from './questionnairerender';
 import { modelutilities } from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'questionnaire-editor',
-    templateUrl: "./src/modules/questionnaires/templates/questionnaireeditor.html",
-    styles: [
-        'slds-tabs_default__content'
-    ]
+    templateUrl: "../templates/questionnaireeditor.html"
 })
 export class QuestionnaireEditor implements OnInit {
 
-    private questionsets: any[] = [];
+    public questionsets: any[] = [];
+    public isLoadingQuestionsets = true;
 
-    private isLoadingQuestionsets = true;
-
-    private categorypool = {
+    public categorypool = {
         loaded: false,
         event: new EventEmitter<any>(),
         list: []
@@ -29,7 +25,7 @@ export class QuestionnaireEditor implements OnInit {
 
     @ViewChild(QuestionnaireRender, {static:false}) public questionnaireRender;
 
-    constructor( private lang: language, private model: model, private backend: backend, private modelutilities: modelutilities ) { } // private questionnaireParticipation: questionnaireParticipationService
+    constructor( public lang: language, public model: model, public backend: backend, public modelutilities: modelutilities ) { } // public questionnaireParticipation: questionnaireParticipationService
 
     public ngOnInit(): void {
         if ( this.model.id ) {
@@ -45,7 +41,7 @@ export class QuestionnaireEditor implements OnInit {
         }
     }
 
-    private createPreview() {
+    public createPreview() {
         1;
         // For the preview create a questionnaire "participation":
         // this.questionnaireParticipation.showQuestionnaireTitle = false;
@@ -57,18 +53,18 @@ export class QuestionnaireEditor implements OnInit {
         return this.model.isLoading || this.isLoadingQuestionsets || !this.categorypool.loaded;
     }
 
-    private addQuestionset( newQuestionset ) {
+    public addQuestionset( newQuestionset ) {
         if ( newQuestionset ) {
             this.questionsets.push( newQuestionset );
             this.sortQuestionsets();
         }
     }
 
-    private reloadPreview(): void {
+    public reloadPreview(): void {
         this.questionnaireRender.reload();
     }
 
-    private loadQuestionsets(): void {
+    public loadQuestionsets(): void {
         this.isLoadingQuestionsets = true;
         this.questionsets = [];
         this.backend.getRequest('module/Questionnaires/'+this.model.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
@@ -83,7 +79,7 @@ export class QuestionnaireEditor implements OnInit {
         });
     }
 
-    private loadQuestionOptionCategories(): void {
+    public loadQuestionOptionCategories(): void {
         this.backend.getRequest('module/QuestionOptionCategories/getList').subscribe(( response: any ) => {
             let allCategories = response;
             if ( this.model.getField('categorypool') ) {
@@ -101,26 +97,26 @@ export class QuestionnaireEditor implements OnInit {
         });
     }
 
-    private sortQuestionsets(): void {
+    public sortQuestionsets(): void {
         this.questionsets.sort((a, b) => {
             return parseInt(a.position, 10 ) - parseInt( b.position, 10 );
         });
     }
 
-    private removeQuestionset( i: number ): void {
+    public removeQuestionset( i: number ): void {
         this.questionsets.splice( i,1 );
     }
 
-    private trackBy( index: number, item: any ): string {
+    public trackBy( index: number, item: any ): string {
         return item.id;
     }
 
-    private changeQuestionset( questionset: any, i: number ) {
+    public changeQuestionset( questionset: any, i: number ) {
         this.questionsets[i] = questionset;
         this.sortQuestionsets();
     }
 
-    private drop(event) {
+    public drop(event) {
         let previousItem = this.questionsets.splice( event.previousIndex, 1 );
         this.questionsets.splice( event.currentIndex, 0, previousItem[0] );
         let updateArray = [];
@@ -133,11 +129,11 @@ export class QuestionnaireEditor implements OnInit {
         this.backend.putRequest('module/Questionnaires/'+this.model.id+'/related/beans/questionsets', null,{ beans: updateArray });
     }
 
-    private dragStarted(e) {
+    public dragStarted(e) {
         e.source.element.nativeElement.classList.add('slds-is-selected');
     }
 
-    private dragEnded(e) {
+    public dragEnded(e) {
         e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 

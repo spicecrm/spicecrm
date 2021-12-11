@@ -8,7 +8,7 @@ import { metadata } from '../../../services/metadata.service';
 
 @Component({
     selector: 'questionnaire-editor-questionset-add',
-    templateUrl: "./src/modules/questionnaires/templates/questionnaireeditorquestionsetadd.html",
+    templateUrl: "../templates/questionnaireeditorquestionsetadd.html",
     providers: [model]
 })
 export class QuestionnaireEditorQuestionsetAdd {
@@ -17,11 +17,11 @@ export class QuestionnaireEditorQuestionsetAdd {
     @Input() public disabled = false;
     @Output() public newQuestionset: EventEmitter<any> = new EventEmitter();
 
-    constructor( private model: model, private lang: language, private metadata: metadata, @SkipSelf() private questionnaire: model ) {
+    constructor( public model: model, public lang: language, public metadata: metadata, @SkipSelf() public questionnaire: model ) {
         this.model.module = 'QuestionSets';
     }
 
-    private addQuestionset(): void {
+    public addQuestionset(): void {
         this.model.id = ''; // we want addModel() to generate a new bean
         this.model.addModel('', this.questionnaire, null, true )
             .subscribe( newQuestionset => this.newQuestionset.emit( newQuestionset ));

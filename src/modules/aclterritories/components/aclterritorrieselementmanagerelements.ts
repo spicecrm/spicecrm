@@ -14,16 +14,16 @@ import {navigationtab} from '../../../services/navigationtab.service';
 
 @Component({
     selector: 'aclterritorries-elementmanager-elements',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanagerelements.html',
+    templateUrl: '../templates/aclterritorrieselementmanagerelements.html',
 })
 export class ACLTerritorriesElementmanagerElements {
 
-    private loading: boolean = false;
-    private elements: any[] = [];
-    private _selectedElement: any = {};
-    @Output() private selectedElement: EventEmitter<any> = new EventEmitter<any>();
+    public loading: boolean = false;
+    public elements: any[] = [];
+    public _selectedElement: any = {};
+    @Output() public selectedElement: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private navigationtab: navigationtab, private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public navigationtab: navigationtab, public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
         this.loadElements();
 
         this.setTabTitle();
@@ -32,14 +32,14 @@ export class ACLTerritorriesElementmanagerElements {
     /**
      * sets the tab title
      */
-    private setTabTitle() {
+    public setTabTitle() {
         this.navigationtab.setTabInfo({displayicon: 'settings', displayname: this.language.getLabel('LBL_TERRITORY_ELEMENTS')});
     }
 
     /**
      * loads the elements
      */
-    private loadElements() {
+    public loadElements() {
         this.loading = true;
         this.backend.getRequest('module/SpiceACLTerritories/core/territoryelements').subscribe(elements => {
             this.elements = elements;
@@ -52,12 +52,12 @@ export class ACLTerritorriesElementmanagerElements {
         });
     }
 
-    private selectElement(element) {
+    public selectElement(element) {
         this._selectedElement = element;
         this.selectedElement.emit(element.id);
     }
 
-    private deleteElement(element) {
+    public deleteElement(element) {
         this.modal.confirm('Delete Element', 'Delete').subscribe(response => {
             if (response) {
                 this.backend.deleteRequest('module/SpiceACLTerritories/core/territoryelements/' + element.id).subscribe(success => {
@@ -73,7 +73,7 @@ export class ACLTerritorriesElementmanagerElements {
         });
     }
 
-    private addElement() {
+    public addElement() {
         this.modal.openModal('ACLTerritorriesElementmanagerElementsAddModal').subscribe(modalRef => {
             modalRef.instance.newelementname.subscribe(newName => {
 

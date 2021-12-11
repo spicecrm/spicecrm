@@ -16,7 +16,7 @@ declare var _;
  */
 @Component({
     selector: 'product-uom-conversions',
-    templateUrl: './src/modules/products/templates/productuomconversions.html',
+    templateUrl: '../templates/productuomconversions.html',
 })
 
 export class ProductUOMConversions implements OnInit {
@@ -31,22 +31,22 @@ export class ProductUOMConversions implements OnInit {
     /**
      * holds the base uom field name
      */
-    private fieldBaseUom: string;
+    public fieldBaseUom: string;
     /**
      * holds the base uom field id
      */
-    private fieldBaseUomId: string;
+    public fieldBaseUomId: string;
     /**
      * holds the component  config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model,
-                private backend: backend,
-                private configuration: configurationService,
-                private view: view) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model,
+                public backend: backend,
+                public configuration: configurationService,
+                public view: view) {
     }
 
     /**
@@ -104,7 +104,7 @@ export class ProductUOMConversions implements OnInit {
      * set the base unit of measure
      * @param id
      */
-    private setBaseUom(id: string) {
+    public setBaseUom(id: string) {
         let unit = this.uomUnits.find(unit => unit.id == id);
         this.model.setField(this.fieldBaseUom, !!unit ? unit.label : '');
         this.model.setField(this.fieldBaseUomId, !!unit ? unit.id : '');
@@ -114,7 +114,7 @@ export class ProductUOMConversions implements OnInit {
      * @return the filtered uom units
      * @param conversion
      */
-    private filteredUomUnits(conversion) {
+    public filteredUomUnits(conversion) {
         let filteredUom = this.uomUnits.filter(unit => {
             let sameBaseUom = this.baseUom && ((this.baseUom.id == unit.id) || ((unit.dimensions != 'none') && (this.baseUom.dimensions == unit.dimensions)));
             let definedInConversions = this.uomConversions
@@ -136,7 +136,7 @@ export class ProductUOMConversions implements OnInit {
     /**
      * set the uom field defs from config
      */
-    private getUomFieldDefs() {
+    public getUomFieldDefs() {
         this.fieldBaseUom = this.componentconfig.baseuomfield || this.fieldBaseUom;
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldBaseUom);
         this.fieldBaseUomId = fieldDefs && fieldDefs.id_name ? fieldDefs.id_name : this.fieldBaseUomId;
@@ -145,14 +145,14 @@ export class ProductUOMConversions implements OnInit {
     /**
      * loads the uom units from the configuration service
      */
-    private getUomUnits() {
+    public getUomUnits() {
         this.uomUnits = this.configuration.getData('uomunits') || [];
     }
 
     /**
      * clone the parent uom conversions
      */
-    private cloneParentConversions() {
+    public cloneParentConversions() {
         if (this.model.isNew && this.uomConversions.length > 0) {
             let originalConversions = this.model.data.uomconversions.beans;
             let clonedConversions = {};
@@ -167,7 +167,7 @@ export class ProductUOMConversions implements OnInit {
     /**
      * add a new conversion
      */
-    private addConversion() {
+    public addConversion() {
         if (!this.canAdd) return;
         this.view.setEditMode();
         let guid = this.model.generateGuid();
@@ -189,7 +189,7 @@ export class ProductUOMConversions implements OnInit {
      * delete conversion
      * @param id
      */
-    private deleteConversion(id: string) {
+    public deleteConversion(id: string) {
         this.model.data.uomconversions.beans[id].deleted = '1';
     }
 
@@ -197,7 +197,7 @@ export class ProductUOMConversions implements OnInit {
      * get conversion display label
      * @param conversionUom
      */
-    private getConversionUomLabel(conversionUom) {
+    public getConversionUomLabel(conversionUom) {
         let uom = this.uomUnits.find(unit => unit.id == conversionUom);
         return uom ? this.language.getLabel(uom.label) : '';
     }
@@ -209,7 +209,7 @@ export class ProductUOMConversions implements OnInit {
      * @param item
      * @return item.id
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

@@ -13,7 +13,7 @@ import {ProductVariantsAttributeVC} from './productvariantsattributevc';
  */
 @Component({
     selector: 'product-variants-attribute-s',
-    templateUrl: './src/modules/products/templates/productvariantsattributess.html'
+    templateUrl: '../templates/productvariantsattributess.html'
 })
 export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
 
@@ -24,7 +24,7 @@ export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
     /**
      * @return value array
      */
-    private _valueArray: any[] = [];
+    public _valueArray: any[] = [];
     /**
      * @return value array
      */
@@ -51,7 +51,7 @@ export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
      * set value from array
      * @param value
      */
-    private setValue(value: any[]) {
+    public setValue(value: any[]) {
         this.value = value.length > 1 ? value.join(',') : value.toString();
 
     }
@@ -63,7 +63,7 @@ export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
      * @param item
      * @return item.id
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 }
