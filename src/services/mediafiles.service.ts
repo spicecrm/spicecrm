@@ -18,26 +18,26 @@ import {modal} from './modal.service';
 @Injectable()
 export class mediafiles {
 
-    private categoriesLoaded: boolean = false;
+    public categoriesLoaded: boolean = false;
     public categories: object = {};
     public categoriesSorted = [];
 
     constructor(
-        private sanitizer: DomSanitizer,
-        private http: HttpClient,
-        private backend: backend,
-        private configurationService: configurationService,
-        private session: session,
-        private metadata: metadata,
-        private footer: footer,
-        private toast: toast,
-        private language: language,
-        private modalservice: modal,
+        public sanitizer: DomSanitizer,
+        public http: HttpClient,
+        public backend: backend,
+        public configurationService: configurationService,
+        public session: session,
+        public metadata: metadata,
+        public footer: footer,
+        public toast: toast,
+        public language: language,
+        public modalservice: modal,
     ) {
     }
 
 
-    private _getImage(mediaId: string, variant: string = '') {
+    public _getImage(mediaId: string, variant: string = '') {
         let responseSubject = new Subject<any>();
         // { 'If-None-Match': '1234567890'  }
         this.backend.getRawRequest('module/MediaFiles/' + mediaId + '/file' + (variant != '' ? '/' : '') + variant, {}, null, {}).subscribe((response: any) => {
@@ -48,7 +48,7 @@ export class mediafiles {
         return responseSubject.asObservable();
     }
 
-    private _getImageBase64(mediaId: string) {
+    public _getImageBase64(mediaId: string) {
         let responseSubject = new Subject<any>();
         // { 'If-None-Match': '1234567890'  }
         this.backend.getRequest('module/MediaFiles/' + mediaId + '/base64').subscribe((response: any) => {
@@ -148,7 +148,7 @@ export class mediafiles {
         return retSubject.asObservable();
     }
 
-    private pickMediaFile(): Observable<any> {
+    public pickMediaFile(): Observable<any> {
         let retSubject = new Subject();
         this.modalservice.openModal('MediaFilePicker').subscribe(picker => {
             picker.instance.answer.subscribe(answer => {
@@ -160,7 +160,7 @@ export class mediafiles {
     }
 
     // todo: acceptFileTypes
-    private uploadMediaFile(acceptFileTypes: string[], noMetaData = false, category: string): Observable<any> {
+    public uploadMediaFile(acceptFileTypes: string[], noMetaData = false, category: string): Observable<any> {
         let retSubject = new Subject();
         this.modalservice.openModal('MediaFileUploader').subscribe(uploader => {
             uploader.instance.acceptFileTypes = acceptFileTypes;
@@ -177,12 +177,12 @@ export class mediafiles {
     /* Code for Media Categories */
 
     /*
-    private makeFullName(category: any) {
+    public makeFullName(category: any) {
         if (category.parent === null) return (category.fullName = category.name);
         else return (category.fullName = this.makeFullName(category.parent) + ' > ' + category.name);
     }
 
-    private setFullName(category: any) {
+    public setFullName(category: any) {
         if (category.fullName) return;
         else category.fullName = this.makeFullName(category);
     }
@@ -233,7 +233,7 @@ export class mediafiles {
         else return this.isChild(category, this.categories[needleID]);
     }
 
-    private isChild(possibleParent, possibleChild) {
+    public isChild(possibleParent, possibleChild) {
         if (!possibleChild.parent) return false;
         if (possibleParent.id === possibleChild.parent_id) return true;
         else return this.isChild(possibleParent, possibleChild.parent);

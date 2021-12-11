@@ -15,7 +15,7 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'global-login-reset-password',
-    templateUrl: './src/globalcomponents/templates/globalloginresetpassword.html',
+    templateUrl: '../templates/globalloginresetpassword.html',
     host: {
         '(window:keyup)': 'this.keypressed($event)'
     }
@@ -25,52 +25,52 @@ export class GlobalLoginResetPassword {
      * the old password to check that the password has been changed
      * @private
      */
-    @Input('oldpassword') private oldPassword: string;
+    @Input('oldpassword')public oldPassword: string;
 
     /**
      * emits if the prompt should be closed again
      *
      * @private
      */
-    @Output() private closeRenewDialog: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output()public closeRenewDialog: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * the entered password
      * @private
      */
-    private password: string;
+   public password: string;
 
     /**
      * the repeated password
      * @private
      */
-    private repeatPassword: string;
+   public repeatPassword: string;
 
     /**
      * the regex to match the password requirements
      * @private
      */
-    private pwdCheck: RegExp = new RegExp('//');
+   public pwdCheck: RegExp = new RegExp('//');
 
     /**
      * the text for the password requriements
      * @private
      */
-    private pwdGuideline: string;
+   public pwdGuideline: string;
 
     /**
      * if we are psoting the password
      * @private
      */
-    private posting: boolean = false;
+   public posting: boolean = false;
 
 
-    constructor(private loginService: loginService,
-                private http: HttpClient,
-                private configuration: configurationService,
-                private toast: toast,
-                private session: session,
-                private language: language
+    constructor(public loginService: loginService,
+               public http: HttpClient,
+               public configuration: configurationService,
+               public toast: toast,
+               public session: session,
+               public language: language
     ) {
         this.getInfo();
     }
@@ -101,14 +101,14 @@ export class GlobalLoginResetPassword {
      *
      * @private
      */
-    private closeDialog() {
+   public closeDialog() {
         this.closeRenewDialog.emit(true);
     }
 
     /*
     * handle change on enter and escape press
     */
-    private keypressed(event) {
+   public keypressed(event) {
         if (event.key === 'Enter') {
             this.sendNewPass();
         }
@@ -120,7 +120,7 @@ export class GlobalLoginResetPassword {
     /*
     * retrieve password guideline
     */
-    private getInfo() {
+   public getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheck = new RegExp(extConf.regex);
 
@@ -144,7 +144,7 @@ export class GlobalLoginResetPassword {
     /*
     * change the password for the user
     */
-    private sendNewPass() {
+   public sendNewPass() {
 
         if (this.canSave) {
 

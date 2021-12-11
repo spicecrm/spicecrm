@@ -10,7 +10,7 @@ import {activitiytimeline, activityTimeLineModules} from '../../../services/acti
  */
 @Component({
     selector: 'activitytimeline-container',
-    templateUrl: './src/modules/activities/templates/activitytimelinecontainer.html',
+    templateUrl: '../templates/activitytimelinecontainer.html',
 
 })
 export class ActivityTimelineContainer implements OnInit {
@@ -18,14 +18,14 @@ export class ActivityTimelineContainer implements OnInit {
     /**
      * the module to be displayed
      */
-    @Input() private module: activityTimeLineModules;
+    @Input() public module: activityTimeLineModules;
 
     /**
      * toggles the aggregates to be displayed or not
      */
-    @Input() private displayaggregates: boolean = false;
+    @Input() public displayaggregates: boolean = false;
 
-    constructor(private activitiytimeline: activitiytimeline, private language: language) {
+    constructor(public activitiytimeline: activitiytimeline, public language: language) {
     }
 
     /**
@@ -82,7 +82,7 @@ export class ActivityTimelineContainer implements OnInit {
      * @param index
      * @param item
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

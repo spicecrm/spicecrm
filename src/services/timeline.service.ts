@@ -108,39 +108,39 @@ export class timeline {
      * checks if a reload is initiated
      * @private
      */
-    private initial = true;
+    public initial = true;
     /**
      * indicates how many module records have been found
      * @private
      */
-    private totalModuleRecords = 0;
+    public totalModuleRecords = 0;
     /**
      * indicates how many audit records have already been loaded
      * @private
      */
-    private loadedAuditRecords = 0;
+    public loadedAuditRecords = 0;
     /**
      * indicates how many audit records have been found
      * @private
      */
-    private totalAuditRecords = 0;
+    public totalAuditRecords = 0;
     /**
      * indicates how many audit records have already been loaded
      * @private
      */
-    private loadedModuleRecords = 0;
+    public loadedModuleRecords = 0;
     /**
      * indicates if searching for module records is disabled
      * @private
      */
-    private moduleSearch = true;
+    public moduleSearch = true;
     /**
      * indicates if searching for audit records is disabled
      * @private
      */
-    private auditSearch: any = true;
+    public auditSearch: any = true;
 
-    constructor(private modelutilities: modelutilities, private backend: backend, private metadata: metadata, private broadcast: broadcast, private model: model) {
+    constructor(public modelutilities: modelutilities, public backend: backend, public metadata: metadata, public broadcast: broadcast, public model: model) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
@@ -293,7 +293,7 @@ export class timeline {
      *
      * @param message the broadcast message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         let messageType = message.messagetype.split('.');
         if (messageType[0] === 'model') {
             // handle the message type
@@ -335,7 +335,7 @@ export class timeline {
      * @param records
      * @private
      */
-    private addRecords(records: moduleRecord[] | auditRecord[], silent = false) {
+    public addRecords(records: moduleRecord[] | auditRecord[], silent = false) {
         if (this.totalAuditRecords === this.loadedAuditRecords && this.totalModuleRecords === this.loadedModuleRecords && this.searchTerm === '' && this.filters.own === '' && this.filters.objectfilters.indexOf('Modules') >= 0) {
 
             if (this.timeRangeStart.isAfter(this.parent.data.date_entered)) {
@@ -353,7 +353,7 @@ export class timeline {
 
     }
 
-    private getBody(response, initial) {
+    public getBody(response, initial) {
         if (initial) {
             this.totalModuleRecords = response.counts.totalModules;
             this.totalAuditRecords = response.counts.totalAudits;

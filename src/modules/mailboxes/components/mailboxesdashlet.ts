@@ -10,22 +10,22 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'dashboard-mailboxes-dashlet',
-    templateUrl: './src/modules/mailboxes/templates/mailboxesdashlet.html',
+    templateUrl: '../templates/mailboxesdashlet.html',
     providers: [model, view]
 })
 export class MailboxesDashlet implements OnInit, OnDestroy {
-    private isLoading: boolean = false;
-    private mailboxes: any[] = [];
-    private canLoadMore: boolean = true;
-    private loadLimit: number = 20;
-    private getMailBoxesInterval: any = undefined;
+    public isLoading: boolean = false;
+    public mailboxes: any[] = [];
+    public canLoadMore: boolean = true;
+    public loadLimit: number = 20;
+    public getMailBoxesInterval: any = undefined;
 
-    @ViewChild('tablecontainer', {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
+    @ViewChild('tablecontainer', {read: ViewContainerRef, static: true}) public tablecontainer: ViewContainerRef;
 
-    constructor(private language: language,
-                private backend: backend,
-                private model: model,
-                private router: Router) {
+    constructor(public language: language,
+                public backend: backend,
+                public model: model,
+                public router: Router) {
 
     }
 
@@ -56,7 +56,7 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -70,7 +70,7 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     * @reset emailsunread if refresh is false
     * @set canLoadMore to false if all records retrieved
     */
-    private getMailboxes(refresh?) {
+    public getMailboxes(refresh?) {
         this.isLoading = true;
         this.backend.getRequest('module/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {
             if (!mailboxes || mailboxes.length == 0) {
@@ -104,14 +104,14 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     * @getMailboxes on interval
     * @return interval
     */
-    private getMailboxesInterval() {
+    public getMailboxesInterval() {
         return window.setInterval(() => this.getMailboxes(true), 60000);
     }
 
     /*
     * @loadMore if the scroll position overflowed the scrollHeight
     */
-    private onScroll() {
+    public onScroll() {
         let element = this.tablecontainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight >= element.scrollHeight) {
             this.loadMore();
@@ -121,7 +121,7 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     /*
     * @navigate to record
     */
-    private goToRecord(id) {
+    public goToRecord(id) {
         this.router.navigate([`/module/${this.model.module}/${id}`]);
 
     }
@@ -132,7 +132,7 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     * @set mailboxes
     * @set canLoadMore
     */
-    private loadMore() {
+    public loadMore() {
         if (this.canLoadMore) {
             this.isLoading = true;
             this.backend.getRequest('module/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {

@@ -29,13 +29,13 @@ export class ReportsDesignerService {
     public visualizeActiveLayoutItem: string = '';
     public visualizeColorTheme: any[] = [];
 
-    constructor(private configurationService: configurationService,
-                private backend: backend,
-                private cdr: ChangeDetectorRef,
-                private model: model,
-                private language: language,
-                private metadata: metadata,
-                private modelUtils: modelutilities) {
+    constructor(public configurationService: configurationService,
+                public backend: backend,
+                public cdr: ChangeDetectorRef,
+                public model: model,
+                public language: language,
+                public metadata: metadata,
+                public modelUtils: modelutilities) {
         this.loadReporterConfig();
     }
 
@@ -96,7 +96,7 @@ export class ReportsDesignerService {
     * @configurationService.setData reporterConfig if is not defined
     * @setConfigs
     */
-    private loadReporterConfig() {
+    public loadReporterConfig() {
         let reporterConfig = this.configurationService.getData('reporterConfig');
         if (!reporterConfig) {
             this.backend.getRequest('module/KReports/core/whereoperators/all').subscribe(reporterConfig => {
@@ -126,7 +126,7 @@ export class ReportsDesignerService {
     * @set operatorTypes
     * @set operatorAssignments
     */
-    private setConfigs(config) {
+    public setConfigs(config) {
         this.operatorCount = config.operatorCount;
         this.operatorTypes = config.operatorTypes;
         this.operatorAssignments = config.operatorAssignments;

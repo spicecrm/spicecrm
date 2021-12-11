@@ -12,24 +12,24 @@ import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: "./src/workbench/templates/mailboxesmanagertestimapmodal.html",
+    templateUrl: "../templates/mailboxesmanagertestimapmodal.html",
 })
 export class MailboxesmanagerTestIMAPModal {
 
     public self: any = {};
-    private validConnection: boolean = false;
+    public validConnection: boolean = false;
     public isvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    private testemailaddress: string = "";
-    private imapStatus: boolean = false;
-    private smtpStatus: boolean = false;
-    private testing: boolean = false;
-    private tested: boolean = false;
+    public testemailaddress: string = "";
+    public imapStatus: boolean = false;
+    public smtpStatus: boolean = false;
+    public testing: boolean = false;
+    public tested: boolean = false;
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private model: model,
-        private session: session,
+        public backend: backend,
+        public language: language,
+        public model: model,
+        public session: session,
     ) {
         this.testemailaddress = this.session.authData.email;
     }
@@ -83,11 +83,11 @@ export class MailboxesmanagerTestIMAPModal {
             });
     }
 
-    private cancel() {
+    public cancel() {
         this.self.destroy();
     }
 
-    private close() {
+    public close() {
         this.isvalid.emit(this.validConnection);
         this.self.destroy();
     }

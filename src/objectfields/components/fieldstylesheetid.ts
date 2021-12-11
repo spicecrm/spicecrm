@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-stylesheetid',
-    templateUrl: './src/objectfields/templates/fieldstylesheetid.html'
+    templateUrl: '../templates/fieldstylesheetid.html'
 })
 export class fieldStylesheetID extends fieldGeneric {
 

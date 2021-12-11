@@ -15,18 +15,18 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: "mailboxes-gmail-traffic-manager",
-    templateUrl: "./src/workbench/templates/mailboxesgmailtrafficmanager.html",
+    templateUrl: "../templates/mailboxesgmailtrafficmanager.html",
 })
 export class MailboxesGmailTrafficManager {
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private model: model,
-        private modal: modal,
-        private toast: toast,
-        private view: view,
-        private injector: Injector
+        public backend: backend,
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public toast: toast,
+        public view: view,
+        public injector: Injector
     ) {
         let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
@@ -55,7 +55,7 @@ export class MailboxesGmailTrafficManager {
     /**
      * retirves the mailbox folders from the backend via the connection
      */
-    private getMailboxes(): Observable<any> {
+    public getMailboxes(): Observable<any> {
         let responseSubject = new Subject<any>();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
         this.backend.postRequest("module/Mailboxes/gmail/labels",{}, {data: modelData})

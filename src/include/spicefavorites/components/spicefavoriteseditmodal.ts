@@ -9,25 +9,25 @@ import {language} from '../../../services/language.service';
  * renders a modal window to manage the favorites
  */
 @Component({
-    templateUrl: './src/include/spicefavorites/templates/spicefavoriteseditmodal.html'
+    templateUrl: '../templates/spicefavoriteseditmodal.html'
 })
 export class SpiceFavoritesEditModal {
 
     /**
      * reference to self for the closure of the modal
      */
-    private self: any;
+    public self: any;
 
     constructor(
-        private favorite: favorite,
-        private language: language
+        public favorite: favorite,
+        public language: language
     ) {
     }
 
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

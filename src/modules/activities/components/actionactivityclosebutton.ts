@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'action-activity-close-button',
-    templateUrl: './src/modules/activities/templates/actionactivityclosebutton.html'
+    templateUrl: '../templates/actionactivityclosebutton.html'
 })
 export class ActionActivityCloseButton implements OnInit, OnDestroy {
 
@@ -40,14 +40,14 @@ export class ActionActivityCloseButton implements OnInit, OnDestroy {
     /**
      * holds the components subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private viewContainerRef: ViewContainerRef
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public viewContainerRef: ViewContainerRef
     ) {
 
     }
@@ -105,7 +105,7 @@ export class ActionActivityCloseButton implements OnInit, OnDestroy {
      *
      * @param mode
      */
-    private handleDisabled(mode) {
+    public handleDisabled(mode) {
         if (this.model.data.acl && !this.model.checkAccess('edit')) {
 
             this.disabled = true;

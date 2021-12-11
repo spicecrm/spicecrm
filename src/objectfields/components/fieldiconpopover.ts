@@ -15,20 +15,20 @@ import {fieldGeneric} from './fieldgeneric';
 
 @Component({
     selector: 'field-icon-popover',
-    templateUrl: './src/objectfields/templates/fieldiconpopover.html',
+    templateUrl: '../templates/fieldiconpopover.html',
     providers: [popup],
     host: {
         // '(document:click)': 'this.onClick($event)'
     }
 })
 export class fieldIconPopover extends fieldGeneric implements OnInit {
-    private clickListener: any;
+    public clickListener: any;
 
-    private parentTypeSelectOpen: boolean = false;
-    private parentSearchOpen: boolean = false;
-    private parentSearchTerm: string = '';
+    public parentTypeSelectOpen: boolean = false;
+    public parentSearchOpen: boolean = false;
+    public parentSearchTerm: string = '';
 
-    private recentItems: Array<any> = [];
+    public recentItems: Array<any> = [];
 
     constructor(
         public model: model,
@@ -38,7 +38,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef
+        public elementRef: ElementRef
     ) {
         super(model, view, language, metadata, router);
 
@@ -72,7 +72,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         return parenttypes;
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         if (message.messagedata.reference) {
             switch (message.messagetype) {
                 case 'model.save':
@@ -97,7 +97,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         }
     }
 
-    private closePopups() {
+    public closePopups() {
         if (this.model.data[this.parentIdField]) {
             this.parentSearchTerm = '';
         }

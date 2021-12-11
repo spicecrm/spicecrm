@@ -9,13 +9,13 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerpresent.html'
+    templateUrl: '../templates/reportsdesignerpresent.html'
 })
 export class ReportsDesignerPresent {
 
-    protected plugins: any[] = [];
+    public plugins: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model, private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language, public metadata: metadata, public model: model, public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -47,7 +47,7 @@ export class ReportsDesignerPresent {
      * set the initial presentation params data
      * @param plugin?: string
      */
-    private initializePresentationParams(plugin?) {
+    public initializePresentationParams(plugin?) {
         let presentationParams = this.model.getField('presentation_params');
         if (!presentationParams || !presentationParams.plugin) {
             presentationParams = {
@@ -70,7 +70,7 @@ export class ReportsDesignerPresent {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

@@ -9,18 +9,18 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-messages-badge',
-    templateUrl: './src/objectcomponents/templates/objectrecordmessagesbadge.html'
+    templateUrl: '../templates/objectrecordmessagesbadge.html'
 })
 export class ObjectRecordMessagesBadge {
 
-    @Input() private side: "left" | "right" = 'left'
+    @Input() public side: "left" | "right" = 'left'
 
     /**
      * if the popover with the messages shoudl be displayed
      */
-    private showpopover: boolean = false;
+    public showpopover: boolean = false;
 
-    constructor(private model: model, private language: language) {
+    constructor(public model: model, public language: language) {
 
     }
 

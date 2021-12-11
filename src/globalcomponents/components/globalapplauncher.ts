@@ -14,14 +14,14 @@ import {modal} from '../../services/modal.service';
  */
 @Component({
     selector: 'global-app-launcher',
-    templateUrl: './src/globalcomponents/templates/globalapplauncher.html',
+    templateUrl: '../templates/globalapplauncher.html',
     host: {
         class: 'slds-context-bar__primary slds-context-bar__item--divider-right'
     }
 })
 export class GlobalAppLauncher {
 
-    constructor(private metadata: metadata, private modal: modal, private language: language, private router: Router) {
+    constructor(public metadata: metadata,public modal: modal,public language: language,public router: Router) {
 
     }
 
@@ -40,11 +40,11 @@ export class GlobalAppLauncher {
     /**
      * linked to the app launcher button ion the template and will render the app launcher dialog
      */
-    private showAppLauncher() {
+   public showAppLauncher() {
         this.modal.openModal('GlobalAppLauncherDialog');
     }
 
-    private navigateHome(){
+   public navigateHome(){
         this.router.navigate(['module/Home']);
     }
 }

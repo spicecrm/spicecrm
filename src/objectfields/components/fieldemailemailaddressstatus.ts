@@ -5,7 +5,7 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 
 @Component({
     selector: 'field-email-emailaddress-status',
-    templateUrl: './src/objectfields/templates/fieldemailemailaddressstatus.html',
+    templateUrl: '../templates/fieldemailemailaddressstatus.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class fieldEmailEmailAddressStatus {

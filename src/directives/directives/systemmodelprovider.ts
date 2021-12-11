@@ -28,7 +28,7 @@ export class SystemModelProviderDirective implements OnDestroy {
      * holds subscription to unsubscribe
      * @private
      */
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
     constructor(
         public model: model
@@ -53,7 +53,7 @@ export class SystemModelProviderDirective implements OnDestroy {
      * @param provided_model
      */
     @Input('system-model-provider')
-    set provided_model(provided_model: { module: string, id: string, data: any }) {
+    set provided_model(provided_model: { module: string, id?: string, data: any }) {
 
         this.model.module = provided_model.module;
         if (provided_model.id) {

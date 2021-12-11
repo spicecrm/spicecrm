@@ -9,17 +9,17 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: '[field-lookup-search-item]',
-    templateUrl: './src/objectfields/templates/fieldlookupsearchitem.html',
+    templateUrl: '../templates/fieldlookupsearchitem.html',
     providers: [model, view]
 })
 export class fieldLookupSearchItem {
-    @Input() private item: any = {};
-    @Input() private module: string;
+    @Input() public item: any = {};
+    @Input() public module: string;
 
-    private mainfieldsetfields: any[];
-    private subfieldsetfields: any[];
+    public mainfieldsetfields: any[];
+    public subfieldsetfields: any[];
 
-    constructor(private model: model, private view: view, private language: language, private metadata: metadata) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata) {
         this.view.displayLabels = false;
     }
 

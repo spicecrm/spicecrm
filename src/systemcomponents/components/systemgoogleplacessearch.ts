@@ -18,7 +18,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: "system-googleplaces-search",
-    templateUrl: "./src/systemcomponents/templates/systemgoogleplacessearch.html",
+    templateUrl: "../templates/systemgoogleplacessearch.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -40,55 +40,55 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * the event emitter that senbds out the address details
      */
-    @Output() private details: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public details: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * for the ValueAccessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * set to enabled: set in the construcutor if an api key is present
      */
-    private isenabled: boolean = false;
+    public isenabled: boolean = false;
 
     /**
      * the serachterm completed
      */
-    private autocompletesearchterm: string = '';
+    public autocompletesearchterm: string = '';
 
     /**
      * a timeoput for the field toi wait until the user did finish typing
      */
-    private autocompleteTimeout: any = undefined;
+    public autocompleteTimeout: any = undefined;
 
     /**
      * the sresults array from the search
      */
-    private autocompleteResults: any[] = [];
+    public autocompleteResults: any[] = [];
 
     /**
      * a listener for the dropdown with the results. enables to close the dropdown when clicked outside
      */
-    private autocompleteClickListener: any = undefined;
+    public autocompleteClickListener: any = undefined;
 
     /**
      * boolean helper to display the dropwodn
      */
-    private displayAutocompleteResults: boolean = false;
+    public displayAutocompleteResults: boolean = false;
 
     /**
      * indicates that a serach is running
      */
-    private isSearching: boolean = false;
+    public isSearching: boolean = false;
 
     /**
      * the bias to search by
      */
-    private locationbias: string = 'ipbias ';
+    public locationbias: string = 'ipbias ';
 
-    constructor(private language: language, private backend: backend, private configuration: configurationService, private elementref: ElementRef, private renderer: Renderer2) {
+    constructor(public language: language, public backend: backend, public configuration: configurationService, public elementref: ElementRef, public renderer: Renderer2) {
         let googleAPIConfig = this.configuration.getCapabilityConfig('google_api');
         if (googleAPIConfig.key && googleAPIConfig.key != '') {
             this.isenabled = true;
@@ -153,16 +153,16 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     }
 
     /**
-     * private function called with the blur event of teh inout field
+     * public function called with the blur event of teh inout field
      */
-    private updateModel() {
+    public updateModel() {
         this.onChange(this.autocompletesearchterm);
     }
 
     /**
      * opens the search results again if theer are any and the fields gets the focus again
      */
-    private onSearchFocus() {
+    public onSearchFocus() {
         if (this.autocompletesearchterm.length > 1 && this.autocompleteResults.length > 0) {
             this.openSearchResults();
         }
@@ -171,7 +171,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * opens the search results
      */
-    private openSearchResults() {
+    public openSearchResults() {
         this.displayAutocompleteResults = true;
         this.autocompleteClickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
@@ -190,7 +190,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * clsoes the search results dialog and destruicts the click listener
      */
-    private closeSearchResutls() {
+    public closeSearchResutls() {
         if (this.autocompleteClickListener) {
             this.autocompleteClickListener();
         }
@@ -201,7 +201,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * starts the serach when the length is longer than 3 digits
      */
-    private doAutocomplete() {
+    public doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
             const searchTerm = encodeURIComponent(this.autocompletesearchterm);
@@ -230,7 +230,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
      *
      * @param placedetails
      */
-    private getDetails(placedetails) {
+    public getDetails(placedetails) {
         this.displayAutocompleteResults = false;
         this.autocompleteResults = []
 

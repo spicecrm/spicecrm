@@ -11,7 +11,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-input-enum',
-    templateUrl: './src/systemcomponents/templates/systeminputenum.html',
+    templateUrl: '../templates/systeminputenum.html',
     providers: [
     {
         provide: NG_VALUE_ACCESSOR,
@@ -25,36 +25,36 @@ export class SystemInputEnum implements OnInit, ControlValueAccessor {
     /**
      * the module so the enum can be determined
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * the field so the enum and the values can be determined
      */
-    @Input() private field: string;
+    @Input() public field: string;
 
     /**
      * the field so the enum and the values can be determined
      */
-    @Input() private sortdirection: string;
+    @Input() public sortdirection: string;
 
     /**
      * the options from the enum
      */
-    private options: any[] = [];
+    public options: any[] = [];
 
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * the value
      */
-    private _value: string;
+    public _value: string;
 
 
-    constructor(private metadata: metadata, private language: language) {}
+    constructor(public metadata: metadata, public language: language) {}
 
     get value() {
         return this._value;

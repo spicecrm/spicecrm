@@ -11,7 +11,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-input-integer',
-    templateUrl: './src/systemcomponents/templates/systeminputinteger.html',
+    templateUrl: '../templates/systeminputinteger.html',
     providers: [
     {
         provide: NG_VALUE_ACCESSOR,
@@ -25,10 +25,10 @@ export class SystemInputInteger implements ControlValueAccessor {
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
-    private _value: string;
+    public _value: string;
 
 
     constructor() {

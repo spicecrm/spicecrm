@@ -12,17 +12,17 @@ import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-item',
-    templateUrl: './src/modules/reports/templates/reporterfilteritem.html'
+    templateUrl: '../templates/reporterfilteritem.html'
 })
 export class ReporterFilterItem {
 
-    @Input() private wherecondition: any = {};
+    @Input() public wherecondition: any = {};
 
-    constructor(private language: language, private model: model, private reporterconfig: reporterconfig) {
+    constructor(public language: language, public model: model, public reporterconfig: reporterconfig) {
 
     }
 
-    private getOperators() {
+    public getOperators() {
         let retArray = [];
         const operatorType = this.reporterconfig.operatorAssignments[this.wherecondition.type] || 'varchar';
         let operators = this.reporterconfig.operatorTypes[operatorType];
@@ -80,7 +80,7 @@ export class ReporterFilterItem {
         return this.reporterconfig.operatorCount[this.wherecondition.operator] > 1;
     }
 
-    private changeOperator() {
+    public changeOperator() {
         this.wherecondition.value = '';
         this.wherecondition.valuekey = '';
         this.wherecondition.valueto = '';

@@ -9,11 +9,11 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'tasks-assistant-tile-close',
-    templateUrl: './src/modules/activities/templates/tasksassitanttileclose.html',
+    templateUrl: '../templates/tasksassitanttileclose.html',
 })
 export class TasksAssitantTileClose {
 
-    constructor(private model: model, private language: language, private helper: helper, private broadcast: broadcast) {
+    constructor(public model: model, public language: language, public helper: helper, public broadcast: broadcast) {
     }
 
     doAction(){

@@ -11,7 +11,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-filter-builder-expression-values',
-    templateUrl: './src/systemcomponents/templates/systemfilterbuilderfilterexpressionvalues.html',
+    templateUrl: '../templates/systemfilterbuilderfilterexpressionvalues.html',
 })
 export class SystemFilterBuilderFilterExpressionValues implements OnChanges {
 
@@ -28,13 +28,13 @@ export class SystemFilterBuilderFilterExpressionValues implements OnChanges {
     /**
      * the operator
      */
-    @Input() private operator: any;
-    @Input() private operators: any[];
+    @Input() public operator: any;
+    @Input() public operators: any[];
 
     /**
      * the durrect set filter expression
      */
-    @Input() private filterexpression: any = {};
+    @Input() public filterexpression: any = {};
 
     constructor(
         public backend: backend,
@@ -60,7 +60,7 @@ export class SystemFilterBuilderFilterExpressionValues implements OnChanges {
     /**
      * returns if any of the two value is set
      */
-    private showValues() {
+    public showValues() {
         return this.operator.value1 || this.operator.value2;
     }
 

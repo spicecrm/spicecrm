@@ -22,7 +22,7 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-timestream-selector',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestreamselector.html'
+    templateUrl: '../templates/spicetimestreamselector.html'
 })
 export class SpiceTimestreamSelector implements OnInit{
 
@@ -31,22 +31,22 @@ export class SpiceTimestreamSelector implements OnInit{
      *
      * @private
      */
-    private focusDate = new moment();
+    public focusDate = new moment();
 
     /**
      * the timestream object
      *
      * @private
      */
-    @Input() private timestream: any;
+    @Input() public timestream: any;
 
     /**
      * the week start day .. as per prefercnes either monday or sunday
      * @private
      */
-    private weekStartDay = 0;
+    public weekStartDay = 0;
 
-    constructor(private userpreferences: userpreferences) {
+    constructor(public userpreferences: userpreferences) {
 
         // get the week start day
         let preferences = this.userpreferences.toUse;
@@ -140,7 +140,7 @@ export class SpiceTimestreamSelector implements OnInit{
      *
      * @private
      */
-    private prev() {
+    public prev() {
         this.focusDate.subtract(1, this.timestream.period);
         this.period = this.timestream.period;
     }
@@ -150,7 +150,7 @@ export class SpiceTimestreamSelector implements OnInit{
      *
      * @private
      */
-    private next() {
+    public next() {
         this.focusDate.add(1, this.timestream.period);
         this.period = this.timestream.period;
     }

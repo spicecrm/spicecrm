@@ -20,7 +20,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-schedule',
-    templateUrl: './src/modules/calendar/templates/calendarsheetschedule.html',
+    templateUrl: '../templates/calendarsheetschedule.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetSchedule implements OnChanges, OnDestroy {
@@ -31,44 +31,44 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * holds all events contacted
      */
-    protected eventDays: any[] = [];
+    public eventDays: any[] = [];
     /**
      * the change date comes from the parent
      */
-    @Input() private setdate: any = {};
+    @Input() public setdate: any = {};
     /**
      * holds a boolean of google events visibility
      */
-    @Input() private googleIsVisible: boolean = true;
+    @Input() public googleIsVisible: boolean = true;
     /**
      * holds the owner events
      */
-    private ownerEvents: any[] = [];
+    public ownerEvents: any[] = [];
     /**
      * holds the users events
      */
-    private userEvents: any[] = [];
+    public userEvents: any[] = [];
     /**
      * holds the google events
      */
-    private googleEvents: any[] = [];
+    public googleEvents: any[] = [];
     /**
      * holds the until date
      */
-    private untilDate: any = {};
+    public untilDate: any = {};
     /**
      * subscription to handle unsubscribe
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private broadcast: broadcast,
-                private navigation: navigation,
-                private elementRef: ElementRef,
-                private backend: backend,
-                private session: session,
-                private cdRef: ChangeDetectorRef,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public broadcast: broadcast,
+                public navigation: navigation,
+                public elementRef: ElementRef,
+                public backend: backend,
+                public session: session,
+                public cdRef: ChangeDetectorRef,
+                public calendar: calendar) {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
 
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
@@ -120,7 +120,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * assign an array of days that holds the events
      */
-    private setEventDays() {
+    public setEventDays() {
         let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
         events.forEach(event => event.events.sort((a, b) => a.start - b.start));
         this.eventDays = events.sort((a, b) => a.date - b.date);
@@ -134,7 +134,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * @param item
      * @return item.id
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -145,14 +145,14 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * @param item
      * @return index
      */
-    private trackByFnDate(index, item) {
+    public trackByFnDate(index, item) {
         return index;
     }
 
     /**
      * set until date
      */
-    private setUntilDate() {
+    public setUntilDate() {
         this.untilDate = moment(this.setdate).add(1, "M");
         this.untildate$.emit(this.untilDate);
     }
@@ -161,7 +161,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * group events by day
      * @param events
      */
-    private groupByDay(events) {
+    public groupByDay(events) {
         let days = [];
         let date = new moment(this.setdate).hour(0).minute(0).second(0);
 
@@ -205,7 +205,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * load owner events from service and rearrange the multi events
      */
-    private getOwnerEvents() {
+    public getOwnerEvents() {
         this.ownerEvents = [];
         this.setEventDays();
 
@@ -223,7 +223,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * load google events from service and rearrange the multi events
      */
-    private getGoogleEvents() {
+    public getGoogleEvents() {
         this.googleEvents = [];
 
         if (!this.googleIsVisible || this.calendar.isMobileView) {
@@ -241,7 +241,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * load other user events from service and rearrange the multi events
      */
-    private getUserEvents(calendar) {
+    public getUserEvents(calendar) {
         this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
@@ -263,7 +263,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * load other users events from service and rearrange the multi events
      */
-    private getUsersEvents() {
+    public getUsersEvents() {
         this.userEvents = [];
         this.setEventDays();
         if (this.calendar.isMobileView) {
@@ -283,14 +283,14 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * navigate to day
      * @param date
      */
-    private goToDay(date) {
+    public goToDay(date) {
         this.calendar.gotToDayView(date);
     }
 
     /**
      * load more events
      */
-    private loadMore() {
+    public loadMore() {
         this.untilDate = moment(this.untilDate).add(1, "M");
         this.untildate$.emit(this.untilDate);
         this.getOwnerEvents();

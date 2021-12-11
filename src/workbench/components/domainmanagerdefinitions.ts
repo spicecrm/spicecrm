@@ -18,13 +18,13 @@ import {domainmanager} from '../services/domainmanager.service';
  */
 @Component({
     selector: 'domain-manager-definitions',
-    templateUrl: './src/workbench/templates/domainmanagerdefinitions.html',
+    templateUrl: '../templates/domainmanagerdefinitions.html',
 })
 export class DomainManagerDefinitions {
 
-    private definitionfilterterm: string;
+    public definitionfilterterm: string;
 
-    constructor(private domainmanager: domainmanager, private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast, private modal: modal, private injector: Injector) {
+    constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
 
@@ -43,12 +43,12 @@ export class DomainManagerDefinitions {
     }
 
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
 
-    private setCurrentDomainDefintion(definitionId: string) {
+    public setCurrentDomainDefintion(definitionId: string) {
         this.domainmanager.currentDomainDefinition = definitionId;
         this.domainmanager.currentDomainField = null;
     }
@@ -56,7 +56,7 @@ export class DomainManagerDefinitions {
     /**
      * react to the click to add a new domain definition
      */
-    private addDomainDefinition(event: MouseEvent) {
+    public addDomainDefinition(event: MouseEvent) {
         event.stopPropagation();
         this.modal.openModal('DomainManagerAddDefinitionModal', true, this.injector);
     }
@@ -67,7 +67,7 @@ export class DomainManagerDefinitions {
      * @param event
      * @param id
      */
-    private deleteDomainDefinition(event: MouseEvent, id: string) {
+    public deleteDomainDefinition(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {

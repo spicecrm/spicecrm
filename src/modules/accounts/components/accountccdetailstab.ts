@@ -14,7 +14,7 @@ declare var _: any;
 
 @Component({
     selector: 'account-cc-details-tab',
-    templateUrl: './src/modules/accounts/templates/accountccdetailstab.html',
+    templateUrl: '../templates/accountccdetailstab.html',
     providers: [model]
 })
 
@@ -22,18 +22,18 @@ export class AccountCCDetailsTab {
     @ViewChild('ccdetailscontainer', {
         read: ViewContainerRef,
         static: true
-    }) private ccdetailscontainer: ViewContainerRef;
+    }) public ccdetailscontainer: ViewContainerRef;
 
-    @Input() private data: any = undefined;
-    @Input() private componentconfig: any = {};
+    @Input() public data: any = undefined;
+    @Input() public componentconfig: any = {};
 
-    @Input() private parent: model;
+    @Input() public parent: model;
 
-    @Input() private ccode: any = {};
+    @Input() public ccode: any = {};
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model) {
 
         // set the model
         this.model.module = 'AccountCCDetails';
@@ -51,7 +51,7 @@ export class AccountCCDetailsTab {
     * Set the model data
     * @return void
     * */
-    private setModelData() {
+    public setModelData() {
         if (this.data) {
             this.model.id = this.data.id;
             this.model.setFields(this.model.utils.backendModel2spice(this.model.module, this.data));
@@ -76,7 +76,7 @@ export class AccountCCDetailsTab {
     * Render the configured component set
     * @return void
     * */
-    private renderView() {
+    public renderView() {
 
         if (_.isEmpty(this.componentconfig)) {
             // check to get the config

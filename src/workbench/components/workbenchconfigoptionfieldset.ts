@@ -7,12 +7,13 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'workbench-config-option-fieldset',
-    templateUrl: './src/workbench/templates/workbenchconfigoptionfieldset.html'
+    templateUrl: '../templates/workbenchconfigoptionfieldset.html'
 })
 export class WorkbenchConfigOptionFieldset {
 
     public option: any = {};
+    public configValues = {};
 
-    constructor(private language: language, private view: view) {
+    constructor(public language: language, public view: view) {
     }
 }

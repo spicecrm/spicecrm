@@ -13,7 +13,7 @@ import {ObjectRelatedlistList} from "./objectrelatedlistlist";
 
 @Component({
     selector: 'object-model-popover-related',
-    templateUrl: './src/objectcomponents/templates/objectmodelpopoverrelated.html',
+    templateUrl: '../templates/objectmodelpopoverrelated.html',
     providers: [relatedmodels]
 })
 export class ObjectModelPopoverRelated extends ObjectRelatedlistList {
@@ -24,7 +24,7 @@ export class ObjectModelPopoverRelated extends ObjectRelatedlistList {
         public relatedmodels: relatedmodels,
         public model: model,
         public cdref: ChangeDetectorRef,
-        private router: Router
+        public router: Router
     ) {
         super(language, metadata, relatedmodels, model, cdref);
     }
@@ -34,7 +34,7 @@ export class ObjectModelPopoverRelated extends ObjectRelatedlistList {
         return this.relatedmodels.count > 0 && this.relatedmodels.count > this.relatedmodels.loaditems;
     }
 
-    private showAll() {
+    public showAll() {
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id + '/' + this.relatedmodels.relatedModule + '/' + this.relatedmodels._linkName]);
     }
 

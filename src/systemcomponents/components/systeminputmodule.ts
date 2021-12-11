@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: "system-input-module",
-    templateUrl: "./src/systemcomponents/templates/systeminputmodule.html",
+    templateUrl: "../templates/systeminputmodule.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -27,42 +27,42 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     /**
      * input to disable the input
      */
-    @Input() private disabled = false;
+    @Input() public disabled = false;
 
     /**
      * if set to true also the tecnical name will be displayed
      */
-    @Input() private displaytechnicalname: boolean = true;
+    @Input() public displaytechnicalname: boolean = true;
 
     /**
      * for generic selections show an '*' as option
      */
-    @Input() private displayAsterisk: boolean = false;
+    @Input() public displayAsterisk: boolean = false;
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * holds all subscriptions
      *
      * @private
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
     /**
      * holds the companycoded
      */
-    private _module: string;
+    public _module: string;
 
     /**
      * the available companycodes
      */
-    private _modules: any[] = [];
+    public _modules: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private configuration: configurationService
+        public language: language,
+        public metadata: metadata,
+        public configuration: configurationService
     ) {
         this._modules = this.metadata.getModules();
         this.sortModules();
@@ -77,7 +77,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    private sortModules() {
+    public sortModules() {
         if(this.displaytechnicalname){
             this._modules.sort((a, b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1);
         } else {

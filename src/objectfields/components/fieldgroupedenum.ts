@@ -8,7 +8,7 @@ declare var _;
 
 @Component({
     selector: 'field-grouped-enum',
-    templateUrl: './src/objectfields/templates/fieldgroupedenum.html'
+    templateUrl: '../templates/fieldgroupedenum.html'
 })
 export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     /**
@@ -25,7 +25,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * holds the local value array
      * @private
      */
-    private localValue: { valueText: string, valueArray: string[], valueDisplay: string, valueGroups: object } = {
+    public localValue: { valueText: string, valueArray: string[], valueDisplay: string, valueGroups: object } = {
         valueText: '',
         valueArray: [],
         valueDisplay: '',
@@ -51,7 +51,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * set the columns class
      * @private
      */
-    private setColumnsClass() {
+    public setColumnsClass() {
         const columns = +this.fieldconfig.columns < 13 && +this.fieldconfig.columns > 0 ? this.fieldconfig.columns : '4';
         this.columnsClass = `slds-size--1-of-${columns}`;
 
@@ -61,7 +61,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     * rebuild the option groups on language change
     * @return void
     */
-    private subscribeToLanguage() {
+    public subscribeToLanguage() {
         this.subscriptions.add(
             this.language.currentlanguage$.subscribe(() =>
                 this.buildOptionGroups()
@@ -73,7 +73,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * set the local values
      * @private
      */
-    private setLocalValues(value: string) {
+    public setLocalValues(value: string) {
 
         if (!value) {
             return this.localValue = {valueText: '', valueArray: [], valueDisplay: '', valueGroups: {}};
@@ -100,7 +100,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * subscribe to model changes
      * @private
      */
-    private subscribeToModelChanges() {
+    public subscribeToModelChanges() {
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
                 if (this.localValue.valueText === data[this.fieldname]) return;
@@ -114,7 +114,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * @param valueArray
      * @private
      */
-    private setItemValue(valueArray) {
+    public setItemValue(valueArray) {
 
         const value = valueArray.map(item => `^${item}^`).join(',');
         this.setLocalValues(value);
@@ -127,7 +127,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * @param group
      * @private
      */
-    private setGroupValue(checked: boolean, group: { value: string, display: string, options: any[] }) {
+    public setGroupValue(checked: boolean, group: { value: string, display: string, options: any[] }) {
 
         let value = this.value;
 
@@ -150,7 +150,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.value;
     }
 
@@ -158,7 +158,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * build the checkbox groups their options
      * @private
      */
-    private buildOptionGroups() {
+    public buildOptionGroups() {
 
         this.groups = [];
 

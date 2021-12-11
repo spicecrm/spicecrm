@@ -11,7 +11,7 @@ import {fieldEnum} from "./fieldenum";
 
 @Component({
     selector: 'field-enum-modules',
-    templateUrl: './src/objectfields/templates/fieldenummodules.html'
+    templateUrl: '../templates/fieldenummodules.html'
 })
 export class FieldEnumModulesComponent extends fieldEnum {
 
