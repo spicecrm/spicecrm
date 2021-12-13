@@ -16,7 +16,7 @@ declare var moment: any;
 
 @Component({
     selector: 'field-project-activity-duration',
-    templateUrl: './src/modules/projects/templates/fieldprojectactivityduration.html',
+    templateUrl: '../templates/fieldprojectactivityduration.html',
 
 })
 export class fieldProjectActivityDuration extends fieldGeneric {

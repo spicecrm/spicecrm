@@ -51,16 +51,16 @@ export class fts {
     public buckets: any = {};
 
     public moduleSearchresults: any[] = [];
-    private lastSearchParams: any = {};
+    public lastSearchParams: any = {};
 
     public gloablSearchResults: any = {};
 
     constructor(
-        private backend: backend,
-        private configurationService: configurationService,
-        private session: session,
-        private modelutilities: modelutilities,
-        private metadata: metadata,
+        public backend: backend,
+        public configurationService: configurationService,
+        public session: session,
+        public modelutilities: modelutilities,
+        public metadata: metadata,
     ) {
         this.getSearchModules();
     }
@@ -70,7 +70,7 @@ export class fts {
         return this.searchModules.filter(module => this.metadata.checkModuleAcl(module, 'list'));
     }
 
-    private transformHits(hits) {
+    public transformHits(hits) {
         let retArray = [];
         for (let hit of hits) {
             retArray.push(this.tranformHit(hit));
@@ -78,7 +78,7 @@ export class fts {
         return retArray;
     }
 
-    private tranformHit(hit) {
+    public tranformHit(hit) {
         // transform the fields
         for (let field in hit._source) {
             if (hit._source.hasOwnProperty(field) && typeof (hit._source[field]) == 'string') {

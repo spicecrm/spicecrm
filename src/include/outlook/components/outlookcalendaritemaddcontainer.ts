@@ -21,7 +21,7 @@ declare var _: any;
  */
 @Component({
     selector: 'outlook-calendaritem-add-container',
-    templateUrl: './src/include/outlook/templates/outlookcalendaritemaddcontainer.html',
+    templateUrl: '../templates/outlookcalendaritemaddcontainer.html',
     providers: [model, view]
 })
 export class OutlookCalendarItemAddContainer {
@@ -29,44 +29,44 @@ export class OutlookCalendarItemAddContainer {
     /**
      * the custom prperties of the mailbox item
      */
-    @Input() private customProperties: any;
+    @Input() public customProperties: any;
 
     /**
      * Input radio Options ...
      * ToDo: needs to be replaced witha load of modules that can be added, loadded form the mapping in the config
      */
-    private modules: InputRadioOptionI[] = [
+    public modules: InputRadioOptionI[] = [
         {value: '', label: 'LBL_NONE'}
     ];
 
     /**
      * the current set module
      */
-    private _module: string = '';
+    public _module: string = '';
 
     /**
      * indicates if the change of the moduel is allowed
      * we are not allwoing it if the user opens the panel up angain and the module is set
      * as we cannot control the status of sync with the backend
      */
-    private allowModuleChange: boolean = true;
+    public allowModuleChange: boolean = true;
 
     /**
      * the componentset to be rendered for the module
      */
-    private fieldset: string;
+    public fieldset: string;
 
     /**
      * the model subscription
      */
-    private modelsubscription: Subscription;
+    public modelsubscription: Subscription;
 
     constructor(
-        private backend: backend,
-        private configuration: configurationService,
-        private model: model,
-        private view: view,
-        private metadata: metadata
+        public backend: backend,
+        public configuration: configurationService,
+        public model: model,
+        public view: view,
+        public metadata: metadata
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -139,7 +139,7 @@ export class OutlookCalendarItemAddContainer {
     /**
      * gets the fields that should be stored or
      */
-    private getFields(): string[] {
+    public getFields(): string[] {
         let fields = [];
 
         let fieldSetFields = this.metadata.getFieldSetFields(this.fieldset);
@@ -169,7 +169,7 @@ export class OutlookCalendarItemAddContainer {
     /**
      * loads the modules that can be added from Outlook
      */
-    private loadExchangeConfig() {
+    public loadExchangeConfig() {
         let config = this.configuration.getData('exchangeuserconfig');
         for (let e of config) {
             if (e.exchange_object == 'calendar' && e.outlookaddenabled == '1') {
@@ -182,7 +182,7 @@ export class OutlookCalendarItemAddContainer {
         }
     }
 
-    private setItemModule() {
+    public setItemModule() {
         let itemModule = this.customProperties.get('_module');
 
         // if we have a module then do not allow changing it
@@ -197,7 +197,7 @@ export class OutlookCalendarItemAddContainer {
      *
      * @param changes
      */
-    private saveChanges(changes) {
+    public saveChanges(changes) {
         let values: outlookNameValuePairI[] = [];
         let fields = this.getFields();
         for (let field of fields) {
@@ -211,7 +211,7 @@ export class OutlookCalendarItemAddContainer {
      *
      * @param values
      */
-    private setCustomProperties(values: outlookNameValuePairI[]) {
+    public setCustomProperties(values: outlookNameValuePairI[]) {
         for (let nmp of values) {
             this.customProperties.set(nmp.name, nmp.value);
         }
@@ -223,7 +223,7 @@ export class OutlookCalendarItemAddContainer {
      *
      * @param names
      */
-    private clearCustomProperties(names: string[]) {
+    public clearCustomProperties(names: string[]) {
         for (let name of names) {
             this.customProperties.remove(name);
         }

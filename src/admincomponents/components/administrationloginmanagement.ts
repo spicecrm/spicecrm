@@ -5,14 +5,14 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AdministrationLoginRestrictionIpAddresses } from './administrationloginrestrictionipaddresses';
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationloginmanagement.html'
+    templateUrl: '../templates/administrationloginmanagement.html'
 })
 export class AdministrationLoginManagement implements OnInit {
 
     @ViewChild('whiteList') public whiteListComponent: AdministrationLoginRestrictionIpAddresses;
     @ViewChild('blackList') public blackListComponent: AdministrationLoginRestrictionIpAddresses;
 
-    constructor( private cdref: ChangeDetectorRef ) { }
+    constructor( public cdref: ChangeDetectorRef ) { }
 
     public ngOnInit() {
         // An additional change detection cycle because of sibling components LoginRestrictionIpAddresses.

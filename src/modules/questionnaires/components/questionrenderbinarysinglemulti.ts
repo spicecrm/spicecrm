@@ -7,7 +7,7 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 
 @Component( {
     selector: 'question-render-binary-single-multi',
-    templateUrl: './src/modules/questionnaires/templates/questionrenderbinarysinglemulti.html',
+    templateUrl: '../templates/questionrenderbinarysinglemulti.html',
     styles: [
         'table.question-render-question { border-collapse: collapse; }',
         'div.question-render-question { border-radius:0; margin-bottom: 1rem; }',
@@ -17,9 +17,9 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 })
 export class QuestionRenderBinarySingleMulti extends QuestionRenderBasic implements OnInit {
 
-    @Input() private hideFinishedQuestions = false;
-    @Input() private imageWidthQuestion = 200;
-    @Input() private imageWidthOption = 200;
+    @Input() public hideFinishedQuestions = false;
+    @Input() public imageWidthQuestion = 200;
+    @Input() public imageWidthOption = 200;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
@@ -32,7 +32,7 @@ export class QuestionRenderBinarySingleMulti extends QuestionRenderBasic impleme
     /**
      * Is the radio button of the quesion option selected?
      */
-    private isChecked( optionId: string ): boolean {
+    public isChecked( optionId: string ): boolean {
         return this.qp.answers && this.qp.answers[this.questionId] && this.qp.answers[this.questionId].options && this.qp.answers[this.questionId].options[optionId];
     }
 

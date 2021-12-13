@@ -15,17 +15,17 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-detail-tasksystemactions',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksystemactions.html',
+    templateUrl: '../templates/workflowmanagerdetailtasksystemactions.html',
 })
 export class WorkflowManagerDetailTaskSystemactions {
 
-    @Input() private tasks: any = {};
-    @Input() private module: string = '';
+    @Input() public tasks: any = {};
+    @Input() public module: string = '';
 
-    constructor(private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
     }
 
-    private addAction() {
+    public addAction() {
         this.model.data.systemactions.push({
             id: this.modelutilities.generateGuid(),
             workflowtaskdefinition_id: this.model.id,

@@ -13,7 +13,7 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'field-service-enhanced-categories',
-    templateUrl: './src/objectfields/templates/fieldcategories.html',
+    templateUrl: '../templates/fieldserviceenhancedcategories.html',
     providers: [model]
 })
 export class fieldServiceEnhancedCategories extends fieldCategories {

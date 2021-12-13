@@ -1,117 +1,75 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "newProjectRoot": "src",
   "projects": {
-    "spicecrm": {
+    "core": {
       "root": "",
-      "sourceRoot": "dist",
+      "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "app",
-      "schematics": {},
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "outputPath": "dist/spicecrm",
-            "index": "index.html",
-            "main": "dist/spiceui.ts",
-            "polyfills": "vendor/core-js/client/shim.min.js",
+            "outputPath": "dev",
+            "index": "index-dev.html",
+            "main": "src/spiceui.ts",
             "tsConfig": "tsconfig.json",
+            "aot": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
             "styles": [
-              "sldassets/styles/salesforce-lightning-design-system.min.css",
+              "vendor/sldassets/styles/salesforce-lightning-design-system.min.css",
               "assets/css/spicecrm.css"
             ],
             "scripts": [
+              "vendor/zone.js/zone.umd.min.js",
               "vendor/underscorejs/underscore-min.js",
-              "vendor/core-js/client/shim.min.js",
-              "vendor/zone.js/dist/zone.min.js",
               "vendor/reflect-metadata/Reflect.js",
-              "vendor/systemjs/system.js",
               "vendor/moment/moment.min.js",
               "vendor/moment/moment-timezone.min.js",
-              "systemjs.config.js"
+              "vendor/socket.io-client/socket.io.js"
             ]
           },
           "configurations": {
             "production": {
+              "customWebpackConfig": {
+                "path": "./webpack.config.js",
+                "mergeRules": {
+                  "externals": "replace"
+                }
+              },
+              "index": "",
+              "outputPath": "app",
               "fileReplacements": [
                 {
                   "replace": "environments/environment.ts",
                   "with": "environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
-              "outputHashing": "all",
+              "optimization": false,
+              "outputHashing": "none",
               "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": true,
+              "namedChunks": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": true
             }
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "proxyConfig": "proxy.conf.js",
-            "browserTarget": "spicecrm:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "spicecrm:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "spicecrm:build"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "spicecrm-e2e": {
-      "root": "e2e/",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "spicecrm:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "spicecrm:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "hmr": true,
+            "browserTarget": "core:build",
+            "port": 3333,
+            "proxyConfig": "proxy.conf.js"
           }
         }
       }
     }
-  },
-  "defaultProject": "spicecrm"
+},
+  "defaultProject": "core"
 }

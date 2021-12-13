@@ -7,24 +7,24 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-visualize-item-chart-type-panel',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignervisualizeitemcharttypepanel.html'
+    templateUrl: '../templates/reportsdesignervisualizeitemcharttypepanel.html'
 })
 export class ReportsDesignerVisualizeItemChartTypePanel {
 
     /**
      * @input dimensionsOptions: object[]
      */
-    @Input() protected typeOptions: any[] = [];
+    @Input() public typeOptions: any[] = [];
     /**
      * @input dimensionsOptions: object[]
      */
-    @Input() private dimensionsOptions: any[] = [];
+    @Input() public dimensionsOptions: any[] = [];
     /**
      * @input properties: object
      */
-    @Input() private properties: any = {};
+    @Input() public properties: any = {};
 
-    constructor(private language: language, private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language, public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -56,7 +56,7 @@ export class ReportsDesignerVisualizeItemChartTypePanel {
     * @param item
     * @return index
     */
-    protected trackByFnValue(index, item) {
+    public trackByFnValue(index, item) {
         return item.value;
     }
 
@@ -67,7 +67,7 @@ export class ReportsDesignerVisualizeItemChartTypePanel {
     * @param item
     * @return index
     */
-    protected trackByFnIndex(index, item) {
+    public trackByFnIndex(index, item) {
         return index;
     }
 }

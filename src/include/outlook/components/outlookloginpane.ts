@@ -21,38 +21,38 @@ declare var _: any;
  */
 @Component({
     selector: 'outlook-login-pane',
-    templateUrl: './src/include/outlook/templates/outlookloginpane.html'
+    templateUrl: '../templates/outlookloginpane.html'
 })
 export class OutlookLoginPane {
 
-    private promptUser: boolean = false;
+    public promptUser: boolean = false;
     /**
      * Login user name.
      */
-    private username: string = '';
+    public username: string = '';
     /**
      * Login password.
      */
-    private password: string = '';
-    private _selectedlanguage: string = '';
-    private selectedsite: string = '';
+    public password: string = '';
+    public _selectedlanguage: string = '';
+    public selectedsite: string = '';
     /**
      * Previously used UI language.
      */
-    private lastSelectedLanguage: string = null;
+    public lastSelectedLanguage: string = null;
     /**
      * Show the form to change forgotten password.
      */
-    private showForgotPass: boolean = false;
+    public showForgotPass: boolean = false;
 
     constructor(
-        private router: Router,
-        private outlookConfiguration: OutlookConfiguration,
+        public router: Router,
+        public outlookConfiguration: OutlookConfiguration,
 
-        private loginService: loginService,
-        private http: HttpClient,
-        private configuration: configurationService,
-        private session: session
+        public loginService: loginService,
+        public http: HttpClient,
+        public configuration: configurationService,
+        public session: session
     ) {
         if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
             let headers = new HttpHeaders();
@@ -107,7 +107,7 @@ export class OutlookLoginPane {
     /**
      * Triggers the actual login itself.
      */
-    private login() {
+    public login() {
         if (this.username && this.username.length > 0 && this.password && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
@@ -124,7 +124,7 @@ export class OutlookLoginPane {
         }
     }
 
-    private goToSettings() {
+    public goToSettings() {
         this.promptUser = true;
         // empty credentials saved in office container
         this.outlookConfiguration.username = '';

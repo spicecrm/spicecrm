@@ -20,7 +20,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'spice-attachment-file',
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentfile.html',
+    templateUrl: '../templates/spiceattachmentfile.html',
 })
 export class SpiceAttachmentFile {
 
@@ -30,7 +30,7 @@ export class SpiceAttachmentFile {
      *
      * @private
      */
-    @Input() private file: any = {};
+    @Input() public file: any = {};
 
 
     /**
@@ -38,15 +38,15 @@ export class SpiceAttachmentFile {
      *
      * @private
      */
-    @Input() private editmode: boolean = true;
+    @Input() public editmode: boolean = true;
 
     /**
      * the modalatatchments service
      * passed in as input since the container knows if self or parent element
      */
-    @Input() private modelattachments: modelattachments;
+    @Input() public modelattachments: modelattachments;
 
-    constructor(private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
+    constructor(public userpreferences: userpreferences, public modal: modal, public toast: toast, public helper: helper, public injector: Injector) {
 
     }
 
@@ -68,7 +68,7 @@ export class SpiceAttachmentFile {
         };
     }
 
-    private downloadFile() {
+    public downloadFile() {
         if (!this.uploading) {
             this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
         }
@@ -79,7 +79,7 @@ export class SpiceAttachmentFile {
      *
      * @param e
      */
-    private previewFile(e) {
+    public previewFile(e) {
         // stop the event from bubbling
         e.preventDefault();
         e.stopPropagation();
@@ -167,7 +167,7 @@ export class SpiceAttachmentFile {
     /**
      * action to delete the file
      */
-    private deleteFile() {
+    public deleteFile() {
         if (this.editmode) {
             this.modelattachments.deleteAttachment(this.file.id);
         }

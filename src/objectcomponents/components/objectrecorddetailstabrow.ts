@@ -9,7 +9,7 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-record-details-tab-row',
-    templateUrl: './src/objectcomponents/templates/objectrecorddetailstabrow.html'
+    templateUrl: '../templates/objectrecorddetailstabrow.html'
 })
 export class ObjectRecordDetailsTabRow implements OnInit {
     // @ViewChild('fieldsetcontainer', {read: ViewContainerRef, static: true}) fieldsetcontainer: ViewContainerRef;
@@ -21,7 +21,7 @@ export class ObjectRecordDetailsTabRow implements OnInit {
 
     @Input() fieldset: string = '';
 
-    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model) {
+    constructor(public activatedRoute: ActivatedRoute, public metadata: metadata, public componentFactoryResolver: ComponentFactoryResolver, public model: model) {
         //if (this.initialized)
         //    this.buildContainer();
     }

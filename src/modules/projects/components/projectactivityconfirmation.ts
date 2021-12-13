@@ -14,7 +14,7 @@ declare var moment: any;
 
 @Component({
     selector: "project-activity-confirmation",
-    templateUrl: "./src/modules/projects/templates/projectactivityconfirmation.html",
+    templateUrl: "../templates/projectactivityconfirmation.html",
     providers: [model, view]
 })
 export class ProjectActivityConfirmation {
@@ -37,11 +37,11 @@ export class ProjectActivityConfirmation {
 
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        @SkipSelf() private parent: model,
-        private model: model,
-        private view: view
+        public language: language,
+        public metadata: metadata,
+        @SkipSelf() public parent: model,
+        public model: model,
+        public view: view
     ) {
 
         // get the config
@@ -75,7 +75,7 @@ export class ProjectActivityConfirmation {
      *
      * @private
      */
-    private save() {
+    public save() {
         if (this.model.validate()) {
             this.model.save().subscribe(saved => {
                 this.action.emit('save');
@@ -89,7 +89,7 @@ export class ProjectActivityConfirmation {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.action.emit('cancel');
         this.self.destroy();
     }

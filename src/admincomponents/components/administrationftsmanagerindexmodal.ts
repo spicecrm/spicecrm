@@ -7,28 +7,28 @@ import {Observable, Subject} from "rxjs";
 
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationftsmanagerindexmodal.html'
+    templateUrl: '../templates/administrationftsmanagerindexmodal.html'
 })
 export class AdministrationFtsManagerIndexModal {
 
-    private response: Observable<any>;
-    private responseSubject: Subject<any>;
-    private settings: any = {};
+    public response: Observable<any>;
+    public responseSubject: Subject<any>;
+    public settings: any = {};
     public self: any = {};
 
-    constructor(private language: language) {
+    constructor(public language: language) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
         this.settings.bulkAmount = -1;
     }
 
-    private cancel() {
+    public cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private start() {
+    public start() {
         this.responseSubject.next(this.settings);
         this.responseSubject.complete();
         this.self.destroy();

@@ -7,7 +7,7 @@ import {ServiceOrderItemPanel} from "./serviceorderitempanel";
 
 @Component({
     selector: "[serviceorder-item-item]",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceorderitemitem.html",
+    templateUrl: "../templates/serviceorderitemitem.html",
     providers: [model, view]
 })
 export class ServiceOrderItemItem implements OnInit  {
@@ -54,7 +54,7 @@ export class ServiceOrderItemItem implements OnInit  {
     /**
      * set the model data for the item
      */
-    private setItemModelData() {
+    public setItemModelData() {
         this.model.module = 'ServiceOrderItems';
         this.model.id = this.item.id;
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
@@ -63,7 +63,7 @@ export class ServiceOrderItemItem implements OnInit  {
     /**
      * view mode subscriptions (manage edit/view mode)
      */
-    private viewSubscriptions() {
+    public viewSubscriptions() {
         // link the two views
 
         this.view.displayLabels = false;
@@ -114,7 +114,7 @@ export class ServiceOrderItemItem implements OnInit  {
     /**
      * marks the item as deleted
      */
-    private deleteItem() {
+    public deleteItem() {
         this.item.deleted = true;
     }
 }

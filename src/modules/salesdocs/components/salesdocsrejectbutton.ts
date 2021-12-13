@@ -9,11 +9,11 @@ import {language} from "../../../services/language.service";
 import {ObjectActionNewButton} from "../../../objectcomponents/components/objectactionnewbutton";
 
 @Component({
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsrejectbutton.html",
+    templateUrl: "../templates/salesdocsrejectbutton.html",
 })
 export class SalesdocsRejectButton {
 
-    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, private injector: Injector) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, public injector: Injector) {
         this.model.module = 'SalesDocs';
     }
 

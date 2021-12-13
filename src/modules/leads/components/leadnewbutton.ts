@@ -16,7 +16,7 @@ import {relatedmodels} from '../../../services/relatedmodels.service';
  */
 @Component({
     selector: 'lead-new-button',
-    templateUrl: './src/modules/leads/templates/leadnewbutton.html',
+    templateUrl: '../templates/leadnewbutton.html',
     providers: [model]
 })
 export class LeadNewButton {
@@ -26,7 +26,7 @@ export class LeadNewButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(private injector: Injector, public language: language, public metadata: metadata, public modal: modal, public model: model, @SkipSelf() public parentmodel: model, @Optional() private relatedmodel: relatedmodels) {
+    constructor(public injector: Injector, public language: language, public metadata: metadata, public modal: modal, public model: model, @SkipSelf() public parentmodel: model, @Optional() public relatedmodel: relatedmodels) {
     }
 
     /**
@@ -34,7 +34,7 @@ export class LeadNewButton {
      *
      * from accounts and contacts it is B2B , from consumers B2C
      */
-    private execute() {
+    public execute() {
         this.model.module = 'Leads';
         this.model.id = undefined;
         if (this.parentmodel.module == 'Contacts' || this.parentmodel.module == 'Accounts') {

@@ -12,7 +12,7 @@ declare var _: any;
 
 @Component({
     selector: 'questions-manager-edit-binary',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditbinary.html',
+    templateUrl: '../templates/questionsmanagereditbinary.html',
     styles: [ 'tr.no-hover:hover td { background-color: inherit; box-shadow: none !important; }']
 })
 export class QuestionsManagerEditBinary extends QuestionsManagerEditBasicWithOptions implements OnInit {

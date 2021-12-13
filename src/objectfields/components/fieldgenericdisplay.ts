@@ -12,7 +12,7 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'field-generic-display',
-    templateUrl: './src/objectfields/templates/fieldgenericdisplay.html'
+    templateUrl: '../templates/fieldgenericdisplay.html'
 })
 export class fieldGenericDisplay {
     // @Input() public value: string = '';
@@ -40,7 +40,7 @@ export class fieldGenericDisplay {
      * internal variable for the truncation setting of the field
      * @private
      */
-    private _truncate: boolean = true;
+    public _truncate: boolean = true;
 
     /**
      * an attribute to disable truncation on the field
@@ -55,7 +55,7 @@ export class fieldGenericDisplay {
         public model: model,
         public view: view,
         public language: language,
-        @Optional() private navigationtab: navigationtab
+        @Optional() public navigationtab: navigationtab
     ) {
     }
 

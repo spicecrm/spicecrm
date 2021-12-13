@@ -22,7 +22,7 @@ import {language} from "../../../services/language.service";
 
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriestypesmanagertypeelementsaddmodal.html',
+    templateUrl: '../templates/aclterritorriestypesmanagertypeelementsaddmodal.html',
 })
 export class ACLTerritorriesTypesmanagerTypeelementsAddModal {
 
@@ -33,7 +33,7 @@ export class ACLTerritorriesTypesmanagerTypeelementsAddModal {
     public currentelements: any[] = [];
     @Output() public newelementid: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private language: language, private elementRef: ElementRef) {
+    constructor(public backend: backend, public language: language, public elementRef: ElementRef) {
         this.backend.getRequest('module/SpiceACLTerritories/core/territoryelements').subscribe(elements => {
             for(let element of elements) {
                 if(this.currentelements.indexOf(element.id) < 0) {

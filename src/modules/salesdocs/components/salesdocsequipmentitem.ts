@@ -11,7 +11,7 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: '[salesdocs-equipment-item]',
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsequipmentitem.html",
+    templateUrl: "../templates/salesdocsequipmentitem.html",
     providers: [model, view]
 })
 export class SalesDocsEquipmentItem implements OnInit  {
@@ -19,34 +19,34 @@ export class SalesDocsEquipmentItem implements OnInit  {
     /**
      * The service equipment to be displayed.
      */
-    @Input() private equipment: any = {};
+    @Input() public equipment: any = {};
 
     /**
      * the SalesDoc model
      */
-    @Input() private salesDoc: model;
+    @Input() public salesDoc: model;
 
     /**
      * the view from the parent .. to link the two
      */
-    @Input() private parentview: view;
+    @Input() public parentview: view;
 
     /**
      * The fieldset ID.
      */
-    @Input() private fieldset: string;
+    @Input() public fieldset: string;
 
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     /**
      * Event emitter to tell the parent component that the equipment has been selected or unselected.
      */
-    @Output() private selectionChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public selectionChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor( private metadata: metadata, private language: language, private model: model, private view: view ) { }
+    constructor( public metadata: metadata, public language: language, public model: model, public view: view ) { }
 
     public ngOnInit(): void {
         this.setEquipmentModelData();
@@ -57,7 +57,7 @@ export class SalesDocsEquipmentItem implements OnInit  {
     /**
      * set the model data for the service equipment
      */
-    private setEquipmentModelData() {
+    public setEquipmentModelData() {
         this.model.module = 'ServiceEquipments';
         this.model.id = this.equipment.id;
         this.model.data = this.model.utils.backendModel2spice( this.model.module, this.equipment );
@@ -66,7 +66,7 @@ export class SalesDocsEquipmentItem implements OnInit  {
     /**
      * view mode subscriptions (manage edit/view mode)
      */
-    private viewSubscriptions() {
+    public viewSubscriptions() {
         // link the two views
         this.view.isEditable = this.parentview.isEditable;
         this.view.mode$.subscribe(mode => {
@@ -97,14 +97,14 @@ export class SalesDocsEquipmentItem implements OnInit  {
     /**
      * set the configuration
      */
-    private setConfig() {
+    public setConfig() {
         if ( this.fieldset ) this.fieldsetItems = this.metadata.getFieldSetItems( this.fieldset );
     }
 
     /**
      * Change the selection-flag and emit the information to the parent component.
      */
-    private changeSelection() {
+    public changeSelection() {
         this.equipment.selected = !this.equipment.selected;
         if ( this.equipment.selected ) {
             this.salesDoc.addRelatedRecords('serviceequipments', [this.equipment], false );

@@ -10,7 +10,7 @@ import {modal} from '../../../services/modal.service';
 
 @Component({
     selector: '[questions-manager-edit-option-ist]',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditoptionist.html',
+    templateUrl: '../templates/questionsmanagereditoptionist.html',
     providers: [model,view]
 })
 export class QuestionsManagerEditOptionIst implements OnInit {
@@ -22,7 +22,7 @@ export class QuestionsManagerEditOptionIst implements OnInit {
     @Input() public isLastRow: boolean;
     @Output() public isDirty: boolean;
 
-    constructor( private language: language, private metadata: metadata, private model: model, private view: view, private modalservice: modal ) {
+    constructor( public language: language, public metadata: metadata, public model: model, public view: view, public modalservice: modal ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -33,13 +33,13 @@ export class QuestionsManagerEditOptionIst implements OnInit {
         this.model.data = this.option;
     }
 
-    private deleteOption(): void {
+    public deleteOption(): void {
         this.modalservice.confirm( this.language.getLabelFormatted( 'QST_DELETE_ANSWER_OPTION_LONG', this.option.name ), this.language.getLabel('QST_DELETE_ANSWER_OPTION' )).subscribe( answer => {
             if ( answer ) this.event.emit( 'delete');
         });
     }
 
-    private change() {
+    public change() {
         null;
     }
 

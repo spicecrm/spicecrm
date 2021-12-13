@@ -13,7 +13,7 @@ import {modellist} from '../../services/modellist.service';
  */
 @Component({
     selector: 'object-listview-aggregates-panel',
-    templateUrl: './src/objectcomponents/templates/objectlistviewaggregatespanel.html',
+    templateUrl: '../templates/objectlistviewaggregatespanel.html',
     host:{
         class : 'slds-is-fixed'
     }
@@ -21,10 +21,10 @@ import {modellist} from '../../services/modellist.service';
 export class ObjectListViewAggregatesPanel {
 
     constructor(
-        private elementRef: ElementRef,
-        private language: language,
-        private metadata: metadata,
-        private modellist: modellist
+        public elementRef: ElementRef,
+        public language: language,
+        public metadata: metadata,
+        public modellist: modellist
     ) {
 
     }
@@ -46,7 +46,7 @@ export class ObjectListViewAggregatesPanel {
     /**
      * reset all aggregate filters
      */
-    private clearAggregates() {
+    public clearAggregates() {
         this.modellist.removeAllAggregates(true);
         this.modellist.reLoadList();
     }

@@ -16,7 +16,7 @@ declare var Croppie: any;
  */
 @Component({
     selector: "system-upload-image",
-    templateUrl: "./src/systemcomponents/templates/systemuploadimage.html"
+    templateUrl: "../templates/systemuploadimage.html"
 })
 export class SystemUploadImage implements OnDestroy {
     /**
@@ -52,28 +52,28 @@ export class SystemUploadImage implements OnDestroy {
     /**
      * a reference to the modal itsel
      */
-    private self: any;
+    public self: any;
 
     /**
      * @ignore
      *
      * the base64 string of the image
      */
-    private imageBase64: any;
+    public imageBase64: any;
 
     /**
      * @ignore
      *
      * the croppie image when the croppie has been loaded andis initialized
      */
-    private croppie: any;
+    public croppie: any;
 
     /**
      * allow pasting an image. This is the listener that catches the past event on the window
      */
-    private pasteListener: any;
+    public pasteListener: any;
 
-    constructor(private language: language, private libloader: libloader, private renderer: Renderer2, private sanitizer: DomSanitizer) {
+    constructor(public language: language, public libloader: libloader, public renderer: Renderer2, public sanitizer: DomSanitizer) {
         this.pasteListener = this.renderer.listen('window', 'paste', e => {
             e.preventDefault();
             e.stopPropagation();
@@ -103,7 +103,7 @@ export class SystemUploadImage implements OnDestroy {
      *
      * @param emitfalse set to false to not emit an image if one is set
      */
-    private close(emitfalse = true) {
+    public close(emitfalse = true) {
         if (emitfalse) this.imagedata.emit(false);
         this.self.destroy();
     }
@@ -111,7 +111,7 @@ export class SystemUploadImage implements OnDestroy {
     /**
      * trigger the upload image window and prompt the user to select an image
      */
-    private showUpload() {
+    public showUpload() {
         let event = new MouseEvent("click", {bubbles: true});
         this.imgupload.element.nativeElement.dispatchEvent(event);
     }
@@ -121,7 +121,7 @@ export class SystemUploadImage implements OnDestroy {
      *
      * @param event the event object when the file has been selected or has been pasted
      */
-    private uploadImage(event) {
+    public uploadImage(event) {
         let reader = new FileReader();
         reader.onloadend = (e) => {
             this.imageBase64 = reader.result;
@@ -134,7 +134,7 @@ export class SystemUploadImage implements OnDestroy {
      *
      * @param event the event itself
      */
-    private doCrop(event): void {
+    public doCrop(event): void {
         if (!this.croppie) {
             this.libloader.loadLib('croppie').subscribe(
                 (next) => {
@@ -163,7 +163,7 @@ export class SystemUploadImage implements OnDestroy {
     /**
      * gets the cropped image as sized and positioned by the user in the modal. This emits the imagedata and closes the image
      */
-    private getcroppedImage(): void {
+    public getcroppedImage(): void {
         this.croppie.result({
             type: 'base64',
             size: 'viewport'

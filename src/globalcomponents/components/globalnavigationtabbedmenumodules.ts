@@ -17,7 +17,7 @@ import {navigation} from '../../services/navigation.service';
  */
 @Component({
     selector: 'global-navigation-tabbed-menu-modules',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedmenumodules.html',
+    templateUrl: '../templates/globalnavigationtabbedmenumodules.html',
     host: {
         '[class.slds-context-bar__item]': '1',
         '[class.slds-is-active]': 'isActive',
@@ -31,30 +31,30 @@ export class GlobalNavigationTabbedMenuModules {
     /**
      * the menu items derived from the role
      */
-    private menuItems: string[] = [];
+   public menuItems: string[] = [];
 
     /**
      * indicates that the menu is open
      *
      * @private
      */
-    private isopen: boolean = false;
+   public isopen: boolean = false;
 
     /**
      * the current active module
      *
      * @private
      */
-    private activeModule: string = '';
+   public activeModule: string = '';
 
     /**
      * is initialized indicates if we have built tjhe module lis or need to rebuild it
      *
      * @private
      */
-    private initialized: boolean = false;
+   public initialized: boolean = false;
 
-    constructor(private metadata: metadata, private broadcast: broadcast, private navigation: navigation, private router: Router, private language: language, private recent: recent, private favorite: favorite, private elementRef: ElementRef) {
+    constructor(public metadata: metadata,public broadcast: broadcast,public navigation: navigation,public router: Router,public language: language,public recent: recent,public favorite: favorite,public elementRef: ElementRef) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -63,7 +63,7 @@ export class GlobalNavigationTabbedMenuModules {
     /**
      * build the menu items based on the role
      */
-    private buildMenuItems() {
+   public buildMenuItems() {
         this.menuItems = [];
 
         let modules = this.metadata.getRoleModules(true);
@@ -89,7 +89,7 @@ export class GlobalNavigationTabbedMenuModules {
     /**
      * sets the current tab as the active tab
      */
-    private setActive() {
+   public setActive() {
         this.navigation.setActiveTab('main');
     }
 
@@ -102,7 +102,7 @@ export class GlobalNavigationTabbedMenuModules {
      *
      * @param message
      */
-    private handleMessage(message) {
+   public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
                 this.buildMenuItems();
@@ -117,7 +117,7 @@ export class GlobalNavigationTabbedMenuModules {
     /**
      * open the list when the mouse enters
      */
-    private openMenu() {
+   public openMenu() {
         this.isopen = true;
 
         // if we are not initialized do this now
@@ -129,7 +129,7 @@ export class GlobalNavigationTabbedMenuModules {
         this.activeModule = this.navigation.activeModule;
     }
 
-    private setActiveModule(event: MouseEvent, module) {
+   public setActiveModule(event: MouseEvent, module) {
         event.stopPropagation();
         this.activeModule = module;
     }
@@ -137,11 +137,11 @@ export class GlobalNavigationTabbedMenuModules {
     /**
      * close when the mouse leaves
      */
-    private closeMenu() {
+   public closeMenu() {
         this.isopen = false;
     }
 
-    private navigateTo(module) {
+   public navigateTo(module) {
         this.isopen = false;
         this.router.navigate(['/module/' + module]);
     }

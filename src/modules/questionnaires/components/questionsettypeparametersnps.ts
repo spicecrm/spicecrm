@@ -15,16 +15,16 @@ declare var _: any;
 
 @Component({
     selector: 'questionset-type-parameters-nps',
-    templateUrl: './src/modules/questionnaires/templates/questionsettypeparametersnps.html',
+    templateUrl: '../templates/questionsettypeparametersnps.html',
     providers: [helper]
 })
 export class QuestionsetTypeParametersNPS implements OnInit {
 
-    private componentId: string;
-    private textForScore0 = '';
-    private textForScore10 = '';
+    public componentId: string;
+    public textForScore0 = '';
+    public textForScore10 = '';
 
-    constructor( private language: language, private model: model, private view: view, private toast: toast, private helper: helper ) {
+    constructor( public language: language, public model: model, public view: view, public toast: toast, public helper: helper ) {
         this.componentId = _.uniqueId();
     }
 
@@ -41,7 +41,7 @@ export class QuestionsetTypeParametersNPS implements OnInit {
      * The question type specific settings are stored in the field "questiontypeparameter" as json string.
      * This method parses the json string to an object.
      */
-    private parseParams(): void {
+    public parseParams(): void {
         let jsonString = this.model.getField('questiontypeparameter');
         if ( jsonString !== '' ) {
             let config = JSON.parse( jsonString );
@@ -56,7 +56,7 @@ export class QuestionsetTypeParametersNPS implements OnInit {
      * The question type specific settings are stored in the field "questiontypeparameter" as json string.
      * This method should be called after any change of any setting. It generates the json string and writes it to the model.
      */
-    private writeSettings(): void {
+    public writeSettings(): void {
         let config =  ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ? JSON.parse( this.model.data.questiontypeparameter ):{});
         config.nps = {
             textForScore0: this.textForScore0,

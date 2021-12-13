@@ -13,16 +13,16 @@ import {Subscription} from "rxjs";
  * renders a button in an actionset that can activate a CR in the system
  */
 @Component({
-    templateUrl: './src/modules/deployment/templates/deploymentcrsetactivebutton.html'
+    templateUrl: '../templates/deploymentcrsetactivebutton.html'
 })
 export class DeploymentCRSetActiveButton {
 
     /**
      * the active id
      */
-    private activeID = '';
+    public activeID = '';
 
-    constructor(private language: language, private backend: backend, private model: model, private toast: toast, private broadcast: broadcast) {
+    constructor(public language: language, public backend: backend, public model: model, public toast: toast, public broadcast: broadcast) {
         this.backend.getRequest('module/SystemDeploymentCRs/active').subscribe(crresponse => {
             this.activeID = crresponse.id;
         });

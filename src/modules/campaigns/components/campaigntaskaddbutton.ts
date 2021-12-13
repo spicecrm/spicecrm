@@ -9,11 +9,11 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaigntask-add-button',
-    templateUrl: './src/modules/campaigns/templates/campaigntaskaddbutton.html'
+    templateUrl: '../templates/campaigntaskaddbutton.html'
 })
 export class CampaignTaskAddButton {
 
-    constructor(private language: language, private model: model, private injector: Injector, private modal: modal) {
+    constructor(public language: language, public model: model, public injector: Injector, public modal: modal) {
 
     }
 

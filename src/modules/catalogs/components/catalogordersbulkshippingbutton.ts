@@ -18,13 +18,13 @@ import {modal} from "../../../services/modal.service";
 import {modellist} from "../../../services/modellist.service";
 
 @Component({
-    templateUrl: './src/modules/catalogs/templates/catalogordersbulkshippingbutton.html',
+    templateUrl: '../templates/catalogordersbulkshippingbutton.html',
 })
 export class CatalogOrdersBulkShippingButton {
 
-    private sending: boolean = false;
+    public sending: boolean = false;
 
-    constructor(private language: language, private model: model, private backend: backend, private toast: toast, private metadata: metadata, private modellist: modellist, private modal: modal) {
+    constructor(public language: language, public model: model, public backend: backend, public toast: toast, public metadata: metadata, public modellist: modellist, public modal: modal) {
     }
 
     public execute() {

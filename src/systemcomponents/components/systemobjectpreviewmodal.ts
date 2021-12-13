@@ -9,44 +9,44 @@ import {language} from '../../services/language.service';
  * a modal that renders and provides a preview for an object
  */
 @Component({
-    templateUrl: './src/systemcomponents/templates/systemobjectpreviewmodal.html'
+    templateUrl: '../templates/systemobjectpreviewmodal.html'
 })
 export class SystemObjectPreviewModal {
 
     /**
      * reference to the modal itself
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the type of the object that will be passed in
      */
-    @Input() private type: string = '';
+    @Input() public type: string = '';
 
     /**
      * the name of the object. This is displayed in the header
      */
-    @Input() private name: string = '';
+    @Input() public name: string = '';
 
     /**
      * can be set to true to display a page not available error
      *
      * @private
      */
-    @Input() private loadingerror: boolean = false;
+    @Input() public loadingerror: boolean = false;
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
-    private blobUrl: any;
+    public blobUrl: any;
 
-    constructor(private language: language, private sanitizer: DomSanitizer) {
+    constructor(public language: language, public sanitizer: DomSanitizer) {
     }
 
     /**
      * handles closing the modal
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
@@ -79,7 +79,7 @@ export class SystemObjectPreviewModal {
     /**
      * a download option in teh window that triggers creation of a link elekent and simulates a click. This will prompt the download in the UI
      */
-    private download() {
+    public download() {
         let a = document.createElement("a");
         document.body.appendChild(a);
         a.href = this.blobUrl;
@@ -95,7 +95,7 @@ export class SystemObjectPreviewModal {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {

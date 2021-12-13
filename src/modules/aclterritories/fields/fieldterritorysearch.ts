@@ -11,14 +11,14 @@ import {territories} from '../../../services/territories.service';
 
 @Component({
     selector: 'field-territory-search',
-    templateUrl: './src/modules/aclterritories/templates/fieldterritorysearch.html'
+    templateUrl: '../templates/fieldterritorysearch.html'
 })
 export class fieldTerritorySearch {
-    private searchTerm: string = '';
-    private searchTimeout: any = {};
-    private searchterritories: any[] = [];
+    public searchTerm: string = '';
+    public searchTimeout: any = {};
+    public searchterritories: any[] = [];
 
-    @Output() private selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
 
     @Input() set searchterm(value) {
         this.searchTerm = value;
@@ -26,10 +26,10 @@ export class fieldTerritorySearch {
         this.searchTimeout = window.setTimeout(() => this.doSearch(), 500);
     };
 
-    constructor(private metadata: metadata, public model: model, public fts: fts, public language: language, private modal: modal, private territories: territories) {
+    constructor(public metadata: metadata, public model: model, public fts: fts, public language: language, public modal: modal, public territories: territories) {
     }
 
-    private doSearch() {
+    public doSearch() {
         let activeTerritories = [];
         activeTerritories.push(this.model.getFieldValue('spiceacl_primary_territory'));
 
@@ -41,7 +41,7 @@ export class fieldTerritorySearch {
         this.searchterritories = this.territories.searchTerritories(this.model.module, this.searchTerm, 5, activeTerritories, this.model.isNew ? 'create': 'edit');
     }
 
-    private setTerritory(territory) {
+    public setTerritory(territory) {
         this.searchTerm = '';
         this.selectedTerritory.emit(territory);
     }

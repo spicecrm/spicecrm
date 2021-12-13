@@ -10,7 +10,7 @@ import {relatedmodels} from "../../services/relatedmodels.service";
 
 @Component({
     selector: 'object-action-save-related-button',
-    templateUrl: './src/objectcomponents/templates/objectactionsaverelatedbutton.html'
+    templateUrl: '../templates/objectactionsaverelatedbutton.html'
 })
 export class ObjectActionSaveRelatedButton {
 
@@ -18,9 +18,9 @@ export class ObjectActionSaveRelatedButton {
 
     public module: string = '';
 
-    private saving: boolean = false;
+    public saving: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view, private relatedmodels: relatedmodels) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view, public relatedmodels: relatedmodels) {
 
     }
 

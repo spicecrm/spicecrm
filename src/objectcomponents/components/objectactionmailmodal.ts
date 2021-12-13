@@ -12,7 +12,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'object-action-mail-modal',
-    templateUrl: './src/objectcomponents/templates/objectactionmailmodal.html',
+    templateUrl: '../templates/objectactionmailmodal.html',
     providers: [view, model]
 })
 export class ObjectActionMailModal implements OnInit {
@@ -30,27 +30,27 @@ export class ObjectActionMailModal implements OnInit {
     /**
      * inidcates that we are sending
      */
-    private sending: boolean = false;
+    public sending: boolean = false;
 
     /**
      * the title for the modal window to be displayed
      */
-    @Input() private titlelabel: string = 'LBL_BEANTOMAIL';
+    @Input() public titlelabel: string = 'LBL_BEANTOMAIL';
 
     /**
      * an event emitter when the email ahs been sent and the modal window will destroy itself
      */
-    @Output() private mailsent: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public mailsent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model,
-                private view: view,
-                private backend: backend,
-                private prefs: userpreferences,
-                private modal: modal) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model,
+                public view: view,
+                public backend: backend,
+                public prefs: userpreferences,
+                public modal: modal) {
 
         // initialize the model and the view
         this.model.module = 'Emails';
@@ -86,7 +86,7 @@ export class ObjectActionMailModal implements OnInit {
     /**
      * sets the data from the parent
      */
-    private setParentData() {
+    public setParentData() {
         this.model.setField('parent_type', this.parent.module);
         this.model.setField('parent_id', this.parent.id);
         this.model.setField('parent_name', this.parent.data.summary_text);
@@ -95,14 +95,14 @@ export class ObjectActionMailModal implements OnInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * send the email
      */
-    private sendEmail() {
+    public sendEmail() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 

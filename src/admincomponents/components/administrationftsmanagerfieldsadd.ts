@@ -10,7 +10,7 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 @Component({
     selector: 'administration-ftsmanager-fields-add',
-    templateUrl: './src/admincomponents/templates/administrationftsmanagerfieldsadd.html'
+    templateUrl: '../templates/administrationftsmanagerfieldsadd.html'
 })
 export class AdministrationFTSManagerFieldsAdd {
 
@@ -18,21 +18,21 @@ export class AdministrationFTSManagerFieldsAdd {
     public self: any = {};
     public fields: any[] = [];
     public dragPlaceHolderNode: Node;
-    private filterKey: string;
+    public filterKey: string;
     /**
      * array with the fields for the module of the current selected node
      */
     public nodefields: any[] = [];
-    private path: any[] = [];
+    public path: any[] = [];
     /**
      * holds the path to the current selected tree node
      */
-    private nodePath: string = '';
+    public nodePath: string = '';
 
-    constructor(private metadata: metadata,
-                private language: language,
-                private ftsconfiguration: ftsconfiguration,
-                private backend: backend) {
+    constructor(public metadata: metadata,
+                public language: language,
+                public ftsconfiguration: ftsconfiguration,
+                public backend: backend) {
     }
 
     get filteredNodeFields() {
@@ -50,7 +50,7 @@ export class AdministrationFTSManagerFieldsAdd {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -59,7 +59,7 @@ export class AdministrationFTSManagerFieldsAdd {
      *
      * @param eventData
      */
-    private itemSelected(eventData) {
+    public itemSelected(eventData) {
         window.setTimeout(()=> this.nodePath = eventData.path);
         this.getModuleFields(eventData.module);
     }
@@ -69,7 +69,7 @@ export class AdministrationFTSManagerFieldsAdd {
      *
      * @param module the module
      */
-    private getModuleFields(module) {
+    public getModuleFields(module) {
         this.nodefields = [];
 
         this.backend.getRequest('dictionary/browser/' + module + '/fields').subscribe(items => {
@@ -78,7 +78,7 @@ export class AdministrationFTSManagerFieldsAdd {
     }
 
 
-    private dropExited(e) {
+    public dropExited(e) {
         let tr = document.createElement('tr');
         let td = document.createElement('td');
         td.colSpan = 10;
@@ -92,11 +92,11 @@ export class AdministrationFTSManagerFieldsAdd {
         }
     }
 
-    private dropEntered(e) {
+    public dropEntered(e) {
         this.removePlaceHolderElement(e.container.element.nativeElement);
     }
 
-    private removePlaceHolderElement(containerElement) {
+    public removePlaceHolderElement(containerElement) {
         if (this.dragPlaceHolderNode) {
             containerElement.removeChild(this.dragPlaceHolderNode);
             this.dragPlaceHolderNode = undefined;
@@ -109,7 +109,7 @@ export class AdministrationFTSManagerFieldsAdd {
      * @param i
      * @param item
      */
-    private trackByFn(i, item) {
+    public trackByFn(i, item) {
         return item.id;
     }
 }

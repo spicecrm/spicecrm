@@ -16,7 +16,7 @@ import {session} from '../../services/session.service';
  */
 @Component({
     selector: 'object-vertical-tab-container',
-    templateUrl: './src/objectcomponents/templates/objectverticaltabcontainer.html',
+    templateUrl: '../templates/objectverticaltabcontainer.html',
     styles: [
             `.slds-is-active {
             font-weight: 600;
@@ -36,25 +36,25 @@ export class ObjectVerticalTabContainer implements OnInit {
     /**
      * the reference to the container
      */
-    @ViewChild('tabscontainer', {read: ViewContainerRef, static: true}) private tabscontainer: ViewContainerRef;
+    @ViewChild('tabscontainer', {read: ViewContainerRef, static: true}) public tabscontainer: ViewContainerRef;
 
     /**
      * the number of the active tab
      */
-    private activeTab: number = 0;
+    public activeTab: number = 0;
 
     /**
      * holds which tabs have been activated already. Since tabs are only rendered when selected
      * for performance reasons this is the array to hold which have been rendered already
      */
-    private activatedTabs: number[] = [0];
+    public activatedTabs: number[] = [0];
 
     /**
      * the component config
      */
     public componentconfig: any = [];
 
-    constructor(private language: language, public metadata: metadata, private session: session) {
+    constructor(public language: language, public metadata: metadata, public session: session) {
     }
 
     /**
@@ -77,7 +77,7 @@ export class ObjectVerticalTabContainer implements OnInit {
     /**
      * a simple getter to see if the tabs are defined
      */
-    private getTabs() {
+    public getTabs() {
         try {
             return this.componentconfig ? this.componentconfig : [];
         } catch (e) {
@@ -90,7 +90,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      *
      * @param index
      */
-    private setActiveTab(index) {
+    public setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
     }
@@ -100,7 +100,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      *
      * @param tabindex
      */
-    private checkRenderTab(tabindex) {
+    public checkRenderTab(tabindex) {
         return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.componentconfig && this.componentconfig[tabindex].forcerender);
     }
 
@@ -108,7 +108,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      * gets the style display property for the tab
      * @param tabindex
      */
-    private getDisplay(tabindex) {
+    public getDisplay(tabindex) {
         let rect = this.tabscontainer.element.nativeElement.getBoundingClientRect();
 
         if (tabindex !== this.activeTab) {
@@ -127,7 +127,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      *
      * ToDo: check if we still need this
      */
-    private getTabsStyle() {
+    public getTabsStyle() {
         let rect = this.tabscontainer.element.nativeElement.getBoundingClientRect();
         return {
             'height': 'calc(99.9vh - ' + (rect.top) + 'px)',
@@ -144,7 +144,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      * @param tabindex
      * @param nrErrors
      */
-    private showErrorsOnTab(tabindex, nrErrors) {
+    public showErrorsOnTab(tabindex, nrErrors) {
         this.componentconfig[tabindex].hasErrors = nrErrors;
     }
 

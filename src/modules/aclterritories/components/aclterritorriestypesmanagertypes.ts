@@ -22,7 +22,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'aclterritorries-typesmanager-types',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriestypesmanagertypes.html',
+    templateUrl: '../templates/aclterritorriestypesmanagertypes.html',
 })
 export class AclterritorriesTypesmanagerTypes {
 
@@ -31,7 +31,7 @@ export class AclterritorriesTypesmanagerTypes {
     public _selectedType: any = {};
     @Output() public selectedType: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
         this.loadElements();
     }
 

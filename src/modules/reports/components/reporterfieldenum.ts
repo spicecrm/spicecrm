@@ -10,24 +10,24 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'reporter-field-enum',
-    templateUrl: './src/modules/reports/templates/reporterfieldenum.html',
+    templateUrl: '../templates/reporterfieldenum.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldEnum implements OnInit {
     /**
      * report full record
      */
-    private record: any = {};
+    public record: any = {};
     /**
      * report field
      */
-    private field: any = {};
+    public field: any = {};
     /**
      * display value
      */
-    private value: string = '';
+    public value: string = '';
 
-    constructor(private language: language, private metadata: metadata) {
+    constructor(public language: language, public metadata: metadata) {
     }
 
     /**
@@ -40,7 +40,7 @@ export class ReporterFieldEnum implements OnInit {
     /**
      * set formatted field value
      */
-    private setFormattedFieldValue() {
+    public setFormattedFieldValue() {
 
         let pathArray = this.field.path.split('::');
 

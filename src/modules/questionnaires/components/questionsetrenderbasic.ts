@@ -29,11 +29,11 @@ export class QuestionsetRenderBasic implements OnInit {
         this.questiontypeparameter = this.questionset.questiontypeparameter;
     }
 
-    private get allQuestionsOfQuestionsetFinished(): boolean {
+    public get allQuestionsOfQuestionsetFinished(): boolean {
         return this.qp.allQuestionsOfQuestionsetFinished[this.questionsetId];
     }
 
-    private isDisabled( questionId: string ): boolean {
+    public isDisabled( questionId: string ): boolean {
         return this.questionsMeta[questionId].tempReadonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
     }
 

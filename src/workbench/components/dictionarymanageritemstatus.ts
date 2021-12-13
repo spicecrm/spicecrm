@@ -9,7 +9,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
  */
 @Component({
     selector: 'dictionary-manager-item-status',
-    templateUrl: './src/workbench/templates/dictionarymanageritemstatus.html',
+    templateUrl: '../templates/dictionarymanageritemstatus.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -26,18 +26,18 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
      *
      * @private
      */
-    @Input() private disabled: boolean = false;
+    @Input() public disabled: boolean = false;
 
     /**
      * internal variable if checked
      */
-    private status: 'i' | 'd' | 'a';
+    public status: 'i' | 'd' | 'a';
 
     /**
      * for the control accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
 
     // ControlValueAccessor Interface: >>
@@ -82,7 +82,7 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
      * @param $e
      * @private
      */
-    private toggleValue($e: MouseEvent) {
+    public toggleValue($e: MouseEvent) {
         if(!this.disabled) {
             $e.stopPropagation();
             this.status === 'a' ? this.status = 'i' : this.status = 'a';

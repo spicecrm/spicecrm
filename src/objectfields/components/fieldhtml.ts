@@ -18,24 +18,24 @@ declare var _;
 
 @Component({
     selector: 'field-html',
-    templateUrl: './src/objectfields/templates/fieldhtml.html',
+    templateUrl: '../templates/fieldhtml.html',
 })
 export class fieldHtml extends fieldGeneric {
-    private stylesheetField: string = '';
-    private useStylesheets: boolean;
-    private useStylesheetSwitcher: boolean;
-    private stylesheets: any[];
-    private stylesheetToUse: string = '';
-    private _sanitizedValue;
-    private fullValue_cached: string; // the cached full html code to prevent "flickering" of the iframe (change detection)
-    private fullValue: string = '';
+    public stylesheetField: string = '';
+    public useStylesheets: boolean;
+    public useStylesheetSwitcher: boolean;
+    public stylesheets: any[];
+    public stylesheetToUse: string = '';
+    public _sanitizedValue;
+    public fullValue_cached: string; // the cached full html code to prevent "flickering" of the iframe (change detection)
+    public fullValue: string = '';
 
-    @ViewChild('printframe', {read: ViewContainerRef, static: true}) private printframe: ViewContainerRef;
+    @ViewChild('printframe', {read: ViewContainerRef, static: true}) public printframe: ViewContainerRef;
 
     constructor(
         public model: model,
         public view: view,
-        public language: language, public metadata: metadata, public router: Router, private zone: NgZone, public sanitized: DomSanitizer, private modal: modal) {
+        public language: language, public metadata: metadata, public router: Router, public zone: NgZone, public sanitized: DomSanitizer, public modal: modal) {
         super(model, view, language, metadata, router);
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
@@ -103,7 +103,7 @@ export class fieldHtml extends fieldGeneric {
         return this.fieldconfig.asiframe || !_.isEmpty(this.fieldconfig.stylesheetId) || !_.isEmpty(this.stylesheetField) ? true : false;
     }
 
-    private updateField(newVal) {
+    public updateField(newVal) {
         // set the model
         this.value = newVal;
 
@@ -111,13 +111,13 @@ export class fieldHtml extends fieldGeneric {
         this.zone.run(() => { 1; });
     }
 
-    private updateStylesheet(stylesheetId) {
+    public updateStylesheet(stylesheetId) {
         if (!_.isEmpty(this.stylesheetField) && _.isString(stylesheetId)) {
             this.model.setField(this.stylesheetField, stylesheetId);
         }
     }
 
-    private expand() {
+    public expand() {
         this.modal.openModal('SystemTinyMCEModal', false).subscribe(componentRef => {
             componentRef.instance.title = this.getLabel();
             componentRef.instance.content = this.value;
@@ -128,13 +128,13 @@ export class fieldHtml extends fieldGeneric {
         });
     }
 
-    private eventHandler(event) {
+    public eventHandler(event) {
         this.value = event.srcElement.innerHTML;
         // console.log(event);
     }
 
     // Code from fieldlabel.ts
-    private getLabel() {
+    public getLabel() {
         if (this.fieldconfig.label) {
             if (this.fieldconfig.label.indexOf(':') > 0) {
                 let fielddetails = this.fieldconfig.label.split(':');
@@ -151,7 +151,7 @@ export class fieldHtml extends fieldGeneric {
      * removed .. this does in this way not make sense
      */
     /*
-    private print() {
+    public print() {
         this.printframe.element.nativeElement.contentWindow.print();
     }
    */

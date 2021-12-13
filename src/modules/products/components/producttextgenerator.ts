@@ -15,23 +15,23 @@ declare var moment: any;
 
 @Component({
     selector: 'product-text-generator',
-    templateUrl: './src/modules/products/templates/producttextgenerator.html'
+    templateUrl: '../templates/producttextgenerator.html'
 })
 export class ProductTextGenerator {
 
-    private componentSubscriptions: any[] = [];
-    private attributes: any = {};
-    private ltattributes: any = {};
-    private productnames: any[] = [];
-    private attributesproductid: string = '';
-    private loading: boolean = false;
-    private tableguid: string = '';
-    private isOpen: boolean = true;
-    private E1: string = '';
-    private E2: string = '';
-    private Q: string = '';
+    public componentSubscriptions: any[] = [];
+    public attributes: any = {};
+    public ltattributes: any = {};
+    public productnames: any[] = [];
+    public attributesproductid: string = '';
+    public loading: boolean = false;
+    public tableguid: string = '';
+    public isOpen: boolean = true;
+    public E1: string = '';
+    public E2: string = '';
+    public Q: string = '';
 
-    private textElements = {
+    public textElements = {
         MGST: '',
         E1: '',
         E2: '',
@@ -40,7 +40,7 @@ export class ProductTextGenerator {
         A: '',
         S: '',
     };
-    private textTemplateDef = [
+    public textTemplateDef = [
         {
             source: 'MGST',
             len: 6
@@ -70,9 +70,9 @@ export class ProductTextGenerator {
             len: 3
         },
     ];
-    private textTemplate: string = 'MGST:1:6::E1:7:10::E2:11:14::Q:15:18::F:19:22::A:23:37::S:38:40';
+    public textTemplate: string = 'MGST:1:6::E1:7:10::E2:11:14::Q:15:18::F:19:22::A:23:37::S:38:40';
 
-    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private view: view) {
+    constructor(public language: language, public backend: backend, public elementRef: ElementRef, public model: model, public view: view) {
         this.componentSubscriptions.push(model.data$.subscribe(event => {
                 this.loadAttributes();
             })
@@ -211,7 +211,7 @@ export class ProductTextGenerator {
         }
     }
 
-    private loadAttributes() {
+    public loadAttributes() {
         if (this.model.data.product_id && this.model.data.product_id !== this.attributesproductid) {
             this.loading = true;
             this.attributesproductid = this.model.data.product_id;
@@ -227,7 +227,7 @@ export class ProductTextGenerator {
         }
     }
 
-    private translateAttribValue(attrib, value) {
+    public translateAttribValue(attrib, value) {
         if (this.attributes[attrib].values && this.attributes[attrib].values[value]) {
             return this.attributes[attrib].values[value];
         } else {
@@ -235,11 +235,11 @@ export class ProductTextGenerator {
         }
     }
 
-    private togglerequired() {
+    public togglerequired() {
         this.isOpen = !this.isOpen;
     }
 
-    private getOpenStyle() {
+    public getOpenStyle() {
         if (!this.isOpen) {
             return {
                 height: '0px',
@@ -248,7 +248,7 @@ export class ProductTextGenerator {
         }
     }
 
-    private getAttributeValue(attributeid) {
+    public getAttributeValue(attributeid) {
         let value = '';
         let beans = this.model.data.productattributevalues.beans;
         try {
@@ -264,7 +264,7 @@ export class ProductTextGenerator {
         return value;
     }
 
-    private getvalues(type) {
+    public getvalues(type) {
         let values = [];
 
         for (let attribute in this.attributes) {

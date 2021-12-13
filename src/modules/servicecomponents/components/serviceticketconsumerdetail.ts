@@ -10,7 +10,7 @@ import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
 
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketconsumerdetail.html',
+    templateUrl: '../templates/serviceticketconsumerdetail.html',
     providers: [model]
 })
 export class ServiceTicketConsumerDetail implements OnDestroy, OnInit {
@@ -23,19 +23,19 @@ export class ServiceTicketConsumerDetail implements OnDestroy, OnInit {
     /**
      * the fieldset rendered in the header
      */
-    private headerfieldset: string;
+    public headerfieldset: string;
 
     /**
      * the componentset rendered in the body
      */
-    private componentset: string;
+    public componentset: string;
 
     /**
      * any subscription the component might have that are killed on destroy
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(@SkipSelf() private parent: model, private model: model, private metadata: metadata, private language: language) {
+    constructor(@SkipSelf() public parent: model, public model: model, public metadata: metadata, public language: language) {
         this.model.module = 'Consumers';
         this.subscriptions.add(this.parent.data$.subscribe(ticketdata => {
             this.loadConsumer();
@@ -64,7 +64,7 @@ export class ServiceTicketConsumerDetail implements OnDestroy, OnInit {
     /**
      * loads the contact on change
      */
-    private loadConsumer() {
+    public loadConsumer() {
         if (this.consumerid && this.consumerid != this.model.id) {
             this.model.id = this.consumerid;
             this.model.getData();

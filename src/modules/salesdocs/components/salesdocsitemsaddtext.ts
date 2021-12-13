@@ -14,7 +14,7 @@ import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 
 @Component({
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsaddtext.html',
+    templateUrl: '../templates/salesdocsitemsaddtext.html',
     providers: [view, model]
 })
 export class SalesDocsItemsAddText {
@@ -22,17 +22,17 @@ export class SalesDocsItemsAddText {
     /**
      * reference to self for the modal
      */
-    private self: any;
+    public self: any;
 
 
-    private fieldset: string = '';
+    public fieldset: string = '';
 
     /**
      * event emitter so the add process can subscribe
      */
-    @Output() private additem: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, private language: language, private model: model, private view: view) {
+    constructor(public metadata: metadata, public language: language, public model: model, public view: view) {
         // prepare the model
         this.model.module = 'SalesDocItems';
         this.model.initialize();
@@ -48,7 +48,7 @@ export class SalesDocsItemsAddText {
     /**
      * closes the modal and emits false
      */
-    private close() {
+    public close() {
         // emit the value
         this.additem.emit(false);
 
@@ -59,7 +59,7 @@ export class SalesDocsItemsAddText {
     /**
      * adds the text item and closes the modal
      */
-    private add() {
+    public add() {
         // check if valid and if yes save
         if (this.model.validate()) {
             // compose the items to be added

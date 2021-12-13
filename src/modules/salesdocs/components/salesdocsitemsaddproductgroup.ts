@@ -22,7 +22,7 @@ import {layout} from '../../../services/layout.service';
 import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
+    templateUrl: '../../../objectcomponents/templates/objectmodalmodulelookup.html',
     providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
@@ -31,7 +31,7 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
 })
 export class SalesDocsItemsAddProductGroup extends ObjectModalModuleLookup {
 
-    @Output() private additem: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout) {
         super(language, modellist, metadata, modelutilities, model, layout);
@@ -45,7 +45,7 @@ export class SalesDocsItemsAddProductGroup extends ObjectModalModuleLookup {
         this.self.destroy();
     }
 
-    private productSelected(productgroup) {
+    public productSelected(productgroup) {
 
         // compose the items to be added
         let itemData = {

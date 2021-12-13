@@ -1,4 +1,4 @@
-<div class="slds-section" [ngClass]="{'slds-is-open': requiredopen}">
+<div class="slds-section" [ngClass]="{'slds-is-open': isOpen}">
     <h3 class="slds-section__title">
         <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action"
                 (click)="togglerequired()">
@@ -33,7 +33,7 @@
         <div class="slds-form-element">
             <label class="slds-form-element__label">Longtext</label>
             <div class="slds-form-element__control">
-                <textarea readonly class="slds-textarea" [(ngModel)]="longText"></textarea>
+                <textarea readonly class="slds-textarea" [ngModel]="longText"></textarea>
             </div>
         </div>
     </div>

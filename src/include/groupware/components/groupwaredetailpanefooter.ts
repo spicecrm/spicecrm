@@ -14,20 +14,20 @@ import {footer} from "../../../services/footer.service";
  */
 @Component({
     selector: 'groupware-detail-pane-footer',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpanefooter.html'
+    templateUrl: '../templates/groupwaredetailpanefooter.html'
 })
 export class GroupwareDetailPanefooter implements AfterViewInit, OnDestroy {
 
-    @ViewChild('footer', {static: false}) private footerElement;
+    @ViewChild('footer', {static: false}) public footerElement;
 
-    private _currentroute: string = 'groupware/mailitem';
+    public _currentroute: string = 'groupware/mailitem';
 
     constructor(
-        private router: Router,
-        private metadata: metadata,
-        private language: language,
-        private footer: footer,
-        private elementRef: ElementRef
+        public router: Router,
+        public metadata: metadata,
+        public language: language,
+        public footer: footer,
+        public elementRef: ElementRef
     ) {
     }
 
@@ -42,7 +42,7 @@ export class GroupwareDetailPanefooter implements AfterViewInit, OnDestroy {
     /**
      * calculates the height of the panel element and sets it to the footer service
      */
-    private setFooterHeight() {
+    public setFooterHeight() {
         let cRect = this.footerElement.nativeElement.getBoundingClientRect();
         this.footer.visibleFooterHeight = cRect.height;
     }
@@ -50,7 +50,7 @@ export class GroupwareDetailPanefooter implements AfterViewInit, OnDestroy {
     /**
      * sets the footer height in the sevrice back to 0
      */
-    private clearFooterHeight() {
+    public clearFooterHeight() {
         this.footer.visibleFooterHeight = 0;
     }
 
@@ -58,7 +58,7 @@ export class GroupwareDetailPanefooter implements AfterViewInit, OnDestroy {
      * Call an action.
      * @param action
      */
-    private callAction(action) {
+    public callAction(action) {
         this.router.navigate([action.actionconfig.route]);
     }
 

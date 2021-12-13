@@ -15,20 +15,20 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-detail-taskdecisions',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtaskdecisions.html',
+    templateUrl: '../templates/workflowmanagerdetailtaskdecisions.html',
 })
 export class WorkflowManagerDetailTaskDecisions {
 
-    @Input() private tasks: any = {};
+    @Input() public tasks: any = {};
 
-    constructor(private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
 
     }
 
     /**
      * adds a new decision
      */
-    private addDecision() {
+    public addDecision() {
         this.model.data.decisions.push({
             id: this.modelutilities.generateGuid(),
             workflowtaskdefinition_id: this.model.id,

@@ -12,7 +12,7 @@ import {view} from '../../../services/view.service';
  */
 @Component({
     selector: 'product-variants-attribute-vc',
-    templateUrl: './src/modules/products/templates/productvariantsattributevc.html'
+    templateUrl: '../templates/productvariantsattributevc.html'
 })
 export class ProductVariantsAttributeVC implements OnInit {
 
@@ -67,7 +67,7 @@ export class ProductVariantsAttributeVC implements OnInit {
     /**
      * create the initial attribute value
      */
-    private createInitialAttributeValue() {
+    public createInitialAttributeValue() {
 
         this.model.data.productattributevalues.beans[this.attributeValueId] = {
             id: this.attributeValueId,
@@ -81,7 +81,7 @@ export class ProductVariantsAttributeVC implements OnInit {
     /**
      * set the attribute value id and clone the attribute value from
      */
-    private setAttributeValueId() {
+    public setAttributeValueId() {
 
         const newId = this.model.generateGuid();
         const attrValues = this.model.data.productattributevalues;

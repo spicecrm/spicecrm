@@ -172,17 +172,17 @@ export class calendar implements OnDestroy {
     /**
      * holds the subscriptions to unsubscribe on destroy
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private backend: backend,
-                private session: session,
-                private broadcast: broadcast,
-                private modal: modal,
-                private language: language,
-                private configuration: configurationService,
-                private modelutilities: modelutilities,
-                private cdRef: ChangeDetectorRef,
-                private userPreferences: userpreferences) {
+    constructor(public backend: backend,
+                public session: session,
+                public broadcast: broadcast,
+                public modal: modal,
+                public language: language,
+                public configuration: configurationService,
+                public modelutilities: modelutilities,
+                public cdRef: ChangeDetectorRef,
+                public userPreferences: userpreferences) {
         this.loadCalendarModules();
         this.loadPreferences();
         this.subscribeToLanguage();
@@ -193,7 +193,7 @@ export class calendar implements OnDestroy {
     /**
      * holds the sidebar width
      */
-    private _sidebarWidth: number = 360;
+    public _sidebarWidth: number = 360;
 
     /**
      * @return sidebar width
@@ -205,7 +205,7 @@ export class calendar implements OnDestroy {
     /**
      * holds the calendar date
      */
-    private _calendarDate: any = moment();
+    public _calendarDate: any = moment();
 
     /**
      * @return calendardate: moment
@@ -807,14 +807,14 @@ export class calendar implements OnDestroy {
      * @param field
      * @return boolean
      */
-    protected isValid(field): boolean {
+    public isValid(field): boolean {
         return field && typeof field === 'object' && field.isValid();
     }
 
     /**
      * load the modules which have the flag 'show in calendar' in the fts configs
      */
-    private loadCalendarModules() {
+    public loadCalendarModules() {
         this.backend.getRequest('module/Calendar/modules').subscribe(modules => {
             if (!modules) return;
             this.modules = modules;
@@ -827,7 +827,7 @@ export class calendar implements OnDestroy {
      * @param event: object
      * @return boolean
      */
-    private absenceExists(event): boolean {
+    public absenceExists(event): boolean {
         let found = false;
         for (let prop in this.calendars) {
             if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id == event.id && cEvent.type == event.type)) {
@@ -841,7 +841,7 @@ export class calendar implements OnDestroy {
     /**
      * subscribe to model and timezone changes and apply the changes in the calendar
      */
-    private broadcastSubscriber() {
+    public broadcastSubscriber() {
         let subscriber = this.broadcast.message$.subscribe(message => {
             let id = message.messagedata.id;
             let module = message.messagedata.module;
@@ -896,7 +896,7 @@ export class calendar implements OnDestroy {
      * @param calendarId
      * @return boolean
      */
-    private modifyEvent(id: string, module: string, data, calendarId: string) {
+    public modifyEvent(id: string, module: string, data, calendarId: string) {
         if (!this.isValid(data.date_start) || !this.isValid(data.date_end)) {
             return true;
         }
@@ -920,7 +920,7 @@ export class calendar implements OnDestroy {
      * @param id: string
      * @param module: string
      */
-    private removeEvent(id: string, module: string) {
+    public removeEvent(id: string, module: string) {
         this.calendars[this.owner].some((event, index) => {
             if (event.data.id == id && module == event.module) {
                 this.calendars[this.owner].splice(index, 1);
@@ -934,7 +934,7 @@ export class calendar implements OnDestroy {
     /**
      * load calendar preferences from user preferences and from the saved session
      */
-    private loadPreferences() {
+    public loadPreferences() {
         this.timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
         let preferences = this.userPreferences.toUse;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
@@ -952,7 +952,7 @@ export class calendar implements OnDestroy {
     /**
      * load calendar preferences from the user preferences and save changes in calendar
      */
-    private getCalendarPreferences() {
+    public getCalendarPreferences() {
         if (this.isMobileView || this.isDashlet) return;
 
         this.userPreferences.loadPreferences("Calendar")
@@ -972,7 +972,7 @@ export class calendar implements OnDestroy {
     /**
      * subscribe to language change and reload events to apply change
      */
-    private subscribeToLanguage() {
+    public subscribeToLanguage() {
         let languageSubscriber = this.language.currentlanguage$.subscribe(() => this.triggerSheetReload());
         this.subscriptions.add(languageSubscriber);
     }
@@ -981,7 +981,7 @@ export class calendar implements OnDestroy {
      * reset the calendar date to force reload the events
      * @param date: moment
      */
-    private triggerSheetReload(date?) {
+    public triggerSheetReload(date?) {
         this._calendarDate = moment(date ? date : this._calendarDate);
     }
 }

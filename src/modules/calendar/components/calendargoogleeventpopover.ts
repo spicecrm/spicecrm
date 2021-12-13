@@ -10,7 +10,7 @@ import {language} from "../../../services/language.service";
  * Display a popover to list the google event details
  */
 @Component({
-    templateUrl: './src/modules/calendar/templates/calendargoogleeventpopover.html',
+    templateUrl: '../templates/calendargoogleeventpopover.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarGoogleEventPopover implements AfterViewInit {
@@ -41,17 +41,17 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
      * holds the popover hide timeout
      */
-    private hidePopoverTimeout: any = {};
+    public hidePopoverTimeout: any = {};
     /**
      * element reference of the popover container to handle its style
      */
-    @ViewChild('popoverContainer', {read: ViewContainerRef, static: true}) private popoverContainer: ViewContainerRef;
+    @ViewChild('popoverContainer', {read: ViewContainerRef, static: true}) public popoverContainer: ViewContainerRef;
 
-    constructor(private metadata: metadata,
-                private calendar: calendar,
-                private language: language,
-                private renderer: Renderer2,
-                private cdr: ChangeDetectorRef) {
+    constructor(public metadata: metadata,
+                public calendar: calendar,
+                public language: language,
+                public renderer: Renderer2,
+                public cdr: ChangeDetectorRef) {
     }
 
     /**
@@ -84,7 +84,7 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
      * set popover style and the popover sides and position
      */
-    private setPopoverPosition() {
+    public setPopoverPosition() {
 
         if (this.isMobileView) {
             return {left: 0, bottom: 0, width: '100%'};
@@ -122,7 +122,7 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
      * clear hide timeout
      */
-    private onMouseEnter() {
+    public onMouseEnter() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
@@ -131,7 +131,7 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
      * call to force closing the popover
      */
-    private onMouseLeave(event) {
+    public onMouseLeave(event) {
         this.closePopover(true, event);
     }
 }

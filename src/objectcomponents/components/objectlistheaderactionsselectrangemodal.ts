@@ -8,7 +8,7 @@ import {modellist} from '../../services/modellist.service';
 
 @Component({
     selector: 'object-list-header-actions-select-range-modal',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsselectrangemodal.html',
+    templateUrl: '../templates/objectlistheaderactionsselectrangemodal.html',
 })
 export class ObjectListHeaderActionsSelectRangeModal implements OnInit {
 
@@ -17,25 +17,25 @@ export class ObjectListHeaderActionsSelectRangeModal implements OnInit {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the range to select from
      *
      * @private
      */
-    private from: number = 1;
+    public from: number = 1;
 
     /**
      * the range to select to
      *
      * @private
      */
-    private to: number;
+    public to: number;
 
     constructor(
-        private model: model,
-        private modellist: modellist
+        public model: model,
+        public modellist: modellist
     ) {
     }
 
@@ -51,7 +51,7 @@ export class ObjectListHeaderActionsSelectRangeModal implements OnInit {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -73,7 +73,7 @@ export class ObjectListHeaderActionsSelectRangeModal implements OnInit {
         return true;
     }
 
-    private select() {
+    public select() {
         if (this.canSelect) {
             this.modellist.setRangeSelected(this.from, this.to);
             this.close();

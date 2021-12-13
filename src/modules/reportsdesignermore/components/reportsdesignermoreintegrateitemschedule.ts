@@ -10,18 +10,18 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-integrate-item-schedule',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemschedule.html'
+    templateUrl: '../templates/reportsdesignermoreintegrateitemschedule.html'
 })
 export class ReportsDesignerMoreIntegrateItemSchedule {
 
-    protected dLists: any[] = [];
-    private expandedId: string = '';
+    public dLists: any[] = [];
+    public expandedId: string = '';
 
-    constructor(private language: language,
-                private model: model,
-                private modal: modal,
-                private backend: backend,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public backend: backend,
+                public reportsDesignerService: ReportsDesignerService) {
     }
 
     get schedules() {
@@ -39,7 +39,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     /**
      * set the initial plugin properties
      */
-    private initializeProperties() {
+    public initializeProperties() {
         const integrationParams = this.model.getField('integration_params');
         if (!integrationParams.kscheduling) {
             integrationParams.kscheduling = [];
@@ -50,7 +50,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     /**
      * load dLists from backend
      */
-    private loadDLists() {
+    public loadDLists() {
         this.backend.getRequest('module/KReports/dlistmanager/dlists').subscribe(dLists => {
             if (!!dLists) this.dLists = dLists;
         });
@@ -59,7 +59,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     /**
      * @return newSchedule: object
      */
-    private generateSchedule() {
+    public generateSchedule() {
         const guid = this.reportsDesignerService.generateGuid();
         return {
             id: guid,
@@ -80,7 +80,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     /**
      * add new schedule to the kscheduling list
      */
-    private addSchedule() {
+    public addSchedule() {
         const integrationParams = this.model.getField('integration_params');
         integrationParams.kscheduling = [...this.schedules, this.generateSchedule()];
         this.model.setField('integration_params', integrationParams);
@@ -90,7 +90,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
      * delete the schedule with the given id
      * @param scheduleId: string
      */
-    private deleteSchedule(scheduleId) {
+    public deleteSchedule(scheduleId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 const integrationParams = this.model.getField('integration_params');
@@ -107,7 +107,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -115,7 +115,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
      * toggle expansion
      * @param scheduleId: object
      */
-    private toggleExpandSchedule(scheduleId) {
+    public toggleExpandSchedule(scheduleId) {
         this.expandedId = this.expandedId == scheduleId ? '' : scheduleId;
     }
 }

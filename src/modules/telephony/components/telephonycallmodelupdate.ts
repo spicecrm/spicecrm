@@ -16,7 +16,7 @@ declare var libphonenumber: any;
  */
 @Component({
     selector: 'telephony-call-model-update',
-    templateUrl: './src/modules/telephony/templates/telephonycallmodelupdate.html',
+    templateUrl: '../templates/telephonycallmodelupdate.html',
     providers: [ view]
 })
 export class TelephonyCallModelUpdate implements OnInit {
@@ -25,35 +25,35 @@ export class TelephonyCallModelUpdate implements OnInit {
      * reference to the modal itself
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the calldata object passed in
      *
      * @private
      */
-    @Input() private calldata: any;
+    @Input() public calldata: any;
 
     /**
      * an event emitter when we need to handle the update
      *
      * @private
      */
-    @Output() private updated: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public updated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * an array with the fields for the phone
      *
      * @private
      */
-    private phoneFields: any[] = [];
+    public phoneFields: any[] = [];
 
     constructor(
-        private modal: modal,
-        private model: model,
-        private view: view,
-        private session: session,
-        private metadata: metadata
+        public modal: modal,
+        public model: model,
+        public view: view,
+        public session: session,
+        public metadata: metadata
     ) {
         this.view.displayLabels = false;
         this.view.isEditable = true;
@@ -77,7 +77,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      *
      * @private
      */
-    private getPhoneFields() {
+    public getPhoneFields() {
         let fields = this.metadata.getModuleFields(this.calldata.relatedmodule);
         for (let field in fields) {
             if (fields[field].type == 'phone' && fields[field].phonesearch) {
@@ -90,7 +90,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      * load the module fresh from thebackend
      * @private
      */
-    private initializeModel() {
+    public initializeModel() {
         // let await = this.modal.await('LBL_LOADING_DATA');
         this.model.module = this.calldata.relatedmodule;
         this.model.id = this.calldata.relatedid;
@@ -118,7 +118,7 @@ export class TelephonyCallModelUpdate implements OnInit {
         return this.model.isDirty();
     }
 
-    private copy2Field(field) {
+    public copy2Field(field) {
         this.model.setField(field, this.msisdnFormatted);
     }
 
@@ -127,7 +127,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      *
      * @private
      */
-    private updateModel() {
+    public updateModel() {
         this.model.save();
         this.updated.emit(true);
         this.self.destroy();
@@ -138,7 +138,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.updated.emit(false);
 
         this.self.destroy();

@@ -19,20 +19,20 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
  */
 @Component({
     selector: 'object-tab-container-item-header',
-    templateUrl: './src/objectcomponents/templates/objecttabcontaineritemheader.html'
+    templateUrl: '../templates/objecttabcontaineritemheader.html'
 })
 export class ObjectTabContainerItemHeader implements AfterViewInit {
     /**
      * the reference to the header where the compponent is placed in
      */
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headercontainer: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) public headercontainer: ViewContainerRef;
 
     /**
      * the inpout from teh tab embedding the header
      */
-    @Input() private tab: any = [];
+    @Input() public tab: any = [];
 
-    constructor(private metadata: metadata, private language: language) {
+    constructor(public metadata: metadata, public language: language) {
 
     }
 
@@ -60,7 +60,7 @@ export class ObjectTabContainerItemHeader implements AfterViewInit {
      *
      * @param label
      */
-    private getTabLabel(label) {
+    public getTabLabel(label) {
         if (label.indexOf(':') > 0) {
             let arr = label.split(':');
             return this.language.getLabel(arr[0], arr[1])
@@ -76,36 +76,36 @@ export class ObjectTabContainerItemHeader implements AfterViewInit {
  */
 @Component({
     selector: 'object-tab-container-item',
-    templateUrl: './src/objectcomponents/templates/objecttabcontaineritem.html',
+    templateUrl: '../templates/objecttabcontaineritem.html',
     providers: [fielderrorgrouping]
 })
 export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
     /**
      * component reference to the container itself
      */
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
     /**
      * an array with componentrefs to be used when the component is dexytoryed to also ensure all dynamic components are destroyed
      */
-    private componentRefs: any = [];
+    public componentRefs: any = [];
 
     /**
      * internal variable to check if the component is initialized. Tabs are not initialized by default but only once the user selects a tab. This improves the load performance since related records e.g. are not yet loaded
      */
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
     /**
      * the componetnset to be rendered
      */
-    @Input() private componentset: any = [];
+    @Input() public componentset: any = [];
 
     /**
      * in case errors are renderd from a fieldgroup on the tab this is emitted on the tab level to guide the user in multi tabbed scenarios on the detail view
      */
-    @Output() private taberrors = new EventEmitter();
+    @Output() public taberrors = new EventEmitter();
 
-    constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping, public model: model) {
+    constructor(public metadata: metadata, public fielderrorgroup: fielderrorgrouping, public model: model) {
     }
 
     /**
@@ -137,7 +137,7 @@ export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
     /**
      * renders the contaioner and the componentsets
      */
-    private buildContainer() {
+    public buildContainer() {
         for (let component of this.metadata.getComponentSetObjects(this.componentset)) {
             this.metadata.addComponent(component.component, this.container).subscribe(componentRef => {
                 this.componentRefs.push(componentRef);
@@ -152,32 +152,32 @@ export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
  */
 @Component({
     selector: 'object-tab-container',
-    templateUrl: './src/objectcomponents/templates/objecttabcontainer.html'
+    templateUrl: '../templates/objecttabcontainer.html'
 })
 export class ObjectTabContainer implements OnInit {
     /**
      * the index of the active tab
      */
-    private activeTab: number = 0;
+    public activeTab: number = 0;
 
     /**
      * holds which tabs have been activated. Since they are only rnedered when clicked or set to forcerender
      */
-    private activatedTabs: number[] = [0];
+    public activatedTabs: number[] = [0];
 
     /**
      * the componentconfig
      */
-    private componentconfig: any;
+    public componentconfig: any;
 
     /**
      * the tabs to be rendered
      *
      * ToDo: remove from the legacy support that this can also be defined as JSON
      */
-    private tabs: any[] = [];
+    public tabs: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(public language: language, public metadata: metadata, public model: model) {
 
     }
 
@@ -212,7 +212,7 @@ export class ObjectTabContainer implements OnInit {
      *
      * ToDo: remove
      */
-    private getTabs() {
+    public getTabs() {
         try {
             return this.componentconfig.tabs ? this.componentconfig.tabs : [];
         } catch (e) {
@@ -224,7 +224,7 @@ export class ObjectTabContainer implements OnInit {
      * chanmge teh active tab and render it
      * @param index
      */
-    private setActiveTab(index) {
+    public setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
     }
@@ -233,7 +233,7 @@ export class ObjectTabContainer implements OnInit {
      * checks if the tab is to be rendered or forced to be rendered. If not is will be (by ngIf only be rendered when the tab is selected
      * @param tabindex
      */
-    private checkRenderTab(tabindex) {
+    public checkRenderTab(tabindex) {
         return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.tabs && this.tabs[tabindex].forcerender);
     }
 }

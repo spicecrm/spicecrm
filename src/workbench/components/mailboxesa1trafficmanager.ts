@@ -1,7 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, OnInit, ViewContainerRef} from "@angular/core";
+import {Component, Input, OnInit, ViewContainerRef} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
@@ -12,19 +12,21 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailboxes-a1-traffic-manager",
-    templateUrl: "./src/workbench/templates/mailboxesa1trafficmanager.html",
+    templateUrl: "../templates/mailboxesa1trafficmanager.html",
 })
 export class MailboxesA1TrafficManager implements OnInit {
 
+    @Input() public valid_connection = false;
+
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast,
-        private view: view,
-        private ViewContainerRef: ViewContainerRef
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast,
+        public view: view,
+        public ViewContainerRef: ViewContainerRef
     ) {
 
     }

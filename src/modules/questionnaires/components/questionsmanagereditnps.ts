@@ -9,13 +9,13 @@ import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
 
 @Component({
     selector: 'questions-manager-edit-nps',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditnps.html'
+    templateUrl: '../templates/questionsmanagereditnps.html'
 })
 export class QuestionsManagerEditNPS extends QuestionsManagerEditBasic implements OnInit {
 
     // The object "forCategories" is a workaround,
     // because the component QuestionsManagerEditCategories wants a object/bean of module QuestionOptions (with field "categories").
-    private forCategories = { categories: '' };
+    public forCategories = { categories: '' };
 
     constructor( public language: language, public model: model, public view: view ) {
         super( language, model, view );

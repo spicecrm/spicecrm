@@ -10,16 +10,16 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-systemcheck',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallersystemcheck.html',
+    templateUrl: '../templates/spiceinstallersystemcheck.html',
 })
 export class SpiceInstallerSystemCheck {
-    private loading: boolean = false;
-    private requirements: any = [];
+    public loading: boolean = false;
+    public requirements: any = [];
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public spiceinstaller: spiceinstaller
     ) {
 
         this.checkSystem();
@@ -34,7 +34,7 @@ export class SpiceInstallerSystemCheck {
         return false;
     }
 
-    private checkSystem() {
+    public checkSystem() {
         this.loading = true;
         this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/check`).subscribe((response: any) => {
             this.loading = false;

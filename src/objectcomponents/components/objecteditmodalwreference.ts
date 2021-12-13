@@ -14,7 +14,7 @@ import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objecteditmodalwreference.html',
+    templateUrl: '../templates/objecteditmodalwreference.html',
     providers: [model, view]
 })
 export class ObjectEditModalWReference {
@@ -32,7 +32,7 @@ export class ObjectEditModalWReference {
 
     self: any = {};
 
-    constructor(private router: Router, private language: language, private model: model, private view: view, private metadata: metadata, private elementref: ElementRef) {
+    constructor(public router: Router, public language: language, public model: model, public view: view, public metadata: metadata, public elementref: ElementRef) {
         this.view.isEditable = true;
         this.view.setEditMode();
 

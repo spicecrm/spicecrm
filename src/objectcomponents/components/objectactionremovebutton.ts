@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-action-remove-button',
-    templateUrl: './src/objectcomponents/templates/objectactionremovebutton.html'
+    templateUrl: '../templates/objectactionremovebutton.html'
 })
 export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
 
@@ -34,9 +34,9 @@ export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
     /**
      * the subscriptions the component has
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view, private relatedmodels: relatedmodels, private modalservice: modal) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view, public relatedmodels: relatedmodels, public modalservice: modal) {
 
         // handleDisabled on on model.mode changes
         this.subscriptions.add(
@@ -90,7 +90,7 @@ export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
     * @set disabled
     * @delete if answer is true
     */
-    private handleDisabled(mode) {
+    public handleDisabled(mode) {
         if (!this.canDelete) {
             this.disabled = true;
             return;

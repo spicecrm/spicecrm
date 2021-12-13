@@ -14,24 +14,24 @@ import {navigation} from '../../../services/navigation.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/products/templates/productgroupscontentcodeassignments.html',
+    templateUrl: '../templates/productgroupscontentcodeassignments.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '[style.display]': 'getDisplay()'
     },
     styles: [
-        ':host >>> span {cursor:pointer;}'
+        ':host  span {cursor:pointer;}'
     ]
 })
 export class ProductGroupsContentCodeAssignments {
 
-    private dialogvisible: boolean = false;
-    private assignedAttributes: any[] = [];
-    private allAttributes: any[] = [];
-    private selectedAttribute: string = '';
-    private isLoading: boolean = false;
+    public dialogvisible: boolean = false;
+    public assignedAttributes: any[] = [];
+    public allAttributes: any[] = [];
+    public selectedAttribute: string = '';
+    public isLoading: boolean = false;
 
-    constructor(private language: language, private model: model, private navigation: navigation, private backend: backend, private toast: toast) {
+    constructor(public language: language, public model: model, public navigation: navigation, public backend: backend, public toast: toast) {
 
     }
 
@@ -51,7 +51,7 @@ export class ProductGroupsContentCodeAssignments {
         return attribfound;
     }
 
-    private getDisplay() {
+    public getDisplay() {
         if (this.model.data.acl && !this.model.data.acl.edit) {
             return 'none';
         }
@@ -59,11 +59,11 @@ export class ProductGroupsContentCodeAssignments {
         return this.model.isEditing ? 'none' : 'inherit';
     }
 
-    private editDisable(productgroup_id) {
+    public editDisable(productgroup_id) {
         return productgroup_id != this.model.id;
     }
 
-    private showDialog() {
+    public showDialog() {
         // get the attributes
         this.assignedAttributes = [];
         this.isLoading = true;
@@ -92,11 +92,11 @@ export class ProductGroupsContentCodeAssignments {
         this.dialogvisible = true;
     }
 
-    private hideDialog() {
+    public hideDialog() {
         this.dialogvisible = false;
     }
 
-    private save() {
+    public save() {
         this.isLoading = true;
         let attributes = [];
         for (let attribute of this.assignedAttributes) {
@@ -116,7 +116,7 @@ export class ProductGroupsContentCodeAssignments {
         });
     }
 
-    private addAttribute() {
+    public addAttribute() {
         this.allAttributes.some(attribute => {
             if (attribute.id == this.selectedAttribute) {
                 this.assignedAttributes.push({
@@ -132,7 +132,7 @@ export class ProductGroupsContentCodeAssignments {
         });
     }
 
-    private removeAttribute(attribute) {
+    public removeAttribute(attribute) {
         let foundindex = 0;
 
         this.assignedAttributes.some(thisAttribute => {

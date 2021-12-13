@@ -9,7 +9,7 @@ import { broadcast } from '../../../services/broadcast.service';
 
 @Component({
     selector: 'questionnaire-single-evaluation-values',
-    templateUrl: './src/modules/questionnaires/templates/questionnairesingleevaluationvalues.html',
+    templateUrl: '../templates/questionnairesingleevaluationvalues.html',
     styles: [
         "span.quest-eval-points { display: inline-block; text-align: center; x-min-width: 2rem; margin-left: 0.33rem; font-weight: normal; border: 1px solid #fff; line-height: 1; }",
         "span.quest-eval-catname { padding-top:0; padding-bottom:0; padding-right:0; font-weight: normal; margin-top: 0.5rem; display: inline-block; margin-left: 0; margin-right: 0.25rem; line-height: 1; }"
@@ -17,17 +17,17 @@ import { broadcast } from '../../../services/broadcast.service';
 })
 export class QuestionnaireSingleEvaluationValues implements OnInit {
 
-    private sectionIsOpen = true;
-    private isLoading = true;
+    public sectionIsOpen = true;
+    public isLoading = true;
 
-    private evaluationValues = [];
-    private source = '';
+    public evaluationValues = [];
+    public source = '';
 
-    private noParticipation: boolean;
+    public noParticipation: boolean;
 
-    private route = 'module/QuestionnaireEvaluations/';
+    public route = 'module/QuestionnaireEvaluations/';
 
-    constructor( private backend: backend, private model: model, private language: language, private broadcast: broadcast ) { }
+    constructor( public backend: backend, public model: model, public language: language, public broadcast: broadcast ) { }
 
     public ngOnInit(): void {
         // The Service Feedback is in creation just now?
@@ -52,11 +52,11 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
         });
     }
 
-    private toggleSection(): void {
+    public toggleSection(): void {
         this.sectionIsOpen = !this.sectionIsOpen;
     }
 
-    private getSectionStyle(): any {
+    public getSectionStyle(): any {
         if ( !this.sectionIsOpen ) {
             return {
                 height: '0px',
@@ -65,7 +65,7 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
         }
     }
 
-    private loadValues(): void {
+    public loadValues(): void {
         this.backend.postRequest( this.route ).subscribe( ( data: any ) => {
                 this.isLoading = false;
                 this.source = data.source;
@@ -85,7 +85,7 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
             });
     }
 
-    private reloadValues(): void {
+    public reloadValues(): void {
         this.isLoading = true;
         this.source = '';
         this.evaluationValues.length = 0;

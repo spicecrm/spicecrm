@@ -15,29 +15,29 @@ import {telephony} from "../../../services/telephony.service";
 declare var _: any;
 
 @Component({
-    templateUrl: './src/modules/five9/templates/five9preferences.html'
+    templateUrl: '../templates/five9preferences.html'
 })
 export class Five9Preferences {
 
     /**
      * reference to self as modal
      */
-    private self: any;
+    public self: any;
 
-    private verifying: boolean = false;
+    public verifying: boolean = false;
 
-    private saved$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public saved$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    private preferences: any = {
+    public preferences: any = {
         username: '',
         userpass: ''
     };
 
-    constructor(private language: language, private backend: backend, private toast: toast) {
+    constructor(public language: language, public backend: backend, public toast: toast) {
         this.getPreferences();
     }
 
-    private close() {
+    public close() {
         if(!this.verifying) {
             this.self.destroy();
         }
@@ -46,7 +46,7 @@ export class Five9Preferences {
     /**
      * get the preferences and check if we have a username set
      */
-    private getPreferences() {
+    public getPreferences() {
         this.backend.getRequest('channels/voice/Five9/preferences').subscribe(prefs => {
             this.preferences.username = prefs.username;
         });
@@ -59,7 +59,7 @@ export class Five9Preferences {
     /**
      * set the preferences and test them
      */
-    private setPreferences() {
+    public setPreferences() {
         if (this.canSet) {
             this.verifying = true;
             this.backend.postRequest('channels/voice/Five9/preferences', {}, this.preferences).subscribe(

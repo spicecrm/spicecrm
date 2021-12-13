@@ -37,6 +37,9 @@ import /*embed*/ {EmailTemplatesPreview} from "./components/emailtemplatesprevie
 import /*embed*/ {fieldEmailSubject} from "./fields/fieldemailsubject";
 import /*embed*/ {fieldEmailActivityOpenness} from "./fields/fieldemailactivityopenness";
 import /*embed*/ {EmailParentAddressesModal} from "./components/emailparentaddressesmodal";
+import /*embed*/ {EmailToLeadModal} from "./components/emailtoleadmodal";
+import /*embed*/ {EmailToLeadEmailText} from "./components/emailtoleademailtext";
+import /*embed*/ {EmailToLeadButton} from "./components/emailtoleadbutton";
 
 @NgModule({
     imports: [
@@ -73,7 +76,10 @@ import /*embed*/ {EmailParentAddressesModal} from "./components/emailparentaddre
         EmailTemplatesPreview,
         EmailParentAddressesModal,
         fieldEmailSubject,
-        fieldEmailActivityOpenness
+        fieldEmailActivityOpenness,
+        EmailToLeadModal,
+        EmailToLeadEmailText,
+        EmailToLeadButton
     ]
 })
 export class ModuleEmails {}

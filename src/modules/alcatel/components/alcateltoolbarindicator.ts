@@ -25,55 +25,55 @@ import {socket} from "../../../services/socket.service";
 
 
 @Component({
-    templateUrl: './src/modules/alcatel/templates/alcateltoolbarindicator.html'
+    templateUrl: '../templates/alcateltoolbarindicator.html'
 })
 export class AlcatelToolbarIndicator implements OnDestroy {
 
-    private status_socket: any;
+    public status_socket: any;
 
-    private username: string;
-    private phoneusername: string;
+    public username: string;
+    public phoneusername: string;
 
     /**
      * the status of the connection
      */
-    private alcatelstatus: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
+    public alcatelstatus: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
 
     /**
      * the url for the socket connection from the backend
      */
-    private socketurl: string;
+    public socketurl: string;
 
     /**
      * a unique id for the server to connect to the socket
      */
-    private socketid: string;
+    public socketid: string;
 
     /**
      * holds the subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * an interval function to keep the login alive
      */
-    private keepAlive: any;
+    public keepAlive: any;
 
     /**
      * indicator if the subscriptions for the events are active
      */
-    private alcatelsubscription: boolean = false;
+    public alcatelsubscription: boolean = false;
 
     constructor(
-        private backend: backend,
-        private configuration: configurationService,
-        private language: language,
-        private modal: modal,
-        private modelutilities: modelutilities,
-        private telephony: telephony,
-        private toast: toast,
-        private session: session,
-        private socket: socket
+        public backend: backend,
+        public configuration: configurationService,
+        public language: language,
+        public modal: modal,
+        public modelutilities: modelutilities,
+        public telephony: telephony,
+        public toast: toast,
+        public session: session,
+        public socket: socket
     ) {
         this.initialize();
     }
@@ -113,7 +113,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     /**
      * get the prefs and login
      */
-    private initialize() {
+    public initialize() {
 
         // get the scoketurl
 
@@ -129,7 +129,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private getPreferences(): Observable<string> {
+    public getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
         this.backend.getRequest('channels/voice/alcatel/preferences').subscribe(prefs => {
             if (prefs.phoneusername) {
@@ -147,7 +147,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private setPreferences() {
+    public setPreferences() {
         this.modal.openModal('AlcatelPreferences').subscribe(componentRef => {
             componentRef.instance.saved$.subscribe(saved => {
                 this.getPreferences().subscribe(username => {
@@ -160,7 +160,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     /**
      * login to the UC
      */
-    private login() {
+    public login() {
         this.alcatelstatus = "connecting";
         this.backend.postRequest('channels/voice/alcatel/login').subscribe(res => {
             if (res.login) {
@@ -194,7 +194,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     /**
      * disconnects
      */
-    private disconnect() {
+    public disconnect() {
         this.alcatelstatus = 'disconnected';
         this.alcatelsubscription = false;
         if (this.keepAlive) {
@@ -209,7 +209,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * connect to the socket
      * todo handle restart if needed
      */
-    private connectSocket() {
+    public connectSocket() {
         // ensure we have an URL
         if (!this.socketurl) {
             return false;
@@ -224,7 +224,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     /**
      * disconnect from the socket
      */
-    private disconnectSocket() {
+    public disconnectSocket() {
         this.socket.disconnect('alcatel');
     }
 
@@ -233,7 +233,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      *
      * @param event
      */
-    private handleCallEvent(event: SocketEventI) {
+    public handleCallEvent(event: SocketEventI) {
         switch (event.type) {
             case 'update':
                 let call = this.telephony.calls.find(c => c.callid == event.data.id);
@@ -262,7 +262,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      *
      * @param eventData
      */
-    private addCall(eventData) {
+    public addCall(eventData) {
         /*
         let util = libphonenumber.PhoneNumberUtil.getInstance();
         let msisdn = eventData.direction == 'inbound' ? eventData.callernumber : eventData.callednumber;
@@ -277,7 +277,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         });
     }
 
-    private translateStatus(status) {
+    public translateStatus(status) {
         switch (status) {
             case 'PROCEEDING':
                 return 'initial';
@@ -301,7 +301,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * @param relatedmodule
      * @param relatedrecord
      */
-    private initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
+    public initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
 
         // create a call and push to the telphony service
         let callid = this.modelutilities.generateGuid();
@@ -334,7 +334,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      *
      * @param call
      */
-    private terminateCall(call: telephonyCallI) {
+    public terminateCall(call: telephonyCallI) {
         if (call.callid) {
             this.backend.deleteRequest(`channels/voice/alcatel/call/${call.callid}`).subscribe(deleted => {
                 call.status = 'disconnected';
@@ -343,7 +343,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     }
 
     /* automatically done on teh backend
-    private subscribe() {
+    public subscribe() {
         this.backend.postRequest('StarFaceVOIP/events').subscribe(res => {
             if (res.status == 'success') {
                 this.starfacesubscription = true;
@@ -351,7 +351,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         });
     }
 
-    private unsubscribe() {
+    public unsubscribe() {
         this.backend.deleteRequest('StarFaceVOIP/events').subscribe(res => {
             if (res.status == 'success') {
                 this.starfacesubscription = false;

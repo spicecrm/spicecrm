@@ -11,7 +11,7 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'telephony-call-panel-create-related-button',
-    templateUrl: './src/modules/telephony/templates/telephonycallcreaterelatedbutton.html',
+    templateUrl: '../templates/telephonycallcreaterelatedbutton.html',
     providers: [model]
 })
 export class TelephonyCallCreateRelatedButton {
@@ -21,21 +21,21 @@ export class TelephonyCallCreateRelatedButton {
      *
      * @private
      */
-    @Input() private calldata: any;
+    @Input() public calldata: any;
 
     /**
      * emits if the object has been selected
      */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private modal: modal) {
+    constructor(public model: model, public modal: modal) {
 
     }
 
     /**
      * prompt the user to select a module and if yes create the record
      */
-    private execute() {
+    public execute() {
         this.modal.openModal('TelephonyCallCreateRelatedModal').subscribe(modalRef => {
             modalRef.instance.moduleselected.subscribe(
                 module => {
@@ -58,7 +58,7 @@ export class TelephonyCallCreateRelatedButton {
      * @param model
      * @private
      */
-    private setRelated(module, modelData) {
+    public setRelated(module, modelData) {
         this.calldata.relatedid = modelData.id;
         this.calldata.relatedmodule = module;
         this.calldata.relateddata = modelData;

@@ -9,7 +9,7 @@ import { view } from '../../../services/view.service';
 
 @Component({
     selector: '[questions-manager-edit-binary-option]',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditbinaryoption.html',
+    templateUrl: '../templates/questionsmanagereditbinaryoption.html',
     providers: [model]
 })
 export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
@@ -19,9 +19,9 @@ export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
     @Input() public side: string; // l...left, r...right
     @Output() public dataChanged: EventEmitter<any> = new EventEmitter<any>();
 
-    private textIsMultiline = false;
+    public textIsMultiline = false;
 
-    constructor( private language: language, private metadata: metadata, private model: model, private view: view ) {
+    constructor( public language: language, public metadata: metadata, public model: model, public view: view ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -39,7 +39,7 @@ export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
         this.model.data = this.option;
     }
 
-    private change(): void {
+    public change(): void {
         this.option.name = this.option.text;
         this.option.name = this.option.name.replace( /\s/g, ' ' );
         if ( this.option.name.length > 50 ) this.option.name = this.option.name.substring( 0, 49 )+'…';

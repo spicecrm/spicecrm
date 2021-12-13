@@ -9,7 +9,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'home-assistant-tile',
-    templateUrl: './src/modules/home/templates/homeassistanttile.html',
+    templateUrl: '../templates/homeassistanttile.html',
     providers: [model, view]
 })
 export class HomeAssistantTile implements OnInit {
@@ -18,7 +18,7 @@ export class HomeAssistantTile implements OnInit {
     tileFields: Array<any> = [];
     actionset: string = '';
 
-    constructor(private language: language, private model: model, private view: view, private metadata: metadata) {
+    constructor(public language: language, public model: model, public view: view, public metadata: metadata) {
         view.isEditable = false;
     }
 

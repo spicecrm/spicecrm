@@ -8,15 +8,15 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'questionset-type-parameters-text',
-    templateUrl: './src/modules/questionnaires/templates/questionsettypeparameterstext.html',
+    templateUrl: '../templates/questionsettypeparameterstext.html',
 })
 export class QuestionsetTypeParametersText implements OnInit {
 
-    private sequenced: boolean;
+    public sequenced: boolean;
 
-    constructor(private language: language, private model: model, private view: view ) { }
+    constructor(public language: language, public model: model, public view: view ) { }
 
-    private get editing(): boolean {
+    public get editing(): boolean {
         return this.view.isEditMode();
     }
 
@@ -25,14 +25,14 @@ export class QuestionsetTypeParametersText implements OnInit {
         this.model.data$.subscribe( () => this.parseParams() );
     }
 
-    private parseParams(): void {
+    public parseParams(): void {
         if ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ) {
             let config = JSON.parse( this.model.data.questiontypeparameter );
             if ( config.text ) this.sequenced = config.text.sequenced;
         }
     }
 
-    private writeSettings(): void {
+    public writeSettings(): void {
         let config =  ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ? JSON.parse( this.model.data.questiontypeparameter ) : {} );
         config.text = {
             sequenced: this.sequenced
@@ -40,7 +40,7 @@ export class QuestionsetTypeParametersText implements OnInit {
         this.model.data.questiontypeparameter = JSON.stringify( config );
     }
 
-    private click(): void {
+    public click(): void {
         this.sequenced = !this.sequenced;
         this.writeSettings();
     }

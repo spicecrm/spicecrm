@@ -25,7 +25,7 @@ export class QuestionsManagerEditBasic implements OnInit {
     /**
      * A unique ID for the component. Used for the attributes "id" and "for" in html elements.
      */
-    private compId = _.uniqueId();
+    public compId = _.uniqueId();
 
     /**
      * The name field is required. Missing?

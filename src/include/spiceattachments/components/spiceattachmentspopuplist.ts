@@ -20,7 +20,7 @@ declare var moment: any;
  * displays a quicknote that is read in teh stream
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentspopuplist.html',
+    templateUrl: '../templates/spiceattachmentspopuplist.html',
     providers: [modelattachments],
 })
 export class SpiceAttachmentsPopupList implements OnInit{
@@ -30,7 +30,7 @@ export class SpiceAttachmentsPopupList implements OnInit{
      *
      * passed in component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * contructor sets the module and id for the laoder
@@ -38,7 +38,7 @@ export class SpiceAttachmentsPopupList implements OnInit{
      * @param language
      * @param model
      */
-    constructor(private modelattachments: modelattachments, private language: language, private model: model) {
+    constructor(public modelattachments: modelattachments, public language: language, public model: model) {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }

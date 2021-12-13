@@ -13,19 +13,19 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-set-language',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallersetlanguage.html'
+    templateUrl: '../templates/spiceinstallersetlanguage.html'
 })
 
 export class SpiceInstallerSetLanguage {
-    private languages: any = [];
-    private loading: boolean = false;
+    public languages: any = [];
+    public loading: boolean = false;
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private backend: backend,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public router: Router,
+        public configurationService: configurationService,
+        public backend: backend,
+        public spiceinstaller: spiceinstaller
     ) {
         // checks the reference
         this.checkReference();
@@ -39,7 +39,7 @@ export class SpiceInstallerSetLanguage {
      * backend call to reference server
      */
 
-    private checkReference() {
+    public checkReference() {
         this.loading = true;
         this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/checkreference`).subscribe(result => {
             this.loading = false;
@@ -51,7 +51,7 @@ export class SpiceInstallerSetLanguage {
     /**
      * sets the chosen language and saves it in the configuration body
      */
-    private setLanguage() {
+    public setLanguage() {
         this.spiceinstaller.configObject.language = this.spiceinstaller.language;
         this.spiceinstaller.selectedStep.completed = true;
         this.spiceinstaller.steps[6] = this.spiceinstaller.selectedStep;

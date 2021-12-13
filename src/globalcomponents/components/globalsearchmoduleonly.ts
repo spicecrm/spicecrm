@@ -16,14 +16,14 @@ declare var _;
 
 @Component({
     selector: 'global-search-module-only',
-    templateUrl: './src/globalcomponents/templates/globalsearchmoduleonly.html'
+    templateUrl: '../templates/globalsearchmoduleonly.html'
 })
 export class GlobalSearchModuleOnly implements OnChanges {
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @Input() private module: string = '';
-    private listfields: any[] = [];
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true})public tablecontent: ViewContainerRef;
+    @Input()public module: string = '';
+   public listfields: any[] = [];
 
-    constructor(private broadcast: broadcast, private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language, private layout: layout) {
+    constructor(public broadcast: broadcast,public metadata: metadata,public elementref: ElementRef, router: Router,public fts: fts,public language: language,public layout: layout) {
 
     }
 
@@ -45,7 +45,7 @@ export class GlobalSearchModuleOnly implements OnChanges {
         }
     }
 
-    private getCount(): any {
+   public getCount(): any {
         let resultCount = {};
         this.fts.moduleSearchresults.some(item => {
             if (item.module === this.module) {
@@ -59,7 +59,7 @@ export class GlobalSearchModuleOnly implements OnChanges {
         return resultCount;
     }
 
-    private getItems(): any[] {
+   public getItems(): any[] {
         let items: any[] = [];
         this.fts.moduleSearchresults.some(item => {
             if (item.module === this.module) {
@@ -71,7 +71,7 @@ export class GlobalSearchModuleOnly implements OnChanges {
     }
 
 
-    private onScroll(e): void {
+   public onScroll(e): void {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.fts.loadMore();

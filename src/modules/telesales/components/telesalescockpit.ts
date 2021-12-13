@@ -10,7 +10,7 @@ import {telecockpitservice} from '../services/telecockpit.service';
 import {Subscription} from "rxjs";
 
 @Component({
-    templateUrl: './src/modules/telesales/templates/telesalescockpit.html',
+    templateUrl: '../templates/telesalescockpit.html',
     providers: [
         telecockpitservice,
         view,
@@ -23,12 +23,12 @@ export class TeleSalesCockpit implements OnDestroy {
     /**
      * handles the subscriptions for the component
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private model: model,
-                private navigationtab: navigationtab,
-                private telecockpitservice: telecockpitservice) {
+    constructor(public language: language,
+                public model: model,
+                public navigationtab: navigationtab,
+                public telecockpitservice: telecockpitservice) {
         this.selectedListItemSubscriber();
 
         this.navigationtab.setTabInfo({displayname: 'Telesales'});
@@ -41,11 +41,11 @@ export class TeleSalesCockpit implements OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    private selectedListItemSubscriber() {
+    public selectedListItemSubscriber() {
         this.subscriptions.add(this.telecockpitservice.selectedListItem$.subscribe(listItem => this.loadModel(listItem)));
     }
 
-    private loadModel(selectedListItem) {
+    public loadModel(selectedListItem) {
         this.model.reset();
         if (!selectedListItem) {
             return;

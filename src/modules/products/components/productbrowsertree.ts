@@ -14,24 +14,24 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-tree',
-    templateUrl: './src/modules/products/templates/productbrowsertree.html'
+    templateUrl: '../templates/productbrowsertree.html'
 })
 export class ProductBrowserTree implements OnInit {
 
-    @ViewChild('treeheader', {read: ViewContainerRef, static: true}) private treeheader: ViewContainerRef;
-    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('treeheader', {read: ViewContainerRef, static: true}) public treeheader: ViewContainerRef;
+    @Output() public selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
-    private productGroups: any[] = [];
-    private productGroupTree: any[] = [];
-    private productGroupTreeResultsOnly: boolean = false;
-    private selectedId: string = '';
-    private fieldset: string;
+    public productGroups: any[] = [];
+    public productGroupTree: any[] = [];
+    public productGroupTreeResultsOnly: boolean = false;
+    public selectedId: string = '';
+    public fieldset: string;
 
-    constructor(private language: language,
-                private backend: backend,
-                private elementRef: ElementRef,
-                private metadata: metadata,
-                private productfinder: productfinder) {
+    constructor(public language: language,
+                public backend: backend,
+                public elementRef: ElementRef,
+                public metadata: metadata,
+                public productfinder: productfinder) {
         this.getProductGroups();
     }
 
@@ -45,15 +45,15 @@ export class ProductBrowserTree implements OnInit {
         this.fieldset = !!config && !!config.fieldset ? config.fieldset : undefined;
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
-    private getLinkTitle(productgroup) {
+    public getLinkTitle(productgroup) {
         return `${productgroup.summary_text}(${this.getAggregateCount(productgroup)})`;
     }
 
-    private getProductGroups(parentId = '') {
+    public getProductGroups(parentId = '') {
 
         this.backend.getRequest('module/ProductGroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
             items.sort((a, b) => {
@@ -77,7 +77,7 @@ export class ProductBrowserTree implements OnInit {
         });
     }
 
-    private getProducts(parentId = '') {
+    public getProducts(parentId = '') {
         this.backend.getRequest(`module/ProductGroups/${parentId}/products`).subscribe(items => {
             for (let item of items.list) {
                 item.expanded = false;
@@ -90,11 +90,11 @@ export class ProductBrowserTree implements OnInit {
         });
     }
 
-    private canExpand(item) {
+    public canExpand(item) {
         return item.member_count > 0 || item.product_count > 0;
     }
 
-    private toggle(productgroup) {
+    public toggle(productgroup) {
         this.productGroups.some(item => {
                 if (item.id == productgroup.id) {
                     item.expanded = !item.expanded;
@@ -118,12 +118,12 @@ export class ProductBrowserTree implements OnInit {
         );
     }
 
-    private buildTree() {
+    public buildTree() {
         this.productGroupTree = [];
         this.addTreeNode();
     }
 
-    private addTreeNode(parentId = '', level = 1) {
+    public addTreeNode(parentId = '', level = 1) {
         for (let productgroup of this.productGroups) {
             if (productgroup.parent_productgroup_id == parentId) {
                 productgroup.level = level;
@@ -136,30 +136,30 @@ export class ProductBrowserTree implements OnInit {
         }
     }
 
-    private selectGroup(group) {
+    public selectGroup(group) {
         let obj = {type: 'ProductGroup', object: group};
         this.productfinder.setSearchFocus(obj);
         this.selectedId = group.id;
         this.selectionchanged.emit(obj);
     }
 
-    private selectProduct(product) {
+    public selectProduct(product) {
         let obj = {type: 'Product', object: product};
         this.productfinder.setSearchFocus(obj);
         this.selectedId = product.id;
         this.selectionchanged.emit(obj);
     }
 
-    private isSelected(id) {
+    public isSelected(id) {
         return this.selectedId == id;
     }
 
-    private getAggregateCount(item) {
+    public getAggregateCount(item) {
         let aggregate = item.type === 'Product' ? 'productid' : 'productgroups';
         return this.productfinder.getAggregateCount(aggregate, item.id);
     }
 
-    private displayTreeNode(node) {
+    public displayTreeNode(node) {
         return this.productGroupTreeResultsOnly ? this.getAggregateCount(node) !== '-' : true;
     }
 }

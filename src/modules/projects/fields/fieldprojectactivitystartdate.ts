@@ -20,7 +20,7 @@ declare var _: any;
 
 @Component({
     selector: 'field-project-activity-startdate',
-    templateUrl: './src/modules/projects/templates/fieldprojectactivitystartdate.html',
+    templateUrl: '../templates/fieldprojectactivitystartdate.html',
 
 })
 export class fieldProjectActivityStartdate extends fieldGeneric {
@@ -31,10 +31,10 @@ export class fieldProjectActivityStartdate extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private session: session,
-        private modal: modal,
-        private broadcast: broadcast,
-        private injector: Injector
+        public session: session,
+        public modal: modal,
+        public broadcast: broadcast,
+        public injector: Injector
     ) {
         super(model, view, language, metadata, router);
     }
@@ -43,7 +43,7 @@ export class fieldProjectActivityStartdate extends fieldGeneric {
         return !this.model.isEditing && this.model.getField('assigned_user_id') == this.session.authData.userId;
     }
 
-    private start() {
+    public start() {
         this.model.startEdit();
         this.value = new moment();
         this.model.save();
@@ -53,7 +53,7 @@ export class fieldProjectActivityStartdate extends fieldGeneric {
      * records a new activity record
      * @private
      */
-    private record() {
+    public record() {
         this.modal.openModal('ProjectActivityConfirmation', true, this.injector).subscribe(modalRef => {
             modalRef.instance.action.subscribe(action => {
                 if (action == 'save') {
@@ -87,7 +87,7 @@ export class fieldProjectActivityStartdate extends fieldGeneric {
      * cancel the time recording
      * @private
      */
-    private cancel() {
+    public cancel() {
         this.modal.confirm('MSG_CANCEL_ACTIVITY', 'MSG_CANCEL_ACTIVITY').subscribe(response => {
             if (response) {
                 this.model.startEdit();
@@ -101,7 +101,7 @@ export class fieldProjectActivityStartdate extends fieldGeneric {
      * stops the recording if a start date is set
      * @private
      */
-    private stop() {
+    public stop() {
         this.modal.openModal('ProjectActivityConfirmation', true, this.injector).subscribe(modalRef => {
             modalRef.instance.action.subscribe(action => {
                 if (action == 'save') {

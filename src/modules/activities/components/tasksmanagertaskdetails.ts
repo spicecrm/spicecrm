@@ -25,7 +25,7 @@ import {broadcast} from '../../../services/broadcast.service';
  */
 @Component({
     selector: 'tasks-manager-task-details',
-    templateUrl: './src/modules/activities/templates/tasksmanagertaskdetails.html',
+    templateUrl: '../templates/tasksmanagertaskdetails.html',
     host: {
         class: 'slds-theme--shade'
     },
@@ -33,17 +33,17 @@ import {broadcast} from '../../../services/broadcast.service';
 })
 export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
 
-    @ViewChild('detailscontent', {read: ViewContainerRef, static: true}) private detailscontent: ViewContainerRef;
+    @ViewChild('detailscontent', {read: ViewContainerRef, static: true}) public detailscontent: ViewContainerRef;
 
     /**
      * to set the focus
      */
-    @Input() private focusid: string = '';
+    @Input() public focusid: string = '';
 
-    private viewComponent: any = null;
-    private modelSubscription: any = null;
+    public viewComponent: any = null;
+    public modelSubscription: any = null;
 
-    constructor(private view: view, private language: language, private elementRef: ElementRef, private metadata: metadata, private model: model, private broadcast: broadcast) {
+    constructor(public view: view, public language: language, public elementRef: ElementRef, public metadata: metadata, public model: model, public broadcast: broadcast) {
         this.model.module = 'Tasks';
 
         // subscribe to the broadcast service
@@ -54,7 +54,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
         this.view.displayLabels = false;
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagedata.module !== this.model.module)  return;
 
@@ -117,7 +117,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
         }
     }
 
-    private completeTask() {
+    public completeTask() {
         this.model.data.status = 'Completed';
         this.model.save();
     }

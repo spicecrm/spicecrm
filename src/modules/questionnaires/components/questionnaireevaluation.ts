@@ -8,11 +8,11 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'questionnaire-evaluation',
-    templateUrl: './src/modules/questionnaires/templates/questionnaireevaluation.html',
+    templateUrl: '../templates/questionnaireevaluation.html',
 })
 export class QuestionnaireEvaluation implements OnInit {
 
-    @ViewChild('destination', {read: ViewContainerRef, static: true}) private destination: ViewContainerRef;
+    @ViewChild('destination', {read: ViewContainerRef, static: true}) public destination: ViewContainerRef;
 
     @Input() public parentdata: any = {};
     @Input() public reference_id = '';
@@ -23,15 +23,15 @@ export class QuestionnaireEvaluation implements OnInit {
         if ( this.component  ) this.component.instance.individualHeight = val;
     }
 
-    private component: any;
-    private evaluationType: string;
-    private sequenceNr = 0;
-    private loading = true;
+    public component: any;
+    public evaluationType: string;
+    public sequenceNr = 0;
+    public loading = true;
 
-    private noEvaluationTypeDefined = false;
-    private noParticipationYet = false;
+    public noEvaluationTypeDefined = false;
+    public noParticipationYet = false;
 
-    constructor( private language: language, private backend: backend, private metadata: metadata ) { }
+    constructor( public language: language, public backend: backend, public metadata: metadata ) { }
 
     public ngOnInit(): void {
 

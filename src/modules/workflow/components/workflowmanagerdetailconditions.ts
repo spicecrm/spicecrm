@@ -17,12 +17,12 @@ declare var _: any;
  */
 @Component({
     selector: 'workflow-manager-detail-conditions',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailconditions.html',
+    templateUrl: '../templates/workflowmanagerdetailconditions.html',
     providers: [view]
 })
 export class WorkflowManagerDetailConditions {
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
         this.view.isEditable = true;
         this.view.setEditMode();
 

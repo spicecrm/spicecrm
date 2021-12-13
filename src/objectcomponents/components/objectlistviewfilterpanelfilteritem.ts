@@ -29,7 +29,7 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-filter-panel-filter-item',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilteritem.html',
+    templateUrl: '../templates/objectlistviewfilterpanelfilteritem.html',
     animations: [
         trigger('animatepopover', [
             transition(':enter', [
@@ -44,22 +44,22 @@ declare var _: any;
     ]
 })
 export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilterExpression implements OnDestroy, AfterViewInit {
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
 
     /**
      * boolean if the popover is open
      */
-    private showPopover: boolean = false;
+    public showPopover: boolean = false;
 
     /**
      * helper listener to close the popup when a click happens outside
      */
-    private clickListener: any = null;
+    public clickListener: any = null;
 
     /**
      * list of fieldtypes that shoudl not be allowed for filtering
      */
-    private excludedFieldtypes: string[] = ['link', 'relate', 'email'];
+    public excludedFieldtypes: string[] = ['link', 'relate', 'email'];
 
     /**
      * an emitter to indicate that the current item should be deleted by the user
@@ -70,10 +70,10 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         public backend: backend,
         public language: language,
         public metadata: metadata,
-        private elementRef: ElementRef,
-        private modellist: modellist,
-        private renderer: Renderer2,
-        private userpreferences: userpreferences
+        public elementRef: ElementRef,
+        public modellist: modellist,
+        public renderer: Renderer2,
+        public userpreferences: userpreferences
     ) {
         super(backend, language, metadata);
 
@@ -111,14 +111,14 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * show the popover
      */
-    private onClick() {
+    public onClick() {
         this.openPopover();
     }
 
     /**
      * opens the popover
      */
-    private openPopover() {
+    public openPopover() {
         if (!this.showPopover) {
             this.showPopover = true;
             // this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -126,7 +126,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         }
     }
 
-    private onFocus(event) {
+    public onFocus(event) {
         window.setTimeout(() => {
             event.target.blur();
         }, 250);
@@ -135,7 +135,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * closes the popover
      */
-    private closePopover() {
+    public closePopover() {
         this.showPopover = false;
     }
 
@@ -144,7 +144,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
      *
      * @param event
      */
-    private onDocumentClick(event: MouseEvent): void {
+    public onDocumentClick(event: MouseEvent): void {
         if (this.showPopover) {
             if (!this.elementRef.nativeElement.contains(event.target)) {
                 this.showPopover = false;
@@ -156,7 +156,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * positions the popover properly
      */
-    private getPopoverStyle() {
+    public getPopoverStyle() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
         return {
@@ -169,14 +169,14 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * display the name oif the field used for the filter resp the labe that it is a new filter
      */
-    private getDisplayName() {
+    public getDisplayName() {
         return this.field ? this.language.getFieldDisplayName(this.modellist.module, this.field) : this.language.getLabel('LBL_NEW_FILTER');
     }
 
     /**
      * emits that the filter shopudl be deleted
      */
-    private deleteFilter() {
+    public deleteFilter() {
         this.deleteItem.emit(true);
     }
 
@@ -185,7 +185,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
      *
      * @param value
      */
-    private interpretvalue(value) {
+    public interpretvalue(value) {
         try {
             let operator = this.operators[this.operatortype].find(item => item.operator == this.operator);
             switch (operator.value1) {

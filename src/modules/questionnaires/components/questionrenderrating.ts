@@ -8,7 +8,7 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 
 @Component({
     selector: 'question-render-rating',
-    templateUrl: './src/modules/questionnaires/templates/questionrenderrating.html',
+    templateUrl: '../templates/questionrenderrating.html',
     styles: [
         'table { border-top: none; }',
         'th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}',
@@ -20,11 +20,11 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 })
 export class QuestionRenderRating extends QuestionRenderBasic implements OnInit {
 
-    @Input() private hideFinishedQuestions = false;
-    @Input() private imageWidthQuestion = 200;
+    @Input() public hideFinishedQuestions = false;
+    @Input() public imageWidthQuestion = 200;
 
-    private ratingValuesHaveAlsoText = false;
-    private altTexts = {};
+    public ratingValuesHaveAlsoText = false;
+    public altTexts = {};
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
@@ -45,11 +45,11 @@ export class QuestionRenderRating extends QuestionRenderBasic implements OnInit 
 
     }
 
-    private onClick( optionId: string ): boolean {
+    public onClick( optionId: string ): boolean {
         return this.questionnaireParticipation.clickAnswerOption( this.questionId, optionId );
     }
 
-    private isChecked( optionId: string ): boolean {
+    public isChecked( optionId: string ): boolean {
         return this.qp.answers && this.qp.answers[this.questionId] && this.qp.answers[this.questionId].options && this.qp.answers[this.questionId].options[optionId];
     }
 
