@@ -18,7 +18,7 @@ declare var moment: any;
 
 @Component({
     selector: "system-input-date",
-    templateUrl: "./src/systemcomponents/templates/systeminputdate.html",
+    templateUrl: "../templates/systeminputdate.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
@@ -32,10 +32,10 @@ export class SystemInputDate implements ControlValueAccessor {
 
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
-    private showCalendarButton: boolean = true;
-    private _date: any = {
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
+    public showCalendarButton: boolean = true;
+    public _date: any = {
         display: '',
         moment: null,
         valid: true
@@ -46,7 +46,7 @@ export class SystemInputDate implements ControlValueAccessor {
      *
      * @private
      */
-    private isDisabled: boolean = false;
+    public isDisabled: boolean = false;
 
     /**
      * an attribute that can be set and does not require the value true passed in
@@ -61,11 +61,11 @@ export class SystemInputDate implements ControlValueAccessor {
         }
     }
 
-    constructor(private elementref: ElementRef,
-                private renderer: Renderer2,
-                private userpreferences: userpreferences,
-                private modal: modal,
-                private cdref: ChangeDetectorRef) {
+    constructor(public elementref: ElementRef,
+                public renderer: Renderer2,
+                public userpreferences: userpreferences,
+                public modal: modal,
+                public cdref: ChangeDetectorRef) {
     }
 
     get isValid() {
@@ -155,7 +155,7 @@ export class SystemInputDate implements ControlValueAccessor {
         this.cdref.detectChanges();
     }
 
-    private clear(notify = true) {
+    public clear(notify = true) {
         this._date.moment = null;
         this._date.display = '';
         this._date.valid = true;
@@ -166,7 +166,7 @@ export class SystemInputDate implements ControlValueAccessor {
         }
     }
 
-    private datePicked(value, fromCalendar?: boolean) {
+    public datePicked(value, fromCalendar?: boolean) {
         if (value) {
             if (!this._date.moment) {
                 this._date.moment = new moment();
@@ -190,7 +190,7 @@ export class SystemInputDate implements ControlValueAccessor {
         }
     }
 
-    private openCalendar() {
+    public openCalendar() {
         this.modal.openModal('Calendar').subscribe(modalRef => {
             modalRef.instance.calendar.asPicker = true;
             modalRef.instance.calendar.pickerDate$

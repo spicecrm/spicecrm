@@ -10,40 +10,40 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanageradditemmodal.html',
+    templateUrl: '../templates/dictionarymanageradditemmodal.html',
 })
 export class DictionaryManagerAddItemModal {
 
     /**
      * reference to the modal self
      */
-    private self: any;
+    public self: any;
 
     /**
      * the domain definition
      */
-    private dictionaryitem: DictionaryItem;
+    public dictionaryitem: DictionaryItem;
 
     /**
      * the list of the domains
      */
-    private domains: any[] = [];
+    public domains: any[] = [];
 
     /**
      * the list fo the didsctionary items
      */
-    private templates: any[] = [];
+    public templates: any[] = [];
 
     /**
      * the type of the item to be added
      */
-    private itemtype: 'i' | 't' = 'i';
+    public itemtype: 'i' | 't' = 'i';
 
     /**
      * messages collected
      * @private
      */
-    private messages: DictionaryManagerMessage[] = [];
+    public messages: DictionaryManagerMessage[] = [];
 
     /**
      * the type tof the current dictionary item
@@ -51,9 +51,9 @@ export class DictionaryManagerAddItemModal {
      *
      * @private
      */
-    private currentType: string;
+    public currentType: string;
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modelutilities: modelutilities) {
 
         this.dictionaryitem = {
             id: this.modelutilities.generateGuid(),
@@ -98,7 +98,7 @@ export class DictionaryManagerAddItemModal {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -107,7 +107,7 @@ export class DictionaryManagerAddItemModal {
      * @param field
      * @private
      */
-    private getMessages(field) {
+    public getMessages(field) {
         return this.messages.filter(m => m.field == field);
     }
 
@@ -153,7 +153,7 @@ export class DictionaryManagerAddItemModal {
     /**
      * saves the modal
      */
-    private save() {
+    public save() {
         if (this.canSave) {
 
             // handle the itemtype and reset the other option

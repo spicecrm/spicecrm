@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'object-action-edit-button',
-    templateUrl: './src/objectcomponents/templates/objectactioneditbutton.html'
+    templateUrl: '../templates/objectactioneditbutton.html'
 })
 export class ObjectActionEditButton {
 
@@ -22,9 +22,9 @@ export class ObjectActionEditButton {
     public displayasicon: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
     ) {
 
     }

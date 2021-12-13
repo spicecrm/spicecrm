@@ -20,16 +20,16 @@ declare var _: any;
  */
 @Component({
     selector: 'global-header',
-    templateUrl: './src/globalcomponents/templates/globalheader.html'
+    templateUrl: '../templates/globalheader.html'
 })
 export class GlobalHeader {
 
     /**
      * reference to the header to get the height
      */
-    @ViewChild('header', {read: ViewContainerRef, static: false}) private header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: false})public header: ViewContainerRef;
 
-    constructor(private session: session, private router: Router, private toast: toast, private layout: layout, private navigation: navigation, private configurationService: configurationService) {
+    constructor(public session: session,public router: Router,public toast: toast,public layout: layout,public navigation: navigation,public configurationService: configurationService) {
 
         // ToDo: check what this is doing here
         this.router.events.subscribe((val: any) => {

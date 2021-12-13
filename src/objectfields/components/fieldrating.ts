@@ -11,22 +11,22 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-rating',
-    templateUrl: './src/objectfields/templates/fieldrating.html'
+    templateUrl: '../templates/fieldrating.html'
 })
 export class fieldRating extends fieldGeneric {
 
-    private options: any[] = ["1","2","3","4","5"];
+    public options: any[] = ["1","2","3","4","5"];
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
     }
 
-    private setRatingValue( value ) {
+    public setRatingValue( value ) {
         if ( this.value == value ) this.value = '';
         else this.value = value;
     }
 
-    private get ratingIcon() {
+    public get ratingIcon() {
         if ( parseInt( this.value, 10 ) == 3) return 'sentiment_neutral';
         if ( parseInt( this.value, 10 ) > 3) return 'smiley_and_people';
         if ( parseInt( this.value, 10 ) < 3) return 'sentiment_negative';

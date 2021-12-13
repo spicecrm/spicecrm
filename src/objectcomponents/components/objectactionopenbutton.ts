@@ -14,7 +14,7 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: 'object-action-open-button',
-    templateUrl: './src/objectcomponents/templates/objectactionopenbutton.html',
+    templateUrl: '../templates/objectactionopenbutton.html',
     providers: [helper]
 })
 export class ObjectActionOpenButton {
@@ -24,7 +24,7 @@ export class ObjectActionOpenButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view) {
+    constructor(public language: language, public metadata: metadata, public model: model, public router: Router, public helper: helper, public view: view) {
     }
 
     /**

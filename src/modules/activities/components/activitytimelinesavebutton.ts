@@ -10,7 +10,7 @@ import {ObjectActionSaveButton} from "../../../objectcomponents/components/objec
 
 @Component({
     selector: 'activity-timeline-save-button',
-    templateUrl: './src/modules/activities/templates/activitytimelinesavebutton.html'
+    templateUrl: '../templates/activitytimelinesavebutton.html'
 })
 export class ActivityTimelineSaveButton {
 
@@ -27,9 +27,9 @@ export class ActivityTimelineSaveButton {
     /**
      * indicates that the model is saving
      */
-    private saving: boolean = false;
+    public saving: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view) {
 
     }
 

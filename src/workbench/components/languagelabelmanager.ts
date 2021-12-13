@@ -15,13 +15,13 @@ import { session } from '../../services/session.service';
 
 @Component({
     selector: 'language-label-manager',
-    templateUrl: './src/workbench/templates/languagelabelmanager.html',
+    templateUrl: '../templates/languagelabelmanager.html',
 })
 export class LanguageLabelManagerComponent {
     public search_term: string = '';
     public labels = [];
     public languages = [];
-    private _selected_label = null;
+    public _selected_label = null;
     get selected_label() {
         return this._selected_label;
     }
@@ -55,14 +55,14 @@ export class LanguageLabelManagerComponent {
     public readonly scopes = ['global', 'custom'];
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
-        private toast: toast,
-        private footer: footer,
-        private modalservice: modal,
-        private sessionservice: session
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
+        public toast: toast,
+        public footer: footer,
+        public modalservice: modal,
+        public sessionservice: session
     ) {
         this.languages = this.language.getAvialableLanguages();
     }
@@ -187,7 +187,7 @@ export class LanguageLabelManagerComponent {
     }
 
 
-    private getcurrentLanguageTranslations() {
+    public getcurrentLanguageTranslations() {
         let translations = this.translations;
         let currenttranslation = {default: '', short: '', long: ''};
         translations.some(translation => {
@@ -236,7 +236,7 @@ export class LanguageLabelManagerComponent {
         return this.language.getLangText(language);
     }
 
-    private filesToDB() {
+    public filesToDB() {
         this.modalservice.confirm('Transfering custom labels from language files will change your database content and might destroy/overwrite existing language data in your database! Do you really want to do this?', 'Caution!', 'warning' ).subscribe( (answer) => {
             if ( answer ) {
                 let stopper = this.modalservice.await('Transfering language data from files to database …');

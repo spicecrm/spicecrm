@@ -18,18 +18,18 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-filter-button',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterbutton.html'
+    templateUrl: '../templates/objectlistviewfilterbutton.html'
 })
 export class ObjectListViewFilterButton {
 
-    constructor(private modellist: modellist) {
+    constructor(public modellist: modellist) {
 
     }
 
     /**
      * toggles the display attribute on the modellist service
      */
-    private togglefilters() {
+    public togglefilters() {
 
         // make sure no aggregates are displayed
         this.modellist.displayAggregates = false;

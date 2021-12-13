@@ -16,21 +16,21 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'field-gdpr',
-    templateUrl: './src/objectfields/templates/fieldgdpr.html'
+    templateUrl: '../templates/fieldgdpr.html'
 })
 export class fieldGDPR extends fieldGeneric implements OnInit {
 
     /**
      * the gdpr data as retrieved from the backend for the record
      */
-    private gdprData: any = {};
+    public gdprData: any = {};
 
     /**
      * an indicator if the laoding is completed for the field or the data is still loading
      */
-    private loaded = false;
+    public loaded = false;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private modal: modal, private injector: Injector) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend, public modal: modal, public injector: Injector) {
         super(model, view, language, metadata, router);
     }
 
@@ -47,7 +47,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
     /**
      * returns the style for the DATA pill
      */
-    private getDataStyle() {
+    public getDataStyle() {
         if (!this.loaded) return {};
 
         if (this.model.data.gdpr_data_agreement == '1') {
@@ -81,7 +81,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
     /**
      * return the stle for the MARKETING pill
      */
-    private getMarketingStyle() {
+    public getMarketingStyle() {
         if (!this.loaded) return {};
 
         // if agreement was granted
@@ -124,7 +124,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
     /**
      * renders the details modal
      */
-    private showDetails() {
+    public showDetails() {
         this.modal.openModal('ObjectGDPRModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.gdprRelatedLog = this.gdprData.related;
             modalRef.instance.gdprAuditLog = this.gdprData.audit;

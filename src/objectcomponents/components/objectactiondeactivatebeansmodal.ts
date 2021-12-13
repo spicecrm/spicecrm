@@ -15,7 +15,7 @@ import {NgModel} from "@angular/forms";
  * renders a modal window to show all selected beans to select the active one
  */
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectactiondeactivatebeansmodal.html',
+    templateUrl: '../templates/objectactiondeactivatebeansmodal.html',
     providers: [model]
 })
 export class ObjectActionDeactivateBeansModal implements OnInit {
@@ -23,7 +23,7 @@ export class ObjectActionDeactivateBeansModal implements OnInit {
     /**
      * the componentconfig that gets passed in when the modal is created
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
 
     /**
@@ -43,18 +43,18 @@ export class ObjectActionDeactivateBeansModal implements OnInit {
     /**
      * show finish button to close modal
      */
-    private showfinish: boolean = false;
+    public showfinish: boolean = false;
 
 
-    private self: any = {};
-    private value: string = "";
+    public self: any = {};
+    public value: string = "";
 
 
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata
+        public language: language,
+        public model: model,
+        public metadata: metadata
     ) {}
 
 
@@ -70,14 +70,14 @@ export class ObjectActionDeactivateBeansModal implements OnInit {
     /**
      * destroy the component
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
     /**
      * Set the successor_id and the is_inactive-flag of the inactive beans
      */
-    private select() {
+    public select() {
         let itemcounter = 0;
         let save = 0;
         for (let item of this.selectedItems) {

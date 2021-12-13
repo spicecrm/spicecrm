@@ -15,7 +15,7 @@ declare var moment: any;
 
 @Component({
     selector: 'email-reply-modal',
-    templateUrl: './src/modules/emails/templates/emailreplymodal.html',
+    templateUrl: '../templates/emailreplymodal.html',
     providers: [view, model]
 })
 export class EmailReplyModal implements OnInit {
@@ -28,7 +28,7 @@ export class EmailReplyModal implements OnInit {
     /**
      * inidcates that we are sending
      */
-    private sending: boolean = false;
+    public sending: boolean = false;
 
     /**
      * the title for the modal window to be displayed
@@ -40,19 +40,19 @@ export class EmailReplyModal implements OnInit {
      *
      * @private
      */
-    private mode: 'reply'|'replyall' = 'reply';
+    public mode: 'reply'|'replyall' = 'reply';
 
     /**
      * an event emitter when the email ahs been sent and the modal window will destroy itself
      */
-    @Output() private mailsent: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public mailsent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * the component config
      *
      * @private
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     constructor(public language: language,
                 public metadata: metadata,
@@ -154,7 +154,7 @@ export class EmailReplyModal implements OnInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -163,7 +163,7 @@ export class EmailReplyModal implements OnInit {
      *
      * @private
      */
-    private dock() {
+    public dock() {
         this.dockedcomposer.addComposer(this.model.module, this.model);
         this.close();
 
@@ -172,7 +172,7 @@ export class EmailReplyModal implements OnInit {
     /**
      * send the email
      */
-    private sendEmail() {
+    public sendEmail() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
@@ -206,7 +206,7 @@ export class EmailReplyModal implements OnInit {
      * @param action
      * @private
      */
-    private handleaction(action) {
+    public handleaction(action) {
         switch (action) {
             default:
                 this.close();

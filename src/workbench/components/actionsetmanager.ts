@@ -17,20 +17,20 @@ import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: './src/workbench/templates/actionsetmanager.html',
+    templateUrl: '../templates/actionsetmanager.html',
     providers: [view]
 })
 export class ActionsetManager {
 
-    private edit_mode: string = "custom";
-    private allowBarButtons: boolean = true;
-    private crNoneActive: boolean = false;
+    public edit_mode: string = "custom";
+    public allowBarButtons: boolean = true;
+    public crNoneActive: boolean = false;
 
-    private change_request_required: boolean = false;
+    public change_request_required: boolean = false;
 
-    private sysModules: any = [];
-    private currentModule: string = '*';
-    private currentActionSet: any = {
+    public sysModules: any = [];
+    public currentModule: string = '*';
+    public currentActionSet: any = {
         id: '',
         module: '',
         name: '',
@@ -40,25 +40,25 @@ export class ActionsetManager {
         isnew: false
     };
 
-    private actionSetBackup = "";
+    public actionSetBackup = "";
 
-    // private currentActionSetItems: Array<any> = [];
-    private selectedItem: any = null;
+    // public currentActionSetItems: Array<any> = [];
+    public selectedItem: any = null;
 
-    private selectedItemID = "";
+    public selectedItemID = "";
 
-    private showActionSetDetails: boolean = false;
+    public showActionSetDetails: boolean = false;
 
-    constructor(private backend: backend,
-                private metadata: metadata,
-                private language: language,
-                private modelutilities: modelutilities,
-                private broadcast: broadcast,
-                private toast: toast,
-                private modalservice: modal,
-                private configurationService: configurationService,
-                private view: view,
-                private modal: modal) {
+    constructor(public backend: backend,
+                public metadata: metadata,
+                public language: language,
+                public modelutilities: modelutilities,
+                public broadcast: broadcast,
+                public toast: toast,
+                public modalservice: modal,
+                public configurationService: configurationService,
+                public view: view,
+                public modal: modal) {
 
         this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
@@ -72,7 +72,7 @@ export class ActionsetManager {
      *
      * get all actionsets for the current module and type(global, custom)
      */
-    private getActionSets(type = null) {
+    public getActionSets(type = null) {
         let retArray = [];
         if (!type) {
             retArray = this.metadata.getActionSets(this.currentModule);
@@ -88,7 +88,7 @@ export class ActionsetManager {
     }
 
     // check edit mode
-    private checkMode() {
+    public checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
 
@@ -125,12 +125,12 @@ export class ActionsetManager {
         }
     }
 
-    private setNoneMode() {
+    public setNoneMode() {
         this.view.setViewMode();
         this.allowBarButtons = false;
     }
 
-    private setCustomMode() {
+    public setCustomMode() {
         if (this.currentActionSet.type == "custom") {
             this.view.setEditMode();
         } else {
@@ -138,7 +138,7 @@ export class ActionsetManager {
         }
     }
 
-    private setAllMode() {
+    public setAllMode() {
         this.view.setEditMode();
     }
 
@@ -146,7 +146,7 @@ export class ActionsetManager {
         return this.checkForChangesFunction();
     }
 
-    private checkForChangesFunction() {
+    public checkForChangesFunction() {
         if(this.currentActionSet.id != "") {
             return JSON.stringify(this.currentActionSet) == this.actionSetBackup ? false: true;
         } else {
@@ -154,7 +154,7 @@ export class ActionsetManager {
         }
     }
 
-    private selectCurrentActionset() {
+    public selectCurrentActionset() {
         if(this.currentActionSet.id) {
             let newID = this.currentActionSet.id;
             if(this.actionSetBackup != "") {
@@ -182,7 +182,7 @@ export class ActionsetManager {
      *
      * selected an actionset
      */
-    private loadCurrentActionset(newID) {
+    public loadCurrentActionset(newID) {
         this.selectedItem = null;
         this.checkMode();
         this.currentActionSet = this.metadata.getActionSet(newID);
@@ -202,7 +202,7 @@ export class ActionsetManager {
      *
      * Add a new actionsetitem
      */
-    private addActionsetItem() {
+    public addActionsetItem() {
         let currentActionSetItem = {
             // actionset: this.currentActionSet,
             action: "NEW",
@@ -220,7 +220,7 @@ export class ActionsetManager {
         this.metadata.setActionSetItems(this.currentActionSet.id, this.currentActionSet.actions);
         this.selectItem(currentActionSetItem);
     }
-    private deleteItem(item) {
+    public deleteItem(item) {
         this.modal.confirm( 'LBL_ARE_YOU_SURE', 'LBL_REMOVE_ITEM' ).subscribe( ( answer ) => {
             if(answer) {
                 this.currentActionSet.actions.splice(
@@ -235,7 +235,7 @@ export class ActionsetManager {
      *
      * Add a new actionset
      */
-    private addActionset() {
+    public addActionset() {
         this.modalservice.openModal('ActionsetManagerAddDialog').subscribe(modal => {
 
             modal.instance.sysModules = this.sysModules;
@@ -275,7 +275,7 @@ export class ActionsetManager {
      * Selected a module
      * Check if any changes are active
      */
-    private selectModule() {
+    public selectModule() {
         let newModule = this.currentActionSet.module;
         if(this.actionSetBackup != "") {
             // set it back to the old id .. for the dirty-field check
@@ -299,7 +299,7 @@ export class ActionsetManager {
     /**
      * reset the current data
      */
-    private reset() {
+    public reset() {
         this.currentActionSet = {
             id: '',
             module: '',
@@ -317,7 +317,7 @@ export class ActionsetManager {
      *
      * get the label of the item
      */
-    private getDisplayName(item) {
+    public getDisplayName(item) {
         let name = item.action ? item.action: item.component;
         return item.actionconfig.label ? name + " (" + this.language.getLabel(item.actionconfig.label) + ")":  name;
     }
@@ -326,11 +326,11 @@ export class ActionsetManager {
      * check if id is selected
      * return bool
      */
-    private isSelected(id) {
+    public isSelected(id) {
         return id == this.selectedItem.id;
     }
 
-    private selectItem(currentActionSetItem) {
+    public selectItem(currentActionSetItem) {
         this.selectedItemID = currentActionSetItem.id;
         for (let item of this.currentActionSet.actions) {
             if(item.id == currentActionSetItem.id) {
@@ -343,7 +343,7 @@ export class ActionsetManager {
      * handles the drop event and rearranges the array
      * @param event
      */
-    private drop(event) {
+    public drop(event) {
         this.currentActionSet.actions.splice(event.currentIndex, 0, this.currentActionSet.actions.splice(event.previousIndex, 1)[0]);
 
         // rebuild the sequence
@@ -354,7 +354,7 @@ export class ActionsetManager {
         }
     }
 
-    private deleteChanges() {
+    public deleteChanges() {
         if(this.currentActionSet.isnew) {
             this.metadata.removeActionset(this.currentActionSet.id);
             this.reset();
@@ -369,7 +369,7 @@ export class ActionsetManager {
         }
     }
 
-    private saveChanges() {
+    public saveChanges() {
 
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
 
@@ -405,7 +405,7 @@ export class ActionsetManager {
         });
     }
 
-    private copy() {
+    public copy() {
         this.modalservice.openModal('ActionsetManagerAddDialog').subscribe(modal => {
 
             modal.instance.sysModules = this.sysModules;

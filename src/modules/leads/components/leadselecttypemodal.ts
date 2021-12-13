@@ -13,7 +13,7 @@ import {view} from "../../../services/view.service";
  * a separet modal to display the steps for th elad comversion as well as the progress
  */
 @Component({
-    templateUrl: './src/modules/leads/templates/leadselecttypemodal.html',
+    templateUrl: '../templates/leadselecttypemodal.html',
     providers: [view]
 })
 export class LeadSelectTypeModal {
@@ -21,14 +21,14 @@ export class LeadSelectTypeModal {
     /**
      * reference to the modal itsefl
      */
-    private self: any;
+    public self: any;
 
     /**
      * the fieldset to be rendered
      */
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private injector: Injector, private metadata: metadata, private view: view, private language: language, private modal: modal, private model: model) {
+    constructor(public injector: Injector, public metadata: metadata, public view: view, public language: language, public modal: modal, public model: model) {
         this.view.isEditable = true;
         this.view.setEditMode();
 
@@ -45,7 +45,7 @@ export class LeadSelectTypeModal {
     /**
      * trigger creating the new lead
      */
-    private create() {
+    public create() {
         if(this.cancreate) {
             this.modal.openModal("ObjectEditModal", true, this.injector);
             this.close();
@@ -55,7 +55,7 @@ export class LeadSelectTypeModal {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 }

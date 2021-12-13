@@ -19,7 +19,7 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-timestream',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestream.html',
+    templateUrl: '../templates/spicetimestream.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceTimestream implements OnInit, OnDestroy {
@@ -29,7 +29,7 @@ export class SpiceTimestream implements OnInit, OnDestroy {
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
 
     /**
@@ -37,7 +37,7 @@ export class SpiceTimestream implements OnInit, OnDestroy {
      *
      * @private
      */
-    private timestream: any = {
+    public timestream: any = {
         period: 'y',
         dateStart: null,
         dateEnd: null,
@@ -46,9 +46,9 @@ export class SpiceTimestream implements OnInit, OnDestroy {
 
 
     constructor(
-        private language: language,
-        private userpreferences: userpreferences,
-        private modellist: modellist,
+        public language: language,
+        public userpreferences: userpreferences,
+        public modellist: modellist,
         public cdRef: ChangeDetectorRef
     ) {
 
@@ -90,7 +90,7 @@ export class SpiceTimestream implements OnInit, OnDestroy {
      * trigger get list data on the service if autoload is not disabled and the list type is not "all" or reset the list data
      * @private
      */
-    private getListData() {
+    public getListData() {
         if (this.modellist.currentList.id != 'all') {
             this.modellist.getListData().subscribe(() =>
                 this.cdRef.detectChanges()
@@ -105,7 +105,7 @@ export class SpiceTimestream implements OnInit, OnDestroy {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         this.cdRef.detectChanges();
         if (newType.listcomponent != 'SpiceTimestream') return;
         this.getListData();

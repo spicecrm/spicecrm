@@ -20,7 +20,7 @@ import {currency} from '../../services/currency.service';
  */
 @Component({
     selector: 'system-display-number',
-    templateUrl: './src/systemcomponents/templates/systemdisplaynumber.html',
+    templateUrl: '../templates/systemdisplaynumber.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemDisplayNumber implements OnChanges {
@@ -28,19 +28,19 @@ export class SystemDisplayNumber implements OnChanges {
     /**
      * the number to be displayed
      */
-    @Input() private number: any;
+    @Input() public number: any;
 
     /**
      * the field
      */
-    @Input() private currency_id: string;
+    @Input() public currency_id: string;
 
     /**
      * set thisto ture so no values past the comma sre displayed
      *
      * @private
      */
-    @Input() private noDigits: boolean = false;
+    @Input() public noDigits: boolean = false;
 
     /**
      * an attribute that can be set and doies not require the value true poassed in
@@ -54,7 +54,7 @@ export class SystemDisplayNumber implements OnChanges {
         }
     }
 
-    constructor(private language: language, private cdRef: ChangeDetectorRef, private currency: currency, private userpreferences: userpreferences) {
+    constructor(public language: language, public cdRef: ChangeDetectorRef, public currency: currency, public userpreferences: userpreferences) {
 
     }
 
@@ -93,7 +93,7 @@ export class SystemDisplayNumber implements OnChanges {
     /**
      * triggers the change detection when the language is changed
      */
-    private detectChanges() {
+    public detectChanges() {
         this.cdRef.detectChanges();
     }
 

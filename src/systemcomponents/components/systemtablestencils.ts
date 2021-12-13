@@ -8,53 +8,53 @@ import {Component, Input, OnInit} from '@angular/core';
  */
 @Component({
     selector: '[system-table-stencils]',
-    templateUrl: './src/systemcomponents/templates/systemtablestencils.html'
+    templateUrl: '../templates/systemtablestencils.html'
 })
 export class SystemTableStencils implements OnInit {
 
     /**
      * the numer of columns to be rendered
      */
-    @Input() private columns: number = 1;
+    @Input() public columns: number = 1;
 
     /**
      * the number of rows to be rendered
      */
-    @Input() private rows: number = 5;
+    @Input() public rows: number = 5;
 
     /**
      * is set to true expects the table to have a tools column and adds a separate column for the tools without a stencil in it
      */
-    @Input() private tools: boolean = false;
+    @Input() public tools: boolean = false;
 
     /**
      * if set to true expects the table to have a select column and renders a column in the beginning without a stencil
      */
-    @Input() private select: boolean = false;
+    @Input() public select: boolean = false;
 
     /**
      * if set to true expects the table to have a line number column
      */
-    @Input() private rownumbers: boolean = false;
+    @Input() public rownumbers: boolean = false;
 
     /**
      * if set to true expects the table to have a drag handle column
      */
-    @Input() private dragHandles: boolean = false;
+    @Input() public dragHandles: boolean = false;
 
     /**
      * @ignore
      *
      * internal array for the columns
      */
-    private colArray: any[] = [];
+    public colArray: any[] = [];
 
     /**
      * @ignore
      *
      * internal array for the ros
      */
-    private rowArray: any[] = [];
+    public rowArray: any[] = [];
 
 
     public ngOnInit() {
@@ -78,7 +78,7 @@ export class SystemTableStencils implements OnInit {
      *
      * @param index the number of the row to be rendered
      */
-    private linestyle(index) {
+    public linestyle(index) {
         return {
             opacity: 0.2 + (0.8 / index)
         };

@@ -9,24 +9,24 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
  */
 @Component({
     selector: 'reporter-field-text',
-    templateUrl: './src/modules/reports/templates/reporterfieldtext.html',
+    templateUrl: '../templates/reporterfieldtext.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldText {
     /**
      * report full record
      */
-    private record: any = {};
+    public record: any = {};
     /**
      * report field
      */
-    private field: any = {};
+    public field: any = {};
     /**
      * display value
      */
-    private value: SafeHtml = '';
+    public value: SafeHtml = '';
 
-    constructor(private sanitizer: DomSanitizer) {
+    constructor(public sanitizer: DomSanitizer) {
     }
 
     /**
@@ -39,7 +39,7 @@ export class ReporterFieldText {
     /**
      * set formatted field value
      */
-    private setFormattedFieldValue() {
+    public setFormattedFieldValue() {
 
         if (!!this.record[this.field.fieldid]) {
             this.value = this.sanitizer.bypassSecurityTrustHtml(this.record[this.field.fieldid].replace(/(?:\r\n|\r|\n)/g, '<br>'));

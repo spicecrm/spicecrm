@@ -11,39 +11,39 @@ import {timeline} from "../../services/timeline.service";
  */
 @Component({
     selector: 'object-timeline-filter',
-    templateUrl: './src/objectcomponents/templates/objecttimelinefilter.html'
+    templateUrl: '../templates/objecttimelinefilter.html'
 })
 export class ObjectTimelineFilter {
 
     /**
      * internal fag if the dropdown is open
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
 
     /**
      * @ignore
      *
      * internal listener for the click outsife of the div
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * internal array with the types and the names
      */
-    private moduleTypes: any[] = [];
+    public moduleTypes: any[] = [];
 
     /**
      * the filters set for the objects
      */
-    private objectfilters: string[] = [];
+    public objectfilters: string[] = [];
 
-    private ownerfilter;
+    public ownerfilter;
 
-    private onlyAuditObjects = false;
+    public onlyAuditObjects = false;
 
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language,
-                private metadata: metadata, private timeline: timeline) {
+    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language,
+                public metadata: metadata, public timeline: timeline) {
         this.setFromService();
     }
 
@@ -75,7 +75,7 @@ export class ObjectTimelineFilter {
     /**
      * get teh values from the service
      */
-    private setFromService() {
+    public setFromService() {
         this.objectfilters = JSON.parse(JSON.stringify(this.timeline.filters.objectfilters));
         this.ownerfilter = this.timeline.filters.own;
     }
@@ -83,7 +83,7 @@ export class ObjectTimelineFilter {
     /**
      * set the values to the service
      */
-    private setToService() {
+    public setToService() {
         this.timeline.filters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
         this.timeline.filters.own = this.ownerfilter;
         this.timeline.onlyAudits = this.onlyAuditObjects;
@@ -96,7 +96,7 @@ export class ObjectTimelineFilter {
      *
      * helper to toggle the dropdown open or closed
      */
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
@@ -116,7 +116,7 @@ export class ObjectTimelineFilter {
      * @param event
      * @param filter
      */
-    private setFilter(event, filter) {
+    public setFilter(event, filter) {
         event.preventDefault();
         if (filter == 'Modules') {
             let index = this.objectfilters.indexOf(filter);
@@ -154,7 +154,7 @@ export class ObjectTimelineFilter {
      *
      * @param filter the filter
      */
-    private getChecked(filter) {
+    public getChecked(filter) {
         if (filter == 'Modules') {
             return (this.objectfilters.length === 1 && this.objectfilters.indexOf('Modules') >= 0 || (this.objectfilters.length === 2 && this.objectfilters.indexOf('Modules') >= 0 && this.objectfilters.indexOf('auditLog') >= 0));
         } else if (filter == 'auditLog') {
@@ -171,7 +171,7 @@ export class ObjectTimelineFilter {
      *
      * @param apply if set to true the values are set to the service
      */
-    private closeDialog(apply) {
+    public closeDialog(apply) {
         if (this.clickListener) this.clickListener();
 
         if (apply) {

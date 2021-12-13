@@ -10,7 +10,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: "email-schedules-beans",
-    templateUrl: "./src/modules/emails/templates/emailschedulesbeans.html"
+    templateUrl: "../templates/emailschedulesbeans.html"
 })
 
 export class EmailSchedulesBeans implements OnDestroy {
@@ -30,17 +30,17 @@ export class EmailSchedulesBeans implements OnDestroy {
      *
      * @private
      */
-    private loadedStatus: string;
+    public loadedStatus: string;
 
     /**
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private model: model,
-                private metadata: metadata,
-                private backend: backend
+    constructor(public model: model,
+                public metadata: metadata,
+                public backend: backend
     ) {
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
@@ -56,7 +56,7 @@ export class EmailSchedulesBeans implements OnDestroy {
     /**
      * get the data from the backend
      */
-    private getData() {
+    public getData() {
         if (this.model.getField('email_schedule_status') && (!this.loadedStatus || this.loadedStatus != this.model.getField('email_schedule_status'))) {
             this.beans = [];
             this.loading = true;

@@ -18,7 +18,7 @@ declare var _:any;
 
 @Component({
     selector: 'categgory-tree-manager',
-    templateUrl: './src/workbench/templates/categorytreemanager.html',
+    templateUrl: '../templates/categorytreemanager.html',
 })
 export class CategoryTreeManager {
 
@@ -27,49 +27,49 @@ export class CategoryTreeManager {
      *
      * @private
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     /**
      * the active tree
      * @private
      */
-    private _activeTree: string;
+    public _activeTree: string;
 
     /**
      * the current tree nodes
      *
      * @private
      */
-    private activeTreeNodes: any[] = [];
+    public activeTreeNodes: any[] = [];
 
     /**
      * a backup of thetree nodes to determine if the data is dirty or not
      *
      * @private
      */
-    private activeTreeNodesBackup: string;
+    public activeTreeNodesBackup: string;
 
     /**
      * the list of category trees
      * @private
      */
-    private categoryTrees = [];
+    public categoryTrees = [];
 
     /**
      * holds the selected tree nodes on any of the levels
      *
      * @private
      */
-    private selectedTreeNodes = [null, null, null, null];
+    public selectedTreeNodes = [null, null, null, null];
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private config: configurationService,
-        private utils: modelutilities,
-        private toast: toast,
-        private modal: modal
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public config: configurationService,
+        public utils: modelutilities,
+        public toast: toast,
+        public modal: modal
     ) {
         this.loadTrees();
     }
@@ -79,7 +79,7 @@ export class CategoryTreeManager {
      *
      * @private
      */
-    private addTree() {
+    public addTree() {
         this.modal.prompt("input", 'MSG_ENTER_TREE_NAME', 'MSG_ENTER_TREE_NAME').subscribe(
             name => {
                 if (name) {
@@ -122,7 +122,7 @@ export class CategoryTreeManager {
      * @param id
      * @private
      */
-    private hasChildren(id){
+    public hasChildren(id){
         return this.activeTreeNodes.filter(n => n.parent_id == id).length > 0
     }
 
@@ -131,7 +131,7 @@ export class CategoryTreeManager {
      *
      * @private
      */
-    private loadTrees() {
+    public loadTrees() {
         this.loading = true;
         if (!this.config.getData('select_trees')) {
             this.backend.getRequest('configuration/spiceui/core/categorytrees').subscribe(
@@ -158,7 +158,7 @@ export class CategoryTreeManager {
      *
      * @private
      */
-    private loadActiveTree() {
+    public loadActiveTree() {
         this.loading = true;
         this.activeTreeNodes = [];
         this.selectedTreeNodes = [null, null, null, null];
@@ -183,7 +183,7 @@ export class CategoryTreeManager {
      * @param id
      * @private
      */
-    private setSelectedNodeID(level, id) {
+    public setSelectedNodeID(level, id) {
         if (this.selectedTreeNodes[level] != id) {
             this.selectedTreeNodes[level] = id;
 
@@ -203,7 +203,7 @@ export class CategoryTreeManager {
      * @param level
      * @private
      */
-    private addEnabled(level) {
+    public addEnabled(level) {
         switch (level) {
             case 0:
                 return !!this.activeTree
@@ -220,7 +220,7 @@ export class CategoryTreeManager {
      * @param level
      * @private
      */
-    private getNodes(level: number) {
+    public getNodes(level: number) {
         switch (level) {
             case 0:
                 return this.activeTreeNodes.filter(l => !l.parent_id).sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1);
@@ -236,7 +236,7 @@ export class CategoryTreeManager {
      * @param node
      * @private
      */
-    private editNode(node) {
+    public editNode(node) {
         let upd = {...node};
         this.modal.openModal('CategoryTreeManagerNode').subscribe(modalref => {
 
@@ -270,7 +270,7 @@ export class CategoryTreeManager {
      * @param level
      * @private
      */
-    private addNode(level) {
+    public addNode(level) {
         let node = {
             id: this.utils.generateGuid(),
             node_name: null,
@@ -332,7 +332,7 @@ export class CategoryTreeManager {
      *
      * @private
      */
-    private revertChanges(){
+    public revertChanges(){
         this.loadActiveTree();
     }
 
@@ -341,7 +341,7 @@ export class CategoryTreeManager {
      *
      * @private
      */
-    private save() {
+    public save() {
         let delta = this.changedNodes;
         if(delta.length > 0){
             this.backend.postRequest(`configuration/spiceui/core/categorytrees/${this.activeTree}/categorytreenodes`, null, delta).subscribe(

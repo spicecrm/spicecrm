@@ -23,40 +23,40 @@ import {toast} from "../../../services/toast.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-manager-email-details",
-    templateUrl: "./src/modules/mailboxes/templates/mailboxmanageremaildetails.html",
+    templateUrl: "../templates/mailboxmanageremaildetails.html",
 })
 export class MailboxmanagerEmailDetails implements OnDestroy {
 
     /**
      * the reference to the content container
      */
-    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) private detailscontent: ViewContainerRef;
+    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) public detailscontent: ViewContainerRef;
 
     /**
      * the components rendered in the container
      */
-    private containerComponents: any[] = [];
+    public containerComponents: any[] = [];
 
     /**
      * the fieldset for further details
      */
-    private fieldset: string = '';
+    public fieldset: string = '';
 
     /**
      * keep the subscription and unsubscribe when the component is destroyed
      */
-    private mailboxSubscription: any;
+    public mailboxSubscription: any;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private mailboxesEmails: mailboxesEmails,
-        private backend: backend,
-        private toast: toast,
-        private view: view,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public mailboxesEmails: mailboxesEmails,
+        public backend: backend,
+        public toast: toast,
+        public view: view,
+        public modal: modal,
+        public injector: Injector
     ) {
         // subscribe to the event when a message is selected
         this.mailboxSubscription = this.mailboxesEmails.activeMessage$.subscribe(email => {
@@ -81,7 +81,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @param email
      */
-    private loadEmail(email) {
+    public loadEmail(email) {
 
         // set the module to the model
         if (this.mailboxesEmails.activeMailBox) {
@@ -117,14 +117,14 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     /**
      * destroy the container
      */
-    private destroyContainer() {
+    public destroyContainer() {
         for (let containerComponent of this.containerComponents) {
             containerComponent.destroy();
         }
         this.containerComponents = [];
     }
 
-    private handleAction(event) {
+    public handleAction(event) {
         switch (event) {
             // is needed for the emailtoobject component and its behavior to link a relation after save so it needs to reloaded in order to show new related records...
             case 'save':
@@ -136,7 +136,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     /**
      * builds the container, destroying all prev components and then rendering the new ones
      */
-    private buildContainer() {
+    public buildContainer() {
 
         this.destroyContainer();
 
@@ -182,21 +182,21 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     /**
      * set the email to closed
      */
-    private completeMail() {
+    public completeMail() {
         this.setOpenness('user_closed');
     }
 
     /**
      * marks the email as unread
      */
-    private markUnread() {
+    public markUnread() {
         this.setStatus('unread');
     }
 
     /**
      * reopens a closed email
      */
-    private reopen() {
+    public reopen() {
         this.setOpenness('open');
     }
 
@@ -244,7 +244,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @private
      */
-    private reply() {
+    public reply() {
         this.modal.openModal('EmailReplyModal', true, this.injector);
     }
 
@@ -253,7 +253,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @private
      */
-    private forward() {
+    public forward() {
         this.modal.openModal('EmailForwardModal', true, this.injector);
     }
 
@@ -262,7 +262,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @private
      */
-    private delete() {
+    public delete() {
         this.model.delete();
     }
 

@@ -8,14 +8,14 @@ import {broadcast} from "../../../services/broadcast.service";
 
 @Component({
     selector: "user-signature",
-    templateUrl: "./src/modules/users/templates/usersignature.html",
+    templateUrl: "../templates/usersignature.html",
     providers: [view]
 })
 export class UserSignature {
 
-    private preferences: any = {};
+    public preferences: any = {};
 
-    constructor(private backend: backend,private view: view, private broadcast: broadcast) {
+    constructor(public backend: backend,public view: view, public broadcast: broadcast) {
 
     }
 }

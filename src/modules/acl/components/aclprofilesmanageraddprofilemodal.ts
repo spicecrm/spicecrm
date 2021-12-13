@@ -13,18 +13,18 @@ import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 
 @Component({
-    templateUrl: './src/modules/acl/templates/aclprofilesmanageraddprofilemodal.html',
+    templateUrl: '../templates/aclprofilesmanageraddprofilemodal.html',
     providers: [model, view]
 })
 export class ACLProfilesManagerAddProfileModal {
 
-    private self: any = {};
-    private fieldset: string = '';
-    @Input() private sysmodule_id: string = '';
+    public self: any = {};
+    public fieldset: string = '';
+    @Input() public sysmodule_id: string = '';
 
-    @Output() private newObjectData: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public newObjectData: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language) {
         // initialize the model
         this.model.module = 'SpiceACLProfiles';
         this.model.initialize();
@@ -44,11 +44,11 @@ export class ACLProfilesManagerAddProfileModal {
         this.model.setField('sysmodule_id', this.sysmodule_id);
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private save() {
+    public save() {
         this.model.save().subscribe(success => {
             this.newObjectData.emit(this.model.data);
             this.close();

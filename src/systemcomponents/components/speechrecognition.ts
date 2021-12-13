@@ -9,39 +9,39 @@ import {toast} from '../../services/toast.service';
 declare var window: any;
 
 @Component({
-    templateUrl: './src/systemcomponents/templates/speechrecognition.html'
+    templateUrl: '../templates/speechrecognition.html'
 })
 export class SpeechRecognition implements OnInit {
 
-    private self;
+    public self;
 
-    private recognition: any;
-    private start_timestamp: any;
+    public recognition: any;
+    public start_timestamp: any;
 
-    private textfield: any;
-    private part1fromField: string;
-    private part2fromField: string;
+    public textfield: any;
+    public part1fromField: string;
+    public part2fromField: string;
 
-    private theText = '';
-    private theTextNewest = '';
+    public theText = '';
+    public theTextNewest = '';
 
-    private theTextHtml = '';
+    public theTextHtml = '';
 
-    private dirty = false;
+    public dirty = false;
 
-    private errorOccurred = false;
+    public errorOccurred = false;
 
-    private toRestart = false;
-    private recognizing = false;
-    private cancelling = false;
-    private stopping = false;
-    private pausing = false;
-    private working = false;
+    public toRestart = false;
+    public recognizing = false;
+    public cancelling = false;
+    public stopping = false;
+    public pausing = false;
+    public working = false;
 
-    private languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
-    private selectedLanguage = 0;
+    public languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
+    public selectedLanguage = 0;
 
-    constructor(private language: language, private metadata: metadata, private toast: toast, private changeDetRef: ChangeDetectorRef, private applicationRef: ApplicationRef) {
+    constructor(public language: language, public metadata: metadata, public toast: toast, public changeDetRef: ChangeDetectorRef, public applicationRef: ApplicationRef) {
     }
 
     public ngOnInit() {
@@ -151,17 +151,17 @@ export class SpeechRecognition implements OnInit {
 
     }
 
-    private doRestart() {
+    public doRestart() {
         this.toRestart = true;
         this.recognition.stop();
     }
 
-    private applyText() {
+    public applyText() {
         this.theText += (this.theText === '' ? this.capitalize(this.theTextNewest) : this.theTextNewest);
         this.theTextNewest = '';
     }
 
-    private acceptAndClose() {
+    public acceptAndClose() {
 
         this.applyText();
 
@@ -185,20 +185,20 @@ export class SpeechRecognition implements OnInit {
 
     }
 
-    private start(event = null) {
+    public start(event = null) {
         if (this.recognizing) return;
         this.recognizing = true;
         this.recognition.start();
         if (event) this.start_timestamp = event.timeStamp;
     }
 
-    private buttonAcceptClose() {
+    public buttonAcceptClose() {
         this.stopping = true;
         if (this.pausing) this.acceptAndClose();
         else this.recognition.stop();
     }
 
-    private buttonPause() {
+    public buttonPause() {
         this.pausing = !this.pausing;
         this.changeDetRef.detectChanges();
         this.applicationRef.tick();
@@ -206,29 +206,29 @@ export class SpeechRecognition implements OnInit {
         !this.pausing && this.recognition.start();
     }
 
-    private buttonCancel() {
+    public buttonCancel() {
         this.cancelling = true;
         this.pausing && this.recognition.start();
         this.recognition.abort();
         this.self.destroy();
     }
 
-    private changeLang(event) {
+    public changeLang(event) {
         this.selectedLanguage = event.target.selectedIndex;
         this.recognition.lang = this.languages[this.selectedLanguage].id;
         this.doRestart();
     }
 
-    private capitalize(string: string) {
+    public capitalize(string: string) {
         if (this.part1fromField.length === 0) return string.replace(/\S/, m => m.toUpperCase());
         else return string;
     }
 
-    private linebreaks2html(string: string) {
+    public linebreaks2html(string: string) {
         return string.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
     }
 
-    private sendErrorToast(message: string) {
+    public sendErrorToast(message: string) {
         this.toast.sendToast(this.language.getLabel('ERR_SPEECH_RECOGNITION') + ': ' + message + '.', 'error', '', false);
     }
 }

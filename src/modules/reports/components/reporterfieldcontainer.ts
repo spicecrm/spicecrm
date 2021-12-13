@@ -9,7 +9,7 @@ declare var _: any;
 
 @Component({
     selector: 'reporter-field-container',
-    templateUrl: './src/modules/reports/templates/reporterfieldcontainer.html',
+    templateUrl: '../templates/reporterfieldcontainer.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldContainer implements OnInit {
@@ -17,33 +17,33 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * the record from the reporter
      */
-    @Input() private record: any = {};
+    @Input() public record: any = {};
 
     /**
      * alternative value passed in direct
      */
-    @Input() private value: string = '';
+    @Input() public value: string = '';
     /**
      * report field
      */
-    @Input() private field: any = {};
+    @Input() public field: any = {};
 
     /**
      * the module for the link
      */
-    private recordModule: string;
+    public recordModule: string;
 
     /**
      * the id for the link
      */
-    private recordId: string;
+    public recordId: string;
 
     /**
      * the field type to be rendered
      */
-    private fieldType;
+    public fieldType;
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
 
     }
 
@@ -65,7 +65,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * initializes the record if a value is passed in but no record is present
      */
-    private initializeRecord() {
+    public initializeRecord() {
         // if we have a value an no record ... create the record
         if (this.value && _.isEmpty(this.record)) {
             this.record = {};
@@ -77,7 +77,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * builds the info for the link if we have one
      */
-    private buildLinkInfo() {
+    public buildLinkInfo() {
         if (this.field.link == 'yes' && this.record) {
             // route to the proper module
             // check if a link info is set
@@ -159,7 +159,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * determines the field type and the component to be rendered for this
      */
-    private determineFieldType() {
+    public determineFieldType() {
         if (this.field.component) {
             this.fieldType = this.field.component;
         } else {

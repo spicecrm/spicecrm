@@ -14,17 +14,17 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-enum',
-    templateUrl: './src/objectfields/templates/fieldlanguage.html'
+    templateUrl: '../templates/fieldlanguage.html'
 })
 export class fieldLanguage extends fieldGeneric implements OnInit {
     /**
      * display value for the language
      */
-    protected displayValue: string = '';
+    public displayValue: string = '';
     /**
      * system language possible options
      */
-    protected options: any[] = [];
+    public options: any[] = [];
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
@@ -43,7 +43,7 @@ export class fieldLanguage extends fieldGeneric implements OnInit {
     /**
      * get language options
      */
-    private getOptions() {
+    public getOptions() {
         this.options = this.language.getAvialableLanguages().map(language => ({
             value: language.language,
             display: language.text
@@ -56,7 +56,7 @@ export class fieldLanguage extends fieldGeneric implements OnInit {
     /**
      * subscribe to model data change and set the value and the display value
      */
-    private subscribeToDataChanges() {
+    public subscribeToDataChanges() {
 
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
@@ -74,7 +74,7 @@ export class fieldLanguage extends fieldGeneric implements OnInit {
     /**
      * set the display value
      */
-    private setDisplayValue() {
+    public setDisplayValue() {
         const lang = this.options.find(lang => lang.value == this.model.data[this.fieldname]);
         this.displayValue = lang?.display || '';
     }

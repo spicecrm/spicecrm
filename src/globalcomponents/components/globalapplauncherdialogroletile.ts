@@ -9,20 +9,20 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-app-launcher-dialog-role-tile',
-    templateUrl: './src/globalcomponents/templates/globalapplauncherdialogroletile.html'
+    templateUrl: '../templates/globalapplauncherdialogroletile.html'
 })
 export class GlobalAppLauncherDialogRoleTile implements OnInit {
 
-    @Input() private role;
+    @Input()public role;
 
-    private name: string;
-    private identifier: string;
-    private description: string;
-    private descriptionfull: string;
+   public name: string;
+   public identifier: string;
+   public description: string;
+   public descriptionfull: string;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
+       public language: language,
+       public metadata: metadata,
     ) {
 
     }
@@ -31,7 +31,7 @@ export class GlobalAppLauncherDialogRoleTile implements OnInit {
         this.buildRoleLabels();
     }
 
-    private buildRoleLabels() {
+   public buildRoleLabels() {
         this.metadata.getRoles().some((role) => {
             if (role.id == this.role.id) {
                 this.identifier = this.language.getAppLanglabel(role.label, 'short');

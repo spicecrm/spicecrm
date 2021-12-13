@@ -8,7 +8,7 @@ import {Component} from '@angular/core';
  */
 @Component({
     selector: 'groupware-pane-no-beans-found',
-    templateUrl: './src/include/groupware/templates/groupwarepanenobeansfound.html'
+    templateUrl: '../templates/groupwarepanenobeansfound.html'
 })
 export class GroupwarePaneNoBeansFound  {
 
