@@ -12,7 +12,7 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'spice-importer-select',
-    templateUrl: './src/include/spiceimporter/templates/spiceimporterselect.html'
+    templateUrl: '../templates/spiceimporterselect.html'
 })
 
 export class SpiceImporterSelect {
@@ -28,22 +28,22 @@ export class SpiceImporterSelect {
      * true if the file preview is loading
      * @private
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
     /**
      * holds enclosure options
      * @private
      */
-    private enclosureOptions = [
+    public enclosureOptions = [
         {label: "'", value: 'single'},
         {label: ' ', value: 'none'},
         {label: '"', value: 'double'},
     ];
 
     constructor(
-        private spiceImport: SpiceImporterService,
-        private toast: toast,
-        private backend: backend,
-        private language: language
+        public spiceImport: SpiceImporterService,
+        public toast: toast,
+        public backend: backend,
+        public language: language
     ) {
     }
 
@@ -106,7 +106,7 @@ export class SpiceImporterSelect {
      * reset select options
      * @private
      */
-    private resetOptions() {
+    public resetOptions() {
         this.spiceImport.importDuplicateAction = 'ignore';
         this.spiceImport.importTemplateAction = 'none';
         this.spiceImport.idFieldAction = 'auto';
@@ -117,7 +117,7 @@ export class SpiceImporterSelect {
      * @param event
      * @private
      */
-    private setSavedImport(event) {
+    public setSavedImport(event) {
         this.spiceImport.setSavedImport(event.srcElement.value);
     }
 
@@ -125,7 +125,7 @@ export class SpiceImporterSelect {
      * clear file data
      * @private
      */
-    private clearFile() {
+    public clearFile() {
         this.spiceImport.fileName = '';
         this.spiceImport.fileId = '';
 
@@ -142,7 +142,7 @@ export class SpiceImporterSelect {
      * @param file
      * @private
      */
-    private loadFilePreview(file: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void }) {
+    public loadFilePreview(file: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void }) {
 
         if (!file.file_mime_type.toLowerCase().includes('excel')) {
             this.toast.sendToast(this.language.getLabel('MSG_ONLY_CSV_ALLOWED'), 'error');

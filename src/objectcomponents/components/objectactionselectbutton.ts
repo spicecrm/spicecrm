@@ -11,16 +11,16 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-action-select-button',
-    templateUrl: './src/objectcomponents/templates/objectactionselectbutton.html',
+    templateUrl: '../templates/objectactionselectbutton.html',
     providers: [model]
 })
 export class ObjectActionSelectButton implements OnInit, OnDestroy {
 
     public actionconfig: any = {};
     public disabled: boolean = true;
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private language: language, private modal: modal, private model: model, @SkipSelf() private parent: model, private relatedmodels: relatedmodels) {
+    constructor(public metadata: metadata, public language: language, public modal: modal, public model: model, @SkipSelf() public parent: model, public relatedmodels: relatedmodels) {
     }
 
     public ngOnInit() {
@@ -79,7 +79,7 @@ export class ObjectActionSelectButton implements OnInit, OnDestroy {
     * @call relatedmodels.addItems
     * @pass event: any[]
     */
-    private addSelectedItems(event) {
+    public addSelectedItems(event) {
         this.relatedmodels.addItems(event);
     }
 }

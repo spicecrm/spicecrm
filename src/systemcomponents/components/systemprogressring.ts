@@ -9,34 +9,34 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "system-progress-ring",
-    templateUrl: "./src/systemcomponents/templates/systemprogressring.html"
+    templateUrl: "../templates/systemprogressring.html"
 })
 export class SystemProgressRing {
     /**
      * the completion percentage
      */
-    @Input() private percentage: number = 100;
+    @Input() public percentage: number = 100;
 
     /**
      * the size of the ring in px
      */
-    @Input() private size: number = 24;
+    @Input() public size: number = 24;
 
     /**
      * a status indicator:
      *  - warning turns yellow
      *  - expired turns red
      */
-    @Input() private status: "" | "warning" | "expired" = "";
+    @Input() public status: "" | "warning" | "expired" = "";
 
     /**
      * an optional background color if the ring is rendered in a contect with different background
      *
      * @private
      */
-    @Input() private backgroundcolor: string;
+    @Input() public backgroundcolor: string;
 
-    constructor(private language: language) {
+    constructor(public language: language) {
     }
 
     /**

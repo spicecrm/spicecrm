@@ -15,7 +15,7 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: '[object-related-card-tile]',
-    templateUrl: './src/objectcomponents/templates/objectrelatedcardtile.html',
+    templateUrl: '../templates/objectrelatedcardtile.html',
     providers: [model, view]
 })
 export class ObjectRelatedCardTile {
@@ -23,24 +23,24 @@ export class ObjectRelatedCardTile {
     /**
      * trhe data passed in fromn teh related models service
      */
-    @Input() private data: any = {};
+    @Input() public data: any = {};
 
     /**
      * the fieldset passed in
      */
-    @Input() private fieldset: string = '';
+    @Input() public fieldset: string = '';
 
     /**
      * the actionset
      */
-    private actionset: string;
+    public actionset: string;
 
     /**
      * the fields to be didsplayed
      */
-    private fields: any[] = [];
+    public fields: any[] = [];
 
-    constructor(private model: model, private relatedmodels: relatedmodels, private view: view, private language: language, private metadata: metadata, private router: Router) {
+    constructor(public model: model, public relatedmodels: relatedmodels, public view: view, public language: language, public metadata: metadata, public router: Router) {
         this.view.displayLabels = false;
     }
 
@@ -56,7 +56,7 @@ export class ObjectRelatedCardTile {
     /**
      * inialize the model
      */
-    private initalizeModel(){
+    public initalizeModel(){
         this.model.module = this.relatedmodels.relatedModule;
         this.model.id = this.data.id;
         this.model.data = this.data;
@@ -65,7 +65,7 @@ export class ObjectRelatedCardTile {
     /**
      * loads the config (mainly for the actionset
      */
-    private loadConfig() {
+    public loadConfig() {
         let componentconfig = this.metadata.getComponentConfig('ObjectRelatedCardTile', this.model.module);
         this.actionset = componentconfig.actionset;
 

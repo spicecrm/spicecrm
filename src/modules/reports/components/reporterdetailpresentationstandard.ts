@@ -26,7 +26,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'reporter-detail-presentation-standard',
-    templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandard.html',
+    templateUrl: '../templates/reporterdetailpresentationstandard.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
@@ -74,15 +74,15 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * holds the resize directive elements - table header
      */
-    @ViewChildren(SystemResizeDirective) protected resizeElements: QueryList<SystemResizeDirective>;
+    @ViewChildren(SystemResizeDirective) public resizeElements: QueryList<SystemResizeDirective>;
     /**
      * save the current page number for pagination
      */
-    private currentPage: number = 1;
+    public currentPage: number = 1;
     /**
      * holds any subscription
      */
-    private subscriptions = new Subscription();
+    public subscriptions = new Subscription();
 
     constructor(public language: language,
                 public model: model,
@@ -239,7 +239,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * set presentation fields from report metadata
      */
-    private setDisplayFields() {
+    public setDisplayFields() {
 
         this.displayFields = [];
         this.cdRef.detectChanges();
@@ -258,7 +258,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      * generate additional display classes for the header field
      * @param field
      */
-    private generateFieldDisplayClass(field) {
+    public generateFieldDisplayClass(field) {
         let classes = [];
 
         if (!!field.sort && field.sort != '-') {
@@ -291,7 +291,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      *
      * @param field
      */
-    private toggleSort(field) {
+    public toggleSort(field) {
         if (field.sort == 'sortable') {
             if (this.sortData.sortField == field.fieldid) {
                 if (this.sortData.sortDirection == 'asc') {
@@ -312,7 +312,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * handles the resize event and recalculates the width of the various columns
      */
-    private onresize() {
+    public onresize() {
         let elementWidths = {};
         let totalwidth = 0;
 
@@ -333,7 +333,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * saves the current layout
      */
-    private saveLayout() {
+    public saveLayout() {
         if (this.model.checkAccess('edit')) {
             let layoutdata = [];
             for (let field of this.model.getField('listfields').filter(field => field.display != 'hidden')) {
@@ -355,7 +355,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate tot he first page
      */
-    private firstPage() {
+    public firstPage() {
         this.currentPage = 1;
         this.getPresentation();
     }
@@ -363,7 +363,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate to the previous page
      */
-    private prevPage() {
+    public prevPage() {
         this.currentPage--;
         this.getPresentation();
     }
@@ -371,7 +371,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate to the next page
      */
-    private nextPage() {
+    public nextPage() {
         this.currentPage++;
         this.getPresentation();
     }
@@ -379,7 +379,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate to the last page
      */
-    private lastPage() {
+    public lastPage() {
         this.currentPage = Math.ceil(this.presData.count / this.listEntries);
         this.getPresentation();
     }
@@ -387,7 +387,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * opens the select fields modal
      */
-    private selectFields() {
+    public selectFields() {
         this.modal.openModal('ReporterDetailSelectFieldsModal', true, this.injector).subscribe(modalref => {
             modalref.instance.presentationFields = this.presData.reportmetadata.fields;
             modalref.instance.dataChanged$.subscribe(res => {

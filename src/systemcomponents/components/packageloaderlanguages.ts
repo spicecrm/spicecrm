@@ -7,11 +7,11 @@ import {
 
 @Component({
     selector: 'package-loader-languages',
-    templateUrl: './src/systemcomponents/templates/packageloaderlanguages.html',
+    templateUrl: '../templates/packageloaderlanguages.html',
 })
 export class PackageLoaderLanguages {
 
-    @Input() private languages = [];
-    @Input() private repository: any;
+    @Input() public languages = [];
+    @Input() public repository: any;
 
 }

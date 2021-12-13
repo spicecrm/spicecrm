@@ -12,7 +12,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'validationrules-actions',
-    templateUrl: './src/workbench/templates/validationrulesactions.html',
+    templateUrl: '../templates/validationrulesactions.html',
 })
 export class ValidationRulesActions implements OnInit {
     @Input() data; // validation rule data
@@ -31,9 +31,9 @@ export class ValidationRulesActions implements OnInit {
     fieldname_options: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
     ) {
 
     }

@@ -21,18 +21,18 @@ import {timeline} from "../../services/timeline.service";
  */
 @Component({
     selector: 'object-timeline-item-line',
-    templateUrl: './src/objectcomponents/templates/objecttimelineitemline.html',
+    templateUrl: '../templates/objecttimelineitemline.html',
 
 })
 export class ObjectTimelineItemLine {
 
-    @Input() private Record: object;
+    @Input() public Record: any;
 
-    @Input() private index: number;
+    @Input() public index: number;
 
     @Input() public buttons = true;
 
-    constructor(private timeline: timeline) {
+    constructor(public timeline: timeline) {
     }
 
     /**

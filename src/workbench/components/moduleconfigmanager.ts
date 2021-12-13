@@ -17,7 +17,7 @@ import {configurationService} from "../../services/configuration.service";
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: './src/workbench/templates/moduleconfigmanager.html',
+    templateUrl: '../templates/moduleconfigmanager.html',
     providers: [view]
 })
 export class ModuleConfigManager {
@@ -48,20 +48,20 @@ export class ModuleConfigManager {
 
     treelist: Array<any> = [];
 
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
-    @ViewChild("treecontainer", {read: ViewContainerRef, static: true}) private treecontainer: ViewContainerRef;
-    @ViewChild("addconfigcontainer", {read: ViewContainerRef, static: true}) private addconfigcontainer: ViewContainerRef;
+    @ViewChild("treecontainer", {read: ViewContainerRef, static: true}) public treecontainer: ViewContainerRef;
+    @ViewChild("addconfigcontainer", {read: ViewContainerRef, static: true}) public addconfigcontainer: ViewContainerRef;
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private toast: toast,
-        private modalservice: modal,
-        private configurationService: configurationService,
-        private view: view,
-        private modal: modal
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public toast: toast,
+        public modalservice: modal,
+        public configurationService: configurationService,
+        public view: view,
+        public modal: modal
     ) {
         // get roles
         this.backend.getRequest('configuration/configurator/entries/sysuiroles').subscribe(roles => {
@@ -289,7 +289,7 @@ export class ModuleConfigManager {
     // }
 
 
-    private buildTreeList(data) {
+    public buildTreeList(data) {
 
         let components = [];
         for (let entry of data) {

@@ -21,14 +21,14 @@ import {Subject, Observable} from 'rxjs';
  */
 @Component({
     selector: 'field-file',
-    templateUrl: './src/objectfields/templates/fieldfile.html'
+    templateUrl: '../templates/fieldfile.html'
 })
 export class fieldFile extends fieldGeneric {
 
-    @ViewChild('fileupload', {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
-    private showUploadModal: boolean = false;
-    private theFile: string = '';
-    private theProgress: number = 0;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: false}) public fileupload: ViewContainerRef;
+    public showUploadModal: boolean = false;
+    public theFile: string = '';
+    public theProgress: number = 0;
 
     constructor(
         public model: model,
@@ -36,12 +36,12 @@ export class fieldFile extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private configurationService: configurationService,
-        private session: session,
-        private toast: toast,
-        private modal: modal,
-        private backend: backend,
-        private helper: helper
+        public configurationService: configurationService,
+        public session: session,
+        public toast: toast,
+        public modal: modal,
+        public backend: backend,
+        public helper: helper
     ) {
         super(model, view, language, metadata, router);
     }
@@ -69,7 +69,7 @@ export class fieldFile extends fieldGeneric {
     /**
      * handles the upload of the file
      */
-    private uploadFile() {
+    public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         this.doupload(files);
     }
@@ -78,7 +78,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param files
      */
-    private doupload(files) {
+    public doupload(files) {
         this.showUploadModal = true;
         this.theFile = files[0].name;
         this.uploadAttachmentsBase64(files).subscribe((retVal: any) => {
@@ -95,12 +95,12 @@ export class fieldFile extends fieldGeneric {
         }, () => this.closeUploadPopup());
     }
 
-    private removeFile() {
+    public removeFile() {
         this.value = '';
         this.model.setField('file_mime_type', '');
     }
 
-    private closeUploadPopup() {
+    public closeUploadPopup() {
         this.showUploadModal = false;
     }
 
@@ -170,7 +170,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param file
      */
-    private readFile(file): Observable<any> {
+    public readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader = new FileReader();
         /* tslint:disable:no-string-literal */
@@ -190,7 +190,7 @@ export class fieldFile extends fieldGeneric {
         return responseSubject.asObservable();
     }
 
-    private getBarStyle() {
+    public getBarStyle() {
         return {
             width: this.theProgress + '%'
         };
@@ -203,7 +203,7 @@ export class fieldFile extends fieldGeneric {
      * @param contentType
      * @param sliceSize
      */
-    private b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+    public b64toBlob(b64Data, contentType = '', sliceSize = 512) {
 
         let byteCharacters = atob(b64Data);
         let byteArrays = [];
@@ -228,7 +228,7 @@ export class fieldFile extends fieldGeneric {
     /**
      * doanloads the attachment via ajax request
      */
-    private downloadAttachment() {
+    public downloadAttachment() {
         this.backend.getRequest('module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
@@ -245,7 +245,7 @@ export class fieldFile extends fieldGeneric {
     /**
      * a preview window for the file. if there is not a file type that can be previewed the file is downloaded
      */
-    private previewFile() {
+    public previewFile() {
 
         if (this.model.getFieldValue('file_mime_type')) {
             let fileTypeArray = this.model.getFieldValue('file_mime_type').split("/");
@@ -302,7 +302,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param event
      */
-    private preventdefault(event: any) {
+    public preventdefault(event: any) {
         if ((event.dataTransfer.items.length == 1 && event.dataTransfer.items[0].kind === 'file') || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
@@ -314,7 +314,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param files
      */
-    private onDrop(files: FileList) {
+    public onDrop(files: FileList) {
             this.doupload(files);
     }
 

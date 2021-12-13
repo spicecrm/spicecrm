@@ -6,7 +6,7 @@ import {administrationapiinspectorService} from "../services/administrationapiin
  */
 @Component({
     selector: 'administration-api-inspector-method-responses',
-    templateUrl: './src/admincomponents/templates/administrationapiinspectormethodresponses.html'
+    templateUrl: '../templates/administrationapiinspectormethodresponses.html'
 })
 export class AdministrationapiinspectorMethodResponses implements OnChanges {
 
@@ -15,18 +15,18 @@ export class AdministrationapiinspectorMethodResponses implements OnChanges {
      *
      * @private
      */
-    private response: any[];
+    public response: any[];
 
     /**
      * the api method as input
      *
      * @private
      */
-    @Input() private apimethod: any;
+    @Input() public apimethod: any;
 
 
     constructor(
-        private apiinspector: administrationapiinspectorService
+        public apiinspector: administrationapiinspectorService
     ) {
     }
 

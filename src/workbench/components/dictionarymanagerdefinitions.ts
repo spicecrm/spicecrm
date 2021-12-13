@@ -20,7 +20,7 @@ import {DictionaryDefinition} from "../interfaces/dictionarymanager.interfaces";
  */
 @Component({
     selector: 'dictionary-manager-definitions',
-    templateUrl: './src/workbench/templates/dictionarymanagerdefinitions.html',
+    templateUrl: '../templates/dictionarymanagerdefinitions.html',
 })
 export class DictionaryManagerDefinitions {
 
@@ -29,16 +29,16 @@ export class DictionaryManagerDefinitions {
      *
      * @private
      */
-    private definitionfilterterm: string;
+    public definitionfilterterm: string;
 
     /**
      * a type to filter the list by
      *
      * @private
      */
-    private definitionfiltertype: string;
+    public definitionfiltertype: string;
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language,  public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -60,7 +60,7 @@ export class DictionaryManagerDefinitions {
 
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -69,7 +69,7 @@ export class DictionaryManagerDefinitions {
      *
      * @param definitionId
      */
-    private setCurrentDictionaryDefintion(definitionId: string) {
+    public setCurrentDictionaryDefintion(definitionId: string) {
         if(definitionId != this.dictionarymanager.currentDictionaryDefinition) {
             this.dictionarymanager.currentDictionaryDefinition = definitionId;
             this.dictionarymanager.currentDictionaryItem = null;
@@ -83,7 +83,7 @@ export class DictionaryManagerDefinitions {
     /**
      * react to the click to add a new dictionary definition
      */
-    private addDictionaryDefinition(event: MouseEvent) {
+    public addDictionaryDefinition(event: MouseEvent) {
         event.stopPropagation();
         this.modal.openModal('DictionaryManagerAddDefinitionModal', true, this.injector);
     }
@@ -94,7 +94,7 @@ export class DictionaryManagerDefinitions {
      * @param event
      * @param id
      */
-    private deleteDictionaryDefinition(event: MouseEvent, id: string) {
+    public deleteDictionaryDefinition(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {

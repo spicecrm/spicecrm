@@ -8,7 +8,7 @@ import {Subscription} from 'rxjs';
 
 @Component({
     selector: 'global-header-image',
-    templateUrl: './src/globalcomponents/templates/globalheaderimage.html',
+    templateUrl: '../templates/globalheaderimage.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalHeaderImage {
@@ -16,20 +16,20 @@ export class GlobalHeaderImage {
     /**
      * Default image url.
      */
-    private defaultImageUrl = 'config/headerimage';
+   public defaultImageUrl = 'config/headerimage';
 
     /**
      * The URL for the image tag:
      * Either a base64 string from the CRM config (if available) or the default image url.
      */
-    private imageUrl: SafeResourceUrl | string = this.defaultImageUrl;
+   public imageUrl: SafeResourceUrl | string = this.defaultImageUrl;
 
     /**
      * Subscription to configuration service.
      */
-    private subscription: Subscription;
+   public subscription: Subscription;
 
-    constructor(private sanitizer: DomSanitizer, private configuration: configurationService) {
+    constructor(public sanitizer: DomSanitizer,public configuration: configurationService) {
 
         // Set the image url in case there is a CRM config for that:
         if (this.configuration.hasCapabilityConfig('theme')) this.setImageUrl();
@@ -45,7 +45,7 @@ export class GlobalHeaderImage {
     /**
      * Update the image url  an there is a specific header image defined.
      */
-    private setImageUrl(): void {
+   public setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific header image defined.
         if (this.configuration.getCapabilityConfig('theme').header_image) {
             this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl('data:' + this.configuration.getCapabilityConfig('theme').header_image);

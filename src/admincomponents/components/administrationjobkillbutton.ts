@@ -12,7 +12,7 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'administration-job-kill-button',
-    templateUrl: './src/admincomponents/templates/administrationjobkillbutton.html'
+    templateUrl: '../templates/administrationjobkillbutton.html'
 })
 export class AdministrationJobKillButton {
 

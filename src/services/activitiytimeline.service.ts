@@ -35,7 +35,7 @@ export class activitiytimeline {
     /**
      * subscriptions to be called to destroy in the destructor
      */
-    private serviceSubscriptions: any[] = [];
+    public serviceSubscriptions: any[] = [];
 
     /**
      * an object for filters to be applied
@@ -65,12 +65,12 @@ export class activitiytimeline {
      * the modules to be loaded
      * ToDo: replace this .. shoudl no longer be needed but be determined by the backend. Eventually we can load this in teh componentconfig
      */
-    private timelineModules: string[] = ['Calls', 'Meetings', 'Tasks', 'Emails', 'Notes'];
+    public timelineModules: string[] = ['Calls', 'Meetings', 'Tasks', 'Emails', 'Notes'];
 
     /**
      * for sorting in new activities .. shoudl be replaced and triggered by the filter objects int he backend to keep it flexible
      */
-    private activeStates: string[] = ['Planned', 'In Progress', 'Not Started', 'Pending Input'];
+    public activeStates: string[] = ['Planned', 'In Progress', 'Not Started', 'Pending Input'];
 
     /**
      * list fo teh objects the filter can be applied to if selöected from the Database
@@ -83,7 +83,7 @@ export class activitiytimeline {
      * the sort dates ..
      * ToDo: not nice to handle it that way .. shoudl be done on the backend
      */
-    private sortDates: any = {
+    public sortDates: any = {
         Calls: 'date_start',
         Meetings: 'date_start',
         Tasks: 'date_due',
@@ -128,7 +128,7 @@ export class activitiytimeline {
      */
     public openness$: BehaviorSubject<boolean>;
 
-    constructor(private metadata: metadata, private backend: backend, private modelutilities: modelutilities, private configurationService: configurationService, private session: session, private broadcast: broadcast) {
+    constructor(public metadata: metadata, public backend: backend, public modelutilities: modelutilities, public configurationService: configurationService, public session: session, public broadcast: broadcast) {
         this.serviceSubscriptions.push(this.broadcast.message$.subscribe(message => this.handleMessage(message)));
 
         // create the behavious Subject
@@ -164,7 +164,7 @@ export class activitiytimeline {
         }
     }
 
-    private getAggregateObjects(module) {
+    public getAggregateObjects(module) {
         try {
             let aggModules = [];
             for (let aggregate of this.activities[module].aggregates.module) {
@@ -192,7 +192,7 @@ export class activitiytimeline {
      *
      * @param message the broadcast message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         let messageType = message.messagetype.split('.');
         if (messageType[0] === 'model') {
             // handle the message type
@@ -428,7 +428,7 @@ export class activitiytimeline {
      * resets the data for a n object
      * @param module the module to reset the data for
      */
-    private resetListData(module: activityTimeLineModules) {
+    public resetListData(module: activityTimeLineModules) {
         this.activities[module] = {
             loading: false,
             loadingmore: false,

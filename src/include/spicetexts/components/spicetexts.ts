@@ -10,7 +10,7 @@ import {session} from "../../../services/session.service";
 import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    templateUrl: './src/include/spicetexts/templates/spicetexts.html',
+    templateUrl: '../templates/spicetexts.html',
     providers: [relatedmodels]
 })
 export class SpiceTexts implements OnInit {
@@ -18,12 +18,12 @@ export class SpiceTexts implements OnInit {
     public searchTerm: string = '';
     public languageFilter: string = 'all';
 
-    constructor(private model: model,
-                private language: language,
-                private backend: backend,
-                private session: session,
-                private metadata: metadata,
-                private relatedModels: relatedmodels) {
+    constructor(public model: model,
+                public language: language,
+                public backend: backend,
+                public session: session,
+                public metadata: metadata,
+                public relatedModels: relatedmodels) {
     }
 
     get moduleTexts() {
@@ -46,7 +46,7 @@ export class SpiceTexts implements OnInit {
         this.loadModuleTexts();
     }
 
-    private loadModuleTexts() {
+    public loadModuleTexts() {
         this.relatedModels.id = this.model.id;
         this.relatedModels.module = this.model.module;
         this.relatedModels.loaditems = -1;
@@ -54,7 +54,7 @@ export class SpiceTexts implements OnInit {
         this.relatedModels.getData();
     }
 
-    private trackByFn(i, item) {
+    public trackByFn(i, item) {
         return item.id;
     }
 }

@@ -4,19 +4,19 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 
 @Component({
     selector: 'administration-api-inspector-methods',
-    templateUrl: './src/admincomponents/templates/administrationapiinspectormethods.html'
+    templateUrl: '../templates/administrationapiinspectormethods.html'
 })
 
 export class AdministrationApiInspectorMethods {
 
     constructor(
-        private modal: modal,
-        private injector: Injector,
-        private apiinspector: administrationapiinspectorService
+        public modal: modal,
+        public injector: Injector,
+        public apiinspector: administrationapiinspectorService
     ) {
     }
 
-    private test(apiMethod: any, e: MouseEvent){
+    public test(apiMethod: any, e: MouseEvent){
         e.preventDefault();
         e.stopPropagation();
 

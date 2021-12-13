@@ -40,13 +40,13 @@ export class telephony {
         transfer: false
     };
 
-    constructor(private broadcast: broadcast) {
+    constructor(public broadcast: broadcast) {
 
         // subscribe to the logout so we can remove all open composers
         this.broadcast.message$.subscribe(message => this.handleLogout(message));
     }
 
-    private handleLogout(message) {
+    public handleLogout(message) {
         if (message.messagetype == 'logout') {
             this.calls = [];
             this.isActive = false;

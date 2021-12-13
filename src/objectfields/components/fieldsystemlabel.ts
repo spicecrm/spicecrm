@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-system-label',
-    templateUrl: './src/objectfields/templates/fieldsystemlabel.html'
+    templateUrl: '../templates/fieldsystemlabel.html'
 })
 export class fieldSystemLabel extends fieldGeneric {
 }

@@ -16,7 +16,7 @@ declare var _: any;
  */
 @Component({
     selector: 'administration-login-restriction',
-    templateUrl: './src/admincomponents/templates/administrationloginrestriction.html'
+    templateUrl: '../templates/administrationloginrestriction.html'
 })
 export class AdministrationLoginRestriction implements OnInit {
 
@@ -24,9 +24,9 @@ export class AdministrationLoginRestriction implements OnInit {
      * inidcates that we are loading
      * @private
      */
-    private isLoading = true;
+    public isLoading = true;
 
-    private restrictions = {
+    public restrictions = {
         user: {
             enabled: false,
             number_attempts: 0,
@@ -40,23 +40,23 @@ export class AdministrationLoginRestriction implements OnInit {
             monitored_period: 0
         }
     };
-    private restrictionsBackup: any;
+    public restrictionsBackup: any;
 
-    constructor( private backend: backend, private toast: toast ) { }
+    constructor( public backend: backend, public toast: toast ) { }
 
     public ngOnInit() {
         this.loadConfig();
     }
 
-    private isDirty() {
+    public isDirty() {
         return !_.isEqual( this.restrictions, this.restrictionsBackup );
     }
 
-    private cancelEditing() {
+    public cancelEditing() {
         this.restrictions = JSON.parse(JSON.stringify( this.restrictionsBackup ));
     }
 
-    private saveConfig() {
+    public saveConfig() {
         let config = {
             ip_enabled: this.restrictions.ip.enabled ? 1:0,
             ip_number_attempts: this.restrictions.ip.number_attempts,
@@ -76,7 +76,7 @@ export class AdministrationLoginRestriction implements OnInit {
             });
     }
 
-    private loadConfig() {
+    public loadConfig() {
         this.isLoading = true;
         this.backend.getRequest('configuration/configurator/editor/login_attempt_restriction')
             .pipe(take(1))

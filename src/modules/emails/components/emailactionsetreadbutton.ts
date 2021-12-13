@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'email-action-set-read-button',
-    templateUrl: './src/modules/emails/templates/emailactionsetreadbutton.html'
+    templateUrl: '../templates/emailactionsetreadbutton.html'
 })
 export class EmailActionSetReadButton {
 
@@ -22,9 +22,9 @@ export class EmailActionSetReadButton {
     public displayasicon: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
     ) {
 
     }

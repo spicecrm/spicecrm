@@ -17,7 +17,7 @@ declare var _;
  */
 @Component({
     selector: 'field-email-addresses',
-    templateUrl: './src/objectfields/templates/fieldemailaddresses.html'
+    templateUrl: '../templates/fieldemailaddresses.html'
 })
 export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     /**
@@ -143,7 +143,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * subscribe to model.loaded broadcast message
      * @private
      */
-    private subscribeToDataChange() {
+    public subscribeToDataChange() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(msg => {
                 if (msg.messagetype != 'model.loaded') return;
@@ -165,7 +165,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @param emailAddress
      * @private
      */
-    private setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
         if (emailAddress?.invalid_email == 1 || emailAddress?.email_address == this.model.getField('email1')) {
             return;
         }
@@ -176,7 +176,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * subscribe to mode change to initialize a new email address if needed
      * @private
      */
-    private subscribeToModeChange() {
+    public subscribeToModeChange() {
         this.subscriptions.add(
             this.view.mode$.subscribe(() => this.initialize())
         );
@@ -187,7 +187,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set field status and can add value
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         const email_addresses = this.model.getRelatedRecords('email_addresses');
         this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
@@ -212,7 +212,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set can add boolean
      * @private
      */
-    private setEmailAddressesField() {
+    public setEmailAddressesField() {
 
         this.pushNewEmailAddress();
 
@@ -247,7 +247,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * handle setting/clearing the field message for invalid status
      * @private
      */
-    private handleFieldInvalid() {
+    public handleFieldInvalid() {
         if (((this.emailAddresses.length == 1 && !!this.emailAddresses[0].email_address) || this.emailAddresses.length > 1) && this.emailAddresses.some(e => e.invalid_email == 1)) {
             this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
         } else {
@@ -262,7 +262,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set can add boolean if all email addresses are valid and we are not in single mode
      * @private
      */
-    private setCanAdd() {
+    public setCanAdd() {
         this.canAdd = !this.fieldconfig.singleMode ?
             !this.emailAddresses.some(emailAddress => emailAddress.invalid_email == 1) : this.emailAddresses.length == 0;
     }
@@ -272,7 +272,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @return any[]
      * @private
      */
-    private getUniqueCleanEmailAddresses(): {deletedIds, unique} {
+    public getUniqueCleanEmailAddresses(): {deletedIds, unique} {
 
         const unique = [];
         const deletedIds = this.emailAddresses.filter(emailAddress => !emailAddress.email_address).map(e => e.id);

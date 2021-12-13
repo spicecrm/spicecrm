@@ -13,7 +13,7 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-listview-aggregate-item-term',
-    templateUrl: './src/objectcomponents/templates/objectlistviewaggregateitemterm.html',
+    templateUrl: '../templates/objectlistviewaggregateitemterm.html',
     providers: [view, model]
 })
 export class ObjectListViewAggregateItemTerm implements OnInit {
@@ -21,14 +21,14 @@ export class ObjectListViewAggregateItemTerm implements OnInit {
     /**
      * the item in the aggregate
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the aggregate
      */
-    @Input() private aggregate: any = {};
+    @Input() public aggregate: any = {};
 
-    constructor(private model: model, private view: view) {
+    constructor(public model: model, public view: view) {
         this.view.displayLabels = false;
     }
 

@@ -11,19 +11,19 @@ import {modal} from "../../services/modal.service";
  */
 @Component({
     selector: "global-user-panel-icon",
-    templateUrl: "./src/globalcomponents/templates/globaluserpanelicon.html",
+    templateUrl: "../templates/globaluserpanelicon.html",
 })
 export class GlobaUserPanelIcon {
 
     /**
      * transition if the edit icon is shown
      */
-    private showEdit: boolean = false;
+   public showEdit: boolean = false;
 
     constructor(
-        private session: session,
-        private modalservice: modal,
-        private backend: backend
+       public session: session,
+       public modalservice: modal,
+       public backend: backend
     ) {
 
     }
@@ -31,7 +31,7 @@ export class GlobaUserPanelIcon {
     /**
      * renders the upload modal to allow the user to change the image
      */
-    private changeImage() {
+   public changeImage() {
         this.modalservice.openModal("SystemUploadImage").subscribe(componentref => {
             componentref.instance.cropheight = 150;
             componentref.instance.cropwidth = 150;
@@ -71,14 +71,14 @@ export class GlobaUserPanelIcon {
     /**
      * registers the mouse enter and sets the edit show to true
      */
-    private onMouseEnter() {
+   public onMouseEnter() {
         this.showEdit = true;
     }
 
     /**
      * registers the mouse leave and sets the edit show to false
      */
-    private onMouseLeave() {
+   public onMouseLeave() {
         this.showEdit = false;
     }
 }

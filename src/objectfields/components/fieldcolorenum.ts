@@ -11,14 +11,14 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-enum',
-    templateUrl: './src/objectfields/templates/fieldcolorenum.html'
+    templateUrl: '../templates/fieldcolorenum.html'
 })
 export class fieldColorEnum  extends fieldGeneric {
 
-    private longOptions: any = [];
-    private options: any = [];
-    private colors: any = [];
-    private acolor: any = {'background-color': ''};
+    public longOptions: any = [];
+    public options: any = [];
+    public colors: any = [];
+    public acolor: any = {'background-color': ''};
 
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
@@ -29,7 +29,7 @@ export class fieldColorEnum  extends fieldGeneric {
         this.getOptions();
     }
 
-    private getOptions() {
+    public getOptions() {
         this.longOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
         let options = this.longOptions;
 
@@ -76,7 +76,7 @@ export class fieldColorEnum  extends fieldGeneric {
         return this.acolor;
     }
 
-    private getValue(): string {
+    public getValue(): string {
         for (let opt of this.options) {
             if (opt.value == this.value) {
                 return opt.display;
@@ -84,7 +84,7 @@ export class fieldColorEnum  extends fieldGeneric {
         }
     }
 
-    private changed() {
+    public changed() {
         let colordef = '';
         colordef = this.colors[this.value];
         if (typeof colordef !== 'undefined') {

@@ -14,26 +14,26 @@ import {ObjectStatusNetworkButtonItem} from "./objectstatusnetworkbuttonitem";
  */
 @Component({
     selector: 'object-status-network-button',
-    templateUrl: './src/objectcomponents/templates/objectstatusnetworkbutton.html'
+    templateUrl: '../templates/objectstatusnetworkbutton.html'
 })
 export class ObjectStatusNetworkButton implements OnInit {
 
     /**
      * a selector for the child items
      */
-    @ViewChildren(ObjectStatusNetworkButtonItem) private buttonitemlist: QueryList<ObjectStatusNetworkButtonItem>;
+    @ViewChildren(ObjectStatusNetworkButtonItem) public buttonitemlist: QueryList<ObjectStatusNetworkButtonItem>;
 
     /**
      * the field that is status managed
      */
-    private statusField: string = '';
+    public statusField: string = '';
 
     /**
      * the status network as retrieved from the config
      */
-    private statusNetwork: any[] = [];
+    public statusNetwork: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private router: Router, private renderer: Renderer2, private elementRef: ElementRef) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, public router: Router, public renderer: Renderer2, public elementRef: ElementRef) {
 
     }
 
@@ -99,7 +99,7 @@ export class ObjectStatusNetworkButton implements OnInit {
      *
      * @param actionid
      */
-    private propagateclick(actionid) {
+    public propagateclick(actionid) {
         this.buttonitemlist.some(actionitem => {
             if (actionitem.id == actionid) {
                 actionitem.setStatus(this.statusField);

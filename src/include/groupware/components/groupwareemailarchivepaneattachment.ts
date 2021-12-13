@@ -9,20 +9,20 @@ import {GroupwareService} from '../../../include/groupware/services/groupware.se
  */
 @Component({
     selector: 'groupware-email-archive-pane-attachment',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepaneattachment.html'
+    templateUrl: '../templates/groupwareemailarchivepaneattachment.html'
 })
 export class GroupwareEmailArchivePaneAttachment {
 
     /**
      * Current attachment.
      */
-    @Input() private attachment: any;
+    @Input() public attachment: any;
 
     constructor(
-        private groupware: GroupwareService,
+        public groupware: GroupwareService,
     ) {}
 
-    private onClick(event) {
+    public onClick(event) {
         if (event.target.checked) {
             this.groupware.addAttachment(this.attachment);
         } else {

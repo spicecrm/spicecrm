@@ -13,7 +13,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'componensetmanager-edit-dialog',
-    templateUrl: './src/workbench/templates/componentsetmanagereditdialog.html'
+    templateUrl: '../templates/componentsetmanagereditdialog.html'
 })
 export class ComponentsetManagerEditDialog implements OnInit{
     @Output() closedialog: EventEmitter<any> = new EventEmitter<any>();
@@ -27,7 +27,7 @@ export class ComponentsetManagerEditDialog implements OnInit{
 
     self;
 
-    constructor( private metadata: metadata, private language: language) {
+    constructor( public metadata: metadata, public language: language) {
 
     }
 

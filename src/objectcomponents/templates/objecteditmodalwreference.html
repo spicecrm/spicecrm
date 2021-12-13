@@ -8,7 +8,7 @@
         </div>
         <div class="slds-modal__content slds-is-relative" #modalContent [ngStyle]="contentStyle">
             <object-edit-modal-dialog-container [componentSet]="componentSet"></object-edit-modal-dialog-container>
-            <object-edit-modal-dialog-duplicates class="slds-is-absolute slds-theme--shade" *ngIf="showDuplicates" [ngStyle]="duplicateStyle" [duplicates]="duplicates"></object-edit-modal-dialog-duplicates>
+            <object-edit-modal-dialog-duplicates class="slds-is-absolute slds-theme--shade" *ngIf="showDuplicates" [duplicates]="duplicates"></object-edit-modal-dialog-duplicates>
         </div>
         <div class="slds-modal__footer">
             <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>

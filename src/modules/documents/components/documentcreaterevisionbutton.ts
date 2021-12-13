@@ -12,7 +12,7 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'document-create-revision-button',
-    templateUrl: './src/modules/documents/templates/documentcreaterevisionbutton.html'
+    templateUrl: '../templates/documentcreaterevisionbutton.html'
 })
 export class DocumentCreateRevisionButton implements OnDestroy{
 
@@ -28,7 +28,6 @@ export class DocumentCreateRevisionButton implements OnDestroy{
      * holds the action config
      */
     public actionconfig: {modal_actionset: string};
-
 
     constructor(
         public language: language,

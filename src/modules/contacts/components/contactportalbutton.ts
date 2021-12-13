@@ -10,13 +10,13 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "contact-portal-button",
-    templateUrl: "./src/modules/contacts/templates/contactportalbutton.html"
+    templateUrl: "../templates/contactportalbutton.html"
 })
 export class ContactPortalButton implements OnInit {
 
     public disabled: boolean = true;
 
-    constructor(private language: language, private model: model, private metadata: metadata, private modal: modal, private viewContainerRef: ViewContainerRef) {
+    constructor(public language: language, public model: model, public metadata: metadata, public modal: modal, public viewContainerRef: ViewContainerRef) {
     }
 
     public ngOnInit() {
@@ -30,11 +30,11 @@ export class ContactPortalButton implements OnInit {
         });
     }
 
-    private handleDisabled() {
+    public handleDisabled() {
         this.disabled = !((this.model.data.email1 || this.model.data.email_address_private) && !this.model.isEditing && this.model.checkAccess('edit'));
     }
 
-    private execute() {
+    public execute() {
         this.modal.openModal("ContactPortalDetails", true, this.viewContainerRef.injector);
     }
 }

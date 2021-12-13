@@ -9,18 +9,18 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
 
 @Component({
     selector: 'spice-importer-update',
-    templateUrl: './src/include/spiceimporter/templates/spiceimporterupdate.html',
+    templateUrl: '../templates/spiceimporterupdate.html',
 })
 
 export class SpiceImporterUpdate {
-    @Input() private currentImportStep;
+    @Input() public currentImportStep;
     public checkFields: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private spiceImport: SpiceImporterService
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public spiceImport: SpiceImporterService
     ) {
     }
 
@@ -28,7 +28,7 @@ export class SpiceImporterUpdate {
         return this.spiceImport.fileMapping;
     }
 
-    private setCheckedField(mappedField, moduleField, isChecked) {
+    public setCheckedField(mappedField, moduleField, isChecked) {
 
         if (isChecked.target.checked) {
             this.spiceImport.checkFields = this.spiceImport.checkFields.filter(field => field.mappedField !== mappedField);
@@ -38,7 +38,7 @@ export class SpiceImporterUpdate {
         }
     }
 
-    private getCheckedField(mappedField) {
+    public getCheckedField(mappedField) {
         return this.spiceImport.checkFields.some(field => field.mappedField == mappedField);
     }
 }

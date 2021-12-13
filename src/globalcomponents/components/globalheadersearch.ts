@@ -13,17 +13,17 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'global-header-search',
-    templateUrl: './src/globalcomponents/templates/globalheadersearch.html',
+    templateUrl: '../templates/globalheadersearch.html',
     providers: [fts]
 })
 export class GlobalHeaderSearch {
-    private showRecent: boolean = false;
-    private searchTimeOut: any = undefined;
-    private searchTerm: string = '';
-    private searchTermUntrimmed: string = '';
-    private clickListener: any;
+   public showRecent: boolean = false;
+   public searchTimeOut: any = undefined;
+   public searchTerm: string = '';
+   public searchTermUntrimmed: string = '';
+   public clickListener: any;
     public _searchmodule: string = 'all';
-    private searchresults: any[] = [];
+   public searchresults: any[] = [];
 
 
     get searchmodule() {
@@ -51,19 +51,19 @@ export class GlobalHeaderSearch {
         return window.innerWidth >= 768;
     }
 
-    private onFocus() {
+   public onFocus() {
         this.showRecent = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private closePopup() {
+   public closePopup() {
         this.clickListener();
         this.showRecent = false;
         this.searchTerm = '';
         this.searchTermUntrimmed = '';
     }
 
-    private doSearch() {
+   public doSearch() {
         this.searchTerm = this.searchTermUntrimmed.trim();
         if (this.searchTerm.length && this.searchTerm !== this.fts.searchTerm) {
             // start the search
@@ -71,7 +71,7 @@ export class GlobalHeaderSearch {
         }
     }
 
-    private executeSearch() {
+   public executeSearch() {
         let searchmodules = [];
         if (this.showModuleSelector && this._searchmodule != 'all') searchmodules.push(this._searchmodule);
 
@@ -91,7 +91,7 @@ export class GlobalHeaderSearch {
         // this.broadcast.broadcastMessage('fts.search', this.searchTerm);
     }
 
-    private clearSearchTerm() {
+   public clearSearchTerm() {
         // cancel any ongoing search
         if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
@@ -101,7 +101,7 @@ export class GlobalHeaderSearch {
         this.fts.searchTerm = '';
     }
 
-    private search(_e) {
+   public search(_e) {
         // make sure the popup is open
         this.showRecent = true;
 
@@ -143,7 +143,7 @@ export class GlobalHeaderSearch {
      * @param searchTerm
      * @private
      */
-    private searchTermsValid(searchTerm) {
+   public searchTermsValid(searchTerm) {
         let config = this.configuration.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
         let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
@@ -158,7 +158,7 @@ export class GlobalHeaderSearch {
         }
     }
 
-    private selected(event) {
+   public selected(event) {
         this.showRecent = false;
         this.clearSearchTerm();
     }

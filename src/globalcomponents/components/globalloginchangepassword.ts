@@ -14,64 +14,64 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'global-login-change-password',
-    templateUrl: './src/globalcomponents/templates/globalloginchangepassword.html'
+    templateUrl: '../templates/globalloginchangepassword.html'
 })
 export class GlobalLoginChangePassword {
     /**
      * the old password to check that the password has been changed
      * @private
      */
-    @Input('password') private password: string;
+    @Input('password')public password: string;
 
     /**
      * the id ot the user that tried to log in but has an expired password
      * @private
      */
-    @Input('username') private username: string;
+    @Input('username')public username: string;
 
     /**
      * emits if the prompt should be closed again
      *
      * @private
      */
-    @Output() private closeRenewDialog: EventEmitter<string> = new EventEmitter<string>();
+    @Output()public closeRenewDialog: EventEmitter<string> = new EventEmitter<string>();
 
     /**
      * the entered password
      * @private
      */
-    private newPassword: string;
+   public newPassword: string;
 
     /**
      * the repeated password
      * @private
      */
-    private repeatPassword: string;
+   public repeatPassword: string;
 
     /**
      * the regex to match the password requirements
      * @private
      */
-    private pwdCheck: RegExp = new RegExp('//');
+   public pwdCheck: RegExp = new RegExp('//');
 
     /**
      * the text for the password requriements
      * @private
      */
-    private pwdGuideline: string;
+   public pwdGuideline: string;
 
     /**
      * if we are psoting the password
      * @private
      */
-    private posting: boolean = false;
+   public posting: boolean = false;
 
-    constructor(private loginService: loginService,
-                private http: HttpClient,
-                private configuration: configurationService,
-                private toast: toast,
-                private session: session,
-                private language: language
+    constructor(public loginService: loginService,
+               public http: HttpClient,
+               public configuration: configurationService,
+               public toast: toast,
+               public session: session,
+               public language: language
     ) {
         this.getInfo();
     }
@@ -109,7 +109,7 @@ export class GlobalLoginChangePassword {
     /*
     * retrieve password guideline
     */
-    private getInfo() {
+   public getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheck = new RegExp(extConf.regex);
 
@@ -135,7 +135,7 @@ export class GlobalLoginChangePassword {
     * change the password for the user
     * send an unauthenticated request to the backend
     */
-    private setPassword() {
+   public setPassword() {
         if (this.canSave) {
             this.posting = true;
             this.http.post(this.configuration.getBackendUrl() + '/authentication/changepassword', {

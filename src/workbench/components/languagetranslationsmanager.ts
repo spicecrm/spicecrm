@@ -10,7 +10,7 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'language-translations-manager',
-    templateUrl: './src/workbench/templates/languagetranslationsmanager.html',
+    templateUrl: '../templates/languagetranslationsmanager.html',
 })
 export class LanguageTranslationsManager {
 
@@ -20,11 +20,11 @@ export class LanguageTranslationsManager {
     public isLoading = false;
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
-        private toast: toast,
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
+        public toast: toast,
     ) {
     }
 
@@ -72,13 +72,13 @@ export class LanguageTranslationsManager {
         );
     }
 
-    private getLabelSpecificLength(label, length) {
+    public getLabelSpecificLength(label, length) {
         let defaultText: string = this.language.getLabel(label);
         let text: string = this.language.getLabel(label, '', length);
         return text != defaultText ? text: '';
     }
 
-    private getTranslations() {
+    public getTranslations() {
         this.labels = [];
         if (this.selectedLanguage.length == 0) {
             return;
@@ -93,11 +93,11 @@ export class LanguageTranslationsManager {
                 err => this.isLoading = false);
     }
 
-    private canSave(label) {
+    public canSave(label) {
         return label.translation_default && label.translation_default.length > 0;
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

@@ -8,19 +8,19 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'scrum-main',
-    templateUrl: './src/modules/scrum/templates/scrummain.html',
+    templateUrl: '../templates/scrummain.html',
     providers: [scrum]
 })
 export class ScrumMain {
 
-    constructor(private scrum: scrum, private modellist: modellist, private language: language) {
+    constructor(public scrum: scrum, public modellist: modellist, public language: language) {
         this.loadList();
     }
 
     /**
      * load the list data
      */
-    private loadList() {
+    public loadList() {
         this.modellist.getListData();
     }
 

@@ -24,22 +24,22 @@ declare var moment: any;
 
 @Component({
     selector: 'administration-systrashcan-manager',
-    templateUrl: './src/admincomponents/templates/administrationsystrashcanmanager.html'
+    templateUrl: '../templates/administrationsystrashcanmanager.html'
 })
 export class AdministrationSysTrashcanManager implements OnInit {
 
-    private records: any[] = [];
-    private loaddate: any = {};
-    private loading: boolean = true;
+    public records: any[] = [];
+    public loaddate: any = {};
+    public loading: boolean = true;
 
-    constructor(private metadata: metadata, private modal: modal, private backend: backend, private language: language, private userpreferences: userpreferences, private footer: footer) {
+    constructor(public metadata: metadata, public modal: modal, public backend: backend, public language: language, public userpreferences: userpreferences, public footer: footer) {
     }
 
     public ngOnInit() {
         this.getEntries();
     }
 
-    private getEntries() {
+    public getEntries() {
         this.backend.getRequest('admin/systrashcan').subscribe(records => {
             this.records = records;
             this.loaddate = new moment();
@@ -47,17 +47,17 @@ export class AdministrationSysTrashcanManager implements OnInit {
         });
     }
 
-    private reload() {
+    public reload() {
         this.loading = true;
         this.records = [];
         this.getEntries();
     }
 
-    private getUserDate(date) {
+    public getUserDate(date) {
         return this.userpreferences.formatDateTime(date);
     }
 
-    private recoverRecord(record) {
+    public recoverRecord(record) {
         this.modal.openModal('AdministrationSysTrashcanRecover').subscribe(componentRef =>{
             componentRef.instance.record = record;
             // subscribe to recovered event and if it is treu remove from the list
@@ -74,7 +74,7 @@ export class AdministrationSysTrashcanManager implements OnInit {
         });
     }
 
-    private getModule(singular) {
+    public getModule(singular) {
         return this.metadata.getModuleFromSingular(singular)
     }
 

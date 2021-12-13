@@ -14,21 +14,21 @@ declare var moment: any;
  * renders a tabbed view for body, header and footer of a template
  */
 @Component({
-    templateUrl: "./src/modules/outputtemplates/templates/outputtemplateseditor.html"
+    templateUrl: "../templates/outputtemplateseditor.html"
 })
 export class OutputTemplatesEditor {
 
     /**
      * the currently selected tab
      */
-    private selectedTab: 'body' | 'header' | 'footer' | 'preview' = 'body';
+    public selectedTab: 'body' | 'header' | 'footer' | 'preview' = 'body';
 
     /**
      * the component config as passed in
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(public language: language, public metadata: metadata, public model: model) {
 
     }
 

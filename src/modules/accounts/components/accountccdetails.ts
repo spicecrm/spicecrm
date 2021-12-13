@@ -8,18 +8,18 @@ import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 
 @Component({
-    templateUrl: './src/modules/accounts/templates/accountccdetails.html'
+    templateUrl: '../templates/accountccdetails.html'
 })
 export class AccountCCDetails implements OnInit {
     public companyCodes: any[] = [];
     public activatedTabs: any[] = [];
-    private activeTab: number = 0;
-    private isLoading: boolean = false;
+    public activeTab: number = 0;
+    public isLoading: boolean = false;
 
-    constructor(private language: language,
-                private model: model,
-                private backend: backend,
-                private view: view) {
+    constructor(public language: language,
+                public model: model,
+                public backend: backend,
+                public view: view) {
         this.loadCompanyCodes();
     }
 
@@ -34,7 +34,7 @@ export class AccountCCDetails implements OnInit {
     * Load Company Codes from backend
     * @return void
     * */
-    private loadCompanyCodes() {
+    public loadCompanyCodes() {
         this.isLoading = true;
         let fields = JSON.stringify(["companycode", "date_modified", "description", "id"]);
         this.backend.getRequest(`module/CompanyCodes`, {fields: fields}).subscribe(CCodes => {
@@ -48,7 +48,7 @@ export class AccountCCDetails implements OnInit {
     * @param index Tab Index
     * @return void
     * */
-    private setActiveTab(index) {
+    public setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
     }
@@ -57,7 +57,7 @@ export class AccountCCDetails implements OnInit {
     * @param cc Company Code
     * @return object Account Company Code Details
     * */
-    private getCCDetailsData(cc): any {
+    public getCCDetailsData(cc): any {
         let beans = this.model.data.accountccdetails.beans;
         for (let bean in beans) {
             if (beans.hasOwnProperty(bean) && beans[bean].companycode_id == cc.id) {
@@ -71,7 +71,7 @@ export class AccountCCDetails implements OnInit {
     * @param tabindex
     * @return object Style
     * */
-    private getContentContainerStyle(tabindex) {
+    public getContentContainerStyle(tabindex) {
         return {
             display: (tabindex !== this.activeTab) ? 'none' : 'block',
             padding: '.25rem',
@@ -83,7 +83,7 @@ export class AccountCCDetails implements OnInit {
     * @param item
     * @return index|item
     * */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 }

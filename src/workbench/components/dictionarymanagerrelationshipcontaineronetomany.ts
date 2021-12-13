@@ -17,7 +17,7 @@ import {Relationship, RelationshipRelateField} from "../interfaces/dictionaryman
  */
 @Component({
     selector: 'dictionary-manager-relationship-container-onetomany',
-    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipcontaineronetomany.html',
+    templateUrl: '../templates/dictionarymanagerrelationshipcontaineronetomany.html',
 })
 export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
 
@@ -25,29 +25,29 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      * the items for the left hand side
      * @private
      */
-    private lhs_items: any[] = [];
+    public lhs_items: any[] = [];
 
     /**
      * the items for the right hand side
      * @private
      */
-    private rhs_items: any[] = [];
+    public rhs_items: any[] = [];
 
     /**
      * the relationshiprelatefields
      *
      * @private
      */
-    private relationshiprelatefields: RelationshipRelateField[] = [];
+    public relationshiprelatefields: RelationshipRelateField[] = [];
 
     /**
      * the reltionship itself
      *
      * @private
      */
-    @Input() private relationship: Relationship;
+    @Input() public relationship: Relationship;
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
     }
 
     /**
@@ -65,7 +65,7 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      * loads items for left and right definitions
      * @private
      */
-    private loadItems() {
+    public loadItems() {
         // build the left hand and right hand items
         this.lhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id);
         this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);
@@ -76,7 +76,7 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      *
      * @private
      */
-    private loadRelationshipFields() {
+    public loadRelationshipFields() {
         this.relationshiprelatefields = this.dictionarymanager.dictionaryrelationshiprelatefields.filter(rf => rf.relationship_id == this.relationship.id);
     }
 

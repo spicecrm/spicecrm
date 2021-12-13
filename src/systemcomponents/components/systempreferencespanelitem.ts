@@ -12,13 +12,13 @@ declare var _: any;
 
 @Component({
     selector: "system-preferences-panel-item",
-    templateUrl: "./src/systemcomponents/templates/systempreferencespanelitem.html"
+    templateUrl: "../templates/systempreferencespanelitem.html"
 })
 export class SystemPreferencesPanelItem {
 
-    @Input() private itemlabel: string = '';
+    @Input() public itemlabel: string = '';
 
-    constructor(private view: view, private language: language) {
+    constructor(public view: view, public language: language) {
     }
 
 }

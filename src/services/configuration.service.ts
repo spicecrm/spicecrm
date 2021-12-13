@@ -53,7 +53,7 @@ export class configurationService {
     /**
      * holds any app data the application can store with a given key
      */
-    private appdata: any = {};
+    public appdata: any = {};
 
     /**
      * emits when the systemparamaters have been laoded
@@ -65,13 +65,13 @@ export class configurationService {
      */
     public datachanged$: EventEmitter<string> = new EventEmitter<string>();
 
-    private locationHash: string;
+    public locationHash: string;
 
-    constructor(private http: HttpClient,
-                private session: session,
-                private broadcast: broadcast,
-                private title: Title,
-                private router: Router,) {
+    constructor(public http: HttpClient,
+                public session: session,
+                public broadcast: broadcast,
+                public title: Title,
+                public router: Router,) {
 
         // add a new behaviour subject
         this.loaded$ = new BehaviorSubject<boolean>(false);
@@ -157,7 +157,7 @@ export class configurationService {
      *
      * @param message the message received
      */
-    private handleLogout(message) {
+    public handleLogout(message) {
         if (message.messagetype == 'logout') {
             this.reset();
         }
@@ -393,7 +393,7 @@ export class configurationService {
     /**
      * sets the favicon
      */
-    private setFavIcon() {
+    public setFavIcon() {
         let icon = document.querySelectorAll("link[ rel ~= 'icon' i]")[0];
         if (icon) {
             let config = this.getCapabilityConfig('theme');

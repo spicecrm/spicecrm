@@ -26,7 +26,7 @@ declare var _: any;
 
 @Component({
     selector: "system-richtext-sourcemodal",
-    templateUrl: "./src/systemcomponents/templates/systemrichtextsourcemodal.html",
+    templateUrl: "../templates/systemrichtextsourcemodal.html",
     providers: [ systemrichtextservice ]
 })
 export class SystemRichTextSourceModal implements OnInit, OnDestroy {
@@ -34,21 +34,20 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
     public self: any = {};
     public _html: string = '';
     public searchtext: string = '';
-    private foundIndices: number[] = [];
-    private currentIndex: number = -1;
-    private html: EventEmitter<string> = new EventEmitter<string>();
-    private isUserInsideEditor = false;
-    private editorId = _.uniqueId();
-    private eventListener: any[] = [];
-    private beautifyenabled: boolean = false;
+    public foundIndices: number[] = [];
+    public currentIndex: number = -1;
+    public html: EventEmitter<string> = new EventEmitter<string>();
+    public isUserInsideEditor = false;
+    public editorId = _.uniqueId();
+    public eventListener: any[] = [];
+    public beautifyenabled: boolean = false;
 
     @ViewChild('sourceeditor', {static: true}) public sourceEditor: any;
 
     constructor(
         public language: language, public renderer: Renderer2, public sanitized: DomSanitizer,
-        private libloader: libloader, private injector: Injector, @Optional() private model: model,
-        private modal: modal, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any ) {
-
+        public libloader: libloader, public injector: Injector, @Optional() public model: model,
+        public modal: modal, public editorService: systemrichtextservice, @Inject(DOCUMENT) public _document: any ) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
         });
@@ -85,14 +84,14 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
         }));
     }
 
-    private keyUp(e): void {
+    public keyUp(e): void {
         if (e.which == 13 || e.keyCode == 13 && this.searchText.length > 0) {
             this.currentIndex = 0;
             this.selectFoundText();
         }
     }
 
-    private findTextIndices(searchText: string, text: string): void {
+    public findTextIndices(searchText: string, text: string): void {
         this.foundIndices = [];
         searchText = searchText.toLowerCase();
         let startIndex = 0;
@@ -108,7 +107,7 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
         }
     }
 
-    private getTextNodesIn(node: Node): any[] {
+    public getTextNodesIn(node: Node): any[] {
         let textNodes = [];
         let isTextNode = node.nodeType == 3;
         if (isTextNode) {
@@ -123,7 +122,7 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
         return textNodes;
     }
 
-    private selectFoundText(): void {
+    public selectFoundText(): void {
         let sourceEditor = this.sourceEditor.nativeElement;
 
         if (document.createRange && window.getSelection) {
@@ -160,7 +159,7 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
         }
     }
 
-    private beautify() {
+    public beautify() {
         this.renderer.setProperty(this.sourceEditor.nativeElement, 'innerText', html_beautify(this.sourceEditor.nativeElement.innerText, {
             indent_size: 4,
             indent_char:  " ",
@@ -184,25 +183,25 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
         }));
     }
 
-    private nextResult() {
+    public nextResult() {
         if (this.currentIndex < this.foundIndices.length) {
             this.currentIndex++;
             this.selectFoundText();
         }
     }
 
-    private previewResult() {
+    public previewResult() {
         if (this.currentIndex > 0) {
             this.currentIndex--;
             this.selectFoundText();
         }
     }
 
-    private onContentChange(html) {
+    public onContentChange(html) {
         this._html = html;
     }
 
-    private close() {
+    public close() {
         this.html.emit(this._html);
         this.self.destroy();
     }
@@ -210,14 +209,14 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
     /**
      * Should the TemplateVariableHelper be offered, the button enabled?
      */
-    private get useTemplateVariableHelper() {
+    public get useTemplateVariableHelper() {
         return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
     }
 
     /**
      * Open the modal with the TemplateVariableHelper
      */
-    private openTemplateVariableHelper() {
+    public openTemplateVariableHelper() {
         this.editorService.saveSelection();
         this.modal.openModal('OutputTemplatesVariableHelper', null, this.injector )
             .pipe(take(1))
@@ -232,14 +231,14 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
             });
     }
 
-    private focusEditor() {
+    public focusEditor() {
         this.sourceEditor.nativeElement.focus();
     }
 
     /**
      * Determine if the user "is" currently inside the editor.
      */
-    private testIsUserInsideEditor(): boolean {
+    public testIsUserInsideEditor(): boolean {
         if ( window.getSelection ) {
             let userSelection = window.getSelection();
             let a: any = userSelection.focusNode;

@@ -15,14 +15,14 @@ declare var _: any;
 
 @Component({
     selector: 'spice-importer-map',
-    templateUrl: './src/include/spiceimporter/templates/spiceimportermap.html',
+    templateUrl: '../templates/spiceimportermap.html',
 })
 export class SpiceImporterMap {
 
     @Input('modelfields') public modelFields: any[] = undefined;
     @Input('requiredmodelfields') public requiredModelFields: any[] = undefined;
 
-    constructor(private spiceImport: SpiceImporterService, private language: language, private metadata: metadata, private model: model) {
+    constructor(public spiceImport: SpiceImporterService, public language: language, public metadata: metadata, public model: model) {
     }
 
     get idFieldAction() {
@@ -40,15 +40,15 @@ export class SpiceImporterMap {
         return this.spiceImport.stepLongText;
     }
 
-    private getMapping(row) {
+    public getMapping(row) {
         return this.spiceImport.getMapping(row);
     }
 
-    private setMapping(row, event) {
+    public setMapping(row, event) {
         this.spiceImport.setMapping(row, event.srcElement.value);
     }
 
-    private checkRequired(fieldName) {
+    public checkRequired(fieldName) {
 
         let invertedFileMapping = _.invert(this.spiceImport.fileMapping),
             mappedFieldChecked = invertedFileMapping.hasOwnProperty(fieldName),
@@ -59,13 +59,13 @@ export class SpiceImporterMap {
 
     }
 
-    private isChosen(fieldName) {
+    public isChosen(fieldName) {
         let invertedFileMapping = _.invert(this.spiceImport.fileMapping);
         return !!invertedFileMapping[fieldName];
 
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 }

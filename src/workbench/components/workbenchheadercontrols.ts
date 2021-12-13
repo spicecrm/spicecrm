@@ -10,7 +10,7 @@ import {
  */
 @Component({
     selector: 'workbench-header-controls',
-    templateUrl: './src/workbench/templates/workbenchheadercontrols.html',
+    templateUrl: '../templates/workbenchheadercontrols.html',
 })
 export class WorkbenchHeaderControls {
 

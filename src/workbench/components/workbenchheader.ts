@@ -11,22 +11,22 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'workbench-header',
-    templateUrl: './src/workbench/templates/workbenchheader.html',
+    templateUrl: '../templates/workbenchheader.html',
 })
 export class WorkbenchHeader {
 
     /**
      * the label to be used as title. This is translated with the languaghe service
      */
-    @Input() private titlelabel: string;
+    @Input() public titlelabel: string;
 
     /**
      * an icon to be used and rendered
      */
-    @Input() private icon: string = 'custom';
+    @Input() public icon: string = 'custom';
 
     constructor(
-        private language: language,
+        public language: language,
     ) {
 
     }

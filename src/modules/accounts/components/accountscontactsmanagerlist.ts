@@ -10,24 +10,25 @@ import {view} from '../../../services/view.service';
 
 @Component({
     selector: 'accounts-contacts-manager-list',
-    templateUrl: './src/modules/accounts/templates/accountscontactsmanagerlist.html',
+    templateUrl: '../templates/accountscontactsmanagerlist.html',
     providers: [view, model]
 })
 export class AccountsContactsManagerList {
 
     @ViewChild('tableContainer', {read: ViewContainerRef, static: true}) tableContainer: ViewContainerRef;
 
-    listfields: Array<any> = [];
+    listfields: any[] = [];
+    public hovered: string = '';
     @Input() fieldset: string = '';
     @Input('tableHeight') tableheight: any = {};
     @Output() activeContactId$: EventEmitter<any> = new EventEmitter<any>();
     activeContactId: string = undefined;
-    
+
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private relatedmodels: relatedmodels,
-        private model: model) {
+        public language: language,
+        public metadata: metadata,
+        public relatedmodels: relatedmodels,
+        public model: model) {
         this.model.module = 'Contacts';
     }
 

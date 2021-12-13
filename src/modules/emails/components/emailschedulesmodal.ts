@@ -16,7 +16,7 @@ import {toast} from "../../../services/toast.service";
  */
 @Component({
     selector: "email-schedules-modal",
-    templateUrl: "./src/modules/emails/templates/emailschedulesmodal.html",
+    templateUrl: "../templates/emailschedulesmodal.html",
     providers: [model, view],
 })
 export class EmailSchedulesModal {
@@ -26,18 +26,18 @@ export class EmailSchedulesModal {
      *
      * @private
      */
-    private self: any = {};
+    public self: any = {};
 
-    constructor(private language: language,
-                private model: model,
-                @SkipSelf() private parentModel: model,
-                private injector: Injector,
-                private view: view,
-                private modal: modal,
-                private metadata: metadata,
-                private modellist: modellist,
-                private backend: backend,
-                private toast: toast) {
+    constructor(public language: language,
+                public model: model,
+                @SkipSelf() public parentModel: model,
+                public injector: Injector,
+                public view: view,
+                public modal: modal,
+                public metadata: metadata,
+                public modellist: modellist,
+                public backend: backend,
+                public toast: toast) {
 
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -61,7 +61,7 @@ export class EmailSchedulesModal {
     /**
      * destroy modal instance
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -72,7 +72,7 @@ export class EmailSchedulesModal {
     /**
      * save selected ids of modellist, module, model data and send object to backend
      */
-    private saveSchedule() {
+    public saveSchedule() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
             let selectedIds = this.modellist.getSelectedIDs();

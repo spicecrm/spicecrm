@@ -14,7 +14,7 @@ import {navigationtab} from "../../../services/navigationtab.service";
  */
 @Component({
     selector: 'groupware-detail-pane-view',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpaneview.html',
+    templateUrl: '../templates/groupwaredetailpaneview.html',
     providers: [model]
 })
 export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
@@ -22,33 +22,33 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
     /**
      * reference to the header container
      */
-    @ViewChild('header', {read: ViewContainerRef, static: true}) private header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: true}) public header: ViewContainerRef;
 
     /**
      * reference to the main container
      */
-    @ViewChild('main', {read: ViewContainerRef, static: true}) private main: ViewContainerRef;
+    @ViewChild('main', {read: ViewContainerRef, static: true}) public main: ViewContainerRef;
 
     /**
      * indicates that we have passed the view initialization and can render the view
      */
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
     /**
      * the rendered componentes that need to be destroyed if we rerender
      */
-    private componentRefs: any[] = [];
+    public componentRefs: any[] = [];
 
     /**
      * subscriptions that need to be unsubscribed in the on Destroy lifecycle hook
      */
-    private componentSubscriptions: Subscription = new Subscription();
+    public componentSubscriptions: Subscription = new Subscription();
 
-    constructor(private navigation: navigation,
-                private navigationtab: navigationtab,
-                private broadcast: broadcast,
-                private metadata: metadata,
-                private model: model) {
+    constructor(public navigation: navigation,
+                public navigationtab: navigationtab,
+                public broadcast: broadcast,
+                public metadata: metadata,
+                public model: model) {
 
         // subsribe to the route
         this.componentSubscriptions.add(
@@ -70,7 +70,7 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
      *
      * @param route
      */
-    private setRouteData(route) {
+    public setRouteData(route) {
         if (route.params.module && route.params.id && (this.model.module != route.params.module || this.model.id != route.params.id)) {
             // load the model
             // get the bean details
@@ -93,7 +93,7 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
                 this.buildContainer();
@@ -121,7 +121,7 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
     /**
      * load the config and build the container
      */
-    private buildContainer() {
+    public buildContainer() {
         for (let component of this.componentRefs) {
             component.destroy();
         }

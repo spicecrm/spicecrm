@@ -7,13 +7,13 @@ import {view} from "../../../services/view.service";
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: "./src/modules/users/templates/userpopoverheader.html",
+    templateUrl: "../templates/userpopoverheader.html",
     providers: [view]
 })
 
 export class UserPopoverHeader {
 
-    constructor(private language: language, private view: view, private model: model) {
+    constructor(public language: language, public view: view, public model: model) {
         this.view.displayLabels = false;
     }
 
