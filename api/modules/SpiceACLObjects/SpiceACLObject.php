@@ -633,7 +633,6 @@ class SpiceACLObject extends SugarBean
             }
         }
 
-file_put_contents('spicecrm.log', implode(' AND ', $whereClauses)."\n", FILE_APPEND);
         return implode(' AND ', $whereClauses) ?: '1=1';
     }
 
