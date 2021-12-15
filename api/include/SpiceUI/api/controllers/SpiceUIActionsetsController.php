@@ -168,7 +168,6 @@ class SpiceUIActionsetsController
                     }
 
                 } else {
-                    console.log("try to delete: " + $item['id']);
                     // remove it
                     $db->query("DELETE FROM sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems WHERE id='{$item['id']}'");
                     // add to the CR

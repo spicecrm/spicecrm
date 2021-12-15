@@ -144,8 +144,16 @@ export class loader {
         this.counterCompleted = 0;
         this.progress = 0;
 
-        for (let loadElement of this.loadElements) {
-            loadElement.status = 'initial';
+        for (let loaditem of this.loadElements.system) {
+            loaditem.status = 'initial';
+        }
+
+        for (let loaditem of this.loadElements.primary) {
+            loaditem.status = 'initial';
+        }
+
+        for (let loaditem of this.loadElements.secondary) {
+            loaditem.status = 'initial';
         }
     }
 
