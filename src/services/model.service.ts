@@ -1241,6 +1241,9 @@ export class model implements OnDestroy {
             detail: true
         };
 
+        // get the field control
+        this.data.acl_fieldcontrol = this.metadata.moduleDefs[this.module].acl_fieldcontrol;
+
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
         this.evaluateValidationRules(null, 'initialize');
