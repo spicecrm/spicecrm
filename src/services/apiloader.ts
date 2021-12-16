@@ -10,12 +10,12 @@ import {broadcast} from './broadcast.service';
 export class googleapiloader {
 
     apis: Array<any> = [];
-    private _apiLoadingPromise: Promise<any>;
+    public _apiLoadingPromise: Promise<any>;
 
-    constructor(private broadcast: broadcast, private configuration: configurationService) {
+    constructor(public broadcast: broadcast, public configuration: configurationService) {
     }
 
-    private _loadScript(): void {
+    public _loadScript(): void {
         let script = (<any>document).createElement('script');
         script.async = true;
         script.defer = true;

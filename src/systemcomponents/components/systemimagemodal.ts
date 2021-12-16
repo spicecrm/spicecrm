@@ -8,7 +8,7 @@ import { SystemInputMedia } from './systeminputmedia';
 
 @Component({
     selector: 'system-image-modal',
-    templateUrl: './src/systemcomponents/templates/systemimagemodal.html'
+    templateUrl: '../templates/systemimagemodal.html'
 })
 export class SystemImageModal {
 
@@ -47,17 +47,17 @@ export class SystemImageModal {
     /**
      * The data of the image (base64, leaded by the file format, delimited by '|').
      */
-    private imageData_onlyBase64code: string = null;
+    public imageData_onlyBase64code: string = null;
 
     /**
      * Observable for submitting the image.
      */
-    private answer: Observable<boolean|string> = null;
+    public answer: Observable<boolean|string> = null;
 
     /**
      * Subject for submitting the image.
      */
-    private answerSubject: Subject<boolean|string> = null;
+    public answerSubject: Subject<boolean|string> = null;
 
     /**
      * The mimetype of the image.
@@ -67,14 +67,14 @@ export class SystemImageModal {
     /**
      * Reference for the modal.
      */
-    private self: any;
+    public self: any;
 
     /**
      * reference to the image upload component
      */
-    @ViewChild(SystemInputMedia) private systemInputMedia: SystemInputMedia;
+    @ViewChild(SystemInputMedia) public systemInputMedia: SystemInputMedia;
 
-    constructor( private language: language ) {
+    constructor( public language: language ) {
         this.answerSubject = new Subject();
         this.answer = this.answerSubject.asObservable();
     }
@@ -82,7 +82,7 @@ export class SystemImageModal {
     /**
      * Cancel button clicked.
      */
-    private cancel(): void {
+    public cancel(): void {
         this.answerSubject.next( false );
         this.answerSubject.complete();
         this.self.destroy();
@@ -91,14 +91,14 @@ export class SystemImageModal {
     /**
      * Is allowed to save (click save button)?
      */
-    private get canSave(): boolean {
+    public get canSave(): boolean {
         return !!this.imageData_onlyBase64code;
     }
 
     /**
      * Save button clicked.
      */
-    private save(): void {
+    public save(): void {
         if ( !this.canSave ) return;
         this.answerSubject.next( this.systemInputMedia.mediaMetaData.mimetype + ';base64,' + this.imageData_onlyBase64code );
         this.answerSubject.complete();

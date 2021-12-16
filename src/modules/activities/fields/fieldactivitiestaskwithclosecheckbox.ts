@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
  * renders a bar with quick add sysmbols to be rendered in the model popover
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/fieldactivitiestaskwithclosecheckbox.html',
+    templateUrl: '../templates/fieldactivitiestaskwithclosecheckbox.html',
 })
 export class fieldActivitiesTaskWithCloseCheckbox extends fieldGeneric {
 

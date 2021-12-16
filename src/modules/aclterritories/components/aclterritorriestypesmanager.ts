@@ -8,27 +8,27 @@ import {navigationtab} from '../../../services/navigationtab.service';
 
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriestypesmanager.html',
+    templateUrl: '../templates/aclterritorriestypesmanager.html',
 })
 export class ACLTerritorriesTypesmanager {
 
-    private activeType: string = '';
+    public activeType: string = '';
 
-    constructor(private language: language, private backend: backend, private navigationtab: navigationtab) {
+    constructor(public language: language, public backend: backend, public navigationtab: navigationtab) {
         this.setTabTitle();
     }
 
     /**
      * sets the tab title
      */
-    private setTabTitle() {
+    public setTabTitle() {
         this.navigationtab.setTabInfo({
             displayicon: 'settings',
             displayname: this.language.getLabel('LBL_TERRITORY_TYPES')
         });
     }
 
-    private setType(newType) {
+    public setType(newType) {
         this.activeType = newType;
     }
 

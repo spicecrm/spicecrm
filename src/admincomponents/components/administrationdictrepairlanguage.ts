@@ -11,12 +11,12 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: 'administration-dict-repair-language',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairlanguage.html'
+    templateUrl: '../templates/administrationdictrepairlanguage.html'
 })
 export class AdministrationDictRepairLanguage {
 
-    private loaderHandler: Subject<string> = new Subject<string>();
-    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
+    public loaderHandler: Subject<string> = new Subject<string>();
+    constructor(public backend: backend, public toast: toast, public language: language, public modal: modal) {
     }
 
     /**

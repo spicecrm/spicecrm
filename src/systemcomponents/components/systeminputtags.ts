@@ -23,23 +23,23 @@ declare var moment: any;
 
 @Component({
     selector: "system-input-tags",
-    templateUrl: "./src/systemcomponents/templates/systeminputtags.html"
+    templateUrl: "../templates/systeminputtags.html"
 })
 export class SystemInputTags {
 
-    @Output() private tagemitter: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public tagemitter: EventEmitter<string> = new EventEmitter<string>();
 
     // for the dropdown
-    private querystring: string = '';
-    private querytimeout: any = undefined;
-    private matchedtags: string[] = [];
-    private matchedtagindex: number;
+    public querystring: string = '';
+    public querytimeout: any = undefined;
+    public matchedtags: string[] = [];
+    public matchedtagindex: number;
 
-    constructor(private elementref: ElementRef,
-                private renderer: Renderer2,
-                private userpreferences: userpreferences,
-                private backend: backend,
-                private language: language) {
+    constructor(public elementref: ElementRef,
+                public renderer: Renderer2,
+                public userpreferences: userpreferences,
+                public backend: backend,
+                public language: language) {
     }
 
     get isOpen(): boolean {
@@ -47,7 +47,7 @@ export class SystemInputTags {
     }
 
 
-    private search(_e) {
+    public search(_e) {
         // handle the key pressed
         switch (_e.key) {
             case 'ArrowDown':
@@ -65,7 +65,7 @@ export class SystemInputTags {
         }
     }
 
-    private doSearch() {
+    public doSearch() {
         /*
         this.backend.getRequest('SpiceTags/' + btoa(this.querystring.trim())).subscribe(tags => {
             this.matchedtags = tags;
@@ -82,7 +82,7 @@ export class SystemInputTags {
         });
     }
 
-    private addTag(tag){
+    public addTag(tag){
         if (this.querytimeout) window.clearTimeout(this.querytimeout);
         this.matchedtags = [];
 

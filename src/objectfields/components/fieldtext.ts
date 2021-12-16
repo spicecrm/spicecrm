@@ -14,19 +14,19 @@ declare const window: any;
 
 @Component({
     selector: 'field-text',
-    templateUrl: './src/objectfields/templates/fieldtext.html'
+    templateUrl: '../templates/fieldtext.html'
 })
 export class fieldText extends fieldGeneric implements OnInit {
 
     /**
      * sets if speech recognition is turned on
      */
-    private speechRecognition = false;
+    public speechRecognition = false;
 
     /**
      * if the user resizes manually
      */
-    private fixedHeight: number;
+    public fixedHeight: number;
 
     /**
      * setthe fieldlength to 0
@@ -36,9 +36,9 @@ export class fieldText extends fieldGeneric implements OnInit {
     /**
      * reference to the text area
      */
-    @ViewChild('textField', {read: ViewContainerRef, static: false}) private textField: ViewContainerRef;
+    @ViewChild('textField', {read: ViewContainerRef, static: false}) public textField: ViewContainerRef;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private modalservice: modal) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public modalservice: modal) {
         super(model, view, language, metadata, router);
     }
 
@@ -59,7 +59,7 @@ export class fieldText extends fieldGeneric implements OnInit {
      *
      * @private
      */
-    private getFieldLength() {
+    public getFieldLength() {
         let field = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         if (field.len) {
             this.fieldlength = field.len;
@@ -79,11 +79,11 @@ export class fieldText extends fieldGeneric implements OnInit {
      * @param event
      * @private
      */
-    private resize(event) {
+    public resize(event) {
         this.fixedHeight = event.height;
     }
 
-    private getTextAreaStyle() {
+    public getTextAreaStyle() {
 
         // get min and max height and set default values
         let minheight = this.fieldconfig.minheight ? this.fieldconfig.minheight.replace('px', '') : 38;
@@ -111,7 +111,7 @@ export class fieldText extends fieldGeneric implements OnInit {
         return this.fieldconfig.truncate ? true : false;
     }
 
-    private speechRecognitionStart() {
+    public speechRecognitionStart() {
         this.modalservice.openModal('SpeechRecognition', false).subscribe(modal => {
             modal.instance.textfield = this.textField;
         });
@@ -120,7 +120,7 @@ export class fieldText extends fieldGeneric implements OnInit {
     /**
      * After a change of the textfield value, save the new value to the model.
      */
-    private change($event) {
+    public change($event) {
         if ($event.target.value) this.value = $event.target.value;
     }
 

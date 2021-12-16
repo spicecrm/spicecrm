@@ -13,7 +13,7 @@ import {accountHierarchy} from "../services/accounthierarchy.service";
  */
 @Component({
     selector: "[account-hierarchy-node]",
-    templateUrl: "./src/modules/accounts/templates/accounthierarchynode.html",
+    templateUrl: "../templates/accounthierarchynode.html",
     providers: [model, view],
     host: {
         "[attr.aria-level]": "nodedata.level"
@@ -33,9 +33,9 @@ export class AccountHierarchyNode implements OnInit {
     /**
      * indicator if loading
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
-    constructor(private view: view, private language: language, private metadata: metadata, private accountHierarchy: accountHierarchy, private model: model) {
+    constructor(public view: view, public language: language, public metadata: metadata, public accountHierarchy: accountHierarchy, public model: model) {
         this.view.displayLabels = false;
     }
 
@@ -56,7 +56,7 @@ export class AccountHierarchyNode implements OnInit {
     /**
      * expands/collapses a node and loads the data
      */
-    private expandNode() {
+    public expandNode() {
         if (this.nodedata.expanded) {
             this.accountHierarchy.collapse(this.nodedata.id);
         } else {
@@ -68,7 +68,7 @@ export class AccountHierarchyNode implements OnInit {
     /**
      * simple getter for the icons if openeded or closed
      */
-    private getIcon() {
+    public getIcon() {
         switch (this.nodedata.expanded) {
             case false:
                 return "chevronright";

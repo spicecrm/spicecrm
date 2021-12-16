@@ -10,14 +10,14 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-listview-header-list-selector',
-    templateUrl: './src/objectcomponents/templates/objectlistviewheaderlistselector.html'
+    templateUrl: '../templates/objectlistviewheaderlistselector.html'
 })
 export class ObjectListViewHeaderListSelector implements OnInit {
 
     /**
      * the componentconfig
      */
-    private componentconfig: any;
+    public componentconfig: any;
 
     /**
      * loads the config for the ObjectLiustView with the items to be displayed as list view alternatives
@@ -30,13 +30,13 @@ export class ObjectListViewHeaderListSelector implements OnInit {
      * @param elementRef
      * @param renderer
      */
-    constructor(private metadata: metadata,
-                private userpreferences: userpreferences,
-                private modellist: modellist,
-                private language: language,
-                private model: model,
-                private elementRef: ElementRef,
-                private renderer: Renderer2) {
+    constructor(public metadata: metadata,
+                public userpreferences: userpreferences,
+                public modellist: modellist,
+                public language: language,
+                public model: model,
+                public elementRef: ElementRef,
+                public renderer: Renderer2) {
     }
 
     /**
@@ -50,7 +50,7 @@ export class ObjectListViewHeaderListSelector implements OnInit {
      * load the component config and update the standard list component if selected
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         this.loadComponentConfig();
 
@@ -67,7 +67,7 @@ export class ObjectListViewHeaderListSelector implements OnInit {
      * get the default component
      * @private
      */
-    private getDefaultComponent() {
+    public getDefaultComponent() {
         let component = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
         return component || this.componentconfig.lists[0].component;
     }
@@ -76,7 +76,7 @@ export class ObjectListViewHeaderListSelector implements OnInit {
      * load the component config and build the list of the available component
      * @private
      */
-    private loadComponentConfig() {
+    public loadComponentConfig() {
         let config = this.metadata.getComponentConfig('ObjectListView', this.model.module);
         let items = this.metadata.getComponentSetObjects(config.componentset);
         this.componentconfig = {
@@ -113,7 +113,7 @@ export class ObjectListViewHeaderListSelector implements OnInit {
      *
      * @param component
      */
-    private setListComponent(component) {
+    public setListComponent(component) {
         if (!this.modellist.currentList) {
             return;
         }

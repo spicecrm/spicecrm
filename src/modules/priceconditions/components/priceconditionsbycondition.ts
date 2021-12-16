@@ -16,27 +16,27 @@ declare var _: any;
 
 @Component({
     selector:'price-conditions-by-condition',
-    templateUrl: './src/modules/priceconditions/templates/priceconditionsbycondition.html',
+    templateUrl: '../templates/priceconditionsbycondition.html',
 })
 export class PriceConditionsByCondition implements OnInit {
 
     /**
      * all loaded conditions
      */
-    @Input() private conditions: any[] = [];
+    @Input() public conditions: any[] = [];
 
     /**
      * the list of conditiontypes
      */
-    private conditiontypes: any[] = [];
+    public conditiontypes: any[] = [];
 
     /**
      * the current active condition type
      */
-    private activeconditiontype: string;
+    public activeconditiontype: string;
 
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private backend: backend, private configuration: configurationService, private priceconditonsconfiguration: priceconditonsconfiguration) {
+    constructor(public language: language, public metadata: metadata, public model: model, public router: Router, public backend: backend, public configuration: configurationService, public priceconditonsconfiguration: priceconditonsconfiguration) {
     }
 
     public ngOnInit(): void {
@@ -46,7 +46,7 @@ export class PriceConditionsByCondition implements OnInit {
     /**
      * loads the conditions for the accounnt on the backend
      */
-    private analyzeConditions() {
+    public analyzeConditions() {
         this.conditiontypes = _.uniq(this.conditions.map(d => d.priceconditiontype_id));
 
         this.conditiontypes = [];
@@ -64,7 +64,7 @@ export class PriceConditionsByCondition implements OnInit {
 
     }
 
-    private setConditionType(conditiontypeid) {
+    public setConditionType(conditiontypeid) {
         this.activeconditiontype = conditiontypeid;
     }
 
@@ -73,7 +73,7 @@ export class PriceConditionsByCondition implements OnInit {
      *
      * @param priceconditiontype_id
      */
-    private getConditionTypeName(priceconditiontype_id) {
+    public getConditionTypeName(priceconditiontype_id) {
         if (this.priceconditonsconfiguration.config.conditiontypes) {
             let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
             if (ct) return ct.name;
@@ -87,7 +87,7 @@ export class PriceConditionsByCondition implements OnInit {
      *
      * @param priceconditiontype_id
      */
-    private getConditionTypeLabel(priceconditiontype_id) {
+    public getConditionTypeLabel(priceconditiontype_id) {
         if (this.priceconditonsconfiguration.config.conditiontypes) {
             let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
             if (ct) return ct.label ? ct.label : ct.name;
@@ -100,7 +100,7 @@ export class PriceConditionsByCondition implements OnInit {
         return _.uniq(this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype).map(d => d.priceconditiontypedetermination_id));
     }
 
-    private conditonsForDeterminationId(determinationid) {
+    public conditonsForDeterminationId(determinationid) {
         let conditions = this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype && c.priceconditiontypedetermination_id == determinationid);
         conditions.sort((a, b) => a.pricecondition_key > b.pricecondition_key ? 1 : -1);
         return conditions;

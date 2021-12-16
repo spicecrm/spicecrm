@@ -355,30 +355,34 @@ class SpiceFTSActivityHandler
         /** @todo clarify if we should add a check for the data types to split an object etc.. */
         foreach ($results['hits']['hits'] as &$hit) {
             $seed = BeanFactory::getBean($elastichandler->getHitModule($hit), $hit['_id']);
-            foreach ($seed->field_name_map as $field => $fieldData) {
-                //if (!isset($hit['_source']{$field}))
-                if(is_string($seed->$field)){
-                    $hit['_source'][$field] = html_entity_decode( $seed->$field, ENT_QUOTES);
+                // check if bean found since it might be deleted
+            if($seed){
+
+                foreach ($seed->field_name_map as $field => $fieldData) {
+                    //if (!isset($hit['_source']{$field}))
+                    if(is_string($seed->$field)){
+                        $hit['_source'][$field] = html_entity_decode( $seed->$field, ENT_QUOTES);
+                    }
                 }
+
+                //$hit['_source']['emailaddresses'] = $moduleHandler->getEmailAddresses($elastichandler->getHitModule($hit), $hit['_id']);
+
+                $hit['acl'] = $seed->getACLActions();
+                // $hit['acl_fieldcontrol'] = $krestHandler->get_acl_fieldaccess($seed);
+
+                // unset hidden fields
+                foreach ($hit['acl_fieldcontrol'] as $field => $control) {
+                    if ($control == 1 && isset($hit['_source'][$field])) unset($hit['_source'][$field]);
+                }
+                $items[] = [
+                    'id' => $seed->id,
+                    'module' => $elastichandler->getHitModule($hit),
+                    'start' => $hit['_source']['_activitydate'],
+                    'end' => $hit['_source']['_activityenddate'],
+                    'type' => $elastichandler->getHitModule($hit) == 'UserAbsences' ? 'absence' : 'event',
+                    'data' => $moduleHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed)
+                ];
             }
-
-            //$hit['_source']['emailaddresses'] = $moduleHandler->getEmailAddresses($elastichandler->getHitModule($hit), $hit['_id']);
-
-            $hit['acl'] = $seed->getACLActions();
-            // $hit['acl_fieldcontrol'] = $krestHandler->get_acl_fieldaccess($seed);
-
-            // unset hidden fields
-            foreach ($hit['acl_fieldcontrol'] as $field => $control) {
-                if ($control == 1 && isset($hit['_source'][$field])) unset($hit['_source'][$field]);
-            }
-            $items[] = [
-                'id' => $seed->id,
-                'module' => $elastichandler->getHitModule($hit),
-                'start' => $hit['_source']['_activitydate'],
-                'end' => $hit['_source']['_activityenddate'],
-                'type' => $elastichandler->getHitModule($hit) == 'UserAbsences' ? 'absence' : 'event',
-                'data' => $moduleHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed)
-            ];
         }
 
         return $items;

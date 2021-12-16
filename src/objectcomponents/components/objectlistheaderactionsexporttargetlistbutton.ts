@@ -19,17 +19,17 @@ import {modal} from '../../services/modal.service';
  */
 @Component({
     selector: 'object-list-header-actions-export-targetlist-button',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsexporttargetlistbutton.html',
+    templateUrl: '../templates/objectlistheaderactionsexporttargetlistbutton.html',
 })
 export class ObjectListHeaderActionsExportTargetlistButton {
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal,
+        public injector: Injector
     ) {
     }
 

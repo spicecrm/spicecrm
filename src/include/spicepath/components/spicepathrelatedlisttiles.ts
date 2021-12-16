@@ -7,7 +7,7 @@ import {ObjectRelatedList} from "../../../objectcomponents/components/objectrela
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
-    templateUrl: "./src/include/spicepath/templates/spicepathrelatedlisttiles.html",
+    templateUrl: "../templates/spicepathrelatedlisttiles.html",
     providers: [relatedmodels]
 })
 export class SpicePathRelatedListTiles extends ObjectRelatedList {}

@@ -11,10 +11,10 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-title',
-    templateUrl: './src/objectfields/templates/fieldtitle.html'
+    templateUrl: '../templates/fieldtitle.html'
 })
 export class fieldTitle extends fieldGeneric {
-    private isValid: boolean = true;
+    public isValid: boolean = true;
     errorMessage: String = '';
 
     get fielddd() {
@@ -35,7 +35,7 @@ export class fieldTitle extends fieldGeneric {
     }
 
     /*
-     constructor(private el: ElementRef, private model: model, private view: view, private language: language, private metadata: metadata) {
+     constructor(public el: ElementRef, public model: model, public view: view, public language: language, public metadata: metadata) {
      }
      */
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {

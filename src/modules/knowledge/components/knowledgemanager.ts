@@ -13,7 +13,7 @@ import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'knowledge-manager',
-    templateUrl: "./src/modules/knowledge/templates/knowledgemanager.html",
+    templateUrl: "../templates/knowledgemanager.html",
     providers: [model, KnowledgeService]
 })
 export class KnowledgeManager implements AfterViewInit {
@@ -21,19 +21,19 @@ export class KnowledgeManager implements AfterViewInit {
     public config: any = {canadd: true, draggable: true, expandall: false};
     public activeTab: string = "tree";
 
-    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
-    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) private tabsHeaderContainer: ViewContainerRef;
+    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) public maincontainer: ViewContainerRef;
+    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) public tabsHeaderContainer: ViewContainerRef;
 
-    constructor(private language: language,
-                private model: model,
-                private modal: modal,
-                private backend: backend,
-                private router: Router,
-                private metadata: metadata,
-                private navigationTab: navigationtab,
-                private injector: Injector,
-                private viewContainerRef: ViewContainerRef,
-                private knowledgeService: KnowledgeService) {
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public backend: backend,
+                public router: Router,
+                public metadata: metadata,
+                public navigationTab: navigationtab,
+                public injector: Injector,
+                public viewContainerRef: ViewContainerRef,
+                public knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
         this.checkAccess();
     }
@@ -81,7 +81,7 @@ export class KnowledgeManager implements AfterViewInit {
         }
     }
 
-    private checkAccess() {
+    public checkAccess() {
         if (!this.metadata.checkModuleAcl(this.model.module,'edit')) {
             this.router.navigate(['module/KnowledgeBooks/browser']);
         }
@@ -107,7 +107,7 @@ export class KnowledgeManager implements AfterViewInit {
             });
     }
 
-    private handleTreeDrop(toEdit) {
+    public handleTreeDrop(toEdit) {
         if (toEdit.newSortSequences) {
             this.backend.postRequest('module/KnowledgeDocuments/List/modifysortsequence', {}, toEdit.newSortSequences);
         }

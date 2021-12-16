@@ -15,16 +15,16 @@ import {footer} from "../../../services/footer.service";
 
 @Component({
     selector: '[workflow-manager-detail-taskdecisions-line]',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtaskdecisionsline.html',
+    templateUrl: '../templates/workflowmanagerdetailtaskdecisionsline.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailTaskDecisionsLine {
 
-    @Input() private decision: any = {};
-    @Input() private decisions: any = {};
-    @Input() private tasks: any[] = [];
+    @Input() public decision: any = {};
+    @Input() public decisions: any = {};
+    @Input() public tasks: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'WorkflowTaskDecisions';
 
         // set the view to edit mode
@@ -38,7 +38,7 @@ export class WorkflowManagerDetailTaskDecisionsLine {
         this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.decision);
     }
 
-    private removeDecision() {
+    public removeDecision() {
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Decision';
             componenRef.instance.message = 'are you sure you want to delete the decision option?';

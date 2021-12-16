@@ -8,7 +8,7 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: "./src/modules/servicecomponents/templates/serviceorderconfirmmodal.html",
+    templateUrl: "../templates/serviceorderconfirmmodal.html",
     providers: [view]
 })
 export class ServiceOrderConfirmModal implements OnInit {
@@ -16,14 +16,14 @@ export class ServiceOrderConfirmModal implements OnInit {
     /**
      * reference to self to allow closing the modal
      */
-    private self: any;
+    public self: any;
 
-    private componentset: string;
+    public componentset: string;
 
     constructor(
-        private model: model,
-        private metadata: metadata,
-        private view: view
+        public model: model,
+        public metadata: metadata,
+        public view: view
     ) {
         this.intiializeView();
     }
@@ -32,14 +32,14 @@ export class ServiceOrderConfirmModal implements OnInit {
         this.loadConfig();
     }
 
-    private intiializeView() {
+    public intiializeView() {
         this.view.isEditable = true;
         this.view.setEditMode();
 
         this.model.startEdit();
     }
 
-    private loadConfig() {
+    public loadConfig() {
         let compoonentConfig = this.metadata.getComponentConfig('ServiceOrderConfirmModal', this.model.module);
         this.componentset = compoonentConfig.componentset;
     }
@@ -47,7 +47,7 @@ export class ServiceOrderConfirmModal implements OnInit {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.model.cancelEdit();
         this.self.destroy();
     }
@@ -55,7 +55,7 @@ export class ServiceOrderConfirmModal implements OnInit {
     /**
      * confirm and close the modal
      */
-    private confirm() {
+    public confirm() {
         this.model.setField('serviceorder_status', 'confirmed');
         this.model.save().subscribe(saved => {
             this.self.destroy();

@@ -14,17 +14,17 @@ import {Router}   from '@angular/router';
 
 
 @Component({
-    templateUrl: './src/modules/workflow/templates/workflowmanager.html'
+    templateUrl: '../templates/workflowmanager.html'
 })
 export class WorkflowManager {
-    private _current_module: string;
-    private _current_workflow: string;
-    private _current_workflow_data: any = {};
+    public _current_module: string;
+    public _current_workflow: string;
+    public _current_workflow_data: any = {};
     public self: any = {};
 
-    private workflowdefinitions: any[] = [];
+    public workflowdefinitions: any[] = [];
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private utils: modelutilities, private toast: toast, private router: Router) {}
+    constructor(public backend: backend, public metadata: metadata, public language: language, public utils: modelutilities, public toast: toast, public router: Router) {}
 
     get modules() {
         return this.metadata.getModules().sort();
@@ -56,18 +56,18 @@ export class WorkflowManager {
         return this._current_workflow_data;
     }
 
-    private changeModule() {
+    public changeModule() {
         this.getWorkflows();
     }
 
-    private getWorkflows() {
+    public getWorkflows() {
         this.workflowdefinitions = [];
         this.backend.getRequest('module/WorkflowDefinitions/' + this.current_module).subscribe(wfd => {
             this.workflowdefinitions = wfd;
         });
     }
 
-    private getCurrentWorkflowData() {
+    public getCurrentWorkflowData() {
         this.workflowdefinitions.some(data => {
             if (data.id == this.current_workflow) {
                 this._current_workflow_data = this.utils.backendModel2spice('WorkflowDefinitions', data);
@@ -77,7 +77,7 @@ export class WorkflowManager {
     }
 
     /*
-    private deleteWorkflow() {
+    public deleteWorkflow() {
         this.backend.deleteRequest('spiceui/core/modelvalidations/' + this.current_workflow).subscribe(
             (success) => {
                 // this.broadcast.broadcastMessage('metadata.updatefieldsets', data);
@@ -93,7 +93,7 @@ export class WorkflowManager {
     }
     */
 
-    private save() {
+    public save() {
         let data = this.utils.spiceModel2backend('WorkflowDefinitions', this._current_workflow_data);
         this.backend.postRequest('module/WorkflowDefinitions/' + this.current_module + '/' + this._current_workflow, {}, data).subscribe(
             (success) => {
@@ -105,12 +105,12 @@ export class WorkflowManager {
         );
     }
 
-    private cancel() {
+    public cancel() {
             this.self.destroy();
     }
 
 
-    private addWorkflow() {
+    public addWorkflow() {
         let newGuid = this.utils.generateGuid();
         this.workflowdefinitions.push({
             id: newGuid,

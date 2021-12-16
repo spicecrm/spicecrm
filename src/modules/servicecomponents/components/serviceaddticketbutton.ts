@@ -11,7 +11,7 @@ import {model} from '../../../services/model.service';
  */
 @Component({
     selector: 'service-add-ticket-button',
-    templateUrl: './src/modules/servicecomponents/templates/serviceaddticketbutton.html',
+    templateUrl: '../templates/serviceaddticketbutton.html',
     providers: [model]
 })
 export class ServiceAddTicketButton {
@@ -19,7 +19,7 @@ export class ServiceAddTicketButton {
     @Input() servicecall: any = {};
     @Output() click: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, private model: model, private language: language) {}
+    constructor(public metadata: metadata, public model: model, public language: language) {}
 
     saveandcreate(){
         this.servicecall.save().subscribe(servicecall => {

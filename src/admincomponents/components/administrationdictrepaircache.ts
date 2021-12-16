@@ -9,11 +9,11 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-cache',
-    templateUrl: './src/admincomponents/templates/administrationdictrepaircache.html'
+    templateUrl: '../templates/administrationdictrepaircache.html'
 })
 
 export class AdministrationDictRepairCache {
-    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
+    constructor(public backend: backend, public toast: toast, public language: language, public modal: modal) {
     }
 
     public executeRepairCache() {

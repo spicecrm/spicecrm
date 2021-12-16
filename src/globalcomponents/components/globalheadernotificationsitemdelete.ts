@@ -10,7 +10,7 @@ import {notification} from "../../services/notification.service";
  */
 @Component({
     selector: 'global-header-notifications-item-delete',
-    templateUrl: './src/globalcomponents/templates/globalheadernotificationsitemdelete.html'
+    templateUrl: '../templates/globalheadernotificationsitemdelete.html'
 })
 export class GlobalHeaderNotificationsItemDelete {
     /**

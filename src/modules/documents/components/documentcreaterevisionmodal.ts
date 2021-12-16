@@ -17,7 +17,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: 'object-action-output-bean-modal',
-    templateUrl: './src/modules/documents/templates/documentcreaterevisionmodal.html',
+    templateUrl: '../templates/documentcreaterevisionmodal.html',
     providers: [view],
 
 })

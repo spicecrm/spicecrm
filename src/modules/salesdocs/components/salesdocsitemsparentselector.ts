@@ -10,14 +10,14 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'salesdocs-items-parent-selector',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsparentselector.html'
+    templateUrl: '../templates/salesdocsitemsparentselector.html'
 })
 export class SalesDocsItemsParentSelector {
 
-    @Input() private items: any[] = [];
-    @Input() private item: any = undefined;
+    @Input() public items: any[] = [];
+    @Input() public item: any = undefined;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private configurationService: configurationService, private session: session) {
+    constructor(public language: language, public metadata: metadata, public model: model, public configurationService: configurationService, public session: session) {
     }
 
     get isParent() {

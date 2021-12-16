@@ -15,19 +15,19 @@ import {toast} from "../../../services/toast.service";
  */
 @Component({
     selector: 'mailchimp-get-report-button',
-    templateUrl: './src/include/mailchimp/templates/mailchimpgetreportbutton.html',
+    templateUrl: '../templates/mailchimpgetreportbutton.html',
 })
 export class MailChimpGetReportButton {
 
     public report: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private backend: backend,
-        private toast: toast
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public toast: toast
     ) {
     }
 

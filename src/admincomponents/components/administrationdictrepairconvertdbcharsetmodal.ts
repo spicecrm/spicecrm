@@ -8,7 +8,7 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: 'administration-dict-repair-convert-db-charset-modal',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairconvertdbcharsetmodal.html'
+    templateUrl: '../templates/administrationdictrepairconvertdbcharsetmodal.html'
 })
 export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
     /**
@@ -36,13 +36,13 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
      */
     public self: any;
 
-    constructor(private backend: backend, private toast: toast, private language: language) {
+    constructor(public backend: backend, public toast: toast, public language: language) {
     }
 
     /**
      * holds the tables list filter term
      */
-    private _listFilterTerm: string;
+    public _listFilterTerm: string;
 
     /**
      * @return string the list filter term
@@ -138,7 +138,7 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
      * load the database tables data from backend
      * @private
      */
-    private loadDBTables() {
+    public loadDBTables() {
         this.backend.getRequest('admin/charset/database').subscribe(res => {
             this.tables = res.tables;
             this.filteredTables = this.tables;

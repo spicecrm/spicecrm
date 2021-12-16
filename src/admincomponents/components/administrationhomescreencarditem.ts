@@ -10,7 +10,7 @@ import {administration} from "../services/administration.service";
 
 @Component({
     selector: '[administration-card-item]',
-    templateUrl: './src/admincomponents/templates/administrationhomescreencarditem.html'
+    templateUrl: '../templates/administrationhomescreencarditem.html'
 })
 
 export class AdministrationHomeScreenCardItem {
@@ -19,11 +19,11 @@ export class AdministrationHomeScreenCardItem {
     @Input() public adminNavigationBlock: string = '';
 
     constructor(
-        private router: Router,
-        private metadata: metadata,
-        private language: language,
-        private administration: administration,
-        private navigationtab: navigationtab
+        public router: Router,
+        public metadata: metadata,
+        public language: language,
+        public administration: administration,
+        public navigationtab: navigationtab
     ) {
     }
 
@@ -32,7 +32,7 @@ export class AdministrationHomeScreenCardItem {
      *
      * @param item
      */
-    private openContent() {
+    public openContent() {
         // set the admin label for teh component
         let adminLabel = this.administration.getItemLabel(this.adminNavigationItem.id);
         this.navigationtab.setTabInfo({displayname: this.language.getLabel(adminLabel ? adminLabel : 'LBL_ADMINISTRATION'), displayicon: 'settings'});

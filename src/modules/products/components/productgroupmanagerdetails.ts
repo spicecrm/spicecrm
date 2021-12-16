@@ -8,16 +8,16 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'product-group-manager-details',
-    templateUrl: './src/modules/products/templates/Productgroupmanagerdetails.html',
+    templateUrl: '../templates/Productgroupmanagerdetails.html',
     providers: [model]
 })
 export class ProductGroupManagerDetails implements OnChanges, OnDestroy {
-    @ViewChild("detailscontainer", {read: ViewContainerRef, static: true}) private detailsContainer: ViewContainerRef;
+    @ViewChild("detailscontainer", {read: ViewContainerRef, static: true}) public detailsContainer: ViewContainerRef;
 
-    @Input('groupid') private groupId: string;
-    private renderedComponents: any[] = [];
+    @Input('groupid') public groupId: string;
+    public renderedComponents: any[] = [];
 
-    constructor(private language: language, private model: model, private metadata: metadata) {
+    constructor(public language: language, public model: model, public metadata: metadata) {
         this.model.module = 'ProductGroups';
     }
 
@@ -33,7 +33,7 @@ export class ProductGroupManagerDetails implements OnChanges, OnDestroy {
         this.renderedComponents.forEach(c => c.destroy());
     }
 
-    private buildContainer() {
+    public buildContainer() {
         this.renderedComponents.forEach(c => c.destroy());
         let componentconfig = this.metadata.getComponentConfig("ProductGroupManagerDetails", this.model.module);
         let componentSet = componentconfig.componentset;

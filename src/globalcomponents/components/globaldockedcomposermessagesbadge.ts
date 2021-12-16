@@ -9,13 +9,15 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-docked-composer-messages-badge',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposermessagesbadge.html'
+    templateUrl: '../templates/globaldockedcomposermessagesbadge.html'
 })
 export class GlobalDockedComposerMessagesBadge {
 
-    @Input() private side: "left" | "right" = 'left'
+    public showpopover: boolean = false;
 
-    constructor(private model: model, private language: language) {
+    @Input()public side: "left" | "right" = 'left'
+
+    constructor(public model: model,public language: language) {
 
     }
 

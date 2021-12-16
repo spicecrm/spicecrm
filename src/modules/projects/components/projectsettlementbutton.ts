@@ -13,7 +13,7 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'project-settlement-button',
-    templateUrl: './src/modules/projects/templates/projectsettlementbutton.html'
+    templateUrl: '../templates/projectsettlementbutton.html'
 })
 export class ProjectSettlementButton implements OnInit {
 
@@ -28,11 +28,11 @@ export class ProjectSettlementButton implements OnInit {
     public hidden: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        @Optional() private navigationtab: navigationtab,
-        private router: Router
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        @Optional() public navigationtab: navigationtab,
+        public router: Router
     ) {
     }
 

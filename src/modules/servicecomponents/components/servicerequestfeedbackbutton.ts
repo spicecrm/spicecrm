@@ -12,7 +12,7 @@ import {modal} from "../../../services/modal.service";
  * Button for ServiceTickets that opens up a modal with an email form.
  */
 @Component({
-    templateUrl: "./src/modules/servicecomponents/templates/servicerequestfeedbackbutton.html"
+    templateUrl: "../templates/servicerequestfeedbackbutton.html"
 })
 export class ServiceRequestFeedbackButton {
 
@@ -20,16 +20,16 @@ export class ServiceRequestFeedbackButton {
     public module: string = "";
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private modal: modal,
-        private model: model,
-        private router: Router,
-        private ViewContainerRef: ViewContainerRef,
+        public language: language,
+        public metadata: metadata,
+        public modal: modal,
+        public model: model,
+        public router: Router,
+        public ViewContainerRef: ViewContainerRef,
     ) {
     }
 
-    private execute() {
+    public execute() {
         this.modal.openModal("ObjectActionMailModal", true, this.ViewContainerRef.injector).subscribe(
             (modal: any) => {
                 modal.instance.titellabel = 'LBL_REQUEST_FEEDBACK';

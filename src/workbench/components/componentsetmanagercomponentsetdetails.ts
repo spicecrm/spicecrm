@@ -15,7 +15,7 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'componentsetmanager-componentset-details',
-    templateUrl: './src/workbench/templates/componentsetmanagercomponentsetdetails.html'
+    templateUrl: '../templates/componentsetmanagercomponentsetdetails.html'
 })
 export class ComponentsetManagerComponentsetDetails implements OnChanges {
 
@@ -24,12 +24,12 @@ export class ComponentsetManagerComponentsetDetails implements OnChanges {
      */
     @Input() public component: any = {};
 
-    private configcomponent: string = "";
-    private configValues: any = {};
+    public configcomponent: string = "";
+    public configValues: any = {};
 
-    private selectedComponent: any = {};
+    public selectedComponent: any = {};
 
-    constructor(private view: view, private language: language,) {
+    constructor(public view: view, public language: language,) {
     }
 
     public ngOnChanges(changes: SimpleChanges) {
@@ -42,7 +42,7 @@ export class ComponentsetManagerComponentsetDetails implements OnChanges {
     }
 
 
-    private selectComponent(component) {
+    public selectComponent(component) {
         if (component.id) {
             this.selectedComponent = component;
         } else {

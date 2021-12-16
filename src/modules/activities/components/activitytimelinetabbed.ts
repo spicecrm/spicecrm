@@ -10,17 +10,17 @@ import {ActivityTimeline} from "./activitytimeline";
 
 
 @Component({
-    templateUrl: './src/modules/activities/templates/activitytimelinetabbed.html',
+    templateUrl: '../templates/activitytimelinetabbed.html',
     providers: [activitiytimeline, modelattachments]
 })
 export class ActivityTimelineTabbed extends ActivityTimeline implements OnInit, OnDestroy {
 
-    private activetab: 'planned' | 'history' = 'history';
+    public activetab: 'planned' | 'history' = 'history';
 
     /**
      * display the summary
      */
-    private displaySummary() {
+    public displaySummary() {
         let routeprefix = '';
         if (this.navigationtab?.tabid) {
             routeprefix = '/tab/' + this.navigationtab.tabid

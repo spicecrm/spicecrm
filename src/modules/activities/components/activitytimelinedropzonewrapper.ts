@@ -13,26 +13,26 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'activity-timeline-drop-zone-wrapper',
-    templateUrl: './src/modules/activities/templates/activitytimelinedropzonewrapper.html',
+    templateUrl: '../templates/activitytimelinedropzonewrapper.html',
     viewProviders: [model]
 })
 export class ActivityTimelineDropZoneWrapper {
 
-    private uploadData: any = {
+    public uploadData: any = {
         fileName: '',
         fileIcon: {},
         uploading: false,
         progress: undefined
     };
 
-    constructor(private language: language,
-                private toast: toast,
-                private configurationService: configurationService,
-                private activitiytimeline: activitiytimeline,
-                private noteModel: model,
-                @SkipSelf() private model: model,
-                private session: session,
-                private helper: helper) {
+    constructor(public language: language,
+                public toast: toast,
+                public configurationService: configurationService,
+                public activitiytimeline: activitiytimeline,
+                public noteModel: model,
+                @SkipSelf() public model: model,
+                public session: session,
+                public helper: helper) {
     }
 
     /**
@@ -56,7 +56,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param files
     * @return void
     */
-    private handleDroppedFiles(files: FileList) {
+    public handleDroppedFiles(files: FileList) {
         let msgFiles = [];
         let noteFiles = [];
         for (let file in files) {
@@ -104,7 +104,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param files
     * @return Observable
     */
-    private uploadFiles(files, moduleName, moduleId): Observable<any> {
+    public uploadFiles(files, moduleName, moduleId): Observable<any> {
         if (files.length === 0) {
             return;
         }
@@ -180,7 +180,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param file
     * @return Observable
     */
-    private readFile(file): Observable<any> {
+    public readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader: any = new FileReader();
         reader.file = file;
@@ -202,7 +202,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param fileName
     * @param fileType
     */
-    private setFileIcon(fileName, fileType) {
+    public setFileIcon(fileName, fileType) {
         if (fileType == this.uploadData.fileIcon.fileType) return;
         let icon = this.helper.determineFileIcon(fileType);
         if (icon == 'unknown') {
@@ -227,7 +227,7 @@ export class ActivityTimelineDropZoneWrapper {
     * create a new instance of the model service and pass it to the add note handler
     * @param files
     */
-    private addNotesFromFiles(files) {
+    public addNotesFromFiles(files) {
         this.addNewNote(files);
     }
 
@@ -237,7 +237,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param files
     * @param currentIndex
     */
-    private addNewNote(files, currentIndex = 0) {
+    public addNewNote(files, currentIndex = 0) {
 
         // prepare the note
         this.noteModel.reset();
@@ -289,7 +289,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param file
     * @return boolean
     */
-    private fileSizeExceeded(file) {
+    public fileSizeExceeded(file) {
         return this.maxSize && file.size > this.maxSize;
     }
 }

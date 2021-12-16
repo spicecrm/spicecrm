@@ -21,18 +21,18 @@ import {view} from "../../services/view.service";
 })
 export class SystemViewProviderDirective implements AfterViewInit, OnDestroy {
 
-    private resizeHandler: any;
+    public resizeHandler: any;
 
     constructor(
-        private renderer: Renderer2,
-        private elementRef: ElementRef,
-        private view: view
+        public renderer: Renderer2,
+        public elementRef: ElementRef,
+        public view: view
     ) {
 
     }
 
     @Input('system-view-provider')
-    set viewSettings(viewSettings: { editable: boolean, displayLabels: boolean, displayLinks: boolean }) {
+    set viewSettings(viewSettings: { editable?: boolean, displayLabels?: boolean, displayLinks?: boolean }) {
         if (viewSettings.editable) {
             this.view.isEditable = true;
         }
@@ -56,7 +56,7 @@ export class SystemViewProviderDirective implements AfterViewInit, OnDestroy {
     }
 
 
-    private setviewSize() {
+    public setviewSize() {
         if (this.elementRef.nativeElement.getBoundingClientRect().width < 500) {
             this.view.size = 'small';
         } else {

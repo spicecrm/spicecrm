@@ -11,7 +11,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-tags',
-    templateUrl: './src/objectfields/templates/fieldtags.html'
+    templateUrl: '../templates/fieldtags.html'
 })
 export class fieldTags extends fieldGeneric {
 
@@ -46,7 +46,7 @@ export class fieldTags extends fieldGeneric {
         }
     }
 
-    private removeByIndex(index) {
+    public removeByIndex(index) {
         let tags = this.objecttags;
         tags.splice(index, 1);
         this.model.setField('tags', JSON.stringify(tags));
@@ -57,7 +57,7 @@ export class fieldTags extends fieldGeneric {
      *
      * @param tag the tag
      */
-    private addTag(tag) {
+    public addTag(tag) {
         if( tag !== '' ) {
             let tags = this.objecttags;
             tags.push( tag );

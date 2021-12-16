@@ -8,7 +8,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-slider',
-    templateUrl: './src/systemcomponents/templates/systemslider.html',
+    templateUrl: '../templates/systemslider.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -22,16 +22,16 @@ export class SystemSlider implements ControlValueAccessor {
     /**
      * for the value accessor
      */
-    private onChange: (value: number) => void;
-    private onTouched: () => void;
+    public onChange: (value: number) => void;
+    public onTouched: () => void;
 
-    @Input() private max: string;
-    @Input() private min: string;
-    @Input() private step: string;
-    @Input() private disabled: boolean = false;
+    @Input() public max: string;
+    @Input() public min: string;
+    @Input() public step: string;
+    @Input() public disabled: boolean = false;
 
 
-    private _value: number = 0;
+    public _value: number = 0;
 
 
     constructor() {

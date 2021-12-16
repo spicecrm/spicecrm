@@ -9,7 +9,7 @@ import {calendar} from "../services/calendar.service";
  */
 @Component({
     selector: 'calendar-color-picker',
-    templateUrl: './src/modules/calendar/templates/calendarcolorpicker.html',
+    templateUrl: '../templates/calendarcolorpicker.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarColorPicker {
@@ -18,9 +18,9 @@ export class CalendarColorPicker {
     /**
      * boolean to show/hide the color palette
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
 
-    constructor(private calendar: calendar) {
+    constructor(public calendar: calendar) {
     }
 
 
@@ -28,7 +28,7 @@ export class CalendarColorPicker {
      * emit the picked color and close the palette
      * @param color
      */
-    private pickColor(color) {
+    public pickColor(color) {
         this.colorChange.emit('#' + color);
         this.isOpen = false;
     }

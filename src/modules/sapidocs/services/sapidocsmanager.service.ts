@@ -25,7 +25,7 @@ export class sapIdocsManager {
     /**
      *
      */
-    private references: any = {};
+    public references: any = {};
 
     /**
      * the id of the current selected segment
@@ -47,14 +47,14 @@ export class sapIdocsManager {
      */
     public selectedfield$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-    constructor(private backend: backend, private helper: helper, private toast: toast) {
+    constructor(public backend: backend, public helper: helper, public toast: toast) {
         this.loadSegments();
     }
 
     /**
      * loads all segments and fields
      */
-    private loadSegments() {
+    public loadSegments() {
         let segments = this.backend.getRequest('configuration/sapidocsmanager/segments').subscribe(res => {
             this.segments = res.segments;
             this.addToReference(this.segments);
@@ -70,7 +70,7 @@ export class sapIdocsManager {
      *
      * @param items
      */
-    private addToReference(items: any[]) {
+    public addToReference(items: any[]) {
         for (let item of items) {
             this.references[item.id] = Md5.hashStr(JSON.stringify(item));
         }
@@ -106,7 +106,7 @@ export class sapIdocsManager {
     /**
      * gets the changed items
      */
-    private getChanges() {
+    public getChanges() {
         let objects = ['segments', 'segmentrelations', 'fields'];
 
         let changed: any[] = [];

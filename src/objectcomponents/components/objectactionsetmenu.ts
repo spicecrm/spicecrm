@@ -13,7 +13,7 @@ import {helper} from '../../services/helper.service';
 
 @Component({
     selector: 'object-actionset-menu',
-    templateUrl: './src/objectcomponents/templates/objectactionsetmenu.html',
+    templateUrl: '../templates/objectactionsetmenu.html',
     providers: [popup, helper]
 })
 export class ObjectActionsetMenu implements  OnDestroy {
@@ -27,7 +27,7 @@ export class ObjectActionsetMenu implements  OnDestroy {
     popupSubscription: any;
     clickListener: any;
 
-    constructor(private language: language, private model: model, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer2, private popup: popup, private helper: helper) {
+    constructor(public language: language, public model: model, public metadata: metadata, public elementRef: ElementRef, public renderer: Renderer2, public popup: popup, public helper: helper) {
         this.popupSubscription = this.popup.closePopup$.subscribe(close => {
             this.isOpen = false;
         })

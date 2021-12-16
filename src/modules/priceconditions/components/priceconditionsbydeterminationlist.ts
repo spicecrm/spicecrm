@@ -14,41 +14,41 @@ declare var _: any;
 
 @Component({
     selector: 'price-conditions-by-determination-list',
-    templateUrl: './src/modules/priceconditions/templates/priceconditionsbydeterminationlist.html'
+    templateUrl: '../templates/priceconditionsbydeterminationlist.html'
 })
 export class PriceConditionsByDeterminationList implements OnChanges {
 
     /**
      * the id of the rendered determination
      */
-    @Input() private determinationid: string;
+    @Input() public determinationid: string;
 
     /**
      * the array of conditions to be rendered
      */
-    @Input() private conditions: any[] = [];
+    @Input() public conditions: any[] = [];
 
     /**
      * the type of the condiiton
      */
-    private conditiontype: 'A' | 'P' = 'A';
+    public conditiontype: 'A' | 'P' = 'A';
 
     /**
      * holds the fields for the determination strategy as per the determination_id
      */
-    private determinationfields: any[] = [];
+    public determinationfields: any[] = [];
 
     /**
      * holds the unique keys found in teh conditions
      */
-    private determinationkeys: string[] = [];
+    public determinationkeys: string[] = [];
 
     /**
      * holds conditiontypes allocated to the determination
      */
-    private conditiontypes: any[] = [];
+    public conditiontypes: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model, private priceconditonsconfiguration: priceconditonsconfiguration, private backend: backend, private userpreferences: userpreferences) {
+    constructor(public language: language, public metadata: metadata, public model: model, public priceconditonsconfiguration: priceconditonsconfiguration, public backend: backend, public userpreferences: userpreferences) {
     }
 
     public ngOnChanges(): void {
@@ -72,7 +72,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
         return this.determinationid;
     }
 
-    private getUniqueKeys() {
+    public getUniqueKeys() {
         this.determinationkeys = _.uniq(this.conditions.map(d => d.pricecondition_key));
         this.determinationkeys.sort();
     }
@@ -80,7 +80,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
     /**
      * build teh fields for the determination in the proper sequence
      */
-    private getDeterminationIdFields() {
+    public getDeterminationIdFields() {
         this.determinationfields = [];
         let determinationelements = this.priceconditonsconfiguration.config.determinationelements.filter(d => d.pricedetermination_id == this.determinationid).sort((a, b) => a.priceconditionelement_index > b.priceconditionelement_index ? 1 : -1);
         let start = 0;
@@ -104,7 +104,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
      * @param element
      * @param key
      */
-    private getValueFromKey(key, element) {
+    public getValueFromKey(key, element) {
         let val = key.substring(element.element_start, element.element_start + element.element_length);
         if (element.element_domain && this.language.languagedata.applist[element.element_domain]) {
             let textval = this.language.languagedata.applist[element.element_domain][val];
@@ -113,7 +113,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
         return val;
     }
 
-    private getConditionsTypeIDs() {
+    public getConditionsTypeIDs() {
         this.conditiontypes = this.priceconditonsconfiguration.config.conditiondeterminations.filter(c => c.pricedetermination_id == this.determinationid).map(t => this.priceconditonsconfiguration.config.conditiontypes.find(pc => pc.id == t.priceconditiontype_id));
         this.conditiontypes.sort((a, b) => a.sortindex > b.sortindex ? 1 : -1);
     }
@@ -123,7 +123,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
      *
      * @param priceconditiontype_id
      */
-    private getConditionTypeName(priceconditiontype_id) {
+    public getConditionTypeName(priceconditiontype_id) {
         if (this.priceconditonsconfiguration.config.conditiontypes) {
             let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
             if (ct) return ct.name;
@@ -138,7 +138,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
      * @param key
      * @param conditiontype
      */
-    private getConditionValue(key, conditiontype) {
+    public getConditionValue(key, conditiontype) {
         let conditon = this.conditions.find(c => c.pricecondition_key == key && c.priceconditiontype_id == conditiontype.id);
         return conditon ? this.formatCondition(conditon.amount, conditiontype.valuetype) : '';
     }
@@ -149,7 +149,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
      * @param amount
      * @param valuetype
      */
-    private formatCondition(amount, valuetype) {
+    public formatCondition(amount, valuetype) {
         let val = parseFloat(amount);
         if (isNaN(val)) return '';
         switch (valuetype) {

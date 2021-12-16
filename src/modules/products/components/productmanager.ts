@@ -17,7 +17,7 @@ declare var moment: any;
  * renders the product mnager that display productgroups, selection options and then the product variants
  */
 @Component({
-    templateUrl: './src/modules/products/templates/productmanager.html',
+    templateUrl: '../templates/productmanager.html',
     providers: [model]
 })
 export class ProductManager {
@@ -25,9 +25,9 @@ export class ProductManager {
     /**
      * the selected item
      */
-    private selectedItem: any = {};
+    public selectedItem: any = {};
 
-    constructor(private language: language, private model: model, private navigationtab: navigationtab, private router: Router) {
+    constructor(public language: language, public model: model, public navigationtab: navigationtab, public router: Router) {
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_PRODUCT_MANAGER'), displaymodule: 'Products'});
     }
 
@@ -41,7 +41,7 @@ export class ProductManager {
     /**
      * adds the variant
      */
-    private addVariant() {
+    public addVariant() {
         let parent = {
             module: 'Products',
             id: this.selectedItem.object.id,
@@ -56,7 +56,7 @@ export class ProductManager {
      *
      * @param data
      */
-    private selectionChanged(data) {
+    public selectionChanged(data) {
         if (data.object) {
             this.selectedItem = data;
             if (data.object.goDetail) {

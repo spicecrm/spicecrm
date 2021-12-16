@@ -16,26 +16,26 @@ import {modellist} from '../../services/modellist.service';
  */
 @Component({
     selector: 'object-listview-aggregate-item',
-    templateUrl: './src/objectcomponents/templates/objectlistviewaggregateitem.html'
+    templateUrl: '../templates/objectlistviewaggregateitem.html'
 })
 export class ObjectListViewAggregateItem {
 
     /**
      * ths item in teh bucket
      */
-    @Input() private bucketitem: any = {};
+    @Input() public bucketitem: any = {};
 
     /**
      * the aggregate we are actually on
      */
-    @Input() private aggregate: any = {};
+    @Input() public aggregate: any = {};
 
     /**
      * internal flag if the claue is checked
      */
-    private isChecked: boolean = false;
+    public isChecked: boolean = false;
 
-    constructor(private elementRef: ElementRef, private language: language, private metadata: metadata, private modellist: modellist) {
+    constructor(public elementRef: ElementRef, public language: language, public metadata: metadata, public modellist: modellist) {
 
     }
 

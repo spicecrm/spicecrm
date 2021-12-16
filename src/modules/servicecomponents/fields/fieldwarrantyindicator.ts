@@ -15,7 +15,7 @@ declare var moment: any;
  * renders a bullet, indicating the existence of product warranty
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/fieldwarrantyindicator.html',
+    templateUrl: '../templates/fieldwarrantyindicator.html',
 })
 export class fieldWarrantyIndicator extends fieldGeneric {
 

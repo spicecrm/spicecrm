@@ -10,7 +10,7 @@ import {CdkDropListGroup} from "@angular/cdk/drag-drop";
  */
 @Component({
     selector: 'spice-page-builder',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilder.html',
+    templateUrl: '../templates/spicepagebuilder.html',
     providers: [SpicePageBuilderService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -23,14 +23,14 @@ export class SpicePageBuilder implements AfterViewInit {
     /**
      * drop list reference to manage adding new lists
      */
-    @ViewChild(CdkDropListGroup, {read: CdkDropListGroup, static: false}) private dropListGroup;
+    @ViewChild(CdkDropListGroup, {read: CdkDropListGroup, static: false}) public dropListGroup;
     /**
      * true when the drop list group ist defined
      * @private
      */
-    private dropListGroupDefined: boolean = false;
+    public dropListGroupDefined: boolean = false;
 
-    constructor(public spicePageBuilderService: SpicePageBuilderService, private cdRef: ChangeDetectorRef) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService, public cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -43,7 +43,7 @@ export class SpicePageBuilder implements AfterViewInit {
     /**
      * set drop list group reference
      */
-    private setDropListReference() {
+    public setDropListReference() {
         this.spicePageBuilderService.dropListGroup = this.dropListGroup;
         this.dropListGroupDefined = true;
         this.cdRef.detectChanges();

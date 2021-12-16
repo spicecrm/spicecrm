@@ -23,40 +23,40 @@ declare var moment: any;
 
 @Component({
     selector: 'crm-log-viewer-list',
-    templateUrl: './src/workbench/templates/crmlogviewerlist.html'
+    templateUrl: '../templates/crmlogviewerlist.html'
 })
 export class CRMLogViewerList implements OnInit {
 
-    @Input() private filter = { loglevels: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
-    @Input() private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
-    @Input('load') private load$: EventEmitter<null>;
-    @Input() private valuesNotClickable = false;
-    @Output() private countEntries$ = new BehaviorSubject<number>(0);
-    @Input() private limit: number;
+    @Input() public filter = { loglevels: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    @Input() public period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
+    @Input('load') public load$: EventEmitter<null>;
+    @Input() public valuesNotClickable = false;
+    @Output() public countEntries$ = new BehaviorSubject<number>(0);
+    @Input() public limit: number;
 
-    @Output('valueClicked') private valueClicked$ = new EventEmitter();
+    @Output('valueClicked') public valueClicked$ = new EventEmitter();
 
     /**
      * The log data from the backend
      * @private
      */
-    private entries: any[] = [];
+    public entries: any[] = [];
 
     /**
      * toast id
      * @private
      */
-    private toastId = '';
+    public toastId = '';
 
     /**
      * stati
      * @private
      */
-    private isLoading = false;
-    private isLoaded = false;
-    private isInitialLoaded = false;
+    public isLoading = false;
+    public isLoaded = false;
+    public isInitialLoaded = false;
 
-    constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) { }
+    constructor( public backend: backend, public metadata: metadata, public lang: language, public prefs: userpreferences, public modalservice: modal, public toast: toast ) { }
 
     public ngOnInit() {
         if ( this.load$ ) {
@@ -70,7 +70,7 @@ export class CRMLogViewerList implements OnInit {
      * Load the log entries from the backend
      * @private
      */
-    private loadData() {
+    public loadData() {
 
         if ( this.isLoading ) return;
 
@@ -111,7 +111,7 @@ export class CRMLogViewerList implements OnInit {
      * @param i index of entries
      * @private
      */
-    private showEntryInModal(i) {
+    public showEntryInModal(i) {
         this.modalservice.openModal('CRMLogViewerModal' ).subscribe( modal => {
             modal.instance.entry = this.entries[i];
             modal.instance.user_name = this.entries[i].user_name;

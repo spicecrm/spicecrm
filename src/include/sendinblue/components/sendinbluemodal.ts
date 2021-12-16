@@ -15,21 +15,21 @@ declare var _: any;
 
 @Component({
     selector: 'sendinblue-modal',
-    templateUrl: './src/include/sendinblue/templates/sendinbluemodal.html'
+    templateUrl: '../templates/sendinbluemodal.html'
 })
 export class SendinBlueModal {
 
     public contacts: any = [];
-    private self: any = {};
+    public self: any = {};
 
     constructor(
-        private language: language,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast
+        public language: language,
+        public router: Router,
+        public metadata: metadata,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast
     ) {
     }
 
@@ -38,7 +38,7 @@ export class SendinBlueModal {
      * calls the backend route to update the target list on Sendinblue
      * @private
      */
-    private updateSendInBlueList() {
+    public updateSendInBlueList() {
         const extId = this.model.getFieldValue('ext_id');
         if (_.isEmpty(extId)) {
             this.toast.sendToast(this.language.getLabel('MSG_NO_EXT_ID'), 'error');
@@ -63,7 +63,7 @@ export class SendinBlueModal {
      * destroys modal instance
      */
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

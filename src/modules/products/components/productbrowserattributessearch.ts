@@ -10,11 +10,11 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser-attribute-s-search',
-    templateUrl: './src/modules/products/templates/productbrowserattributessearch.html'
+    templateUrl: '../templates/productbrowserattributessearch.html'
 })
 export class ProductBrowserAttributeSSearch extends ProductBrowserAttributeVCSearch {
 
-    private arrayvalue: any[] = [];
+    public arrayvalue: any[] = [];
 
     constructor(public language: language, public productfinder: productfinder) {
         super(language, productfinder);

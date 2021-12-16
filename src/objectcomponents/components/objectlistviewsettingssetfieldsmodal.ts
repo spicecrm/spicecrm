@@ -14,31 +14,31 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-settings-setfields-modal',
-    templateUrl: './src/objectcomponents/templates/objectlistviewsettingssetfieldsmodal.html'
+    templateUrl: '../templates/objectlistviewsettingssetfieldsmodal.html'
 })
 export class ObjectListViewSettingsSetfieldsModal {
 
     /**
      * reference to self to be able to close the modal
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the listfields that are currently selected
      * cloned from the modellist service
      */
-    private listFields: any[] = [];
+    public listFields: any[] = [];
 
     /**
      * the remaining available fields
      */
-    private availableFields: any[] = [];
+    public availableFields: any[] = [];
 
     /**
      * the list fo selected fields
      */
-    private selectedAvailableFields: any[] = [];
-    private selectedListFields: any[] = [];
+    public selectedAvailableFields: any[] = [];
+    public selectedListFields: any[] = [];
 
     /**
      * load the modal and initlaize the fields from the modellist vs the ones available
@@ -47,7 +47,7 @@ export class ObjectListViewSettingsSetfieldsModal {
      * @param language
      * @param modellist
      */
-    constructor(private metadata: metadata, private language: language, private modellist: modellist) {
+    constructor(public metadata: metadata, public language: language, public modellist: modellist) {
 
         // get the listfields from the service
         this.listFields = _.clone(this.modellist.listfields);
@@ -74,7 +74,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /**
      * sorts the available fields
      */
-    private sortAvailableFields() {
+    public sortAvailableFields() {
         this.availableFields = this.availableFields.sort((a, b) => {
             return this.language.getFieldDisplayName(this.modellist.module, a.field, a.fieldconfig).toLowerCase() > this.language.getFieldDisplayName(this.modellist.module, b.field, b.fieldconfig).toLowerCase() ? 1 : -1;
         });
@@ -83,21 +83,21 @@ export class ObjectListViewSettingsSetfieldsModal {
     /**
      * close the modal
      */
-    private close(): void {
+    public close(): void {
         this.self.destroy();
     }
 
     /**
      * check if we can save (at least one fields needs to be selected
      */
-    private canSet(): boolean {
+    public canSet(): boolean {
         return this.listFields.length > 0;
     }
 
     /**
      * save the fieldsettings
      */
-    private set(): void {
+    public set(): void {
         if (this.canSet()) {
             this.modellist.listfields = this.listFields;
             this.close();
@@ -117,7 +117,7 @@ export class ObjectListViewSettingsSetfieldsModal {
      *
      * @param event
      */
-    private onFieldDrop(event) {
+    public onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }
@@ -125,7 +125,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /*
      select the field whenc lciked int he container
      */
-    private selectField(container, fieldid) {
+    public selectField(container, fieldid) {
         switch (container) {
             case 'available':
                 this.selectedAvailableFields = [fieldid];
@@ -139,7 +139,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /*
      function to set the aria-selected attr on a field
      */
-    private isSelected(container, field) {
+    public isSelected(container, field) {
         switch (container) {
             case 'available':
                 if (this.selectedAvailableFields.indexOf(field) >= 0) {
@@ -159,7 +159,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /*
      move selected field to the othe container
      */
-    private moveFields(fromContainer) {
+    public moveFields(fromContainer) {
         switch (fromContainer) {
             case 'available':
                 this.selectedAvailableFields.forEach((item) => {

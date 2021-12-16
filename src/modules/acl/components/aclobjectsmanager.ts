@@ -6,18 +6,18 @@ import {modelutilities} from "../../../services/modelutilities.service";
 import {modellist} from "../../../services/modellist.service";
 
 @Component({
-    templateUrl: "./src/modules/acl/templates/aclobjectsmanager.html",
+    templateUrl: "../templates/aclobjectsmanager.html",
 })
 export class ACLObjectsManager {
 
     @ViewChild("managercontent", {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
 
-    private activeobjectid: string = "";
-    private activetypeid: string = "";
+    public activeobjectid: string = "";
+    public activetypeid: string = "";
 
     constructor(
-        private modelutilities: modelutilities,
-        private elementRef: ElementRef
+        public modelutilities: modelutilities,
+        public elementRef: ElementRef
     ) {}
 
     get contentStyle(){
@@ -27,11 +27,11 @@ export class ACLObjectsManager {
         };
     }
 
-    private setObject(objectid){
+    public setObject(objectid){
         this.activeobjectid = objectid;
     }
 
-    private setType(typeid){
+    public setType(typeid){
         this.activetypeid = typeid;
     }
 

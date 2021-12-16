@@ -6,7 +6,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'system-modal-wrapper',
-    templateUrl: './src/systemcomponents/templates/systemmodalwrapper.html',
+    templateUrl: '../templates/systemmodalwrapper.html',
 })
 export class SystemModalWrapper implements OnDestroy {
 
@@ -19,7 +19,7 @@ export class SystemModalWrapper implements OnDestroy {
 
     @ViewChild('target', {read: ViewContainerRef, static: true}) target: ViewContainerRef;
 
-    constructor( private modalservice: modal, private application: ApplicationRef ) { }
+    constructor( public modalservice: modal, public application: ApplicationRef ) { }
 
     closeModal() {
         this.self.destroy();

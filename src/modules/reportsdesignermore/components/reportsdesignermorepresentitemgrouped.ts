@@ -10,7 +10,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'reports-designer-more-present-item-grouped',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorepresentitemgrouped.html'
+    templateUrl: '../templates/reportsdesignermorepresentitemgrouped.html'
 })
 export class ReportsDesignerMorePresentItemGrouped extends ReportsDesignerPresentItemStandard {
 
@@ -37,7 +37,7 @@ export class ReportsDesignerMorePresentItemGrouped extends ReportsDesignerPresen
      * @set listfield.sortpriority
      * @set listfields
      */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
+    public onDrop(dragEvent: CdkDragDrop<any>) {
         moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
         dragEvent.container.data = dragEvent.container.data.map((item, index) => {
             item.sortpriority = index;
@@ -49,7 +49,7 @@ export class ReportsDesignerMorePresentItemGrouped extends ReportsDesignerPresen
     /**
      * @set field.link: string
      */
-    protected setFieldLink(field, value) {
+    public setFieldLink(field, value) {
         field.link = value ? 'yes' : 'no';
     }
 }

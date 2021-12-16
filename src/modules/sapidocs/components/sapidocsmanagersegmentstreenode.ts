@@ -9,7 +9,7 @@ import {sapIDOCSegmentI, sapIDOCSegmentRelationI} from "../../../modules/sapidoc
 
 @Component({
     selector: '[sapidocs-manager-segments-tree-node]',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentstreenode.html',
+    templateUrl: '../templates/sapidocsmanagersegmentstreenode.html',
     host: {
         '[attr.aria-expanded]': 'expanded',
         '[attr.aria-level]': 'level + 1'
@@ -21,29 +21,29 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
     /**
      * the segment
      */
-    @Input() private segmentrelation: any;
+    @Input() public segmentrelation: any;
 
     /**
      * the level
      */
-    @Input() private level: number = 1;
+    @Input() public level: number = 1;
 
     /**
      * the segment details
      */
-    // private segment: sapIDOCSegmentI;
+    // public segment: sapIDOCSegmentI;
 
     /**
      * the segments underneath this one
      */
-    // private children: sapIDOCSegmentRelationI[] = [];
+    // public children: sapIDOCSegmentRelationI[] = [];
 
     /**
      * boolean flag if the node is expanded
      */
-    private expanded: boolean = false;
+    public expanded: boolean = false;
 
-    constructor(private language: language, private modal: modal, private injector: Injector, private sapIdocsManager: sapIdocsManager) {
+    constructor(public language: language, public modal: modal, public injector: Injector, public sapIdocsManager: sapIdocsManager) {
 
     }
 
@@ -97,20 +97,20 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
     /**
      * toggle open or closed
      */
-    private toggle() {
+    public toggle() {
         this.expanded = !this.expanded;
     }
 
     /**
      * set the seleted node to the service
      */
-    private selectNode(e: MouseEvent) {
+    public selectNode(e: MouseEvent) {
         e.stopPropagation();
         this.sapIdocsManager.selectSegment(this.segment.id);
     }
 
     // open the add segment modal
-    private addSegment() {
+    public addSegment() {
         this.modal.openModal('SAPIDOCsManagerSegmentAddModal', true, this.injector).subscribe(componentRef => {
             componentRef.instance.parentsegment_id = this.segment.id;
             componentRef.instance.added.subscribe((added: sapIDOCSegmentI) => {
@@ -134,7 +134,7 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
      * @param index
      * @param item
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 

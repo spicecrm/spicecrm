@@ -17,18 +17,18 @@ declare var moment: any;
  */
 @Component({
     selector: 'telephony-toolbar-indicator',
-    templateUrl: './src/modules/telephony/templates/telephonytoolbarindicator.html'
+    templateUrl: '../templates/telephonytoolbarindicator.html'
 })
 export class TelephonyToolbarIndicator  {
 
-    private msisdn: string = '';
+    public msisdn: string = '';
 
-    private callid: string;
+    public callid: string;
 
     constructor(
-        private modal: modal,
-        private modelutilities: modelutilities,
-        private telephony: telephony
+        public modal: modal,
+        public modelutilities: modelutilities,
+        public telephony: telephony
     ) {
         this.callid = this.modelutilities.generateGuid();
     }
@@ -39,7 +39,7 @@ export class TelephonyToolbarIndicator  {
      *
      * @private
      */
-    private doAddCall() {
+    public doAddCall() {
         this.modal.prompt('input', 'msisdn', 'enter the calling number', 'shade', this.msisdn).subscribe(msisdn => {
             this.msisdn= msisdn;
             let calldata = {
@@ -59,7 +59,7 @@ export class TelephonyToolbarIndicator  {
      *
      * @private
      */
-    private doConnectCall() {
+    public doConnectCall() {
         let calldata = {
             id: this.callid,
             direction: 'inbound',
@@ -75,7 +75,7 @@ export class TelephonyToolbarIndicator  {
      *
      * @private
      */
-    private doDisconnectCall() {
+    public doDisconnectCall() {
         let calldata = {
             id: this.callid,
             direction: 'inbound',
@@ -90,7 +90,7 @@ export class TelephonyToolbarIndicator  {
      *
      * @param eventData
      */
-    private handleCallEvent(eventData: any) {
+    public handleCallEvent(eventData: any) {
         let call = this.telephony.calls.find(c => c.callid == eventData.id);
         if (call) {
             call.status = this.translateStatus(eventData.state);
@@ -115,7 +115,7 @@ export class TelephonyToolbarIndicator  {
      *
      * @param eventData
      */
-    private addCall(eventData) {
+    public addCall(eventData) {
         /*
         let util = libphonenumber.PhoneNumberUtil.getInstance();
         let msisdn = eventData.direction == 'inbound' ? eventData.callernumber : eventData.callednumber;
@@ -130,7 +130,7 @@ export class TelephonyToolbarIndicator  {
         });
     }
 
-    private translateStatus(status) {
+    public translateStatus(status) {
         switch (status) {
             case 'PROCEEDING':
                 return 'initial';

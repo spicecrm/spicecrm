@@ -13,19 +13,19 @@ declare var moment: any;
 
 @Component({
     selector: 'workflow-panel-item',
-    templateUrl: './src/modules/workflow/templates/workflowpanelitem.html',
+    templateUrl: '../templates/workflowpanelitem.html',
 
 })
 export class WorkflowPanelItem {
 
-    @Input() private workflow: any = {};
+    @Input() public workflow: any = {};
 
-    private hidebody: boolean = false;
+    public hidebody: boolean = false;
 
-    constructor(private userpreferences: userpreferences) {
+    constructor(public userpreferences: userpreferences) {
     }
 
-    private toggleHidden() {
+    public toggleHidden() {
         this.hidebody = !this.hidebody;
     }
 

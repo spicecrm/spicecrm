@@ -10,16 +10,16 @@ import {BodyI} from "../interfaces/spicepagebuilder.interfaces";
  */
 @Component({
     selector: 'spice-page-builder-renderer',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderrenderer.html',
+    templateUrl: '../templates/spicepagebuilderrenderer.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderRenderer implements OnInit {
     /**
      * body element to be rendered in the view
      */
-    private body: BodyI;
+    public body: BodyI;
 
-    constructor(private spicePageBuilderService: SpicePageBuilderService) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -36,14 +36,14 @@ export class SpicePageBuilderRenderer implements OnInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /**
      * set body element
      */
-    private setBodyElement() {
+    public setBodyElement() {
         if (!this.spicePageBuilderService.page || !this.spicePageBuilderService.page.children) return;
         this.body = this.spicePageBuilderService.page.children[0];
     }

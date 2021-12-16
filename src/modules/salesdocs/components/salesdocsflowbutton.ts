@@ -9,7 +9,7 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'salesdocs-flow-button',
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsflowbutton.html"
+    templateUrl: "../templates/salesdocsflowbutton.html"
 })
 export class SalesDocsFlowButton {
 
@@ -18,7 +18,7 @@ export class SalesDocsFlowButton {
      *
      * @private
      */
-    constructor(public modal: modal, private injector: Injector) {
+    constructor(public modal: modal, public injector: Injector) {
 
     }
 

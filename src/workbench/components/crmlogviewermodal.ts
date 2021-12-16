@@ -8,7 +8,7 @@ import { toast } from '../../services/toast.service';
 import { userpreferences } from '../../services/userpreferences.service';
 
 @Component({
-    templateUrl: './src/workbench/templates/crmlogviewermodal.html',
+    templateUrl: '../templates/crmlogviewermodal.html',
 })
 export class CRMLogViewerModal {
 
@@ -16,21 +16,21 @@ export class CRMLogViewerModal {
      * component inputs
      * @private
      */
-    @Input() private entry: any;
-    @Input() private user_name = '';
+    @Input() public entry: any;
+    @Input() public user_name = '';
 
     /**
      * stati
      * @private
      */
-    private isLoaded = false;
-    private isLoading = true;
+    public isLoaded = false;
+    public isLoading = true;
 
-    private self;
+    public self;
 
-    constructor( private language: language, private backend: backend, private toast: toast, private prefs: userpreferences ) { }
+    constructor( public language: language, public backend: backend, public toast: toast, public prefs: userpreferences ) { }
 
-    private ngOnInit() {
+    public ngOnInit() {
         // When the full text already has been retrieved from the backend
         // (because this modal for this log entry has already been shown)
         // the data is still stored (property "fullDescription") and we don´t need to do the request again:
@@ -42,7 +42,7 @@ export class CRMLogViewerModal {
      * Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
      * @private
      */
-    private loadFullData() {
+    public loadFullData() {
         this.backend.getRequest( 'admin/crmlog/entry/'+this.entry.id ).subscribe(
             response => {
                 this.isLoaded = true;
@@ -58,7 +58,7 @@ export class CRMLogViewerModal {
     /**
      * Close the modal
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 

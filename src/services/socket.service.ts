@@ -17,22 +17,22 @@ export class socket {
     /**
      * the url for the socket connection from the backend
      */
-    private socketUrl: string;
+    public socketUrl: string;
     /**
      * holds the socket id from the backend
      * @private
      */
-    private socketId: string;
+    public socketId: string;
     /**
      * holds the sockets
      * @private
      */
-    private sockets: { [key: string]: SocketObjectI } = {};
+    public sockets: { [key: string]: SocketObjectI } = {};
 
     constructor(
-        private configuration: configurationService,
-        private broadcast: broadcast,
-        private session: session
+        public configuration: configurationService,
+        public broadcast: broadcast,
+        public session: session
     ) {
     }
 
@@ -122,7 +122,7 @@ export class socket {
      * load socket config from spice config
      * @private
      */
-    private setSocketData() {
+    public setSocketData() {
         let config = this.configuration.getCapabilityConfig('socket');
         this.socketUrl = config.socket_frontend;
         this.socketId = config.socket_id;
@@ -133,7 +133,7 @@ export class socket {
      * @param namespace
      * @private
      */
-    private initializeSocket(namespace: string): SocketObjectI {
+    public initializeSocket(namespace: string): SocketObjectI {
 
         const resSubject = new Subject<SocketEventI>();
 
@@ -170,7 +170,7 @@ export class socket {
      * @param resSubject
      * @private
      */
-    private handleConnectEvent(namespace: string, resSubject: Subject<SocketEventI>) {
+    public handleConnectEvent(namespace: string, resSubject: Subject<SocketEventI>) {
 
         if (!this.sockets[namespace]?.rooms) return;
 
@@ -189,7 +189,7 @@ export class socket {
      * @param data
      * @private
      */
-    private handleCustomEvent(resSubject: Subject<SocketEventI>, event: string, data: any) {
+    public handleCustomEvent(resSubject: Subject<SocketEventI>, event: string, data: any) {
         resSubject.next({
             type: event,
             data: data

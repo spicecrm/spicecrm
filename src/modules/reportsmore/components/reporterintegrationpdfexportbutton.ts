@@ -17,23 +17,23 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-integration-pdfexport-button',
-    templateUrl: './src/modules/reportsmore/templates/reporterintegrationpdfexportbutton.html'
+    templateUrl: '../templates/reporterintegrationpdfexportbutton.html'
 })
 export class ReporterIntegrationPDFexportButton {
 
-    @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) private downloadlink: ViewContainerRef;
+    @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) public downloadlink: ViewContainerRef;
 
-    private loadUrl: any = undefined;
-    private fileName: string = undefined;
+    public loadUrl: any = undefined;
+    public fileName: string = undefined;
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private footer: footer, private reporterconfig: reporterconfig) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public model: model, public footer: footer, public reporterconfig: reporterconfig) {
     }
 
     get canExport() {
         return this.model.checkAccess('export');
     }
 
-    private exportPDF() {
+    public exportPDF() {
         // build wherecondition
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {

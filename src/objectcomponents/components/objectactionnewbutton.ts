@@ -8,7 +8,7 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: "object-action-new-button",
-    templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html",
+    templateUrl: "../templates/objectactionnewbutton.html",
     providers: [model]
 })
 export class ObjectActionNewButton implements OnInit {

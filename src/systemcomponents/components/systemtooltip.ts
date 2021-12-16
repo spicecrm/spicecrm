@@ -5,21 +5,21 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-tooltip',
-    templateUrl: './src/systemcomponents/templates/systemtooltip.html'
+    templateUrl: '../templates/systemtooltip.html'
 })
 export class SystemTooltip {
-    @Input() private tooltiptext: string = '';
-    private displayHelp: boolean = false;
+    @Input() public tooltiptext: string = '';
+    public displayHelp: boolean = false;
 
-    private toggleHelp() {
+    public toggleHelp() {
         this.displayHelp = !this.displayHelp;
     }
 
-    private openHelp() {
+    public openHelp() {
         this.displayHelp = true;
     }
 
-    private closeHelp() {
+    public closeHelp() {
         this.displayHelp = false;
     }
 }

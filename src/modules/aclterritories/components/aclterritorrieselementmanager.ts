@@ -11,16 +11,16 @@ import {broadcast} from "../../../services/broadcast.service";
 
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanager.html',
+    templateUrl: '../templates/aclterritorrieselementmanager.html',
 })
 export class ACLTerritorriesElementmanager {
 
-    private activeElement: string = '';
+    public activeElement: string = '';
 
-    constructor(private backend: backend, private navigation: navigation, private elementRef: ElementRef) {
+    constructor(public backend: backend, public navigation: navigation, public elementRef: ElementRef) {
     }
 
-    private setActiveElement(element){
+    public setActiveElement(element){
         this.activeElement = element;
     }
 

@@ -10,7 +10,7 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'potentials-manager-add-button',
-    templateUrl: "./src/modules/potentials/templates/potentialsmanageraddbutton.html",
+    templateUrl: "../templates/potentialsmanageraddbutton.html",
     providers: [model]
 })
 export class PotentialsManagerAddButton {
@@ -18,16 +18,16 @@ export class PotentialsManagerAddButton {
     /**
      * the parent for the new button
      */
-    @Input() private parentModel: any;
+    @Input() public parentModel: any;
 
     /**
      * the product group id
      */
-    @Input() private productgroup_id: string = '';
+    @Input() public productgroup_id: string = '';
     /**
      * the product group name
      */
-    @Input() private productgroup_name: string = '';
+    @Input() public productgroup_name: string = '';
 
     constructor(
         public language: language,
@@ -60,7 +60,7 @@ export class PotentialsManagerAddButton {
         }
     }
 
-    private addPotential() {
+    public addPotential() {
         let setData = {
             productgroup_id: this.productgroup_id,
             productgroup_name: this.productgroup_name,

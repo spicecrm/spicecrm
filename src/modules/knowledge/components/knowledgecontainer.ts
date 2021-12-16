@@ -16,32 +16,32 @@ import {Location} from "@angular/common";
  */
 @Component({
     selector: 'knowledge-container',
-    templateUrl: "./src/modules/knowledge/templates/knowledgecontainer.html"
+    templateUrl: "../templates/knowledgecontainer.html"
 
 })
 export class KnowledgeContainer implements AfterViewInit, OnDestroy {
 
-    private modelId: string;
-    private module: 'KnowledgeBooks' | 'KnowledgeDocuments' = 'KnowledgeBooks';
+    public modelId: string;
+    public module: 'KnowledgeBooks' | 'KnowledgeDocuments' = 'KnowledgeBooks';
     /**
      * needed to determine weather the view is rendered or not to render the suitable component properly
      */
-    private viewInitialized: boolean = false;
-    private subscription: Subscription = new Subscription();
+    public viewInitialized: boolean = false;
+    public subscription: Subscription = new Subscription();
     /**
      * view reference to render the suitable component inside
      */
-    @ViewChild('knowledgeContainer', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('knowledgeContainer', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
 
-    constructor(private activatedRoute: ActivatedRoute,
-                private router: Router,
-                private backend: backend,
-                private location: Location,
-                private language: language,
-                private toast: toast,
-                private navigationtab: navigationtab,
-                private metadata: metadata) {
+    constructor(public activatedRoute: ActivatedRoute,
+                public router: Router,
+                public backend: backend,
+                public location: Location,
+                public language: language,
+                public toast: toast,
+                public navigationtab: navigationtab,
+                public metadata: metadata) {
         this.routerSubscriber();
     }
 
@@ -63,7 +63,7 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
     /**
      * subscribe to navigation and set the module to render the suitable component
      */
-    private routerSubscriber() {
+    public routerSubscriber() {
         this.subscription = this.navigationtab.activeRoute$.subscribe(route => {
             let params = route.params;
             if (!params.module) this.router.navigate(['module/Home']);
@@ -84,7 +84,7 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
      * pass the inputs to the rendered component
      * display error toast if the record was not found
      */
-    private renderView() {
+    public renderView() {
         if (!this.module) return;
         let component = this.metadata.checkModuleAcl(this.module, 'edit') ? 'KnowledgeManager' : 'KnowledgeBrowser';
 

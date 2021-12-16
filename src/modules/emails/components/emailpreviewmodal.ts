@@ -14,7 +14,7 @@ import {modelattachments} from '../../../services/modelattachments.service';
  * a modal that renders and provides a preview for an object
  */
 @Component({
-    templateUrl: './src/modules/emails/templates/emailpreviewmodal.html',
+    templateUrl: '../templates/emailpreviewmodal.html',
     providers: [model, view]
 })
 export class EmailPreviewModal implements OnInit {
@@ -22,34 +22,34 @@ export class EmailPreviewModal implements OnInit {
     /**
      * reference to the modal itself
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the type of the object that will be passed in
      */
-    @Input() private type: string = '';
+    @Input() public type: string = '';
 
     /**
      * the name of the object. This is displayed in the header
      */
-    @Input() private name: string = '';
+    @Input() public name: string = '';
 
     /**
      * the id of the attachment for the email
      */
-    private file: any;
+    public file: any;
 
     /**
      * the fieldset to be rendered
      */
-    private fieldset: string;
+    public fieldset: string;
 
     /**
      * if the email is beiong loaded
      */
-    private isLoading: boolean = true;
+    public isLoading: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private sanitizer: DomSanitizer, private backend: backend, private model: model, private view: view, private modelattachments: modelattachments) {
+    constructor(public language: language, public metadata: metadata, public sanitizer: DomSanitizer, public backend: backend, public model: model, public view: view, public modelattachments: modelattachments) {
         this.model.module = 'Emails';
 
         let componentConfig = this.metadata.getComponentConfig('EmailPreviewModal', this.model.module);
@@ -59,7 +59,7 @@ export class EmailPreviewModal implements OnInit {
     /**
      * handles closing the modal
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
@@ -75,7 +75,7 @@ export class EmailPreviewModal implements OnInit {
         });
     }
 
-    private download(){
+    public download(){
         this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
     }
 

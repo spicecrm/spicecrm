@@ -12,18 +12,18 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-phone-asterisk',
-    templateUrl: './src/objectfields/templates/fieldphoneasterisk.html'
+    templateUrl: '../templates/fieldphoneasterisk.html'
 })
 export class fieldPhoneAsterisk extends fieldGeneric {
 
-    private invalid = false;
-    private mark: string;
+    public invalid = false;
+    public mark: string;
 
-    constructor(public model: model, public view: view, public l: language, public metadata: metadata, public router: Router, private backend: backend) {
+    constructor(public model: model, public view: view, public l: language, public metadata: metadata, public router: Router, public backend: backend) {
         super(model, view, l, metadata, router);
     }
 
-    private makeCall() {
+    public makeCall() {
         if (this.model.data[this.fieldname] != '') {
             // console.log('placing call to ' + this.value);
             this.backend.postRequest('asterisk/outgoingcall', {}, {msisdn: this.value}).subscribe(result => {

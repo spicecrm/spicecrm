@@ -13,7 +13,7 @@ declare var moment: any;
 
 @Component({
     selector: 'campaigntask-mailerge-modal',
-    templateUrl: './src/modules/campaigns/templates/campaigntaskmailmergemodal.html'
+    templateUrl: '../templates/campaigntaskmailmergemodal.html'
 })
 export class CampaignTaskMailMergeModal {
 
@@ -21,20 +21,20 @@ export class CampaignTaskMailMergeModal {
      * reference to the modal itself
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the total number of records
      *
      * @private
      */
-    private totalCount: number = 0;
+    public totalCount: number = 0;
 
     /**
      * the starting number (starts at 1 .. calculated back to 0 indexed for the backend)
      * @private
      */
-    private start: number = 1;
+    public start: number = 1;
 
     /**
      * the number of pages to be generated
@@ -42,27 +42,27 @@ export class CampaignTaskMailMergeModal {
      *
      * @private
      */
-    private limit: number = 100;
+    public limit: number = 100;
 
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     /**
      * the loaded pdf
      *
      * @private
      */
-    private pdf: any;
+    public pdf: any;
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
-    private blobUrl: any;
+    public blobUrl: any;
 
     constructor(
-        private language: language,
-        private model: model,
-        private backend: backend,
-        private modal: modal,
+        public language: language,
+        public model: model,
+        public backend: backend,
+        public modal: modal,
         public sanitizer: DomSanitizer,
     ) {
         this.getCount();
@@ -72,7 +72,7 @@ export class CampaignTaskMailMergeModal {
      * retrieves the number of records in the targetlsts to get an understanding of the nunber of pages that canbe generated
      * @private
      */
-    private getCount() {
+    public getCount() {
         this.backend.getRequest(`module/CampaignTasks/${this.model.id}/targetcount`).subscribe(
             res => {
                 this.totalCount = parseInt(res.count, 10);
@@ -92,7 +92,7 @@ export class CampaignTaskMailMergeModal {
     /**
      * backend call to render the template and return the content
      */
-    private rendertemplate() {
+    public rendertemplate() {
         this.blobUrl = null;
         this.loading = true;
         this.backend.getRequest(`module/CampaignTasks/${this.model.id}/mailmerge`, {
@@ -118,7 +118,7 @@ export class CampaignTaskMailMergeModal {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -143,7 +143,7 @@ export class CampaignTaskMailMergeModal {
      *
      * @private
      */
-    private download() {
+    public download() {
         // generate a link element for the download
         let a = document.createElement("a");
         document.body.appendChild(a);
@@ -170,7 +170,7 @@ export class CampaignTaskMailMergeModal {
      * closes the modal
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

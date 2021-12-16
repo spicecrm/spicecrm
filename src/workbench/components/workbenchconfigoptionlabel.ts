@@ -6,13 +6,13 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'workbench-config-option-label',
-    templateUrl: './src/workbench/templates/workbenchconfigoptionlabel.html'
+    templateUrl: '../templates/workbenchconfigoptionlabel.html'
 })
 export class WorkbenchConfigOptionLabel {
 
     public configValues: any = [];
     public option: any = {};
 
-    constructor(private view: view) {
+    constructor(public view: view) {
     }
 }

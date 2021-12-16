@@ -19,7 +19,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
  */
 @Component({
     selector: 'aclterritorries-manager-territory-add-modal',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritoryaddmodal.html',
+    templateUrl: '../templates/aclterritorriesmanagerterritoryaddmodal.html',
     providers: [model, view]
 })
 export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
@@ -27,24 +27,24 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
     /**
      * reference to the component rendered
      */
-    private self: any;
+    public self: any;
 
     /**
      * the territory type to be created
      */
-    @Input() private territorytype: string = '';
+    @Input() public territorytype: string = '';
 
     /**
      * the territory details
      */
-    private territorrytypedetails: any = {};
+    public territorrytypedetails: any = {};
 
     /**
      * an event emitter top emit when a new territory is created
      */
-    @Output() private newterritory: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public newterritory: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private toast: toast) {
+    constructor(public backend: backend, public modal: modal, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public toast: toast) {
         // initialize the model
         this.initializeModel();
 
@@ -55,7 +55,7 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
     /**
      * set initial view paramaters
      */
-    private initializeView() {
+    public initializeView() {
         // set the view
         this.view.isEditable = true;
         this.view.displayLabels = false;
@@ -65,7 +65,7 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
     /**
      * setmodel attributes and initialize den m,odel
      */
-    private initializeModel() {
+    public initializeModel() {
         this.model.module = 'SpiceACLTerritories';
         this.model.id = this.modelutilities.generateGuid();
         this.model.initialize();

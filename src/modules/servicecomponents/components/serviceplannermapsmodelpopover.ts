@@ -12,7 +12,7 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'service-planner-maps-model-popover',
-    templateUrl: './src/objectcomponents/templates/objectmodelpopover.html',
+    templateUrl: '../../../objectcomponents/templates/objectmodelpopover.html',
     providers: [view]
 })
 export class ServicePlannerMapsModelPopover extends ObjectModelPopover implements OnInit {

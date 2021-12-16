@@ -9,11 +9,11 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-acl-roles',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairaclroles.html'
+    templateUrl: '../templates/administrationdictrepairaclroles.html'
 })
 
 export class AdministrationDictRepairACLRoles {
-    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
+    constructor(public backend: backend, public toast: toast, public language: language, public modal: modal) {
     }
 
     public executeRepairRoles() {

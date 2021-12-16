@@ -8,12 +8,12 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-integrate-item-target-list',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitemtargetlist.html',
+    templateUrl: '../templates/reportsdesignerintegrateitemtargetlist.html',
     providers: [model]
 })
 export class ReportsDesignerIntegrateItemTargetList {
 
-    constructor(private language: language, @SkipSelf() private model: model, private prospectListModel: model) {
+    constructor(public language: language, @SkipSelf() public model: model, public prospectListModel: model) {
     }
 
     /**
@@ -55,7 +55,7 @@ export class ReportsDesignerIntegrateItemTargetList {
     /**
      * set the initial plugin properties
      */
-    private initializeProperties() {
+    public initializeProperties() {
         this.prospectListModel.module = 'ProspectLists';
 
         let integrationParams = this.model.getField('integration_params');

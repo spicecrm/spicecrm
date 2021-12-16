@@ -10,7 +10,7 @@ import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
-import {ModuleActivities} from "../../modules/activities/moduleactivities";
+import {ModuleActivities} from "../activities/moduleactivities";
 
 import /*embed*/ {Home} from './components/home';
 import /*embed*/ {HomeAssistant} from './components/homeassistant';

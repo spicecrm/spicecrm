@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-navigation-tabbed-menu-tab',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedmenutab.html',
+    templateUrl: '../templates/globalnavigationtabbedmenutab.html',
     host: {
         '[class.slds-context-bar__item]': '1',
         '[class.slds-context-bar__item_tab]': '1',
@@ -24,7 +24,7 @@ export class GlobalNavigationTabbedMenuTab {
      */
     @Input() public object: objectTab;
 
-    constructor(private navigation: navigation, private language: language, public elementRef: ElementRef) {
+    constructor(public navigation: navigation,public language: language, public elementRef: ElementRef) {
 
     }
 
@@ -47,14 +47,14 @@ export class GlobalNavigationTabbedMenuTab {
     /**
      * sets the current tab as the active tab
      */
-    private setActive() {
+   public setActive() {
         this.navigation.setActiveTab(this.object.id);
     }
 
     /**
      * close the tab
      */
-    private closetab() {
+   public closetab() {
         this.navigation.closeObjectTab(this.object.id);
     }
 
@@ -68,7 +68,7 @@ export class GlobalNavigationTabbedMenuTab {
     /**
      * close the tab
      */
-    private pintab() {
+   public pintab() {
         this.object.pinned = !this.object.pinned;
     }
 

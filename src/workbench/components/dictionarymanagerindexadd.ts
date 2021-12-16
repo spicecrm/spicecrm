@@ -19,7 +19,7 @@ import {DictionaryIndex, DictionaryIndexItem, DictionaryItem} from "../interface
  * redners a modal to add an index
  */
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanagerindexadd.html',
+    templateUrl: '../templates/dictionarymanagerindexadd.html',
 })
 export class DictionaryManagerIndexAdd {
 
@@ -28,30 +28,30 @@ export class DictionaryManagerIndexAdd {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the index to be created
      *
      * @private
      */
-    private index: DictionaryIndex;
+    public index: DictionaryIndex;
 
     /**
      * the list of available index fields
      *
      * @private
      */
-    private availableDictionaryItems: DictionaryItem[] = [];
+    public availableDictionaryItems: DictionaryItem[] = [];
 
     /**
      * the list of fields in teh index
      *
      * @private
      */
-    private indexDictionaryItems: DictionaryItem[] = [];
+    public indexDictionaryItems: DictionaryItem[] = [];
 
-    constructor(private dictionarymanager: dictionarymanager, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public injector: Injector, public modelutilities: modelutilities) {
 
         let tablename = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).tablename;
 
@@ -73,7 +73,7 @@ export class DictionaryManagerIndexAdd {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -82,7 +82,7 @@ export class DictionaryManagerIndexAdd {
      *
      * @private
      */
-    private add() {
+    public add() {
         this.dictionarymanager.dictionaryindexes.push({...this.index});
 
         let sequence = 0;
@@ -107,7 +107,7 @@ export class DictionaryManagerIndexAdd {
      *
      * @param event
      */
-    private onFieldDrop(event) {
+    public onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }

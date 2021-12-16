@@ -11,26 +11,26 @@ import {model} from '../../../services/model.service';
  * renders a modal with the SQL and allows copying to Clipboard
  */
 @Component({
-    templateUrl: './src/modules/deployment/templates/deploymentcrdbsql.html',
+    templateUrl: '../templates/deploymentcrdbsql.html',
 })
 export class DeploymentCRDBSQL implements OnInit {
 
     /**
      * reference toi the modal
      */
-    private self: any;
+    public self: any;
 
     /**
      * indicates that the modal is loading
      */
-    private loading = true;
+    public loading = true;
 
     /**
      * the generated SQL Statement
      */
-    private sql: string = '';
+    public sql: string = '';
 
-    constructor(private backend: backend, private model: model, private language: language, private toast: toast) {
+    constructor(public backend: backend, public model: model, public language: language, public toast: toast) {
 
     }
 
@@ -47,14 +47,14 @@ export class DeploymentCRDBSQL implements OnInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * copy the SQL to clipboard
      */
-    private copy2clipboard() {
+    public copy2clipboard() {
         navigator.clipboard.writeText(this.sql).then(success => {
             this.toast.sendToast(this.language.getLabel('LBL_COPIED_TO_CLIPBOARD'), "info");
         });

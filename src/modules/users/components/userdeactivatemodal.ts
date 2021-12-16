@@ -9,7 +9,7 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: "./src/modules/users/templates/userdeactivatemodal.html"
+    templateUrl: "../templates/userdeactivatemodal.html"
 })
 
 export class UserDeactivateModal {
@@ -17,41 +17,41 @@ export class UserDeactivateModal {
     /**
      * reference to the modal itself
      */
-    private self: any;
+    public self: any;
 
     /**
      * all objects linked to the assigned user
      */
-    private objects: any[] = [];
+    public objects: any[] = [];
 
     /**
      * inidcator that we are loading elements for the user
      */
-    private loading = true;
+    public loading = true;
 
     /**
      * boolean to indicate that teh records shopudl be reassigned
      */
-    private reassignRecords: boolean = false;
+    public reassignRecords: boolean = false;
 
     /**
      * the total number of records to be reassigned
      */
-    private totalrecords: number = 0;
+    public totalrecords: number = 0;
 
     /**
      * the userid to reassign the records to
      */
-    private newuserid: string = '';
+    public newuserid: string = '';
 
-    constructor(private model: model, private modal: modal, private language: language, private backend: backend, private toast: toast) {
+    constructor(public model: model, public modal: modal, public language: language, public backend: backend, public toast: toast) {
         this.getUserObjects();
     }
 
     /**
      * get objects assigned to the current user
      */
-    private getUserObjects() {
+    public getUserObjects() {
         this.backend.getRequest(`module/Users/${this.model.id}/deactivate`).subscribe(
             res => {
                 for (let moduleid in res) {
@@ -91,7 +91,7 @@ export class UserDeactivateModal {
         return true;
     }
 
-    private deactivate() {
+    public deactivate() {
         let modules = [];
 
         // define an empty body. If newuserid is set create the body
@@ -122,7 +122,7 @@ export class UserDeactivateModal {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

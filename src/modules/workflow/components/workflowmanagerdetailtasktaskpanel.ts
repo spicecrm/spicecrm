@@ -13,13 +13,13 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasktaskpanel.html'
+    templateUrl: '../templates/workflowmanagerdetailtasktaskpanel.html'
 })
 export class WorkflowManagerDetailTaskTaskpanel {
 
     @Input() tasks : any = {};
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
 
     }
 

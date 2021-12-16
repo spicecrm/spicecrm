@@ -10,7 +10,7 @@ import {language} from "../../../services/language.service";
  * display a list of the overflowed events from month view
  */
 @Component({
-    templateUrl: './src/modules/calendar/templates/calendarmorepopover.html',
+    templateUrl: '../templates/calendarmorepopover.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarMorePopover implements AfterViewInit {
@@ -45,17 +45,17 @@ export class CalendarMorePopover implements AfterViewInit {
     /**
      * holds the popover hide timeout
      */
-    private hidePopoverTimeout: any = {};
+    public hidePopoverTimeout: any = {};
     /**
      * element reference of the popover container to handle its style
      */
-    @ViewChild('popoverContainer', {read: ViewContainerRef, static: true}) private popoverContainer: ViewContainerRef;
+    @ViewChild('popoverContainer', {read: ViewContainerRef, static: true}) public popoverContainer: ViewContainerRef;
 
-    constructor(private metadata: metadata,
-                private calendar: calendar,
-                private language: language,
-                private renderer: Renderer2,
-                private cdr: ChangeDetectorRef) {
+    constructor(public metadata: metadata,
+                public calendar: calendar,
+                public language: language,
+                public renderer: Renderer2,
+                public cdr: ChangeDetectorRef) {
     }
 
     /**
@@ -96,7 +96,7 @@ export class CalendarMorePopover implements AfterViewInit {
     /**
      * set popover style and the popover sides and position
      */
-    private setPopoverPosition() {
+    public setPopoverPosition() {
 
         if (this.isMobileView) {
             return {left: 0, bottom: 0, width: '100%'};
@@ -138,14 +138,14 @@ export class CalendarMorePopover implements AfterViewInit {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
     /**
      * clear hide timeout
      */
-    private onMouseOver() {
+    public onMouseOver() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
@@ -154,7 +154,7 @@ export class CalendarMorePopover implements AfterViewInit {
     /**
      * call to force closing the popover
      */
-    private onMouseOut(event) {
+    public onMouseOut(event) {
         this.closePopover(true, event);
     }
 }

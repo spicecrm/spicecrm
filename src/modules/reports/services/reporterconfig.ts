@@ -31,7 +31,7 @@ export class reporterconfig {
      * @param configurationService
      * @param backend
      */
-    constructor(private configurationService: configurationService, private backend: backend) {
+    constructor(public configurationService: configurationService, public backend: backend) {
         let repConfig = this.configurationService.getData('reporterConfig');
         if (!repConfig) {
             this.backend.getRequest('module/KReports/core/whereoperators/all').subscribe(repConfig => {
@@ -45,7 +45,7 @@ export class reporterconfig {
         this.getWhereFunctions();
     }
 
-    private getWhereFunctions() {
+    public getWhereFunctions() {
         this.backend.getRequest('module/KReports/core/wherefunctions').subscribe(res => {
            this.whereFunctions = res;
         });
@@ -56,7 +56,7 @@ export class reporterconfig {
      *
      * @param repConfig
      */
-    private parseConfifg(repConfig) {
+    public parseConfifg(repConfig) {
         this.operatorCount = repConfig.operatorCount;
         this.operatorTypes = repConfig.operatorTypes;
         this.operatorAssignments = repConfig.operatorAssignments;

@@ -7,19 +7,19 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 import {sapIDOCSegmentI} from "../../../modules/sapidocs/interfaces/moudesapidocs.interfaces";
 
 @Component({
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentaddmodal.html'
+    templateUrl: '../templates/sapidocsmanagersegmentaddmodal.html'
 })
 export class SAPIDOCsManagerSegmentAddModal implements OnInit {
 
-    private self: any;
+    public self: any;
 
-    private parentsegment_id: string;
+    public parentsegment_id: string;
 
-    private segment: sapIDOCSegmentI;
+    public segment: sapIDOCSegmentI;
 
-    private added: EventEmitter<string> = new EventEmitter<string>();
+    public added: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private sapIdocsManager: sapIdocsManager, private helper: helper) {
+    constructor(public sapIdocsManager: sapIdocsManager, public helper: helper) {
 
     }
 
@@ -30,7 +30,7 @@ export class SAPIDOCsManagerSegmentAddModal implements OnInit {
     /**
      * initializes the segment
      */
-    private initializeSegment() {
+    public initializeSegment() {
         this.segment = {
             id: this.helper.generateGuid(),
             deleted: '0',
@@ -42,14 +42,14 @@ export class SAPIDOCsManagerSegmentAddModal implements OnInit {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * adds the segment and closes the modal
      */
-    private add() {
+    public add() {
         this.sapIdocsManager.addSegment(this.parentsegment_id, this.segment);
         this.added.emit(this.segment.id);
         this.close();

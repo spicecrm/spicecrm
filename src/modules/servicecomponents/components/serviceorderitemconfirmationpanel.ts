@@ -11,7 +11,7 @@ import {ServiceOrderItemPanel} from "./serviceorderitempanel";
 
 @Component({
 
-    templateUrl: "./src/modules/servicecomponents/templates/serviceorderitemconfirmationpanel.html"
+    templateUrl: "../templates/serviceorderitemconfirmationpanel.html"
 })
 export class ServiceOrderItemConfirmationPanel extends ServiceOrderItemPanel implements OnInit {
 
@@ -19,7 +19,7 @@ export class ServiceOrderItemConfirmationPanel extends ServiceOrderItemPanel imp
 
     constructor(
         public language: language,
-        // @SkipSelf() private parent: model,
+        // @SkipSelf() public parent: model,
         public model: model,
         public modal: modal,
         public metadata: metadata,

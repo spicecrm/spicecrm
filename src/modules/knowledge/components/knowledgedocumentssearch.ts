@@ -11,13 +11,13 @@ import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: "knowledge-documents-search",
-    templateUrl: "./src/modules/knowledge/templates/knowledgedocumentssearch.html"
+    templateUrl: "../templates/knowledgedocumentssearch.html"
 })
 export class KnowledgeDocumentsSearch {
 
     public isLoading: boolean = false;
     public interval: any = undefined;
-    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) private inputContainer: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) public inputContainer: ViewContainerRef;
 
     constructor(public language: language,
                 public model: model,
@@ -52,12 +52,12 @@ export class KnowledgeDocumentsSearch {
         this.knowledgeService.resultsList = [];
     }
 
-    private selectDocument(doc) {
+    public selectDocument(doc) {
         this.knowledgeService.selectedDoc = doc.id;
         this.knowledgeService.selectedBook = {id: doc.knowledgebook_id, name: doc.knowledgebook_name};
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

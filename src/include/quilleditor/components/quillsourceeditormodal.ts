@@ -11,7 +11,7 @@ import {SystemRichTextSourceModal} from "../../../systemcomponents/components/sy
  */
 @Component({
     selector: 'quill-source-editor-modal',
-    templateUrl: './src/include/quilleditor/templates/quillsourceeditormodal.html'
+    templateUrl: '../templates/quillsourceeditormodal.html'
 })
 export class QuillSourceEditorModal extends SystemRichTextSourceModal {
 

@@ -13,12 +13,12 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser-attribute-vc-search',
-    templateUrl: './src/modules/products/templates/productbrowserattributevcsearch.html'
+    templateUrl: '../templates/productbrowserattributevcsearch.html'
 })
 export class ProductBrowserAttributeVCSearch {
 
     @Input() public attribute: any = {};
-    private timeout: any;
+    public timeout: any;
 
     constructor(public language: language, public productfinder: productfinder) {
     }

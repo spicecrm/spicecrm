@@ -17,7 +17,7 @@
             <label class="slds-form-element__label">Componentset</label>
             <div class="slds-form-element__control" style="min-width:250px;">
                 <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="currentComponentSet" (change)="selectComponentSet()" [disabled]="getComponentSets() == 0">
+                    <select class="slds-select" [(ngModel)]="currentComponentSet" (change)="selectComponentSet()" [disabled]="getComponentSets().length == 0">
                         <option></option>
                         <optgroup label="custom Componentsets" *ngIf="getComponentSets('custom').length > 0">
                             <option *ngFor="let sysComponentset of getComponentSets('custom')" [value]="sysComponentset.id">

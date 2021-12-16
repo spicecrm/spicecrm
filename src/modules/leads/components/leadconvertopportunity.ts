@@ -21,7 +21,7 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'lead-convert-opportunity',
-    templateUrl: './src/modules/leads/templates/leadconvertopportunity.html',
+    templateUrl: '../templates/leadconvertopportunity.html',
     providers: [view, model]
 })
 export class LeadConvertOpportunity implements AfterViewInit {
@@ -29,7 +29,7 @@ export class LeadConvertOpportunity implements AfterViewInit {
     /**
      * the container ref to render the detailed view in
      */
-    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
     /**
      * EventEmitter to emit the created opportunity
@@ -39,17 +39,17 @@ export class LeadConvertOpportunity implements AfterViewInit {
     /**
      * the component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * reference to the various compoentnes rendered as part of the detailed componentset
      */
-    private componentRefs: any = [];
+    public componentRefs: any = [];
 
     /**
      * internal boolean flag to allow the user to select if an opportunity shoudl be created
      */
-    private createOpportunity: boolean = false;
+    public createOpportunity: boolean = false;
 
     /**
      * returns if the flag is set
@@ -76,7 +76,7 @@ export class LeadConvertOpportunity implements AfterViewInit {
         }
     }
 
-    constructor(private view: view, private metadata: metadata, @SkipSelf() private lead: model, private model: model, private language: language) {
+    constructor(public view: view, public metadata: metadata, @SkipSelf() public lead: model, public model: model, public language: language) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -93,7 +93,7 @@ export class LeadConvertOpportunity implements AfterViewInit {
      * initialize the Opportunity from the Lead
      * also subscribes to the lead in case the account id changes to get the updated account id to link the opportunity to
      */
-    private initializeFromLead() {
+    public initializeFromLead() {
         this.model.module = 'Opportunities';
         this.model.initialize(this.lead);
         this.lead.data$.subscribe(data => {
@@ -125,7 +125,7 @@ export class LeadConvertOpportunity implements AfterViewInit {
     /**
      * builds the container
      */
-    private buildContainer() {
+    public buildContainer() {
         // Close any already open dialogs
         // this.container.clear();
         for (let component of this.componentRefs) {

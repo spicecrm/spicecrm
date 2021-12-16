@@ -8,21 +8,21 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'reporter-filter-item-user-single',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemusersingle.html'
+    templateUrl: '../templates/reporterfilteritemusersingle.html'
 })
 export class ReporterFilterItemUserSingle implements OnInit {
     /**
      * @input whereCondition: object
      */
-    @Input() private whereCondition: any = {};
+    @Input() public whereCondition: any = {};
     /**
      * @input fieldName: string
      */
-    @Input() private fieldName: string;
+    @Input() public fieldName: string;
 
-    private activeUserName: string = '';
+    public activeUserName: string = '';
 
-    constructor(private language: language, private modal: modal, private session: session) {
+    constructor(public language: language, public modal: modal, public session: session) {
     }
 
     /**
@@ -68,7 +68,7 @@ export class ReporterFilterItemUserSingle implements OnInit {
     /**
      * clear relate fields
      */
-    private clearField() {
+    public clearField() {
         this.whereCondition.value = '';
         this.whereCondition.valuekey = '';
     }
@@ -76,7 +76,7 @@ export class ReporterFilterItemUserSingle implements OnInit {
     /**
      * opens module lookup modal
      */
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = 'Users';
             selectModal.instance.multiselect = false;

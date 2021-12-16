@@ -8,7 +8,7 @@ import {telecockpitservice} from "../services/telecockpit.service";
 
 @Component({
     selector: 'tele_sales_cockpit_add_attempt_button',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitaddattemptbutton.html'
+    templateUrl: '../templates/telesalescockpitaddattemptbutton.html'
 })
 
 export class TeleSalesCockpitAddAttemptButton {
@@ -18,8 +18,8 @@ export class TeleSalesCockpitAddAttemptButton {
 
     constructor(
         public telecockpitservice: telecockpitservice,
-        private language: language,
-        private modalservice: modal) {
+        public language: language,
+        public modalservice: modal) {
     }
 
     get maxAttempts() {
@@ -38,7 +38,7 @@ export class TeleSalesCockpitAddAttemptButton {
         });
     }
 
-    private removeItem(response, item) {
+    public removeItem(response, item) {
         if (!response) {
             return;
         }

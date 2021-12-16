@@ -13,28 +13,28 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "field-duns-number",
-    templateUrl: "./src/include/duns/templates/fielddunsnumber.html"
+    templateUrl: "../templates/fielddunsnumber.html"
 })
 export class FieldDunsNumber extends fieldGeneric {
 
     public componentconfig: any = {};
-    private fieldName: string = 'name';
-    private fieldStreet: string = 'billing_address_street';
-    private fieldCity: string = 'billing_address_city';
-    private fieldPostalCode: string = 'billing_address_postalcode';
-    private fieldCountry: string = 'billing_address_country';
-    private fieldHouseNumber: string = 'billing_address_hsnm';
-    private neverOverwriteAddress: boolean = false;
-    private guessHouseNumber: boolean = false;
+    public fieldName: string = 'name';
+    public fieldStreet: string = 'billing_address_street';
+    public fieldCity: string = 'billing_address_city';
+    public fieldPostalCode: string = 'billing_address_postalcode';
+    public fieldCountry: string = 'billing_address_country';
+    public fieldHouseNumber: string = 'billing_address_hsnm';
+    public neverOverwriteAddress: boolean = false;
+    public guessHouseNumber: boolean = false;
 
     constructor(public model: model,
                 public view: view,
                 public language: language,
                 public metadata: metadata,
                 public router: Router,
-                private backend: backend,
-                private modal: modal,
-                private ViewContainerRef: ViewContainerRef
+                public backend: backend,
+                public modal: modal,
+                public ViewContainerRef: ViewContainerRef
     ) {
         super(model, view, language, metadata, router);
     }
@@ -47,7 +47,7 @@ export class FieldDunsNumber extends fieldGeneric {
     /*
     * @return void
     */
-    private loadComponentConfig() {
+    public loadComponentConfig() {
         if (this.fieldconfig.never_overwrite_address) this.neverOverwriteAddress = true;
         if (this.fieldconfig.guess_house_number) this.guessHouseNumber = true;
         if (this.fieldconfig.field_name) this.fieldName =  this.fieldconfig.field_name;
@@ -63,7 +63,7 @@ export class FieldDunsNumber extends fieldGeneric {
     * open a modal and pass a list of duns
     * @return void
     */
-    private openDunsModal() {
+    public openDunsModal() {
         this.modal.openModal('DunsNumberModal', true, this.ViewContainerRef.injector)
             .subscribe(modalRef => {
                 this.getResults(modalRef);
@@ -81,7 +81,7 @@ export class FieldDunsNumber extends fieldGeneric {
     * @param modalRef
     * @return void
     */
-    private getResults(modalRef) {
+    public getResults(modalRef) {
         let params = {
             name: this.model.data.name,
             street: (this.model.getField(this.fieldStreet) ? this.model.getField(this.fieldStreet) + (this.model.getField(this.fieldHouseNumber) ? ' ' + this.model.getField(this.fieldHouseNumber) : '') : ''),
@@ -108,7 +108,7 @@ export class FieldDunsNumber extends fieldGeneric {
      * @param res
      * @return void
      */
-    private setAddressFields(res) {
+    public setAddressFields(res) {
 
         if (!this.model.getField(this.fieldName) || this.model.getField(this.fieldName).length == 0 || !this.neverOverwriteAddress) {
             if(res.name.length > 0) {

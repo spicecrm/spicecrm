@@ -11,7 +11,7 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "object-action-auditlog-modal",
-    templateUrl: "./src/objectcomponents/templates/objectactionauditlogmodal.html"
+    templateUrl: "../templates/objectactionauditlogmodal.html"
 })
 export class ObjectActionAuditlogModal implements OnInit {
 
@@ -25,28 +25,28 @@ export class ObjectActionAuditlogModal implements OnInit {
      *
      * @private
      */
-    private auditLog: any[] = [];
+    public auditLog: any[] = [];
 
     /**
      * the list of transaction IDs
      *
      * @private
      */
-    private auditTransactions: any[] = [];
+    public auditTransactions: any[] = [];
 
     /**
      * indicates that we are loading
      *
      * @private
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
-    private moduleFields: any[] = [];
+    public moduleFields: any[] = [];
 
-    private _userfilter: string = '';
-    private _fieldfilter: string = '';
+    public _userfilter: string = '';
+    public _fieldfilter: string = '';
 
-    constructor(private language: language, private metadata: metadata, @Optional() private model: model) {
+    constructor(public language: language, public metadata: metadata, @Optional() public model: model) {
     }
 
     get userfilter() {
@@ -85,14 +85,14 @@ export class ObjectActionAuditlogModal implements OnInit {
 
     }
 
-    private hideAuditLog() {
+    public hideAuditLog() {
         this.self.destroy();
     }
 
     /**
      * load ths audit log for the bean
      */
-    private loadAuditLog() {
+    public loadAuditLog() {
         if (this.model) {
             this.auditLog = [];
             this.auditTransactions = [];

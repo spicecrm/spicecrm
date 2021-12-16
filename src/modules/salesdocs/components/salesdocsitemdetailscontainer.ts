@@ -15,7 +15,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'salesdocs-item-details-container',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemdetailscontainer.html',
+    templateUrl: '../templates/salesdocsitemdetailscontainer.html',
     providers: [model]
 })
 export class SalesDocsItemDetailsContainer implements OnInit {
@@ -23,11 +23,11 @@ export class SalesDocsItemDetailsContainer implements OnInit {
     /**
      * the item to be displayed
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
-    private detailcomponentset: string;
+    public detailcomponentset: string;
 
-    constructor(private language: language,  private model: model, private view: view, private configuration: configurationService) {
+    constructor(public language: language,  public model: model, public view: view, public configuration: configurationService) {
 
     }
 

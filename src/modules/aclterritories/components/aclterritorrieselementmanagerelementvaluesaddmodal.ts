@@ -12,7 +12,7 @@ import {language} from "../../../services/language.service";
 
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanagerelementvaluesaddmodal.html',
+    templateUrl: '../templates/aclterritorrieselementmanagerelementvaluesaddmodal.html',
 })
 export class ACLTerritorriesElementmanagerElementValuesAddModal {
 
@@ -22,7 +22,7 @@ export class ACLTerritorriesElementmanagerElementValuesAddModal {
     elementvalue: string = '';
     @Output() newelementvalue: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private language: language, private elementRef: ElementRef) {
+    constructor(public backend: backend, public language: language, public elementRef: ElementRef) {
     }
 
     close(){

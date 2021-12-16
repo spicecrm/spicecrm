@@ -16,19 +16,19 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'field-output-templates',
-    templateUrl: './src/modules/outputtemplates/templates/fieldoutputtemplates.html'
+    templateUrl: '../templates/fieldoutputtemplates.html'
 })
 export class fieldOutputTemplates extends fieldGeneric implements OnInit {
 
     /**
      * set to true if the templates are loaded
      */
-    private isLoaded: boolean = false;
+    public isLoaded: boolean = false;
 
     /**
      * the templates loaded and presernted in the enum
      */
-    private items = [];
+    public items = [];
 
 
     constructor(
@@ -37,8 +37,8 @@ export class fieldOutputTemplates extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private configuration: configurationService
+        public backend: backend,
+        public configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }

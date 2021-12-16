@@ -12,14 +12,14 @@ declare var moment: any;
 
 @Component({
 
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketclosebutton.html'
+    templateUrl: '../templates/serviceticketclosebutton.html'
 })
 export class ServiceTicketCloseButton {
 
     /**
      * the status network item record
      */
-    private item: any;
+    public item: any;
 
     public hidden = false;
     public disabled = false;

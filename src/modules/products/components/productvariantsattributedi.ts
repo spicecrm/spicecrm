@@ -15,7 +15,7 @@ import {ProductVariantsAttributeVC} from './productvariantsattributevc';
 
 @Component({
     selector: 'product-variants-attribute-di',
-    templateUrl: './src/modules/products/templates/productvariantsattributedi.html'
+    templateUrl: '../templates/productvariantsattributedi.html'
 })
 
 export class ProductVariantsAttributeDI extends ProductVariantsAttributeVC {

@@ -23,7 +23,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 import {salesdocrecord} from "../services/salesdocrecord";
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
+    templateUrl: '../../../objectcomponents/templates/objectmodalmodulelookup.html',
     providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
@@ -34,7 +34,7 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
 
     @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout, @Optional() private salesdocrecord: salesdocrecord) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout, @Optional() public salesdocrecord: salesdocrecord) {
         super(language, modellist, metadata, modelutilities, model, layout);
 
         // set module to Products
@@ -54,7 +54,7 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
         this.self.destroy();
     }
 
-    private productSelected(product) {
+    public productSelected(product) {
 
         let itemData: any = {
             acl: {

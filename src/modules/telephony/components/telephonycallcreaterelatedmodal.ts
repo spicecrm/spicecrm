@@ -12,7 +12,7 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'telephony-call-panel-create-related-modal',
-    templateUrl: './src/modules/telephony/templates/telephonycallcreaterelatedmodal.html',
+    templateUrl: '../templates/telephonycallcreaterelatedmodal.html',
     providers: [model]
 })
 export class TelephonyCallCreateRelatedModal {
@@ -22,18 +22,18 @@ export class TelephonyCallCreateRelatedModal {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
-    private modules: string[] = [];
+    public modules: string[] = [];
 
 
-    private selectedModule: string;
+    public selectedModule: string;
     /**
      * emits if the obejct has been selected
      */
     @Output() public moduleselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, private model: model, private modal: modal) {
+    constructor(public metadata: metadata, public model: model, public modal: modal) {
         this.modules = this.metadata.getPhoneSearchModules();
     }
 

@@ -13,16 +13,16 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     selector: 'prospectlists-to-cleverreach-button',
-    templateUrl: './src/include/cleverreach/templates/prospectliststocleverreachbutton.html',
+    templateUrl: '../templates/prospectliststocleverreachbutton.html',
 })
 export class ProspectListsToCleverReachButton {
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector
     ) {}
 
     public execute() {

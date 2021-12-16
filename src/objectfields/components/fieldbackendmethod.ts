@@ -12,12 +12,12 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-backend-method',
-    templateUrl: './src/objectfields/templates/fieldbackendmethod.html'
+    templateUrl: '../templates/fieldbackendmethod.html'
 })
 export class fieldBackendMethod extends fieldGeneric {
 
-    private classexists: boolean = false;
-    private publicMethods: any[] = [];
+    public classexists: boolean = false;
+    public publicMethods: any[] = [];
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
@@ -52,7 +52,7 @@ export class fieldBackendMethod extends fieldGeneric {
         this.value = values[0] + '->' + value;
     }
 
-    private validateNamespace() {
+    public validateNamespace() {
         this.model.backend.getRequest('system/checkclass/' + btoa(this.className)).subscribe(res => {
             this.classexists = res.classexists;
             this.publicMethods = res.methods;

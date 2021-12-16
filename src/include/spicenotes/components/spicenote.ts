@@ -19,46 +19,46 @@ declare var moment: any;
  */
 @Component({
     selector: 'spice-note',
-    templateUrl: './src/include/spicenotes/templates/spicenote.html'
+    templateUrl: '../templates/spicenote.html'
 })
 export class SpiceNote {
 
     /**
      * the note in the for loop
      */
-    @Input() private note: any = {};
+    @Input() public note: any = {};
 
-    private isEditing: boolean = false;
+    public isEditing: boolean = false;
 
-    @Output() private deleteNote: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public deleteNote: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * @ignore
      *
      * @param objectnote
      */
-    constructor(public sanitized: DomSanitizer, private session: session, private backend: backend, private model: model) {
+    constructor(public sanitized: DomSanitizer, public session: session, public backend: backend, public model: model) {
 
     }
 
     /**
      * get the timestamp and vonverts into a relative one
      */
-    private getNoteTimeFromNow() {
+    public getNoteTimeFromNow() {
         return moment(this.note.date).fromNow();
     }
 
     /**
      * delete the note
      */
-    private delete() {
+    public delete() {
         this.deleteNote.emit();
     }
 
     /**
      * save the note
      */
-    private saveNote() {
+    public saveNote() {
         this.isEditing = false;
         this.backend.postRequest(`module/${this.model.module}/${this.model.id}/note/${this.note.id}`, {}, {text: this.note.text, global: !this.note.global});
     }
@@ -66,7 +66,7 @@ export class SpiceNote {
     /**
      * edit the note
      */
-    private edit() {
+    public edit() {
         this.isEditing = true;
     }
 
@@ -77,7 +77,7 @@ export class SpiceNote {
         return this.sanitized.bypassSecurityTrustHtml(this.note.text);
     }
 
-    private hideDeleteButton() {
+    public hideDeleteButton() {
         if (this.note.user_id != this.session.authData.userId && !this.session.authData.admin) {
             return true;
         }
@@ -87,14 +87,14 @@ export class SpiceNote {
     /**
      * tgggle a note privat or global
      */
-    private togglePrivate() {
+    public togglePrivate() {
         this.note.global = !this.note.global;
     }
 
     /**
-     * returns the proper icon for a private vs global note
+     * returns the proper icon for a public vs global note
      */
-    private getPrivateIcon() {
+    public getPrivateIcon() {
         if (this.note.global) {
             return 'unlock';
         } else {

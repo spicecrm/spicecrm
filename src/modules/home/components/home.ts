@@ -10,11 +10,11 @@ import {metadata} from '../../../services/metadata.service';
 import {userpreferences} from "../../../services/userpreferences.service";
 
 @Component({
-    templateUrl: './src/modules/home/templates/home.html',
+    templateUrl: '../templates/home.html',
 })
 export class Home {
-    private hasDashboardSet: boolean = false;
-    constructor(private broadcast: broadcast, private navigation: navigation, private metadata: metadata, private userpreferences: userpreferences) {
+    public hasDashboardSet: boolean = false;
+    constructor(public broadcast: broadcast, public navigation: navigation, public metadata: metadata, public userpreferences: userpreferences) {
         this.userpreferences.loadPreferences().subscribe(res => this.hasDashboardSet = res.home_dashboardset && res.home_dashboardset.length > 0);
         // set the navigation paradigm
         this.navigation.setActiveModule('Home');

@@ -13,33 +13,33 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'campaign-task-email-panel',
-    templateUrl: './src/modules/campaigns/templates/campaigntaskmailmergepanel.html'
+    templateUrl: '../templates/campaigntaskmailmergepanel.html'
 })
 export class CampaignTaskMailMergePanel implements OnInit, OnDestroy {
     /**
      * holds the component config set from the workbench
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * holds the active tab value
      */
-    private activeTab: 'details' | 'preview' = 'details';
+    public activeTab: 'details' | 'preview' = 'details';
 
 
     /**
      * holds a subscription to be unsubscribed on destroy
      */
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
-    constructor(private language: language,
-                private model: model,
-                private injector: Injector,
-                private view: view,
-                private sanitizer: DomSanitizer,
-                private backend: backend,
-                private metadata: metadata,
-                private modal: modal
+    constructor(public language: language,
+                public model: model,
+                public injector: Injector,
+                public view: view,
+                public sanitizer: DomSanitizer,
+                public backend: backend,
+                public metadata: metadata,
+                public modal: modal
     ) {
     }
 
@@ -67,7 +67,7 @@ export class CampaignTaskMailMergePanel implements OnInit, OnDestroy {
     /**
      * set the activeTab
      */
-    private setActiveTab(tab) {
+    public setActiveTab(tab) {
         this.activeTab = tab;
     }
 

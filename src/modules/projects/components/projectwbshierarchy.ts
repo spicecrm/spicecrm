@@ -11,7 +11,7 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
 
 @Component({
     selector: "projectwbs-hierarchy",
-    templateUrl: "./src/modules/projects/templates/projectwbshierarchy.html",
+    templateUrl: "../templates/projectwbshierarchy.html",
     providers: [projectwbsHierarchy, relatedmodels]
 })
 export class ProjectWBSHierarchy implements OnInit {
@@ -19,15 +19,15 @@ export class ProjectWBSHierarchy implements OnInit {
      * the component config
      * @private
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * the fieldsets to be displayed
      * @private
      */
-    private fieldsetFields: any[] = [];
+    public fieldsetFields: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private relatedmodels: relatedmodels, private broadcast: broadcast) {
+    constructor(public language: language, public metadata: metadata, public projectwbsHierarchy: projectwbsHierarchy, public model: model, public relatedmodels: relatedmodels, public broadcast: broadcast) {
 
         // needed for the button in the actionset
         this.relatedmodels.relatedModule = "ProjectWBSs";
@@ -44,7 +44,7 @@ export class ProjectWBSHierarchy implements OnInit {
      * @param message
      * @private
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== "ProjectWBSs" || (message.messagedata.module === "ProjectWBSs" && message.messagetype === "model.loaded")) {
             return;
@@ -57,7 +57,7 @@ export class ProjectWBSHierarchy implements OnInit {
      * calls hierarchy service and load data
      * @private
      */
-    private loadHierarchy() {
+    public loadHierarchy() {
         this.projectwbsHierarchy.project_id = this.model.id;
         this.projectwbsHierarchy.loadHierarchy();
     }
@@ -79,7 +79,7 @@ export class ProjectWBSHierarchy implements OnInit {
      * used to display spinner when hiearchy container is being laoded
      * @private
      */
-    private isLoading() {
+    public isLoading() {
         return this.projectwbsHierarchy.isloading;
     }
 

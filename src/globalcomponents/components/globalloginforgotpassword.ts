@@ -9,7 +9,7 @@ import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: 'global-login-forgot-password',
-    templateUrl: './src/globalcomponents/templates/globalloginforgotpassword.html'
+    templateUrl: '../templates/globalloginforgotpassword.html'
 })
 export class GlobalLoginForgotPassword {
     /**
@@ -17,38 +17,38 @@ export class GlobalLoginForgotPassword {
      *
      * @private
      */
-    private email: string = '';
+   public email: string = '';
 
     /**
      * the token the user sends
      *
      * @private
      */
-    private token: string = '';
+   public token: string = '';
 
     /**
      * the password entered by the user
      * @private
      */
-    private password: string = undefined;
+   public password: string = undefined;
 
     /**
      * holds the repeated password
      * @private
      */
-    private repeatPassword: string = undefined;
+   public repeatPassword: string = undefined;
 
     /**
      * the regex to match the password requirements
      * @private
      */
-    private pwdCheck: RegExp = new RegExp('//');
+   public pwdCheck: RegExp = new RegExp('//');
 
     /**
      * the text for the password requriements
      * @private
      */
-    private pwdGuideline: string;
+   public pwdGuideline: string;
 
     /**
      * defines the legth of the toekn that is either the minimum password length
@@ -56,20 +56,20 @@ export class GlobalLoginForgotPassword {
      *
      * @private
      */
-    private tokenLength: number = 6;
+   public tokenLength: number = 6;
 
     /**
      * indicates that we are sending and thus closes the various inputs and disables the buttons
      *
      * @private
      */
-    private sending: boolean = false;
+   public sending: boolean = false;
 
     /**
      * set to display the
      * @private
      */
-    private display: 'email'|'token' = 'email';
+   public display: 'email'|'token' = 'email';
 
 
     /**
@@ -77,19 +77,19 @@ export class GlobalLoginForgotPassword {
      *
      * @private
      */
-    @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output()public close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * keep the active toast if we have one
      *
      * @private
      */
-    private activeToast: string;
+   public activeToast: string;
 
     constructor(
-        private http: HttpClient,
-        private configuration: configurationService,
-        private toast: toast,
+       public http: HttpClient,
+       public configuration: configurationService,
+       public toast: toast,
     ) {
         this.getInfo();
     }
@@ -97,7 +97,7 @@ export class GlobalLoginForgotPassword {
     /*
     * retrieve password guideline
     */
-    private getInfo() {
+   public getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheck = new RegExp(extConf.regex);
 
@@ -128,7 +128,7 @@ export class GlobalLoginForgotPassword {
      *
      * @private
      */
-    private emailValidation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
+   public emailValidation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
 
 
     /**
@@ -143,7 +143,7 @@ export class GlobalLoginForgotPassword {
      *
      * @private
      */
-    private sendEmail() {
+   public sendEmail() {
         if (this.emailValid) {
             // clear an error toast if we have one
             if(this.activeToast){
@@ -178,7 +178,7 @@ export class GlobalLoginForgotPassword {
      *
      * @private
      */
-    private resetPassword() {
+   public resetPassword() {
         if (this.canSendToken) {
             // clear an error toast if we have one
             if(this.activeToast){

@@ -9,14 +9,14 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaign-send-mail-button',
-    templateUrl: './src/modules/campaigns/templates/campaignsendmailbutton.html'
+    templateUrl: '../templates/campaignsendmailbutton.html'
 })
 export class CampaignSendMailButton {
 
-    private sending: boolean = false;
+    public sending: boolean = false;
     public disabled: boolean = true;
 
-    constructor(private language: language, private model: model, private backend: backend, private toast: toast) {
+    constructor(public language: language, public model: model, public backend: backend, public toast: toast) {
         this.model.mode$.subscribe(mode => {
             this.handleDisabled();
         });
@@ -49,7 +49,7 @@ export class CampaignSendMailButton {
     /**
      * handle the disabled status
      */
-    private handleDisabled() {
+    public handleDisabled() {
 
         // not if activated already
         if (this.model.getField('activated')) {
