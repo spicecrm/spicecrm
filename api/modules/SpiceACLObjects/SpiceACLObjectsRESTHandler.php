@@ -41,9 +41,9 @@ class SpiceACLObjectsRESTHandler
         }
 
         // get action values
-        $authTypeFields = $db->query("SELECT id, action FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
-        while ($authTypeField = $db->fetchByAssoc($authTypeFields)) {
-            $retArray['authtypeactions'][] = $authTypeField;
+        $authTypeActions = $db->query("SELECT id, action, description FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
+        while ($authTypeAction = $db->fetchByAssoc($authTypeActions)) {
+            $retArray['authtypeactions'][] = $authTypeAction;
         }
 
         return $retArray;
