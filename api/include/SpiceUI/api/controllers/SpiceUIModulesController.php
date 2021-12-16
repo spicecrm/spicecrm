@@ -48,7 +48,7 @@ class SpiceUIModulesController
      * @throws \Exception
      *
      */
-    function getModules()
+    static function getModules()
     {
         global $modInvisList;
         $globalModuleList = SpiceModules::getInstance()->getModuleList();
