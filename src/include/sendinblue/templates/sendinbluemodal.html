@@ -7,7 +7,7 @@
             {{contacts.length}} <system-label [label]="'MSG_SENDINBLUE_FOUND'"></system-label>
             <system-label [label]="'MSG_SENDINBLUE_UPDATE_LIST'"></system-label>
         </div>
-        <div *ngIf="!contacts.length > 0">
+        <div *ngIf="contacts.length == 0">
             <system-label [label]="'MSG_SENDINBLUE_UPDATE_LIST'"></system-label>
         </div>
     </system-modal-content>

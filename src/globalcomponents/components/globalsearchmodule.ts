@@ -15,14 +15,14 @@ declare var _;
 
 @Component({
     selector: 'global-search-module',
-    templateUrl: './src/globalcomponents/templates/globalsearchmodule.html'
+    templateUrl: '../templates/globalsearchmodule.html'
 })
 export class GlobalSearchModule implements OnInit {
-    @Input() private module: string = '';
-    @Output() private scope: EventEmitter<string> = new EventEmitter<string>();
-    private listfields: any[] = [];
+    @Input()public module: string = '';
+    @Output()public scope: EventEmitter<string> = new EventEmitter<string>();
+   public listfields: any[] = [];
 
-    constructor(private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language, private layout: layout) {
+    constructor(public metadata: metadata,public elementref: ElementRef, router: Router,public fts: fts,public language: language,public layout: layout) {
 
     }
 
@@ -43,7 +43,7 @@ export class GlobalSearchModule implements OnInit {
         }
     }
 
-    private getCount(): any {
+   public getCount(): any {
         let resultCount = {};
         this.fts.moduleSearchresults.some(item => {
             if (item.module === this.module) {
@@ -61,11 +61,11 @@ export class GlobalSearchModule implements OnInit {
         return !this.fts.runningmodulesearch && this.getCount().total > 0 ? false : true;
     }
 
-    private canViewMore(): boolean {
+   public canViewMore(): boolean {
         return this.getCount().total > 5;
     }
 
-    private getItems(): any[] {
+   public getItems(): any[] {
         let items: any[] = [];
         this.fts.moduleSearchresults.some(item => {
             if (item.module === this.module) {
@@ -76,7 +76,7 @@ export class GlobalSearchModule implements OnInit {
         return items;
     }
 
-    private setSearchScope(): void {
+   public setSearchScope(): void {
         this.scope.emit(this.module);
     }
 }

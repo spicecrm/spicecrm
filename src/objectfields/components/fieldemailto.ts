@@ -12,7 +12,7 @@ import {fieldGeneric} from "./fieldgeneric";
 
 @Component({
     selector: 'field-email-to',
-    templateUrl: './src/objectfields/templates/fieldemailto.html'
+    templateUrl: '../templates/fieldemailto.html'
 })
 export class fieldEmailTo extends fieldGeneric{
     loadingOptions: boolean = false;
@@ -23,7 +23,7 @@ export class fieldEmailTo extends fieldGeneric{
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend
+        public backend: backend
     ) {
         super(model, view, language, metadata, router);
     }

@@ -18,14 +18,14 @@ import {administrationconfigurator} from '../services/administrationconfigurator
 
 @Component({
     selector: '[administration-configurator-item]',
-    templateUrl: './src/admincomponents/templates/administrationconfiguratoritem.html'
+    templateUrl: '../templates/administrationconfiguratoritem.html'
 })
 export class AdministrationConfiguratorItem implements OnInit{
 
     @Input() fields: Array<any> = [];
     @Input() entry: any = {};
 
-    constructor(private administrationconfigurator: administrationconfigurator) {
+    constructor(public administrationconfigurator: administrationconfigurator) {
     }
 
     ngOnInit(){

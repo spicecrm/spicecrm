@@ -23,7 +23,7 @@ export class administrationconfigurator {
     };
     public fielddefobj: any = {};
 
-    constructor(private backend: backend, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modelutilities: modelutilities) {
     }
 
 
@@ -53,7 +53,7 @@ export class administrationconfigurator {
     /**
      * @param record
      */
-    private mapData(record) {
+    public mapData(record) {
         for (let field in this.fielddefobj) {
             switch (this.fielddefobj[field]) {
                 case 'bool':
@@ -67,7 +67,7 @@ export class administrationconfigurator {
     /**
      * @param record
      */
-    private remapData(record) {
+    public remapData(record) {
         let newRecord = {};
         for (let field in this.fielddefobj) {
             switch (this.fielddefobj[field]) {

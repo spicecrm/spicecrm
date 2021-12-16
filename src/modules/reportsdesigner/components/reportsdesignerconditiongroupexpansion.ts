@@ -8,20 +8,20 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-condition-group-expansion',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerconditiongroupexpansion.html'
+    templateUrl: '../templates/reportsdesignerconditiongroupexpansion.html'
 })
 export class ReportsDesignerConditionGroupExpansion implements OnInit {
 
     /**
      * @input whereCondition: object
      */
-    @Input() private whereCondition: any;
+    @Input() public whereCondition: any;
 
-    private contextUsed: boolean = false;
+    public contextUsed: boolean = false;
 
-    constructor(private language: language,
-                private reportsDesignerService: ReportsDesignerService,
-                private model: model) {
+    constructor(public language: language,
+                public reportsDesignerService: ReportsDesignerService,
+                public model: model) {
     }
 
     /**
@@ -62,7 +62,7 @@ export class ReportsDesignerConditionGroupExpansion implements OnInit {
     /**
      * set the contextUsed to true if any of visualizationParams plugins has used it
      */
-    private setContextReferenceUse() {
+    public setContextReferenceUse() {
         const visualizationParams = this.model.getField('visualization_params');
         if (!visualizationParams) return;
         for (let key in visualizationParams) {

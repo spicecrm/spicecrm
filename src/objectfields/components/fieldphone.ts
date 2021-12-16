@@ -13,11 +13,11 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-phone',
-    templateUrl: './src/objectfields/templates/fieldphone.html'
+    templateUrl: '../templates/fieldphone.html'
 })
 export class fieldPhone extends fieldGeneric {
 
-    constructor(public model: model, public view: view, public l: language, public metadata: metadata, public router: Router, private backend: backend, private telephony: telephony) {
+    constructor(public model: model, public view: view, public l: language, public metadata: metadata, public router: Router, public backend: backend, public telephony: telephony) {
         super(model, view, l, metadata, router);
     }
 
@@ -31,7 +31,7 @@ export class fieldPhone extends fieldGeneric {
     /**
      * triggers the calling of an msisdn
      */
-    private initiateCall(e: MouseEvent) {
+    public initiateCall(e: MouseEvent) {
         e.stopPropagation();
         this.telephony.initiateCall(this.value, {
             relatedid: this.model.id,

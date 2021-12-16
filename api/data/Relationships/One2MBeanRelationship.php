@@ -84,11 +84,13 @@ class One2MBeanRelationship extends One2MRelationship
 
     protected function updateLinks($lhs, $lhsLinkName, $rhs, $rhsLinkName)
     {
-        if (isset($lhs->$lhsLinkName))
+        if ($lhs->load_relationship($lhsLinkName)){
             $lhs->$lhsLinkName->addBean($rhs);
+        }
         //RHS only has one bean ever, so we don't need to preload the relationship
-        if (isset($rhs->$rhsLinkName))
+        if ($rhs->load_relationship($rhsLinkName)){
             $rhs->$rhsLinkName->beans = [$lhs->id => $lhs];
+        }
     }
 
     protected function updateFields($lhs, $rhs, $additionalFields)

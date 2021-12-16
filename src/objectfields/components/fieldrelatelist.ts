@@ -14,13 +14,13 @@ import {toast} from '../../services/toast.service';
 
 @Component({
     selector: 'field-relate-list',
-    templateUrl: './src/objectfields/templates/fieldrelatelist.html'
+    templateUrl: '../templates/fieldrelatelist.html'
 })
 export class fieldRelateList extends fieldGeneric implements OnInit {
     public relatedList: any[] = [];
-    private relateIdField: string = '';
-    private relateNameField: string = '';
-    private relateType: string = '';
+    public relateIdField: string = '';
+    public relateNameField: string = '';
+    public relateType: string = '';
 
     constructor(
         public model: model,
@@ -63,14 +63,14 @@ export class fieldRelateList extends fieldGeneric implements OnInit {
         this.getRelatedList();
     }
 
-    private setFieldDefs() {
+    public setFieldDefs() {
         const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
     }
 
-    private getRelatedList() {
+    public getRelatedList() {
         if (!this.relateType) {
             return;
         }
@@ -83,7 +83,7 @@ export class fieldRelateList extends fieldGeneric implements OnInit {
             });
     }
 
-    private executeCopyRules(idRelated) {
+    public executeCopyRules(idRelated) {
         let awaitStopper = this.modal.await('LBL_LOADING');
         this.backend.get(this.relateType, idRelated).subscribe(
             (response: any) => {
@@ -101,7 +101,7 @@ export class fieldRelateList extends fieldGeneric implements OnInit {
             });
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

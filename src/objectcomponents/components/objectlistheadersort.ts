@@ -11,16 +11,16 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-list-header-sort',
-    templateUrl: './src/objectcomponents/templates/objectlistheadersort.html'
+    templateUrl: '../templates/objectlistheadersort.html'
 })
 export class ObjectListHeaderSort {
     /**
      * the field we are displaying
      */
-    @Input() private field: any;
+    @Input() public field: any;
 
 
-    constructor(private modellist: modellist) {
+    constructor(public modellist: modellist) {
 
     }
 

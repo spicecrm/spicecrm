@@ -9,7 +9,7 @@ import {CdkDragDrop} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'reports-designer-visualize-item-chart-data-panel',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignervisualizeitemchartdatapanel.html'
+    templateUrl: '../templates/reportsdesignervisualizeitemchartdatapanel.html'
 })
 export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
 
@@ -65,14 +65,14 @@ export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
     * @param item
     * @return index
     */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.fieldid;
     }
 
     /**
      * initialize the plugin dataseries
      */
-    private initializeDataSeries() {
+    public initializeDataSeries() {
         if (this.properties.dataseries && this.properties.dataseries.length > 0) return;
 
         // check if single series or multiple

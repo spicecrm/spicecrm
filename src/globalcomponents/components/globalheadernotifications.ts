@@ -11,31 +11,31 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'global-header-notifications',
-    templateUrl: './src/globalcomponents/templates/globalheadernotifications.html'
+    templateUrl: '../templates/globalheadernotifications.html'
 })
 export class GlobalHeaderNotifications {
     /**
      * if true show the notifications popover
      * @private
      */
-    private isOpen: boolean = false;
+   public isOpen: boolean = false;
     /**
      * if true the show settings button clicked
      * @private
      */
-    private showSettings: boolean = false;
+   public showSettings: boolean = false;
     /**
      * holds the click listener function to enable remove
      * @private
      */
-    private clickListener: () => void;
+   public clickListener: () => void;
 
     constructor(public notificationService: notification,
-                private elementRef: ElementRef,
+               public elementRef: ElementRef,
                 public userPreferences: userpreferences,
-                private cdRef: ChangeDetectorRef,
-                private router: Router,
-                private renderer: Renderer2) {
+               public cdRef: ChangeDetectorRef,
+               public router: Router,
+               public renderer: Renderer2) {
     }
 
     /**
@@ -115,7 +115,7 @@ export class GlobalHeaderNotifications {
      * @param value
      * @private
      */
-    private setDisplayDesktopNotification(value: boolean) {
+   public setDisplayDesktopNotification(value: boolean) {
 
         if (this.desktopNotificationsStatus === 'default') {
 

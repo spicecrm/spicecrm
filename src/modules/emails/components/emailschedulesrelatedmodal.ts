@@ -12,7 +12,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: "email-schedules-related-modal",
-    templateUrl: "./src/modules/emails/templates/emailschedulesrelatedmodal.html",
+    templateUrl: "../templates/emailschedulesrelatedmodal.html",
     providers: [model, view],
 })
 export class EmailSchedulesRelatedModal {
@@ -20,35 +20,35 @@ export class EmailSchedulesRelatedModal {
      * reference to the modal itsel
      * @private
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the currently active tab
      *
      * @private
      */
-    private activetab: 'emails' | 'recipients' = 'recipients';
+    public activetab: 'emails' | 'recipients' = 'recipients';
 
     /**
      * an array for the linked beans
      *
      * @private
      */
-    private linkedBeans: any[] = [];
+    public linkedBeans: any[] = [];
 
-    private modelId: string;
-    private currentModule: string;
+    public modelId: string;
+    public currentModule: string;
 
 
-    constructor(private language: language,
-                private model: model,
-                @SkipSelf() private parentModel: model,
-                private injector: Injector,
-                private view: view,
-                private modal: modal,
-                private metadata: metadata,
-                private backend: backend,
-                private toast: toast) {
+    constructor(public language: language,
+                public model: model,
+                @SkipSelf() public parentModel: model,
+                public injector: Injector,
+                public view: view,
+                public modal: modal,
+                public metadata: metadata,
+                public backend: backend,
+                public toast: toast) {
 
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -75,7 +75,7 @@ export class EmailSchedulesRelatedModal {
     /**
      * if the count of the linked beans is equal to 0 it will be disabled and unselectable
      */
-    private fiilterProspects() {
+    public fiilterProspects() {
         this.linkedBeans = this.linkedBeans.map(link => {
             link.disabled = link.count == 0;
             link.selected = false;
@@ -87,7 +87,7 @@ export class EmailSchedulesRelatedModal {
     /**
      * destroy modal instance
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -107,7 +107,7 @@ export class EmailSchedulesRelatedModal {
     /**
      * save the emailschedule model data, the current bean id, the current bean name, the selected links and send the object to the backend
      */
-    private saveSchedule() {
+    public saveSchedule() {
         if (this.canSchedule) {
             this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
                 loadingRef.instance.messagelabel = 'LBL_LOADING';
@@ -144,7 +144,7 @@ export class EmailSchedulesRelatedModal {
         return linked;
     }
 
-    private getLinkCount(link) {
+    public getLinkCount(link) {
         if (link.expanded) return link.linkedbeans ? link.linkedbeans.filter(b => !b.deleted).length : 0;
 
         // get a total count
@@ -159,7 +159,7 @@ export class EmailSchedulesRelatedModal {
      * @param link
      * @private
      */
-    private expandRelated(link) {
+    public expandRelated(link) {
         if (!link.expanded) {
             let loadingModal = this.modal.await('LBL_LOADING');
             link.selected= false;
@@ -197,7 +197,7 @@ export class EmailSchedulesRelatedModal {
      * @param link
      * @private
      */
-    private addBean(link) {
+    public addBean(link) {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = link.module;
             selectModal.instance.multiselect = true;
@@ -222,7 +222,7 @@ export class EmailSchedulesRelatedModal {
      * @param link
      * @private
      */
-    private sortLinkedBeans(link) {
+    public sortLinkedBeans(link) {
         link.linkedbeans.sort((a, b) => a.last_name ? a.last_name.localeCompare(b.last_name) : a.summary_text.localeCompare(b.summary_text));
     }
 
@@ -233,7 +233,7 @@ export class EmailSchedulesRelatedModal {
      * @param index
      * @private
      */
-    private removeBean(link, index) {
+    public removeBean(link, index) {
         if(link.linkedbeans[index].source == 'link') {
             link.linkedbeans[index].deleted = !link.linkedbeans[index].deleted;
         } else {

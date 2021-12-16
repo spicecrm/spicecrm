@@ -14,7 +14,7 @@ import {administrationconfigurator} from '../services/administrationconfigurator
  */
 @Component({
     selector: 'administration-configurator',
-    templateUrl: './src/admincomponents/templates/administrationconfigurator.html',
+    templateUrl: '../templates/administrationconfigurator.html',
     providers: [administrationconfigurator]
 })
 export class AdministrationConfigurator implements OnInit {
@@ -23,7 +23,7 @@ export class AdministrationConfigurator implements OnInit {
      *
      * @private
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      *
@@ -31,19 +31,19 @@ export class AdministrationConfigurator implements OnInit {
      *
      * @private
      */
-    private displayFilters: boolean = false;
+    public displayFilters: boolean = false;
 
     /**
      * filters applied
      *
      * @private
      */
-    private filters: any = {};
+    public filters: any = {};
 
     constructor(
-        private metadata: metadata,
-        private administrationconfigurator: administrationconfigurator,
-        private language: language
+        public metadata: metadata,
+        public administrationconfigurator: administrationconfigurator,
+        public language: language
     ) {
 
     }
@@ -57,11 +57,11 @@ export class AdministrationConfigurator implements OnInit {
         return this.administrationconfigurator.entries.length;
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
-    private getEntries() {
+    public getEntries() {
         let entries = [];
         for (let entry of this.administrationconfigurator.entries) {
             // check for filters
@@ -79,7 +79,7 @@ export class AdministrationConfigurator implements OnInit {
         return entries;
     }
 
-    private getFields() {
+    public getFields() {
         let fields = [];
 
         for (let field of this.componentconfig.fields) {
@@ -91,19 +91,19 @@ export class AdministrationConfigurator implements OnInit {
         return fields;
     }
 
-    private addEntry() {
+    public addEntry() {
         this.administrationconfigurator.addEntry();
     }
 
-    private sort(field) {
+    public sort(field) {
         this.administrationconfigurator.sort(field);
     }
 
-    private toggleFilter() {
+    public toggleFilter() {
         this.displayFilters = !this.displayFilters;
     }
 
-    private clearFilter(){
+    public clearFilter(){
         this.filters = {};
     }
 }

@@ -20,7 +20,7 @@ import { dictionary } from '../services/dictionary.service';
 
 @Component({
     selector: '[administration-dictionarymanager-item-field]',
-    templateUrl: './src/admincomponents/templates/administrationdictionarymanageritemfield.html'
+    templateUrl: '../templates/administrationdictionarymanageritemfield.html'
 })
 export class AdministrationDictionaryManagerItemField implements AfterViewInit, OnInit {
     @Input() field: string = "";
@@ -28,7 +28,7 @@ export class AdministrationDictionaryManagerItemField implements AfterViewInit, 
     @Input() inputvalue: any = "";
     editMode: boolean = false;
 
-    constructor(private dictionary:dictionary) {
+    constructor(public dictionary:dictionary) {
 
     }
 
@@ -71,14 +71,14 @@ export class AdministrationDictionaryManagerItemField implements AfterViewInit, 
 
 @Component({
     selector: 'administration-dictionarymanager',
-    templateUrl: './src/admincomponents/templates/administrationdictionarymanager.html',
+    templateUrl: '../templates/administrationdictionarymanager.html',
     providers: [dictionary]
 })
 export class AdministrationDictionaryManager implements AfterViewInit {
 
     @Input() dictionaryitem: string = '';
 
-    constructor(private dictionary:dictionary) {
+    constructor(public dictionary:dictionary) {
 
     }
 
@@ -100,13 +100,13 @@ export class AdministrationDictionaryManager implements AfterViewInit {
 
 @Component({
     selector: '[administration-dictionarymanager-item]',
-    templateUrl: './src/admincomponents/templates/administrationdictionarymanageritem.html'
+    templateUrl: '../templates/administrationdictionarymanageritem.html'
 })
 export class AdministrationDictionaryManagerItem implements AfterViewInit, OnInit {
     @Input() item: any = {};
     editMode: boolean = false;
 
-    constructor(private dictionary:dictionary) {
+    constructor(public dictionary:dictionary) {
 
     }
 

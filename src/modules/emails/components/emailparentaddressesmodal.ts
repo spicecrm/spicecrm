@@ -13,7 +13,7 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'email-parent-addresses-modal',
-    templateUrl: './src/modules/emails/templates/emailparentaddressesmodal.html'
+    templateUrl: '../templates/emailparentaddressesmodal.html'
 })
 export class EmailParentAddressesModal implements OnInit {
 
@@ -22,27 +22,27 @@ export class EmailParentAddressesModal implements OnInit {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the loadedaddresses
      *
      * @private
      */
-    private addresses: any[] = [];
+    public addresses: any[] = [];
 
     /**
      * an eent emitter for the selected addresses
      *
      * @private
      */
-    private addAddresses: EventEmitter<any[]> = new EventEmitter<any[]>();
+    public addAddresses: EventEmitter<any[]> = new EventEmitter<any[]>();
 
     constructor(
         public model: model,
         public modal: modal,
         public toast: toast,
-        private backend: backend
+        public backend: backend
     ) {
 
     }
@@ -51,7 +51,7 @@ export class EmailParentAddressesModal implements OnInit {
      * load the parent email addresses
      */
     public ngOnInit() {
-        let await = this.modal.await('LBL_LOADING');
+        let loading = this.modal.await('LBL_LOADING');
         this.backend.getRequest(`module/EmailAddresses/${this.model.getField('parent_type')}/${this.model.getField('parent_id')}`).subscribe(
             addresses => {
                 this.addresses = addresses;
@@ -59,11 +59,11 @@ export class EmailParentAddressesModal implements OnInit {
                     this.toast.sendToast('LBL_NO_EMAILADDRESSES_FOUND', 'info');
                     this.close();
                 }
-                await.emit(true);
+                loading.emit(true);
             },
             () => {
                 this.toast.sendToast('LBL_SYSTEM_ERROR', 'error');
-                await.emit(true);
+                loading.emit(true);
                 this.close();
             }
         );
@@ -81,7 +81,7 @@ export class EmailParentAddressesModal implements OnInit {
      *
      * @private
      */
-    private add() {
+    public add() {
         this.addAddresses.emit(this.addresses.filter(a => a.selected));
         this.close();
     }
@@ -91,7 +91,7 @@ export class EmailParentAddressesModal implements OnInit {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

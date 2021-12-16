@@ -10,23 +10,23 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reporter-filter-item-parent',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemparent.html'
+    templateUrl: '../templates/reporterfilteritemparent.html'
 })
 export class ReporterFilterItemParent implements OnInit, OnDestroy {
 
-    @Input() private field: string = '';
-    @Input() private wherecondition: any = {};
+    @Input() public field: string = '';
+    @Input() public wherecondition: any = {};
 
-    private fieldName: string;
-    private moduleName: string;
+    public fieldName: string;
+    public moduleName: string;
 
-    private fields: any[] = [];
+    public fields: any[] = [];
 
-    private _value: string;
+    public _value: string;
 
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private language: language, private backend: backend, private model: model) {
+    constructor(public metadata: metadata, public language: language, public backend: backend, public model: model) {
         this.getEnumOptions();
     }
 
@@ -73,7 +73,7 @@ export class ReporterFilterItemParent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    private getEnumOptions() {
+    public getEnumOptions() {
         this.fields = [];
         const integrationParams = this.model.getField('integration_params');
         let fields = this.metadata.getModuleFields(integrationParams.kpublishing.subpanelModule);

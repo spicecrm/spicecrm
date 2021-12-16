@@ -23,7 +23,7 @@ import { SystemInputMedia } from '../../systemcomponents/components/systeminputm
 
 @Component( {
     selector: 'field-image',
-    templateUrl: './src/objectfields/templates/fieldimage.html',
+    templateUrl: '../templates/fieldimage.html',
 })
 export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
 
@@ -35,11 +35,11 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     /**
      * Field is empty?
      */
-    private get fieldIsEmpty() {
+    public get fieldIsEmpty() {
         return !this.value;
     }
 
-    private height = '';
+    public height = '';
 
     constructor(
         public model: model,
@@ -47,13 +47,13 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        private backend: backend ,
-        private elRef: ElementRef,
-        private changeDetRef: ChangeDetectorRef,
-        private modalservice: modal,
-        private sanitizer: DomSanitizer
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public backend: backend ,
+        public elRef: ElementRef,
+        public changeDetRef: ChangeDetectorRef,
+        public modalservice: modal,
+        public sanitizer: DomSanitizer
     ) {
         super( model, view, language, metadata, router );
     }
@@ -73,21 +73,21 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     /**
      * CSS style for the component.
      */
-    private get style() {
+    public get style() {
         return { height: this.height };
     }
 
     /**
      * Delete the existing image.
      */
-    private deleteImage(): void {
+    public deleteImage(): void {
         this.value = '';
     }
 
     /**
      * Import an image or edit the existing image.
      */
-    private editImage( droppedFiles: FileList = null ): void {
+    public editImage( droppedFiles: FileList = null ): void {
         this.modalservice.openModal('SystemImageModal').subscribe( modalRef => {
 
             if ( this.field_defs.maxWidth ) modalRef.instance.maxWidth = this.field_defs.maxWidth;
@@ -112,7 +112,7 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
      * The Handler when a file has been dropped.
      * @param dropEvent
      */
-    private onDrop( droppedFiles ): void {
+    public onDrop( droppedFiles ): void {
         this.view.setEditMode();
         this.editImage( droppedFiles );
     }

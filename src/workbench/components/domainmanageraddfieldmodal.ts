@@ -12,19 +12,19 @@ import {domainmanager} from '../services/domainmanager.service';
  * a modal window to add a fields to a domain definition
  */
 @Component({
-    templateUrl: './src/workbench/templates/domainmanageraddfieldmodal.html',
+    templateUrl: '../templates/domainmanageraddfieldmodal.html',
 })
 export class DomainManagerAddFieldModal {
 
     /**
      * reference to the modal self
      */
-    private self: any;
+    public self: any;
 
     /**
      * the domain definition
      */
-    private domainfield: any = {
+    public domainfield: any = {
         name: '{sysdictionaryitems.name}',
         fieldtype: '',
         scope: 'g',
@@ -33,14 +33,14 @@ export class DomainManagerAddFieldModal {
         status: 'd'
     };
 
-    constructor(private domainmanager: domainmanager, private metadata: metadata, private modelutilities: modelutilities) {
+    constructor(public domainmanager: domainmanager, public metadata: metadata, public modelutilities: modelutilities) {
 
     }
 
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -57,7 +57,7 @@ export class DomainManagerAddFieldModal {
     /**
      * saves the modal
      */
-    private save() {
+    public save() {
         if(this.canSave) {
 
             // add the sequence that represents the number of items

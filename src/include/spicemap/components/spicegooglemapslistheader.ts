@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'spice-google-maps-list-header',
-    templateUrl: './src/include/spicemap/templates/spicegooglemapslistheader.html',
+    templateUrl: '../templates/spicegooglemapslistheader.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
@@ -32,12 +32,12 @@ export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
     public searchTimeOut: any = undefined;
 
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * emits the used search term
      */
-    @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata, public element: ElementRef) {
     }
@@ -96,7 +96,7 @@ export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
     /**
      * tigger the search
      */
-    private doSearch() {
+    public doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
         this.modellist.getListData();
@@ -107,7 +107,7 @@ export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
      *
      * @param _e
      */
-    private triggerSearch(_e) {
+    public triggerSearch(_e) {
         if (this.searchTerm === this.searchTermOld) return;
         // handle the key pressed
         switch (_e.key) {

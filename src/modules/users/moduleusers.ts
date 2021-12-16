@@ -25,6 +25,7 @@ import /*embed*/ {UserPopoverHeader} from "./components/userpopoverheader";
 import /*embed*/ {UserDeactivateButton} from "./components/userdeactivatebutton";
 import /*embed*/ {UserDeactivateModal} from "./components/userdeactivatemodal";
 import /*embed*/ {UserDeactivateSelectUser} from "./components/userdeactivateselectuser";
+import /*embed*/ {UserSignature} from "./components/usersignature";
 
 @NgModule({
     imports: [
@@ -49,7 +50,8 @@ import /*embed*/ {UserDeactivateSelectUser} from "./components/userdeactivatesel
         UserPopoverHeader,
         UserDeactivateButton,
         UserDeactivateModal,
-        UserDeactivateSelectUser
+        UserDeactivateSelectUser,
+        UserSignature
     ]
 })
 export class ModuleUsers {

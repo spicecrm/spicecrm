@@ -13,18 +13,18 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-detail-container',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallerdetailcontainer.html',
+    templateUrl: '../templates/spiceinstallerdetailcontainer.html',
 })
 
 export class SpiceInstallerDetailContainer {
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private backend: backend,
-        private spiceinstaller: spiceinstaller,
+        public toast: toast,
+        public http: HttpClient,
+        public router: Router,
+        public configurationService: configurationService,
+        public backend: backend,
+        public spiceinstaller: spiceinstaller,
     ) {
 
     }

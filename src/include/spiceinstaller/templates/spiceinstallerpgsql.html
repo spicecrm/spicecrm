@@ -12,7 +12,7 @@
         <div *ngIf="!userNameCondition" class="slds-form-element__help">This field is required</div>
     </div>
 </div>
-<div class="slds-form-element slds-p-vertical--small" [system-overlay-loading-spinner]="loading">
+<div class="slds-form-element slds-p-vertical--small">
     <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Administrator Password</label>
     <div class="slds-form-element__control">
         <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_password"/>
@@ -37,7 +37,7 @@
             <div *ngIf="!userNameCondition" class="slds-form-element__help">This field is required</div>
         </div>
     </div>
-    <div class="slds-form-element slds-p-vertical--small" [system-overlay-loading-spinner]="loading">
+    <div class="slds-form-element slds-p-vertical--small">
         <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Database User Password</label>
         <div class="slds-form-element__control">
             <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.new_db_password"/>

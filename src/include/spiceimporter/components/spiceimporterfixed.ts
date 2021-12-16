@@ -16,7 +16,7 @@ declare var _: any;
 
 @Component({
     selector: 'spice-importer-fixed',
-    templateUrl: './src/include/spiceimporter/templates/spiceimporterfixed.html',
+    templateUrl: '../templates/spiceimporterfixed.html',
     providers: [view]
 })
 
@@ -24,16 +24,16 @@ declare var _: any;
 export class SpiceImporterFixed {
 
     @Input('requiredmodelfields')
-    private requiredModelFields: any[];
+    public requiredModelFields: any[];
     public filteredModuleFileds: any[];
-    private modelfields: any[];
+    public modelfields: any[];
 
     constructor(
-        private spiceImport: SpiceImporterService,
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private view: view
+        public spiceImport: SpiceImporterService,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public view: view
     ) {
         // set the vie to editable and edit mode
         this.view.isEditable = true;
@@ -57,7 +57,7 @@ export class SpiceImporterFixed {
         this.filteredModuleFileds = value;
     }
 
-    private getFilteredModuleFields() {
+    public getFilteredModuleFields() {
         let invertedFileMapping = _.invert(this.spiceImport.fileMapping);
         this.filteredModuleFileds = this.modelFields.filter(field => {
             return !invertedFileMapping.hasOwnProperty(field.name);
@@ -65,21 +65,21 @@ export class SpiceImporterFixed {
 
     }
 
-    private setFixedField(index, value) {
+    public setFixedField(index, value) {
         this.spiceImport.setFixedField(index, value);
     }
 
-    private getFixed(row) {
+    public getFixed(row) {
         return this.spiceImport.getFixed(row);
 
     }
 
-    private removeFixed(index) {
+    public removeFixed(index) {
         this.model.data = _.omit(this.model.data, this.spiceImport.fixedFields[index].field);
         this.spiceImport.removeFixed(index);
     }
 
-    private checkRequired(fieldName) {
+    public checkRequired(fieldName) {
 
         let invertedFileMapping = _.invert(this.spiceImport.fileMapping),
             mappedFieldChecked = invertedFileMapping.hasOwnProperty(fieldName),
@@ -90,7 +90,7 @@ export class SpiceImporterFixed {
 
     }
 
-    private isChosen(fieldName) {
+    public isChosen(fieldName) {
         let invertedFileMapping = _.invert(this.spiceImport.fileMapping);
         return !!invertedFileMapping[fieldName];
 

@@ -16,7 +16,7 @@ import {configurationService} from "../../services/configuration.service";
 declare var _: any;
 @Component({
     selector: 'field-google-places-search',
-    templateUrl: './src/objectfields/templates/fieldgoogleplacessearch.html'
+    templateUrl: '../templates/fieldgoogleplacessearch.html'
 })
 export class fieldGooglePlacesSearch extends fieldGeneric {
 
@@ -33,7 +33,7 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
 
     }
 
-    private setDetails(details){
+    public setDetails(details){
         let changedFields = {};
         if(this.fieldconfig.formatted_phone_number && details.formatted_phone_number) {
             changedFields[this.fieldconfig.formatted_phone_number] = details.formatted_phone_number;

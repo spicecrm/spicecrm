@@ -13,7 +13,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
-    templateUrl: './src/objectfields/templates/fieldweightedamount.html'
+    templateUrl: '../templates/fieldweightedamount.html'
 })
 export class fieldWeightedAmount extends fieldCurrency {
 
@@ -39,7 +39,7 @@ export class fieldWeightedAmount extends fieldCurrency {
     }
 
 
-    private getValue() {
+    public getValue() {
 
         try {
             let value = this.model.getFieldValue('amount') ? parseFloat(this.model.getFieldValue(this.amountfield)) : 0;

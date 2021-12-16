@@ -23,7 +23,7 @@ declare var moment: any;
 
 @Component({
     selector: 'field-time',
-    templateUrl: './src/objectfields/templates/fieldtime.html',
+    templateUrl: '../templates/fieldtime.html',
     providers: [popup]
 })
 export class fieldTime extends fieldGeneric {
@@ -34,7 +34,7 @@ export class fieldTime extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private userpreferences: userpreferences
+        public userpreferences: userpreferences
     ) {
         super(model, view, language, metadata, router);
 

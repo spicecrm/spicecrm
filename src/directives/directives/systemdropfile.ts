@@ -13,21 +13,21 @@ import {language} from "../../services/language.service";
 export class SystemDropFile {
 
     @Output('system-drop-file') public filesDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
-    @Input() private dropMessage: string;
-    private overlayElement: HTMLElement;
-    private dragStartListener: any;
-    private dragEnterListener: any;
-    private dragOverListener: any;
-    private dragLeaveListener: any;
-    private dragEndListener: any;
-    private dragDropListener: any;
-    private dragGlobalDropListener: any;
-    private dragDepth: number = 0;
+    @Input() public dropMessage: string;
+    public overlayElement: HTMLElement;
+    public dragStartListener: any;
+    public dragEnterListener: any;
+    public dragOverListener: any;
+    public dragLeaveListener: any;
+    public dragEndListener: any;
+    public dragDropListener: any;
+    public dragGlobalDropListener: any;
+    public dragDepth: number = 0;
 
     constructor(
-        private renderer: Renderer2,
-        private elementRef: ElementRef,
-        private language: language,
+        public renderer: Renderer2,
+        public elementRef: ElementRef,
+        public language: language,
     ) {
         this.defineOverlayElement();
         this.listenWindowEvents();
@@ -53,7 +53,7 @@ export class SystemDropFile {
     /**
      * define an overlay div
      */
-    private defineOverlayElement() {
+    public defineOverlayElement() {
         this.overlayElement = this.renderer.createElement('div');
         this.renderer.setStyle(this.overlayElement, 'height', '100%');
         this.renderer.setStyle(this.overlayElement, 'width', '100%');
@@ -70,7 +70,7 @@ export class SystemDropFile {
         this.renderer.addClass(this.elementRef.nativeElement, 'slds-is-relative');
     }
 
-    private listenWindowEvents() {
+    public listenWindowEvents() {
 
         /**
          * catch drag start as this is heppening when the drag is initiated within the application
@@ -139,7 +139,7 @@ export class SystemDropFile {
      *
      * @param items the items from the event
      */
-    private hasOneItemsFile(items) {
+    public hasOneItemsFile(items) {
         for (let item of items) {
             if (item.kind == 'file') {
                 return true;

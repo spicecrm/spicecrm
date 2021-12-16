@@ -13,13 +13,13 @@ import {telephony} from '../../services/telephony.service';
 
 @Component({
     selector: 'global-docked-composer-overflow',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposeroverflow.html'
+    templateUrl: '../templates/globaldockedcomposeroverflow.html'
 })
 export class GlobalDockedComposerOverflow implements OnDestroy {
-    private showHiddenComposers: boolean = false;
-    private clickListener: any;
+   public showHiddenComposers: boolean = false;
+   public clickListener: any;
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private dockedComposer: dockedComposer, private telephony: telephony, private language: language) {
+    constructor(public renderer: Renderer2,public elementRef: ElementRef,public dockedComposer: dockedComposer,public telephony: telephony,public language: language) {
 
     }
 
@@ -33,7 +33,7 @@ export class GlobalDockedComposerOverflow implements OnDestroy {
         return this.dockedComposer.composers.length + this.telephony.calls.length - this.dockedComposer.maxComposers;
     }
 
-    private toggleHiddenComoposers() {
+   public toggleHiddenComoposers() {
         this.showHiddenComposers = !this.showHiddenComposers;
 
         if (this.showHiddenComposers) {
@@ -57,12 +57,12 @@ export class GlobalDockedComposerOverflow implements OnDestroy {
         return this.dockedComposer.composers.slice(this.dockedComposer.maxComposers - this.telephony.calls.length);
     }
 
-    private displayLabel(composer) {
+   public displayLabel(composer) {
         // return composer.model.data.name ? composer.model.data.name : this.language.getLabel(composer.module, 'LBL_NEW_FORM_TITLE');
         return composer.model.data.name ? composer.model.data.name : this.language.getModuleName(composer.model.module, true);
     }
 
-    private focusComposer(composerid) {
+   public focusComposer(composerid) {
         this.dockedComposer.focusComposer(composerid);
         this.showHiddenComposers = false;
     }

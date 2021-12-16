@@ -23,17 +23,17 @@ interface menuItem {
 
 @Component({
     selector: 'global-navigation-menu-more',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenumore.html',
+    templateUrl: '../templates/globalnavigationmenumore.html',
     host: {
         '[class.slds-context-bar__item]': 'true'
     }
 })
 export class GlobalNavigationMenuMore implements AfterViewInit{
-    constructor(private language: language, private router: Router, private elementRef: ElementRef, private broadcast: broadcast) {}
+    constructor(public language: language,public router: Router,public elementRef: ElementRef,public broadcast: broadcast) {}
 
-    private moreMenuItems: any[] = [];
+   public moreMenuItems: any[] = [];
 
-    private navigateTo(module) {
+   public navigateTo(module) {
         this.router.navigate(['/module/' + module]);
     }
 

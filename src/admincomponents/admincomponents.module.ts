@@ -187,8 +187,7 @@ import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/adminis
         AdministrationPasswordConfig,
         AdministrationBlockedUsers,
         AdministrationLoginManagement
-    ],
-    exports: [],
+    ]
 
 })
 export class AdminComponentsModule {

@@ -181,21 +181,21 @@ export class modellist implements OnDestroy {
      * holds the embedded by component name
      * @private
      */
-    private embeddedByComponent: string;
+    public embeddedByComponent: string;
     /**
      * holds the default value for disable autoload boolean from the spice config
      */
     public disableAutoloadListAll: boolean = false;
 
     constructor(
-        private broadcast: broadcast,
-        private backend: backend,
+        public broadcast: broadcast,
+        public backend: backend,
         public metadata: metadata,
-        private language: language,
-        private userpreferences: userpreferences,
-        private session: session,
-        private configuration: configurationService,
-        private toast: toast
+        public language: language,
+        public userpreferences: userpreferences,
+        public session: session,
+        public configuration: configurationService,
+        public toast: toast
     ) {
         this.setDisableAutoloadListAll();
         this.subscribeToBroadcast();
@@ -207,7 +207,7 @@ export class modellist implements OnDestroy {
      * subscribe to broadcast service
      * @private
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.serviceSubscriptions.add(
             this.broadcast.message$.subscribe(message => {
                 this.handleMessage(message);
@@ -219,7 +219,7 @@ export class modellist implements OnDestroy {
      * set the default value for dsiabled autoload boolean from the spice config
      * @private
      */
-    private setDisableAutoloadListAll() {
+    public setDisableAutoloadListAll() {
         this.disableAutoloadListAll = !!this.configuration.getCapabilityConfig('module').disableAutoloadListAll;
     }
 
@@ -256,7 +256,7 @@ export class modellist implements OnDestroy {
      * loads the module aggregates
      * @private
      */
-    private loadModuleAggregates() {
+    public loadModuleAggregates() {
         this.moduleAggregates = [];
         for (let moduleAggregate of this.metadata.getModuleAggregates(this.module)) {
             this.moduleAggregates.push({...moduleAggregate});
@@ -437,7 +437,7 @@ export class modellist implements OnDestroy {
      *
      * @param listType
      */
-    private listTypeExists(listType: string) {
+    public listTypeExists(listType: string) {
         return !!this.getListTypes().find(lt => lt.id == listType);
     }
 
@@ -502,7 +502,7 @@ export class modellist implements OnDestroy {
     /**
      * build the listfields based on the listtype
      */
-    private determineListFields() {
+    public determineListFields() {
         this._listfields = [];
 
         // check if we have fielddefs
@@ -748,7 +748,7 @@ export class modellist implements OnDestroy {
         this.emitListTypeComponentChange();
     }
 
-    private emitListTypeComponentChange() {
+    public emitListTypeComponentChange() {
         this.listTypeComponent$.next(this.currentList.listcomponent);
     }
 
@@ -816,7 +816,7 @@ export class modellist implements OnDestroy {
      * emit the current list type change
      * @private
      */
-    private emitListTypeChange() {
+    public emitListTypeChange() {
         this.listType$.next(this.currentList);
     }
 
@@ -898,7 +898,7 @@ export class modellist implements OnDestroy {
      * generate the standard lists
      * @private
      */
-    private generateStandardLists() {
+    public generateStandardLists() {
         this.standardLists = [
             {
                 id: 'all',
@@ -1323,8 +1323,8 @@ export class modellist implements OnDestroy {
      * @param to the to status
      * @param bucketamountfields from optionala from value, added in the safe subscribe method to get the old value from the backup data so the update is done properly
      */
-    // private updateBuckets(from, to, valuefrom?, valueto?) {
-    private updateBuckets(from, to, bucketamountfields = []) {
+    // public updateBuckets(from, to, valuefrom?, valueto?) {
+    public updateBuckets(from, to, bucketamountfields = []) {
         // reduce from buckets
         let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
         frombucket.items--;
@@ -1353,7 +1353,7 @@ export class modellist implements OnDestroy {
      * @param from
      * @param bucketamountfields
      */
-    private removeItemFromBucket(from, bucketamountfields = []) {
+    public removeItemFromBucket(from, bucketamountfields = []) {
         // reduce from buckets
         let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
         frombucket.items--;

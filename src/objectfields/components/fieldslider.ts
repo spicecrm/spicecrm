@@ -12,7 +12,7 @@ import {field} from "./field";
 
 @Component({
     selector: 'field-slider',
-    templateUrl: './src/objectfields/templates/fieldslider.html'
+    templateUrl: '../templates/fieldslider.html'
 })
 export class fieldSlider extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {

@@ -15,26 +15,26 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-listview-aggregate-item-range',
-    templateUrl: './src/objectcomponents/templates/objectlistviewaggregateitemrange.html'
+    templateUrl: '../templates/objectlistviewaggregateitemrange.html'
 })
 export class ObjectListViewAggregateItemRange  {
 
     /**
      * the item in the aggregate
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the aggregate
      */
-    @Input() private aggregate: any = {};
+    @Input() public aggregate: any = {};
 
     /**
      * @ignore
      *
      * @param model
      */
-    constructor(private model: model) {
+    constructor(public model: model) {
 
     }
 }

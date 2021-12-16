@@ -12,17 +12,17 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-header-search-recent-items',
-    templateUrl: './src/globalcomponents/templates/globalheadersearchrecentitems.html',
+    templateUrl: '../templates/globalheadersearchrecentitems.html',
 
 })
 export class GlobalHeaderSearchRecentItems {
 
-    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
+    @Output()public selected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language, private recent: recent, private router: Router) {
+    constructor(public language: language,public recent: recent,public router: Router) {
     }
 
-    private goRecent() {
+   public goRecent() {
         this.selected.emit(false);
         this.router.navigate(['/recent']);
     }

@@ -11,18 +11,18 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'language-label-manager',
-    templateUrl: './src/workbench/templates/configcleaner.html',
+    templateUrl: '../templates/configcleaner.html',
 })
 export class ConfigCleaner
 {
-    results = [];
+    results: any = [];
     is_loading = false;
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
     ){
 
     }
