@@ -20,7 +20,7 @@ import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {SystemComponentContainer} from "../systemcomponents/components/systemcomponentcontainer";
 import {fromPromise} from "rxjs/internal-compatibility";
-import {delay, map} from "rxjs/operators";
+import {map} from "rxjs/operators";
 import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
 import {SystemComponentMissing} from "../systemcomponents/components/systemcomponentmissing";
 
@@ -250,9 +250,10 @@ export class metadata {
     public loadComponentFactory(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentFactory<any>> {
 
         if (this.componentFactories[moduleMetadata.name]) {
-            return of(
+            return fromPromise( of(
                 this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName)
-            ).pipe(delay(1));
+            ).toPromise()
+            );
         }
 
         return fromPromise(
