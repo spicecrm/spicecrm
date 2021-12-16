@@ -41,9 +41,9 @@ class SpiceACLObjectsRESTHandler
         }
 
         // get action values
-        $authTypeFields = $db->query("SELECT id, action FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
-        while ($authTypeField = $db->fetchByAssoc($authTypeFields)) {
-            $retArray['authtypeactions'][] = $authTypeField;
+        $authTypeActions = $db->query("SELECT id, action, description FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
+        while ($authTypeAction = $db->fetchByAssoc($authTypeActions)) {
+            $retArray['authtypeactions'][] = $authTypeAction;
         }
 
         return $retArray;
@@ -95,7 +95,8 @@ class SpiceACLObjectsRESTHandler
         while($action = $db->fetchByassoc($actionsObj)){
             $actions[] = [
                 'id' => $action['id'],
-                'action' => $action['action']
+                'action' => $action['action'],
+                'description' => $action['description']
             ];
         }
         return $actions;
@@ -107,14 +108,15 @@ class SpiceACLObjectsRESTHandler
      * @return array
      * @throws \Exception
      */
-    public function addACLModuleAction($sysmoduleid, $action)
+    public function addACLModuleAction($sysmoduleid, $action, $description = null)
     {
         $db = DBManagerFactory::getInstance();
         $actionId = create_guid();
-        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action) VALUES('$actionId', '$sysmoduleid', '$action')");
+        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action, description) VALUES('$actionId', '$sysmoduleid', '$action', '$description')");
         return [
             'id' => $actionId,
-            'action' => $action
+            'action' => $action,
+            'description' => $description
         ];
     }
 

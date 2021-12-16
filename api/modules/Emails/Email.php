@@ -715,6 +715,18 @@ class Email extends SugarBean
     }
 
     /**
+     * generate a tracking pixel with blowfish hash and adds it to the email body
+     */
+    private function generateTrackingPixel() {
+        $key = '2fs5uhnjcnpxcpg9';
+        $method = 'blowfish';
+        $data = $this->_module .':'.$this->id;
+        $encrypted = openssl_encrypt($data, $method, $key);
+
+        $this->body .= '<img src="'.$this->tracking_url.base64_encode($encrypted) .'" height="1" width="1">';
+    }
+
+    /**
      * Send the Email
      *
      * @return mixed
@@ -744,6 +756,10 @@ class Email extends SugarBean
             } catch (Exception $exception) {
                 throw $exception;
             }
+        }
+
+        if($mailbox->track_mailbox) {
+           $this->generateTrackingPixel();
         }
 
         $mailbox->initTransportHandler();
