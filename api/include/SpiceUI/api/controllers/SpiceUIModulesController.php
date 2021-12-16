@@ -132,6 +132,7 @@ class SpiceUIModulesController
                         'favorites' => $module['favorites'],
                         'listtypes' => $listArray,
                         'acl' => $aclArray,
+                        'acl_fieldcontrol' => SpiceACL::getInstance()->getFieldAccess($module['module'], 'create'),
                         'acl_multipleusers' => $module['acl_multipleusers'],
                         'ftsactivities' => SpiceFTSActivityHandler::checkActivities($module['module']),
                         'ftsgeo' => SpiceFTSHandler::checkGeo($module['module']),
