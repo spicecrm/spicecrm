@@ -8,17 +8,17 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reporter-detail-view-edit-button',
-    templateUrl: './src/modules/reports/templates/reporterdetailvieweditbutton.html'
+    templateUrl: '../templates/reporterdetailvieweditbutton.html'
 })
 export class ReporterDetailViewEditButton {
 
-    constructor(public language: language, private router: Router, private model: model) {
+    constructor(public language: language, public router: Router, public model: model) {
     }
 
     /**
      * navigate to reports designer
      */
-    private execute() {
+    public execute() {
         if (this.disabled) return;
         this.router.navigate(['/module/KReports/designer/' + this.model.id]);
     }

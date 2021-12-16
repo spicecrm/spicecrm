@@ -9,52 +9,52 @@ import { loginService } from '../../services/login.service';
 
 @Component({
     selector: 'global-obtain-gdpr-consent-container',
-    templateUrl: './src/globalcomponents/templates/globalobtaingdprconsentcontainer.html',
+    templateUrl: '../templates/globalobtaingdprconsentcontainer.html',
 })
 export class GlobalObtainGDPRConsentContainer implements AfterViewInit {
 
     /*
      * The configuration of this component (optional).
      */
-    private componentConfig: any;
+   public componentConfig: any;
 
     /*
      * The name of a custom child component, if defined in the component configuration.
      */
-    private nameOfCustomComponent: string;
+   public nameOfCustomComponent: string;
 
     /*
      * The template container where a custom child component would get inserted.
      */
-    @ViewChild('container', { read: ViewContainerRef, static: false }) private container: ViewContainerRef;
+    @ViewChild('container', { read: ViewContainerRef, static: false })public container: ViewContainerRef;
 
     /*
      * Reference to the inserted child component.
      */
-    @ViewChild(GlobalObtainGDPRConsent) private childComponent: GlobalObtainGDPRConsent;
+    @ViewChild(GlobalObtainGDPRConsent)public childComponent: GlobalObtainGDPRConsent;
 
     /*
      * Indicates whether the default GDPR consent has to be shown or not.
      */
-    private showDefault = false;
+   public showDefault = false;
 
     /*
      * The label for the modal header. Can get overridden with a value defined in the custom child component.
      */
-    private headerLabel = 'LBL_GDPR_DATA_AGREEMENT';
-    private taglineLabel = 'MSG_TO_CONTINUE_AGREE_TO_GDPR_CONSENT';
+   public headerLabel = 'LBL_GDPR_DATA_AGREEMENT';
+   public taglineLabel = 'MSG_TO_CONTINUE_AGREE_TO_GDPR_CONSENT';
 
     /*
      * The label for the save button. Can get overridden with a value defined in the custom child component.
      */
-    private saveButtonLabel = 'LBL_I_AGREE';
+   public saveButtonLabel = 'LBL_I_AGREE';
 
-    private canSave = () => !!this.childComponent && this.childComponent.canSave();
-    private isSaving = () => !!this.childComponent && this.childComponent.isSaving;
+   public canSave = () => !!this.childComponent && this.childComponent.canSave();
+   public isSaving = () => !!this.childComponent && this.childComponent.isSaving;
 
-    private self: any;
+   public self: any;
 
-    constructor( private metadata: metadata, private language: language, private login: loginService ) { }
+    constructor(public metadata: metadata,public language: language,public login: loginService ) { }
 
     public ngAfterViewInit() {
         this.displayComponent();
@@ -82,14 +82,14 @@ export class GlobalObtainGDPRConsentContainer implements AfterViewInit {
     /*
      * The handler for the save button (for saving the GDPR consent to the backend).
      */
-    private save(): void {
+   public save(): void {
         this.childComponent.save();
     }
 
     /*
      * Close the modal (because obtaining the gdpr consent has been finished or cancelled).
      */
-    private finished( success: boolean ): void {
+   public finished( success: boolean ): void {
         if ( !success ) this.login.logout();
         this.self.destroy();
     }

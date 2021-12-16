@@ -12,20 +12,20 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-set-backend',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallersetbackend.html',
+    templateUrl: '../templates/spiceinstallersetbackend.html',
 })
 
 export class SpiceInstallerSetBackEnd implements OnInit {
-    private checking: boolean = false;
-    private apiurl: string = "";
-    private apiFound: boolean = false;
+    public checking: boolean = false;
+    public apiurl: string = "";
+    public apiFound: boolean = false;
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public router: Router,
+        public configurationService: configurationService,
+        public spiceinstaller: spiceinstaller
     ) {
     }
 
@@ -49,7 +49,7 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                });
     }
 
-    private testConnection() {
+    public testConnection() {
         this.checking = true;
         if(!this.apiFound) {
             this.http.get('config/installercheck', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
@@ -111,7 +111,7 @@ export class SpiceInstallerSetBackEnd implements OnInit {
 
     }
 
-    private saveConnection(body: object) {
+    public saveConnection(body: object) {
         this.checking = true;
         this.http.post('config/set', body, {}).subscribe(
             (res: any) => {

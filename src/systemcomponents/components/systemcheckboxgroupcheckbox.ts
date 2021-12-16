@@ -15,7 +15,7 @@ declare var _;
  */
 @Component({
     selector: 'system-checkbox-group-checkbox',
-    templateUrl: './src/systemcomponents/templates/systemcheckboxgroupcheckbox.html',
+    templateUrl: '../templates/systemcheckboxgroupcheckbox.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
@@ -23,7 +23,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
     @Input() public value: any;
     @Input() public disabled = false;
 
-    constructor(@Host() private systemCheckboxGroup: SystemCheckboxGroup, private cdRef: ChangeDetectorRef) {
+    constructor(@Host() public systemCheckboxGroup: SystemCheckboxGroup, public cdRef: ChangeDetectorRef) {
         // subscribe to parent value emitter
         this.systemCheckboxGroup.valueEmitter.subscribe(() =>
             this.setCheckedValueFromGroup()
@@ -34,7 +34,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * holds the checked boolean
      * @private
      */
-    private _checked = false;
+    public _checked = false;
     /**
      * @return checkbox checked value
      */
@@ -78,7 +78,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * set checked value from parent group value
      * @private
      */
-    private setCheckedValueFromGroup() {
+    public setCheckedValueFromGroup() {
         this._checked = (this.systemCheckboxGroup.value || []).indexOf(this.value) > -1;
         this.cdRef.detectChanges();
     }
@@ -87,7 +87,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * set the group value on the parent
      * @private
      */
-    private setGroupValue() {
+    public setGroupValue() {
         if (!this.checked && this.systemCheckboxGroup.value.indexOf(this.value) > -1) {
             this.systemCheckboxGroup.value = this.systemCheckboxGroup.value.filter(e => e != this.value);
         } else if (this.checked && this.systemCheckboxGroup.value.indexOf(this.value) == -1) {

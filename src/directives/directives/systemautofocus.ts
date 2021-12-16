@@ -19,7 +19,7 @@ export class SystemAutofocusDirective implements AfterViewInit {
      * @ignore
      */
     constructor(
-        private elementRef: ElementRef
+        public elementRef: ElementRef
     ) {
     }
 

@@ -37,7 +37,7 @@ export class objectmerge {
      */
     public mergeSource: any = {};
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
     }
 
     /**
@@ -55,7 +55,7 @@ export class objectmerge {
      *
      * @private
      */
-    private getMergeFields() {
+    public getMergeFields() {
         this.mergeFields = [];
         let modelFields = this.metadata.getModuleFields(this.masterModule);
         for (let mergeField in modelFields) {

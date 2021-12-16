@@ -15,16 +15,16 @@ import {domainmanager} from '../services/domainmanager.service';
  */
 @Component({
     selector: 'domainmanager-field-validation',
-    templateUrl: './src/workbench/templates/domainmanagerfieldvalidation.html'
+    templateUrl: '../templates/domainmanagerfieldvalidation.html'
 })
 export class DomainManagerFieldValidation implements OnChanges {
 
     /**
      * the field
      */
-    @Input() private field: any = {};
+    @Input() public field: any = {};
 
-    constructor(private domainmanager: domainmanager, private language: language, private modelutilities: modelutilities, private modal: modal, private injector: Injector) {
+    constructor(public domainmanager: domainmanager, public language: language, public modelutilities: modelutilities, public modal: modal, public injector: Injector) {
 
     }
 
@@ -45,7 +45,7 @@ export class DomainManagerFieldValidation implements OnChanges {
      *
      * @param e
      */
-    private addValidationValue(e: MouseEvent) {
+    public addValidationValue(e: MouseEvent) {
         e.stopPropagation();
         this.modal.openModal('DomainManagerAddValidationValueModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.fieldvalidationvalue.sysdomainfieldvalidation_id = this.field.sysdomainfieldvalidation_id;
@@ -60,7 +60,7 @@ export class DomainManagerFieldValidation implements OnChanges {
      *
      * @param id
      */
-    private deleteValidation(e: MouseEvent, id: string) {
+    public deleteValidation(e: MouseEvent, id: string) {
         e.preventDefault();
         let index = this.domainmanager.domainfieldvalidationvalues.findIndex(v => v.id == id);
         if (index >= 0) {
@@ -74,7 +74,7 @@ export class DomainManagerFieldValidation implements OnChanges {
      * @param e
      * @param validationValue
      */
-    private customizeValidationValue(e: MouseEvent, validationValue) {
+    public customizeValidationValue(e: MouseEvent, validationValue) {
         e.stopPropagation();
         if (validationValue.scope == 'g') {
             this.modal.prompt('confirm', 'Customize the Domain?', 'Customize').subscribe(resp => {
@@ -94,7 +94,7 @@ export class DomainManagerFieldValidation implements OnChanges {
      * handles the drop event and resets the sequence fiels
      * @param event
      */
-    private drop(event) {
+    public drop(event) {
         // get the values and reshuffle
         let values = this.validationvalues;
         let previousItem = values.splice(event.previousIndex, 1);
@@ -111,14 +111,14 @@ export class DomainManagerFieldValidation implements OnChanges {
     /**
      * unlinks the validation
      */
-    private unlinkValidation() {
+    public unlinkValidation() {
         this.field.sysdomainfieldvalidation_id = null;
     }
 
     /**
      * select a validation
      */
-    private selectValidation() {
+    public selectValidation() {
         this.modal.openModal('DomainManagerSelectValidation', true, this.injector);
 
     }
@@ -126,7 +126,7 @@ export class DomainManagerFieldValidation implements OnChanges {
     /**
      * add a validation
      */
-    private addValidation() {
+    public addValidation() {
         this.modal.openModal('DomainManagerAddValidation', true, this.injector);
 
     }

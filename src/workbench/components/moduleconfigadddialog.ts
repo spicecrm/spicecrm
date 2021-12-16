@@ -14,7 +14,7 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'moduleconfig-add-dialog',
-    templateUrl: './src/workbench/templates/moduleconfigadddialog.html'
+    templateUrl: '../templates/moduleconfigadddialog.html'
 })
 export class ModuleConfigAddDialog implements OnInit {
 
@@ -27,27 +27,27 @@ export class ModuleConfigAddDialog implements OnInit {
 
     @Output('response') public response$: EventEmitter<any> = new EventEmitter<any>();
 
-    private showDeprecatedWarning: boolean = false;
-    private self;
+    public showDeprecatedWarning: boolean = false;
+    public self;
 
-    private types = [
+    public types = [
         {value: "custom", text: 'LBL_CUSTOM'},
         {value: "global", text: 'LBL_GLOBAL'},
     ];
 
 
-    private compSelectList: any[] = [];
-    private compselecteditem: any;
-    private compDisabled = false;
+    public compSelectList: any[] = [];
+    public compselecteditem: any;
+    public compDisabled = false;
 
-    private moduleSelectList: any[] = [];
-    private moduleselecteditem: any;
+    public moduleSelectList: any[] = [];
+    public moduleselecteditem: any;
 
-    private roleSelectList: any[] = [];
-    private roleselecteditem: any;
+    public roleSelectList: any[] = [];
+    public roleselecteditem: any;
 
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private utils: modelutilities, private toast: toast,) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public utils: modelutilities, public toast: toast,) {
     }
 
     get roleSelectedItem() {
@@ -188,7 +188,7 @@ export class ModuleConfigAddDialog implements OnInit {
     }
 
 
-    private validate() {
+    public validate() {
         // validation show button
         if (this.currentModule == "*") {
             if (this.compSelectedItem && this.roleSelectedItem && this.currentType) {
@@ -203,7 +203,7 @@ export class ModuleConfigAddDialog implements OnInit {
     }
 
     // sort the list
-    private sortArray(list) {
+    public sortArray(list) {
         list.sort((a, b) => {
             let x = a.name.toLowerCase();
             let y = b.name.toLowerCase();
@@ -219,12 +219,12 @@ export class ModuleConfigAddDialog implements OnInit {
     }
 
 
-    private closeDialog() {
+    public closeDialog() {
         this.self.destroy();
     }
 
 
-    private save() {
+    public save() {
 
         let type = this.currentType;
         let table = "";
@@ -275,7 +275,7 @@ export class ModuleConfigAddDialog implements OnInit {
     }
 
 
-    private saveComponent(saveComp, table) {
+    public saveComponent(saveComp, table) {
 
         saveComp.type = this.currentType;
 

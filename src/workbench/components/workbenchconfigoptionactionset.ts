@@ -7,13 +7,13 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "workbench-config-option-actionset",
-    templateUrl: "./src/workbench/templates/workbenchconfigoptionactionset.html"
+    templateUrl: "../templates/workbenchconfigoptionactionset.html"
 })
 export class WorkbenchConfigOptionActionset {
 
     public configValues: any = [];
     public option: any = {};
 
-    constructor(private language: language, private view: view) {
+    constructor(public language: language, public view: view) {
     }
 }

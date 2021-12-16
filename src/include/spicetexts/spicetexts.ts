@@ -8,7 +8,6 @@ import {
     OnInit,
     ChangeDetectorRef,
     enableProdMode,
-    SystemJsNgModuleLoader
 } from '@angular/core';
 import {NgModule} from '@angular/core';
 import {LocationStrategy, HashLocationStrategy} from "@angular/common";

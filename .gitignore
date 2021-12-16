@@ -1,7 +1,6 @@
 # Dependency directories
 node_modules
 .idea
-/**/.DS_Store
 src/**/*.js.map
 src/**/*.js
 config.json
@@ -10,3 +9,6 @@ package-lock.json
 /dist
 documentation
 docs
+.angular
+dev_server.url
+/**/.DS_store

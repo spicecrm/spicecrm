@@ -7,41 +7,41 @@ import {session} from "../../services/session.service";
 import {modellist} from "../../services/modellist.service";
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectlistviewsettingsaddlistmodal.html'
+    templateUrl: '../templates/objectlistviewsettingsaddlistmodal.html'
 })
 export class ObjectListViewSettingsAddlistModal implements OnInit {
 
     /**
      * the mode
      */
-    @Input() private modalmode: 'edit'|'add' = 'add';
+    @Input() public modalmode: 'edit'|'add' = 'add';
 
     /**
      * the name to be used to bind to the input field
      */
-    private listname: string = '';
+    public listname: string = '';
 
     /**
      * binds to the global flag
      */
-    private globallist: boolean = false;
+    public globallist: boolean = false;
 
     /**
      * holds the list component name
      */
-    private listcomponent: string;
+    public listcomponent: string;
 
     /**
      * reference to the modal self to enable closing it
      */
-    private self: any = {};
+    public self: any = {};
 
     public componentListOptions: Array<{label: string, component: string}> = [];
 
     constructor(
-        private language: language,
-        private session: session,
-        private modellist: modellist
+        public language: language,
+        public session: session,
+        public modellist: modellist
     ) {
     }
 
@@ -58,7 +58,7 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
      * load the component config and build the list of the available component
      * @private
      */
-    private loadComponentListOptions() {
+    public loadComponentListOptions() {
         let config = this.modellist.metadata.getComponentConfig('ObjectListView', this.modellist.module);
         let items = this.modellist.metadata.getComponentSetObjects(config.componentset);
         this.componentListOptions = items.map(item => ({
@@ -71,14 +71,14 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * checks if the list can be saved
      */
-    private canSave() {
+    public canSave() {
         return !(this.listname.length > 0);
     }
 
@@ -92,7 +92,7 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
     /**
      * save the list with the modellist service
      */
-    private save() {
+    public save() {
         if (this.listname.length > 0) {
             const listParams = {
                 name: this.listname,

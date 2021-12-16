@@ -19,7 +19,7 @@ import {modal} from '../../services/modal.service';
  */
 @Component({
     selector: 'object-list-header-actions-assign-button',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsassignbutton.html',
+    templateUrl: '../templates/objectlistheaderactionsassignbutton.html',
 })
 export class ObjectListHeaderActionsAssignButton {
 
@@ -34,12 +34,12 @@ export class ObjectListHeaderActionsAssignButton {
     public hidden: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal,
+        public injector: Injector
     ) {
     }
 

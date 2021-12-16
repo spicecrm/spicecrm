@@ -28,7 +28,7 @@ import {layout} from '../../services/layout.service';
  */
 @Component({
     selector: 'system-modal',
-    templateUrl: './src/systemcomponents/templates/systemmodal.html',
+    templateUrl: '../templates/systemmodal.html',
     animations: [
         trigger('modalanimation', [
             transition(':enter', [
@@ -46,14 +46,14 @@ export class SystemModal {
     /**
      * the size of the modal tobe rendered
      */
-    @Input() private size: 'prompt' | 'small' | 'medium' | 'large' = 'medium';
+    @Input() public size: 'prompt' | 'small' | 'medium' | 'large' = 'medium';
 
     /**
      * additonal classes that are put in and are rendered with the modal
      */
-    @Input() private class: string = '';
+    @Input() public class: string = '';
 
-    constructor(private metadata: metadata, private layout: layout) {
+    constructor(public metadata: metadata, public layout: layout) {
 
     }
 

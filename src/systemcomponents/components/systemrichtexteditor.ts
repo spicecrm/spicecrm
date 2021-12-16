@@ -20,7 +20,6 @@ import {DOCUMENT} from "@angular/common";
 
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
-import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileuploader";
 import {language} from "../../services/language.service";
 import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
@@ -28,7 +27,7 @@ import { model } from '../../services/model.service';
 
 @Component({
     selector: "system-richtext-editor",
-    templateUrl: "./src/systemcomponents/templates/systemrichtexteditor.html",
+    templateUrl: "../templates/systemrichtexteditor.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -42,61 +41,61 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * the editor container
      */
-    @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) private htmlEditor: ViewContainerRef;
+    @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) public htmlEditor: ViewContainerRef;
 
     /**
      * set to true to have all options
      */
-    @Input() private extendedmode: boolean = true;
+    @Input() public extendedmode: boolean = true;
 
     /**
      * an input to set the inner height of the editor window set in pixel
      * @private
      */
-    @Input() private innerheight: string;
+    @Input() public innerheight: string;
 
     /**
      * enable/disable using the media file module
      * @private
      */
-    @Input() private useMedialFile: boolean = false;
+    @Input() public useMedialFile: boolean = false;
 
-    private get useTemplateVariableHelper() {
+    public get useTemplateVariableHelper() {
         return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
     }
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
-    private _html: string = '';
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
+    public _html: string = '';
 
-    private isActive: boolean = false;
-    private clickListener: any;
-    private keydownListener: any;
-    private modalOpen: boolean = false;
+    public isActive: boolean = false;
+    public clickListener: any;
+    public keydownListener: any;
+    public modalOpen: boolean = false;
     public isExpanded: boolean = false;
 
-    private block: string = 'default';
-    private fontName: string = 'Tilium Web';
-    private fontSize: string = '5';
-    private tagMap = {
+    public block: string = 'default';
+    public fontName: string = 'Tilium Web';
+    public fontSize: string = '5';
+    public tagMap = {
         BLOCKQUOTE: "indent",
         A: "link"
     };
 
-    @Output() private save$: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public save$: EventEmitter<string> = new EventEmitter<string>();
 
-    private select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
+    public select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
-    constructor(private modal: modal,
-                private renderer: Renderer2,
-                private metadata: metadata,
-                private editorService: systemrichtextservice,
-                @Inject(DOCUMENT) private _document: any,
-                private elementRef: ElementRef,
-                private language: language,
-                private viewContainerRef: ViewContainerRef,
-                @Optional() private model: model ) {
+    constructor(public modal: modal,
+                public renderer: Renderer2,
+                public metadata: metadata,
+                public editorService: systemrichtextservice,
+                @Inject(DOCUMENT) public _document: any,
+                public elementRef: ElementRef,
+                public language: language,
+                public viewContainerRef: ViewContainerRef,
+                @Optional() public model: model ) {
     }
 
     get expandIcon() {
@@ -161,7 +160,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * Executed command from editor header buttons
      * @param command string from triggerCommand
      */
-    private executeCommand(command: string) {
+    public executeCommand(command: string) {
         switch (command) {
             case 'openSourceEditor':
                 this.openSourceEditor();
@@ -191,7 +190,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      *  focus the text area when the editor is focussed
      */
-    private onEditorClick(e) {
+    public onEditorClick(e) {
         // check if we are active already
         if (!this.isActive) {
             this.isActive = true;
@@ -203,7 +202,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         e.stopPropagation();
     }
 
-    private onDocumentClick(event: MouseEvent) {
+    public onDocumentClick(event: MouseEvent) {
         if (!this.modalOpen && !this.elementRef.nativeElement.contains(event.target)) {
             this.isActive = false;
             this.clickListener();
@@ -214,7 +213,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * Executed from the contenteditable section while the input property changes
      * @param html html string from contenteditable
      */
-    private onContentChange(html: string): void {
+    public onContentChange(html: string): void {
 
         if (typeof this.onChange === 'function') {
             this.onChange(html);
@@ -229,7 +228,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      *
      * Send a node array from the contentEditable of the editor
      */
-    private exec() {
+    public exec() {
         let userSelection;
         if (window.getSelection) {
             userSelection = window.getSelection();
@@ -261,7 +260,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             });
     }
 
-    private openMediaFilePicker() {
+    public openMediaFilePicker() {
 
         this.editorService.saveSelection();
         this.modalOpen = true;
@@ -293,7 +292,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         });
     }
 
-    private openSourceEditor() {
+    public openSourceEditor() {
         this.modal.openModal('SystemRichTextSourceModal', null, this.viewContainerRef.injector ).subscribe(componentRef => {
             componentRef.instance._html = this._html;
             componentRef.instance.html.subscribe(newHtml => {
@@ -314,7 +313,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /*
      * for the toolbar
      */
-    private commandIsActive(commandState) {
+    public commandIsActive(commandState) {
         // check the state
         return this.isActive && this._document.queryCommandState(commandState);
     }
@@ -322,7 +321,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * trigger highlight editor buttons when cursor moved or positioning in block
      */
-    private triggerBlocks(nodes: Node[]) {
+    public triggerBlocks(nodes: Node[]) {
         if (!this.isActive) {
             return;
         }
@@ -346,7 +345,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * insert URL link
      */
-    private insertUrl() {
+    public insertUrl() {
         const url = prompt("Insert URL link", 'http:\/\/');
         if (url && url !== '' && url !== 'http://') {
             this.editorService.selectedText = this.getSelectedText();
@@ -354,7 +353,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         }
     }
 
-    private addVideo() {
+    public addVideo() {
         if (!this.isActive) {return;}
         this.editorService.saveSelection();
         this.modal.input('Add Video','Inser Video URL').subscribe((url: string) => {
@@ -374,7 +373,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         });
     }
 
-    private getSelectedText(): string {
+    public getSelectedText(): string {
         if (window.getSelection) {
             return window.getSelection().toString();
         } else if (this._document.selection && this._document.selection.type != "Control") {
@@ -383,7 +382,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     /** insert color */
-    private insertColor(color: string, where: string) {
+    public insertColor(color: string, where: string) {
         this.editorService.insertColor(color, where);
         // this.execute.emit("");
     }
@@ -392,7 +391,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * set font Name/family
      * @param fontName string
      */
-    private setFontName(fontName: string): void {
+    public setFontName(fontName: string): void {
         this.editorService.setFontName(fontName);
         // this.execute.emit("");
     }
@@ -401,7 +400,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * set font Size
      * @param fontSize string
      *  */
-    private setFontSize(fontSize: string): void {
+    public setFontSize(fontSize: string): void {
         this.editorService.setFontSize(fontSize);
         // this.execute.emit("");
     }
@@ -409,15 +408,15 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * Upload image when file is selected
      */
-    private onFileChanged(event) {
+    public onFileChanged(event) {
         // to be implemented
     }
 
-    private setCustomClass(classId: number) {
+    public setCustomClass(classId: number) {
         // this.editorService.createCustomClass(this.customClasses[classId]);
     }
 
-    private encodeHtml(value: string): string {
+    public encodeHtml(value: string): string {
         return String(value)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -425,7 +424,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             .replace(/"/g, '&quot;');
     }
 
-    private addCodeSnippet(): void {
+    public addCodeSnippet(): void {
         if (!this.isActive) {return;}
         let value = this.encodeHtml(this.getSelectedText()) || '&nbsp;';
         let html = `<br><pre style="background-color: #eee;border-radius: .2rem; border:1px solid #ccc; padding: .5rem"><code>${value}</code></pre><br>`;
@@ -435,7 +434,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * paste a plain text when the caret is in a code tag.
      */
-    private onPaste(e) {
+    public onPaste(e) {
         if (e.target.nodeName == 'CODE') {
             e.preventDefault();
             let text = (e.originalEvent || e).clipboardData.getData('text/plain');
@@ -443,7 +442,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         }
     }
 
-    private handleKeyboardShortcuts() {
+    public handleKeyboardShortcuts() {
         this.keydownListener = this.renderer.listen('document', 'keydown', (e) => {
             if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() == 's') {
                 e.preventDefault();
@@ -452,11 +451,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         });
     }
 
-    private focusEditor() {
+    public focusEditor() {
         this.htmlEditor.element.nativeElement.focus();
     }
 
-    private openTemplateVariableHelper() {
+    public openTemplateVariableHelper() {
         if (!this.isActive) {return;}
         this.editorService.saveSelection();
         this.modalOpen = true;

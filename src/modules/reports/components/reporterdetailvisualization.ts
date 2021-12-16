@@ -22,47 +22,47 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'reporter-detail-visualization',
-    templateUrl: './src/modules/reports/templates/reporterdetailvisualization.html',
+    templateUrl: '../templates/reporterdetailvisualization.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
-    @ViewChild('vizcontainer', {read: ViewContainerRef, static: true}) private vizcontainer: ViewContainerRef;
+    @ViewChild('vizcontainer', {read: ViewContainerRef, static: true}) public vizcontainer: ViewContainerRef;
 
     /**
      * the parentmodule so if we are in the context that can be filtered properly
      */
-    @Input() private parentModule: string = '';
+    @Input() public parentModule: string = '';
 
     /**
      * the id of the parent reord also used to render in teh context
      */
-    @Input() private parentId: string = '';
+    @Input() public parentId: string = '';
 
     /**
      * when the comonent is loading
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     /**
      * the vizualizationdata
      */
-    private vizData: any = {};
+    public vizData: any = {};
 
     /**
      * the rendered chartcomponent
      */
-    private chartComponent: any[] = [];
+    public chartComponent: any[] = [];
 
     /**
      * holds the subscriptions for thsi component
      */
-    private subscriptions = new Subscription();
+    public subscriptions = new Subscription();
 
-    constructor(private reporterconfig: reporterconfig,
-                private metadata: metadata,
-                private model: model,
-                private backend: backend,
-                private cdRef: ChangeDetectorRef) {
+    constructor(public reporterconfig: reporterconfig,
+                public metadata: metadata,
+                public model: model,
+                public backend: backend,
+                public cdRef: ChangeDetectorRef) {
         this.subscriptions.add(
             this.reporterconfig.refresh$.subscribe(event => {
                 this.getVisualization();
@@ -87,7 +87,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     /**
      * gets the visualization for the report
      */
-    private getVisualization() {
+    public getVisualization() {
 
         this.loading = true;
         this.cdRef.detectChanges();
@@ -125,7 +125,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      *
      * ToDo: remove the hardcoded components and keep this more flexibile in line with the architecture we are having
      */
-    private renderVisualization() {
+    public renderVisualization() {
         // reset the view
         this.chartComponent.forEach(componentRef => componentRef.destroy());
         this.chartComponent = [];

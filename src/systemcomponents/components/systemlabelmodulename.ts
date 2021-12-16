@@ -20,7 +20,7 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: 'system-label-modulename',
-    templateUrl: './src/systemcomponents/templates/systemlabelmodulename.html',
+    templateUrl: '../templates/systemlabelmodulename.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestroy {
@@ -28,29 +28,29 @@ export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestro
     /**
      * the module
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * the field
      */
-    @Input() private singular: boolean = false;
+    @Input() public singular: boolean = false;
 
     /**
      * the field
      */
-    @Input() private length: 'default' | 'long' | 'short' = 'default';
+    @Input() public length: 'default' | 'long' | 'short' = 'default';
 
     /**
      * the subscription on the language
      */
-    private subsciptions: Subscription = new Subscription();
+    public subsciptions: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private modal: modal,
-                private footer: footer,
-                private metadata: metadata,
-                private renderer: Renderer2,
-                private cdRef: ChangeDetectorRef) {
+    constructor(public language: language,
+                public modal: modal,
+                public footer: footer,
+                public metadata: metadata,
+                public renderer: Renderer2,
+                public cdRef: ChangeDetectorRef) {
         this.subsciptions.add(
             this.language.currentlanguage$.subscribe(() => this.detectChanges())
         );
@@ -84,7 +84,7 @@ export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestro
      * @param event
      * @private
      */
-    private onDblClick(event: MouseEvent) {
+    public onDblClick(event: MouseEvent) {
         this.openModal();
         event.preventDefault();
     }
@@ -104,7 +104,7 @@ export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestro
     /**
      * triggers the change detection when the language is changed
      */
-    private detectChanges() {
+    public detectChanges() {
         this.cdRef.detectChanges();
     }
 
@@ -112,7 +112,7 @@ export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestro
      * handle right click to edit translations
      * @private
      */
-    private onRightClick(event) {
+    public onRightClick(event) {
         const dropdown = this.createDropdown(event);
         this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, dropdown);
         const docClickListener = this.renderer.listen('document', 'click', event => {
@@ -128,7 +128,7 @@ export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestro
      * @param dropdown
      * @private
      */
-    private closeDropdown(event: MouseEvent, dropdown: HTMLElement) {
+    public closeDropdown(event: MouseEvent, dropdown: HTMLElement) {
         if (this.footer.footercontainer.element.nativeElement.contains(dropdown)) {
             this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, dropdown);
         }
@@ -139,7 +139,7 @@ export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestro
      * @param event
      * @private
      */
-    private createDropdown(event: MouseEvent): HTMLElement {
+    public createDropdown(event: MouseEvent): HTMLElement {
         const dropdown = this.renderer.createElement('div');
         const addClasses = (item, classes) => classes.forEach(itemClass => this.renderer.addClass(item, itemClass));
         this.renderer.setStyle(dropdown, 'top', event.pageY + 'px');

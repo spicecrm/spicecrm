@@ -29,7 +29,7 @@
                         <system-label label="LBL_CONTINUE"></system-label>
                     </ng-container>
                 </button>
-                <button class="slds-button slds-button--brand" (click)="buttonAcceptClose($event)" [disabled]="!dirty || cancelling">
+                <button class="slds-button slds-button--brand" (click)="buttonAcceptClose()" [disabled]="!dirty || cancelling">
                     <system-button-icon [icon]="'stop'" [position]="'left'"></system-button-icon>
                     <system-label label="LBL_ACCEPT"></system-label>&nbsp;&amp;&nbsp;<system-label label="LBL_CLOSE"></system-label>
                 </button>

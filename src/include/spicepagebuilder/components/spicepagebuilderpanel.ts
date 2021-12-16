@@ -11,7 +11,7 @@ import {ColumnI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
  */
 @Component({
     selector: 'spice-page-builder-panel',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderpanel.html',
+    templateUrl: '../templates/spicepagebuilderpanel.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderPanel {
@@ -19,13 +19,13 @@ export class SpicePageBuilderPanel {
      * reference of the parent to allow destroy
      * @private
      */
-    @Input() private self: any;
+    @Input() public self: any;
     /**
      * available sections
      */
-    protected sections: SectionI[] = [];
+    public sections: SectionI[] = [];
 
-    constructor(private spicePageBuilderService: SpicePageBuilderService) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -38,7 +38,7 @@ export class SpicePageBuilderPanel {
     /**
      * generate sections
      */
-    protected generateSections() {
+    public generateSections() {
 
         let counterSection = 1;
 
@@ -66,14 +66,14 @@ export class SpicePageBuilderPanel {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /**
      * Predicate function that doesn't allow items to be dropped into a list.
      */
-    protected noReturnPredicate() {
+    public noReturnPredicate() {
         return false;
     }
 
@@ -81,7 +81,7 @@ export class SpicePageBuilderPanel {
      * emit drag exited to parent
      * @param event
      */
-    private onDragExit(event: CdkDragExit) {
+    public onDragExit(event: CdkDragExit) {
         const placeholderNode: any = event.item.getPlaceholderElement().cloneNode(true);
         this.spicePageBuilderService.dragPlaceholderNode = placeholderNode;
         event.container.element.nativeElement.insertBefore(placeholderNode, event.item.getPlaceholderElement());
@@ -91,7 +91,7 @@ export class SpicePageBuilderPanel {
      * remove placeholder element if exists
      * @param event
      */
-    private onDragEnter(event: CdkDragEnter) {
+    public onDragEnter(event: CdkDragEnter) {
         if (this.spicePageBuilderService.dragPlaceholderNode && event.container.element.nativeElement.contains(this.spicePageBuilderService.dragPlaceholderNode)) {
             event.container.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
             this.spicePageBuilderService.dragPlaceholderNode = undefined;
@@ -102,7 +102,7 @@ export class SpicePageBuilderPanel {
      * emit the page data by the service
      * @private
      */
-    private save() {
+    public save() {
         this.spicePageBuilderService.emitData();
     }
 
@@ -110,7 +110,7 @@ export class SpicePageBuilderPanel {
      * emit the page data by the service
      * @private
      */
-    private cancel() {
+    public cancel() {
         this.spicePageBuilderService.emitData(true);
         this.self.destroy();
     }

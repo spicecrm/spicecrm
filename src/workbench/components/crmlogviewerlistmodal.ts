@@ -5,18 +5,18 @@ import { Component, Input } from '@angular/core';
 import { language } from '../../services/language.service';
 
 @Component({
-    templateUrl: './src/workbench/templates/crmlogviewerlistmodal.html',
+    templateUrl: '../templates/crmlogviewerlistmodal.html',
 })
 export class CRMLogViewerListModal {
 
-    @Input() private filter: any;
-    @Input() private crmLogId: string;
-    private self;
+    @Input() public filter: any;
+    @Input() public crmLogId: string;
+    public self;
 
-    constructor( private language: language ) { }
+    constructor( public language: language ) { }
 
     // Close the modal.
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 

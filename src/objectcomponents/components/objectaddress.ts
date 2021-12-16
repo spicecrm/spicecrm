@@ -11,7 +11,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-address',
-    templateUrl: './src/objectcomponents/templates/objectaddress.html',
+    templateUrl: '../templates/objectaddress.html',
     providers: [model]
 })
 export class ObjectAddress implements OnInit{
@@ -21,7 +21,7 @@ export class ObjectAddress implements OnInit{
     @Input() parent: any = {};
     @Input() fieldset: string = '';
 
-    constructor( private language: language, private metadata: metadata, private model: model, private view: view, private modelutilities: modelutilities, private footer: footer) {
+    constructor( public language: language, public metadata: metadata, public model: model, public view: view, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'Addresses';
     }
 

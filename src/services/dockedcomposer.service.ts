@@ -21,13 +21,13 @@ export class dockedComposer {
      */
     public hiddenComposers: number[] = [];
 
-    constructor(private modelutilities: modelutilities, private broadcast: broadcast) {
+    constructor(public modelutilities: modelutilities, public broadcast: broadcast) {
 
         // subscribe to the logout so we can remove all open composers
         this.broadcast.message$.subscribe(message => this.handleLogout(message));
     }
 
-    private handleLogout(message) {
+    public handleLogout(message) {
         if (message.messagetype == 'logout') {
             this.composers = [];
             this.hiddenComposers = [];

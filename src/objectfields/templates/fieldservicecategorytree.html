@@ -2,7 +2,7 @@
     <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
         <system-spinner></system-spinner>
     </div>
-    <div *ngFor="let lvl of levels; let i = index" class="slds-col slds-size--1-of-{{maxlevels}}" [ngClass]="{'slds-border--right': i < max_levels -1}">
+    <div *ngFor="let lvl of levels; let i = index" class="slds-col slds-size--1-of-{{maxlevels}}">
         <div *ngFor="let cat of lvl" [ngClass]="{'slds-theme--shade': isCategorySelected(cat)}">
             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small" (mouseenter)="select(cat)">
                 <span *ngIf="cat.selectable == 0 && cat.categories" class="slds-truncate" style="cursor: default;"><system-label [label]="cat.name"></system-label></span>

@@ -26,22 +26,22 @@ export class SystemResizeDirective implements OnDestroy {
     /**
      * the emitter with the name of the directive emitting the dimensions if they changed
      */
-    @Output('system-resize') private resizeemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output('system-resize') public resizeemitter: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the widht of the element when mouse went down
      */
-    private elementWidth: any;
+    public elementWidth: any;
 
     /**
      * the hwight of teh element when the mouse was down
      */
-    private elementHeight: any;
+    public elementHeight: any;
 
     /**
      * a listener to all mouseup events. Need to listen on document since in case of limited horiz or vertical resize the event might no occur in the element
      */
-    private mouseListener: any;
+    public mouseListener: any;
 
     constructor(
         public elementRef: ElementRef,
@@ -60,7 +60,7 @@ export class SystemResizeDirective implements OnDestroy {
      * @param event
      */
     @HostListener('mousedown', ['$event'])
-    private onMouseDown(event) {
+    public onMouseDown(event) {
         // get the current dimensions
         let rect = this.elementRef.nativeElement.getClientRects()[0];
         this.elementWidth = rect.width;
@@ -76,7 +76,7 @@ export class SystemResizeDirective implements OnDestroy {
     /**
      * react to the mouse up event
      */
-    private onMouseup() {
+    public onMouseup() {
         if (!this.elementWidth || !this.elementWidth) return;
         let currentrect = this.elementRef.nativeElement.getClientRects()[0];
         if ((this.elementWidth && currentrect.width != this.elementWidth) || (this.elementHeight && currentrect.height != this.elementHeight)) {

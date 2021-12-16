@@ -14,21 +14,21 @@ declare var _: any;
 
 @Component({
     selector: 'object-listview-filter-panel-filter-geo',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfiltergeo.html'
+    templateUrl: '../templates/objectlistviewfilterpanelfiltergeo.html'
 })
 export class ObjectListViewFilterPanelFilterGeo {
 
     /**
      * the geogrpahy
      */
-    @Input('geography') private geography: any = {};
+    @Input('geography') public geography: any = {};
 
     /**
      * the change output
      */
-    @Output('geographyChange') private geographyChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output('geographyChange') public geographyChange: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private modal: modal, private language: language, private metadata: metadata) {
+    constructor(public model: model, public modal: modal, public language: language, public metadata: metadata) {
 
     }
 
@@ -46,7 +46,7 @@ export class ObjectListViewFilterPanelFilterGeo {
     /**
      * a function that handöles the click registered by the renderer
      */
-    private onClick() {
+    public onClick() {
         this.modal.openModal('SpiceMapSelector').subscribe(mapModal => {
 
             if (this.hasGeogrpahy) {

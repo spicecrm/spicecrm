@@ -26,11 +26,11 @@ interface menuItem {
  */
 @Component({
     selector: 'global-navigation-menu-item-new',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemnew.html'
+    templateUrl: '../templates/globalnavigationmenuitemnew.html'
 })
 export class GlobalNavigationMenuItemNew {
 
-    constructor( private language: language, private model: model) {
+    constructor(public language: language,public model: model) {
     }
 
     public exceuteItem() {

@@ -9,11 +9,11 @@ import {UserChangePasswordModal} from "./userchangepasswordmodal";
 
 @Component({
     selector: "user-change-password-button",
-    templateUrl: "./src/modules/users/templates/userchangepasswordbutton.html"
+    templateUrl: "../templates/userchangepasswordbutton.html"
 })
 export class UserChangePasswordButton {
 
-    constructor(private language: language, private modal: modal, private model: model) {
+    constructor(public language: language, public modal: modal, public model: model) {
 
     }
 
@@ -21,7 +21,7 @@ export class UserChangePasswordButton {
         return this.model.getFieldValue('external_auth_only') == false;
     }
 
-    private execute() {
+    public execute() {
         this.modal.openModal("UserChangePasswordModal");
     }
 

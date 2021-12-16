@@ -11,17 +11,17 @@ import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-saved-filters',
-    templateUrl: './src/modules/reports/templates/reporterfiltersavedfilters.html'
+    templateUrl: '../templates/reporterfiltersavedfilters.html'
 })
 export class ReporterFilterSavedFilters implements OnInit {
 
-    @Output() private selectFilterChange: EventEmitter<any> = new EventEmitter<any>();
-    @Input() private reportId: string = '';
-    @Input() private _selectedFilterId: string = '';
+    @Output() public selectFilterChange: EventEmitter<any> = new EventEmitter<any>();
+    @Input() public reportId: string = '';
+    @Input() public _selectedFilterId: string = '';
 
-    private savedFilters: any[] = [];
+    public savedFilters: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private language: language, private reporterconfig: reporterconfig, private backend: backend) {
+    constructor(public metadata: metadata, public model: model, public language: language, public reporterconfig: reporterconfig, public backend: backend) {
 
     }
 

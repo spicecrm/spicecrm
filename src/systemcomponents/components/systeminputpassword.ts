@@ -11,7 +11,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-input-password',
-    templateUrl: './src/systemcomponents/templates/systeminputpassword.html',
+    templateUrl: '../templates/systeminputpassword.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -25,17 +25,17 @@ export class SystemInputPassword implements ControlValueAccessor {
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
-    private _value: string;
+    public _value: string;
 
-    private _inputtype: 'text' | 'password' = 'password';
+    public _inputtype: 'text' | 'password' = 'password';
 
     /**
      * set to disabled
      */
-    @Input() private disabled: boolean = false;
+    @Input() public disabled: boolean = false;
 
     constructor() {
 
@@ -98,7 +98,7 @@ export class SystemInputPassword implements ControlValueAccessor {
     /**
      * toggle the type
      */
-    private toggleType() {
+    public toggleType() {
         this._inputtype = this._inputtype == 'text' ? 'password' : 'text';
     }
 

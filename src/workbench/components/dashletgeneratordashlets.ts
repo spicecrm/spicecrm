@@ -11,23 +11,23 @@ import {modelutilities} from '../../services/modelutilities.service';
 
 @Component({
     selector: 'dashlet-generator-dashlets',
-    templateUrl: './src/workbench/templates/dashletgeneratordashlets.html',
+    templateUrl: '../templates/dashletgeneratordashlets.html',
 })
 export class DashletGeneratorDashlets {
 
-    private loading: boolean = false;
-    private _module: string = '';
+    public loading: boolean = false;
+    public _module: string = '';
     public modules: string[];
-    private dashlets: any[] = [];
-    private activeTab: string = 'global';
+    public dashlets: any[] = [];
+    public activeTab: string = 'global';
 
-    @Output() private dashlet: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public dashlet: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private metadata: metadata,
-        private modelutilities: modelutilities,
+        public backend: backend,
+        public language: language,
+        public metadata: metadata,
+        public modelutilities: modelutilities,
     ) {
         this.modules = this.metadata.getModules();
         this.modules.sort();
@@ -60,11 +60,11 @@ export class DashletGeneratorDashlets {
         return this.dashlets.filter(dashlet => dashlet.module == this.module && dashlet.type == 'custom');
     }
 
-    private goDetail(dashlet) {
+    public goDetail(dashlet) {
         this.dashlet.emit(dashlet);
     }
 
-    private add(type) {
+    public add(type) {
         let dashlet = {
             id: this.modelutilities.generateGuid(),
             name: 'new dashlet',
@@ -81,7 +81,7 @@ export class DashletGeneratorDashlets {
         this.dashlet.emit(dashlet);
     }
 
-    private remove(dashletId) {
+    public remove(dashletId) {
         this.backend.deleteRequest('module/Dashboards/dashlets/' + dashletId);
         this.dashlets = this.dashlets.filter(dashlet => dashlet.id != dashletId);
         this.dashlet.emit(undefined);

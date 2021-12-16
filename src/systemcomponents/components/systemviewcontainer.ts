@@ -11,7 +11,7 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: "system-view-container",
-    templateUrl: "./src/systemcomponents/templates/systemviewcontainer.html"
+    templateUrl: "../templates/systemviewcontainer.html"
 })
 export class SystemViewContainer {
     /**
@@ -19,7 +19,7 @@ export class SystemViewContainer {
      */
     @Input() public componentconfig: any = {};
 
-    constructor(private view: view, private language: language, @Optional() private model: model) {
+    constructor(public view: view, public language: language, @Optional() public model: model) {
     }
 
     /**
@@ -39,7 +39,7 @@ export class SystemViewContainer {
     /**
      * cancels editing and sets the view back to viewMode
      */
-    private cancel() {
+    public cancel() {
         if(this.model) {
             this.model.cancelEdit();
             this.view.setViewMode();
@@ -49,7 +49,7 @@ export class SystemViewContainer {
     /**
      * saves the model and sets the view back to view mode
      */
-    private save() {
+    public save() {
         if (this.model && this.model.validate()) {
             this.model.save(true);
             this.view.setViewMode();

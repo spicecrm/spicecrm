@@ -15,12 +15,12 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'field-modulefilter',
-    templateUrl: './src/objectfields/templates/fieldmodulefilter.html',
+    templateUrl: '../templates/fieldmodulefilter.html',
     providers: [popup],
 })
 export class fieldModuleFilter extends fieldGeneric implements OnInit {
-    private clickListener: any;
-    private moduleSelectOpen: boolean = false;
+    public clickListener: any;
+    public moduleSelectOpen: boolean = false;
     public modules: any[] = ['Contacts','Accounts','Leads','Users',];
 
     constructor(
@@ -31,9 +31,9 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        private modal: modal
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public modal: modal
     ) {
         super(model, view, language, metadata, router);
 
@@ -73,16 +73,16 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
         this.setModule(this.module);
     }
 
-    private setModule(module) {
+    public setModule(module) {
         this.model.setField('module', module);
         this.moduleSelectOpen = false;
     }
 
-    private clearFilter() {
+    public clearFilter() {
         this.model.setField('module_filter', '');
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         if (message.messagedata.reference) {
             switch (message.messagetype) {
                 case 'model.save':
@@ -103,12 +103,12 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
         }
     }
 
-    private openModules() {
+    public openModules() {
         this.moduleSelectOpen = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private closePopups() {
+    public closePopups() {
         if (this.model.data.module_filter) {
         }
         this.moduleSelectOpen = false;

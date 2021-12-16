@@ -15,12 +15,12 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'field-email-templates',
-    templateUrl: './src/objectfields/templates/fieldemailtemplates.html'
+    templateUrl: '../templates/fieldemailtemplates.html'
 })
 export class fieldEmailTemplates extends fieldGeneric implements OnInit {
 
-    private isLoaded: boolean = false;
-    private availableTemplates: any[] = [];
+    public isLoaded: boolean = false;
+    public availableTemplates: any[] = [];
 
     constructor(
         public model: model,
@@ -28,9 +28,9 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private modal: modal,
-        private configuration: configurationService
+        public backend: backend,
+        public modal: modal,
+        public configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
@@ -52,7 +52,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
     }
 
-    private getValue() {
+    public getValue() {
         for (let template of this.availableTemplates) {
             if (template.id == this.value) {
                 return template.name;
@@ -97,7 +97,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
      *
      * @param event
      */
-    private chooseTemplate(event) {
+    public chooseTemplate(event) {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
                 this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {

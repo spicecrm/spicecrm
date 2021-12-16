@@ -16,7 +16,7 @@ import {interval, Subscription} from "rxjs";
  */
 @Component({
     selector: 'global-re-connect',
-    templateUrl: './src/globalcomponents/templates/globalreconnect.html',
+    templateUrl: '../templates/globalreconnect.html',
 })
 export class GlobalReConnect implements OnInit, OnDestroy {
 
@@ -25,36 +25,36 @@ export class GlobalReConnect implements OnInit, OnDestroy {
      *
      * @private
      */
-    private self: any;
+   public self: any;
 
     /**
      * the password for the user
      *
      * @private
      */
-    private password: string;
+   public password: string;
 
     /**
      * emits if the user logged in successfully
      *
      * @private
      */
-    @Output() private connected: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output()public connected: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * a timer to the reconnect check
      * @private
      */
-    private timeToNextCheck: number = 1000;
+   public timeToNextCheck: number = 1000;
 
     /**
      * the subscription to countdown the time
      *
      * @private
      */
-    private timerSubscription: Subscription;
+   public timerSubscription: Subscription;
 
-    constructor(private http: HttpClient, private configuration: configurationService, private login: loginService) {
+    constructor(public http: HttpClient,public configuration: configurationService,public login: loginService) {
 
     }
 
@@ -80,7 +80,7 @@ export class GlobalReConnect implements OnInit, OnDestroy {
      *
      * @private
      */
-    private checkReconnect() {
+   public checkReconnect() {
         if (this.timeToNextCheck == 0) {
             this.reconnect();
         }
@@ -96,7 +96,7 @@ export class GlobalReConnect implements OnInit, OnDestroy {
      *
      * @private
      */
-    private reconnect() {
+   public reconnect() {
         let loginUrl: string = this.configuration.getBackendUrl() + '/sysinfo';
         this.http.get(loginUrl).subscribe(
             (res: any) => {
@@ -116,7 +116,7 @@ export class GlobalReConnect implements OnInit, OnDestroy {
      *
      * @private
      */
-    private logout() {
+   public logout() {
         this.login.logout(true);
         this.close();
     }
@@ -125,7 +125,7 @@ export class GlobalReConnect implements OnInit, OnDestroy {
      * closes the modal
      * @private
      */
-    private close() {
+   public close() {
         this.self.destroy();
     }
 }
