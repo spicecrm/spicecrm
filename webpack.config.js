@@ -2,6 +2,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 
 require('./gulpfile_globals.js');
 const moment = require("moment");
@@ -52,7 +53,8 @@ module.exports = {
                     `;
                 },
             }),
-            new CssMinimizerPlugin()
+            new CssMinimizerPlugin(),
+            new HtmlMinimizerPlugin()
         ],
     },
     plugins: [
