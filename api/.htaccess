@@ -22,7 +22,7 @@ RewriteRule ^ service/v4_1/soap.php [QSA,L]
 RewriteCond %{REQUEST_URI} ^(.*)install\/(.*)$
 RewriteRule ^ include/SpiceInstaller/install.php [QSA,L]
 
-RewriteCond %{REQUEST_URI} !^(.*)api(.*)$
+RewriteCond %{REQUEST_URI} !^(.*)KREST(.*)$
 RewriteRule ^ index.php [QSA,L]
 
 # use the rewrite rule below if loaded as CLI in Apache
