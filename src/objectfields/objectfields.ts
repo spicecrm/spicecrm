@@ -122,6 +122,7 @@ import {fieldImage} from './components/fieldimage';
 import {fieldCompound} from './components/fieldcompound';
 import {fieldIconCondition} from './components/fieldiconcondition';
 import {fieldIndicator} from './components/fieldindicator';
+import {fieldEmailRecipientsInput} from './components/fieldemailrecipientsinput';
 
 /**
  * @ignore
@@ -252,7 +253,8 @@ declare var _: any;
         fieldSlider,
         fieldCompound,
         fieldIconCondition,
-        fieldIndicator
+        fieldIndicator,
+        fieldEmailRecipientsInput
     ],
     exports: [
         fieldSet,
@@ -271,7 +273,8 @@ declare var _: any;
         fieldLookupSearchAdd,
         fieldTags,
         fieldCategories,
-        fieldCategoriesTree
+        fieldCategoriesTree,
+        fieldEmailRecipientsInput
     ]
 })
 export class ObjectFields {}
