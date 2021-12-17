@@ -66,10 +66,7 @@ export class ACLObjectsManagerObjects {
 
         this.backend.getRequest('module/SpiceACLObjects', params).subscribe(aclobjects => {
             this.aclobjects = aclobjects;
-
-            this.aclobjects.sort((a, b) => {
-                return a.name > b.name ? 1 : -1;
-            });
+            this.aclobjects.sort((a, b) =>  a.name.localeCompare(b.name));
             this.loading = false;
         });
     }

@@ -1242,7 +1242,7 @@ export class model implements OnDestroy {
         };
 
         // get the field control
-        this.data.acl_fieldcontrol = this.metadata.moduleDefs[this.module].acl_fieldcontrol;
+        this.data.acl_fieldcontrol = this.metadata.moduleDefs[this.module]?.acl_fieldcontrol ?? [];
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
