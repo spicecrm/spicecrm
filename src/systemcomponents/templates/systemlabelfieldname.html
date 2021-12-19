@@ -1,6 +1,4 @@
-<ng-container *ngIf="!language.inlineEditEnabled; else labelListenerContainer">
-    {{language.getFieldDisplayName(module, field, fieldconfig, length)}}
-</ng-container>
+<ng-container *ngIf="!language.inlineEditEnabled; else labelListenerContainer">{{language.getFieldDisplayName(module, field, fieldconfig, length)}}</ng-container>
 <ng-template #labelListenerContainer>
     <span (dblclick)="onDblClick($event)" (contextmenu)="onRightClick($event)">
         {{language.getFieldDisplayName(module, field, fieldconfig, length)}}
