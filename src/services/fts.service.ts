@@ -61,6 +61,7 @@ export class fts {
         public session: session,
         public modelutilities: modelutilities,
         public metadata: metadata,
+        private language: language
     ) {
         this.getSearchModules();
     }
@@ -268,7 +269,7 @@ export class fts {
     }
 
     public getSearchModules() {
-        this.searchModules = this.metadata.getGlobalSearchModules();
+        this.searchModules = this.metadata.getGlobalSearchModules().sort((a,b) => this.language.getModuleName(a).localeCompare(this.language.getModuleName(b)));
 
         /*
         this.backend.getRequest('fts/searchmodules')
