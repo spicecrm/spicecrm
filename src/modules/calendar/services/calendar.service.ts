@@ -35,6 +35,10 @@ export class calendar implements OnDestroy {
      */
     public userCalendarChange$ = new EventEmitter<{id: string, name: string, visible: boolean, color: string} | {id: string}>();
     /**
+     * holds the search term
+     */
+    public searchTerm: string = '';
+    /**
      *  emit on drop target click
      */
     public addingEvent$ = new EventEmitter<any>();
@@ -395,7 +399,7 @@ export class calendar implements OnDestroy {
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users};
+            let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users, searchTerm: this.searchTerm};
             let endPoint = users.length > 0 ? 'module/Calendar/users/' : 'module/Calendar/';
             this.currentEnd[userId] = end;
             this.currentStart[userId] = start;
@@ -479,7 +483,7 @@ export class calendar implements OnDestroy {
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
+            let params = {startdate: startDate.format(format), enddate: endDate.format(format), searchTerm: this.searchTerm};
             this.calendars.google = [];
             this.currentEnd.google = endDate;
             this.currentStart.google = startDate;
