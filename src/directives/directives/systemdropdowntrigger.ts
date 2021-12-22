@@ -80,7 +80,6 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
 
         if (this.dropdownElement) {
             this.moveDropdownToFooter();
-            this.resetDropdownStyles();
             this.setDropdownElementPosition();
         }
 
@@ -92,6 +91,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
                 this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
             } else {
                 this.removeDropdownFromFooter();
+                this.previousTriggerRect = undefined;
                 this.clickListener();
             }
         }
@@ -130,17 +130,6 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     }
 
     /*
-    * @set dropdown style.transform
-    * @set dropdown style.right
-    * @set dropdown style.z-index
-    */
-    public resetDropdownStyles() {
-        this.renderer.setStyle(this.dropdownElement, 'transform', 'initial');
-        this.renderer.setStyle(this.dropdownElement, 'right', 'initial');
-        this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
-    }
-
-    /*
     * @set dropdownElement from origin children
     */
     public setDropdownElement() {
@@ -162,17 +151,17 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     }
 
     /*
-    * @set previousTriggerRect
-    * @set dropdown style.top
-    * @set dropdown style.left
+    * set the dropdown element position
     */
     public setDropdownElementPosition() {
         let triggerRect = this.elementRef.nativeElement.getBoundingClientRect();
         let dropdownRect = this.dropdownElement.getBoundingClientRect();
         if (this.previousTriggerRect && this.previousTriggerRect.bottom == triggerRect.bottom && this.previousTriggerRect.right == triggerRect.right) return;
         this.previousTriggerRect = triggerRect;
-        this.renderer.setStyle(this.dropdownElement, 'top', window.innerHeight - triggerRect.bottom < 100 ? Math.abs(triggerRect.bottom - dropdownRect.height) + 'px' : triggerRect.bottom + 'px');
-        this.renderer.setStyle(this.dropdownElement, 'left', Math.abs(triggerRect.right - dropdownRect.width) + 'px');
+        this.renderer.setStyle(this.dropdownElement, 'bottom', window.innerHeight - (triggerRect.bottom + dropdownRect.height + 3));
+        this.renderer.setStyle(this.dropdownElement, 'right', window.innerWidth - triggerRect.right + 'px');
+        this.renderer.setStyle(this.dropdownElement, 'transform', 'translateX(0)');
+        this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
 
         // make sure we detect changes in case we are on a push strategy
         this.cdRef.markForCheck();

@@ -21,7 +21,7 @@ export class ObjectActionDuplicateButton {
      * hide the button while the model is editing
      */
     get hidden() {
-        return this.model.isEditing;
+        return this.parent.isEditing;
     }
 
     /**
