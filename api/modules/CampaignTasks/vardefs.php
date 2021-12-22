@@ -258,6 +258,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'relationship' => 'servicefeedbacks_campaigntasks',
             'link_type' => 'one',
             'source' => 'non-db'
+        ],
+        'emailtrackingactions' => [
+            'name' => 'emailtrackingactions',
+            'type' => 'link',
+            'module' => 'EmailTrackingActions',
+            'relationship' => 'campaigntask_emailtrackingactions',
+            'source' => 'non-db'
         ]
     ],
     'relationships' => [
