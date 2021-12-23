@@ -31,7 +31,7 @@
         -->
         <!-- standard actions -->
         <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions slds-p-around--none" [class.slds-grid]="grouped == 'horizontal'" style="max-width: initial;">
-            <div *ngFor="let group of groups; let last = last" [class.slds-hide]="group.hidden" [class.slds-border--right]="!last && grouped == 'horizontal'" [style.width]="grouped == 'horizontal' ? '160px' : 'initial'">
+            <div *ngFor="let group of groups; let last = last" [class.slds-hide]="group.hidden" [class.slds-border--right]="!last && grouped == 'horizontal'" [style.width]="grouped == 'horizontal' ? '160px' : 'initial'" [style.min-width]="grouped == 'horizontal' ? '160px' : 'initial'">
                 <div *ngIf="groups.length > 1" class="slds-p-around--x-small slds-theme--shade slds-text-title--caps">
                     <system-label [label]="group.name == 'undefined' ? 'LBL_DEFAULT' : group.name"></system-label>
                 </div>
