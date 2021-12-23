@@ -160,6 +160,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
         this.previousTriggerRect = triggerRect;
 
         this.renderer.setStyle(this.dropdownElement, 'transform', 'translateX(0)');
+        this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
 
         if (triggerRect.bottom + this.dropdownElement.clientHeight > window.innerHeight) {
             this.renderer.setStyle(this.dropdownElement, 'bottom', (window.innerHeight - triggerRect.top) + 'px');
