@@ -30,13 +30,13 @@
         </div>
         -->
         <!-- standard actions -->
-        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions" [class.slds-grid]="grouped == 'horizontal'">
-            <div *ngFor="let item of groups | keyvalue; let last = last" [class.slds-hide]="item.value.hidden" [class.slds-border--right]="!last && grouped == 'horizontal'">
-                <div *ngIf="(groups | keyvalue).length > 1" class="slds-p-around--x-small slds-theme--shade slds-text-title--caps">
-                    <system-label [label]="item.key == 'undefined' ? 'LBL_DEFAULT' : item.key"></system-label>
+        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions slds-p-around--none" [class.slds-grid]="grouped == 'horizontal'" style="max-width: initial;">
+            <div *ngFor="let group of groups; let last = last" [class.slds-hide]="group.hidden" [class.slds-border--right]="!last && grouped == 'horizontal'" [style.width]="grouped == 'horizontal' ? '160px' : 'initial'">
+                <div *ngIf="groups.length > 1" class="slds-p-around--x-small slds-theme--shade slds-text-title--caps">
+                    <system-label [label]="group.name == 'undefined' ? 'LBL_DEFAULT' : group.name"></system-label>
                 </div>
-                <ul [class.slds-hide]="item.value.hidden" class="slds-dropdown__list" role="menu">
-                    <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of item.value.items" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+                <ul [class.slds-hide]="group.hidden" class="slds-dropdown__list" role="menu">
+                    <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of group.items" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
                         <a href="javascript:void(0);" role="menuitem" tabindex="0">
                             <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
                         </a>

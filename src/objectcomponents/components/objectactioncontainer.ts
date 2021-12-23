@@ -75,7 +75,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     /**
      * holds the groups
      */
-    public groups: {[key: symbol]: {hidden: boolean, items: any[]}} = {};
+    public groups: {name: string, sequence: number, hidden: boolean, items: any[]}[] = [];
     /**
      * holds grouped value
      */
@@ -87,8 +87,8 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     public ngDoCheck() {
         if (!this.stable) return;
 
-        Object.keys(this.groups).forEach(group => {
-            this.groups[group].hidden = this.actionitemlist.filter(i =>  (i.actionitem.actionconfig?.group == group || !i.actionitem.actionconfig?.group && group == 'undefined') && !i.hidden).length == 0;
+        this.groups.forEach(group => {
+            group.hidden = this.actionitemlist.filter(i =>  (i.actionitem.actionconfig?.group == group.name || !i.actionitem.actionconfig?.group && group.name == 'undefined') && !i.hidden).length == 0;
         })
     }
 
@@ -98,43 +98,47 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      */
     private buildItems() {
 
-        const actionItems = this.metadata.getActionSetItems(this.actionset);
+        const actionItems = this.metadata.getActionSetItems(this.actionset)
+            .sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+
         this.mainactionitems = [];
         let initial = true;
-        this.groups = {};
+        this.groups = [];
+        const groupsObj: {[key: string]: {name: string, sequence: number, hidden: boolean, items: any[]}} = {};
 
-        for (let item of actionItems) {
+        for (const item of actionItems) {
+
+            const actionItem = {
+                disabled: true,
+                id: item.id,
+                sequence: item.sequence,
+                action: item.action,
+                component: item.component,
+                actionconfig: item.actionconfig
+            };
 
             if (initial || item.singlebutton == '1') {
-                this.mainactionitems.push({
-                    disabled: true,
-                    id: item.id,
-                    sequence: item.sequence,
-                    action: item.action,
-                    component: item.component,
-                    actionconfig: item.actionconfig
-                });
+                this.mainactionitems.push(actionItem);
                 initial = false;
             } else {
-                const actionItem = {
-                    disabled: true,
-                    id: item.id,
-                    sequence: item.sequence,
-                    action: item.action,
-                    component: item.component,
-                    actionconfig: item.actionconfig
-                };
 
                 if (!this.isHidden(item.id)) {
                     const group = ['horizontal', 'vertical'].indexOf(this.grouped) > -1 && !!item.actionconfig?.group ? item.actionconfig?.group : 'undefined';
-                    if (!this.groups[group]) {
-                        this.groups[group] = {items: [actionItem], hidden: false};
+                    if (!groupsObj[group]) {
+                        groupsObj[group] = {
+                            name: group,
+                            sequence: group == 'undefined' ? 1000 : Object.keys(groupsObj).length +1,
+                            items: [actionItem],
+                            hidden: false
+                        };
                     } else {
-                        this.groups[group].items.push(actionItem);
+                        groupsObj[group].items.push(actionItem);
                     }
                 }
             }
         }
+
+        this.groups = Object.values(groupsObj).sort((a,b) => a.sequence > b.sequence ? 1 : -1);
     }
 
     public ngOnChanges() {
@@ -155,7 +159,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
 
     get opendisabled() {
         let disabled = true;
-        Object.keys(this.groups).some(group => this.groups[group].items.some(actionitem => {
+        this.groups.some(group => group.items.some(actionitem => {
             if (this.isDisabled(actionitem.id) === false) {
                 disabled = false;
                 return true;
@@ -165,7 +169,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     }
 
     get hasAddItems() {
-        return Object.keys(this.groups).some(group => this.groups[group].items.length > 0);
+        return this.groups.some(group => group.items.length > 0);
     }
 
     /**
