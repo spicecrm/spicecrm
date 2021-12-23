@@ -161,21 +161,44 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
 
         this.renderer.setStyle(this.dropdownElement, 'transform', 'translateX(0)');
         this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
+        this.renderer.addClass(this.dropdownElement, 'slds-scrollable');
 
-        if (triggerRect.bottom + this.dropdownElement.clientHeight > window.innerHeight) {
+        // from bottom to top direction
+        if (triggerRect.bottom > window.innerHeight * 0.70 && triggerRect.bottom + this.dropdownElement.clientHeight > window.innerHeight) {
             this.renderer.setStyle(this.dropdownElement, 'bottom', (window.innerHeight - triggerRect.top) + 'px');
             this.renderer.setStyle(this.dropdownElement, 'top', 'auto');
+
+            // on overflow adjust the height
+            this.renderer.setStyle(this.dropdownElement, 'max-height', (triggerRect.top - 10) + 'px');
+
+            // from top to bottom direction
         } else {
             this.renderer.setStyle(this.dropdownElement, 'top', triggerRect.bottom + 'px');
             this.renderer.setStyle(this.dropdownElement, 'bottom', 'auto');
+
+            // on overflow adjust the height
+            if (triggerRect.bottom < window.innerHeight * 0.70) {
+                this.renderer.setStyle(this.dropdownElement, 'max-height', (window.innerHeight - triggerRect.bottom - 10) + 'px');
+            }
         }
 
-        if (triggerRect.right - this.dropdownElement.clientWidth > 10) {
+        // from left to right direction
+        if (triggerRect.right > window.innerWidth * 0.70 && triggerRect.right - this.dropdownElement.clientWidth > 10) {
             this.renderer.setStyle(this.dropdownElement, 'right', (window.innerWidth - triggerRect.right) + 'px');
             this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
+
+            // on overflow adjust the height
+            this.renderer.setStyle(this.dropdownElement, 'max-width', (triggerRect.left - 10) + 'px');
+
+            // from right to left direction
         } else {
             this.renderer.setStyle(this.dropdownElement, 'right', 'auto');
             this.renderer.setStyle(this.dropdownElement, 'left', triggerRect.left + 'px');
+
+            // on overflow adjust the width
+            if (triggerRect.bottom < window.innerWidth * 0.70) {
+                this.renderer.setStyle(this.dropdownElement, 'max-width', (window.innerWidth - triggerRect.right - 10) + 'px');
+            }
         }
 
         // make sure we detect changes in case we are on a push strategy
