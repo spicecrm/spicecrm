@@ -91,7 +91,6 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
                 this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
             } else {
                 this.removeDropdownFromFooter();
-                this.previousTriggerRect = undefined;
                 this.clickListener();
             }
         }
@@ -155,13 +154,28 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     */
     public setDropdownElementPosition() {
         let triggerRect = this.elementRef.nativeElement.getBoundingClientRect();
-        let dropdownRect = this.dropdownElement.getBoundingClientRect();
-        if (this.previousTriggerRect && this.previousTriggerRect.bottom == triggerRect.bottom && this.previousTriggerRect.right == triggerRect.right) return;
+
+        if (this.previousTriggerRect && JSON.stringify(this.previousTriggerRect) == JSON.stringify(triggerRect)) return;
+
         this.previousTriggerRect = triggerRect;
-        this.renderer.setStyle(this.dropdownElement, 'bottom', window.innerHeight - (triggerRect.bottom + dropdownRect.height + 3));
-        this.renderer.setStyle(this.dropdownElement, 'right', window.innerWidth - triggerRect.right + 'px');
+
         this.renderer.setStyle(this.dropdownElement, 'transform', 'translateX(0)');
-        this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
+
+        if (triggerRect.bottom + this.dropdownElement.clientHeight > window.innerHeight) {
+            this.renderer.setStyle(this.dropdownElement, 'bottom', (window.innerHeight - triggerRect.top) + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'top', 'auto');
+        } else {
+            this.renderer.setStyle(this.dropdownElement, 'top', triggerRect.bottom + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'bottom', 'auto');
+        }
+
+        if (triggerRect.right - this.dropdownElement.clientWidth > 10) {
+            this.renderer.setStyle(this.dropdownElement, 'right', (window.innerWidth - triggerRect.right) + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
+        } else {
+            this.renderer.setStyle(this.dropdownElement, 'right', 'auto');
+            this.renderer.setStyle(this.dropdownElement, 'left', triggerRect.left + 'px');
+        }
 
         // make sure we detect changes in case we are on a push strategy
         this.cdRef.markForCheck();
