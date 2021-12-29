@@ -19,7 +19,7 @@ import {modellist} from '../../../services/modellist.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
-import {CdkDragDrop} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
 import {ListTypeI} from "../../../services/interfaces.service";
 import {skip} from "rxjs/operators";
 
@@ -75,6 +75,18 @@ export class SpiceKanban implements OnInit, OnDestroy {
     public sortfields: any[] = [];
 
     public loadLabel: boolean = false;
+    /**
+     * holds the status network items
+     */
+    public statusNetworkItems: any[] = [];
+    /**
+     * holds the status network field
+     */
+    public statusField: string = '';
+    /**
+     * holds the status network managed boolean
+     */
+    public statusNetworkManaged: boolean = false;
 
     constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency) {
 
@@ -132,10 +144,26 @@ export class SpiceKanban implements OnInit, OnDestroy {
             this.sortfields = filtered.map(field => field.fieldname);
         });
     }
+
+    /**
+     * load status network from metadata
+     * @private
+     */
+    private loadStatusNetwork() {
+        const managed = this.metadata.checkStatusManaged(this.modellist.module);
+        if (managed != false) {
+            this.statusField = managed.statusField;
+            this.statusNetworkItems = managed.statusNetwork;
+            this.statusNetworkManaged = true;
+        }
+    }
+
     /**
      * load ths stage data and build the buckts we are searching for to build the kanban board
      */
     public ngOnInit() {
+
+        this.loadStatusNetwork();
         this.confdata = this.configuration.getData('spicebeanguides')[this.modellist.module];
         let stages = this.confdata.stages;
 
@@ -449,7 +477,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param item
      */
     public allowDrag(item) {
-        return this.draganddropenabled && item.acl.edit;
+        return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from));
     }
 
     /**
@@ -474,4 +502,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
     }
 
+    /**
+     * method to be passed to drop list to disable dropping based on status network
+     * @param stage
+     */
+    public dropEnterAllowed(stage: any) {
+        return (item: CdkDrag) => {
+            return !this.statusNetworkManaged || this.statusNetworkItems.filter(e => e.status_to == stage.stage).some(e => e.status_from == item.data[this.statusField])
+        }
+    }
 }
