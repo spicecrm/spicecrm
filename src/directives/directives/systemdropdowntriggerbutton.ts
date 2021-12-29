@@ -21,6 +21,7 @@ export class SystemDropdownTriggerButtonDirective {
     public ngOnInit() {
         if (!this.trigger) return;
         this.trigger.hasTriggerButton = true;
+        this.trigger.triggerElementButton = this.elementRef;
     }
 
     /**
