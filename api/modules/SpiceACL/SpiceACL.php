@@ -516,7 +516,7 @@ class SpiceACL
                     $activities = $this->aclObject->getObjectActivities($bean, $aclObjectData);
                     foreach ($activitiesAllowed as $allowedid => $allwoedaction) {
                         if (!isset($activities[$allowedid])) {
-                            unset($activitiesAllowed['$allowedid']);
+                            unset($activitiesAllowed[$allowedid]);
                         }
                     }
 

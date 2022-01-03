@@ -6,6 +6,7 @@ import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 import {modelutilities} from "../../../services/modelutilities.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * @ignore
@@ -23,6 +24,17 @@ export class CalendarHeader implements OnDestroy {
      * show/hide date picker
      */
     public openPicker: boolean = false;
+    /**
+     * indicates if the entered searchterms woudl provoke any error
+     * dues to the min and max engram restrictions and thus
+     * would certainly not pfind any results
+     * @private
+     */
+    public searchTermError: boolean = false;
+    /**
+     * the search timeout triggered by the keyup in the search box
+     */
+    public searchTimeOut: any;
     /**
      * holds schedule sheet until date
      */
@@ -49,6 +61,7 @@ export class CalendarHeader implements OnDestroy {
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
                 public modelUtils: modelutilities,
+                public configuration: configurationService,
                 public calendar: calendar) {
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
     }
@@ -248,5 +261,58 @@ export class CalendarHeader implements OnDestroy {
      */
     public getIconStyle(module) {
         return this.calendar.otherCalendars.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
+    }
+
+    set searchTerm(value: string) {
+        if (value != this.calendar.searchTerm) {
+            this.calendar.searchTerm = value;
+            if(value == '' || this.searchTermsValid(value)) {
+                this.searchTermError = false;
+                this.reloadList();
+            } else {
+                // if we have a timeout set .. clear it
+                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+                // set the error
+                this.searchTermError = true;
+            }
+        }
+    }
+
+    /**
+     * checks if we have the proper length of searchterms
+     *
+     * @param searchTerm
+     * @private
+     */
+    public searchTermsValid(searchTerm) {
+        let config = this.configuration.getCapabilityConfig('search');
+        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
+        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
+        let items = searchTerm.split(' ');
+        return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
+    }
+
+    get searchTerm(): string {
+        return this.calendar.searchTerm;
+    }
+
+    /**
+     * clears the searchterm
+     * @private
+     */
+    public clearSearchTerm() {
+        this.searchTerm = '';
+    }
+
+    /**
+     * reload the model list on 1 second timeout
+     * @private
+     */
+    public reloadList() {
+        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+        this.searchTimeOut = window.setTimeout(() => {
+            this.calendar.refresh();
+            this.calendar.cdRef.detectChanges();
+        }, 1000);
     }
 }

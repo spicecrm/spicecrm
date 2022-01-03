@@ -27,11 +27,28 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class ACLTypesManagerTypesAddAction implements OnInit{
 
-    self: any = {};
-    currentactions: Array<any> = [];
-    _currentActions: Array<string> = [];
-    action: string = '';
-    addaction: EventEmitter<string> = new EventEmitter<string>();
+    /**
+     * reference to the modal itself
+     */
+    private self: any = {};
+
+    currentactions: any[] = [];
+    _currentActions: string[] = [];
+
+    /**
+     * the action bound int he modal
+     */
+    public action: string = '';
+
+    /**
+     * the description bound to the modal
+     */
+    public description: string = '';
+
+    /**
+     * an event emitter triggering when the action is added
+     */
+    private addaction: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
 
@@ -52,7 +69,7 @@ export class ACLTypesManagerTypesAddAction implements OnInit{
     }
 
     add(){
-        this.addaction.emit(this.action);
+        this.addaction.emit({action: this.action, description: this.description});
         this.close();
     }
 

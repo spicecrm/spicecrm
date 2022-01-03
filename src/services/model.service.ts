@@ -1161,7 +1161,7 @@ export class model implements OnDestroy {
         this.id = null;
         this.module = null;
         this._fields_stati_tmp = this._fields_stati = [];
-
+        this._fields = [];
         this.isLoading = false;
         this.isEditing = false;
         this.mode$.emit('display');
@@ -1240,6 +1240,9 @@ export class model implements OnDestroy {
             edit: true,
             detail: true
         };
+
+        // get the field control
+        this.data.acl_fieldcontrol = this.metadata.moduleDefs[this.module]?.acl_fieldcontrol ?? [];
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
