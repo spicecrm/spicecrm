@@ -25,7 +25,7 @@ export class ServiceSelectQueueButton {
     }
 
     get canChange() {
-        if (this.model.data.acl && !this.model.data.acl.edit) return false;
+        if (!this.model.checkAccess('edit')) return false;
 
         let resolveDate = this.model.getField('resolve_date');
         if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {

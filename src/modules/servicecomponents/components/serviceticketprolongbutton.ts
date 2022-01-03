@@ -42,7 +42,7 @@ export class ServiceTicketProlongButton implements OnInit {
     }
 
     public handleDisabled(mode) {
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+        if (!this.model.checkAccess('edit')) {
 
             this.disabled = true;
             return;

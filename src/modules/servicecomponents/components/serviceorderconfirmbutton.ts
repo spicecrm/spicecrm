@@ -22,7 +22,7 @@ export class ServiceOrderConfirmButton {
     }
 
     get display() {
-        if (this.model.data.acl && !this.model.data.acl.edit) {
+        if (!this.model.checkAccess('edit')) {
             return false;
         }
         return this.model.isEditing ? false : true;

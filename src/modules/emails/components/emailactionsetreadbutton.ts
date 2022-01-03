@@ -40,7 +40,7 @@ export class EmailActionSetReadButton {
      * set to dsiabled when we are not allowed to edit or we are editing or saving already
      */
     get disabled() {
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+        if (!this.model.checkAccess('edit')) {
             return true;
         }
         return this.model.isEditing || this.model.isSaving;

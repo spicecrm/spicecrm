@@ -58,7 +58,7 @@ export class CampaignSendMailButton {
         }
 
         // not if editing
-        if (this.model.data.acl && !this.model.data.acl.edit) {
+        if (!this.model.data.checkAccess('edit')) {
             this.disabled = true;
             return;
         }

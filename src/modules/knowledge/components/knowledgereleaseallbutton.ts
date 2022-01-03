@@ -61,7 +61,7 @@ export class KnowledgeReleaseAllButton {
         if (this.model.getFieldValue('status') != 'Draft') {
             return this.disabled = true;
         }
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+        if (!this.model.checkAccess('edit')) {
             return this.disabled = true;
         }
         this.disabled = mode == 'edit';
