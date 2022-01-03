@@ -471,6 +471,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'len'    => 36,
             'comment' => 'Reference Email ID to trace reply forward emails',
         ],
+        'emailtrackingactions' => [
+            'name' => 'emailtrackingactions',
+            'type' => 'link',
+            'module' => 'EmailTrackingActions',
+            'relationship' => 'email_emailtrackingactions',
+            'source' => 'non-db'
+        ]
         /* end relationship collections */
 
     ], /* end fields() array */

@@ -250,9 +250,8 @@ export class metadata {
     public loadComponentFactory(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentFactory<any>> {
 
         if (this.componentFactories[moduleMetadata.name]) {
-            return fromPromise( of(
-                this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName)
-            ).toPromise()
+            return fromPromise(
+                Promise.resolve(this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName))
             );
         }
 

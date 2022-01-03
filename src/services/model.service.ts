@@ -1161,7 +1161,7 @@ export class model implements OnDestroy {
         this.id = null;
         this.module = null;
         this._fields_stati_tmp = this._fields_stati = [];
-
+        this._fields = [];
         this.isLoading = false;
         this.isEditing = false;
         this.mode$.emit('display');
