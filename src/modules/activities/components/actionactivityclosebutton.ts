@@ -106,7 +106,7 @@ export class ActionActivityCloseButton implements OnInit, OnDestroy {
      * @param mode
      */
     public handleDisabled(mode) {
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+        if (!this.model.checkAccess('edit')) {
 
             this.disabled = true;
             return;
