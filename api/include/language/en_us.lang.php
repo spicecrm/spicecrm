@@ -2118,3 +2118,8 @@ $app_list_strings['bonuscard_extension_status_enum'] = [
     'initial' => 'initial',
     'sent' => 'sent'
 ];
+$app_list_strings['tracking_actions_dom'] = [
+    'clicked' => 'clicked',
+    'opened' => 'opened',
+    'sent' => 'sent'
+];
