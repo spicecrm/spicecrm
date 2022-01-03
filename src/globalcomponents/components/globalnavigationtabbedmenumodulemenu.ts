@@ -95,6 +95,8 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
      * when the module changes reload the menu, recent items and favorites
      */
     public ngOnChanges(): void {
+        // reset the module to remove cached properties
+        this.model.reset();
         // set the module
         this.model.module = this.module;
 

@@ -65,7 +65,7 @@ export class ACLTypesManager {
     }
 
     public addAction(action) {
-        this.backend.postRequest('module/SpiceACLObjects/modules/'+this.activeType.authtypeid+'/actions/'+action).subscribe(actiondata => {
+        this.backend.postRequest('module/SpiceACLObjects/modules/'+this.activeType.authtypeid+'/actions/'+action.action, {}, {description: action.description}).subscribe(actiondata => {
             this.activeType.authtypeactions.push(actiondata);
             this.sortType();
         });

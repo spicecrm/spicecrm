@@ -32,6 +32,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
 
     @HostBinding('class.slds-is-open') public dropDownOpen: boolean = false;
     public hasTriggerButton = false;
+    public triggerElementButton: ElementRef;
     public clickListener: any;
     public triggerClickListener: any;
     public previousTriggerRect: any;
@@ -48,6 +49,13 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
         public cdRef: ChangeDetectorRef
     ) {
 
+    }
+
+    /**
+     * @return trigger element reference either the button element directive if used or this element ref
+     */
+    get triggerElement() {
+        return this.hasTriggerButton ? this.triggerElementButton.nativeElement : this.elementRef.nativeElement;
     }
 
     /*
@@ -80,7 +88,6 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
 
         if (this.dropdownElement) {
             this.moveDropdownToFooter();
-            this.resetDropdownStyles();
             this.setDropdownElementPosition();
         }
 
@@ -130,17 +137,6 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     }
 
     /*
-    * @set dropdown style.transform
-    * @set dropdown style.right
-    * @set dropdown style.z-index
-    */
-    public resetDropdownStyles() {
-        this.renderer.setStyle(this.dropdownElement, 'transform', 'initial');
-        this.renderer.setStyle(this.dropdownElement, 'right', 'initial');
-        this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
-    }
-
-    /*
     * @set dropdownElement from origin children
     */
     public setDropdownElement() {
@@ -162,17 +158,57 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     }
 
     /*
-    * @set previousTriggerRect
-    * @set dropdown style.top
-    * @set dropdown style.left
+    * set the dropdown element position
     */
     public setDropdownElementPosition() {
-        let triggerRect = this.elementRef.nativeElement.getBoundingClientRect();
-        let dropdownRect = this.dropdownElement.getBoundingClientRect();
-        if (this.previousTriggerRect && this.previousTriggerRect.bottom == triggerRect.bottom && this.previousTriggerRect.right == triggerRect.right) return;
+
+        let triggerRect = this.triggerElement.getBoundingClientRect();
+
+        if (this.previousTriggerRect && JSON.stringify(this.previousTriggerRect) == JSON.stringify(triggerRect)) return;
+
         this.previousTriggerRect = triggerRect;
-        this.renderer.setStyle(this.dropdownElement, 'top', window.innerHeight - triggerRect.bottom < 100 ? Math.abs(triggerRect.bottom - dropdownRect.height) + 'px' : triggerRect.bottom + 'px');
-        this.renderer.setStyle(this.dropdownElement, 'left', Math.abs(triggerRect.right - dropdownRect.width) + 'px');
+
+        this.renderer.setStyle(this.dropdownElement, 'transform', 'translateX(0)');
+        this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
+        this.renderer.addClass(this.dropdownElement, 'slds-scrollable');
+
+        // from bottom to top direction
+        if (triggerRect.bottom > window.innerHeight * 0.70 && triggerRect.bottom + this.dropdownElement.clientHeight > window.innerHeight) {
+            this.renderer.setStyle(this.dropdownElement, 'bottom', (window.innerHeight - triggerRect.top) + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'top', 'auto');
+
+            // on overflow adjust the height
+            this.renderer.setStyle(this.dropdownElement, 'max-height', (triggerRect.top - 10) + 'px');
+
+            // from top to bottom direction
+        } else {
+            this.renderer.setStyle(this.dropdownElement, 'top', triggerRect.bottom + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'bottom', 'auto');
+
+            // on overflow adjust the height
+            if (triggerRect.bottom < window.innerHeight * 0.70) {
+                this.renderer.setStyle(this.dropdownElement, 'max-height', (window.innerHeight - triggerRect.bottom - 10) + 'px');
+            }
+        }
+
+        // from right to left direction
+        if (triggerRect.right - this.dropdownElement.clientWidth > 10 || triggerRect.right > window.innerWidth * 0.30) {
+            this.renderer.setStyle(this.dropdownElement, 'right', (window.innerWidth - triggerRect.right) + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
+
+            // on overflow adjust the height
+            this.renderer.setStyle(this.dropdownElement, 'max-width', (triggerRect.left - 10) + 'px');
+
+            // from left to right direction
+        } else {
+            this.renderer.setStyle(this.dropdownElement, 'left', triggerRect.left + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'right', 'auto');
+
+            // on overflow adjust the width
+            if (triggerRect.right < window.innerWidth * 0.70) {
+                this.renderer.setStyle(this.dropdownElement, 'max-width', (window.innerWidth - triggerRect.right - 10) + 'px');
+            }
+        }
 
         // make sure we detect changes in case we are on a push strategy
         this.cdRef.markForCheck();
@@ -185,11 +221,12 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @remove global click listener
     */
     public onClick(event): void {
-        if (!this.elementRef.nativeElement.contains(event.target)) {
+
+        if (!this.triggerElement.contains(event.target)) {
             this.dropDownOpen = false;
             this.removeDropdownFromFooter();
             // append dropdown element to it's origin
-            this.renderer.appendChild(this.elementRef.nativeElement, this.dropdownElement);
+            this.renderer.appendChild(this.triggerElement, this.dropdownElement);
             this.clickListener();
 
             // make sure we detect changes in case we are on a push strategy
