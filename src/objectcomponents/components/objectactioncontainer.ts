@@ -9,7 +9,7 @@ import {
     ViewChildren,
     QueryList,
     OnInit,
-    OnChanges, AfterViewInit, NgZone, ChangeDetectorRef
+    OnChanges, AfterViewInit, NgZone, ChangeDetectorRef, KeyValueDiffer, ElementRef
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -55,11 +55,6 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
     public mainactionitems: any[] = [];
 
     /**
-     * the overflow action items
-     */
-    public addactionitems: any[] = [];
-
-    /**
      * an event emitter that emits if an action is triggered in the actionset. Tis is usefuly if custom actionitems are used or if you want to subscribe in your application to an event from an actionset and trigger additonal actions once the action has been selected
      */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
@@ -68,43 +63,87 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      * @ignore
      */
     public stable: boolean = false;
+    /**
+     * holds the horizontal view boolean
+     */
+    public horizontalView: boolean = false;
 
     /**
      * @ignore
      */
     public stableSub: any;
+    /**
+     * holds the groups
+     */
+    public groups: {name: string, sequence: number, hidden: boolean, items: any[]}[] = [];
+    /**
+     * holds grouped value
+     */
+    public grouped: 'vertical' | 'horizontal' | 'no';
 
     constructor(public language: language, public metadata: metadata, public model: model, public ngZone: NgZone, public cdRef: ChangeDetectorRef) {
     }
 
-    public ngOnChanges() {
-        let actionitems = this.metadata.getActionSetItems(this.actionset);
-        this.mainactionitems = [];
-        this.addactionitems = [];
-        let initial = true;
+    public ngDoCheck() {
+        if (!this.stable) return;
 
-        for (let actionitem of actionitems) {
-            if (initial || actionitem.singlebutton == '1') {
-                this.mainactionitems.push({
-                    disabled: true,
-                    id: actionitem.id,
-                    sequence: actionitem.sequence,
-                    action: actionitem.action,
-                    component: actionitem.component,
-                    actionconfig: actionitem.actionconfig
-                });
+        this.groups.forEach(group => {
+            group.hidden = this.actionitemlist.filter(i =>  (i.actionitem.actionconfig?.group == group.name || !i.actionitem.actionconfig?.group && group.name == 'undefined') && !i.hidden).length == 0;
+        })
+    }
+
+    /**
+     * build the action groups
+     * @private
+     */
+    private buildItems() {
+
+        const actionItems = this.metadata.getActionSetItems(this.actionset)
+            .sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+
+        this.mainactionitems = [];
+        let initial = true;
+        this.groups = [];
+        const groupsObj: {[key: string]: {name: string, sequence: number, hidden: boolean, items: any[]}} = {};
+
+        for (const item of actionItems) {
+
+            const actionItem = {
+                disabled: true,
+                id: item.id,
+                sequence: item.sequence,
+                action: item.action,
+                component: item.component,
+                actionconfig: item.actionconfig
+            };
+
+            if (initial || item.singlebutton == '1') {
+                this.mainactionitems.push(actionItem);
                 initial = false;
             } else {
-                this.addactionitems.push({
-                    disabled: true,
-                    id: actionitem.id,
-                    sequence: actionitem.sequence,
-                    action: actionitem.action,
-                    component: actionitem.component,
-                    actionconfig: actionitem.actionconfig
-                });
+
+                if (!this.isHidden(item.id)) {
+                    const group = ['horizontal', 'vertical'].indexOf(this.grouped) > -1 && !!item.actionconfig?.group ? item.actionconfig?.group : 'undefined';
+                    if (!groupsObj[group]) {
+                        groupsObj[group] = {
+                            name: group,
+                            sequence: group == 'undefined' ? 1000 : Object.keys(groupsObj).length +1,
+                            items: [actionItem],
+                            hidden: false
+                        };
+                    } else {
+                        groupsObj[group].items.push(actionItem);
+                    }
+                }
             }
         }
+
+        this.groups = Object.values(groupsObj).sort((a,b) => a.sequence > b.sequence ? 1 : -1);
+    }
+
+    public ngOnChanges() {
+        this.grouped = this.metadata.getActionSet(this.actionset)?.grouped;
+        this.buildItems();
     }
 
 
@@ -120,35 +159,17 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
 
     get opendisabled() {
         let disabled = true;
-        this.addactionitems.some(actionitem => {
+        this.groups.some(group => group.items.some(actionitem => {
             if (this.isDisabled(actionitem.id) === false) {
                 disabled = false;
                 return true;
             }
-        });
+        }));
         return disabled;
     }
 
     get hasAddItems() {
-        return this.addactionitems.length > 0;
-    }
-
-    public disabledhandler(id, disabled) {
-        setTimeout(() => {
-            this.mainactionitems.some((actionitem: any) => {
-                if (actionitem.id == id) {
-                    actionitem.disabled = disabled;
-                    return true;
-                }
-            });
-
-            this.addactionitems.some((actionitem: any) => {
-                if (actionitem.id == id) {
-                    actionitem.disabled = disabled;
-                    return true;
-                }
-            });
-        });
+        return this.groups.some(group => group.items.length > 0);
     }
 
     /**
@@ -199,6 +220,19 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
             if (actionitem) hidden = actionitem.hidden;
         }
         return hidden;
+    }
+
+    /**
+     * determines based on the action ID if the component embedded in the container item is hidden
+     *
+     * @param name
+     * @param groupItemsContainer
+     */
+    public isGroupHidden(name: string, groupItemsContainer: HTMLElement) {
+
+        if (!this.stable) return false;
+
+        return Array.from(groupItemsContainer.children).filter(c => !c.classList.contains('slds-hide')).length == 0;
     }
 
 

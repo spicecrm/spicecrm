@@ -16,16 +16,17 @@
         <system-select [selectList]="yearsList" [(ngModel)]="currentYear" [emitInputValueOnEnterPress]="true"></system-select>
     </div>
 </div>
-<table aria-labelledby="month" aria-multiselectable="true" class="slds-datepicker__month slds-m-left--x-small" role="grid">
-    <thead>
+<div class="slds-p-left--x-small">
+    <table aria-labelledby="month" aria-multiselectable="true" class="slds-datepicker__month" role="grid">
+        <thead>
         <tr>
             <th scope="col"></th>
             <th *ngFor="let weekday of weekdays; let index = index" scope="col">
                 <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
             </th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr *ngFor="let week of currentGrid">
             <td role="gridcell" class="slds-theme--shade">
                 <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
@@ -36,8 +37,8 @@
                 <span class="slds-day">{{day.date()}}</span>
             </td>
         </tr>
-    </tbody>
-    <tbody *ngIf="dual">
+        </tbody>
+        <tbody *ngIf="dual">
         <tr>
             <td [attr.colspan]="weekdays.length +1" class="slds-theme--shade">
                 <div class="slds-grid slds-m-vertical--xx-small">
@@ -60,6 +61,7 @@
                 <span class="slds-day">{{day?.date()}}</span>
             </td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 <button *ngIf="showTodayButton" class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday($event);"><system-label label="LBL_TODAY"></system-label></button>

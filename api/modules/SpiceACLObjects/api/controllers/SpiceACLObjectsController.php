@@ -138,7 +138,8 @@ class SpiceACLObjectsController
      */
     public function addACLModuleAction(Request $req, Response $res, array $args): Response {
         $spiceACLObjectsRESTHandler = new SpiceACLObjectsRESTHandler();
-        return $res->withJson($spiceACLObjectsRESTHandler->addACLModuleAction($args['moduleid'], $args['action']));
+        $body = $req->getParsedBody();
+        return $res->withJson($spiceACLObjectsRESTHandler->addACLModuleAction($args['moduleid'], $args['action'], $body['description']));
     }
 
     /**

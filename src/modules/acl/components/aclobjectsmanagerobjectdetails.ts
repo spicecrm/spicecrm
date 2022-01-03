@@ -50,6 +50,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     public ngOnInit() {
         this.backend.getRequest('module/SpiceACLObjects/modules/' + this.model.getFieldValue('sysmodule_id') + '/actions').subscribe(objectactions => {
             this.objectactions = objectactions;
+            this.objectactions.sort((a, b) => a.action.localeCompare(b.action));
         });
     }
 
@@ -70,26 +71,15 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     }
 
     public setActionValue(actionid, event) {
-        // stop propagation
-        event.preventDefault();
-
-        // search for the value
         let objectactions = this.model.getFieldValue('objectactions');
-        let i = 0;
-        for (let objectaction of objectactions) {
-            if (objectaction.spiceaclaction_id == actionid) {
-                objectactions.splice(i, 1);
-                this.model.setField('objectactions', objectactions);
-                return;
-            }
-            i++;
+        if(event){
+            objectactions.push({
+                spiceaclobject_id: this.model.id,
+                spiceaclaction_id: actionid
+            });
+        } else {
+            let i = objectactions.findIndex(a => a.spiceaclaction_id == actionid);
+            objectactions.splice(i, 1);
         }
-
-        // if not found add it
-        objectactions.push({
-            spiceaclobject_id: this.model.id,
-            spiceaclaction_id: actionid
-        });
-
     }
 }
