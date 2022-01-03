@@ -53,12 +53,14 @@ export class fieldMailRelais extends fieldGeneric{
 
     getDisplay() {
         // not if editing
-        if(this.model.data.acl && !this.model.data.acl.edit)
+        if(!this.model.checkAccess('edit')) {
             return false;
+        }
 
         // only for email
-        if(this.model.data.campaign_type !== 'Email')
+        if(this.model.data.campaign_type !== 'Email') {
             return false;
+        }
 
         // not if editing
         return this.model.isEditing ? false : true;

@@ -43,7 +43,7 @@ export class GlobalSearchModuleItem implements OnInit {
         event.stopPropagation();
 
         // see if we can navigate
-        if (this.model.data.acl.detail) {
+        if (this.model.checkAccess('detail')) {
             this.model.goDetail();
         }
     }

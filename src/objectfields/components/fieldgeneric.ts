@@ -206,7 +206,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      */
     public displayLink() {
         try {
-            return this.view.displayLinks && this.fieldconfig.link && this.model.data.acl.detail;
+            return this.view.displayLinks && this.fieldconfig.link && this.model.checkAccess('detail');
         } catch (e) {
             return false;
         }

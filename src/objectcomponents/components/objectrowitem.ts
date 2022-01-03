@@ -50,7 +50,7 @@ export class ObjectRowItemComponent implements OnInit
         this.model.id = this.listItem.id;
         this.model.data = this.listItem;
 
-        this.view.isEditable = this.inlineedit && this.model.data.acl.edit;
+        this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');
     }
 
     set selected(val:boolean)
