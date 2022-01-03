@@ -909,10 +909,10 @@ $app_list_strings = [
         'p' => 'Prozentsatz'
     ],
     'salesdoc_status_dom' => [
-        'vsnew' => 'new',
-        'vscreated' => 'created',
-        'vspaid' => 'paid',
-        'vscancelled' => 'cancelled'
+        'vsnew' => 'Neu',
+        'vscreated' => 'Erstellt',
+        'vspaid' => 'Bezahlt',
+        'vscancelled' => 'Storniert'
     ],
     'salesvoucher_status_dom' => [
         'created' => 'Erstellt',
