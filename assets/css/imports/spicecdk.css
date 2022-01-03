@@ -67,3 +67,21 @@
     background: var(--brand-primary);
     color: var(--color-white);
 }
+
+.cdk-drag-disabled .slds-tile {
+    background-color: var(--color-grey-3);
+}
+
+.kanbancontainer .cdk-drop-list-receiving:after, .cdk-drop-list-dragging:after {
+    border: 2px dashed var(--color-border-brand);
+    content: '';
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.kanbancontainer .cdk-drop-list-receiving, .cdk-drop-list-dragging {
+position: relative;
+}
