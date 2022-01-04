@@ -64,23 +64,12 @@ export class SystemModelProviderDirective implements OnDestroy {
 
         if (provided_model.data) {
 
-            if (provided_model.data.isNew) {
+            // if (provided_model.data.isNew) {
                 this.model.initialize();
-            }
+            // }
 
+            this.model.setData(provided_model.data);
 
-            this.model.setFields(
-                this.model.utils.backendModel2spice(provided_model.module, provided_model.data)
-            );
-
-            this.model.isLoading = false;
-            this.model.data$.next(this.model.data);
-
-            if (provided_model.data.acl) {
-                this.model.acl = provided_model.data.acl
-                // has to be called again after the data is set because of the missing acl before...
-                this.model.initializeFieldsStati();
-            }
         } else if (this.model.id) {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
             this.model.getData();
