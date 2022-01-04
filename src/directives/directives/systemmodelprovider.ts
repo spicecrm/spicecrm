@@ -68,7 +68,11 @@ export class SystemModelProviderDirective implements OnDestroy {
                 this.model.initialize();
             // }
 
+            // set the data
             this.model.setData(provided_model.data);
+
+            // set to loading done
+            this.model.isLoading = false;
 
         } else if (this.model.id) {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
