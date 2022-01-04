@@ -1472,7 +1472,7 @@ export class model implements OnDestroy {
      */
     public getCalculatedValue(copyRule: {fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any}, fromField?: string) {
 
-        let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+        let timeZone = this.session.getSessionData('timezone', false) || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
             case "now":
                 return new moment.utc().tz(timeZone);
