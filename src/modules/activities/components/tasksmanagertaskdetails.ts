@@ -64,7 +64,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
                 break;
             case 'model.save':
                 if (this.model.id === message.messagedata.id) {
-                    this.model.data = message.messagedata.data;
+                    this.model.setData(message.messagedata.data, false);
                 }
                 break;
         }
@@ -106,7 +106,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
     }
 
     get isCompleted() {
-        return this.model.data.status == 'Completed';
+        return this.model.getField('status') == 'Completed';
     }
 
     get canEdit() {
@@ -118,7 +118,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
     }
 
     public completeTask() {
-        this.model.data.status = 'Completed';
+        this.model.setField('status', 'Completed');
         this.model.save();
     }
 }

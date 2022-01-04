@@ -51,7 +51,7 @@ export class ProjectWBSQuoteButton {
                 this.model.module = 'SalesDocs';
                 this.model.id = res.data.id;
                 this.model.startEdit();
-                this.model.data = this.model.utils.backendModel2spice('SalesDocs', res.data);
+                this.model.setData(res.data);
                 this.model.edit();
             }
         )

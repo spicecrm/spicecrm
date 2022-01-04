@@ -48,8 +48,8 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
 
     public get selectedCategories2(): any[] {
         this.selectedCategories = [];
-        if ( this.model.data.categories && this.model.data.categories != '' ) {
-            let categorypool = this.model.data.categories.split(',');
+        if ( this.model.getField('categories') && this.model.getField('categories') != '' ) {
+            let categorypool = this.model.getField('categories').split(',');
             for ( let category of this.allCategories ) {
                 for ( let categoryId of categorypool ) {
                     if ( category.id === categoryId ) this.selectedCategories.push( category );
@@ -61,13 +61,13 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
 
     public deselectCategory( i: number ): void {
         this.selectedCategories.splice( i, 1 );
-        this.model.data.categories = this.makeCategoryString();
+        this.model.setField('categories', this.makeCategoryString());
     }
 
     public selectCategory( i: number ): void {
         if ( this.selectedCategories.indexOf( this.allCategories[i] ) === -1 ) {
             this.selectedCategories.push( this.allCategories[i] );
-            this.model.data.categories = this.makeCategoryString();
+            this.model.setField('categories', this.makeCategoryString());
             this.selectedCategories.sort( ( a: any, b: any ): number => {
                 const an = a.name.toLocaleLowerCase();
                 const bn = b.name.toLocaleLowerCase();

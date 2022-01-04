@@ -62,7 +62,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
     public closePopups() {
         this.clickListener();
 
-        if (this.model.data[this.relateIdField]) {
+        if (this.model.getField(this.relateIdField)) {
             this.search_term = '';
         }
 
@@ -107,7 +107,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         if (this.selected_item && this.selected_item.id) {
             return this.selected_item.id;
         } else if (this.relateIdField) {
-            return this.model.data[this.relateIdField];
+            return this.model.getField(this.relateIdField);
         } else {
             return '';
         }
@@ -117,7 +117,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         if (this.selected_item && this.selected_item.summary_text) {
             return this.selected_item.summary_text;
         } else if (this.relateNameField) {
-            return this.model.data[this.relateNameField];
+            return this.model.getField(this.relateNameField);
         } else {
             return '';
         }

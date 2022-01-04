@@ -48,7 +48,7 @@ export class ObjectRowItemComponent implements OnInit
     ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.listItem.id;
-        this.model.data = this.listItem;
+        this.model.setData(this.listItem);
 
         this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');
     }

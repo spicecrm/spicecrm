@@ -82,7 +82,7 @@ export class QuestionsManagerAddModal implements OnInit {
         if ( emptyRows ) {
             this.toast.sendToast( 'You have empty rows. Complete or delete them before saving!', 'error', '', true );
         } else {
-            if ( !!this.model.data.name ) {
+            if ( !!this.model.getField('name') ) {
                 this.model.save().subscribe(modeldata => {
                     this.responseSubject.next( this.model.data );
                     this.responseSubject.complete();

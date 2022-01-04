@@ -50,7 +50,7 @@ export class fieldTotalAmount extends fieldCurrency {
         }
 
         // set it to the model
-        this.model.data[this.fieldname] = totalvalue;
+        this.model.setField(this.fieldname, totalvalue);
 
         // return the value
         return this.userpreferences.formatMoney(totalvalue);

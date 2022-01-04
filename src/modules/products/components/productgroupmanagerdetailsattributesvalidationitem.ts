@@ -33,7 +33,7 @@ export class ProductGroupManagerDetailsAttributesValidationItem {
         this.view.isEditable = this.canEdit;
         this.model.module = 'ProductAttributeValueValidations';
         this.model.id = this.item.id;
-        this.model.data = this.item;
+        this.model.setData(this.item);
     }
 
     public trackByFn(index, item) {

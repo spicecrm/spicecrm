@@ -35,11 +35,11 @@ export class WorkflowManagerTaskdropdown{
     }
 
     set value(value){
-        this.model.data[this.field] = value;
+        this.model.setField(this.field, value);
     }
 
     get value(){
-        return this.model.data[this.field];
+        return this.model.getField(this.field);
     }
 
 

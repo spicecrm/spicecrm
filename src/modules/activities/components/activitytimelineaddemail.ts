@@ -72,26 +72,25 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         this.model.startEdit();
 
         // set the parent data
-        this.model.data.parent_type = this.activitiytimeline.parent.module;
-        this.model.data.parent_id = this.activitiytimeline.parent.id;
-        this.model.data.parent_name = this.activitiytimeline.parent.data.summary_text;
-
-        this.model.data.type = 'out';
-        this.model.data.status = 'created';
-
-        // set sender and recipients
-        this.model.data.recipient_addresses = [];
-        this.model.data.from_addr_name = this.session.authData.email;
+        this.model.setFields({
+            parent_type: this.activitiytimeline.parent.module,
+            parent_id: this.activitiytimeline.parent.id,
+            parent_name: this.activitiytimeline.parent.getField('summary_text'),
+            type: 'out',
+            status:'created',
+            recipient_addresses: [],
+            from_addr_name: this.session.authData.email
+        });
     }
 
     public subscribeParent() {
         this.activitiytimeline.parent.data$.subscribe(data => {
-            if (this.model.data.recipient_addresses?.length == 0) {
+            if (this.model.getField('recipient_addresses')?.length == 0) {
                 this.determineRecipientAddress();
             }
             // if we still have the same model .. update
-            if (data.id == this.model.data.parent_id) {
-                this.model.data.parent_name = data.summary_text;
+            if (data.id == this.model.getField('parent_id')) {
+                this.model.setField('parent_name', data.summary_text);
             }
         });
     }
@@ -129,14 +128,14 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
      * determine recipient address from parent
      */
     public determineRecipientAddress() {
-        if (this.activitiytimeline.parent.data.email1) {
-            this.model.data.recipient_addresses = [{
+        if (this.activitiytimeline.parent.getField('email1')) {
+            this.model.setField('recipient_addresses', [{
                 parent_type: this.activitiytimeline.parent.module,
                 parent_id: this.activitiytimeline.parent.id,
-                email_address: this.activitiytimeline.parent.data.email1,
+                email_address: this.activitiytimeline.parent.getField('email1'),
                 id: this.model.generateGuid(),
                 address_type: 'to'
-            }];
+            }]);
         }
     }
 
@@ -164,10 +163,10 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
      * save the email and reinitialize the email model
      */
     public save() {
-        this.model.data.to_be_sent = true;
+        this.model.setField('to_be_sent', true);
         this.model.save().subscribe(() => {
             this.isExpanded = false;
-            this.model.data.to_be_sent = false;
+            this.model.setField('to_be_sent', false);
             this.initializeEmail();
             this.determineRecipientAddress();
             this.model.endEdit();

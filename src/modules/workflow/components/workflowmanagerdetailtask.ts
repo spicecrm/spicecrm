@@ -37,8 +37,8 @@ export class WorkflowManagerDetailTask implements OnChanges {
         this.tasks.some(task => {
             if (task.id == this.currenttask) {
                 this.model.id = task.id;
-                this.model.data = this.modelutilities.backendModel2spice(this.model.module, task);
-                this.model.data.acl = {
+                this.model.setData(task);
+                this.model.acl = {
                     create: true,
                     edit: true
                 };

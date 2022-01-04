@@ -25,7 +25,7 @@ export class QuestionsetManager implements OnInit {
     public ngOnInit(): void {
         this.model.module = 'QuestionSets';
         this.model.id = this.questionset.id;
-        this.model.data = this.questionset;
+        this.model.setData(this.questionset);
         this.currentPosition = this.questionset.position;
         this.model.data$.subscribe( () => {
             this.changed.emit( this.model.data );

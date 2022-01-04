@@ -33,7 +33,6 @@ import {fieldLanguage} from './components/fieldlanguage';
 import {fieldEmailTo} from './components/fieldemailto';
 import {fieldEmailTemplates} from './components/fieldemailtemplates';
 import {fieldTextMessageTemplates} from './components/fieldtextmessagetemplates';
-import {fieldMailRelais} from './components/fieldmailrelais';
 import {fieldMultienum} from './components/fieldmultienum';
 import {fieldGroupedEnum} from './components/fieldgroupedenum';
 import {fieldMultienumCheckBox} from './components/fieldmultienumcheckbox';
@@ -99,7 +98,6 @@ import {fieldNotAuthorized} from "./components/fieldnotauthorized";
 import {fieldModuleIcon} from "./components/fieldmoduleicon";
 import {fieldRichText} from "./components/fieldrichtext";
 import {fieldEnumMulti} from "./components/fieldenummulti";
-import {fieldPhoneAsterisk} from "./components/fieldphoneasterisk";
 import {fieldCronInterval} from "./components/fieldcroninterval";
 import {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 import {fieldTextID} from "./components/fieldtextid";
@@ -166,7 +164,6 @@ declare var _: any;
         fieldEmailTo,
         fieldEmailTemplates,
         fieldTextMessageTemplates,
-        fieldMailRelais,
         fieldMultienum,
         fieldGroupedEnum,
         fieldMultienumCheckBox,
@@ -230,7 +227,6 @@ declare var _: any;
         fieldModuleIcon,
         fieldRichText,
         fieldEnumMulti,
-        fieldPhoneAsterisk,
         fieldCronInterval,
         fieldGooglePlacesSearch,
         fieldTextID,

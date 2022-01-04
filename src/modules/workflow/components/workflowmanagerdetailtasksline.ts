@@ -33,7 +33,7 @@ export class WorkflowManagerDetailTasksLine {
 
     ngOnChanges() {
         this.model.id = this.task.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.task);
+        this.model.setData(this.task);
     }
 
     getTaskName(taskID, renderMultiple = false) {
@@ -49,7 +49,7 @@ export class WorkflowManagerDetailTasksLine {
         }
 
         // render the multiple next indicator
-        if(renderMultiple && this.model.data.tasktype == 'decision' && this.model.data.decisions && this.model.data.decisions.length > 0){
+        if(renderMultiple && this.model.getField('tasktype') == 'decision' && this.model.getField('decisions') && this.model.getField('decisions').length > 0){
             taskname = '[..]';
         }
 

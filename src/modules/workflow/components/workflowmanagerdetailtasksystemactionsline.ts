@@ -34,7 +34,7 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
 
     public ngOnChanges() {
         this.model.id = this.systemaction.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.systemaction);
+        this.model.setData(this.systemaction);
     }
 
     public removeDecision() {

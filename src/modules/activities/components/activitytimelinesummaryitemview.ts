@@ -31,7 +31,7 @@ export class ActivityTimelineSummaryItemView implements OnChanges{
     public ngOnChanges() {
         this.model.module = this.module;
         this.model.id = this.id;
-        this.model.data = this.data;
+        this.model.setData(this.data, false);
 
         for (let component of this.componentRefs) {
             component.destroy();

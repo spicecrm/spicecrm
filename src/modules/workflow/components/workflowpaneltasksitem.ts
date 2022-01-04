@@ -24,11 +24,11 @@ export class WorkflowPanelTasksItem implements OnInit{
     }
 
     public ngOnInit(): void {
-        this.model.data._displayComments = false;
+        this.model.setField('_displayComments', false, true);
     }
 
     public toggleComments(){
-        this.model.data._displayComments = !this.model.data._displayComments;
+        this.model.setField('_displayComments', this.model.getField('_displayComments'), true);
     }
 
     /**

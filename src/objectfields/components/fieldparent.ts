@@ -73,8 +73,8 @@ export class fieldParent extends fieldGeneric implements OnInit {
         // determine the valid types
         this.determineParentTypes();
         // initialize the parenttype
-      if (!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
-            this.model.data[this.parentTypeField] = this.parentTypes[0];
+      if (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '') {
+            this.model.setField(this.parentTypeField, this.parentTypes[0]);
        }
 
     }
@@ -104,8 +104,10 @@ export class fieldParent extends fieldGeneric implements OnInit {
                         this.parentSearchTerm = '';
 
                         // set the model
-                        this.model.data[this.parentIdField] = message.messagedata.data.id;
-                        this.model.data[this.fieldname] = message.messagedata.data.summary_text;
+                        let modelFields: any = {};
+                        modelFields[this.parentIdField] = message.messagedata.data.id;
+                        modelFields[this.fieldname] = message.messagedata.data.summary_text;
+                        this.model.setFields(modelFields, true);
                     }
                     break;
             }
@@ -120,7 +122,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     public closePopups() {
-        if (this.model.data[this.parentIdField]) {
+        if (this.model.getField(this.parentIdField)) {
             this.parentSearchTerm = '';
         }
 

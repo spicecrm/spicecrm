@@ -30,8 +30,7 @@ export class DashboardGenericDashletRow implements OnInit {
     public ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.data.id;
-        this.model.acl = this.data.acl;
-        this.model.data = this.modelutilities.backendModel2spice(this.module, this.data);
+        this.model.setData(this.data);
 
         this.fieldsetfields = this.metadata.getFieldSetFields(this.fieldset);
     }
