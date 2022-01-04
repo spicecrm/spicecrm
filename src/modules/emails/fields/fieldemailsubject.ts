@@ -44,7 +44,7 @@ export class fieldEmailSubject extends fieldGeneric {
      * @return the email status icon
      */
     get statusIcon() {
-        switch (this.model.data.status) {
+        switch (this.model.getField('status')) {
             case 'opened':
             case 'read':
                 return 'email_open';
@@ -63,7 +63,7 @@ export class fieldEmailSubject extends fieldGeneric {
      * @return the email status label
      */
     get statusLabel() {
-        switch (this.model.data.status) {
+        switch (this.model.getField('status')) {
             case 'opened':
             case 'read':
                 return 'LBL_OPEN';

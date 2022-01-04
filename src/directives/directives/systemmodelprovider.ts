@@ -77,6 +77,7 @@ export class SystemModelProviderDirective implements OnDestroy {
             this.model.data$.next(this.model.data);
 
             if (provided_model.data.acl) {
+                this.model.acl = provided_model.data.acl
                 // has to be called again after the data is set because of the missing acl before...
                 this.model.initializeFieldsStati();
             }

@@ -49,7 +49,7 @@ export class SpicePathRelatedListTile implements OnInit {
     public ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.data.id;
-        this.model.data = this.data;
+        this.model.setData(this.data);
 
         this.componentconfig = this.metadata.getComponentConfig('SpicePathRelatedListTile', this.module);
     }

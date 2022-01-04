@@ -59,8 +59,8 @@ export class fieldHtml extends fieldGeneric {
     }
 
     get styleTag() {
-        return ( this.useStylesheets && !_.isEmpty( this.model.data[this.stylesheetField] )) ?
-            '<style>' + this.metadata.getHtmlStylesheetCode( this.model.data[this.stylesheetField] ) + '</style>' : '';
+        return ( this.useStylesheets && !_.isEmpty( this.model.getField(this.stylesheetField) )) ?
+            '<style>' + this.metadata.getHtmlStylesheetCode( this.model.getField(this.stylesheetField) ) + '</style>' : '';
     }
 
     /**
@@ -72,10 +72,11 @@ export class fieldHtml extends fieldGeneric {
     {
         if(this.value)
         {
-            if(this.value.includes('</html>'))
+            if(this.value.includes('</html>')) {
                 this.fullValue = this.value;
-            else
+            } else {
                 this.fullValue = `<html><head>${this.styleTag}</head><body class="spice">${this.value}</body></html>`;
+            }
         }
 
         // if value changed, generate sanitized html value
@@ -87,8 +88,8 @@ export class fieldHtml extends fieldGeneric {
     }
 
     get stylesheetId(): string {
-        if (!_.isEmpty(this.model.data[this.stylesheetField])) {
-            return this.model.data[this.stylesheetField];
+        if (!_.isEmpty(this.model.getField(this.stylesheetField))) {
+            return this.model.getField(this.stylesheetField);
         }
         return this.stylesheetId = this.stylesheetToUse;
     }

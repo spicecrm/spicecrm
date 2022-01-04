@@ -102,7 +102,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
                 this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
                     // nur überschreiben wenn nicht bereits ein subject angegeben wurde.
-                    if (!this.model.data[this.subjectField]) {
+                    if (!this.model.getField(this.subjectField)) {
                         this.model.setField(this.subjectField, data.subject);
                     }
                     // Check if element with class "spicecrm_quote" should kept on the bottom (it is for the email-reply)

@@ -43,7 +43,7 @@ export class GroupwareDetailPaneBean implements OnInit {
 
         this.model.module = this.bean.module;
         this.model.id = this.bean.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.bean.data);
+        this.model.setData(this.bean.data);
 
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig(
