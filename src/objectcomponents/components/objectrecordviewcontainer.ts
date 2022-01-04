@@ -15,26 +15,26 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-recordview-container',
-    templateUrl: './src/objectcomponents/templates/objectrecordviewcontainer.html',
+    templateUrl: '../templates/objectrecordviewcontainer.html',
     providers: [model]
 })
 export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
-    private module: string = '';
-    private id: string = '';
-    private initialized: boolean = false;
-    private componentset: string = '';
-    private componentRefs: any[] = [];
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
+    public module: string = '';
+    public id: string = '';
+    public initialized: boolean = false;
+    public componentset: string = '';
+    public componentRefs: any[] = [];
 
-    private componentSubscriptions: Subscription = new Subscription();
+    public componentSubscriptions: Subscription = new Subscription();
 
-    constructor(private navigation: navigation,
-                private navigationtab: navigationtab,
-                private activatedRoute: ActivatedRoute,
-                private metadata: metadata,
-                private model: model,
-                private broadcast: broadcast,
-                private elementref: ElementRef) {
+    constructor(public navigation: navigation,
+                public navigationtab: navigationtab,
+                public activatedRoute: ActivatedRoute,
+                public metadata: metadata,
+                public model: model,
+                public broadcast: broadcast,
+                public elementref: ElementRef) {
 
         this.componentSubscriptions.add(
             this.navigationtab.activeRoute$.subscribe(route => {
@@ -55,7 +55,7 @@ export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
         );
     }
 
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
                 this.buildContainer();
@@ -72,7 +72,7 @@ export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
         this.componentSubscriptions.unsubscribe();
     }
 
-    private buildContainer() {
+    public buildContainer() {
         for (let component of this.componentRefs) {
             component.destroy();
         }

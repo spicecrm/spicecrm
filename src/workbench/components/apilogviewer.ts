@@ -15,7 +15,7 @@ declare var moment: any;
  * the api log viwer rendered as part of the admin setion in the system
  */
 @Component({
-    templateUrl: './src/workbench/templates/apilogviewer.html'
+    templateUrl: '../templates/apilogviewer.html'
 })
 export class APIlogViewer {
 
@@ -23,27 +23,27 @@ export class APIlogViewer {
      * the methods allowed for selection in teh filter
      * @private
      */
-    private methods = ['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'SOAP', 'TRACE'];
+    public methods = ['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'SOAP', 'TRACE'];
 
     /**
      * the load limit in the list
      *
      * @private
      */
-    private limit = '250';
+    public limit = '250';
 
     /**
      * the data loaded fromt he backend
      * @private
      */
-    private entries: any[] = [];
+    public entries: any[] = [];
 
     /**
      * an object holding the filter settings
      *
      * @private
      */
-    private filter = {
+    public filter = {
         method: '',
         session_id: '',
         userId: '',
@@ -58,20 +58,20 @@ export class APIlogViewer {
      * the username picked forthe filtered userid
      * @private
      */
-    private filterUserName: string;
+    public filterUserName: string;
 
     /**
      * the date end set in the filters
      * @private
      */
-    private dateEnd: any;
+    public dateEnd: any;
 
     /**
      * inidcates that we are loading
      *
      * @private
      */
-    private isLoading = false;
+    public isLoading = false;
 
     /**
      * sets the filter for a specific user
@@ -79,7 +79,7 @@ export class APIlogViewer {
      * @param idAndName
      * @private
      */
-    private set filterUser(idAndName: string) {
+    public set filterUser(idAndName: string) {
         if (!idAndName) {
             this.filter.userId = '';
             this.filterUserName = undefined;
@@ -95,12 +95,12 @@ export class APIlogViewer {
      *
      * @private
      */
-    private get filterUser(): string {
+    public get filterUser(): string {
         if (!this.filter.userId) return undefined;
         return this.filter.userId + '::' + this.filterUserName;
     }
 
-    constructor(private backend: backend, private modal: modal, private toast: toast) {
+    constructor(public backend: backend, public modal: modal, public toast: toast) {
 
     }
 
@@ -109,7 +109,7 @@ export class APIlogViewer {
      *
      * @private
      */
-    private setNow() {
+    public setNow() {
         this.dateEnd = new moment();
     }
 
@@ -118,7 +118,7 @@ export class APIlogViewer {
      *
      * @private
      */
-    private loadData() {
+    public loadData() {
 
         if (!this.isLoading) {
 
@@ -158,7 +158,7 @@ export class APIlogViewer {
      * button action for the load button
      * @private
      */
-    private buttonLoad() {
+    public buttonLoad() {
         this.loadData();
     }
 
@@ -167,7 +167,7 @@ export class APIlogViewer {
      *
      * @private
      */
-    private truncate() {
+    public truncate() {
         this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Truncate API Log').subscribe(
             res => {
                 if (res) {
@@ -193,7 +193,7 @@ export class APIlogViewer {
      * @param entry
      * @private
      */
-    private showEntryInModal(entry) {
+    public showEntryInModal(entry) {
         this.modal.openModal('APIlogViewerModal').subscribe(modal => {
             modal.instance.entry = entry;
         });
@@ -206,7 +206,7 @@ export class APIlogViewer {
      * @param transaction_id
      * @private
      */
-    private showCRMlog(transaction_id: string) {
+    public showCRMlog(transaction_id: string) {
         this.modal.openModal('CRMLogViewerListModal').subscribe(modal => {
             modal.instance.filter = {transaction_id: transaction_id};
         });
@@ -220,7 +220,7 @@ export class APIlogViewer {
      * @param value
      * @private
      */
-    private valueClicked(type: string, value: any) {
+    public valueClicked(type: string, value: any) {
         let items: string[];
         switch (type) {
             case 'route':

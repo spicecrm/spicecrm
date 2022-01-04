@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-checklist-item',
-    templateUrl: './src/objectcomponents/templates/objectrecordchecklistitem.html',
+    templateUrl: '../templates/objectrecordchecklistitem.html',
     providers: [view]
 })
 export class ObjectRecordChecklistItem {
@@ -18,10 +18,10 @@ export class ObjectRecordChecklistItem {
     @Input() checkitem: any = {};
     @Input() checkfield: string = '';
 
-    private checkid: string = '';
+    public checkid: string = '';
 
 
-    constructor(private view: view, private model: model, private modelutilities: modelutilities, private language: language, private backend: backend) {
+    constructor(public view: view, public model: model, public modelutilities: modelutilities, public language: language, public backend: backend) {
         this.checkid = this.modelutilities.generateGuid();
     }
 

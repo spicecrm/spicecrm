@@ -12,21 +12,21 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'home-dashboard',
-    templateUrl: './src/modules/home/templates/homedashboard.html',
+    templateUrl: '../templates/homedashboard.html',
 })
 export class HomeDashboard implements AfterViewInit, OnDestroy {
 
-    @ViewChild('dashboardcontainer', {read: ViewContainerRef, static: true}) private dashboardcontainer: ViewContainerRef;
+    @ViewChild('dashboardcontainer', {read: ViewContainerRef, static: true}) public dashboardcontainer: ViewContainerRef;
 
     public componentSubscriptions: any[] = [];
     public dashboardid: string = '';
     public dashboardcontainercomponent: any = undefined;
 
     constructor(
-        private broadcast: broadcast,
-        private metadata: metadata,
-        private language: language,
-        private userpreferences: userpreferences) {
+        public broadcast: broadcast,
+        public metadata: metadata,
+        public language: language,
+        public userpreferences: userpreferences) {
         this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         }));
@@ -34,7 +34,7 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
         this.loadDashboardConfig();
     }
 
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
                 this.loadDashboardConfig();
@@ -43,7 +43,7 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
         }
     }
 
-    private loadDashboardConfig() {
+    public loadDashboardConfig() {
         let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
         let activeRole = this.metadata.getActiveRole();
         this.dashboardid = homeDashboard || activeRole.default_dashboard || '';

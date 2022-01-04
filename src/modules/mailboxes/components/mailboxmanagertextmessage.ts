@@ -16,27 +16,27 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-manager-textmessage",
-    templateUrl: "./src/modules/mailboxes/templates/mailboxmanagertextmessage.html",
+    templateUrl: "../templates/mailboxmanagertextmessage.html",
 })
 export class MailboxManagerTextMessage implements OnInit {
 
     /**
      * the textmessage
      */
-    @Input() private message: any = {};
+    @Input() public message: any = {};
 
     /**
      * the fieldset for the additonal fields
      */
-    private fieldset: string;
+    public fieldset: string;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private mailboxesEmails: mailboxesEmails,
-        private view: view,
-        private model: model,
-        private modelutilities: modelutilities,
+        public metadata: metadata,
+        public language: language,
+        public mailboxesEmails: mailboxesEmails,
+        public view: view,
+        public model: model,
+        public modelutilities: modelutilities,
     ) {
         // nolinks
         this.view.displayLinks = false;
@@ -62,7 +62,7 @@ export class MailboxManagerTextMessage implements OnInit {
      *
      * @param e
      */
-    private selectTextmessage(message) {
+    public selectTextmessage(message) {
         if (!this.mailboxesEmails.activeMessage || message.id != this.mailboxesEmails.activeMessage.id) {
             this.mailboxesEmails.activeMessage = message;
         }

@@ -13,7 +13,7 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: 'groupware-pane-bean',
-    templateUrl: './src/include/groupware/templates/groupwarepanebean.html',
+    templateUrl: '../templates/groupwarepanebean.html',
     providers: [view]
 })
 export class GroupwarePaneBean implements OnInit {
@@ -21,17 +21,17 @@ export class GroupwarePaneBean implements OnInit {
     /**
      * Current bean.
      */
-    @Input() private bean: any;
+    @Input() public bean: any;
 
-    private mainfieldsetfields: any[];
-    private subfieldsetfields: any[];
+    public mainfieldsetfields: any[];
+    public subfieldsetfields: any[];
 
     constructor(
-        private groupware: GroupwareService,
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private view: view
+        public groupware: GroupwareService,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public view: view
     ) {
         // set base settings for the view
         this.view.displayLabels = false;
@@ -58,7 +58,7 @@ export class GroupwarePaneBean implements OnInit {
      *
      * @param event
      */
-    private onClick(event) {
+    public onClick(event) {
         if (event.target.checked) {
             this.groupware.addBean(this.bean);
         } else {

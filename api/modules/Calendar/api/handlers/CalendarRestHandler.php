@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Calendar\api\handlers;
 
@@ -37,14 +38,14 @@ class CalendarRestHandler
         $db = DBManagerFactory::getInstance();
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
-        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId);
+        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, $params['searchTerm']);
     }
 
     public function getUsersCalendar(string $userId, array $params): array {
         $db = DBManagerFactory::getInstance();
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
-        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, '', json_decode($params['users']));
+        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, $params['searchTerm'], json_decode($params['users']));
     }
 
     public function getCalendars(): array {

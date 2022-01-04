@@ -119,7 +119,7 @@ class ServiceCalendar extends SugarBean
         $calendarStartTime = new DateTime($startdate->format('c'), new DateTimeZone('UTC'));
         $calendarStartTime->setTimezone(new DateTimeZone($this->timezone));
 
-        // calculkate all the times in Caldnartime
+        // calculate all the times in Calendartime
         $endDate = $this->addWorkingHours($calendarStartTime, $hours);
 
         // format back to UTC
@@ -181,13 +181,13 @@ class ServiceCalendar extends SugarBean
         // create a new Startdate time object
         $startDate = new DateTime($date ? $date->format('c') : '');
 
-        // check if we have a owrkingday .. other wise move one day and set to 00:00
+        // check if we have a workingday .. otherwise move one day and set to 00:00
         while (!$this->isWorkingDay($startDate) || $this->isHoliday($startDate)) {
             $startDate->add(new DateInterval('P1D'));
             $startDate->setTime(0, 0, 0);
         }
 
-        // if we have no workingtimeslots return the curren date
+        // if we have no workingtimeslots return the current date
         if (count($this->workingtimes) == 0) {
             return $startDate;
         }
@@ -252,7 +252,7 @@ class ServiceCalendar extends SugarBean
         // create a new Startdate time object
         $endDate = new DateTime($startDate ? $startDate->format('c') : '', new DateTimeZone($this->timezone));
 
-        // check if we have a owrkingday .. other wise move one day and set to 00:00
+        // check if we have a workingday .. otherwise move one day and set to 00:00
         while (!$this->isWorkingDay($endDate) || $this->isHoliday($endDate)) {
             $endDate->add(new DateInterval('P1D'));
             $endDate->setTime(0, 0, 0);
@@ -343,5 +343,25 @@ class ServiceCalendar extends SugarBean
         $minutes = (int)substr($endpoint, 2, 2) - (int)substr($startpoint, 2, 2);;
         $hours = (int)substr($endpoint, 0, 2) - (int)substr($startpoint, 0, 2);
         return $hours * 60 + $minutes;
+    }
+
+    /**
+     * @param $startDate
+     * returns an array with total hours worked between the two dates (not yet finished)
+     */
+    function getWorkTime($startDate, $endDate, $step = '+1 day', $output_format = 'd/m/Y')
+    {
+
+        $dates = array();
+        $current = strtotime($startDate);
+        $endDate = strtotime($endDate);
+
+        while ($current <= $endDate) {
+
+            $dates[] = date($output_format, $current);
+            $current = strtotime($step, $current);
+        }
+
+        return $dates;
     }
 }

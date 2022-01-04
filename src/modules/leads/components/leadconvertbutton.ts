@@ -16,17 +16,17 @@ import {navigationtab} from '../../../services/navigationtab.service';
  */
 @Component({
     selector: 'lead-convert-button',
-    templateUrl: './src/modules/leads/templates/leadconvertbutton.html'
+    templateUrl: '../templates/leadconvertbutton.html'
 })
 export class LeadConvertButton {
 
-    constructor(private injector: Injector, private language: language, private model: model, private router: Router, private toast: toast, private modal: modal, @Optional() private navigationtab: navigationtab) {
+    constructor(public injector: Injector, public language: language, public model: model, public router: Router, public toast: toast, public modal: modal, @Optional() public navigationtab: navigationtab) {
     }
 
     /**
      * triggers the excecution
      */
-    private execute() {
+    public execute() {
         if (this.model.data.status === 'Converted') {
             this.toast.sendToast('Lead already Converted', 'warning');
         } else if (this.model.getFieldValue('account_id')) {

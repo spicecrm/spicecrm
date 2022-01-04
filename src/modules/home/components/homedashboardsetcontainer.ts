@@ -29,7 +29,7 @@ declare var _;
  */
 @Component({
     selector: 'home-dashboardset-container',
-    templateUrl: './src/modules/home/templates/homedashboardsetcontainer.html'
+    templateUrl: '../templates/homedashboardsetcontainer.html'
 })
 export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
 
@@ -43,35 +43,35 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     /**
      * view reference of main tabs used for the overflow handling
      */
-    @ViewChildren('maintabs', {read: ViewContainerRef}) protected maintabs: QueryList<any>;
+    @ViewChildren('maintabs', {read: ViewContainerRef}) public maintabs: QueryList<any>;
     /**
      * view reference of more tabs used for the overflow handling
      */
-    @ViewChildren('moreTabItems', {read: ViewContainerRef}) protected moreTabItems: QueryList<any>;
+    @ViewChildren('moreTabItems', {read: ViewContainerRef}) public moreTabItems: QueryList<any>;
     /**
      * view reference of more tab to render overflowed items inside
      */
-    @ViewChild('moreTab', {read: ViewContainerRef, static: false}) private moreTab: ViewContainerRef;
+    @ViewChild('moreTab', {read: ViewContainerRef, static: false}) public moreTab: ViewContainerRef;
     /**
      * view reference to render the active dashboard inside
      */
-    @ViewChild('activeDashboardContainer', {read: ViewContainerRef}) private activeDashboardContainer: ViewContainerRef;
+    @ViewChild('activeDashboardContainer', {read: ViewContainerRef}) public activeDashboardContainer: ViewContainerRef;
 
     constructor(
-        private broadcast: broadcast,
-        private metadata: metadata,
-        private language: language,
-        private renderer: Renderer2,
-        private backend: backend,
-        private elementRef: ElementRef,
-        private cdr: ChangeDetectorRef,
-        private userpreferences: userpreferences) {
+        public broadcast: broadcast,
+        public metadata: metadata,
+        public language: language,
+        public renderer: Renderer2,
+        public backend: backend,
+        public elementRef: ElementRef,
+        public cdr: ChangeDetectorRef,
+        public userpreferences: userpreferences) {
         this.subscribeToBroadcast();
         this.loadDashboardConfig();
 
     }
 
-    private _activeDashboardId: string = '';
+    public _activeDashboardId: string = '';
 
     /**
      * @return active dashboard id
@@ -104,7 +104,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         this.loadDashboards();
     }
 
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.subscriptions.add(this.broadcast.message$.subscribe(message => {
             this.handleBroadcastSubscription(message);
         }));
@@ -115,7 +115,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
      * handle the overflowed dashboard tabs
      * listen to resize event and handle overflow
      */
-    private loadDashboards() {
+    public loadDashboards() {
         // set isLoading on timeout to prevent angular change detection error
         this.isLoading = true;
         this.cdr.detectChanges();
@@ -135,7 +135,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
      * Handel role changes and set the role dashboard
      * @param message: broadcastMessage
      */
-    private handleBroadcastSubscription(message) {
+    public handleBroadcastSubscription(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
                 this.loadDashboardConfig();
@@ -148,7 +148,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
      * set the active dashboard id
      * pass the active dashboard id to the dashboard container reference
      */
-    private loadDashboardConfig() {
+    public loadDashboardConfig() {
         let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
         let activeRole = this.metadata.getActiveRole();
         this.activeDashboardId = homeDashboard || activeRole.default_dashboard || '';
@@ -162,7 +162,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     /**
      * render the DashboardContainer in the active dashboard container and pass the necessary params to it
      */
-    private renderView() {
+    public renderView() {
 
         this.resetView();
         if (!this.activeDashboardContainer) return;
@@ -177,7 +177,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     /**
      * destroy the dashboardContainerComponentRef
      */
-    private resetView() {
+    public resetView() {
         if (this.dashboardContainerComponentRef) {
             this.dashboardContainerComponentRef.destroy();
             this.dashboardContainerComponentRef = undefined;
@@ -188,7 +188,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
      * define the observable of dashboards list related to the dashboardset from backend
      * @return Observable<dashboards[]>
      */
-    private loadDashboardSetDashboards() {
+    public loadDashboardSetDashboards() {
         let dashboardSetId = this.userpreferences.toUse.home_dashboardset;
         let config = this.metadata.getComponentConfig('HomeDashboardSetContainer', 'Home');
         let params = {

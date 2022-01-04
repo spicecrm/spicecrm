@@ -21,7 +21,7 @@ import { metadata } from '../../services/metadata.service';
  */
 @Component({
     selector: 'object-related-card-header',
-    templateUrl: './src/objectcomponents/templates/objectrelatedcardheader.html',
+    templateUrl: '../templates/objectrelatedcardheader.html',
     animations: [
         trigger('animateicon', [
             state('open', style({ transform: 'scale(1, 1)'})),
@@ -40,7 +40,7 @@ export class ObjectRelatedCardHeader implements OnInit {
     /**
      * the component config as key paramater into the component
      */
-    @Input() private componentconfig: any = {};
+    @Input() public componentconfig: any = {};
 
     /**
      * indicates if the panel is open ... this is checked fromt eh vcard to render the content or not
@@ -50,9 +50,9 @@ export class ObjectRelatedCardHeader implements OnInit {
     /**
      * Reference to <ng-content></ngcontent>. Is needed in the template.
      */
-    // @ViewChild('ngContent', {static:true}) private ngContent: ElementRef;
+    // @ViewChild('ngContent', {static:true}) public ngContent: ElementRef;
 
-    constructor( private language: language, private relatedmodels: relatedmodels, private model: model, private metadata: metadata ) { }
+    constructor( public language: language, public relatedmodels: relatedmodels, public model: model, public metadata: metadata ) { }
 
     public ngOnInit(): void {
         if ( this.componentconfig.collapsed ) {
@@ -89,7 +89,7 @@ export class ObjectRelatedCardHeader implements OnInit {
     /**
      * toggle Open or Close the panel
      */
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this.isopen = !this.isopen;
     }
@@ -97,7 +97,7 @@ export class ObjectRelatedCardHeader implements OnInit {
     /**
      * triggers the reload of the related models service
      */
-    private reload() {
+    public reload() {
         this.relatedmodels.getData();
     }
 

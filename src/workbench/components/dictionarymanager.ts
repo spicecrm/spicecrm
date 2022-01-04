@@ -18,12 +18,12 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
  * the central dictionary Manager
  */
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanager.html',
+    templateUrl: '../templates/dictionarymanager.html',
     providers: [dictionarymanager]
 })
 export class DictionaryManager {
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata) {
 
     }
 

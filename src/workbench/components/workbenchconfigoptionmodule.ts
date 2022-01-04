@@ -16,7 +16,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'workbench-config-option-componentset',
-    templateUrl: './src/workbench/templates/workbenchconfigoptionmodule.html'
+    templateUrl: '../templates/workbenchconfigoptionmodule.html'
 })
 export class WorkbenchConfigOptionModule implements AfterViewInit {
 
@@ -29,16 +29,16 @@ export class WorkbenchConfigOptionModule implements AfterViewInit {
     public option: any = {};
     public objtype: string = "";
 
-    private modules: any[] = [];
+    public modules: any[] = [];
 
-    constructor(private backend: backend,
-                private metadata: metadata,
-                private language: language,
-                private modelutilities: modelutilities,
-                private broadcast: broadcast,
-                private toast: toast,
-                private cdRef: ChangeDetectorRef,
-                private view: view) {
+    constructor(public backend: backend,
+                public metadata: metadata,
+                public language: language,
+                public modelutilities: modelutilities,
+                public broadcast: broadcast,
+                public toast: toast,
+                public cdRef: ChangeDetectorRef,
+                public view: view) {
     }
 
     public ngAfterViewInit() {

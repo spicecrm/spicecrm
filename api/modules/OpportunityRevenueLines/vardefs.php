@@ -1,8 +1,9 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['OpportunityRevenueLine'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['OpportunityRevenueLine'] = [
     'table' => 'opportunityrevenuelines',
     'comment' => 'Split Opportunity Revenue in recognition lines',
     'fields' => [

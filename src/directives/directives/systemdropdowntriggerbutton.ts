@@ -12,7 +12,7 @@ import {SystemDropdownTriggerDirective} from "./systemdropdowntrigger";
 })
 export class SystemDropdownTriggerButtonDirective {
 
-    constructor(public elementRef: ElementRef, @Optional() @Host() private trigger: SystemDropdownTriggerDirective) {
+    constructor(public elementRef: ElementRef, @Optional() @Host() public trigger: SystemDropdownTriggerDirective) {
     }
 
     /**
@@ -21,6 +21,7 @@ export class SystemDropdownTriggerButtonDirective {
     public ngOnInit() {
         if (!this.trigger) return;
         this.trigger.hasTriggerButton = true;
+        this.trigger.triggerElementButton = this.elementRef;
     }
 
     /**
@@ -29,7 +30,7 @@ export class SystemDropdownTriggerButtonDirective {
      * @private
      */
     @HostListener('click', ['$event'])
-    private onClick(event) {
+    public onClick(event) {
         if (!this.trigger) return;
         this.trigger.openDropdown(event);
     }

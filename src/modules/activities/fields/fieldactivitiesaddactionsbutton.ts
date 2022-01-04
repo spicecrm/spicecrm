@@ -15,7 +15,7 @@ import {ActivitiesPopoverAddBarButton} from "../components/activitiespopoveraddb
  */
 @Component({
     selector: '[field-activities-addactions-button]',
-    templateUrl: './src/modules/activities/templates/fieldactivitiesaddactionsbutton.html',
+    templateUrl: '../templates/fieldactivitiesaddactionsbutton.html',
     providers: [model],
     host:{
         '(click)': 'addModel()'

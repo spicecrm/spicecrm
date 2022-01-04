@@ -13,7 +13,7 @@ import {broadcast} from "../../../services/broadcast.service";
  */
 @Component({
     selector: "spice-path-model",
-    templateUrl: "./src/include/spicepath/templates/spicepathmodel.html",
+    templateUrl: "../templates/spicepathmodel.html",
 })
 export class SpicePathModel {
 

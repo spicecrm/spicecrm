@@ -16,14 +16,14 @@ export class SystemPopOverDirective implements OnDestroy {
     /**
      * reference to the component that is rendered as popover
      */
-    private popoverCmp = null;
+    public popoverCmp = null;
 
     /**
      * a timeout that is initalized when the user hovers over the component
      */
-    private showPopoverTimeout: any = {};
+    public showPopoverTimeout: any = {};
 
-    private _popoverSettings: any = {
+    public _popoverSettings: any = {
         injector: {},
         componentset: {},
         component: ''
@@ -48,9 +48,9 @@ export class SystemPopOverDirective implements OnDestroy {
     }
 
     constructor(
-        private metadata: metadata,
-        private footer: footer,
-        private elementRef: ElementRef
+        public metadata: metadata,
+        public footer: footer,
+        public elementRef: ElementRef
     ) {
 
     }
@@ -59,7 +59,7 @@ export class SystemPopOverDirective implements OnDestroy {
      * listens to the mouseenter event on the host and if the mouse enters starts the timeout to render the popover
      */
     @HostListener('mouseenter')
-    private onMouseOver() {
+    public onMouseOver() {
         this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
     }
 
@@ -67,7 +67,7 @@ export class SystemPopOverDirective implements OnDestroy {
      * catches when the user leaves the host element and either stops the timeout or closes the popover
      */
     @HostListener('mouseleave')
-    private onMouseOut() {
+    public onMouseOut() {
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
         }
@@ -80,7 +80,7 @@ export class SystemPopOverDirective implements OnDestroy {
     /**
      * renders the popover
      */
-    private renderPopover() {
+    public renderPopover() {
         this.metadata.addComponent('SystemPopover', this.footer.footercontainer, this._popoverSettings.injector).subscribe(
             popover => {
                 popover.instance.parentElementRef = this.elementRef;

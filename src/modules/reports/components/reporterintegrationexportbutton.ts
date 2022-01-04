@@ -19,7 +19,7 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'reporter-integration-export-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationexportbutton.html',
+    templateUrl: '../templates/reporterintegrationexportbutton.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterIntegrationExportButton implements OnChanges, AfterViewInit {
@@ -29,19 +29,19 @@ export class ReporterIntegrationExportButton implements OnChanges, AfterViewInit
     @ViewChild('actionItemsContainer', {
         read: ViewContainerRef,
         static: true
-    }) private actionItemsContainer: ViewContainerRef;
+    }) public actionItemsContainer: ViewContainerRef;
     /**
      * integration params of the report to handle the plugins
      */
-    @Input() private integrationParams: any = {};
+    @Input() public integrationParams: any = {};
     /**
      * to save the action component references
      */
-    private actionComponentRefs: any[] = [];
+    public actionComponentRefs: any[] = [];
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model) {
     }
 
     /**
@@ -87,7 +87,7 @@ export class ReporterIntegrationExportButton implements OnChanges, AfterViewInit
     /**
      * rerender the action items and push the component reference to array
      */
-    private renderActionItems() {
+    public renderActionItems() {
         this.actionComponentRefs.forEach(ref => ref.destroy());
         this.actionComponentRefs = [];
 
@@ -133,7 +133,7 @@ export class ReporterIntegrationExportButton implements OnChanges, AfterViewInit
      * render action item component by metadata service
      * @param componentName
      */
-    private renderActionItem(componentName) {
+    public renderActionItem(componentName) {
         this.metadata.addComponent(componentName, this.actionItemsContainer).subscribe(object => {
             this.actionComponentRefs.push(object);
         });

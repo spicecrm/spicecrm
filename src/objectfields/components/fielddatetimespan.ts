@@ -20,7 +20,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'field-date-time-span',
-    templateUrl: './src/objectfields/templates/fielddatetimespan.html'
+    templateUrl: '../templates/fielddatetimespan.html'
 })
 export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
@@ -29,21 +29,21 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
      *
      * @private
      */
-    private isValid: boolean = true;
+    public isValid: boolean = true;
 
     /**
      * collected error messages
      *
      * @private
      */
-    private errorMessage: string = '';
+    public errorMessage: string = '';
 
     /**
      * the duration, held intrnally so we can move the end date when the start date moves
      *
      * @private
      */
-    private duration: any;
+    public duration: any;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
@@ -116,6 +116,8 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
             // add the end date
             fields[this.fieldend] = newEndDate;
+        } else if (!this.model.getField(this.fieldend)) {
+            fields[this.fieldend] = new moment(date);
         }
 
         // set the fields on the model

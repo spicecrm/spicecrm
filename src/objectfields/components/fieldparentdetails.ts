@@ -10,10 +10,10 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
 @Component({
-    templateUrl: './src/objectfields/templates/fieldparentdetails.html'
+    templateUrl: '../templates/fieldparentdetails.html'
 })
 export class fieldParentDetails extends fieldGeneric implements OnInit {
-    private parentDefs: any = {};
+    public parentDefs: any = {};
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
@@ -57,7 +57,7 @@ export class fieldParentDetails extends fieldGeneric implements OnInit {
      * Initializes parent object definitions.
      * @private
      */
-    private getParentDefinition() {
+    public getParentDefinition() {
         this.parentDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
     }
 }

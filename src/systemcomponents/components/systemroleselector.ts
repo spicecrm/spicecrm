@@ -5,21 +5,27 @@ import {Component, EventEmitter, Input, OnInit} from "@angular/core";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {broadcast} from "../../services/broadcast.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 declare var _: any;
 
 @Component({
     selector: "system-role-selector",
-    templateUrl: "./src/systemcomponents/templates/systemroleselector.html"
+    templateUrl: "../templates/systemroleselector.html"
 })
 export class SystemRoleSelector implements OnInit {
 
     /**
      * the available languages
      */
-    private roles: any[] = [];
+    public roles: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private broadcast: broadcast) {
+    constructor(
+        public language: language,
+        public metadata: metadata,
+        public broadcast: broadcast,
+        public userpreferences: userpreferences
+    ) {
     }
 
     public ngOnInit(): void {
@@ -29,7 +35,7 @@ export class SystemRoleSelector implements OnInit {
     /**
      * fecthes the available roles for the user
      */
-    private getRoles() {
+    public getRoles() {
         this.roles = this.metadata.getRoles();
     }
 
@@ -45,8 +51,11 @@ export class SystemRoleSelector implements OnInit {
      *
      * @param role
      */
-    private setActiveRole(roleid){
+    public setActiveRole(roleid){
         this.metadata.setActiveRole(roleid);
+
+        // set the role to the preferences
+        this.userpreferences.setPreference('userrole', roleid)
 
         // navigate home and broadcast the message
         this.broadcast.broadcastMessage('applauncher.setrole', roleid);

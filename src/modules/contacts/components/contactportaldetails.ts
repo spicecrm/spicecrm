@@ -12,13 +12,13 @@ import { take } from 'rxjs/operators';
 
 @Component({
     selector: "contact-portal-details",
-    templateUrl: "./src/modules/contacts/templates/contactportaldetails.html"
+    templateUrl: "../templates/contactportaldetails.html"
 })
 export class ContactPortalDetails implements OnInit {
 
-    private loaded: boolean = false;
+    public loaded: boolean = false;
 
-    private user = {
+    public user = {
         active: false,
         id: '',
         aclRole: '',
@@ -29,29 +29,29 @@ export class ContactPortalDetails implements OnInit {
         setDateTimePrefsWithSystemDefaults: true
     };
 
-    private pwdGuideline = '';
+    public pwdGuideline = '';
 
     /**
      * a regex for the password check that is built from the password requirements
      * @private
      */
-    private pwdCheckRegex: RegExp = new RegExp("//");
+    public pwdCheckRegex: RegExp = new RegExp("//");
 
 
-    private aclRoles = []; // empty array means: no acl roles, new acl system is used
-    private aclProfiles = []; // empty array means: no acl profiles, old acl system is used
-    private portalRoles = [];
-    private defaultPortalUserProfile: string;
-    private self: any = undefined;
+    public aclRoles = []; // empty array means: no acl roles, new acl system is used
+    public aclProfiles = []; // empty array means: no acl profiles, old acl system is used
+    public portalRoles = [];
+    public defaultPortalUserProfile: string;
+    public self: any = undefined;
 
-    private usernameAlreadyExists = false;
-    private usernameTesting = false;
+    public usernameAlreadyExists = false;
+    public usernameTesting = false;
 
-    private lastToast;
+    public lastToast;
 
-    private isSaving = false;
+    public isSaving = false;
 
-    constructor( private language: language, private backend: backend, private metadata: metadata, private model: model, private toast: toast, private configuration: configurationService ) { }
+    constructor( public language: language, public backend: backend, public metadata: metadata, public model: model, public toast: toast, public configuration: configurationService ) { }
 
     public ngOnInit() {
 
@@ -104,7 +104,7 @@ export class ContactPortalDetails implements OnInit {
         });
     }
 
-    private testUsername() {
+    public testUsername() {
         if ( this.user.name ) {
             this.usernameTesting = true;
             this.backend.getRequest('module/Contacts/'+this.model.id+'/testUsername', { username: this.user.name } )
@@ -123,7 +123,7 @@ export class ContactPortalDetails implements OnInit {
         return !this.user.password || this.pwdCheckRegex.test( this.user.password ) ? false : this.language.getLabel("MSG_PWD_NOT_LEGAL");
     }
 
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
@@ -144,7 +144,7 @@ export class ContactPortalDetails implements OnInit {
         return true;
     }
 
-    private save() {
+    public save() {
         if ( this.canSave ) {
             this.isSaving = true;
             let body = {
@@ -188,7 +188,7 @@ export class ContactPortalDetails implements OnInit {
      *
      * @private
      */
-    private getInfo() {
+    public getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheckRegex = new RegExp(extConf.regex);
 
@@ -196,6 +196,7 @@ export class ContactPortalDetails implements OnInit {
         if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
         if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
         if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
         if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');

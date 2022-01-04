@@ -14,7 +14,7 @@ import {metadata} from '../../../services/metadata.service';
  * renders a modal window to show all possible modules(beans) which can be created after closing an activity
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/activityclosecreatemodal.html',
+    templateUrl: '../templates/activityclosecreatemodal.html',
     providers: [model]
 })
 export class ActivityCloseCreateModal implements OnInit {
@@ -22,12 +22,12 @@ export class ActivityCloseCreateModal implements OnInit {
     /**
      * the componentconfig that gets passed in when the modal is created
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * all modules where its possible to create new bean | STRING with ',' Seperator
      */
-    private newBeanModules: any = [];
+    public newBeanModules: any = [];
 
     /**
      * the parent bean we are cloning from
@@ -37,13 +37,13 @@ export class ActivityCloseCreateModal implements OnInit {
     /**
      * a reference to the modal itself so the modal cann close itself
      */
-    private self: any = {};
-    private value: string = "";
+    public self: any = {};
+    public value: string = "";
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata
+        public language: language,
+        public model: model,
+        public metadata: metadata
     ) {
 
     }
@@ -70,14 +70,14 @@ export class ActivityCloseCreateModal implements OnInit {
     /**
      * destroy the component
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
     /**
      * Set the module of the new model; Opens modal for new bean; self destroy
      */
-    private create() {
+    public create() {
         this.model.module = this.value;
         this.model.addModel("", this.parent);
         this.self.destroy();

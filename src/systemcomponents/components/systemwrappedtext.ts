@@ -6,14 +6,14 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
     selector: 'system-wrapped-text',
-    templateUrl: './src/systemcomponents/templates/systemwrappedtext.html'
+    templateUrl: '../templates/systemwrappedtext.html'
 })
 export class SystemWrappedText {
 
     /**
      * The text to be rendered.
      */
-    @Input() private text = '';
+    @Input() public text = '';
 
     constructor( public sanitizer: DomSanitizer ) {}
 
@@ -22,7 +22,7 @@ export class SystemWrappedText {
      * Why? Because the text will be handled as HTML (to do nice line breaks), so possibly included HTML characters have to get escaped.
      * @private
      */
-    private getHtml(): SafeHtml {
+    public getHtml(): SafeHtml {
         let text = this.text;
         text = this.escapeHtml( text );
         text = text.replace(/ *\n( *\n)+ */g,'</div><div style="margin-top:0.5em">');
@@ -35,7 +35,7 @@ export class SystemWrappedText {
      * @param text The text to escape.
      * @private
      */
-    private escapeHtml( text ) {
+    public escapeHtml( text ) {
         let map = {
             '&': '&amp;',
             '<': '&lt;',

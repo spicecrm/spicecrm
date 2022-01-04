@@ -1,10 +1,9 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
-
-
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\Administration\Administration;
@@ -130,7 +129,7 @@ class BeanFactory
             $bean = new SugarBean();
             $bean->module_dir = $module;
             $bean->object_name = $beanName;
-            $bean->table_name = $GLOBALS['dictionary'][$beanName]['table'] ?: strtolower($module);
+            $bean->table_name = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
             $bean->initialize_bean();
         }
 
@@ -165,11 +164,11 @@ class BeanFactory
         return self::getBean($module);
     }
 
-    public static function getBeanName(string $module): string {
+    public static function getBeanName(?string $module): string {
         return SpiceModules::getInstance()->getBeanName($module) ?? false;
     }
 
-    public static function getBeanClass(string $module): string {
+    public static function getBeanClass(?string $module): string {
         return SpiceModules::getInstance()->getBeanClassForModule($module) ?? false;
     }
 

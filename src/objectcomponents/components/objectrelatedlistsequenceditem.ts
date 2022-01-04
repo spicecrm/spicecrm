@@ -9,21 +9,21 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[object-related-list-sequenced-item]',
-    templateUrl: './src/objectcomponents/templates/objectrelatedlistsequenceditem.html',
+    templateUrl: '../templates/objectrelatedlistsequenceditem.html',
     providers: [model, view]
 })
 export class ObjectRelatedListSequencedItem implements OnInit {
-    @Input() private listfields: any[] = [];
-    @Input() private listitem: any = {};
-    @Input() private module = '';
+    @Input() public listfields: any[] = [];
+    @Input() public listitem: any = {};
+    @Input() public module = '';
     /**
      * optional list item action set that can be passed through
      */
-    @Input() private listItemActionset: string;
+    @Input() public listItemActionset: string;
 
     public componentconfig: any = {};
 
-    constructor( private model: model, private view: view, private router: Router, private language: language ) {
+    constructor( public model: model, public view: view, public router: Router, public language: language ) {
         this.view.isEditable = false;
     }
 
@@ -42,7 +42,7 @@ export class ObjectRelatedListSequencedItem implements OnInit {
         this.model.data = this.listitem;
     }
 
-    private navigateDetail() {
+    public navigateDetail() {
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
     }
 

@@ -10,17 +10,17 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: '[global-search-module-item]',
-    templateUrl: './src/globalcomponents/templates/globalsearchmoduleitem.html',
+    templateUrl: '../templates/globalsearchmoduleitem.html',
     providers: [view, model]
 })
 export class GlobalSearchModuleItem implements OnInit {
-    @Input() private module: string = '';
-    @Input() private listfields: string = '';
-    @Input() private listitem: any = {};
+    @Input()public module: string = '';
+    @Input()public listfields: string = '';
+    @Input()public listitem: any = {};
 
-    private expanded: boolean = false;
+   public expanded: boolean = false;
 
-    constructor(private elementref: ElementRef, private router: Router, private view: view, private model: model, private language: language, private layout: layout) {
+    constructor(public elementref: ElementRef,public router: Router,public view: view,public model: model,public language: language,public layout: layout) {
         this.view.isEditable = false;
         this.view.displayLabels = false;
     }
@@ -38,17 +38,17 @@ export class GlobalSearchModuleItem implements OnInit {
         this.model.data.acl = this.listitem.acl;
     }
 
-    private navigateDetail(event) {
+   public navigateDetail(event) {
         // stop the click here
         event.stopPropagation();
 
         // see if we can navigate
-        if (this.model.data.acl.detail) {
+        if (this.model.checkAccess('detail')) {
             this.model.goDetail();
         }
     }
 
-    private toggleexpanded() {
+   public toggleexpanded() {
         this.expanded = !this.expanded;
     }
 

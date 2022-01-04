@@ -28,7 +28,7 @@ export class ObjectActionNewCopyRuleBeanButtonModelHelper {
  */
 @Component({
     selector: "object-action-new-copy-rule-bean-button",
-    templateUrl: "./src/objectcomponents/templates/objectactionnewcopyrulebeanbutton.html",
+    templateUrl: "../templates/objectactionnewcopyrulebeanbutton.html",
 })
 export class ObjectActionNewCopyRuleBeanButton implements OnInit {
 
@@ -37,7 +37,7 @@ export class ObjectActionNewCopyRuleBeanButton implements OnInit {
      *
      * this model is detected via teh component and then addressed
      */
-    @ViewChild(ObjectActionNewCopyRuleBeanButtonModelHelper, {static: true}) private child;
+    @ViewChild(ObjectActionNewCopyRuleBeanButtonModelHelper, {static: true}) public child;
 
     /**
      * the parent model in which the action is happening
@@ -54,7 +54,7 @@ export class ObjectActionNewCopyRuleBeanButton implements OnInit {
      */
     public actionconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model, @Optional() private relatedmodels: relatedmodels) {
+    constructor(public language: language, public metadata: metadata, public model: model, @Optional() public relatedmodels: relatedmodels) {
 
     }
 

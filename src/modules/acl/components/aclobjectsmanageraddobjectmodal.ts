@@ -21,18 +21,18 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'aclobjects-manager-add-object-modal',
-    templateUrl: './src/modules/acl/templates/aclobjectsmanageraddobjectmodal.html',
+    templateUrl: '../templates/aclobjectsmanageraddobjectmodal.html',
     providers: [model, view]
 })
 export class ACLObjectsManagerAddObjectModal implements OnInit {
 
     public self: any = {};
-    private fieldset: string = '';
-    @Input() private sysmodule_id: string = '';
+    public fieldset: string = '';
+    @Input() public sysmodule_id: string = '';
 
-    @Output() private newObjectData: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public newObjectData: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language) {
         // initialize the model
         this.model.module = 'SpiceACLObjects';
         this.model.initialize();
@@ -52,11 +52,11 @@ export class ACLObjectsManagerAddObjectModal implements OnInit {
         this.model.setField('sysmodule_id', this.sysmodule_id);
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private save() {
+    public save() {
         this.model.save().subscribe(success => {
             this.newObjectData.emit(this.model.data);
             this.close();

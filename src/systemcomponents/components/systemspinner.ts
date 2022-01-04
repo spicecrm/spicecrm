@@ -8,29 +8,29 @@ import {Component, Input, OnInit} from '@angular/core';
  */
 @Component({
     selector: 'system-spinner',
-    templateUrl: './src/systemcomponents/templates/systemspinner.html'
+    templateUrl: '../templates/systemspinner.html'
 })
 export class SystemSpinner implements OnInit {
 
     /**
      * the size of the spinner in pixel
      */
-    @Input() private size: number = 0;
+    @Input() public size: number = 0;
 
     /**
      * an optional paramater for the border with in pixel
      */
-    @Input() private border: number = 0;
+    @Input() public border: number = 0;
 
     /**
      * set to true to inverse the spinner color schema
      */
-    @Input() private inverse: string = 'false';
+    @Input() public inverse: string = 'false';
 
     /**
      * @ignore
      */
-    private spinnerStyle: any = {};
+    public spinnerStyle: any = {};
 
     public ngOnInit() {
         let            styleObj = {};

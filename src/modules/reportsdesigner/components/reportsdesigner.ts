@@ -21,26 +21,26 @@ import {Subscription} from "rxjs";
         view,
         model
     ],
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesigner.html',
+    templateUrl: '../templates/reportsdesigner.html',
 })
 export class ReportsDesigner implements OnDestroy {
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    protected currentUnionListFields: any[] = [];
-    private activeTab: 'details' | 'filter' | 'manipulate' | 'present' | 'visualize' | 'integrate' = 'manipulate';
+    public currentUnionListFields: any[] = [];
+    public activeTab: 'details' | 'filter' | 'manipulate' | 'present' | 'visualize' | 'integrate' = 'manipulate';
 
-    constructor(private language: language,
-                private cdr: ChangeDetectorRef,
-                private view: view,
-                private router: Router,
-                private model: model,
-                private modal: modal,
-                private metadata: metadata,
-                private navigationtab: navigationtab,
-                private activatedRoute: ActivatedRoute,
-                private injector: Injector,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public cdr: ChangeDetectorRef,
+                public view: view,
+                public router: Router,
+                public model: model,
+                public modal: modal,
+                public metadata: metadata,
+                public navigationtab: navigationtab,
+                public activatedRoute: ActivatedRoute,
+                public injector: Injector,
+                public reportsDesignerService: ReportsDesignerService) {
         this.model.module = 'KReports';
         this.subscribeToActivatedRoute();
     }
@@ -66,7 +66,7 @@ export class ReportsDesigner implements OnDestroy {
      * set the initial values for the report
      * @param data: object
      */
-    protected setInitialValues(data) {
+    public setInitialValues(data) {
 
         const statusFieldDefs = this.metadata.getFieldDefs(this.model.module, 'report_status');
         this.model.setFields({
@@ -95,7 +95,7 @@ export class ReportsDesigner implements OnDestroy {
      * @set currentPath
      * @set activeModule
      */
-    private subscribeToActivatedRoute() {
+    public subscribeToActivatedRoute() {
         this.subscriptions.add(
             this.navigationtab.activeRoute$.subscribe(route => {
                 const params = route.params;
@@ -128,7 +128,7 @@ export class ReportsDesigner implements OnDestroy {
     /**
      * @set activeTab
      */
-    private setActiveTab(tab) {
+    public setActiveTab(tab) {
         if ((this.activeTab == 'details' && !this.model.validate()) || ((tab == 'present' || tab == 'visualize') && this.reportsDesignerService.listFields.length == 0)) return;
         this.activeTab = tab;
     }
@@ -136,14 +136,14 @@ export class ReportsDesigner implements OnDestroy {
     /**
      * @navigate to listView
      */
-    private goToModule() {
+    public goToModule() {
         this.router.navigate(['/module/KReports']);
     }
 
     /**
      * @navigate to Record in view mode or to list view
      */
-    private cancel() {
+    public cancel() {
         // if we have a new tab .. close the tab
         if(this.model.isNew) this.navigationtab.closeTab();
 
@@ -163,7 +163,7 @@ export class ReportsDesigner implements OnDestroy {
      * @set view mode
      * @navigate to Record in view mode or to list view
      */
-    private save() {
+    public save() {
         if (this.model.validate()) {
             this.model.save(true)
                 .subscribe(() => {
@@ -187,7 +187,7 @@ export class ReportsDesigner implements OnDestroy {
      * @set activeTab
      * @set activeModule
      */
-    private openSelectModuleModal() {
+    public openSelectModuleModal() {
         this.model.initialize();
         this.modal.openModal('ReportsDesignerSelectModuleModal', true, this.injector)
             .subscribe(modalRef => {
@@ -210,7 +210,7 @@ export class ReportsDesigner implements OnDestroy {
      * @cleanWhereGroups
      * @cleanUnionListFields
      */
-    private handleUnionDelete(unionId) {
+    public handleUnionDelete(unionId) {
         this.cleanWhereGroups(unionId);
         this.cleanUnionListFields(unionId);
     }
@@ -219,7 +219,7 @@ export class ReportsDesigner implements OnDestroy {
      * @param fields: object[]
      * @set currentUnionListFields
      */
-    private handleUnionAdd(fields) {
+    public handleUnionAdd(fields) {
         this.currentUnionListFields = fields;
     }
 
@@ -228,7 +228,7 @@ export class ReportsDesigner implements OnDestroy {
      * @filter whereGroups from deleted groups
      * @set wheregroups
      */
-    private cleanWhereGroups(unionId) {
+    public cleanWhereGroups(unionId) {
         let whereGroups = this.model.getField('wheregroups');
         if (whereGroups && whereGroups.length) {
             whereGroups = whereGroups.filter(group => group.unionid != unionId);
@@ -242,7 +242,7 @@ export class ReportsDesigner implements OnDestroy {
      * @filter whereConditions from deleted conditions
      * @set whereconditions
      */
-    private cleanWhereConditions(whereGroups) {
+    public cleanWhereConditions(whereGroups) {
         let whereConditions = this.model.getField('whereconditions');
         if (!whereConditions || !whereConditions.length) return;
         whereConditions = whereConditions.filter(condition => whereGroups.some(group => group.id == condition.groupid));
@@ -254,7 +254,7 @@ export class ReportsDesigner implements OnDestroy {
      * @filter unionListFields from deleted fields
      * @set unionlistfields
      */
-    private cleanUnionListFields(unionId) {
+    public cleanUnionListFields(unionId) {
         let unionListFields = this.model.getField('unionlistfields');
         if (!unionListFields || !unionListFields.length) return;
         unionListFields = unionListFields.filter(field => field.joinid != unionId);

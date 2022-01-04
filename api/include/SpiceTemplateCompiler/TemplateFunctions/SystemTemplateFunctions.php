@@ -7,6 +7,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use DateTime;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SystemTemplateFunctions {
 
@@ -110,5 +111,11 @@ class SystemTemplateFunctions {
         $now = new DateTime();
         return $now->format( $format );
     }
+
+    /*
+    static function shorturl( $longUrl ) {
+        return SpiceUtils::createShortUrl( $longUrl );
+    }
+    */
 
 }

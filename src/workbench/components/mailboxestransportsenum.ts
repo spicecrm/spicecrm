@@ -11,11 +11,11 @@ import {Router} from "@angular/router";
 import {fieldGeneric} from "../../objectfields/components/fieldgeneric";
 
 @Component({
-    templateUrl: "./src/workbench/templates/mailboxestransportsenum.html",
+    templateUrl: "../templates/mailboxestransportsenum.html",
 })
 export class MailboxesTransportsEnum extends fieldGeneric {
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public configuration: configurationService) {
         super(model, view, language, metadata, router);
     }
 

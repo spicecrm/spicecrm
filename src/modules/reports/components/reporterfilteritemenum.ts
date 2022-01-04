@@ -9,22 +9,22 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reporter-filter-item-enum',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemenum.html'
+    templateUrl: '../templates/reporterfilteritemenum.html'
 })
 export class ReporterFilterItemEnum implements OnInit, OnDestroy {
 
-    @Input() private field: string = '';
-    @Input() private isMultiSelect: boolean = false;
-    @Input() private wherecondition: any = {};
+    @Input() public field: string = '';
+    @Input() public isMultiSelect: boolean = false;
+    @Input() public wherecondition: any = {};
 
-    private fieldName: string;
-    private moduleName: string;
+    public fieldName: string;
+    public moduleName: string;
 
-    private enumOptions: any[] = [];
-    private _value: any = [];
-    private subscription: Subscription = new Subscription();
+    public enumOptions: any[] = [];
+    public _value: any = [];
+    public subscription: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private language: language, private backend: backend) {
+    constructor(public metadata: metadata, public language: language, public backend: backend) {
         this.subscription = this.language.currentlanguage$.subscribe(() => {
             this.getEnumOptions();
         });
@@ -78,12 +78,12 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    private initializeValueArray() {
+    public initializeValueArray() {
         const value = this.wherecondition[this.field + 'key'] ? this.wherecondition[this.field + 'key'] : this.wherecondition[this.field];
         this._value = this.isMultiSelect ? (!!value ? value.split(',') : []) : value;
     }
 
-    private getEnumOptions() {
+    public getEnumOptions() {
         // if we have module and fieldname we can get the otpions locally .. otherwise we try remote
         if (this.moduleName && this.fieldName) {
             this.enumOptions = this.language.getFieldDisplayOptions(this.moduleName, this.fieldName, true);

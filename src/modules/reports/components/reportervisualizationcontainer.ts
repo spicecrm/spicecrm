@@ -8,7 +8,7 @@ import {model} from '../../../services/model.service';
 
 @Component({
     selector: 'reporter-visualization-container',
-    templateUrl: './src/modules/reports/templates/reportervisualizationcontainer.html',
+    templateUrl: '../templates/reportervisualizationcontainer.html',
     styles: [
         ':host {width:100%; height: 300px;}'
     ]
@@ -23,16 +23,16 @@ export class ReporterVisualizationContainer {
     /**
      * status to have the component hidden
      */
-    private isHidden: boolean = false;
+    public isHidden: boolean = false;
 
-    constructor(private model: model) {
+    constructor(public model: model) {
     }
 
     /**
      * called when the container canot load the report
      * @param event
      */
-    private noAccess(event) {
+    public noAccess(event) {
         this.isHidden = event;
     }
 

@@ -43,7 +43,7 @@ export class systemrichtextservice {
     public selectedText: string;
     public uploadUrl: string;
 
-    constructor(@Inject(DOCUMENT) private _document: Document) {
+    constructor(@Inject(DOCUMENT) public _document: Document) {
     }
 
     /**
@@ -111,7 +111,7 @@ export class systemrichtextservice {
      * Create raw HTML
      * @param html HTML string
      */
-    private insertHtml(html: string): void {
+    public insertHtml(html: string): void {
 
         const isHTMLInserted = this._document.execCommand('insertHTML', false, html);
 
@@ -161,7 +161,7 @@ export class systemrichtextservice {
     }
 
     /** check any slection is made or not */
-    private checkSelection(): any {
+    public checkSelection(): any {
 
         const slectedText = this.savedSelection.toString();
 
@@ -220,7 +220,7 @@ export class systemrichtextservice {
      * clear the document/window user selection
      * @private
      */
-    private clearSelection() {
+    public clearSelection() {
 
         this.savedSelection = undefined;
 
@@ -236,7 +236,7 @@ export class systemrichtextservice {
      * @param editorContainer
      * @protected
      */
-    protected resetRangeBoundaries(editorContainer) {
+    public resetRangeBoundaries(editorContainer) {
         if (!this.savedSelection) return;
         if (!editorContainer.contains(this.savedSelection.startContainer)) {
             this.savedSelection.setStart(editorContainer, 0);
@@ -253,7 +253,7 @@ export class systemrichtextservice {
      * @param beforeElement
      * @protected
      */
-    protected insertElementForNode(element: HTMLElement, target: HTMLElement, beforeElement?: HTMLElement) {
+    public insertElementForNode(element: HTMLElement, target: HTMLElement, beforeElement?: HTMLElement) {
 
         if (this.savedSelection) {
             this.savedSelection.deleteContents();
@@ -272,7 +272,7 @@ export class systemrichtextservice {
      * @param editorContainer
      * @protected
      */
-    protected getRangeCurrentTarget(startContainer: Node, editorContainer: HTMLElement): HTMLElement {
+    public getRangeCurrentTarget(startContainer: Node, editorContainer: HTMLElement): HTMLElement {
 
         let currentTarget = startContainer as HTMLElement;
 

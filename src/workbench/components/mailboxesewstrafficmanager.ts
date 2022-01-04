@@ -14,17 +14,17 @@ import {Observable, Subject} from "rxjs";
  */
 @Component({
     selector: "mailboxes-mailgun-ews-manager",
-    templateUrl: "./src/workbench/templates/mailboxesewstrafficmanager.html",
+    templateUrl: "../templates/mailboxesewstrafficmanager.html",
 })
 export class MailboxesEWSTrafficManager {
 
     constructor(
-        private language: language,
-        private injector: Injector,
-        private model: model,
-        private modal: modal,
-        private view: view,
-        private backend: backend
+        public language: language,
+        public injector: Injector,
+        public model: model,
+        public modal: modal,
+        public view: view,
+        public backend: backend
     ) {
         let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
@@ -50,7 +50,7 @@ export class MailboxesEWSTrafficManager {
     /**
      * retirves the mailbox folders from the backend via the connection
      */
-    private getMailboxes(): Observable<any> {
+    public getMailboxes(): Observable<any> {
         let responseSubject = new Subject<any>();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
         this.backend.postRequest("module/Mailboxes/ews/folders", {}, {data: modelData})
@@ -70,7 +70,7 @@ export class MailboxesEWSTrafficManager {
     /**
      * opens the modal for the seldection of the IMAP folders
      */
-    private displayFoldersModal() {
+    public displayFoldersModal() {
         let waitingmodal = this.modal.await('loading folders');
         this.getMailboxes().subscribe(
             (response) => {

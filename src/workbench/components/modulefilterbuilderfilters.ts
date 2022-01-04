@@ -12,24 +12,24 @@ import {session} from '../../services/session.service';
 
 @Component({
     selector: 'module-builder-filters',
-    templateUrl: './src/workbench/templates/modulefilterbuilderfilters.html',
+    templateUrl: '../templates/modulefilterbuilderfilters.html',
 })
 export class ModuleFilterBuilderFilters {
 
-    private loading: boolean = false;
-    private _module: string = '';
+    public loading: boolean = false;
+    public _module: string = '';
     public modules: string[];
     public filters: any[] = [];
-    private activeTab: string = 'global';
+    public activeTab: string = 'global';
 
-    @Output() private filter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public filter: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private metadata: metadata,
-        private modelutilities: modelutilities,
-        private session: session
+        public backend: backend,
+        public language: language,
+        public metadata: metadata,
+        public modelutilities: modelutilities,
+        public session: session
     ) {
         this.modules = this.metadata.getModules();
         this.modules.sort();
@@ -55,11 +55,11 @@ export class ModuleFilterBuilderFilters {
         return this.filters.filter(filter => filter.scope == 'custom');
     }
 
-    private goDetail(filter) {
+    public goDetail(filter) {
         this.filter.emit(filter);
     }
 
-    private loadLists() {
+    public loadLists() {
         this.filters = [];
         if (this.module) {
             this.loading = true;
@@ -70,7 +70,7 @@ export class ModuleFilterBuilderFilters {
         }
     }
 
-    private add(scope) {
+    public add(scope) {
         let filter = {
             id: this.modelutilities.generateGuid(),
             module: this.module,
@@ -85,7 +85,7 @@ export class ModuleFilterBuilderFilters {
         this.filter.emit(filter);
     }
 
-    private remove(filter) {
+    public remove(filter) {
         this.metadata.removeModuleFilter(filter.id);
         this.backend.deleteRequest('configuration/sysmodulefilters/' + filter.module + '/' + filter.id);
         this.filters = this.filters.filter(moduleFilter => moduleFilter.id != filter.id);

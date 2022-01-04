@@ -16,7 +16,7 @@
         </button>
     </div>
     <div class="slds-scrollable--y" [ngClass]="{'slds-grow':ipAddresses.length!==0}">
-        <table #table class="slds-table slds-table_bordered slds-table--header-fixed" system-multi-select-checkboxes [ngStyle]="{borderBottom:ipAddresses.length===0?'none':'auto'}">
+        <table #table class="slds-table slds-table_bordered slds-table--header-fixed" [ngStyle]="{borderBottom:ipAddresses.length===0?'none':'auto'}">
             <thead>
                 <tr class="slds-text-title--caps">
                     <th></th>
@@ -26,12 +26,12 @@
                     <th><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_CREATED_BY"></system-label></div></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody system-multi-select-checkboxes>
                 <tr *ngIf="isAdding">
                     <td colspan="2" style="vertical-align:top">
-                        <div class="slds-form-element slds-has-error">
+                        <div class="slds-form-element" [ngClass]="{'slds-has-error':addressError}">
                             <div class="slds-form-element__control">
-                                <input #addressInput type="text" [(ngModel)]="newAddress" [placeholder]="language.getLabel('LBL_IPADDRESS')" class="slds-input" (change)="checkAddressInput()" style="min-width:8.8rem">
+                                <input system-autofocus type="text" [(ngModel)]="newAddress" [placeholder]="language.getLabel('LBL_IPADDRESS')" class="slds-input" (change)="checkAddressInput()" style="min-width:8.8rem">
                             </div>
                             <div class="slds-form-element__help" id="error-message-unique-id">{{addressError}}</div>
                         </div>

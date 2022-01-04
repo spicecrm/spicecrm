@@ -13,29 +13,29 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: '[global-header-search-recent-item]',
-    templateUrl: './src/globalcomponents/templates/globalheadersearchrecentitem.html',
+    templateUrl: '../templates/globalheadersearchrecentitem.html',
     providers: [model, view],
     host: {
         "(click)": "navigateTo()"
     }
 })
 export class GlobalHeaderSearchRecentItem implements OnInit {
-    @Input() private item: any = {};
-    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
+    @Input()public item: any = {};
+    @Output()public selected: EventEmitter<any> = new EventEmitter<any>();
 
-    private mainfieldset: string;
-    private subfieldsetfields: any[];
+   public mainfieldset: string;
+   public subfieldsetfields: any[];
 
-    constructor(private model: model, private router: Router, private language: language, private metadata: metadata, private view: view) {
+    constructor(public model: model,public router: Router,public language: language,public metadata: metadata,public view: view) {
         this.view.displayLabels = false;
     }
 
-    private navigateTo() {
+   public navigateTo() {
         this.selected.emit(true);
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
     }
 
-    private gethref() {
+   public gethref() {
         return '#/module/' + this.model.module + '/' + this.model.id;
     }
 

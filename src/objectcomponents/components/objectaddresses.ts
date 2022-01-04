@@ -26,7 +26,7 @@ export class ObjectAddressesPipe {
 
 @Component({
     selector: 'object-addresses',
-    templateUrl: './src/objectcomponents/templates/objectaddresses.html',
+    templateUrl: '../templates/objectaddresses.html',
     host: {
         '[style.display]': 'getDisplay()'
     },
@@ -36,7 +36,7 @@ export class ObjectAddresses implements OnInit {
     componentconfig: any = {};
     expanded: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view, private modelutilities: modelutilities) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view, public modelutilities: modelutilities) {
 
     }
 

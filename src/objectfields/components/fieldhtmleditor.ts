@@ -19,13 +19,13 @@ declare var _;
 
 @Component({
     selector: 'field-html-editor',
-    templateUrl: './src/objectfields/templates/fieldhtmleditor.html',
+    templateUrl: '../templates/fieldhtmleditor.html',
     styles: [
-        ':host >>> .mce-ico{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-text{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-btn button{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-tinymce{border-radius: 4px}',
-        ':host >>> .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
+        ':host  .mce-ico{font-size: 12px; color: #54698d;}',
+        ':host  .mce-text{font-size: 12px; color: #54698d;}',
+        ':host  .mce-btn button{font-size: 12px; color: #54698d;}',
+        ':host  .mce-tinymce{border-radius: 4px}',
+        ':host  .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
     ]
 })
 export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnInit {
@@ -129,7 +129,7 @@ export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnI
     @Output() public contentchange: EventEmitter<any> = new EventEmitter<any>();
     @Output() public stylesheetIdChange: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor( private metadata: metadata, private footer: footer, private configurationService: configurationService, private modal: modal ) {
+    constructor( public metadata: metadata, public footer: footer, public configurationService: configurationService, public modal: modal ) {
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
 
