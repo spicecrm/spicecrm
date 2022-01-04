@@ -485,7 +485,12 @@ export class model implements OnDestroy {
 
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
+
+                // set data and acl
                 this.data = res;
+                this.acl = res.acl;
+                this.acl_fieldcontrol = res.acl_fieldcontrol;
+
                 this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
