@@ -121,6 +121,7 @@ import {fieldCompound} from './components/fieldcompound';
 import {fieldIconCondition} from './components/fieldiconcondition';
 import {fieldIndicator} from './components/fieldindicator';
 import {fieldEmailRecipientsInput} from './components/fieldemailrecipientsinput';
+import {fieldJson} from "./components/fieldjson";
 
 /**
  * @ignore
@@ -250,7 +251,8 @@ declare var _: any;
         fieldCompound,
         fieldIconCondition,
         fieldIndicator,
-        fieldEmailRecipientsInput
+        fieldEmailRecipientsInput,
+        fieldJson
     ],
     exports: [
         fieldSet,
