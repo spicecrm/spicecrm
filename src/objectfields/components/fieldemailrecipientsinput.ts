@@ -127,8 +127,10 @@ export class fieldEmailRecipientsInput {
         this.modal.openModal('EmailParentAddressesModal', true, this.injector).subscribe(
             modalRef => {
 
-                this.parent.clickListener();
-                this.parent.clickListener = undefined;
+                if (this.parent.clickListener) {
+                    this.parent.clickListener();
+                    this.parent.clickListener = undefined;
+                }
 
                 modalRef.instance.addAddresses.subscribe(
                     addresses => {
@@ -144,6 +146,7 @@ export class fieldEmailRecipientsInput {
 
                             this.value = [...this.model.getField('recipient_addresses'), newEmailAddress];
                             this.isInputTextVisible = true;
+                            this.parent.focused = true;
                         }
                     }
                 );
