@@ -1,5 +1,8 @@
-<div class="slds-p-around--medium">
-    <div class="slds-size_12-of-12 slds-scrollable_y slds-p-around--medium" style="height: 30rem">
+<h2 class="slds-p-around--small slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small slds-border--bottom">
+    License Agreement
+</h2>
+<div system-to-bottom>
+    <div class="slds-p-around--medium slds-theme--default">
         <p>GNU AFFERO GENERAL PUBLIC LICENSE
             Version 3, 19 November 2007</p>
         <p> Copyright (C) 2007 Free Software Foundation, Inc. <a href="http://fsf.org/">fsf.org</a>
@@ -65,7 +68,7 @@
             <p> To &quot;propagate&quot; a work means to do anything with it that, without
                 permission, would make you directly or secondarily liable for
                 infringement under applicable copyright law, except executing it on a
-                computer or modifying a private copy. Propagation includes copying,
+                computer or modifying a public copy. Propagation includes copying,
                 distribution (with or without modification), making available to the
                 public, and in some countries other activities as well.</p>
             <p> To &quot;convey&quot; a work means any kind of propagation that enables other
@@ -629,13 +632,8 @@
                 <a href="http://www.gnu.org/licenses/">gnu.org/licenses</a>.</p>
         </div>
     </div>
-    <div class="slds-grid slds-p-vertical--medium">
-        <system-checkbox [(ngModel)]="spiceinstaller.selectedStep.completed"></system-checkbox>
-        <span>agree to Terms & Conditions</span>
-    </div>
-
-    <div class="slds-p-vertical--small slds-text-align--right">
+    <div class="slds-grid slds-p-around--small slds-grid--vertical-align-center slds-grid--align-spread slds-border--top">
+        <system-checkbox [(ngModel)]="spiceinstaller.selectedStep.completed">agree to Terms & Conditions</system-checkbox>
         <button class="slds-button slds-button--brand" [disabled]="!spiceinstaller.selectedStep.completed" (click)="spiceinstaller.next(spiceinstaller.steps[2])">next</button>
     </div>
-
 </div>

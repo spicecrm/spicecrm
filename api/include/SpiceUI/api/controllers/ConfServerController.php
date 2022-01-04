@@ -128,6 +128,7 @@ class ConfServerController
             'sysuiloadtaskitems',
             'sysmailboxtransports',
             'spiceaclstandardactions',
+            'systemplatefunctions'
         ];
 
         $tableArray = [];

@@ -12,7 +12,7 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: '[opportunity-revenue-line-item]',
-    templateUrl: "./src/modules/opportunities/templates/opportunityrevenuelineitem.html",
+    templateUrl: "../templates/opportunityrevenuelineitem.html",
     providers: [model]
 })
 export class OpportunityRevenueLineItem implements OnChanges {
@@ -20,29 +20,29 @@ export class OpportunityRevenueLineItem implements OnChanges {
     /**
      * input for the revenue line itself
      */
-    @Input() private revenueLine: any;
+    @Input() public revenueLine: any;
 
     /**
      * the close date .. not too nice but needed so it can be passed from the parent in case the date is changed so changed etection is triggered when the dates are recalculated
      */
-    @Input() private closeDate: any;
+    @Input() public closeDate: any;
 
     /**
      * the total amount .. not too nice but needed so it can be passed from the parent in case the amount is changed so changed detection is triggered when the dates are recalculated
      */
-    @Input() private totalAmount: any;
+    @Input() public totalAmount: any;
 
     /**
      * an event emitter that fires when the line is updated
      */
-    @Output() private update: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public update: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * an event emitter that fires when the line is deleted
      */
-    @Output() private delete: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public delete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private model: model, private view: view, private language: language) {
+    constructor(public model: model, public view: view, public language: language) {
         this.model.module = 'OpportunityRevenueLines';
         this.model.data$.subscribe(data => {
             this.update.emit(true);
@@ -68,7 +68,7 @@ export class OpportunityRevenueLineItem implements OnChanges {
     /**
      * action to trigger deete of the line
      */
-    private deleteitem() {
+    public deleteitem() {
         this.delete.emit(true);
     }
 }

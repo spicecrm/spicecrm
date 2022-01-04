@@ -6,11 +6,11 @@ import {fieldEnum} from './fieldenum';
 
 @Component({
     selector: 'field-enum-alternate',
-    templateUrl: './src/objectfields/templates/fieldenumalternate.html'
+    templateUrl: '../templates/fieldenumalternate.html'
 })
 
 export class fieldEnumAlternate extends fieldEnum {
-    private setValue(value) {
+    public setValue(value) {
         this.value = value; // not needed anymore? :o
     }
 }

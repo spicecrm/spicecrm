@@ -20,7 +20,7 @@ declare var moment;
  */
 @Component({
     selector: 'field-activity-reminder',
-    templateUrl: './src/modules/activities/templates/fieldactivityreminder.html'
+    templateUrl: '../templates/fieldactivityreminder.html'
 })
 export class fieldActivityReminder extends fieldGeneric {
 
@@ -28,7 +28,7 @@ export class fieldActivityReminder extends fieldGeneric {
      * the reminder options
      * @private
      */
-    private options = [
+    public options = [
         {value: '-1', label: 'LBL_REMINDER_NONE'},
         {value: '60', label: 'LBL_REMINDER_1MINUTE'},
         {value: '300', label: 'LBL_REMINDER_5MINUTES'},
@@ -51,7 +51,7 @@ export class fieldActivityReminder extends fieldGeneric {
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
                 public modal: modal,
-                private userpreferences: userpreferences) {
+                public userpreferences: userpreferences) {
 
         super(model, view, language, metadata, router);
     }

@@ -19,7 +19,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'lead-convert-opportunity-modal',
-    templateUrl: './src/modules/leads/templates/leadconvertconsumermodal.html',
+    templateUrl: '../templates/leadconvertconsumermodal.html',
     providers: [model, view]
 })
 export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
@@ -27,19 +27,19 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
     /**
      * reference to the modal itself
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * ebent emitter when the conversion is completed
      */
-    @Output() private converted: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public converted: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the componentset to be rendered
      */
-    private componentSet: string;
+    public componentSet: string;
 
-    constructor(private language: language, @SkipSelf() private lead: model, private model: model, private metadata: metadata, private view: view, private modal: modal) {
+    constructor(public language: language, @SkipSelf() public lead: model, public model: model, public metadata: metadata, public view: view, public modal: modal) {
         this.model.module = 'Consumers';
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -47,6 +47,18 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
 
     public ngOnInit() {
         this.model.initialize(this.lead);
+
+        this.model.initializeField(
+            'email_addresses',
+            {"beans": [{
+                    id: this.model.generateGuid(),
+                    bean_id: this.model.id,
+                    bean_module: this.model.module,
+                    email_address: this.lead.getField('email1'),
+                    email_address_id: '',
+                    primary_address: '1'
+                }]}
+        );
     }
 
     public ngAfterViewInit() {
@@ -57,14 +69,14 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * converts the lead to a consumer
      */
-    private convert() {
+    public convert() {
         if (!this.model.validate()) return;
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             loadingModalRef.instance.messagelabel = 'creating Consumer';

@@ -31,7 +31,7 @@ declare var _;
  */
 @Component({
     selector: 'system-input-file',
-    templateUrl: './src/systemcomponents/templates/systeminputfile.html',
+    templateUrl: '../templates/systeminputfile.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
         provide: NG_VALUE_ACCESSOR,
@@ -44,67 +44,67 @@ export class SystemInputFile implements ControlValueAccessor {
      * holds a view container reference for the input file
      * @private
      */
-    @ViewChild('inputFile', {read: ViewContainerRef, static: false}) private inputFile: ViewContainerRef;
+    @ViewChild('inputFile', {read: ViewContainerRef, static: false}) public inputFile: ViewContainerRef;
     /**
      * holds the field name of the file from parent
      * @private
      */
-    @Input() private fieldName: string;
+    @Input() public fieldName: string;
     /**
      * holds the disabled boolean from parent
      * @private
      */
-    @Input() private accept: string = '*';
+    @Input() public accept: string = '*';
     /**
      * holds the disabled boolean from parent
      * @private
      */
-    @Input() private disabled: boolean = false;
+    @Input() public disabled: boolean = false;
     /**
      * holds the disabled boolean from parent
      * @private
      */
-    @Output() private onRemove = new EventEmitter();
+    @Output() public onRemove = new EventEmitter();
     /**
      * holds the uploading boolean
      * @private
      */
-    private isUploading: boolean = false;
+    public isUploading: boolean = false;
     /**
      * holds the uploading boolean
      * @private
      */
-    private elementID: string = _.uniqueId('input-file');
+    public elementID: string = _.uniqueId('input-file');
     /**
      * ControlValueAccessor change emitter
      * @private
      */
-    private onChange: (value: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void}) => void;
+    public onChange: (value: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void}) => void;
     /**
      * ControlValueAccessor touched emitter
      * @private
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
     /**
      * holds the file progress value
      * @private
      */
-    private fileProgress: number = 0;
+    public fileProgress: number = 0;
     /**
      * holds the file value
      * @private
      */
-    private file: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string };
+    public file: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string };
 
-    constructor(private configurationService: configurationService,
-                private session: session,
-                private toast: toast,
-                private helper: helper,
-                private model: model,
-                private backend: backend,
-                private modal: modal,
-                private cdRef: ChangeDetectorRef,
-                private language: language) {
+    constructor(public configurationService: configurationService,
+                public session: session,
+                public toast: toast,
+                public helper: helper,
+                public model: model,
+                public backend: backend,
+                public modal: modal,
+                public cdRef: ChangeDetectorRef,
+                public language: language) {
     }
 
     /**
@@ -165,13 +165,13 @@ export class SystemInputFile implements ControlValueAccessor {
 
         const fileBody = {
             file: fileContent.substring(fileContent.indexOf('base64,') + 7),
-            file_name: this.file.file_name,
-            file_mime_type: this.file.file_mime_type
+            filename: this.file.file_name,
+            filemimetype: this.file.file_mime_type
         };
 
-        this.backend.postRequestWithProgress('common/bean/file/upload', null, fileBody, progressSubscription)
+        this.backend.postRequestWithProgress('common/spiceattachments', null, fileBody, progressSubscription)
             .subscribe(res => {
-                this.file.file_md5 = res.file_md5;
+                this.file.file_md5 = res[0].filemd5;
                 this.onChange({
                     ...this.file,
                     remove: () => this.removeFile(true)
@@ -186,7 +186,7 @@ export class SystemInputFile implements ControlValueAccessor {
      * read file async and return promise
      * @param file
      */
-    private async readFileAsync(file): Promise<any> {
+    public async readFileAsync(file): Promise<any> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result.toString());

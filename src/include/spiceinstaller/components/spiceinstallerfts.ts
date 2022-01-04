@@ -10,33 +10,33 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-fts',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallerfts.html'
+    templateUrl: '../templates/spiceinstallerfts.html'
 })
 
 export class SpiceInstallerFTS {
     /**
      * condition booleans
      */
-    private serverCondition: boolean = true;
-    private portCondition: boolean = true;
-    private prefixCondition: boolean = true;
+    public serverCondition: boolean = true;
+    public portCondition: boolean = true;
+    public prefixCondition: boolean = true;
     /**
      * loading boolean
      */
-    private loading: boolean = false;
-    private protocolOptions: any = [{type: 'http', name: 'HTTP'}, {type: 'https', name: 'HTTPS'}];
+    public loading: boolean = false;
+    public protocolOptions: any = [{type: 'http', name: 'HTTP'}, {type: 'https', name: 'HTTPS'}];
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public spiceinstaller: spiceinstaller
     ) {
-
+        if(!this.spiceinstaller.prefix) this.spiceinstaller.prefix = this.spiceinstaller.db_name + '_';
     }
 
     /**
      * checks if a connection with the fts server is possible, saves the configuration
      */
-    private checkFTS() {
+    public checkFTS() {
 
         let body = {
             server: this.spiceinstaller.server,

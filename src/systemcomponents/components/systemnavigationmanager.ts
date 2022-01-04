@@ -12,11 +12,11 @@ import {session} from '../../services/session.service';
  */
 @Component({
     selector: 'system-navigation-manager',
-    templateUrl: './src/systemcomponents/templates/systemnavigationmanager.html',
+    templateUrl: '../templates/systemnavigationmanager.html',
 })
 export class SystemNavigationManager {
 
-    constructor(private session: session, private navigation: navigation) {
+    constructor(public session: session, public navigation: navigation) {
 
     }
 

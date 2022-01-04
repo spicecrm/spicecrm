@@ -10,40 +10,40 @@ import {helper} from "../../services/helper.service";
  */
 @Component({
     selector: "system-file-icon",
-    templateUrl: "./src/systemcomponents/templates/systemfileicon.html"
+    templateUrl: "../templates/systemfileicon.html"
 })
 export class SystemFileIcon implements OnInit {
     /**
      * thze mime type or type of the file
      */
-    @Input() private filemimetype: string = "";
+    @Input() public filemimetype: string = "";
 
     /**
      * the name of the file
      */
-    @Input() private filename: string = "";
+    @Input() public filename: string = "";
 
     /**
      * the size fo the icon
      */
-    @Input() private size: '' | 'large' | 'small' | 'x-small' | 'xx-small' = '';
+    @Input() public size: '' | 'large' | 'small' | 'x-small' | 'xx-small' = '';
 
     /**
      * additonal classes
      */
-    @Input() private addclasses: string = "";
+    @Input() public addclasses: string = "";
 
     /**
      * the default div class
      */
-    @Input() private divClass = "slds-media__figure";
+    @Input() public divClass = "slds-media__figure";
 
     /**
      * the fileicon as determined
      */
-    private fileicon: any = {icon: 'unknown', sprite: 'doctype'};
+    public fileicon: any = {icon: 'unknown', sprite: 'doctype'};
 
-    constructor(private metadata: metadata, private helper: helper) {
+    constructor(public metadata: metadata, public helper: helper) {
 
     }
 
@@ -57,7 +57,7 @@ export class SystemFileIcon implements OnInit {
     /**
      * determine the file icon
      */
-    private determineIcon() {
+    public determineIcon() {
         let icon = this.helper.determineFileIcon(this.filemimetype);
         if (icon == 'unknown') {
             let nameparts = this.filename.split('.');

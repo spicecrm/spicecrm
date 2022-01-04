@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maretval
- * Date: 07.05.2019
- * Time: 13:20
- */
+/***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -110,10 +105,10 @@ class OutputTemplatesController
     {
         $db = DBManagerFactory::getInstance();
         $functions = [ 'pipe' => [], 'noPipe' => [] ];
-        $dbResult = $db->query('SELECT name, no_pipe FROM systemplatefunctions UNION SELECT name, no_pipe FROM syscustomtemplatefunctions');
+        $dbResult = $db->query('SELECT name, no_pipe, param_configs FROM systemplatefunctions UNION SELECT name, no_pipe, param_configs FROM syscustomtemplatefunctions');
         while ( $function = $db->fetchByAssoc( $dbResult )) {
-            if ( $function['no_pipe'] === '1' ) $functions['noPipe'][] = $function['name'];
-            else $functions['pipe'][] = $function['name'];
+            if ( $function['no_pipe'] === '1' ) $functions['noPipe'][] = ['name'=>$function['name'],'paramConfigs'=>json_decode($function['param_configs'])];
+            else $functions['pipe'][] = ['name'=>$function['name'],'paramConfigs'=>json_decode($function['param_configs'])];
         }
         return $res->withJson( $functions );
     }

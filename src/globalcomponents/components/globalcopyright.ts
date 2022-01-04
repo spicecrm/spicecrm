@@ -10,7 +10,7 @@ import {
  */
 @Component({
     selector: 'global-copyright',
-    templateUrl: 'copyright.html'
+    templateUrl: '../../../copyright.html'
 })
 export class GlobalCopyright {
 

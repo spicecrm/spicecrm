@@ -12,25 +12,25 @@ import {modal} from '../../services/modal.service';
  */
 @Component({
     selector: "object-file-action-menu",
-    templateUrl: "./src/objectcomponents/templates/objectfileactionmenu.html"
+    templateUrl: "../templates/objectfileactionmenu.html"
 })
 export class ObjectFileActionMenu {
 
-    @Input() private file: any;
+    @Input() public file: any;
 
-    constructor(private broadcast: broadcast,
-                private modelattachments: modelattachments,
-                private language: language,
-                private elementRef: ElementRef,
-                private modalservice: modal,
-                private injector: Injector) {
+    constructor(public broadcast: broadcast,
+                public modelattachments: modelattachments,
+                public language: language,
+                public elementRef: ElementRef,
+                public modalservice: modal,
+                public injector: Injector) {
 
     }
 
     /**
      * determines where the menu is opened
      */
-    private getDropdownLocationClass() {
+    public getDropdownLocationClass() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         if (window.innerHeight - rect.bottom < 100) {
             return "slds-dropdown--bottom";
@@ -42,7 +42,7 @@ export class ObjectFileActionMenu {
      *
      * ToDo: add ACL Check
      */
-    private deleteFile() {
+    public deleteFile() {
         this.modalservice.confirm(this.language.getLabel('QST_DELETE_FILE'), this.language.getLabel('QST_DELETE_FILE', null, 'short')).subscribe((answer) => {
             if (answer) this.modelattachments.deleteAttachment(this.file.id);
         });
@@ -51,7 +51,7 @@ export class ObjectFileActionMenu {
     /**
      * triggers the download of the file
      */
-    private downloadFile() {
+    public downloadFile() {
         this.modelattachments.downloadAttachment(this.file.id, this.file.name);
     }
 
@@ -59,7 +59,7 @@ export class ObjectFileActionMenu {
      * open edit modal and fill in the input data
      * @private
      */
-    private edit() {
+    public edit() {
         this.modalservice.openModal('SpiceAttachmentsEditModal', true, this.injector).subscribe(
             modalRef => {
                 modalRef.instance.attachment = this.file;

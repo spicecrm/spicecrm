@@ -11,7 +11,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-url',
-    templateUrl: './src/objectfields/templates/fieldurl.html'
+    templateUrl: '../templates/fieldurl.html'
 })
 export class fieldUrl extends fieldGeneric {
 
@@ -23,7 +23,7 @@ export class fieldUrl extends fieldGeneric {
         return this.model.data[this.fieldname] ? this.model.data[this.fieldname].replace( /https?\:\/\//, '') : '';
     }
 
-    private navigateTo() {
+    public navigateTo() {
         if (this.url != ''){
             window.open('//' + this.url, '_blank');
         }

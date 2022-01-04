@@ -12,7 +12,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: "email-schedules-button",
-    templateUrl: "./src/modules/emails/templates/emailschedulesbutton.html",
+    templateUrl: "../templates/emailschedulesbutton.html",
 })
 export class EmailSchedulesButton implements OnInit {
 
@@ -22,13 +22,13 @@ export class EmailSchedulesButton implements OnInit {
     public hidden: boolean = true;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal,
-        private injector: Injector,
-        private toast: toast
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal,
+        public injector: Injector,
+        public toast: toast
     ) {
     }
 
@@ -52,7 +52,7 @@ export class EmailSchedulesButton implements OnInit {
         return selectedCount ? selectedCount : this.modellist.listData.totalcount;
     }
 
-    private findEmailsLink() {
+    public findEmailsLink() {
         // check that the user has the right to create email schedules
         if(!this.metadata.checkModuleAcl('EmailSchedules', 'create')) return;
 

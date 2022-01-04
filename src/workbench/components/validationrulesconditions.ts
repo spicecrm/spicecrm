@@ -12,17 +12,17 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'validationrules-conditions',
-    templateUrl: './src/workbench/templates/validationrulesconditions.html',
+    templateUrl: '../templates/validationrulesconditions.html',
 })
 export class ValidationRulesConditions implements OnInit {
-    @Input() private data; // validation rule data
-    private comparator_options: any[] = [];
-    private fieldname_options: any[] = [];
+    @Input() public data; // validation rule data
+    public comparator_options: any[] = [];
+    public fieldname_options: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
     ) {
 
     }
@@ -45,7 +45,7 @@ export class ValidationRulesConditions implements OnInit {
         });
     }
 
-    private addCondition() {
+    public addCondition() {
         return this.data.conditions.push({
             id: this.utils.generateGuid(),
             sysuimodelvalidation_id: this.data.id,
@@ -53,7 +53,7 @@ export class ValidationRulesConditions implements OnInit {
         });
     }
 
-    private removeCondition(id) {
+    public removeCondition(id) {
         let idx = this.data.conditions.findIndex((e) => {
             return e.id == id
         });

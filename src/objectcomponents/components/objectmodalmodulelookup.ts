@@ -18,7 +18,7 @@ import {relateFilter} from "../../services/interfaces.service";
  */
 @Component({
     selector: 'object-modal-module-lookup',
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
+    templateUrl: '../templates/objectmodalmodulelookup.html',
     providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
@@ -26,8 +26,8 @@ import {relateFilter} from "../../services/interfaces.service";
 })
 export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild(ObjectModalModuleLookupHeader) private headercontent: ObjectModalModuleLookupHeader;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) public tablecontent: ViewContainerRef;
+    @ViewChild(ObjectModalModuleLookupHeader) public headercontent: ObjectModalModuleLookupHeader;
 
     /**
      * the search term entered
@@ -57,23 +57,23 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * a relate filter for the modellist
      */
-    @Input() private relatefilter: relateFilter;
+    @Input() public relatefilter: relateFilter;
 
 
     /**
      * a collection of subscriptions to be cancelled once the component is destroyed
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * emits when an item is selected and which items are selected
      */
-    @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * emits the used search term
      */
-    @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout) {
         // subscribe to changes of the listtype
@@ -83,7 +83,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * get the style for the content so the table can scroll with fixed header
      */
-    private contentStyle() {
+    public contentStyle() {
         if(this.headercontent) {
             let headerRect = this.headercontent.element.nativeElement.getBoundingClientRect();
 
@@ -134,7 +134,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * handle the change of listtype
      */
-    private switchListtype() {
+    public switchListtype() {
         /**
         if (this.modellist.module) {
             this.modellist.reLoadList();
@@ -144,7 +144,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * tigger the search
      */
-    private doSearch() {
+    public doSearch() {
         this.modellist.searchTerm = this.searchTerm;
         this.modellist.getListData();
     }
@@ -153,7 +153,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * scroll event handler for the infinite scrolling in the window
      * @param e
      */
-    private onScroll(e) {
+    public onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.modellist.loadMoreList();
@@ -163,7 +163,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * closes the popup
      */
-    private closePopup() {
+    public closePopup() {
         this.usedSearchTerm.emit(this.modellist.searchTerm);
         this.self.destroy();
     }

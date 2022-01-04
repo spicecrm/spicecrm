@@ -10,28 +10,28 @@ import {model} from "../../services/model.service";
 
 @Component({
     selector: 'mailboxmanager-add-dialog',
-    templateUrl: './src/workbench/templates/mailboxmanageradddialog.html',
+    templateUrl: '../templates/mailboxmanageradddialog.html',
     providers: [model]
 })
 export class MailboxManagerAddDialog {
     // @Output()
-    private closedialog: EventEmitter<any> = new EventEmitter<any>();
-    @Input() private mailboxes: any[];
+    public closedialog: EventEmitter<any> = new EventEmitter<any>();
+    @Input() public mailboxes: any[];
 
-    private mailbox_name: string = '';
-    private self: any = null;
-    private saving: boolean = false;
+    public mailbox_name: string = '';
+    public self: any = null;
+    public saving: boolean = false;
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private model: model) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public model: model) {
 
     }
 
-    private closeDialog() {
+    public closeDialog() {
         this.closedialog.emit(false);
         this.self.destroy();
     }
 
-    private add() {
+    public add() {
         this.model.module = 'Mailboxes';
         this.model.id = this.modelutilities.generateGuid();
         this.model.data.name = this.mailbox_name;
@@ -42,7 +42,7 @@ export class MailboxManagerAddDialog {
         });
     }
 
-    private getComponents() {
+    public getComponents() {
         return this.metadata.getSystemComponents();
     }
 }

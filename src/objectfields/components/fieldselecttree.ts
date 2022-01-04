@@ -17,17 +17,17 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'select-tree',
-    templateUrl: './src/objectfields/templates/fieldselecttree.html'
+    templateUrl: '../templates/fieldselecttree.html'
 })
 export class fieldSelectTree extends fieldGeneric {
-    private fields = [];
+    public fields = [];
 
-    private show_tree: boolean = false;
-    private show_search: boolean = false;
-    private search: string;
-    private sel_fields = [];
+    public show_tree: boolean = false;
+    public show_search: boolean = false;
+    public search: string;
+    public sel_fields = [];
 
-    private clickListener: any;
+    public clickListener: any;
 
 
     constructor(
@@ -36,9 +36,9 @@ export class fieldSelectTree extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private config: configurationService,
-        private elementRef: ElementRef,
+        public backend: backend,
+        public config: configurationService,
+        public elementRef: ElementRef,
         public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);

@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['UOMUnit'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
     'table' => 'uomunits',
     'comment' => 'UOMUnits Module',
     'audited' =>  false,

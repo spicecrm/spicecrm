@@ -2,17 +2,17 @@ import { Component } from "@angular/core";
 
 @Component({
     selector: 'folder-object-listview',
-    templateUrl : './src/modules/folders/templates/folderobjectlistview.html'
+    templateUrl : '../templates/folderobjectlistview.html'
 })
 
 export class FolderObjectListView {
 
-    private folderId: string = null;
+    public folderId: string = null;
 
     /*
     * getting folder id
     * */
-    private setFolderId( folderId ) {
+    public setFolderId( folderId ) {
         this.folderId = folderId;
     }
 

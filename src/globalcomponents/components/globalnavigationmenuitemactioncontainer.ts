@@ -20,7 +20,7 @@ import {model} from "../../services/model.service";
  */
 @Component({
     selector: "global-navigation-menu-item-action-container",
-    templateUrl: "./src/globalcomponents/templates/globalnavigationmenuitemactioncontainer.html"
+    templateUrl: "../templates/globalnavigationmenuitemactioncontainer.html"
 })
 export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
 
@@ -28,7 +28,7 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
     /**
      * a viewcontainer ref to the container itself so the action set item can render the component from the config in this element
      */
-    @ViewChild("actioncontainer", {read: ViewContainerRef, static: true}) private actioncontainer: ViewContainerRef;
+    @ViewChild("actioncontainer", {read: ViewContainerRef, static: true})public actioncontainer: ViewContainerRef;
 
     /**
      * an Input parameter with the action item from the actionset items defined in the metadata
@@ -43,26 +43,26 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
     /**
      * a reference to the individual component that was rendered in the conatinerrf as part of the actionset item config
      */
-    private componentref: any;
+   public componentref: any;
 
     /**
      * defines standrd actions and their compoenntes that can be used in actionset items
      */
-    private standardActions = {
+   public standardActions = {
         NEW: "GlobalNavigationMenuItemActionNew",
         ROUTE: "GlobalNavigationMenuItemActionRoute"
     };
     /**
      * @ignore
      */
-    private stable: boolean = false;
+   public stable: boolean = false;
 
     /**
      * @ignore
      */
-    private stableSub: any;
+   public stableSub: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
+    constructor(public language: language,public metadata: metadata,public model: model,public ngZone: NgZone,public cdr: ChangeDetectorRef) {
     }
 
     /**

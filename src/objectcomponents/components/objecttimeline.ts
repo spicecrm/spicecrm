@@ -28,12 +28,12 @@ declare var moment;
 
 @Component({
     selector: 'object-timeline',
-    templateUrl: './src/objectcomponents/templates/objecttimeline.html',
+    templateUrl: '../templates/objecttimeline.html',
     providers: [view, timeline]
 })
 export class ObjectTimeline implements OnInit, AfterViewInit {
 
-    @ViewChild('timelinecontent') private content: ElementRef;
+    @ViewChild('timelinecontent') public content: ElementRef;
 
     public loading: boolean;
 
@@ -41,7 +41,7 @@ export class ObjectTimeline implements OnInit, AfterViewInit {
 
     public hasRecords: boolean;
 
-    constructor(private element: ElementRef, private timeline: timeline, public language: language, private model: model, private el: ElementRef) {
+    constructor(public element: ElementRef, public timeline: timeline, public language: language, public model: model, public el: ElementRef) {
     }
 
     public ngOnInit() {
@@ -83,7 +83,7 @@ export class ObjectTimeline implements OnInit, AfterViewInit {
         this.timeline.reload();
     }
 
-    @HostListener('window:resize', ['$event']) private onResize() {
+    @HostListener('window:resize', ['$event']) public onResize() {
         this.timeline.smartView = this.el.nativeElement.getBoundingClientRect().width < 730;
         this.timeline.smartFontSize = this.el.nativeElement.getBoundingClientRect().width < 380;
     }

@@ -16,7 +16,7 @@ import {configurationService} from '../../services/configuration.service';
 
 @Component({
     selector: 'fieldsetmanager-edit-dialog',
-    templateUrl: './src/workbench/templates/fieldsetmanagereditdialog.html'
+    templateUrl: '../templates/fieldsetmanagereditdialog.html'
 })
 export class FieldsetManagerEditDialog implements OnInit{
 
@@ -35,7 +35,7 @@ export class FieldsetManagerEditDialog implements OnInit{
 
     self;
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private configurationService: configurationService) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public configurationService: configurationService) {
         this.modalTitle = this.language.getAppLanglabel('LBL_EDIT');
     }
 

@@ -14,7 +14,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'global-setup',
-    templateUrl: './src/globalcomponents/templates/globalsetup.html'
+    templateUrl: '../templates/globalsetup.html'
 })
 export class GlobalSetup {
     // systemid: string = '000';
@@ -28,10 +28,10 @@ export class GlobalSetup {
     // checking: boolean = false;
     //
     // constructor(
-    //     private toast: toast,
-    //     private http: HttpClient,
-    //     private router: Router,
-    //     private configurationService: configurationService,
+    //    public toast: toast,
+    //    public http: HttpClient,
+    //    public router: Router,
+    //    public configurationService: configurationService,
     // ) {
     //
     // }

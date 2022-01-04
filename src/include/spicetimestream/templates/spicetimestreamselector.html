@@ -1,0 +1,27 @@
+<div class=" slds-border--bottom slds-p-vertical--xx-small slds-p-horizontal--x-small" style="height: 40px;">
+    <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
+        <div class="slds-form-element slds-size--1-of-2">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="period">
+                        <option value="y"><system-label label="LBL_YEAR"></system-label></option>
+                        <option value="Q"><system-label label="LBL_QUARTER"></system-label></option>
+                        <option value="M"><system-label label="LBL_MONTH"></system-label></option>
+                        <!--option value="w">Week</option-->
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <button class="slds-button slds-button_icon" (click)="prev()">
+                <system-button-icon [icon]="'left'"></system-button-icon>
+            </button>
+            <div class="slds-p-horizontal--small">
+                {{periodText}}
+            </div>
+            <button class="slds-button slds-button_icon" (click)="next()">
+                <system-button-icon [icon]="'right'"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>

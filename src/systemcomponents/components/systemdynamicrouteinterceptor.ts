@@ -8,7 +8,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-dynamicroute-container',
-    templateUrl: './src/systemcomponents/templates/systemdynamicroutecontainer.html'
+    templateUrl: '../templates/systemdynamicroutecontainer.html'
 })
 export class SystemDynamicRouteInterceptor implements OnInit{
 
@@ -17,9 +17,9 @@ export class SystemDynamicRouteInterceptor implements OnInit{
     routercomponent: any = null;
 
     constructor(
-        private metadata: metadata,
-        private route: ActivatedRoute,
-        private router: Router
+        public metadata: metadata,
+        public route: ActivatedRoute,
+        public router: Router
     ) {
 
     }

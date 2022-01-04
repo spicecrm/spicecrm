@@ -19,16 +19,16 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-select-panel',
-    templateUrl: './src/modules/dashboard/templates/dashboardselectpanel.html',
+    templateUrl: '../templates/dashboardselectpanel.html',
     providers: [model]
 })
 export class DashboardSelectPanel {
 
-    private dashboardFilter: string = '';
-    @Output() private hide: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() private dashboardSelect: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public dashboardFilter: string = '';
+    @Output() public hide: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public dashboardSelect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private vcr: ViewContainerRef,private metadata: metadata, private userpreferences: userpreferences, private language: language, private model: model, private modellist: modellist, private dashboardlayout: dashboardlayout, private cfr: ComponentFactoryResolver) {
+    constructor(public vcr: ViewContainerRef,public metadata: metadata, public userpreferences: userpreferences, public language: language, public model: model, public modellist: modellist, public dashboardlayout: dashboardlayout, public cfr: ComponentFactoryResolver) {
 
     }
 
@@ -46,22 +46,22 @@ export class DashboardSelectPanel {
         return this.metadata.checkModuleAcl('Dashboards', 'create');
     }
 
-    private getActiveClass(id) {
+    public getActiveClass(id) {
         return id == this.dashboardlayout.dashboardId ? 'slds-is-active' : '';
     }
 
-    private setDashboard(dashboard) {
+    public setDashboard(dashboard) {
         // save the preference
         this.userpreferences.setPreference('last_dashboard', dashboard.id);
         this.dashboardSelect.emit(dashboard.id);
         this.hidepanel();
     }
 
-    private hidepanel() {
+    public hidepanel() {
         this.hide.emit(true);
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

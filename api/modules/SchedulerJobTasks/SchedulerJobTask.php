@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SchedulerJobTasks;
 
@@ -233,7 +233,7 @@ class SchedulerJobTask extends Basic
                 return call_user_func_array([$classMethod->class, $classMethod->method], [$this->method_params]);
 
             } catch (Exception $exception) {
-                LoggerManager::getLogger()->fatal("SchedulerJobTask {$this->id} ({$this->name}) Exception: Stack Trace: {$exception->getTraceAsString()}");
+                LoggerManager::getLogger()->fatal("SchedulerJobTask {$this->id} ({$this->name}) Exception: {$exception->getMessage()} Stack Trace: {$exception->getTraceAsString()}");
                 return ['success' => false, 'message' => "Exception: " . $exception->getMessage()];
             }
         }

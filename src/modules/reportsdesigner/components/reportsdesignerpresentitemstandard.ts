@@ -9,7 +9,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'reports-designer-present-item-standard',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerpresentitemstandard.html'
+    templateUrl: '../templates/reportsdesignerpresentitemstandard.html'
 })
 export class ReportsDesignerPresentItemStandard implements OnInit {
 
@@ -62,7 +62,7 @@ export class ReportsDesignerPresentItemStandard implements OnInit {
     * @param item
     * @return index
     */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.fieldid;
     }
 }

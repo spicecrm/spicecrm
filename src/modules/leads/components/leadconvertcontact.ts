@@ -14,7 +14,7 @@ import {view} from '../../../services/view.service';
  */
 @Component({
     selector: 'lead-convert-contact',
-    templateUrl: './src/modules/leads/templates/leadconvertcontact.html',
+    templateUrl: '../templates/leadconvertcontact.html',
     providers: [view, model]
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {
@@ -43,7 +43,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
      */
     public componentRefs: any = [];
 
-    constructor(private view: view, private metadata: metadata, @SkipSelf() private lead: model, private model: model) {
+    constructor(public view: view, public metadata: metadata, @SkipSelf() public lead: model, public model: model) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -62,21 +62,22 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
      *
      * also links to the lead in case the account is changed to link to the account
      */
-    private initializeFromLead() {
+    public initializeFromLead() {
         this.model.module = 'Contacts';
         this.model.id = null;
         this.model.isNew = true;
         this.model.initialize(this.lead);
+
         this.model.initializeField(
-            'emailaddresses',
-            [{
+            'email_addresses',
+            {"beans": [{
                 id: this.model.generateGuid(),
                 bean_id: this.model.id,
                 bean_module: this.model.module,
                 email_address: this.lead.getField('email1'),
                 email_address_id: '',
                 primary_address: '1'
-            }]
+            }]}
         );
 
         /**
@@ -130,7 +131,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
      *
      * @param accountdata
      */
-    private selectContact(contactdata) {
+    public selectContact(contactdata) {
         this.selectedContact = contactdata;
 
         this.model.id = contactdata.id;
@@ -144,7 +145,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
     /**
      * then the user unlinks the account
      */
-    private unlinkContact() {
+    public unlinkContact() {
         this.selectedContact = undefined;
         this.view.isEditable = true;
 

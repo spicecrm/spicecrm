@@ -15,31 +15,31 @@ declare var moment: any;
  */
 @Component({
     selector: 'reporter-field-date-time',
-    templateUrl: './src/modules/reports/templates/reporterfielddatetime.html',
+    templateUrl: '../templates/reporterfielddatetime.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldDateTime implements OnInit {
     /**
      * report full record
      */
-    private record: any = {};
+    public record: any = {};
     /**
      * report field
      */
-    private field: any = {};
+    public field: any = {};
     /**
      * display value
      */
-    private value: string = '';
+    public value: string = '';
     /**
      * to save observable for unsubscribe
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private userpreferences: userpreferences,
-                private session: session,
-                private cdRef: ChangeDetectorRef,
-                private broadcast: broadcast) {
+    constructor(public userpreferences: userpreferences,
+                public session: session,
+                public cdRef: ChangeDetectorRef,
+                public broadcast: broadcast) {
         this.subscribeToTimezoneChange();
     }
 
@@ -60,7 +60,7 @@ export class ReporterFieldDateTime implements OnInit {
     /**
      * reset the field value on timezone change
      */
-    private subscribeToTimezoneChange() {
+    public subscribeToTimezoneChange() {
         this.subscription.add(
             this.broadcast.message$.subscribe(message => {
                 if (message.messagetype == 'timezone.changed') {
@@ -74,7 +74,7 @@ export class ReporterFieldDateTime implements OnInit {
     /**
      * set formatted field value
      */
-    private setFormattedFieldValue() {
+    public setFormattedFieldValue() {
 
         if (this.record[this.field.fieldid]) {
             let date = new moment.utc(this.record[this.field.fieldid]).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));

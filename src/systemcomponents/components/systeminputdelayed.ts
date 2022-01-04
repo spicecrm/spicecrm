@@ -21,7 +21,7 @@ declare var moment: any;
  */
 @Component({
     selector: "system-input-delayed",
-    templateUrl: "./src/systemcomponents/templates/systeminputdelayed.html",
+    templateUrl: "../templates/systeminputdelayed.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -37,40 +37,40 @@ export class SystemInputDelayed implements ControlValueAccessor {
      *
      * for the vlaue accessor
      */
-    private onChange: (value: string) => void;
+    public onChange: (value: string) => void;
 
     /**
      * @ignore
      *
      * for the vlaue accessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
 
     /**
      * @ignore
      *
      * keeps the value internally
      */
-    private _value: string;
+    public _value: string;
 
     /**
      * @ignore
      *
      * the timeout function
      */
-    private _modeltimeout: any;
+    public _modeltimeout: any;
 
     /**
      * the delay the model update is fired after the value has changed
      */
-    @Input() private delay: number = 500;
+    @Input() public delay: number = 500;
 
     /**
      * @ignore
      *
      * funnel through the placeholder
      */
-    @Input() private placeholder: string = '';
+    @Input() public placeholder: string = '';
 
     /**
      * getter for the value

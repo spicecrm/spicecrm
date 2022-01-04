@@ -28,7 +28,7 @@ declare var _: any;
  */
 @Component({
     selector: 'activitytimeline-item',
-    templateUrl: './src/modules/activities/templates/activitytimelineitem.html',
+    templateUrl: '../templates/activitytimelineitem.html',
     providers: [model, modelattachments, view],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -37,32 +37,32 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     /**
      * the activity data passed in the component
      */
-    @Input() private activity: any = {};
+    @Input() public activity: any = {};
 
     /**
      * if set to truie a toolset is shown
      */
-    @Input() private showtoolset: boolean = true;
+    @Input() public showtoolset: boolean = true;
 
     /**
      * the fieldset that is rendered in teh form if the item is expandad
      */
-    private formFieldSet: string = '';
+    public formFieldSet: string = '';
 
     /**
      * the fieldset used in the main header line
      */
-    private headerFieldSet: string;
+    public headerFieldSet: string;
 
     /**
      * the fieldset used in teh subline
      */
-    private subheaderFieldSet: string;
+    public subheaderFieldSet: string;
 
     /**
      * indicates if the
      */
-    private isopen: boolean = false;
+    public isopen: boolean = false;
 
     /**
      * the componmentconfig passed in
@@ -72,14 +72,24 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     /**
      * the module to be displayed
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * holds all subsriptions for the component
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private model: model, private modelattachments: modelattachments, private metadata: metadata, private view: view, private userpreferences: userpreferences, private session: session, private language: language, @Optional() private activitiytimeline: activitiytimeline, private cdref: ChangeDetectorRef) {
+    constructor(
+        public model: model,
+        public modelattachments: modelattachments,
+        public metadata: metadata,
+        public view: view,
+        public userpreferences: userpreferences,
+        public session: session,
+        public language: language,
+        @Optional() public activitiytimeline: activitiytimeline,
+        public cdref: ChangeDetectorRef
+    ) {
         this.view.isEditable = false;
         this.view.displayLabels = true;
 
@@ -165,7 +175,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     /**
      * fired when the attcahments are laoded to trigger the change detection
      */
-    private attachmentsloaded() {
+    public attachmentsloaded() {
         this.cdref.detectChanges();
     }
 
@@ -240,16 +250,25 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     }
 
     /**
+     * run change detection after the action fired
+     *
+     * @param action
+     */
+    public handleAction(action) {
+        this.cdref.detectChanges();
+    }
+
+    /**
      * navigate to the records
      */
-    private goDetail() {
+    public goDetail() {
         if (this.enableDetail) this.model.goDetail();
     }
 
     /**
      * toggles the state between expanded and collapsed
      */
-    private toggleexpand() {
+    public toggleexpand() {
         this.isopen = !this.isopen;
 
         // if expanded and not laoded yet load the atachments

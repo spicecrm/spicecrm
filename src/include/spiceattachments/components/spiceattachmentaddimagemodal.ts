@@ -21,14 +21,14 @@ interface imageData {
  * displays a quicknote that is read in teh stream
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentaddimagemodal.html',
+    templateUrl: '../templates/spiceattachmentaddimagemodal.html',
 })
 export class SpiceAttachmentAddImageModal {
 
     /**
      * reference to the modal itself
      */
-    private self: any;
+    public self: any;
 
     /**
      * loads the input component
@@ -38,28 +38,28 @@ export class SpiceAttachmentAddImageModal {
     /**
      * the base64 encoded image string, bound to the ngModel of the input
      */
-    private filecontent: string = '';
+    public filecontent: string = '';
 
     /**
      * an event emitter with the image data
      */
-    @Output() private imagedata: EventEmitter<imageData> = new EventEmitter<imageData>();
+    @Output() public imagedata: EventEmitter<imageData> = new EventEmitter<imageData>();
 
-    constructor(private language: language, private modelattachments: modelattachments) {
+    constructor(public language: language, public modelattachments: modelattachments) {
 
     }
 
     /**
      * closes the dialog
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * emits that the image shoudl be added
      */
-    private add() {
+    public add() {
         // get the image data fromn the uploader
         let mediaMetaData = this.inputMedia.mediaMetaData;
 

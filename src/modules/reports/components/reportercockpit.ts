@@ -16,7 +16,7 @@ import {skip} from "rxjs/operators";
  */
 @Component({
     selector: 'reporter-cockpit',
-    templateUrl: './src/modules/reports/templates/reportercockpit.html'
+    templateUrl: '../templates/reportercockpit.html'
 })
 export class ReporterCockpit implements OnInit, OnDestroy {
 
@@ -30,13 +30,13 @@ export class ReporterCockpit implements OnInit, OnDestroy {
     /**
      * holds the cockpits returned from teh abckend in which reports are sorted in
      */
-    protected allFields: any[] = [];
+    public allFields: any[] = [];
 
-    constructor(private backend: backend,
-                private modellist: modellist,
-                private language: language,
-                private configuration: configurationService,
-                private metadata: metadata) {
+    constructor(public backend: backend,
+                public modellist: modellist,
+                public language: language,
+                public configuration: configurationService,
+                public metadata: metadata) {
     }
 
     /**
@@ -63,7 +63,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * call to get the list data
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         this.componentconfig = this.metadata.getComponentConfig('ReporterCockpit', this.modellist.module);
 
@@ -88,7 +88,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         if (newType.listcomponent != 'ReporterCockpit') return;
         this.modellist.reLoadList();
     }
@@ -97,7 +97,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
     /**
      * load reports categories from backend the get the list data by the service
      */
-    private loadCategories() {
+    public loadCategories() {
         const categories = this.configuration.getData('reportcategories');
         if (!categories) {
             this.backend.getRequest('module/KReports/categoriesmanager/categories').subscribe(categories => {
@@ -116,7 +116,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * @param categories
      * @private
      */
-    private setBuckets(categories) {
+    public setBuckets(categories) {
         this.modellist.buckets = {
             bucketfield: 'category_name',
             bucketitems: categories.map(category => ({
@@ -138,7 +138,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * load more items for single bucket
      * @param bucket
      */
-    private loadMore(bucket) {
+    public loadMore(bucket) {
         this.modellist.loadMoreBucketList(bucket);
     }
 
@@ -146,7 +146,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * @param categoryName: string
      * @return filtered list items by category
      */
-    private getCategoryReports(categoryName) {
+    public getCategoryReports(categoryName) {
         return this.modellist.listData.list.filter(item => item.category_name == categoryName);
     }
 }

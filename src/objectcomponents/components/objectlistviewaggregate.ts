@@ -14,7 +14,7 @@ import {modellist} from '../../services/modellist.service';
  */
 @Component({
     selector: 'object-listview-aggregate',
-    templateUrl: './src/objectcomponents/templates/objectlistviewaggregate.html'
+    templateUrl: '../templates/objectlistviewaggregate.html'
 })
 export class ObjectListViewAggregate {
 
@@ -91,7 +91,7 @@ export class ObjectListViewAggregate {
     /**
      * toggles the collapsed status
      */
-    private toggleCollapsed() {
+    public toggleCollapsed() {
         this.aggregate.collapsed = !this.aggregate.collapsed;
     }
 }

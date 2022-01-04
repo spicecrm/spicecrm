@@ -8,13 +8,13 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "contact-newsletters-button",
-    templateUrl: "./src/modules/contacts/templates/contactnewslettersbutton.html"
+    templateUrl: "../templates/contactnewslettersbutton.html"
 })
 export class ContactNewslettersButton implements OnInit {
 
     public disabled: boolean = true;
 
-    constructor(private language: language, private model: model, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+    constructor(public language: language, public model: model, public modal: modal, public ViewContainerRef: ViewContainerRef) {
     }
 
     public ngOnInit() {
@@ -33,7 +33,7 @@ export class ContactNewslettersButton implements OnInit {
         this.modal.openModal("ContactNewsletters", true, this.ViewContainerRef.injector);
     }
 
-    private handleDisabled() {
-        this.disabled = !this.model.data.email1 || this.model.isEditing || (this.model.data.acl && !this.model.data.acl.edit) ? true : false;
+    public handleDisabled() {
+        this.disabled = !this.model.data.email1 || this.model.isEditing || !this.model.checkAccess('edit') ? true : false;
     }
 }

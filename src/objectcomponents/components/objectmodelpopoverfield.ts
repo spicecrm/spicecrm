@@ -6,15 +6,15 @@ import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectmodelpopoverfield.html',
+    templateUrl: '../templates/objectmodelpopoverfield.html',
     providers: [view]
 })
 export class ObjectModelPopoverField {
     public componentconfig: any = {};
 
     constructor(
-        private model: model,
-        private view: view
+        public model: model,
+        public view: view
     ) {
 
     }

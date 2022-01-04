@@ -9,7 +9,7 @@ import {footer} from "../../../services/footer.service";
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: "./src/modules/emails/templates/emailtoleadbutton.html",
+    templateUrl: "../templates/emailtoleadbutton.html",
     host: {
         "class": "slds-button slds-button--neutral",
         "(click)" : "createLead()"
@@ -21,9 +21,9 @@ import {language} from "../../../services/language.service";
 export class EmailToLeadButton {
 
 
-    constructor(private language: language, private metadata: metadata, private model: model, private footer: footer, private toast: toast) {}
+    constructor(public language: language, public metadata: metadata, public model: model, public footer: footer, public toast: toast) {}
 
-    private createLead() {
+    public createLead() {
         this.metadata.addComponent("EmailToLeadModal", this.footer.footercontainer).subscribe(popup => {
             popup.instance.email = this.model;
             popup.instance.self = popup;

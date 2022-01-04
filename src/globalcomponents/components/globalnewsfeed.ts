@@ -9,7 +9,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
  */
 @Component({
     selector: 'global-newsfeed',
-    templateUrl: './src/globalcomponents/templates/globalnewsfeed.html',
+    templateUrl: '../templates/globalnewsfeed.html',
 })
 export class GlobalNewsFeed {
 
@@ -17,15 +17,15 @@ export class GlobalNewsFeed {
      * the news items to be displayed
      * @private
      */
-    private news: any[] = [];
+   public news: any[] = [];
 
     /**
      * an indicator while the news feed is being retrieved
      * @private
      */
-    private isLoading: boolean = true;
+   public isLoading: boolean = true;
 
-    constructor(private http: HttpClient) {
+    constructor(public http: HttpClient) {
         this.loadNewsFeed();
     }
 
@@ -36,7 +36,7 @@ export class GlobalNewsFeed {
      *
      * @private
      */
-    private loadNewsFeed(){
+   public loadNewsFeed(){
         let posturl = btoa('https://www.spicecrm.com/wp-json/wp/v2/posts?context=embed');
         this.http.get('proxy?useurl=' + posturl)
             .subscribe((res: any) => {

@@ -12,7 +12,7 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: 'object-subscription-button',
-    templateUrl: './src/objectcomponents/templates/objectsubscriptionbutton.html'
+    templateUrl: '../templates/objectsubscriptionbutton.html'
 })
 export class ObjectSubscriptionButton {
 
@@ -21,11 +21,11 @@ export class ObjectSubscriptionButton {
      *
      * @private
      */
-    private inProcess: boolean = false;
+    public inProcess: boolean = false;
 
-    constructor(private subscriptionService: subscription,
-                private metadata: metadata,
-                private model: model) {
+    constructor(public subscriptionService: subscription,
+                public metadata: metadata,
+                public model: model) {
     }
 
     /**

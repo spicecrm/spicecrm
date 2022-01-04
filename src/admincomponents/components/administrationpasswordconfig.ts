@@ -15,7 +15,7 @@ declare var _: any;
 
 @Component({
     selector: 'administration-password-config',
-    templateUrl: './src/admincomponents/templates/administrationpasswordconfig.html'
+    templateUrl: '../templates/administrationpasswordconfig.html'
 })
 export class AdministrationPasswordConfig implements OnInit {
 
@@ -23,34 +23,36 @@ export class AdministrationPasswordConfig implements OnInit {
      * inidcates that we are loading
      * @private
      */
-    private isLoading = true;
+    public isLoading = true;
 
-    private config = {
+    public config = {
         minpwdlength: 6,
         oneupper: true,
         onelower: true,
         onenumber: true,
+        onespecial: true,
         pwdvaliditydays: 0
     };
 
-    private configBackup: any;
+    public configBackup: any;
 
-    constructor( private backend: backend, private modal: modal, private toast: toast, private language: language ) { }
+    constructor( public backend: backend, public modal: modal, public toast: toast, public language: language ) { }
 
-    private configIsDirty() {
+    public configIsDirty() {
         return !_.isEqual( this.config, this.configBackup );
     }
 
-    private cancel() {
+    public cancel() {
         this.config = JSON.parse(JSON.stringify( this.configBackup ));
     }
 
-    private save() {
+    public save() {
         let config = {
             minpwdlength: this.config.minpwdlength,
             oneupper: this.config.oneupper ? '1':'0',
             onelower: this.config.onelower ? '1':'0',
             onenumber: this.config.onenumber ? '1':'0',
+            onespecial: this.config.onespecial ? '1':'0',
             pwdvaliditydays: this.config.pwdvaliditydays
         };
         this.isLoading = true;
@@ -67,7 +69,7 @@ export class AdministrationPasswordConfig implements OnInit {
         this.loadConfig();
     }
 
-    private loadConfig() {
+    public loadConfig() {
         this.isLoading = true;
         this.backend.getRequest('configuration/configurator/editor/passwordsetting')
             .pipe(take(1))
@@ -75,6 +77,7 @@ export class AdministrationPasswordConfig implements OnInit {
                 this.config.oneupper = response.oneupper === true || response.oneupper === 1 || response.oneupper === '1' || false;
                 this.config.onelower = response.onelower === true || response.onelower === 1 || response.onelower === '1' || false;
                 this.config.onenumber = response.onenumber === true || response.onenumber === 1 || response.onenumber === '1' || false;
+                this.config.onespecial = response.onespecial === true || response.onespecial === 1 || response.onespecial === '1' || false;
                 this.config.minpwdlength = parseInt( response.minpwdlength, 10 ) || 0,
                 this.config.pwdvaliditydays = parseInt( response.pwdvaliditydays, 10 ) || 0,
                 this.configBackup = JSON.parse( JSON.stringify( this.config ) );

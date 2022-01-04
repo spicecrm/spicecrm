@@ -16,7 +16,7 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'system-collapsable-tab',
-    templateUrl: './src/systemcomponents/templates/systemcollapsabletab.html',
+    templateUrl: '../templates/systemcollapsabletab.html',
     animations: [
         trigger('tabanimation', [
             // open
@@ -41,36 +41,36 @@ export class SystemCollabsableTab {
     /**
      * if set to false the panel will not be collapsible
      */
-    @Input() private collapsible: boolean = true;
+    @Input() public collapsible: boolean = true;
 
     /**
      * set to true to expand it when loaded. if set to false the panel will be collapsed by default
      */
-    @Input() private expanded: boolean = true;
+    @Input() public expanded: boolean = true;
 
     /**
      * @deprecated: replaced by tabtitle since title is reserved and will render a title for the dom element
      */
-    @Input() private title: string = '';
+    @Input() public title: string = '';
 
     /**
      * an optional icon to be rendered on the tab as module icon
      */
-    @Input() private moduleicon: string = '';
+    @Input() public moduleicon: string = '';
 
 
     /**
      * the title. This can be a string or a label that will be run via the laguage service to be rendered in the users language
      */
-    @Input() private tabtitle: string = '';
+    @Input() public tabtitle: string = '';
 
-    constructor(private language: language) {
+    constructor(public language: language) {
     }
 
     /**
      * colapses and expands the panel
      */
-    private togglePanel() {
+    public togglePanel() {
         this.expanded = !this.expanded;
     }
 

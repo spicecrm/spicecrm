@@ -21,18 +21,18 @@ import {Observable, Subject} from "rxjs";
  */
 @Component({
     selector: 'object-list-header-actions-export-targetlist-modal',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsexporttargetlistmodal.html',
+    templateUrl: '../templates/objectlistheaderactionsexporttargetlistmodal.html',
     providers: [model]
 })
 export class ObjectListHeaderActionsExportTargetlistModal {
 
-    private self: any = {};
-    private targetlistname: string = '';
+    public self: any = {};
+    public targetlistname: string = '';
 
-    constructor(private language: language, private router: Router, private metadata: metadata, private backend: backend, private toast: toast, private modal: modal, private modellist: modellist) {
+    constructor(public language: language, public router: Router, public metadata: metadata, public backend: backend, public toast: toast, public modal: modal, public modellist: modellist) {
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -40,7 +40,7 @@ export class ObjectListHeaderActionsExportTargetlistModal {
         return this.modellist.listData.totalcount;
     }
 
-    private export() {
+    public export() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 

@@ -5,7 +5,7 @@ import {Component, EventEmitter, Input, NgZone, Output} from '@angular/core';
 
 @Component({
     selector: 'field-email-emailaddress',
-    templateUrl: './src/objectfields/templates/fieldemailemailaddress.html'
+    templateUrl: '../templates/fieldemailemailaddress.html'
 })
 export class fieldEmailEmailAddress {
     /*
@@ -15,14 +15,14 @@ export class fieldEmailEmailAddress {
     /*
     * @input email address data
     */
-    @Input() private emailAddress: any = {};
+    @Input() public emailAddress: any = {};
     /**
      * holds the typing timeout
      * @private
      */
-    private typingTimeout: number;
+    public typingTimeout: number;
 
-    constructor(private zone: NgZone) {
+    constructor(public zone: NgZone) {
     }
 
     /**
@@ -58,7 +58,7 @@ export class fieldEmailEmailAddress {
      * validate the email address by regex
      * @private
      */
-    private validateEmailAddress() {
+    public validateEmailAddress() {
         const validation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
         this.emailAddress.invalid_email = validation.test(this.emailAddress.email_address) ? 0 : 1;
     }

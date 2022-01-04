@@ -33,16 +33,16 @@ interface menuItem {
  */
 @Component({
     selector: 'global-navigation-menu-item-route',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemroute.html'
+    templateUrl: '../templates/globalnavigationmenuitemroute.html'
 })
 export class GlobalNavigationMenuItemRoute {
     clickListener: any;
     actionconfig: any = {};
 
-    constructor(private metadata: metadata,
-                private language: language,
-                private model: model,
-                private router: Router) {
+    constructor(public metadata: metadata,
+               public language: language,
+               public model: model,
+               public router: Router) {
     }
 
     get actionicon() {

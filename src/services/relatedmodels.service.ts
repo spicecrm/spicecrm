@@ -112,7 +112,7 @@ export class relatedmodels implements OnDestroy {
      *
      *  currently only used for display purposes
      */
-    private lastLoad: any = new moment();
+    public lastLoad: any = new moment();
 
     /**
      * an optional sequence field. if a value is set the table can be sequenced by drag and drop
@@ -122,15 +122,15 @@ export class relatedmodels implements OnDestroy {
     /**
      * a handler to the broadcast subscrition. Making sure the susbcription is cancelled whent he component is destroyed
      */
-    private serviceSubscriptions: any[] = [];
+    public serviceSubscriptions: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private backend: backend,
-        private broadcast: broadcast,
-        private modelutilities: modelutilities,
-        private toast: toast,
-        private language: language
+        public metadata: metadata,
+        public backend: backend,
+        public broadcast: broadcast,
+        public modelutilities: modelutilities,
+        public toast: toast,
+        public language: language
     ) {
         // subscribe to the broadcast service
         this.serviceSubscriptions.push(
@@ -205,7 +205,7 @@ export class relatedmodels implements OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== this.relatedModule) {
             return;
@@ -424,7 +424,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * sorts the items according to the sort settings
      */
-    private sortItems() {
+    public sortItems() {
 
         let sortfield: string;
         let sortdirection: string;

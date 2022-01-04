@@ -9,26 +9,26 @@ import {metadata} from '../../../services/metadata.service';
  */
 @Component({
     selector: 'activitytimeline-add-tabcontainer',
-    templateUrl: './src/modules/activities/templates/activitytimelineaddtabcontainer.html'
+    templateUrl: '../templates/activitytimelineaddtabcontainer.html'
 })
 export class ActivityTimelineAddTabContainer implements OnInit {
 
     /**
      * the ref to the container wher the items are added
      */
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
     /**
      * the component to be added
      */
-    @Input() private tabcomponent: string = '';
+    @Input() public tabcomponent: string = '';
 
     /**
      * the componentconfig for the added component
      */
-    @Input() private componentconfig: any = {};
+    @Input() public componentconfig: any = {};
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
 
     }
 

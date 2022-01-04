@@ -9,7 +9,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-action-edit-related-button',
-    templateUrl: './src/objectcomponents/templates/objectactioneditrelatedbutton.html',
+    templateUrl: '../templates/objectactioneditrelatedbutton.html',
     providers: [model]
 })
 export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
@@ -26,13 +26,13 @@ export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
      *
      * this model is detected via teh component and then addressed
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        @SkipSelf() private parent: model,
-        private model: model
+        public language: language,
+        public metadata: metadata,
+        @SkipSelf() public parent: model,
+        public model: model
     ) {
 
     }
@@ -78,8 +78,8 @@ export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
     /*
     * @set disabled
     */
-    private handleDisabled(mode) {
-        if (this.parent.data.acl && !this.parent.checkAccess('edit')) {
+    public handleDisabled(mode) {
+        if (!this.parent.checkAccess('edit')) {
             this.disabled = true;
             return;
         }

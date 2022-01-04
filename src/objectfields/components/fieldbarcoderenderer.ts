@@ -9,16 +9,16 @@ declare let JsBarcode: any;
 
 @Component({
     selector: "field-barcode-renderer",
-    templateUrl: "./src/objectfields/templates/fieldbarcoderenderer.html"
+    templateUrl: "../templates/fieldbarcoderenderer.html"
 })
 export class fieldBarcodeRenderer implements OnChanges {
 
-    @Input() private code: any = "";
-    @Input() private fieldId: any = "";
+    @Input() public code: any = "";
+    @Input() public fieldId: any = "";
 
     constructor(
-        private metadata: metadata,
-        private libloader: libloader
+        public metadata: metadata,
+        public libloader: libloader
     ) {
         this.libloader.loadLib("js-barcode").subscribe(
             (next) => {
