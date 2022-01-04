@@ -1270,6 +1270,9 @@ export class model implements OnDestroy {
         if(silent !== true){
             this.data$.next(this.data);
         }
+
+        // initialize the field stati
+        this.initializeFieldsStati();
     }
 
     /**
