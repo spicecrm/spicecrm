@@ -48,7 +48,7 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      * the max length attribute
      * @private
      */
-    @Input() public maxlengt: number;
+    @Input() public maxlength: number;
 
     /**
      * to disable autocomplete set value to off or set a specific value
