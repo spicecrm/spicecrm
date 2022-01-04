@@ -35,10 +35,6 @@ export class SystemModelProviderDirective implements OnDestroy {
     ) {
         // in case the host component is listening to the loading status and waits for it!
         this.model.isLoading = true;
-
-        this.subscription.add(
-            this.model.data$.subscribe(data => this.data$.next(data))
-        );
     }
 
     /**
@@ -53,7 +49,7 @@ export class SystemModelProviderDirective implements OnDestroy {
      * @param provided_model
      */
     @Input('system-model-provider')
-    set provided_model(provided_model: { module: string, id?: string, data: any }) {
+    set provided_model(provided_model: { module: string, id?: string, data: any, clone?: boolean }) {
 
         this.model.module = provided_model.module;
         if (provided_model.id) {
@@ -69,7 +65,7 @@ export class SystemModelProviderDirective implements OnDestroy {
             // }
 
             // set the data
-            this.model.setData(provided_model.data);
+            this.model.setData(provided_model.clone === true ?  {...provided_model.data} : provided_model.data);
 
             // set to loading done
             this.model.isLoading = false;
@@ -80,6 +76,10 @@ export class SystemModelProviderDirective implements OnDestroy {
         } else {
             this.model.initialize();
         }
+
+        this.subscription.add(
+            this.model.data$.subscribe(data => this.data$.next(data))
+        );
     }
 
     /**
