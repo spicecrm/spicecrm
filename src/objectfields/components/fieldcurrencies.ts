@@ -30,7 +30,7 @@ export class fieldCurrencies extends fieldGeneric {
     public getCurrencySymbol() {
         let currencyid = -99;
 
-        if (this.model.data[this.fieldname]) currencyid = this.model.data[this.fieldname];
+        if (this.model.getField(this.fieldname)) currencyid = this.model.getField(this.fieldname);
         return this.currency.getCurrencySmbol(currencyid);
     }
 }

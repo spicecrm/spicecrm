@@ -52,8 +52,10 @@ export class EmailSchedulesModal {
         this.model.module = 'EmailSchedules';
         // initialize the model
         this.model.initialize(this.parentModel);
-        this.model.data.parent_id = this.parentModel.id;
-        this.model.data.parent_type = this.parentModel.module;
+        this.model.setFields({
+            parent_id: this.parentModel.id,
+            parent_type: this.parentModel.module
+        });
         // start editing
         this.model.startEdit(false);
     }

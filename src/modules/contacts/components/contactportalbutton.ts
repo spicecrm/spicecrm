@@ -31,7 +31,7 @@ export class ContactPortalButton implements OnInit {
     }
 
     public handleDisabled() {
-        this.disabled = !((this.model.data.email1 || this.model.data.email_address_private) && !this.model.isEditing && this.model.checkAccess('edit'));
+        this.disabled = !((this.model.getField('email1') || this.model.getField('email_address_private')) && !this.model.isEditing && this.model.checkAccess('edit'));
     }
 
     public execute() {

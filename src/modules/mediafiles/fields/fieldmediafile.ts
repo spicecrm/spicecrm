@@ -107,7 +107,7 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
         this.modalservice.openModal('SystemImagePreviewModal', true ).subscribe( modal => {
             modal.instance.imgname = this.model.getField('name');
             modal.instance.imgtype = this.model.getField('filetype');
-            this.mediafiles.getImage( this.model.data.id ).subscribe( url => {
+            this.mediafiles.getImage( this.model.id ).subscribe( url => {
                 modal.instance.imgsrc = url;
             });
         });

@@ -2,7 +2,7 @@
  * @module ModuleEmails
  */
 
-import {Component, EventEmitter, Output } from "@angular/core";
+import {Component, EventEmitter, Output} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
@@ -55,11 +55,13 @@ export class EmailSendButton {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
             this.sending = true;
-            this.model.setField('type', 'out');
-            this.model.setField('to_be_sent', true);
-            this.model.setField('from_addr', this.model.data.from_addr_name);
-            this.model.setField('to_addrs', this.model.data.to_addrs_names);
-            this.model.setField('cc_addrs', this.model.data.cc_addrs_names);
+            this.model.setFields({
+                type: 'out',
+                to_be_sent: true,
+                from_addr: this.model.getField('from_addr_name'),
+                to_addrs: this.model.getField('to_addrs_names'),
+                cc_addrs: this.model.getField('cc_addrs_names')
+            });
 
             this.model.save().subscribe(
                 success => {

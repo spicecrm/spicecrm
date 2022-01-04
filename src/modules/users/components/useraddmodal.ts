@@ -148,8 +148,10 @@ export class UserAddModal implements OnInit {
 
     public ngOnInit() {
         this.model.initialize(this.parent);
-        this.model.data.UserType = "RegularUser";
-        this.model.data.status = "Active";
+        this.model.setFields({
+            UserType: "RegularUser",
+            status: "Active",
+        })
         this.getFieldSets();
         this.getPassInfo();
     }
@@ -207,8 +209,11 @@ export class UserAddModal implements OnInit {
         if (this.hasError) {
             return;
         }
-        this.model.data.system_generated_password = this.autoGenerate;
-        this.model.data.pwd_last_changed = new moment();
+
+        this.model.setFields({
+            system_generated_password: this.autoGenerate,
+            pwd_last_changed: new moment()
+        });
         let saveData = this.modelutilities.spiceModel2backend("Users", this.model.data);
 
         this.backend.postRequest("module/Users/" + this.model.id, {}, JSON.stringify(saveData))
@@ -219,7 +224,7 @@ export class UserAddModal implements OnInit {
                             response[fieldName] = this.modelutilities.backend2spice("Users", fieldName, response[fieldName]);
                         }
                     }
-                    this.model.data = response;
+                    this.model.setData(response);
                     this.model.endEdit();
                     this.savePassword(goDetail);
                 },

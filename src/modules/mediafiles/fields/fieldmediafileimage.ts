@@ -111,11 +111,11 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
      * Stuff to do, when the model has been loaded.
      */
     public afterLoadingModel(): void {
-        this.lastValue = this.model.data[this.fieldname];
+        this.lastValue = this.model.getField(this.fieldname);
         this.loadImages();
         this.model.data$.subscribe( () => {
-            if ( this.model.data[this.fieldname] !== this.lastValue ) {
-                this.lastValue = this.model.data[this.fieldname];
+            if ( this.model.getField(this.fieldname) !== this.lastValue ) {
+                this.lastValue = this.model.getField(this.fieldname);
                 this.loadImages();
             }
         });
@@ -151,17 +151,17 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
      * Load the image/thumbnails from the backend with the proper size.
      */
     public loadImages(): void {
-        if ( this.model.data[this.fieldname] ) {
+        if ( this.model.getField(this.fieldname) ) {
             this.fieldIsEmpty = false;
             if ( this.fieldconfig.format === 'button' ) {
-                this.mediafiles.getImageVariant( this.model.data[this.fieldname], 'th/' + this.thumbSize ).subscribe( url => {
+                this.mediafiles.getImageVariant( this.model.getField(this.fieldname), 'th/' + this.thumbSize ).subscribe( url => {
                     this.imageUrl = url;
                 } );
-                this.mediafiles.getImageVariant( this.model.data[this.fieldname], 'th/200' ).subscribe( url => {
+                this.mediafiles.getImageVariant( this.model.getField(this.fieldname), 'th/200' ).subscribe( url => {
                     this.imageUrlEnlarged = url;
                 } );
             } else { // format === 'image'
-                this.mediafiles.getImageVariant( this.model.data[this.fieldname], 'mw/' + this.determineWidthOfImage() ).subscribe( url => {
+                this.mediafiles.getImageVariant( this.model.getField(this.fieldname), 'mw/' + this.determineWidthOfImage() ).subscribe( url => {
                     this.imageUrl = url;
                 });
             }
@@ -182,7 +182,8 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
      * Removes the image in case it is a real image (not a button image).
      */
     public clearField4image(): void {
-        this.imageUrl = this.model.data[this.fieldname] = '';
+        this.imageUrl = '';
+        this.model.setField(this.fieldname, '');
         this.fieldIsEmpty = true;
     }
 

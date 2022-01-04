@@ -55,7 +55,7 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
         this.model.module = 'ScrumEpics';
         this.model.initialize();
         this.model.id = this.epic.id;
-        this.model.data = this.epic;
+        this.model.setData(this.epic);
 
         // related module
         this.userstories.module = this.model.module;

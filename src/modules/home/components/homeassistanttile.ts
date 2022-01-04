@@ -33,7 +33,7 @@ export class HomeAssistantTile implements OnInit {
 
         this.model.module = this.item.module;
         this.model.id = this.item.id;
-        this.model.data = this.item.data;
+        this.model.setData(this.item.data);
     }
 
     goDetail() {
