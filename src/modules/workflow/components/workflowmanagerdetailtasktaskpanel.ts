@@ -24,18 +24,21 @@ export class WorkflowManagerDetailTaskTaskpanel {
     }
 
     get nextTaskDisabled(){
-        if(this.model.data && this.model.data.tasktype == 'decision')
+        if(this.model.getField('tasktype') == 'decision') {
             return true;
+        }
 
-        if(this.model.data && this.model.data.closetask)
+        if(this.model.getField('closetask')) {
             return true;
+        }
 
         return false;
     }
 
     get previousTaskDisabled(){
-        if(this.model.data && this.model.data.primarytask)
+        if(this.model.getField('primarytask')) {
             return true;
+        }
 
         return false;
     }

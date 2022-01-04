@@ -85,7 +85,7 @@ export class MediaFilesTile implements OnInit {
     public initializeModel() {
         this.model.module = 'MediaFiles';
         this.model.id = this.data.id;
-        this.model.data = this.model.utils.backendModel2spice('MediaFiles', this.data);
+        this.model.setData(this.data);
     }
 
     /**

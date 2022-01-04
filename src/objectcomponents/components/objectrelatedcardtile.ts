@@ -59,7 +59,7 @@ export class ObjectRelatedCardTile {
     public initalizeModel(){
         this.model.module = this.relatedmodels.relatedModule;
         this.model.id = this.data.id;
-        this.model.data = this.data;
+        this.model.setData(this.data);
     }
 
     /**

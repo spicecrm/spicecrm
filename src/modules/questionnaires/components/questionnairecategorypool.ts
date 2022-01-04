@@ -48,8 +48,8 @@ export class QuestionnaireCategoryPool implements OnInit, OnDestroy {
 
     public get selectedCategories2(): any[] {
         this.selectedCategories = [];
-        if ( this.model.data.categorypool && this.model.data.categorypool != '' ) {
-            let categorypool = this.model.data.categorypool.split(',');
+        if ( this.model.getField('categorypool') && this.model.getField('categorypool') != '' ) {
+            let categorypool = this.model.getField('categorypool').split(',');
             this.allCategories.forEach( ( e, i ) => {
                 for ( let categoryId of categorypool ) {
                     if ( this.allCategories[i].id === categoryId ) {
@@ -63,13 +63,13 @@ export class QuestionnaireCategoryPool implements OnInit, OnDestroy {
 
     public deselectCategory( i: number ): void {
         this.selectedCategories.splice( i, 1 );
-        this.model.data.categorypool = this.makeCategoryString();
+        this.model.setField('categorypool', this.makeCategoryString());
     }
 
     public selectCategory( i: number ): void {
         if ( this.selectedCategories.indexOf( this.allCategories[i] ) === -1 ) {
             this.selectedCategories.push( this.allCategories[i] );
-            this.model.data.categorypool = this.makeCategoryString();
+            this.model.setField('categorypool', this.makeCategoryString());
             this.selectedCategories.sort( ( a: any, b: any ): number => {
                 let an = a.name.toLocaleLowerCase();
                 let bn = b.name.toLocaleLowerCase();

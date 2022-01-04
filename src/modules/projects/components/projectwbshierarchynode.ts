@@ -41,7 +41,7 @@ export class ProjectWBSHierarchyNode implements OnInit {
     public ngOnInit() {
         this.model.module = "ProjectWBSs";
         this.model.id = this.nodedata.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.nodedata.data);
+        this.model.setData(this.nodedata.data);
     }
 
     get expandable() {

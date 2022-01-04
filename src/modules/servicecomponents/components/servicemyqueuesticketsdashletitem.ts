@@ -34,7 +34,7 @@ export class ServiceMyQueuesTicketsDashletItem implements OnInit {
 
     ngOnInit() {
         this.model.id = this.ticket.id;
-        this.model.data = this.modelutilities.backendModel2spice('ServiceTickets', this.ticket);
+        this.model.setData(this.ticket);
     }
 
 }

@@ -69,7 +69,7 @@ export class fieldCatalogs extends fieldGeneric {
         this.is_loading_items = false;
 
         if (this.fieldconfig && this.fieldconfig.fieldname_for_template) {
-            let current_val = this.model.data[this.fieldconfig.fieldname_for_template];
+            let current_val = this.model.getField(this.fieldconfig.fieldname_for_template);
             this.model.data$.subscribe(
                 data => {
                     let new_val = data[this.fieldconfig.fieldname_for_template];

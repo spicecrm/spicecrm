@@ -35,7 +35,7 @@ export class WorkflowManagerDetailTaskDecisionsLine {
 
     public ngOnChanges() {
         this.model.id = this.decision.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.decision);
+        this.model.setData(this.decision);
     }
 
     public removeDecision() {

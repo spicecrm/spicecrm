@@ -27,7 +27,7 @@ export class SignServiceOrderModalComponent {
     public setModel(model: model) {
         this.model.id = model.id;
         this.model.module = model.module;
-        this.model.data = model.data;
+        this.model.setData(model.data, false);
     }
 
     public cancel() {
@@ -39,7 +39,7 @@ export class SignServiceOrderModalComponent {
     }
 
     public accept() {
-        this.model.data.serviceorder_status = 'signed';
+        this.model.setField('serviceorder_status', 'signed');
         this.model.save();
 
         this.self.destroy();

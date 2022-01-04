@@ -36,7 +36,7 @@ export class CreateMailingButton {
      */
 
     public disableButton() {
-        if (this.model.data.mailing_id) {
+        if (this.model.getField('mailing_id')) {
             this.disabled = true;
             return;
         }

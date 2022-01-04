@@ -56,7 +56,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     public setItemModelData() {
         this.model.module = 'ServiceOrderEfforts';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
     }
 
     /**

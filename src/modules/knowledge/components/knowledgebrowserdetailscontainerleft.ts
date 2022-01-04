@@ -36,7 +36,7 @@ export class KnowledgeBrowserDetailsContainerLeft {
     }
 
     get hasContent() {
-        return this.model.data.description && this.model.data.description.length > 0;
+        return this.model.getField('description') && this.model.getField('description').length > 0;
     }
 
     public ngOnChanges(changes: SimpleChanges) {

@@ -69,14 +69,15 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
         this.model.module = 'SpiceACLTerritories';
         this.model.id = this.modelutilities.generateGuid();
         this.model.initialize();
-
-        this.model.data.inactive = 1;
-        this.model.data.usagecount = 0;
+        this.model.setFields({
+            inactive : 1,
+            usagecount: 0
+        })
     }
 
     public ngOnInit() {
         // set type
-        this.model.data.territorytype_id = this.territorytype;
+        this.model.setField('territorytype_id', this.territorytype);
 
         // load type
         this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes/' + this.territorytype).subscribe(territorrytypedetails => {
@@ -96,7 +97,7 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
     }
 
     get addDisabled() {
-        if (!this.model.data.name) {
+        if (!this.model.getField('name')) {
             return true;
         }
 

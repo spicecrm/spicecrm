@@ -59,7 +59,7 @@ export class TeleSalesCockpitListItem implements OnInit {
     public initializeModel() {
         this.model.module = this.item.target_type;
         this.model.id = this.item.id;
-        this.model.data = this.item.data;
+        this.model.setData(this.item.data);
     }
 
     public loadComponentFields() {

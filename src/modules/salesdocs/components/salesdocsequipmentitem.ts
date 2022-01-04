@@ -60,7 +60,7 @@ export class SalesDocsEquipmentItem implements OnInit  {
     public setEquipmentModelData() {
         this.model.module = 'ServiceEquipments';
         this.model.id = this.equipment.id;
-        this.model.data = this.model.utils.backendModel2spice( this.model.module, this.equipment );
+        this.model.setData(this.equipment);
     }
 
     /**

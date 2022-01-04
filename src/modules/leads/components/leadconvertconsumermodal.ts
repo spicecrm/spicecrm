@@ -85,7 +85,7 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
                 this.lead.setField('status', 'Converted');
                 this.lead.setField('consumer_id', this.model.id);
                 this.lead.save().subscribe(leaddata => {
-                    this.lead.data = this.lead.utils.backendModel2spice('Leads', leaddata);
+                    this.lead.setData(leaddata);
                     loadingModalRef.instance.self.destroy();
                     this.close();
                 });

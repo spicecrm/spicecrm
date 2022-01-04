@@ -56,7 +56,7 @@ export class CampaignSendTestMailButton {
      * only show for campaign tasks of type email
      */
     get hidden() {
-        return this.model.data.campaigntask_type !== 'Email';
+        return this.model.getField('campaigntask_type') !== 'Email';
     }
 
     /**
@@ -76,13 +76,13 @@ export class CampaignSendTestMailButton {
         }
 
         // only for email
-        if (this.model.data.campaigntask_type !== 'Email') {
+        if (this.model.getField('campaigntask_type') !== 'Email') {
             this.disabled = true;
             return;
         }
 
         // mailbox is set
-        if (!this.model.data.mailbox_id) {
+        if (!this.model.getField('mailbox_id')) {
             this.disabled = true;
             return;
         }

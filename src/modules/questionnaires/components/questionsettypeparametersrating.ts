@@ -31,8 +31,8 @@ export class QuestionsetTypeParametersRating implements OnInit {
     }
 
     public parseParams(): void {
-        if ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ) {
-            let config = JSON.parse(this.model.data.questiontypeparameter);
+        if ( this.model.getField('questiontypeparameter') && this.model.getField('questiontypeparameter') !== '' ) {
+            let config = JSON.parse(this.model.getField('questiontypeparameter'));
             if ( config.rating ) {
                 this.numEntries = config.rating.numEntries;
                 this.entriesTable = config.rating.entries;
@@ -108,7 +108,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
     }
 
     public writeSettings(): void {
-        let config =  ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ? JSON.parse( this.model.data.questiontypeparameter ):{});
+        let config =  ( this.model.getField('questiontypeparameter') && this.model.getField('questiontypeparameter') !== '' ? JSON.parse( this.model.getField('questiontypeparameter') ):{});
         for ( let entry of this.entriesTable ) {
             entry.value = typeof entry.value === 'string' ? entry.value.trim() : entry.value;
             entry.text = entry.text.trim();
@@ -117,7 +117,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
             numEntries: this.numEntries,
             entries: this.entriesTable
         };
-        this.model.data.questiontypeparameter = JSON.stringify(config);
+        this.model.setField('questiontypeparameter', JSON.stringify(config))
     }
 
     public fillRange( from: number, to: number ): void {

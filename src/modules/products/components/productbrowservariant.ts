@@ -45,7 +45,7 @@ export class ProductBrowserVariant implements OnInit {
     public ngOnInit() {
         this.model.id = this.productvariant.id;
         this.model.module = 'ProductVariants';
-        this.model.data = this.modelutilities.backendModel2spice('ProductVariants', this.productvariant);
+        this.model.setData(this.productvariant);
 
         const config = this.metadata.getComponentConfig('ProductBrowserVariant', 'ProductVariants');
         this.fieldset = !!config && !!config.fieldset ? config.fieldset : undefined;

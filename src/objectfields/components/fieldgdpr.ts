@@ -50,7 +50,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
     public getDataStyle() {
         if (!this.loaded) return {};
 
-        if (this.model.data.gdpr_data_agreement == '1') {
+        if (this.model.getField('gdpr_data_agreement') == '1') {
             return {
                 'background-color': '#009900',
                 'color': 'white',
@@ -85,7 +85,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
         if (!this.loaded) return {};
 
         // if agreement was granted
-        if (this.model.data.gdpr_marketing_agreement == 'g') {
+        if (this.model.getField('gdpr_marketing_agreement') == 'g') {
             return {
                 'background-color': '#009900',
                 'color': 'white',
@@ -94,7 +94,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
         }
 
         // if agreement was granted
-        if (this.model.data.gdpr_marketing_agreement == 'r') {
+        if (this.model.getField('gdpr_marketing_agreement') == 'r') {
             return {
                 'background-color': '#cc0000',
                 'color': 'white',

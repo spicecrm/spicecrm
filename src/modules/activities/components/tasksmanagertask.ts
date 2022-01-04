@@ -64,14 +64,14 @@ export class TasksManagerTask implements OnInit {
     public ngOnInit() {
         this.model.module = 'Tasks';
         this.model.id = this.task.id;
-        this.model.data = this.modelutilities.backendModel2spice('Tasks', this.task);
+        this.model.setData(this.task);
     }
 
     /**
      * a getter to check if the task is completed
      */
     get isCompleted() {
-        return this.model.data.status == 'Completed';
+        return this.model.getField('status') == 'Completed';
     }
 
     /**
@@ -108,7 +108,7 @@ export class TasksManagerTask implements OnInit {
      * complete the task with one click
      */
     public completeTask() {
-        this.model.data.status = 'Completed';
+        this.model.setField('status', 'Completed');
         this.model.save();
     }
 

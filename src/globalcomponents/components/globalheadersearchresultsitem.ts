@@ -76,7 +76,7 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
         this.mainfieldset = componentconfig.mainfieldset;
         if(componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
 
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.hit._source);
+        this.model.setData(this.hit._source);
     }
 
 
