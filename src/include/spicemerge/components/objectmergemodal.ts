@@ -59,7 +59,7 @@ export class ObjectMergeModal implements OnInit {
         // if we have a parentmodel id add this as the master
         if (this.parentmodel.id) {
             this.model.id = this.parentmodel.id;
-            this.model.data = this.parentmodel.data;
+            this.model.setData(this.parentmodel.data, false);
 
             // set the master id
             this.objectmerge.masterId = this.model.id;
@@ -69,10 +69,10 @@ export class ObjectMergeModal implements OnInit {
             this.objectmerge.allowSwitchMaster = this.parentmodel.checkAccess('delete');
 
             // select the current model and add to the list
-            this.model.data.selected = true;
+            this.model.setField('selected', true);
 
             // just to be sure
-            this.model.data.id = this.model.id;
+            // this.model.data.id = this.model.id;
 
             // push the record
             this.modellist.listData.list.push(this.model.data);

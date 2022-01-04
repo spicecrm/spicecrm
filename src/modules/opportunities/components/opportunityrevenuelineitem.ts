@@ -55,7 +55,7 @@ export class OpportunityRevenueLineItem implements OnChanges {
      */
     public ngOnChanges(): void {
         this.model.id = this.revenueLine.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.revenueLine);
+        this.model.setData(this.revenueLine);
     }
 
     /**

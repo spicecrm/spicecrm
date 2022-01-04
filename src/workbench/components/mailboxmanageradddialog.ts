@@ -34,7 +34,7 @@ export class MailboxManagerAddDialog {
     public add() {
         this.model.module = 'Mailboxes';
         this.model.id = this.modelutilities.generateGuid();
-        this.model.data.name = this.mailbox_name;
+        this.model.setField('name', this.mailbox_name);
         this.saving = true;
         this.model.save().subscribe(() => {
             this.closedialog.emit(this.model.data);

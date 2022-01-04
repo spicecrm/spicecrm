@@ -83,24 +83,26 @@ export class EmailReplyModal implements OnInit {
         this.model.initializeModel(this.parent);
         this.model.startEdit(false);
         // set the from-addresses to to-addresses and vice versa
-        this.model.data.recipient_addresses = [];
-        this.model.data.reference_id = this.parent.id;
 
-        for (let address of this.parent.data.recipient_addresses) {
+        // build the receipient addresses
+        let recipient_addresses = [];
+        for (let address of this.parent.getField('recipient_addresses')) {
             if (address.address_type == "from") {
                 let toaddress = {...address};
                 toaddress.address_type = "to";
                 toaddress.id = '';
-                this.model.data.recipient_addresses.push(toaddress);
+                recipient_addresses.push(toaddress);
             } else if (address.address_type != "from" && address.address_type != "to") {
                 let addaddress = {...address};
                 addaddress.id = '';
-                this.model.data.recipient_addresses.push(addaddress);
+                recipient_addresses.push(addaddress);
             }
         }
 
         // set the email-history into the body
         this.model.setFields({
+            recipient_addresses: recipient_addresses,
+            reference_id: this.parent.id,
             name: this.language.getLabel('LBL_RE') + this.parent.getField('name'),
             body: '<br><br><br>' + this.buildHistoryText()
         });
@@ -112,25 +114,25 @@ export class EmailReplyModal implements OnInit {
      */
     public buildHistoryText() {
 
-        let datetime = new moment.utc(this.parent.data.date_sent).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
+        let datetime = new moment.utc(this.parent.getField('date_sent')).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
         let hdate = datetime ? datetime.format(this.userpreferences.getDateFormat()) : "";
         let htime = datetime ? datetime.format(this.userpreferences.getTimeFormat()) : "";
 
         let historytext = "";
         historytext += "<div class='spicecrm_quote'>";
         historytext += "<div dir='ltr' class='crm_attr'>";
-        historytext += "<b>" + this.language.getLabel('LBL_FROM') + ":</b> <a href='mailto:" + this.parent.data.from_addr + "'>" + this.parent.data.from_addr + "</a>";
+        historytext += "<b>" + this.language.getLabel('LBL_FROM') + ":</b> <a href='mailto:" + this.parent.getField('from_addr') + "'>" + this.parent.getField('from_addr') + "</a>";
         historytext += "<br>";
         historytext += "<b>" + this.language.getLabel('LBL_DATE_SENT') + ":</b> " + hdate + " " + htime;
         historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_TO') + ":</b> " + this.parent.data.to_addrs;
+        historytext += "<b>" + this.language.getLabel('LBL_TO') + ":</b> " + this.parent.getField('to_addrs');
         historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.data.name;
+        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('data.name');
         historytext += "<br><br>";
         historytext += "</div>";
 
         historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
-        historytext += this.parent.data.body.replace('data-signature=""', '');
+        historytext += this.parent.getField('body').replace('data-signature=""', '');
         historytext += '</blockquote>';
 
         historytext += '</div>';
@@ -180,9 +182,9 @@ export class EmailReplyModal implements OnInit {
             this.model.setFields({
                 type: 'outbound',
                 to_be_sent: '1',
-                from_addr: this.model.data.from_addr_name,
-                to_addrs: this.model.data.to_addrs_names,
-                cc_addrs: this.model.data.cc_addrs_names,
+                from_addr: this.model.getField('from_addr_name'),
+                to_addrs: this.model.getField('to_addrs_names'),
+                cc_addrs: this.model.getField('cc_addrs_names'),
             });
 
             this.model.save().subscribe(

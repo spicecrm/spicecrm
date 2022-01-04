@@ -28,7 +28,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
     public parentSearchOpen: boolean = false;
     public parentSearchTerm: string = '';
 
-    public recentItems: Array<any> = [];
+    public recentItems: any[] = [];
 
     constructor(
         public model: model,
@@ -62,7 +62,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         return this.model.getField('grp_member_count');
     }
 
-    get parentTypes(): Array<string>{
+    get parentTypes(): string[]{
         let parenttypes = ['Contacts', 'Accounts', 'Leads'];
 
         if(this.fieldconfig.parenttypes) {
@@ -81,8 +81,10 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
                         this.parentSearchTerm = '';
 
                         // set the model
-                        this.model.data[this.parentIdField] = message.messagedata.data.id;
-                        this.model.data[this.fieldname] = message.messagedata.data.summary_text;
+                        let modelfields: any = {};
+                        modelfields[this.parentIdField] = message.messagedata.data.id;
+                        modelfields[this.fieldname] = message.messagedata.data.summary_text;
+                        this.model.setFields(modelfields);
                     }
                     break;
             }
@@ -98,7 +100,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
     }
 
     public closePopups() {
-        if (this.model.data[this.parentIdField]) {
+        if (this.model.getField(this.parentIdField)) {
             this.parentSearchTerm = '';
         }
 

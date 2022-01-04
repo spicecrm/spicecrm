@@ -89,7 +89,7 @@ export class ObjectActionDeactivateBeansModal implements OnInit {
                 this.model.id = item.id;
                 this.model.initialize();
                 this.model.module = this.module;
-                this.model.data = item;
+                this.model.setData(item);
 
 
                 if (this.model.validate()) {

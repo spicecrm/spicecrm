@@ -446,7 +446,7 @@ export class navigation {
                     this.backend.get(event.data.module, event.data.id).subscribe(modelData => {
                         let models = this.modelregister.filter(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing);
                         for (let model of models) {
-                            model.model.data = {...modelData};
+                            model.model.setData({...modelData}, false);
                             model.model.data$.next(model.model.data);
                         }
 
