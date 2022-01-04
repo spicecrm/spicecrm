@@ -26,7 +26,7 @@ import {ObjectList} from "../../../objectcomponents/components/objectlist";
  */
 @Component({
     selector: 'media-files-list',
-    templateUrl: './src/modules/mediafiles/templates/mediafileslist.html',
+    templateUrl: '../templates/mediafileslist.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaFilesList extends ObjectList implements OnDestroy {
@@ -34,9 +34,9 @@ export class MediaFilesList extends ObjectList implements OnDestroy {
     /**
      * a handler to catch the resizte event and recalculate the padding
      */
-    private resizeHandler: any;
+    public resizeHandler: any;
 
-    constructor(public router: Router, public cdRef: ChangeDetectorRef, public metadata: metadata, public modellist: modellist, public language: language, public injector: Injector, public modal: modal, public layout: layout, private renderer: Renderer2, private elementRef: ElementRef) {
+    constructor(public router: Router, public cdRef: ChangeDetectorRef, public metadata: metadata, public modellist: modellist, public language: language, public injector: Injector, public modal: modal, public layout: layout, public renderer: Renderer2, public elementRef: ElementRef) {
 
         super(router, cdRef, metadata, modellist, language, injector, modal, layout);
 
@@ -49,7 +49,7 @@ export class MediaFilesList extends ObjectList implements OnDestroy {
         this.resizeHandler();
     }
 
-    private onResize() {
+    public onResize() {
         this.cdRef.detectChanges();
     }
 

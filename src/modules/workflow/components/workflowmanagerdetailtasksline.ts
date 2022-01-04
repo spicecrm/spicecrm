@@ -13,7 +13,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: '[workflow-manager-detail-tasks-line]',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksline.html',
+    templateUrl: '../templates/workflowmanagerdetailtasksline.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailTasksLine {
@@ -22,7 +22,7 @@ export class WorkflowManagerDetailTasksLine {
     @Input() public fields: any[] = [];
     @Output() public deleted$ = new EventEmitter<void>();
 
-    constructor(public workflowManagerService: WorkflowManagerService, private metadata: metadata, public model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(public workflowManagerService: WorkflowManagerService, public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'WorkflowTaskDefinitions';
 
         this.view.displayLabels = false;

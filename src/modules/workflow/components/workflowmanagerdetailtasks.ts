@@ -15,7 +15,7 @@ import {PanelElementI} from "../../../include/spicepagebuilder/interfaces/spicep
  */
 @Component({
     selector: 'workflow-manager-detail-tasks',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasks.html',
+    templateUrl: '../templates/workflowmanagerdetailtasks.html',
 })
 export class WorkflowManagerDetailTasks {
 
@@ -24,11 +24,11 @@ export class WorkflowManagerDetailTasks {
      */
     public selectedTask: any;
 
-    constructor(private modal: modal,
-                private model: model,
-                private view: view,
-                private injector: Injector,
-                private workflowManagerService: WorkflowManagerService) {
+    constructor(public modal: modal,
+                public model: model,
+                public view: view,
+                public injector: Injector,
+                public workflowManagerService: WorkflowManagerService) {
     }
 
     /**
@@ -63,7 +63,7 @@ export class WorkflowManagerDetailTasks {
     /**
      * sorts the tasks by the sequence
      */
-    private sortTasksBySequence() {
+    public sortTasksBySequence() {
         if (this.tasks) {
             this.tasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
         }
@@ -72,7 +72,7 @@ export class WorkflowManagerDetailTasks {
     /**
      * adds a task
      */
-    private addTask() {
+    public addTask() {
 
         this.modal.openModal('WorkflowManagerTaskTypesModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.response.subscribe((type: WorkflowTaskType) => {
@@ -100,7 +100,7 @@ export class WorkflowManagerDetailTasks {
     /**
      * helper function that loops over the tasks and gets the next available sequence number in an incremtne of 10
      */
-    private getNextSequence() {
+    public getNextSequence() {
         let highestSequence = 0;
 
         for (let task of this.tasks) {

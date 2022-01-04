@@ -11,7 +11,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'systemtenant-header-bar-validity',
-    templateUrl: './src/modules/systemtenants/templates/systemtenantheaderbarvalidity.html'
+    templateUrl: '../templates/systemtenantheaderbarvalidity.html'
 })
 export class SystemTenantHeaderBarValidity implements OnInit {
 
@@ -20,21 +20,21 @@ export class SystemTenantHeaderBarValidity implements OnInit {
      *
      * @private
      */
-    private isTrial: boolean = false;
+    public isTrial: boolean = false;
 
     /**
      * indicates that the tentnat has an expiration date
      * @private
      */
-    private hasExpiration: boolean = false;
+    public hasExpiration: boolean = false;
 
     /**
      * the number of days left in the trial
      * @private
      */
-    private daysLeft: number;
+    public daysLeft: number;
 
-    constructor(private configuration: configurationService) {
+    constructor(public configuration: configurationService) {
 
     }
 
@@ -52,7 +52,7 @@ export class SystemTenantHeaderBarValidity implements OnInit {
      * get the trial state
      * @private
      */
-    private getTrial() {
+    public getTrial() {
         let configData = this.configuration.getData('tenantconfig');
         this.isTrial = configData?.is_trial == '1';
     }
@@ -60,12 +60,12 @@ export class SystemTenantHeaderBarValidity implements OnInit {
     /**
      * checks if the tentnat has a validity date
      */
-    private getExpiration() {
+    public getExpiration() {
         let configData = this.configuration.getData('tenantconfig');
         this.hasExpiration = !!configData?.valid_until;
     }
 
-    private getDaysLeft() {
+    public getDaysLeft() {
         let validity = new moment(this.configuration.getData('tenantconfig').valid_until);
         let duration = moment.duration(validity.diff(new moment()));
         this.daysLeft = Math.round(duration.as('days'));

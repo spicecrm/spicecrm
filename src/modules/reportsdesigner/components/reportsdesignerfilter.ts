@@ -10,18 +10,18 @@ declare var _;
 
 @Component({
     selector: 'reports-designer-filter',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerfilter.html'
+    templateUrl: '../templates/reportsdesignerfilter.html'
 })
 export class ReportsDesignerFilter implements OnChanges, OnDestroy {
 
     /**
     * @input module: {module: string, unionid: string}
     */
-    @Input() private module: any = {};
-    private rootGroup: any = {};
-    private subscription: Subscription = new Subscription();
+    @Input() public module: any = {};
+    public rootGroup: any = {};
+    public subscription: Subscription = new Subscription();
 
-    constructor(private reportsDesignerService: ReportsDesignerService, private model: model) {
+    constructor(public reportsDesignerService: ReportsDesignerService, public model: model) {
     }
 
     /**
@@ -74,7 +74,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
      * @param id: string = guid
      * @return group: object
      */
-    protected generateGroup(parent = '-', id = this.reportsDesignerService.generateGuid()) {
+    public generateGroup(parent = '-', id = this.reportsDesignerService.generateGuid()) {
         return {
             id: id,
             groupid: id,
@@ -93,7 +93,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
      * @buildTree
      * @set whereGroups
      */
-    private loadWhereGroups() {
+    public loadWhereGroups() {
         this.rootGroup = {};
 
         const existingRootGroup = this.whereGroups && this.whereGroups.length && this.whereGroups
@@ -116,7 +116,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
      * @cleanGroup
      * @buildTree
      */
-    private handleTreeChange(obj) {
+    public handleTreeChange(obj) {
         switch (obj.action) {
             case 'deleteGroup':
                 this.whereGroups = this.whereGroups.filter(group => group.id != obj.id);
@@ -129,7 +129,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         }
     }
 
-    private buildTree() {
+    public buildTree() {
         this.rootGroup.children = [];
         this.addGroupChildren(this.rootGroup);
     }
@@ -138,7 +138,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @param group
      * @set group.conditions from whereConditions
      */
-    private setGroupConditions(group) {
+    public setGroupConditions(group) {
         group.conditions = this.whereConditions ? this.whereConditions
             .filter(condition => condition.groupid == group.id) : [];
     }
@@ -149,7 +149,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @push group Item to parent.children array
     * @call self and pass the group as parent
     */
-    private addGroupChildren(parent) {
+    public addGroupChildren(parent) {
         for (let group of this.whereGroups) {
             if (group.parent == parent.id) {
                 let newGroup = {...group};
@@ -165,7 +165,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @markDeletedGroupChildren
     * @filter whereGroups from deleted
     */
-    private cleanGroup(parentId) {
+    public cleanGroup(parentId) {
         this.markDeletedGroupChildren(parentId);
         this.whereGroups = this.whereGroups.filter(group => !group.deleted);
         this.cleanWhereConditions();
@@ -177,7 +177,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @call markDeletedGroupChildren
     * @set group.deleted = true
     */
-    private markDeletedGroupChildren(parentId) {
+    public markDeletedGroupChildren(parentId) {
         for (let group of this.whereGroups) {
             if (group.parent == parentId) {
                 this.markDeletedGroupChildren(group.id);
@@ -189,7 +189,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     /**
     * @filter whereConditions by condition.groupid
      */
-    private cleanWhereConditions() {
+    public cleanWhereConditions() {
         if (!this.whereConditions) return;
         this.whereConditions = this.whereConditions
             .filter(condition => this.whereGroups.some(group => group.id == condition.groupid));

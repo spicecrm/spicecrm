@@ -8,18 +8,18 @@ declare var moment: any;
 
 @Component({
     selector: 'telephony-call-duration',
-    templateUrl: './src/modules/telephony/templates/telephonycallduration.html',
+    templateUrl: '../templates/telephonycallduration.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TelephonyCallDuration implements OnDestroy {
 
     @Input() public calldata: telephonyCallI;
 
-    private interval: any;
+    public interval: any;
 
-    private duration: string = '';
+    public duration: string = '';
 
-    constructor(private cdref: ChangeDetectorRef) {
+    constructor(public cdref: ChangeDetectorRef) {
         this.interval = window.setInterval(() => {
             this.calculateDuration();
         }, 100);
@@ -35,7 +35,7 @@ export class TelephonyCallDuration implements OnDestroy {
     /**
      * trigger determination of duration and trigger change detection
      */
-    private calculateDuration() {
+    public calculateDuration() {
         this.duration = this._duration;
         this.cdref.detectChanges();
     }
@@ -43,7 +43,7 @@ export class TelephonyCallDuration implements OnDestroy {
     /**
      * clear the interval
      */
-    private clearInterval() {
+    public clearInterval() {
         if (this.interval) {
             window.clearInterval(this.interval);
             this.interval = undefined;

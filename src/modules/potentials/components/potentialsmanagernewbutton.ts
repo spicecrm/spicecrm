@@ -8,7 +8,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "potentials-manager-new-button",
-    templateUrl: "./src/modules/potentials/templates/potentialsmanagernewbutton.html",
+    templateUrl: "../templates/potentialsmanagernewbutton.html",
     providers: [model]
 })
 export class PotentialsManagerNewButton {
@@ -16,17 +16,17 @@ export class PotentialsManagerNewButton {
     /**
      * the parent model in which context we are
      */
-    @Input() private parent: any;
+    @Input() public parent: any;
 
     /**
      * the input for the companycode. This is passed in when the new potential is created
      */
-    @Input() private companyCode: string;
+    @Input() public companyCode: string;
 
     /**
      * set if the button is disabled
      */
-    private disabled: boolean = true;
+    public disabled: boolean = true;
 
     constructor(public language: language, public metadata: metadata, public model: model) {
         this.model.module = 'Potentials';

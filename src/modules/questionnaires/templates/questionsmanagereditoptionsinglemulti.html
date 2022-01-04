@@ -1,15 +1,15 @@
 <td *ngIf="hasInfosCorrectness" width="0">
-    <input type="checkbox" [checked]="option.is_correct_option=='1'" (change)="onChange_isCorrectOption($event)">
+    <input type="checkbox" [checked]="option.is_correct_option=='1'" (change)="onChange_isCorrectOption($event)" [disabled]="!canEditOption">
 </td>
 <td width="50%">
     <ng-container *ngIf="textIsMultiline; else notMultiline">
-        <textarea rows="5" class="slds-textarea" [(ngModel)]="option.text" (change)="change()" style="display:block"></textarea>
+        <textarea rows="5" class="slds-textarea" [(ngModel)]="option.text" (change)="change()" style="display:block" [disabled]="!canEditOption"></textarea>
     </ng-container>
     <ng-template #notMultiline>
         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-            <input type="text" class="slds-input" [(ngModel)]="option.text" (change)="change()">
+            <input type="text" class="slds-input" [(ngModel)]="option.text" (change)="change()" [disabled]="!canEditOption">
             <div class="slds-input__icon-group slds-input__icon-group_right">
-                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position:relative" (click)="textIsMultiline=true">
+                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position:relative" (click)="textIsMultiline=true" >
                     <system-button-icon icon="textarea"></system-button-icon>
                 </button>
             </div>
@@ -20,22 +20,22 @@
     <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>
 </td>
 <td width="50%" style="vertical-align:top">
-    <div><questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories></div>
+    <div><questions-manager-edit-categories [option]="option" [categorypool]="categorypool" [disabled]="!canEditOption"></questions-manager-edit-categories></div>
 </td>
 <td style="vertical-align:top">
-    <div><input type="text" class="slds-input slds-text-align_right" style="width:unset" [(ngModel)]="option.points" size="4"></div>
+    <div><input type="text" class="slds-input slds-text-align_right" style="width:unset" [(ngModel)]="option.points" size="4" [disabled]="!canEditOption"></div>
 </td>
 <td style="vertical-align:top">
-    <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionUp()" title="{{language.getLabel('LBL_UP')}}" [disabled]="isFirstRow">
+    <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionUp()" title="{{language.getLabel('LBL_UP')}}" [disabled]="isFirstRow || !canMoveOption">
         <system-button-icon [icon]="'arrowup'"></system-button-icon>
         <span class="slds-assistive-text"><system-label label="LBL_UP"></system-label></span>
     </button>
     <button
-            class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionDown()" title="{{language.getLabel('LBL_DOWN')}}" [disabled]="isLastRow">
+            class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionDown()" title="{{language.getLabel('LBL_DOWN')}}" [disabled]="isLastRow || !canMoveOption">
         <system-button-icon [icon]="'arrowdown'"></system-button-icon>
         <span class="slds-assistive-text"><system-label label="LBL_DOWN"></system-label></span>
     </button><button
-        class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="deleteOption()" title="{{language.getLabel('LBL_DELETE')}}">
+        class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="deleteOption()" title="{{language.getLabel('LBL_DELETE')}}" [disabled]="!canDeleteOption">
     <system-button-icon [icon]="'delete'"></system-button-icon>
     <span class="slds-assistive-text"><system-label label="LBL_DELETE"></system-label></span>
 </button>

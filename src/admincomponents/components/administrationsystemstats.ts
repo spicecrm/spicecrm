@@ -9,7 +9,7 @@ import {backend} from '../../services/backend.service';
 import {helper} from '../../services/helper.service';
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationsystemstats.html'
+    templateUrl: '../templates/administrationsystemstats.html'
 })
 export class AdministrationSystemStats {
 
@@ -18,28 +18,28 @@ export class AdministrationSystemStats {
      *
      * otherwise a spinner is rendered for the user
      */
-    private loaded: boolean = false;
+    public loaded: boolean = false;
 
     /**
      * holds the stats
      */
-    private stats: any = {};
+    public stats: any = {};
 
     /**
      * the total number of DB records
      */
-    private totaldbrecords: number = 0;
+    public totaldbrecords: number = 0;
 
     /**
      * the total db size
      */
-    private totaldbsize: number = 0;
+    public totaldbsize: number = 0;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private helper: helper
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public helper: helper
     ) {
         this.loadStats();
     }
@@ -47,7 +47,7 @@ export class AdministrationSystemStats {
     /**
      * loads the stats from the backend
      */
-    private loadStats() {
+    public loadStats() {
         this.loaded = false;
         this.backend.getRequest('configuration/systemstats').subscribe(stats => {
             this.stats = stats;
@@ -63,7 +63,7 @@ export class AdministrationSystemStats {
     /**
      * reloads
      */
-    private refresh() {
+    public refresh() {
         this.loadStats();
     }
 
@@ -124,14 +124,14 @@ export class AdministrationSystemStats {
      * @param column the name of the column
      * @param asc defaults to true, send flase to sort descending
      */
-    private sortby(column, asc: boolean = true) {
+    public sortby(column, asc: boolean = true) {
         this.stats.database.sort((a, b) => a[column] > b[column] ? (asc ? -1 : 1) : (asc ? 1 : -1));
     }
 
     /**
      * calculates the total DB size after the data has been loaded
      */
-    private calculateTotalsDB() {
+    public calculateTotalsDB() {
         this.totaldbrecords = 0;
         this.totaldbsize = 0;
         for (let table of this.stats.database) {
@@ -145,7 +145,7 @@ export class AdministrationSystemStats {
      *
      * @param size the size to be formatted
      */
-    private humanReadableSize(size) {
+    public humanReadableSize(size) {
         return this.helper.humanFileSize(size);
     }
 
@@ -154,7 +154,7 @@ export class AdministrationSystemStats {
      *
      * @param tablename
      */
-    private ftsDocumentCount(tablename) {
+    public ftsDocumentCount(tablename) {
         try {
             return this.stats.elastic.indices[this.stats.elastic._prefix + tablename].total.docs.count;
         } catch (e) {
@@ -167,7 +167,7 @@ export class AdministrationSystemStats {
      *
      * @param tablename
      */
-    private ftsIndexSize(tablename) {
+    public ftsIndexSize(tablename) {
         try {
             return this.humanReadableSize(this.stats.elastic.indices[this.stats.elastic._prefix + tablename].total.store.size_in_bytes);
         } catch (e) {

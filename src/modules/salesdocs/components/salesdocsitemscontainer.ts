@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef,
-    Injector,
+    Injector, OnDestroy,
     OnInit
 } from '@angular/core';
 import {model} from '../../../services/model.service';
@@ -13,50 +13,64 @@ import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {currency} from '../../../services/currency.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {Subscription} from "rxjs";
+import {broadcast} from "../../../services/broadcast.service";
 
 declare var moment: any;
 
 @Component({
     selector: 'salesdocs-items-container',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemscontainer.html'
+    templateUrl: '../templates/salesdocsitemscontainer.html'
 })
-export class SalesDocsItemsContainer implements OnInit {
+export class SalesDocsItemsContainer implements OnInit, OnDestroy {
 
     /**
      * the items on the sales Document
      */
-    private items: any[] = [];
+    public items: any[] = [];
 
     /**
      * for the voucher handling
      */
-    private voucher: any = {};
+    public voucher: any = {};
 
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
+
+    /**
+     * the columns to be displayed
+     */
+    public subscription = new Subscription();
 
     constructor(
-        private userpreferences: userpreferences,
-        private injector: Injector,
-        private language: language,
-        private backend: backend,
-        private elementRef: ElementRef,
-        private model: model,
-        private modal: modal,
-        private view: view,
-        private configuration: configurationService,
-        private metadata: metadata
+        public userpreferences: userpreferences,
+        public injector: Injector,
+        public language: language,
+        public backend: backend,
+        public elementRef: ElementRef,
+        public model: model,
+        public modal: modal,
+        public view: view,
+        public configuration: configurationService,
+        public metadata: metadata,
+        public broadcast: broadcast,
     ) {
-        let itemSubscription = this.model.data$.subscribe(data => {
-            if (this.buildItems()) {
-                if (itemSubscription) itemSubscription.unsubscribe();
-            }
-        });
+        // build in any case if the items had already been passed in
+        this.buildItems();
+
+        // add the subscriber
+        this.subscription.add(
+            this.broadcast.message$.subscribe(msg => {
+                    if (msg.messagetype == 'model.save' || msg.messagetype == 'model.loaded' && msg.messagedata.module === this.model.module) {
+                        this.buildItems();
+                    }
+                }
+            )
+        );
 
         // determine the list fieldset
         let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
@@ -70,6 +84,13 @@ export class SalesDocsItemsContainer implements OnInit {
      */
     public ngOnInit() {
         this.recalculate();
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**
@@ -111,7 +132,7 @@ export class SalesDocsItemsContainer implements OnInit {
     /**
      * recacluates the total document
      */
-    private recalculate() {
+    public recalculate() {
         this.model.setField('amount_net', this.totalnet);
         this.model.setField('amount_gross', this.totalgross);
     }
@@ -119,8 +140,8 @@ export class SalesDocsItemsContainer implements OnInit {
     /**
      * build the items and render them in the container
      */
-    private buildItems(): boolean {
-        if (!this.model.data.salesdocitems) return false;
+    public buildItems(): boolean {
+        if (!this.model.data?.salesdocitems) return false;
 
         this.items = [];
         for (let itemid in this.model.data.salesdocitems.beans) {
@@ -143,7 +164,7 @@ export class SalesDocsItemsContainer implements OnInit {
     /**
      * gets the next item number
      */
-    private getNextItemNr() {
+    public getNextItemNr() {
         let lastitemnr = 0;
         for (let item of this.items) {
             let thisitemNr = parseInt(item.itemnr, 10);
@@ -159,7 +180,7 @@ export class SalesDocsItemsContainer implements OnInit {
     /**
      * called to add an Item
      */
-    private addItem() {
+    public addItem() {
         this.modal.openModal('SalesDocsItemsAddTypeSelector', true, this.injector).subscribe(addItemModal => {
             addItemModal.instance.itemTypeSelected.subscribe(itemType => {
                 if (itemType) {
@@ -188,7 +209,7 @@ export class SalesDocsItemsContainer implements OnInit {
      * handler to add the item
      * @param itemData
      */
-    private handleAddItem(itemData, itemType) {
+    public handleAddItem(itemData, itemType) {
         itemData.id = this.model.generateGuid();
         itemData.deleted = 0;
         itemData.salesdoc_id = this.model.id;

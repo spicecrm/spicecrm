@@ -8,7 +8,7 @@ import {ServiceOrderItemItem} from "./serviceorderitemitem";
 
 @Component({
     selector: "[serviceorder-item-confirm-item]",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceorderitemconfirmitem.html",
+    templateUrl: "../templates/serviceorderitemconfirmitem.html",
     providers: [model, view]
 })
 export class ServiceOrderItemConfirmItem extends ServiceOrderItemItem {

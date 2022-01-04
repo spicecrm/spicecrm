@@ -12,7 +12,7 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'field-project-activity-dropdown',
-    templateUrl: './src/modules/projects/templates/fieldprojectactivitydropdown.html',
+    templateUrl: '../templates/fieldprojectactivitydropdown.html',
 })
 
 export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit {
@@ -20,7 +20,7 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
      * holds the options
      * @private
      */
-    private options: any = [];
+    public options: any = [];
 
     constructor(public backend: backend, public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);

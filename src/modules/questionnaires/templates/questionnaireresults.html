@@ -1,19 +1,24 @@
-<ng-container *ngIf="noParticipation">
+<ng-container *ngIf="participationExists === false && !isForParticipation">
     <div class="slds-text-align--center slds-text-heading--small slds-p-top--small">
-        <ng-container *ngIf="questionnaireIsCompleted"><system-label [label]="'MSG_QUESTIONNAIRE_COMPLETED_BUT_NO_ANSWERS_AVAILABLE'"></system-label></ng-container>
-        <ng-container *ngIf="!questionnaireIsCompleted">
-            <div class="slds-grid slds-grid--align-spread">
-                <div class="slds-grow">
-                    <div><system-label [label]="'MSG_NO_QUESTIONNAIRE_PARTICIPATION_YET'"></system-label></div>
-                    <button class="slds-button slds-button_neutral slds-m-top_medium" (click)="fillOut()"><system-label label="LBL_FILL_IN_QUESTIONNAIRE"></system-label>&nbsp;&hellip;</button>
-                </div>
-                <div *ngIf="questionnaireParticipation && questionnaireParticipation.isLoaded" class="slds-col--bump-left"><button class="slds-button slds-button_icon" (click)="reload()"><system-button-icon [icon]="'refresh'"></system-button-icon></button></div>
-            </div>
-        </ng-container>
+        <div><system-label label="MSG_NO_QUESTIONNAIRE_PARTICIPATION_YET"></system-label></div>
+        <button class="slds-button slds-button_neutral slds-m-top_medium" (click)="fillOut()"><system-label label="LBL_FILL_IN_QUESTIONNAIRE"></system-label>&nbsp;&hellip;</button>
     </div>
-
 </ng-container>
 
-<questionnaire-render *ngIf="!noParticipation" [parentType]="model.module" [parentId]="model.id" [editMode]="'postview'" (questionnaireParticipation$)="questionnaireParticipation=$event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false" [inModal]="false"></questionnaire-render>
-
-
+<div system-to-bottom class="slds-p-right--small slds-is-relative slds-m-bottom--medium">
+    <ng-container *ngIf="isForParticipation">
+        <div *ngIf="!!questionnaireParticipation && questionnaireParticipation.isLoaded" class="slds-m-bottom--x-small slds-text-align--right">
+            <button *ngIf="questionnaireParticipation?.isLoaded" class="slds-button slds-button_icon slds-button_icon-border slds-button_neutral" (click)="reload()"><system-button-icon icon="refresh" size="medium"></system-button-icon></button>
+            <button class="slds-button slds-button_neutral" (click)="fillOut()"><system-label label="LBL_FILL_IN_QUESTIONNAIRE"></system-label>&nbsp;&hellip;</button>
+        </div>
+        <questionnaire-render [participationId]="model.id" editMode="postview" (questionnaireParticipation$)="questionnaireParticipation=$event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false" [inModal]="false" [showQuestionnaireTitle]="false" class="slds-p-bottom--medium"></questionnaire-render>
+    </ng-container>
+    <ng-container *ngIf="!isForParticipation">
+        <div *ngIf="participationExists !== undefined" style="position:absolute;right:0.75rem">
+            <button *ngIf="questionnaireParticipation?.isLoaded" class="slds-button slds-button_icon slds-button_icon-border slds-button_neutral" (click)="reload()"><system-button-icon icon="refresh" size="medium"></system-button-icon></button>
+            <button class="slds-button slds-button_neutral" (click)="fillOut()"><system-label label="LBL_FILL_IN_QUESTIONNAIRE"></system-label>&nbsp;&hellip;</button>
+        </div>
+        <system-spinner *ngIf="participationExists === undefined" size="medium" class="slds-m-vertical--large" style="display:block"></system-spinner>
+        <questionnaire-render [ngStyle]="{'visibility':participationExists ? 'visible':'hidden'}" [parentType]="model.module" [parentId]="model.id" editMode="postview" (questionnaireParticipation$)="questionnaireParticipation=$event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false" [inModal]="false" class="slds-p-bottom--medium"></questionnaire-render>
+    </ng-container>
+</div>

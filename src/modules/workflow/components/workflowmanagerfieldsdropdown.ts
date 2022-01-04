@@ -7,20 +7,19 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: 'workflow-manager-fieldsdropdown',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerfieldsdropdown.html'
+    templateUrl: '../templates/workflowmanagerfieldsdropdown.html'
 })
 export class WorkflowManagerFieldsdropdown {
 
     public fields: any[] = [];
-    @Input() private field: string = '';
+    @Input() public field: string = '';
 
-    constructor(private model: model,
+    constructor(public model: model,
                 public workflowManagerService: WorkflowManagerService) {
     }
 
     /**
      * fill the dropwdown menu with appropriate field value
-     * @private
      */
 
     get value() {

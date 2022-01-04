@@ -13,7 +13,7 @@ import {language} from '../../../services/language.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/accounts/templates/accountskpisoverview.html'
+    templateUrl: '../templates/accountskpisoverview.html'
 })
 export class AccountsKPIsOverview {
 
@@ -24,11 +24,11 @@ export class AccountsKPIsOverview {
     accountKpis: any = {};
     isLoading: boolean = false;
 
-    constructor(private backend: backend,
-                private model: model,
-                private metadata: metadata,
-                private language: language,
-                private renderer: Renderer2) {
+    constructor(public backend: backend,
+                public model: model,
+                public metadata: metadata,
+                public language: language,
+                public renderer: Renderer2) {
 
         this.getYears();
         this.isLoading = true;

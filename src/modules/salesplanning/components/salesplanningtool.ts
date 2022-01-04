@@ -32,7 +32,7 @@ const ANIMATIONS: any = [
 ];
 
 @Component({
-    templateUrl: './src/modules/salesplanning/templates/salesplanningtool.html',
+    templateUrl: '../templates/salesplanningtool.html',
     providers: [SalesPlanningService],
     animations: ANIMATIONS
 })
@@ -41,26 +41,26 @@ export class SalesPlanningTool {
 
     public self: any = {};
     public subscriptions: Subscription = new Subscription();
-    private isLoading: boolean = false;
-    private isCollapsed: boolean = false;
-    private isHovered: boolean = false;
-    private isAnimating: boolean = false;
-    private hoverTimeout: any;
-    private mouseEnterListener: () => void;
+    public isLoading: boolean = false;
+    public isCollapsed: boolean = false;
+    public isHovered: boolean = false;
+    public isAnimating: boolean = false;
+    public hoverTimeout: any;
+    public mouseEnterListener: () => void;
     @ViewChild('hoverTriggerContainer', {
         read: ViewContainerRef,
         static: true
-    }) private hoverTriggerContainer: ViewContainerRef;
+    }) public hoverTriggerContainer: ViewContainerRef;
 
-    constructor(private language: language,
-                private backend: backend,
-                private renderer: Renderer2,
-                private navigation: navigation,
-                private model: model,
-                private broadcast: broadcast,
-                private favorite: favorite,
-                private navigationtab: navigationtab,
-                private planningService: SalesPlanningService) {
+    constructor(public language: language,
+                public backend: backend,
+                public renderer: Renderer2,
+                public navigation: navigation,
+                public model: model,
+                public broadcast: broadcast,
+                public favorite: favorite,
+                public navigationtab: navigationtab,
+                public planningService: SalesPlanningService) {
         this.initialize();
     }
 
@@ -90,7 +90,7 @@ export class SalesPlanningTool {
     * @get all characteristics
     * @subscribe model.save
     */
-    private initialize() {
+    public initialize() {
 
         this.subscriptions.add(
             this.navigationtab.activeRoute$.subscribe(route => {
@@ -118,7 +118,7 @@ export class SalesPlanningTool {
     * @get characteristics
     * @reset selection
     */
-    private subscribeToModelSave() {
+    public subscribeToModelSave() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(msg => {
                 let res = msg.messagedata;
@@ -135,7 +135,7 @@ export class SalesPlanningTool {
     * @reset selectedNodes
     * @reset selectedNode
     */
-    private resetSelections() {
+    public resetSelections() {
         this.planningService.selectedCharacteristics = [];
         this.planningService.selectedNodes = [];
         this.planningService.selectedNode = undefined;
@@ -146,7 +146,7 @@ export class SalesPlanningTool {
     * @sort characteristics by sequence
     * @set characteristicTerritory label
     */
-    private getCharacteristicList() {
+    public getCharacteristicList() {
         this.planningService.characteristics = [];
         this.isLoading = true;
         this.backend.getRequest(`module/SalesPlanningNodes/${this.planningService.versionId}/characteristiclist`)
@@ -172,7 +172,7 @@ export class SalesPlanningTool {
     * @sort contentFields by (sort_order | summary_text)
     * @set contentFields
     */
-    private getContentFields(parent) {
+    public getContentFields(parent) {
         if (!parent || !parent.salesplanningcontents) return;
         let content = _.toArray(parent.salesplanningcontents.beans).length > 0 ? _.toArray(parent.salesplanningcontents.beans)[0] : undefined;
         if (!content || !content.salesplanningcontentfields) return;
@@ -185,7 +185,7 @@ export class SalesPlanningTool {
     * @toggle? isCollapsed
     * @clear? hoverTimeout
     */
-    private toggleCollapseView() {
+    public toggleCollapseView() {
         if (!this.isHovered) {
             this.isCollapsed = !this.isCollapsed;
         } else {
@@ -197,7 +197,7 @@ export class SalesPlanningTool {
     * @set isAnimating
     * @removeListener mouseEnterListener
     */
-    private onAnimationStart() {
+    public onAnimationStart() {
         this.isAnimating = true;
         if (this.mouseEnterListener) this.mouseEnterListener();
     }
@@ -206,7 +206,7 @@ export class SalesPlanningTool {
     * @set isAnimating
     * @listen mouseEnter on tree open trigger
     */
-    private onAnimationDone() {
+    public onAnimationDone() {
         this.isAnimating = false;
         if (this.isCollapsed) {
             this.mouseEnterListener = this.renderer
@@ -221,7 +221,7 @@ export class SalesPlanningTool {
     * @setTimeout hoverTimeout if isHovered true
     * @set isHovered
     */
-    private toggleHover(bool) {
+    public toggleHover(bool) {
         if (!this.isCollapsed) return;
         window.clearTimeout(this.hoverTimeout);
         if (bool) {

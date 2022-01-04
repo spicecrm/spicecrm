@@ -13,8 +13,6 @@ use SpiceCRM\modules\ProspectLists\ProspectList;
 
 require_once('modules/KReports/utils.php');
 
-global $dictionary;
-
 //2013-05-14 include files with custom functions .. Bug #478
 //2013-10-19 check if file exists before .. Bug #507
 if (file_exists('./custom/modules/KReports/includes')) {
@@ -278,12 +276,8 @@ class KReport extends SugarBean
             $paramsArray ['exclusiveGrouping'] = $parameters ['exclusiveGrouping'];
 
         if (isset($parameters['start']) && isset($parameters['limit'])) {
-            //handle start not set and start content (added maretval 2019-05-03)
-            if (isset($parameters['start']) && !KReportUtil::KReportValueIsIntegerOnly($parameters['start']))
-                $paramsArray['start'] = 0;
-            //handle limit not set and limit content (added maretval 2019-05-03)
-            if (isset($parameters['limit']) && !KReportUtil::KReportValueIsIntegerOnly($parameters['limit']))
-                $paramsArray['limit'] = 0;
+            $paramsArray['start'] = $parameters['start'] ?: 0;
+            $paramsArray['limit'] = $parameters['limit'] ?: 0;
         }
 
 
@@ -349,8 +343,6 @@ class KReport extends SugarBean
 
     function buildLinkArray($fieldArray)
     {
-        global $app_list_strings, $timedate;
-
         $linkArray = [];
 
         foreach ($fieldArray as $fieldId => $fieldName) {
@@ -370,24 +362,6 @@ class KReport extends SugarBean
         }
         return $linkArray;
     }
-
-    /* widgets removed
-    function evaluateWidgets($fieldArray, $excludeFields = array()) {
-        global $app_list_strings, $timedate;
-
-        $listFieldArray = json_decode(html_entity_decode($this->listfields, ENT_QUOTES, 'UTF-8'), true);
-
-        foreach ($fieldArray as $fieldID => $fieldValue) {
-            if (isset($this->listFieldArrayById [$fieldID] ['widget']) && $this->listFieldArrayById [$fieldID] ['widget'] != '') {
-                require_once ('modules/KReports/KReporterWidgets/' . $this->listFieldArrayById [$fieldID] ['widget'] . '.php');
-                $widgetClass = new $this->listFieldArrayById[$fieldID]['widget']();
-                $fieldValue = $widgetClass->renderField($fieldValue);
-            }
-            $returnArray [$fieldID] = $fieldValue;
-        }
-        return $returnArray;
-    }
-    */
 
     function calculateValueOfTotal($fieldArray, &$cumulatedArray = [])
     {
@@ -428,9 +402,6 @@ class KReport extends SugarBean
 
     function formatFields($fieldArray, $excludeFields = [], $toPdf = false, $forceUTF8 = false)
     {
-        //require_once('modules/Currencies/Currency.php');
-
-        global $app_list_strings, $mod_strings, $timedate;
 
         // 2012-03-29 memorize the complete fields ... has issues with the currencies
         $completeFieldArray = $fieldArray;
@@ -548,8 +519,6 @@ class KReport extends SugarBean
 
     function formateDateTime($fieldArray, $excludeFields = [])
     {
-
-        global $app_list_strings, $timedate;
 
         foreach ($fieldArray as $fieldID => $fieldValue) {
             // get the FieldDetails from the Query
@@ -838,12 +807,8 @@ $db = DBManagerFactory::getInstance();
     {
         $query = '';
 
-        //handle start not set and start content (added maretval 2019-05-03)
-        if (!isset($parameters['start']) || !KReportUtil::KReportValueIsIntegerOnly((int)$parameters['start']))
-            $parameters['start'] = 0;
-        //handle limit not set and limit content (added maretval 2019-05-03)
-        if (!isset($parameters['limit']) || !KReportUtil::KReportValueIsIntegerOnly((int)$parameters['limit']))
-            $parameters['limit'] = 0;
+        $parameters['start'] = $parameters['start'] ?:0;
+        $parameters['limit'] = $parameters['limit'] ?: 0;
 
 
         if (!empty(SpiceConfig::getInstance()->config['k_dbconfig_clone'])) {
@@ -1049,15 +1014,10 @@ $db = DBManagerFactory::getInstance();
         // return an empty array if we have nothing else
         $retArray = [];
 
-        //handle start not set and start content (added maretval 2019-05-03)
-        if (!isset($parameters['start']) || !KReportUtil::KReportValueIsIntegerOnly($parameters['start']))
-            $parameters['start'] = 0;
-        //handle limit not set and limit content (added maretval 2019-05-03)
-        if (!isset($parameters['limit']) || !KReportUtil::KReportValueIsIntegerOnly($parameters['limit']))
-            $parameters['limit'] = 0;
-        //handle snapshot_id content (added maretval 2019-05-03)
-        if ($snapshotid != '0' && !KReportUtil::KReportValueIsAnId($snapshotid))
-            $snapshotid = '0';
+
+        $parameters['start'] = $parameters['start'] ?: 0;
+        $parameters['limit'] = $parameters['limit'] ?:0;
+        $snapshotid = $snapshotid ?: '0';
 
 
         // get the sql array or retrieve from snapshot if set
@@ -1494,13 +1454,13 @@ $db = DBManagerFactory::getInstance();
                             case 'datetimecombo':
                             case 'datetime':
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() - $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() - $origValue * 86400) . ' 00:00:00';
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() - $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() - $origValue * 86400) . ' 00:00:00';
                                 break;
                             default:
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() - $origValue * 86400);
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() - $origValue * 86400);
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() - $origValue * 86400);
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() - $origValue * 86400);
                                 break;
                         }
                         break;
@@ -1509,13 +1469,13 @@ $db = DBManagerFactory::getInstance();
                             case 'datetimecombo':
                             case 'datetime':
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400) . ' 00:00:00';
                                 break;
                             default:
                                 $origValue = $whereField ['value'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400);
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400);
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400);
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400);
                                 break;
                         }
                         break;
@@ -1525,18 +1485,18 @@ $db = DBManagerFactory::getInstance();
                             case 'datetime':
                                 $origValue = $whereField ['value'];
                                 $origValueto = $whereField ['valueto'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400) . ' 00:00:00';
-                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValueto * 86400) . ' 00:00:00';
-                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValueto * 86400) . ' 00:00:00';
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400) . ' 00:00:00';
+                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValueto * 86400) . ' 00:00:00';
+                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValueto * 86400) . ' 00:00:00';
                                 break;
                             default:
                                 $origValue = $whereField ['value'];
                                 $origValueto = $whereField ['valueto'];
-                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValue * 86400);
-                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValue * 86400);
-                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), gmmktime() + $origValueto * 86400);
-                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), gmmktime() + $origValueto * 86400);
+                                $whereField ['value'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValue * 86400);
+                                $whereField ['valuekey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValue * 86400);
+                                $whereField ['valueto'] = date($GLOBALS ['timedate']->get_date_format(), time() + $origValueto * 86400);
+                                $whereField ['valuetokey'] = date($GLOBALS ['timedate']->get_db_date_format(), time() + $origValueto * 86400);
 
                                 break;
                         }

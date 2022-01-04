@@ -8,7 +8,7 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 @Pipe({name: 'questiontypeisttextspipe'})
 export class QuestionTypeISTTextPipe {
 
-    private transform( value ): any[] {
+    public transform( value ): any[] {
         let retArray = [];
         let iteration = 0;
         let foundValue = true;
@@ -21,7 +21,7 @@ export class QuestionTypeISTTextPipe {
         return retArray;
     }
 
-    private findNext( value, items, iteration ): string|false {
+    public findNext( value, items, iteration ): string|false {
         let nextPos = value.indexOf('?');
         if( nextPos >= 0 ) {
             if( nextPos > 0 ) {
@@ -50,7 +50,7 @@ export class QuestionTypeISTTextPipe {
 }
 @Pipe({name: 'questiontypeistoptionspipe'})
 export class QuestionTypeISTOptionsPipe {
-    private transform( values ) {
+    public transform( values ) {
         if ( values ) return values.split(',');
         else return [];
     }
@@ -58,7 +58,7 @@ export class QuestionTypeISTOptionsPipe {
 
 @Component( {
     selector: 'question-render-ist',
-    templateUrl: './src/modules/questionnaires/templates/questionrenderist.html',
+    templateUrl: '../templates/questionrenderist.html',
     styles: [
         'div.question-render-question:last-child { margin-bottom: 0; }',
         'div.question-render-question { border-radius:0; }'
@@ -66,13 +66,13 @@ export class QuestionTypeISTOptionsPipe {
 } )
 export class QuestionRenderIST extends QuestionRenderBasic implements OnInit {
 
-    @Input() private hideFinishedQuestions = false;
+    @Input() public hideFinishedQuestions = false;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
     }
 
-    private getAnswerValue( answerIndex: number ): string {
+    public getAnswerValue( answerIndex: number ): string {
         try {
             let optionId = this.qp.questionoptionsArray[this.questionId][answerIndex].id;
             return this.qp.answers[this.questionId].options[optionId];
@@ -86,7 +86,7 @@ export class QuestionRenderIST extends QuestionRenderBasic implements OnInit {
         if ( !this.question.questiontext ) this.question.questiontext = this.question.name; // provisorisch, solange gefahr besteht, dass "questiontext" leer ist
     }
 
-    private onChange( answerIndex: number, $event: any ): boolean {
+    public onChange( answerIndex: number, $event: any ): boolean {
         $event.stopPropagation();
         let optionId = this.qp.questionoptionsArray[this.questionId][answerIndex].id;
         return this.qp.setOptionWithValue( optionId, $event.target.value );

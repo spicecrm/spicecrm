@@ -10,6 +10,7 @@ import {broadcast} from './broadcast.service';
 import {configurationService} from './configuration.service';
 import {modal} from './modal.service';
 import {session} from './session.service';
+import {metadata} from "./metadata.service";
 
 /**
  * @ignore
@@ -49,7 +50,7 @@ export class userpreferences {
         default_currency_significant_digits: 2,
         default_locale_name_format: 'l, f',
         week_day_start: 0,
-        navigation_paradigm: 'simple',
+        navigation_paradigm: 'subtabbed',
         distance_unit_system: 'METRIC'
     };
 
@@ -60,15 +61,26 @@ export class userpreferences {
      */
     public preferences$: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal, private session: session) {
+    constructor(
+        public backend: backend,
+        public toast: toast,
+        public configuration: configurationService,
+        public language: language,
+        public broadcast: broadcast,
+        public modalservice: modal,
+        public session: session,
+        public metadata: metadata
+    ) {
         this.toUse = this.preferences.global;
         // this.retrievePrefsFromConfigService();
         this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') this.retrievePrefsFromConfigService();
+            if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') {
+                this.retrievePrefsFromConfigService()
+            };
         });
     }
 
-    private retrievePrefsFromConfigService() {
+    public retrievePrefsFromConfigService() {
         let prefs = this.configuration.getData('globaluserpreferences');
         this.preferences.global = _.extendOwn(this.preferences.global, prefs);
         this.unchangedPreferences.global = _.clone(prefs);
@@ -76,6 +88,11 @@ export class userpreferences {
         this.askForMissingPreferences();
         this.completePreferencesWithDefaults();
         this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
+
+        // if we have a role set it
+        if(this.preferences.global.userrole){
+            this.metadata.setActiveRole(this.preferences.global.userrole);
+        }
     }
 
     public getPreferences(loadhandler: Subject<string>) {
@@ -105,7 +122,7 @@ export class userpreferences {
     // Completes the global preferences with default values.
     // This case shouldn´t happen, the global preferences of a user should always be set (by the user).
     // Just in case it´s not and to ensure proper work of the UI:
-    private completePreferencesWithDefaults() {
+    public completePreferencesWithDefaults() {
         let uncomplete = false;
         _.each(this.defaults, (value, key) => {
             if (typeof this.preferences.global[key] === 'string') {
@@ -221,7 +238,7 @@ export class userpreferences {
         }
     }
 
-    private loadFormats(): Observable<any> {
+    public loadFormats(): Observable<any> {
         let retSubject: Subject<boolean> = new Subject<boolean>();
 
         this.formats.nameFormats.length = 0;
@@ -239,7 +256,7 @@ export class userpreferences {
         return retSubject.asObservable();
     }
 
-    private translateNameFormat(format: string): string {
+    public translateNameFormat(format: string): string {
         let translation = '';
         for (let i = 0; i < format.length; i++) {
             switch (format.charAt(i)) {
@@ -299,7 +316,7 @@ export class userpreferences {
         return moment.utc(d).format(this.getDateFormat()) + ' ' + moment.utc(d).format(this.getTimeFormat());
     }
 
-    private askForMissingPreferences() {
+    public askForMissingPreferences() {
 
         // Which important user preferences are not set?
         let namesOfMissingPrefs = this.getNamesOfMissingImportantPrefs();
@@ -324,7 +341,7 @@ export class userpreferences {
         });
     }
 
-    private getNamesOfMissingImportantPrefs(): string[] {
+    public getNamesOfMissingImportantPrefs(): string[] {
         let missing = [];
         for (let name of ['timezone', 'datef', 'timef']) {
             if (!this.unchangedPreferences.global[name]) missing.push(name);

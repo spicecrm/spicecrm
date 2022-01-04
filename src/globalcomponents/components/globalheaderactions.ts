@@ -1,30 +1,30 @@
 /**
  * @module GlobalComponents
  */
-import {AfterViewInit, Component, ViewChild, ViewContainerRef, Renderer2, ElementRef} from '@angular/core';
+import {Component, ViewChild, ViewContainerRef, Renderer2, ElementRef} from '@angular/core';
 import {session} from '../../services/session.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-header-actions',
-    templateUrl: './src/globalcomponents/templates/globalheaderactions.html'
+    templateUrl: '../templates/globalheaderactions.html'
 })
-export class GlobalHeaderActions implements AfterViewInit {
+export class GlobalHeaderActions  {
 
     @ViewChild('actioncontainerheader', {
         read: ViewContainerRef,
         static: true
-    }) private actioncontainerheader: ViewContainerRef;
+    })public actioncontainerheader: ViewContainerRef;
 
     /**
      * the open boolean indicator
      *
      * @private
      */
-    private isOpen: boolean = false;
+   public isOpen: boolean = false;
 
-    private clickListener: any;
+   public clickListener: any;
 
     /**
      * indicates that the add is visible
@@ -32,13 +32,23 @@ export class GlobalHeaderActions implements AfterViewInit {
      *
      * @private
      */
-    private isVisible: boolean = false;
+   public isVisible: boolean = false;
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private session: session, private metadata: metadata, private language: language) {
+    /**
+     * holds if we are initialized
+     *
+     * @private
+     */
+    private isInitialized: boolean = false;
+
+    constructor(public renderer: Renderer2,public elementRef: ElementRef,public session: session,public metadata: metadata,public language: language) {
 
     }
 
-    public ngAfterViewInit() {
+    /**
+     * initializte the component and load all elements
+     */
+    public initialize() {
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderActions');
         if (componentconfig && componentconfig.actionset) {
             let actionsetitems = this.metadata.getActionSetItems(componentconfig.actionset);
@@ -63,18 +73,32 @@ export class GlobalHeaderActions implements AfterViewInit {
                 });
             }
         }
+        this.isInitialized = true;
     }
 
-    private toggleOpen() {
+    /**
+     * toggle the open space
+     *
+     * @private
+     */
+    public toggleOpen() {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
+            if(!this.isInitialized) this.initialize();
+
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
         } else if (this.clickListener) {
             this.clickListener();
         }
     }
 
-    private onClick(event: MouseEvent): void {
+    /**
+     * clock event handler
+     *
+     * @param event
+     * @private
+     */
+    public onClick(event: MouseEvent): void {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.isOpen = false;

@@ -6,22 +6,22 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-custom-icon',
-    templateUrl: './src/systemcomponents/templates/systemcustomicon.html'
+    templateUrl: '../templates/systemcustomicon.html'
 })
 export class SystemCustomIcon {
-    @Input() private icon: string = 'info';
-    @Input() private file: string = './assets/icons/spicecrm.svg';
-    @Input() private size: string = '';
-    @Input() private color: string = '';
-    @Input() private desaturate: boolean = false;
-    @Input() private addclasses: string = ''
-    @Input() private divClass = 'slds-media__figure';
+    @Input() public icon: string = 'info';
+    @Input() public file: string = './assets/icons/spicecrm.svg';
+    @Input() public size: string = '';
+    @Input() public color: string = '';
+    @Input() public desaturate: boolean = false;
+    @Input() public addclasses: string = ''
+    @Input() public divClass = 'slds-media__figure';
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
 
     }
 
-    private getSizeClass() {
+    public getSizeClass() {
         if (this.size) {
             return 'slds-icon--' + this.size;
         } else {
@@ -29,7 +29,7 @@ export class SystemCustomIcon {
         }
     }
 
-    private getSvg() {
+    public getSvg() {
         return this.file + '#' + this.icon;
     }
 

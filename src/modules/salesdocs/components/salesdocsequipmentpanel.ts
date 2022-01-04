@@ -11,7 +11,7 @@ import {modellist} from "../../../services/modellist.service";
 
 @Component({
     selector: "salesdocs-equipment-panel",
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsequipmentpanel.html",
+    templateUrl: "../templates/salesdocsequipmentpanel.html",
     providers: [modellist]
 })
 export class SalesDocsEquipmentPanel implements OnInit {
@@ -34,34 +34,34 @@ export class SalesDocsEquipmentPanel implements OnInit {
     /**
      * the columns to be displayed
      */
-    private fieldsetFields: any[] = [];
+    public fieldsetFields: any[] = [];
 
     /**
      * list of all selected service equipments
      */
-    private selectedEquipments: any[] = [];
+    public selectedEquipments: any[] = [];
 
     /**
      * list of all service equipments
      */
-    private availableEquipments: any = {};
+    public availableEquipments: any = {};
 
     /**
      * sortfield
      */
-    private sortField = 'date_entered';
+    public sortField = 'date_entered';
 
     /**
      * Defines if the panel is expanded or collapsed. Expanded by default.
      */
-    private expanded = true;
+    public expanded = true;
 
     /**
      * Remember the current account (ordering party) to detect modification.
      */
-    private currentAccount = '';
+    public currentAccount = '';
 
-    constructor( private model: model, private metadata: metadata, private view: view, private modellist: modellist ) { }
+    constructor( public model: model, public metadata: metadata, public view: view, public modellist: modellist ) { }
 
     public ngOnInit() {
         // get the config
@@ -101,7 +101,7 @@ export class SalesDocsEquipmentPanel implements OnInit {
     /**
      * Fetch the available service equipments from the backend.
      */
-    private fetchAvailableEquipments() {
+    public fetchAvailableEquipments() {
         let accountId = this.model.getField('account_op_id');
         if ( accountId ) {
             this.modellist.initialize( 'ServiceEquipments' );
@@ -122,7 +122,7 @@ export class SalesDocsEquipmentPanel implements OnInit {
     /**
      * Assigns selection flags to the list off available service equipment.
      */
-    private assignSelectedEquipments() {
+    public assignSelectedEquipments() {
         this.selectedEquipments = this.model.getRelatedRecords('serviceequipments');
         for ( let availableEquipment of this.availableEquipments ) {
             availableEquipment.selected = this.selectedEquipments.some( selectedEquipment => availableEquipment.id === selectedEquipment.id );
@@ -133,7 +133,7 @@ export class SalesDocsEquipmentPanel implements OnInit {
     /**
      * Does the account (ordering party) have service equipments?
      */
-    private hasEquipments(): boolean {
+    public hasEquipments(): boolean {
         return this.availableEquipments.length > 0;
     }
 
@@ -142,7 +142,7 @@ export class SalesDocsEquipmentPanel implements OnInit {
      * it must not be allowed to change the ordering party account (because the service equipments are assigned to it).
      * So in this case set the field account_op_name to status "disabled". Or remove the disabled status, when no service equipment is selected any more.
      */
-    private selectionChanged(): void {
+    public selectionChanged(): void {
         this.model.setFieldStatus('account_op_name', 'disabled', this.model.getRelatedRecords('serviceequipments').length > 0 );
     }
 

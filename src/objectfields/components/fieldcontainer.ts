@@ -9,20 +9,20 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'field-container',
-    templateUrl: './src/objectfields/templates/fieldcontainer.html'
+    templateUrl: '../templates/fieldcontainer.html'
 })
 export class fieldContainer implements AfterViewInit {
-    @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) private fieldcontainer: ViewContainerRef;
+    @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) public fieldcontainer: ViewContainerRef;
 
-    @Input() private field: string;
-    @Input() private fieldconfig: any = {};
-    @Input() private fielddisplayclass = 'slds-text-body--regular slds-truncate slds-m-vertical--small spice-fieldbody';
+    @Input() public field: string;
+    @Input() public fieldconfig: any = {};
+    @Input() public fielddisplayclass = 'slds-text-body--regular slds-truncate slds-m-vertical--small spice-fieldbody';
 
     constructor(
-        protected model: model,
-        private language: language,
-        private metadata: metadata,
-        private view: view
+        public model: model,
+        public language: language,
+        public metadata: metadata,
+        public view: view
     ) {
 
     }
@@ -45,7 +45,7 @@ export class fieldContainer implements AfterViewInit {
         this.buildContainer();
     }
 
-    private buildContainer() {
+    public buildContainer() {
         this.metadata.addComponent(this.getFieldType(), this.fieldcontainer).subscribe(componentRef => {
             componentRef.instance.fieldname = this.field;
             componentRef.instance.fieldconfig = this.fieldconfig;
@@ -53,7 +53,7 @@ export class fieldContainer implements AfterViewInit {
         });
     }
 
-    private getFieldType() {
+    public getFieldType() {
         let fieldType = '';
 
         // check if we have a field access

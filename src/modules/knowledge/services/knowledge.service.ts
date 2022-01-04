@@ -31,22 +31,22 @@ export class KnowledgeService {
     public moduleFilter: string = "";
     public resultsList: any[] = [];
     public documentsList: any[] = [];
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    @ViewChild("searchcontainer", {read: ViewContainerRef, static: true}) private searchContainer: ViewContainerRef;
+    @ViewChild("searchcontainer", {read: ViewContainerRef, static: true}) public searchContainer: ViewContainerRef;
 
-    constructor(private backend: backend,
-                private language: language,
-                private broadcast: broadcast,
-                private modelutilities: modelutilities,
-                private navigation: navigation,
+    constructor(public backend: backend,
+                public language: language,
+                public broadcast: broadcast,
+                public modelutilities: modelutilities,
+                public navigation: navigation,
                 public userPreferences: userpreferences,
-                private location: Location,
-                private activatedRoute: ActivatedRoute,
-                private toast: toast,
-                private metadata: metadata,
-                private navigationtab: navigationtab,
-                private fts: fts) {
+                public location: Location,
+                public activatedRoute: ActivatedRoute,
+                public toast: toast,
+                public metadata: metadata,
+                public navigationtab: navigationtab,
+                public fts: fts) {
         this.loadPreferences();
         this.saveSubscriber();
         this.routerSubscriber();
@@ -147,7 +147,7 @@ export class KnowledgeService {
             );
     }
 
-    private loadPreferences() {
+    public loadPreferences() {
         this.userPreferences.loadPreferences('KnowledgeBooks')
             .pipe(take(1))
             .subscribe(prefs => {
@@ -157,7 +157,7 @@ export class KnowledgeService {
             });
     }
 
-    private saveSubscriber() {
+    public saveSubscriber() {
         let subscriber = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == "model.save") {
                 switch (msg.messagedata.module) {
@@ -200,7 +200,7 @@ export class KnowledgeService {
         this.subscriptions.add(subscriber);
     }
 
-    private sortDocuments(docs) {
+    public sortDocuments(docs) {
         return docs.sort((a, b) => {
             if (+a.parent_sequence != +b.parent_sequence) {
                 return +a.parent_sequence > +b.parent_sequence ? 1 : -1;
@@ -212,7 +212,7 @@ export class KnowledgeService {
 
 
 
-    private routerSubscriber() {
+    public routerSubscriber() {
         let subscriber = this.navigationtab.activeRoute$.subscribe(route => {
             let params = route.params;
             if (!params.module) return;

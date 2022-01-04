@@ -16,7 +16,7 @@ declare var _: any;
 declare var libphonenumber: any;
 
 @Component({
-    templateUrl: './src/modules/telephony/templates/telephonycallpanel.html',
+    templateUrl: '../templates/telephonycallpanel.html',
 })
 export class TelephonyCallPanel implements OnInit, OnDestroy {
 
@@ -25,7 +25,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      *
      * @private
      */
-    private compenentconfig: any = {};
+    public compenentconfig: any = {};
 
     /**
      * the calldata
@@ -40,27 +40,27 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
     /**
      * notes on the call
      */
-    private callnotes: string = '';
+    public callnotes: string = '';
 
     /**
      * the fieldset loaded fromt he componentconfig to be rendered for the embedded object if there is any set
      *
      * @private
      */
-    private fieldset: string;
+    public fieldset: string;
 
     /**
      * holds the components subscriptions
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private broadcast: broadcast,
-        private session: session,
-        private model: model) {
+        public metadata: metadata,
+        public language: language,
+        public broadcast: broadcast,
+        public session: session,
+        public model: model) {
 
     }
 
@@ -86,9 +86,9 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      * @param event
      * @private
      */
-    private handleBroadcast(event) {
+    public handleBroadcast(event) {
         // check that we have a related id and that we also have the proper eventes and model in scope
-        if(this.calldata.relatedid && event.messagetype == 'model.save' && event.messagedata.module == this.calldata.relatedmodule && event.messagedata.id == this.calldata.relatedid){
+        if (this.calldata.relatedid && event.messagetype == 'model.save' && event.messagedata.module == this.calldata.relatedmodule && event.messagedata.id == this.calldata.relatedid) {
             this.calldata.relateddata = event.messagedata.data;
             this.setReletadeData();
         }
@@ -98,7 +98,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      * loads the component config and sets the initial data if we have a related id
      * @private
      */
-    private initalizeModel() {
+    public initalizeModel() {
         this.compenentconfig = this.metadata.getComponentConfig('TelephonyCallPanel');
         if (this.compenentconfig.objectmodule) {
             // initialize the model
@@ -107,6 +107,11 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
 
             // set the related data
             this.setReletadeData();
+
+            // specific handling for Calls where we also have a direction
+            if (this.model.getField('direction')) {
+                this.model.setField('direction', this.calldata.direction == 'inbound' ? 'Inbound' : 'Outbound');
+            }
 
             // start the edit ont he model
             this.model.startEdit();
@@ -120,7 +125,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      *
      * @private
      */
-    private setReletadeData() {
+    public setReletadeData() {
         if (this.calldata.relatedid) {
             // some specific handling just in case we have a call or other object that has a contacts field
             // ToDo: shoudl be solved somewhat nicer in the future, potentially with Copy Rules but woudl require a modl instance to be created
@@ -143,6 +148,33 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
     }
 
     /**
+     * unsets the related data
+     *
+     * @private
+     */
+    public unsetRelatedData(){
+        this.calldata.relatedid = null;
+        this.calldata.relatedmodule= null;
+        this.calldata.relateddata = {};
+
+        if (this.calldata.relatedmodule == 'Contacts' && this.metadata.getModuleFields(this.model.module).contact_id) {
+            this.model.setFields({
+                contact_id: undefined,
+                contact_name: undefined,
+                parent_type: undefined,
+                parent_id: undefined,
+                parent_name: undefined,
+            });
+        } else {
+            this.model.setFields({
+                parent_type: undefined,
+                parent_id: undefined,
+                parent_name: undefined
+            });
+        }
+    }
+
+    /**
      * gets a formatted MSISDN
      */
     get msisdnFormatted() {
@@ -158,7 +190,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      *
      * @param record
      */
-    private selectMatched(record) {
+    public selectMatched(record) {
         this.calldata.relatedid = record.id;
         this.calldata.relatedmodule = record.module;
         this.calldata.relateddata = record.data;
@@ -169,7 +201,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
     /**
      * no match found in the listed items
      */
-    private noMatch() {
+    public noMatch() {
         this.matchedbeans = [];
     }
 

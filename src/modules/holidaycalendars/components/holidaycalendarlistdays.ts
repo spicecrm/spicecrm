@@ -7,23 +7,25 @@ import {model} from '../../../services/model.service';
 import {metadata} from "../../../services/metadata.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
+declare var moment: any;
+
 @Component({
     selector: 'holiday-calendar-list-days',
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlistdays.html',
+    templateUrl: '../templates/holidaycalendarlistdays.html',
     providers: [relatedmodels, model]
 })
 export class HolidayCalendarListDays implements OnChanges {
 
-    @Input() private calendarid: string;
+    @Input() public calendarid: string;
 
-    private componentconfig: any;
-    private listfields: any[];
+    public componentconfig: any;
+    public listfields: any[];
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata,
-        private relatedmodels: relatedmodels
+        public language: language,
+        public model: model,
+        public metadata: metadata,
+        public relatedmodels: relatedmodels
     ) {
         this.relatedmodels.module = 'SystemHolidayCalendars';
         this.relatedmodels.relatedModule = 'SystemHolidayCalendarDays';
@@ -37,7 +39,11 @@ export class HolidayCalendarListDays implements OnChanges {
     public ngOnChanges(changes: SimpleChanges) {
         this.relatedmodels.id = this.calendarid;
         this.relatedmodels.resetData();
-        this.relatedmodels.getData();
+        this.relatedmodels.getData().subscribe(data => {
+            this.relatedmodels.items.sort((a, b) => {
+                return moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? 1 : -1;
+            })
+        });
     }
 
 }

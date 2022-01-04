@@ -9,7 +9,7 @@ import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 
 @Component({
-    templateUrl: './src/modules/products/templates/productgroupmanager.html',
+    templateUrl: '../templates/productgroupmanager.html',
     providers: [productfinder, model]
 })
 
@@ -18,14 +18,14 @@ export class ProductGroupManager {
     /**
      * the id of the currently selected group
      */
-    private selectedGroupId: string;
+    public selectedGroupId: string;
 
     /**
      * the actionset
      */
-    private actionSet: string = '';
+    public actionSet: string = '';
 
-    constructor(private language: language, private navigationtab: navigationtab, private metadata: metadata, private model: model) {
+    constructor(public language: language, public navigationtab: navigationtab, public metadata: metadata, public model: model) {
         this.model.module = 'ProductGroups';
         this.navigationtab.setTabInfo({displaymodule: 'ProductGroups', displayname: this.language.getLabel('LBL_PRODUCT_GROUP_MANAGER')})
         this.getActionSet();
@@ -34,7 +34,7 @@ export class ProductGroupManager {
     /**
      * called in the contructor to get the actionset from the config
      */
-    private getActionSet() {
+    public getActionSet() {
         let conf = this.metadata.getComponentConfig('ProductGroupManager', 'ProductGroups');
         this.actionSet = conf && conf.actionset ? conf.actionset : '';
     }
@@ -44,7 +44,7 @@ export class ProductGroupManager {
      *
      * @param data
      */
-    private selectionChanged(data) {
+    public selectionChanged(data) {
         this.selectedGroupId = data.object.id;
     }
 }

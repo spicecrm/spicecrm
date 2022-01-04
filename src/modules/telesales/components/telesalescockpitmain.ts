@@ -8,16 +8,16 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'tele-sales-cockpit-main',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitmain.html',
+    templateUrl: '../templates/telesalescockpitmain.html',
 })
 export class TeleSalesCockpitMain implements OnChanges {
 
-    @ViewChild('maincontainer', {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
-    @Input() private selectedListItemId: string;
+    @ViewChild('maincontainer', {read: ViewContainerRef, static: true}) public maincontainer: ViewContainerRef;
+    @Input() public selectedListItemId: string;
 
-    constructor(private language: language,
-                private model: model,
-                private teleSalesCockpit: telecockpitservice) {
+    constructor(public language: language,
+                public model: model,
+                public teleSalesCockpit: telecockpitservice) {
     }
 
     get mainStyle() {

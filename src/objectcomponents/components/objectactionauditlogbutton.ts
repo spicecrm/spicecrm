@@ -12,7 +12,7 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-action-auditlog-button',
-    templateUrl: './src/objectcomponents/templates/objectactionauditlogbutton.html'
+    templateUrl: '../templates/objectactionauditlogbutton.html'
 })
 export class ObjectActionAuditlogButton implements OnInit {
 
@@ -26,7 +26,7 @@ export class ObjectActionAuditlogButton implements OnInit {
      */
     public hidden: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, public ViewContainerRef: ViewContainerRef) {
     }
 
     /**

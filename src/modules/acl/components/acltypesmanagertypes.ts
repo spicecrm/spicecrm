@@ -21,20 +21,38 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types',
-    templateUrl: './src/modules/acl/templates/acltypesmanagertypes.html',
+    templateUrl: '../templates/acltypesmanagertypes.html',
 })
 export class ACLTypesManagerTypes {
 
-    @ViewChild('header', {read: ViewContainerRef, static: true}) public header: ViewContainerRef;
-
+    /**
+     * inicates that we are loading
+     */
     public loading: boolean = true;
 
+    /**
+     * the list of acl types
+     */
     public acltypes: any[] = [];
+
+    /**
+     * the active type id
+     */
     public activeTypeId: string = '';
 
+    /**
+     * a filter for the module
+     *
+     * @private
+     */
+    public filter: string;
+
+    /**
+     * an output when the type is selected
+     */
     @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
         this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
             this.acltypes = acltypes;
 
@@ -46,16 +64,23 @@ export class ACLTypesManagerTypes {
         });
     }
 
+    /**
+     * returns a filtered list of acl types
+     */
+    get acltypeslist(){
+        if(!this.filter) return this.acltypes;
+
+        return this.acltypes.filter(t => t.id == this.activeTypeId ||  t.module.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0);
+    }
+
+    /**
+     * selects a type
+     *
+     * @param acltype
+     */
     public selectType(acltype) {
         this.activeTypeId = acltype.id;
         this.typeselected.emit(acltype);
-    }
-
-    get contentStyle() {
-        let rect = this.header.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        };
     }
 
 }

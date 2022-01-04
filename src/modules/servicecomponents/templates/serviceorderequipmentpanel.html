@@ -8,13 +8,13 @@
     </thead>
     <tbody *ngIf="itemcount > 0">
         <ng-container *ngFor="let item of items.list|serviceorderitempipe">
-            <tr serviceorder-equipment-item [(item)]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name" ></tr>
+            <tr serviceorder-equipment-item [item]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name" ></tr>
         </ng-container>
     </tbody>
 </table>
-<div *ngIf="!loading && !servicelocationId" class="slds-p-around--medium slds-text-align--center">
+<div *ngIf="!servicelocationId" class="slds-p-around--medium slds-text-align--center">
     <system-label label="LBL_PLEASE_SELECT_SERVICELOCATION"></system-label>
 </div>
-<div *ngIf="!loading && servicelocationId && itemcount == 0" class="slds-p-around--medium slds-text-align--center">
+<div *ngIf="servicelocationId && itemcount == 0" class="slds-p-around--medium slds-text-align--center">
     <system-label label="LBL_NO_EQUIPMENTS_UNDER_SERVICELOCATION"></system-label>
 </div>

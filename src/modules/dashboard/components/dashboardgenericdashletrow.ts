@@ -10,16 +10,16 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: '[dashboard-generic-dashlet-row]',
-    templateUrl: './src/modules/dashboard/templates/dashboardgenericdashletrow.html',
+    templateUrl: '../templates/dashboardgenericdashletrow.html',
     providers: [model, view]
 })
 export class DashboardGenericDashletRow implements OnInit {
     public fieldsetfields: Array<any> = [];
-    @Input() private module: string = '';
-    @Input() private fieldset: string = '';
-    @Input() private data: any = {};
+    @Input() public module: string = '';
+    @Input() public fieldset: string = '';
+    @Input() public data: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view, private modelutilities: modelutilities) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view, public modelutilities: modelutilities) {
         // note editable
         this.view.isEditable = false;
 
@@ -36,7 +36,7 @@ export class DashboardGenericDashletRow implements OnInit {
         this.fieldsetfields = this.metadata.getFieldSetFields(this.fieldset);
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

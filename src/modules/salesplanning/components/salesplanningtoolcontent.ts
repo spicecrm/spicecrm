@@ -22,7 +22,7 @@ declare var _: any;
 
 @Component({
     selector: 'sales-planning-tool-content',
-    templateUrl: './src/modules/salesplanning/templates/salesplanningtoolcontent.html',
+    templateUrl: '../templates/salesplanningtoolcontent.html',
     providers: [view]
 })
 
@@ -52,23 +52,23 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
      */
     public nodeCrumbs: any[] = [];
 
-    private isLoading: boolean = false;
-    private isSaving: boolean = false;
-    private isClosing: boolean = false;
-    @Input() private node: any;
+    public isLoading: boolean = false;
+    public isSaving: boolean = false;
+    public isClosing: boolean = false;
+    @Input() public node: any;
 
-    constructor(private language: language,
-                private backend: backend,
-                private model: model,
-                private broadcast: broadcast,
-                private view: view,
-                private toast: toast,
-                private modal: modal,
-                private metadata: metadata,
-                private userPrefs: userpreferences,
-                private injector: Injector,
-                private mathExpCompiler: MathExpressionCompilerService,
-                private planningService: SalesPlanningService) {
+    constructor(public language: language,
+                public backend: backend,
+                public model: model,
+                public broadcast: broadcast,
+                public view: view,
+                public toast: toast,
+                public modal: modal,
+                public metadata: metadata,
+                public userPrefs: userpreferences,
+                public injector: Injector,
+                public mathExpCompiler: MathExpressionCompilerService,
+                public planningService: SalesPlanningService) {
     }
 
     get displayNodeCrumbs() {
@@ -134,7 +134,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @push period: {key: string, name:string}
     * @sort periods by default
     */
-    private buildPeriods() {
+    public buildPeriods() {
         this.periods = [];
         let unit = this.model.getField('periode_unit');
         let segments = this.model.getField('periode_segments');
@@ -169,7 +169,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @get nodeInfo
     * @get nodeContent
     */
-    private getNodeInfo() {
+    public getNodeInfo() {
         if (!this.node) return;
         this.isLoading = true;
         this.nodeInfo = undefined;
@@ -196,7 +196,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @set data
     * @sum rows and columns
     */
-    private getNodeContent() {
+    public getNodeContent() {
         this.data = undefined;
         this.rowsSum = undefined;
         if (!this.node) return;
@@ -218,7 +218,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @calculate columnFields
     * @calculate rowsTotals
     */
-    private doRowsColumnsSum() {
+    public doRowsColumnsSum() {
         this.calculateColumnFields();
         this.calculateRowsTotals();
     }
@@ -226,7 +226,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     /*
     * @calculate cellValue if formula is set
     */
-    private calculateColumnFields() {
+    public calculateColumnFields() {
         this.periods.forEach(period => {
             this.contentFields.forEach(field => {
                 // return if we do not have a formula
@@ -248,7 +248,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @sum field columns if formula_sum is not set and cbfunction_sum is not set
     * @calculate field columns if formula_sum is set and cbfunction_sum is not set
     */
-    private calculateRowsTotals() {
+    public calculateRowsTotals() {
         this.rowsSum = {};
         let fieldsHasNoFormula = this.contentFields.filter(field => (!field.formula_sum || field.formula_sum.length == 0) && (!field.cbfunction_sum || field.cbfunction_sum.length == 0));
         let fieldsHasFormula = this.contentFields.filter(field => (field.formula_sum && field.formula_sum.length > 0) && (!field.cbfunction_sum || field.cbfunction_sum.length == 0));
@@ -268,7 +268,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @calculate formulaValues by mathExpCompiler.do
     * @return result: formatted number
     */
-    private getCellValue(fieldData, formula, periodKey) {
+    public getCellValue(fieldData, formula, periodKey) {
         let result = fieldData[periodKey];
         let formulaIds = formula.match(/\[.*?]/g);
         let formulaValues = this.replaceIdsWithValues('contentData', formulaIds, formula, periodKey);
@@ -285,7 +285,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @calculate formulaValues by mathExpCompiler.do
     * @return result: number
     */
-    private getRowSum(formulaSum) {
+    public getRowSum(formulaSum) {
         let result = 0;
         let formulaIds = formulaSum.match(/\[.*?]/g);
         let formulaValues = this.replaceIdsWithValues('rowSum', formulaIds, formulaSum);
@@ -303,7 +303,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @replace fieldId with cellValue
     * @return parsedFormula
     */
-    private replaceIdsWithValues(source, ids, formula, periodKey?) {
+    public replaceIdsWithValues(source, ids, formula, periodKey?) {
         let parsedFormula = formula;
         ids.forEach(fieldId => {
             let idString = fieldId.replace(/[\[\]]/g, '');
@@ -329,7 +329,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @format cellValue
     * @return data: any
     */
-    private formatAllData(data) {
+    public formatAllData(data) {
         for (let id in data) {
             if (data.hasOwnProperty(id)) {
                 this.periods.forEach(period => data[id][period.key] = this.formatValue(data[id][period.key]));
@@ -343,7 +343,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @machineFormat cellValue
     * @return data: any
     */
-    private machineFormatAllData(data) {
+    public machineFormatAllData(data) {
         for (let id in data) {
             if (data.hasOwnProperty(id)) {
                 this.periods.forEach(period => data[id][period.key] = this.machineFormat(data[id][period.key]));
@@ -359,7 +359,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @set editMode true
     * @set isEditing true
     */
-    private setEditMode() {
+    public setEditMode() {
         if (!this.nodeInfo.leaf || !this.canEdit) return;
         let dataPeriods = {};
         for (let key in this.data) if (this.data.hasOwnProperty(key)) dataPeriods[key] = {...this.data[key]};
@@ -375,7 +375,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @set viewMode true
     * @set isEditing false
     */
-    private setViewMode() {
+    public setViewMode() {
         this.dataBackup = undefined;
         this.rowsSumBackup = undefined;
         this.view.setViewMode();
@@ -388,7 +388,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @set viewMode true
     * @set data
     */
-    private save() {
+    public save() {
         this.isSaving = true;
         let body = {data: this.machineFormatAllData(this.data)};
         this.backend.postRequest(`module/SalesPlanningContents/${this.planningService.versionId}/${this.nodeInfo.planningNode}`, {}, body)
@@ -409,7 +409,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @pass periods
     * @execute inputHelperData
     */
-    private openInputHelper() {
+    public openInputHelper() {
         this.modal.openModal('SalesPlanningToolInputHelperModal', true, this.injector)
             .subscribe(ref => {
                 ref.instance.periods = this.periods;
@@ -430,7 +430,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @set cellValue
     * @do rowsColumnsSum
     */
-    private executeInputHelperData(res) {
+    public executeInputHelperData(res) {
         if (!res) return;
         let periodRange = this.periods.slice(res.startPeriod, +res.endPeriod + 1);
         let value = this.machineFormat(res.value);
@@ -455,7 +455,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @restore rowsSum
     * @set viewMode true
     */
-    private cancel() {
+    public cancel() {
         this.data = _.clone(this.dataBackup);
         this.rowsSum = _.clone(this.rowsSumBackup);
         this.setViewMode();
@@ -468,7 +468,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param item
     * @return item
     */
-    private trackByItemFn(index, item) {
+    public trackByItemFn(index, item) {
         return item.id;
     }
 
@@ -479,7 +479,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param item
     * @return index
     */
-    private trackByIndexFn(index, item) {
+    public trackByIndexFn(index, item) {
         return index;
     }
 
@@ -489,7 +489,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param withSymbol: boolean = true
     * @return cellValue with fieldSymbol
     */
-    private getCellDisplayValue(column, contentField, withSymbol = true) {
+    public getCellDisplayValue(column, contentField, withSymbol = true) {
         if (!this.data) return '';
         if (this.data[contentField.id][column] != '') {
             return (withSymbol ? this.getFieldSymbol(contentField.field_type) + ' ' : '') + this.data[contentField.id][column];
@@ -505,7 +505,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @set cellValue
     * @do rowsColumnsSum
     */
-    private setCellValue(value, contentField, periodKey) {
+    public setCellValue(value, contentField, periodKey) {
         this.data[contentField.id][periodKey] = this.formatValue(this.machineFormat(value));
         this.doRowsColumnsSum();
     }
@@ -514,7 +514,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param contentField: any
     * @return rowSum with fieldSymbol | ''
     */
-    private getRowSumDisplay(contentField) {
+    public getRowSumDisplay(contentField) {
         if (!this.rowsSum && !this.data[contentField.id].sum) return '';
         let rowSum = this.data[contentField.id].sum || this.rowsSum[contentField.id];
         if (this.formatValue(rowSum) != '') {
@@ -528,7 +528,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param value: string
     * @return money formatted value | ''
     */
-    private formatValue(value) {
+    public formatValue(value) {
         value = parseFloat(value);
         return !isNaN(+value) && value != 0 ? this.userPrefs.formatMoney(+value) : '';
     }
@@ -537,7 +537,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param value: string
     * @return number value without format | ''
     */
-    private machineFormat(value) {
+    public machineFormat(value) {
         if (value) {
             value = value.split(this.userPrefs.toUse.num_grp_sep).join('');
             value = value.split(this.userPrefs.toUse.dec_sep).join('.');
@@ -554,7 +554,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @pass nodeInfo
     * @save contentNote
     */
-    private viewNote() {
+    public viewNote() {
         this.modal.openModal('SalesPlanningToolContentNoteModal')
             .subscribe(modalRef => {
                 modalRef.instance.canEdit = this.canEdit;
@@ -568,7 +568,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @toast success
     * @set viewMode
     */
-    private saveContentNote() {
+    public saveContentNote() {
         let body = {notice: this.nodeInfo.notice};
         this.backend.postRequest(`module/SalesPlanningContents/${this.planningService.versionId}/${this.nodeInfo.planningNode}/notice`, {}, body)
             .subscribe(result => {
@@ -583,7 +583,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param fieldType: 'currency' | 'percentage' | mixed
     * @return symbol
     */
-    private getFieldSymbol(fieldType) {
+    public getFieldSymbol(fieldType) {
         switch (fieldType) {
             case 'currency':
                 return '€';
@@ -598,7 +598,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @param color: string
     * @return isDarkColor: boolean
     */
-    private isDarkColor(color) {
+    public isDarkColor(color) {
         if (!color || color.length == 0) return false;
         let c = color.indexOf('#') > -1 ? color.substring(1) : color;
         let rgb = parseInt(c, 16);   // convert rrggbb to decimal

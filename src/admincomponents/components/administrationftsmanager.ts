@@ -10,7 +10,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: '[administration-ftsmanager]',
-    templateUrl: './src/admincomponents/templates/administrationftsmanager.html',
+    templateUrl: '../templates/administrationftsmanager.html',
     providers: [ftsconfiguration]
 })
 export class AdministrationFTSManager {
@@ -19,11 +19,11 @@ export class AdministrationFTSManager {
     public selected_module;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private modal: modal,
-        private ftsconfiguration: ftsconfiguration,
-        private injector: Injector
+        public metadata: metadata,
+        public language: language,
+        public modal: modal,
+        public ftsconfiguration: ftsconfiguration,
+        public injector: Injector
     ) {
 
     }
@@ -44,7 +44,7 @@ export class AdministrationFTSManager {
     /**
      * adds a new fts module
      */
-    private add() {
+    public add() {
         this.modal.openModal('AdministrationFTSManagerModuleAdd', true, this.injector).subscribe(addPopup => {
             addPopup.instance.module$.subscribe(newModule => {
                 if (newModule) {
@@ -57,7 +57,7 @@ export class AdministrationFTSManager {
     /**
      * deletes the current FTS config settings
      */
-    private delete() {
+    public delete() {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 this.ftsconfiguration.deleteModule(this.module);

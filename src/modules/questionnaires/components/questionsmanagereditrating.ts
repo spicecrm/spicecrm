@@ -6,11 +6,12 @@ import { model } from '../../../services/model.service';
 import { language } from '../../../services/language.service';
 import { view } from '../../../services/view.service';
 import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasicwithoptions';
+import { metadata } from '../../../services/metadata.service';
 
 declare var _: any;
 @Component({
     selector: 'questions-manager-edit-rating',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditrating.html'
+    templateUrl: '../templates/questionsmanagereditrating.html'
 })
 export class QuestionsManagerEditRating extends QuestionsManagerEditBasicWithOptions implements OnInit {
 
@@ -24,8 +25,8 @@ export class QuestionsManagerEditRating extends QuestionsManagerEditBasicWithOpt
      */
     public numEntries: number;
 
-    constructor( public language: language, public model: model, public view: view ) {
-        super( language, model, view );
+    constructor( public language: language, public model: model, public view: view, public metadata: metadata ) {
+        super( language, model, view, metadata );
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -115,6 +116,18 @@ export class QuestionsManagerEditRating extends QuestionsManagerEditBasicWithOpt
         this.writeQuestionparametersToModel();
         super.deleteOption( index );
         this.numEntries = this.options.length;
+    }
+
+    public canEditOption( option ): boolean {
+        return option.new_with_id || !!option.acl?.edit;
+    }
+
+    public canDeleteOption( option ): boolean {
+        return option.new_with_id || !!option.acl?.delete;
+    }
+
+    public canMoveOption( option ): boolean {
+        return this.canEditOption( option );
     }
 
 }

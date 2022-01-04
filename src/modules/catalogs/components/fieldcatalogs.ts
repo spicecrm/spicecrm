@@ -12,18 +12,18 @@ import {configurationService} from '../../../services/configuration.service';
 
 
 @Component({
-    templateUrl: './src/modules/catalogs/templates/fieldcatalogs.html'
+    templateUrl: '../templates/fieldcatalogs.html'
 })
 export class fieldCatalogs extends fieldGeneric {
     @Input() public fieldname: string = '';
     @Input() public fieldconfig: any = {};
     public fieldid: string = '';
-    private filterKey: string = '';
-    private items = [];
-    private products = [];
-    private lastLoadedTemplate: string = '';
+    public filterKey: string = '';
+    public items = [];
+    public products = [];
+    public lastLoadedTemplate: string = '';
 
-    private is_loading_items = false;
+    public is_loading_items = false;
 
     constructor(
         public model: model,
@@ -31,9 +31,9 @@ export class fieldCatalogs extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private modal: modal,
-        private configurationService: configurationService
+        public backend: backend,
+        public modal: modal,
+        public configurationService: configurationService
     ) {
         super(model, view, language, metadata, router);
 
@@ -87,7 +87,7 @@ export class fieldCatalogs extends fieldGeneric {
 
     }
 
-    private setItemsFromValue() {
+    public setItemsFromValue() {
         if (this.items.length > 0) return;
 
         if (!Array.isArray(this.value)) {

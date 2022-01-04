@@ -24,11 +24,12 @@ export class spiceinstaller {
      * backend config
      */
     public systemid: string = '000';
-    public systemname: string = '';
-    public systemurl: string = '';
-    public systemproxy: number = 1;
+    public systemname: string = 'SpiceCRM';
+    public systemurl: string = window.location.href.split('#')[0] + 'api';
+    public systemproxy: number = 0;
     public systemdevmode: boolean = false;
     public systemloginprogressbar: number = 0;
+    public systemloginsidebar: number = 0;
     public systemallowforgotpass: number = 0;
     public frontendUrl: string = window.location.href.split('#')[0];
     /**
@@ -44,14 +45,14 @@ export class spiceinstaller {
     public db_user_name: string = '';
     public db_password: string = '';
     public db_name: string = '';
-    public db_type: string = 'mysqli';
+    public db_type: string = '';
     public db_port: string = '';
     public db_manager: string = '';
     public persistent: boolean = true;
     public autofree: boolean = false;
     public debug: number = 0;
     public ssl: boolean = false;
-    public collation: string = 'utf8_general_ci';
+    public collation: string = '';
     public dbaccessuser: string = 'admin';
     /**
      * existing or new user for database access
@@ -68,7 +69,6 @@ export class spiceinstaller {
     /**
      * oracle additional parameters
      */
-
     public db_schema: string = 'SpiceCRM';
     /**
      * fts
@@ -76,7 +76,7 @@ export class spiceinstaller {
 
     public server: string = '';
     public port: string = '9200';
-    public prefix: string = 'spicecrm_';
+    public prefix: string = '';
     public transferProtocol: string = 'http';
     /**
      * credentials
@@ -162,7 +162,7 @@ export class spiceinstaller {
     /**
      * the selected step object and its event emitter for tracking the change
      */
-    private _selectedStep: stepObject;
+    public _selectedStep: stepObject;
 
     /**
      * getter for the selected step object

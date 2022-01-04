@@ -11,7 +11,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
  */
 @Component({
     selector: 'object-modal-module-lookup-aggregates',
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookupaggregates.html',
+    templateUrl: '../templates/objectmodalmodulelookupaggregates.html',
     animations: [
         trigger('animatepanel', [
             transition(':enter', [
@@ -28,7 +28,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 })
 export class ObjectModalModuleLookupAggregates {
 
-    constructor(private modellist: modellist, private metadata: metadata) {
+    constructor(public modellist: modellist, public metadata: metadata) {
 
     }
 
@@ -42,7 +42,7 @@ export class ObjectModalModuleLookupAggregates {
     /**
      * a getter for the aggregates
      */
-    private getAggregates() {
+    public getAggregates() {
         return this.modellist.moduleAggregates;
     }
 }

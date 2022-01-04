@@ -43,7 +43,7 @@ export class SalesPlanningService {
     * @param originNodes: number
     * @return selectedNodes: array[]
     */
-    private getVisitedTreeItems(item, originNodes) {
+    public getVisitedTreeItems(item, originNodes) {
         let selectedNodes = [];
         if (item && item.value) selectedNodes = [(item)];
         if (item && item.parent_id && item.parent_id.length > 0) {
@@ -59,7 +59,7 @@ export class SalesPlanningService {
     * @param selectedNodes: any[]
     * @unshift selectedNodes
     */
-    private getTreeItemByParent(originNodes, parentId, selectedNodes) {
+    public getTreeItemByParent(originNodes, parentId, selectedNodes) {
         for (let item of originNodes) {
             if (item.id == parentId) {
                 selectedNodes.unshift(item);

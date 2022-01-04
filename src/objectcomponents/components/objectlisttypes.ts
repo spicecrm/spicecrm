@@ -9,16 +9,16 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-list-types',
-    templateUrl: './src/objectcomponents/templates/objectlisttypes.html'
+    templateUrl: '../templates/objectlisttypes.html'
 })
 export class ObjectListTypes {
     /**
      * holds the list types
      */
     public listTypes: ListTypeI[] = [];
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
-    constructor(private modellist: modellist, private elementRef: ElementRef, private renderer: Renderer2, private language: language) {
+    constructor(public modellist: modellist, public elementRef: ElementRef, public renderer: Renderer2, public language: language) {
         this.initialize();
     }
 
@@ -33,22 +33,22 @@ export class ObjectListTypes {
      * load the list types and subscribe to list type changes
      * @private
      */
-    private initialize() {
+    public initialize() {
         this.setListTypes();
         this.subscription = this.modellist.listType$.subscribe(() => {
             this.setListTypes();
         });
     }
 
-    private setListTypes() {
+    public setListTypes() {
         this.listTypes = this.modellist.getListTypes(false)
             .map(type => ({...type, icon: type.global && type.global != '0' ? 'world' : 'user'}))
             .sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
     }
 
-    private showMenu: boolean = false;
+    public showMenu: boolean = false;
 
-    private setListType(id = 'all') {
+    public setListType(id = 'all') {
         this.modellist.setListType(id);
         this.showMenu = false;
     }
@@ -74,7 +74,7 @@ export class ObjectListTypes {
      *
      * @param listtype
      */
-    private getListtypeIcon(listtype) {
+    public getListtypeIcon(listtype) {
         return listtype.global && listtype.global != '0' ? 'world' : 'user';
     }
 

@@ -12,30 +12,30 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
  */
 @Component({
     selector: 'spice-page-builder-element-column',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementcolumn.html',
+    templateUrl: '../templates/spicepagebuilderelementcolumn.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
      * containers to be rendered
      */
-    @Input() protected readonly column: ColumnI;
+    @Input() public readonly column: ColumnI;
     /**
      * holds the drag entered value
      */
-    private dragEntered: boolean = false;
+    public dragEntered: boolean = false;
     /**
      * read drop list dom element to be added to the group
      */
-    @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
+    @ViewChild('dropList', {read: CdkDropList, static: false}) public dropList: CdkDropList;
     /**
      * hold the style object for the element
      */
-    private style = {};
+    public style = {};
 
-    constructor(private spicePageBuilderService: SpicePageBuilderService,
-                private modal: modal,
-                private cdRef: ChangeDetectorRef) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService,
+                public modal: modal,
+                public cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -56,19 +56,19 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /** Predicate method that only allows sections to be dropped into a list. */
-    protected contentPredicate(item: CdkDrag) {
+    public contentPredicate(item: CdkDrag) {
         return item.data.tagName != 'section';
     }
 
     /**
      * generate body style object
      */
-    private generateStyle() {
+    public generateStyle() {
         this.style = {
             'background-color': this.column.attributes['background-color'],
             'border': this.column.attributes.border,
@@ -87,7 +87,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * push the dropped item to the container array
      * @param event
      */
-    private onDrop(event: CdkDragDrop<any>) {
+    public onDrop(event: CdkDragDrop<any>) {
 
         if (event.previousContainer != event.container) {
             // remove placeholder element
@@ -133,7 +133,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * emit drag exited to parent
      * @param event
      */
-    private onDragExit(event: CdkDragExit) {
+    public onDragExit(event: CdkDragExit) {
         this.dragEntered = false;
     }
 
@@ -141,7 +141,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * remove placeholder element if exists
      * @param event
      */
-    private onDragEnter(event: CdkDragEnter) {
+    public onDragEnter(event: CdkDragEnter) {
         this.dragEntered = true;
     }
 
@@ -149,7 +149,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * delete the content element from the column
      * @param element
      */
-    private onContentDelete(element) {
+    public onContentDelete(element) {
         this.column.children = this.column.children.filter(item => item != element);
     }
 }

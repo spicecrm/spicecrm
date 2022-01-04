@@ -13,7 +13,7 @@ import {view} from '../../../services/view.service';
  * renders a bullet, in slds success color or grey, depending on the boolean value of the field
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/fieldbooleanbullet.html',
+    templateUrl: '../templates/fieldbooleanbullet.html',
 })
 export class fieldBooleanBullet extends fieldGeneric {
 

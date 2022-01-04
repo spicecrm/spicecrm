@@ -9,7 +9,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'object-action-save-button',
-    templateUrl: './src/objectcomponents/templates/objectactionsavebutton.html'
+    templateUrl: '../templates/objectactionsavebutton.html'
 })
 export class ObjectActionSaveButton {
 
@@ -20,7 +20,7 @@ export class ObjectActionSaveButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view) {
 
     }
 

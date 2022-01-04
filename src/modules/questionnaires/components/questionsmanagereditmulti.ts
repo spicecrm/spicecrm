@@ -6,15 +6,16 @@ import { model } from '../../../services/model.service';
 import { language } from '../../../services/language.service';
 import { view } from '../../../services/view.service';
 import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasicwithoptions';
+import { metadata } from '../../../services/metadata.service';
 
 @Component({
     selector: 'questions-manager-edit-multi',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditmulti.html'
+    templateUrl: '../templates/questionsmanagereditmulti.html'
 })
 export class QuestionsManagerEditMulti extends QuestionsManagerEditBasicWithOptions implements OnInit {
 
-    constructor( public language: language, public model: model, public view: view ) {
-        super( language, model, view );
+    constructor( public language: language, public model: model, public view: view, public metadata: metadata ) {
+        super( language, model, view, metadata );
     }
 
     public ngOnInit(): void {
@@ -57,7 +58,7 @@ export class QuestionsManagerEditMulti extends QuestionsManagerEditBasicWithOpti
      * Handler if the the min. and max. number of answers got changed.
      * @param event Event
      */
-    private onChange_numAnswers(): void {
+    public onChange_numAnswers(): void {
         this.writeQuestionparametersToModel();
     }
 
@@ -65,7 +66,7 @@ export class QuestionsManagerEditMulti extends QuestionsManagerEditBasicWithOpti
      * Handler if the flag "onChange_hasInfosCorrectness" got changed.
      * @param event Event
      */
-    private onChange_hasInfosCorrectness( event ): void {
+    public onChange_hasInfosCorrectness( event ): void {
         this.questionparameters.hasInfosCorrectness = event.target.checked;
         this.writeQuestionparametersToModel();
     }

@@ -13,7 +13,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr  [ngStyle]="{'cursor': row.recordId ? 'pointer': 'initial'}" *ngFor="let row of spiceImport.result.list; let row = row" (click)="row.recordId ? goToRecord(row.recordId): false">
+            <tr  [ngStyle]="{'cursor': row.recordId ? 'pointer': 'initial'}" *ngFor="let row of spiceImport.result.list" (click)="row.recordId ? goToRecord(row.recordId): false">
                 <td scope="row">
                     <div class="slds-truncate">{{row.status}}</div>
                 </td>

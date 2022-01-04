@@ -6,15 +6,16 @@ import { model } from '../../../services/model.service';
 import { language } from '../../../services/language.service';
 import { view } from '../../../services/view.service';
 import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasicwithoptions';
+import { metadata } from '../../../services/metadata.service';
 
 @Component({
     selector: 'questions-manager-edit-ist',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditist.html'
+    templateUrl: '../templates/questionsmanagereditist.html'
 })
 export class QuestionsManagerEditIst extends QuestionsManagerEditBasicWithOptions implements OnInit {
 
-    constructor( public language: language, public model: model, public view: view ) {
-        super( language, model, view );
+    constructor( public language: language, public model: model, public view: view, public metadata: metadata ) {
+        super( language, model, view, metadata );
     }
 
     public ngOnInit(): void {

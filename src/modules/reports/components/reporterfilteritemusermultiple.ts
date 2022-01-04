@@ -8,21 +8,21 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'reporter-filter-item-user-multiple',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemusermultiple.html'
+    templateUrl: '../templates/reporterfilteritemusermultiple.html'
 })
 export class ReporterFilterItemUserMultiple implements OnInit {
     /**
      * @input whereCondition: object
      */
-    @Input() private whereCondition: any = {};
+    @Input() public whereCondition: any = {};
     /**
      * @input fieldName: string
      */
-    @Input() private fieldName: string;
+    @Input() public fieldName: string;
 
-    private activeUserName: string = '';
+    public activeUserName: string = '';
 
-    constructor(private language: language, private modal: modal, private session: session) {
+    constructor(public language: language, public modal: modal, public session: session) {
     }
 
     /**
@@ -76,7 +76,7 @@ export class ReporterFilterItemUserMultiple implements OnInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item;
     }
 
@@ -84,14 +84,14 @@ export class ReporterFilterItemUserMultiple implements OnInit {
      * remove user from value
      * @param username
      */
-    private removeUser(username) {
+    public removeUser(username) {
         this.value = this.whereCondition.value.filter(u => u != username).slice();
     }
 
     /**
      * opens module lookup modal
      */
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = 'Users';
             selectModal.instance.multiselect = true;

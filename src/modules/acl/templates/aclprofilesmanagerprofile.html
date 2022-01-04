@@ -17,10 +17,10 @@
                     <thead>
                     <tr class="slds-text-title_caps">
                         <th scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                            <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                         </th>
                         <th scope="col" style="width: 3rem;"></th>
                     </tr>
@@ -28,10 +28,10 @@
                     <tbody>
                     <tr *ngFor="let aclobject of aclobjects">
                         <td>
-                            <div class="slds-truncate">{{aclobject.name}}</div>
+                            <div class="slds-truncate">{{aclobject.module}}</div>
                         </td>
                         <td>
-                            <div class="slds-truncate">{{aclobject.module}}</div>
+                            <div class="slds-truncate">{{aclobject.name}}</div>
                         </td>
                         <td style="width: 3rem;">
                             <div class="slds-grid">

@@ -1,14 +1,14 @@
 /**
  * @module ModuleQuestionnaire
  */
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, SkipSelf } from "@angular/core";
 import {model} from "../../../services/model.service";
 import { language } from '../../../services/language.service';
 import { modal } from '../../../services/modal.service';
 
 @Component({
     selector: 'questionset-manager',
-    templateUrl: "./src/modules/questionnaires/templates/questionsetmanager.html",
+    templateUrl: "../templates/questionsetmanager.html",
     providers: [ model ]
 })
 export class QuestionsetManager implements OnInit {
@@ -18,9 +18,9 @@ export class QuestionsetManager implements OnInit {
     @Output() public changed = new EventEmitter();
     @Output() public deleted = new EventEmitter();
 
-    private currentPosition: number;
+    public currentPosition: number;
 
-    constructor( private model: model, private lang: language, private modalservice: modal ) { }
+    constructor( @SkipSelf() public questionnaire: model, public model: model, public lang: language, public modalservice: modal ) { }
 
     public ngOnInit(): void {
         this.model.module = 'QuestionSets';
@@ -32,7 +32,7 @@ export class QuestionsetManager implements OnInit {
         });
     }
 
-    private questionsetAction( action: string ): void {
+    public questionsetAction( action: string ): void {
         switch( action ) {
             case 'edit':
                 this.model.edit();
@@ -48,11 +48,11 @@ export class QuestionsetManager implements OnInit {
     }
 
 
-    private dragStarted(e) {
+    public dragStarted(e) {
         e.source.element.nativeElement.classList.add('slds-is-selected');
     }
 
-    private dragEnded(e) {
+    public dragEnded(e) {
         e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 

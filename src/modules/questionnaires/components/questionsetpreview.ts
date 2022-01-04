@@ -7,19 +7,19 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 
 @Component({
     selector: 'questionset-preview',
-    templateUrl: './src/modules/questionnaires/templates/questionsetpreview.html',
+    templateUrl: '../templates/questionsetpreview.html',
 })
 export class QuestionsetPreview {
 
     public questionsetIdOrObject: any;
-    private self: any = null;
-    private qp: any;
+    public self: any = null;
+    public qp: any;
 
-    constructor( private language: language, private questionnaireParticipation: questionnaireParticipationService ) {
+    constructor( public language: language, public questionnaireParticipation: questionnaireParticipationService ) {
         this.qp = questionnaireParticipation;
     }
 
-    private closePopup() {
+    public closePopup() {
         this.self.destroy();
     }
 

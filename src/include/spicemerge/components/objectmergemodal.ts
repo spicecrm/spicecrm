@@ -15,7 +15,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'object-merge-modal',
-    templateUrl: './src/include/spicemerge/templates/objectmergemodal.html',
+    templateUrl: '../templates/objectmergemodal.html',
     providers: [model, modellist, objectmerge]
 })
 export class ObjectMergeModal implements OnInit {
@@ -23,24 +23,24 @@ export class ObjectMergeModal implements OnInit {
     /**
      * a list of models to be merged
      */
-    @Input() private mergemodels: any[] = [];
+    @Input() public mergemodels: any[] = [];
 
     /**
      * the current merge step
      */
-    private currentMergeStep: number = 0;
+    public currentMergeStep: number = 0;
 
     /**
      * the merge steps available
      */
-    private mergeSteps: string[] = ['records', 'fields', 'execute'];
+    public mergeSteps: string[] = ['records', 'fields', 'execute'];
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
-    constructor(private broadcast: broadcast, private router: Router, private metadata: metadata, private objectmerge: objectmerge, @SkipSelf() private parentmodel: model, private model: model, private modellist: modellist, private backend: backend, private modal: modal) {
+    constructor(public broadcast: broadcast, public router: Router, public metadata: metadata, public objectmerge: objectmerge, @SkipSelf() public parentmodel: model, public model: model, public modellist: modellist, public backend: backend, public modal: modal) {
 
     }
 
@@ -105,18 +105,18 @@ export class ObjectMergeModal implements OnInit {
     /**
      * closes the modal
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
     /**
      *
      */
-    private getCurrentStep() {
+    public getCurrentStep() {
         return this.mergeSteps[this.currentMergeStep];
     }
 
-    private nextStep() {
+    public nextStep() {
         if (this.currentMergeStep < this.mergeSteps.length - 1) {
             switch (this.currentMergeStep) {
                 default:
@@ -197,7 +197,7 @@ export class ObjectMergeModal implements OnInit {
         }
     }
 
-    private prevStep() {
+    public prevStep() {
         if (this.currentMergeStep > 0) {
             this.currentMergeStep--;
         }

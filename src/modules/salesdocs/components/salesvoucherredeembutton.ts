@@ -10,14 +10,14 @@ import {language} from "../../../services/language.service";
 declare var _: any;
 
 @Component({
-    templateUrl: "./src/modules/salesdocs/templates/salesvoucherredeembutton.html",
+    templateUrl: "../templates/salesvoucherredeembutton.html",
 
 })
 export class SalesVoucherRedeemButton {
 
     public actionconfig: any = {};
 
-    constructor(public language: language, public metadata: metadata, public parentmodel: model, public modal: modal, private injector: Injector) {
+    constructor(public language: language, public metadata: metadata, public parentmodel: model, public modal: modal, public injector: Injector) {
 
     }
 

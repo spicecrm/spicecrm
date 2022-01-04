@@ -14,7 +14,7 @@ declare var moment: any;
  */
 @Component({
     selector: '[workflow-panel-tasks-comments]',
-    templateUrl: './src/modules/workflow/templates/workflowpaneltaskscomments.html',
+    templateUrl: '../templates/workflowpaneltaskscomments.html',
 
 })
 export class WorkflowPanelTasksComments {
@@ -22,9 +22,9 @@ export class WorkflowPanelTasksComments {
     /**
      * an array of comment objects
      */
-    @Input() private comments: any[] = [];
+    @Input() public comments: any[] = [];
 
-    constructor(private userpreferences: userpreferences, private language: language) {
+    constructor(public userpreferences: userpreferences, public language: language) {
     }
 
 
@@ -33,7 +33,7 @@ export class WorkflowPanelTasksComments {
      *
      * @param date
      */
-    private startdate(date) {
+    public startdate(date) {
         return this.userpreferences.formatDateTime(date);
     }
 

@@ -10,7 +10,7 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: "duns-number-modal",
-    templateUrl: "./src/include/duns/templates/dunsnumbermodal.html"
+    templateUrl: "../templates/dunsnumbermodal.html"
 })
 export class DunsNumberModal {
 
@@ -23,7 +23,7 @@ export class DunsNumberModal {
     public response: Observable<string>;
     public responseSubject: Subject<any>;
 
-    constructor(private language: language, private backend: backend, private metadata: metadata, private model: model) {
+    constructor(public language: language, public backend: backend, public metadata: metadata, public model: model) {
         this.responseSubject = new Subject<any>();
         this.response = this.responseSubject.asObservable();
     }
@@ -33,33 +33,33 @@ export class DunsNumberModal {
         this.fieldsetFields = this.metadata.getFieldSetFields(conf.fieldset);
     }
 
-    private confirm() {
+    public confirm() {
         this.responseSubject.next(this.selectedItem);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private notFound() {
+    public notFound() {
         this.responseSubject.next({duns: 'none'});
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private selectItem(item) {
+    public selectItem(item) {
         this.selectedItem = this.selectedItem == item ? undefined : item;
     }
 
-    private rowClass(item) {
+    public rowClass(item) {
         return this.selectedItem == item ? 'slds-is-selected' : '';
     }
 
-    private cancel() {
+    public cancel() {
         this.responseSubject.next();
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 }

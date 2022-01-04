@@ -10,7 +10,7 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'workflow-manager-detail',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetail.html',
+    templateUrl: '../templates/workflowmanagerdetail.html',
     providers: [view]
 })
 export class WorkflowManagerDetail implements OnChanges {
@@ -29,10 +29,10 @@ export class WorkflowManagerDetail implements OnChanges {
     public fieldset: string = '';
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private model: model,
-        private view: view,
+        public backend: backend,
+        public metadata: metadata,
+        public model: model,
+        public view: view,
     ) {
         this.setEditMode();
         this.model.module = 'WorkflowDefinitions';
@@ -71,9 +71,9 @@ export class WorkflowManagerDetail implements OnChanges {
 
     /**
      * set the edit mode in view
-     * @private
+     * @public
      */
-    private setEditMode() {
+    public setEditMode() {
         this.view.isEditable = true;
         this.view.setEditMode();
     }

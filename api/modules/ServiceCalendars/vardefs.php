@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['ServiceCalendar'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['ServiceCalendar'] = [
     'table' => 'servicecalendars',
     'comment' => 'ServiceCalendars Module',
     'audited' => false,
@@ -35,6 +35,14 @@ $dictionary['ServiceCalendar'] = [
             'link' => 'systemholidaycalendar',
             'join_name' => 'systemholidaycalendar',
         ],
+        'servicecalendartimes' => [
+            'vname' => 'LBL_SERVICECALENDARTIMES',
+            'name' => 'servicecalendartimes',
+            'type' => 'link',
+            'module' => 'ServiceCalendarTimes',
+            'relationship' => 'servicecalendar_servicecalendartimes',
+            'source' => 'non-db'
+        ],
         'systemholidaycalendar' => [
             'vname' => 'LBL_SYSTEMHOLIDAYCALENDAR',
             'name' => 'systemholidaycalendar',
@@ -50,6 +58,15 @@ $dictionary['ServiceCalendar'] = [
             'type' => 'link',
             'module' => 'ServiceTicketSLAs',
             'relationship' => 'servicecalendar_serviceticketslas',
+            'link_type' => 'one',
+            'source' => 'non-db'
+        ],
+        'servicecalendartimes' => [
+            'name' => 'servicecalendartimes',
+            'vname' => 'LBL_SERVICECALENDARTIMES',
+            'type' => 'link',
+            'module' => 'ServiceCalendarTimes',
+            'relationship' => 'servicecalendar_servicecalendartimes',
             'link_type' => 'one',
             'source' => 'non-db'
         ]

@@ -12,7 +12,7 @@ import {modal} from '../../../services/modal.service';
 
 @Component({
     selector: 'questionnaire-fill-out-action-item',
-    templateUrl: './src/globalcomponents/templates/globalheaderactionitem.html',
+    templateUrl: '../../../globalcomponents/templates/globalheaderactionitem.html',
     providers: [model]
 })
 export class QuestionnaireFillOutActionItem extends GlobalHeaderActionItem implements OnInit {

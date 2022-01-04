@@ -16,12 +16,12 @@
                 </div>
             </div>
         </div>
-        <div class="slds-m-horizontal--x-small slds-show--medium">
+        <div class="slds-m-horizontal--x-small slds-show--medium slds-align--absolute-center">
             <object-subscription-button></object-subscription-button>
             <object-reminder-button></object-reminder-button>
             <object-status-network-button></object-status-network-button>
+            <object-action-container [actionset]="actionSet"></object-action-container>
         </div>
-        <object-action-container [actionset]="actionSet"></object-action-container>
     </div>
     <object-page-header-tags></object-page-header-tags>
 </div>

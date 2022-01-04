@@ -9,21 +9,21 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'sapidocs-manager-segment-details-segmentrelation',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetailssegmentrelation.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetailssegmentrelation.html'
 })
 export class SAPIDOCsManagerSegmentDetailsSegmentrelation implements OnInit, OnDestroy {
 
     /**
      * subscriptions for the component, unsubscribed in OnDestroy Lifecycle Hook
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * the current selected segment
      */
-    private segmentrelation: any;
+    public segmentrelation: any;
 
-    constructor(private language: language, private backend: backend, private sapIdocsManager: sapIdocsManager, private cdRef: ChangeDetectorRef) {
+    constructor(public language: language, public backend: backend, public sapIdocsManager: sapIdocsManager, public cdRef: ChangeDetectorRef) {
 
     }
 
@@ -47,7 +47,7 @@ export class SAPIDOCsManagerSegmentDetailsSegmentrelation implements OnInit, OnD
      *
      * @param segmentid
      */
-    private loadSegment(segmentid) {
+    public loadSegment(segmentid) {
         if (segmentid) {
             this.segmentrelation = this.sapIdocsManager.getSegmentRelationById(segmentid);
         } else {
@@ -56,7 +56,7 @@ export class SAPIDOCsManagerSegmentDetailsSegmentrelation implements OnInit, OnD
     }
 
 
-    private setboolfield(fieldname, fieldvalue){
+    public setboolfield(fieldname, fieldvalue){
         this.segmentrelation[fieldname] = fieldvalue ? '1' : '0';
     }
 

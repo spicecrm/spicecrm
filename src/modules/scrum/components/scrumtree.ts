@@ -7,17 +7,17 @@ import {scrum} from '../services/scrum.service';
 
 @Component({
     selector: 'scrum-tree',
-    templateUrl: './src/modules/scrum/templates/scrumtree.html'
+    templateUrl: '../templates/scrumtree.html'
 })
 export class ScrumTree {
 
-    constructor(private scrum: scrum, private modellist: modellist) {
+    constructor(public scrum: scrum, public modellist: modellist) {
 
     }
     /**
      * faster loop
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 

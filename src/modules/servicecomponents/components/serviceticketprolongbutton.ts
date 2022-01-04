@@ -10,18 +10,18 @@ import {language} from '../../../services/language.service';
 
 @Component({
 
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketprolongbutton.html'
+    templateUrl: '../templates/serviceticketprolongbutton.html'
 })
 export class ServiceTicketProlongButton implements OnInit {
 
     public disabled: boolean = true;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private viewContainerRef: ViewContainerRef
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public viewContainerRef: ViewContainerRef
     ) {
 
     }
@@ -41,8 +41,8 @@ export class ServiceTicketProlongButton implements OnInit {
         this.modal.openModal('ServiceTicketProlongModal', true, this.viewContainerRef.injector);
     }
 
-    private handleDisabled(mode) {
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+    public handleDisabled(mode) {
+        if (!this.model.checkAccess('edit')) {
 
             this.disabled = true;
             return;

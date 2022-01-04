@@ -10,17 +10,17 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'reporter-integration-queryanalyzer-button',
-    templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzerbutton.html'
+    templateUrl: '../templates/reporterintegrationqueryanalyzerbutton.html'
 })
 export class ReporterIntegrationQueryanalyzerButton {
 
-    constructor(private language: language, private modal: modal, private injector: Injector) {
+    constructor(public language: language, public modal: modal, public injector: Injector) {
     }
 
     /**
      * opens the modal
      */
-    private showModal() {
+    public showModal() {
         this.modal.openModal('ReporterIntegrationQueryanalyzerModal', true, this.injector);
     }
 }

@@ -16,47 +16,47 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/workbench/templates/configtransfer.html'
+    templateUrl: '../templates/configtransfer.html'
 })
 export class ConfigTransfer {
 
-    private tabToShow = 'i'; // i...import, e...export
+    public tabToShow = 'i'; // i...import, e...export
 
     // EXPORT:
 
-    private selectableTables: any[] = [];
-    private blacklistedTables: string[] = [];
-    private additionalTables = '';
-    private tablenamesLoaded = false;
-    private showBlacklistedTables = false;
-    private isLoadingTablenames = false;
-    private isDownloading = false;
-    private exportErrorID: string;
-    private exportErrorMessage: string;
-    @ViewChild( 'downloadlink', {read: ViewContainerRef, static: true } ) private downloadlink: ViewContainerRef;
-    private loadUrl: any = undefined;
-    private fileName: string = 'export.gz';
-    private changeExportSettings = false;
+    public selectableTables: any[] = [];
+    public blacklistedTables: string[] = [];
+    public additionalTables = '';
+    public tablenamesLoaded = false;
+    public showBlacklistedTables = false;
+    public isLoadingTablenames = false;
+    public isDownloading = false;
+    public exportErrorID: string;
+    public exportErrorMessage: string;
+    @ViewChild( 'downloadlink', {read: ViewContainerRef, static: true } ) public downloadlink: ViewContainerRef;
+    public loadUrl: any = undefined;
+    public fileName: string = 'export.gz';
+    public changeExportSettings = false;
 
     // IMPORT:
 
-    private fileFromBrowser: File;
-    private uploadProgress: number;
-    private isUploading = false;
-    private isImporting = false;
-    private isAfterUpload = false;
-    private dropErrorMessageCode: string = null;
-    private importOK: boolean = null;
-    private importResponse: any;
-    private importErrorMessage: string;
-    private importErrorID: string;
-    private ignoreUnknownTables = false;
-    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
-    private isDragOver = false;
+    public fileFromBrowser: File;
+    public uploadProgress: number;
+    public isUploading = false;
+    public isImporting = false;
+    public isAfterUpload = false;
+    public dropErrorMessageCode: string = null;
+    public importOK: boolean = null;
+    public importResponse: any;
+    public importErrorMessage: string;
+    public importErrorID: string;
+    public ignoreUnknownTables = false;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
+    public isDragOver = false;
 
-    constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) { }
+    constructor( public backend: backend, public metadata: metadata, public lang: language, public prefs: userpreferences, public modalservice: modal, public toast: toast ) { }
 
-    private showExport() {
+    public showExport() {
         if ( this.tabToShow === 'e' ) return;
         if( !this.tablenamesLoaded && !this.isLoadingTablenames ) {
             this.isLoadingTablenames = true;
@@ -74,11 +74,11 @@ export class ConfigTransfer {
         this.tabToShow = 'e';
     }
 
-    private showImport() {
+    public showImport() {
         this.tabToShow = 'i';
     }
 
-    private exportTables() {
+    public exportTables() {
         this.isDownloading = true;
         if ( this.exportErrorID ) {
             this.toast.clearToast( this.exportErrorID );
@@ -102,19 +102,19 @@ export class ConfigTransfer {
         );
     }
 
-    private selectAll( status: boolean ) {
+    public selectAll( status: boolean ) {
         this.selectableTables.forEach( table => {
             table.include = status;
         });
     }
 
-    private get numberOfSelectedTables() {
+    public get numberOfSelectedTables() {
         let number = 0;
         this.selectableTables.forEach( table => table.include && number++ );
         return number;
     }
 
-    private uploadFile() {
+    public uploadFile() {
         this.modalservice.confirm('You are about to upload a file and import its data into the database. This will change the existing database. Do you really want to do this?', this.lang.getLabel('LBL_WARNING'), 'warning').subscribe(
             answer => {
                 if ( answer ) {
@@ -144,19 +144,19 @@ export class ConfigTransfer {
         return;
     }
 
-    private get filename() {
+    public get filename() {
         if ( !this.fileFromBrowser ) return '';
         return this.fileFromBrowser.name;
     }
 
-    private fileSelectionChange() {
+    public fileSelectionChange() {
         if ( this.fileupload.element.nativeElement.files.length === 1 ) this.fileFromBrowser = this.fileupload.element.nativeElement.files[0];
         this.fileSelectedOrDropped();
         this.fileupload.element.nativeElement.value = null;
         return false;
     }
 
-    private fileSelectedOrDropped() {
+    public fileSelectedOrDropped() {
         this.isAfterUpload = this.isUploading = false;
         this.importOK = null;
         if ( this.importErrorID ) {
@@ -165,11 +165,11 @@ export class ConfigTransfer {
         }
     }
 
-    private get fileReadyForUpload() {
+    public get fileReadyForUpload() {
         return this.fileFromBrowser && true;
     }
 
-    private readFileFromFilesystem( file: File ): Observable<string> {
+    public readFileFromFilesystem( file: File ): Observable<string> {
         let responseSubject = new Subject<string>();
         let reader = new FileReader();
         reader.onloadend = () => {
@@ -182,7 +182,7 @@ export class ConfigTransfer {
         return responseSubject.asObservable();
     }
 
-    private onDrop( event: DragEvent ) {
+    public onDrop( event: DragEvent ) {
         event.preventDefault(); // Turn off the browser's default drag and drop handler.
         this.isDragOver = false;
         if ( event.dataTransfer.items ) {
@@ -210,19 +210,19 @@ export class ConfigTransfer {
         this.fileSelectedOrDropped();
     }
 
-    private showDropError() {
+    public showDropError() {
         if ( this.dropErrorMessageCode ) this.toast.clearToast( this.dropErrorMessageCode );
         this.dropErrorMessageCode = this.toast.sendToast('You can drop only a file. One file. With the extension "gz".','error', null, false, this.dropErrorMessageCode );
     }
 
-    private onDragOver( event: DragEvent ) {
+    public onDragOver( event: DragEvent ) {
         event.preventDefault();
         event.stopPropagation();
         event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
         this.isDragOver = true;
     }
 
-    private onDragLeave() {
+    public onDragLeave() {
         this.isDragOver = false;
     }
 

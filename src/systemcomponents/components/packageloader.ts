@@ -16,27 +16,27 @@ declare var _;
 
 @Component({
     selector: 'package-loader',
-    templateUrl: './src/systemcomponents/templates/packageloader.html',
+    templateUrl: '../templates/packageloader.html',
 })
 export class PackageLoader {
 
-    private scope: string = 'essentials';
-    private loading: boolean = true;
-    private packagefilterterm: string = '';
+    public scope: string = 'essentials';
+    public loading: boolean = true;
+    public packagefilterterm: string = '';
 
-    protected repositories = [];
-    protected repository: any;
-    protected packages = [];
-    protected versions = [];
-    protected languages = [];
-    protected opencrs: boolean = false;
-    private errorpackages: string[] = [];
+    public repositories = [];
+    public repository: any;
+    public packages = [];
+    public versions = [];
+    public languages = [];
+    public opencrs: boolean = false;
+    public errorpackages: string[] = [];
 
     constructor(
-        private language: language,
-        protected backend: backend,
-        private toast: toast,
-        private metadata: metadata
+        public language: language,
+        public backend: backend,
+        public toast: toast,
+        public metadata: metadata
     ) {
 
         this.backend.getRequest('configuration/packages/repositories').subscribe(
@@ -63,6 +63,10 @@ export class PackageLoader {
         return this.errorpackages.join(', ');
     }
 
+    set repositoryname(value) {
+        this.repository.name = value;
+    }
+
     get repositoryname() {
         return this.repository && this.repository.name ? this.repository.name : '';
     }
@@ -70,7 +74,7 @@ export class PackageLoader {
         return this.repository && this.repository.id ? '/' + this.repository.id : '';
     }
 
-    private loadpackages() {
+    public loadpackages() {
         this.loading = true;
 
         this.packages = [];
@@ -119,7 +123,7 @@ export class PackageLoader {
         );
     }
 
-    private selectRepository(repository) {
+    public selectRepository(repository) {
         this.repository = repository;
         this.loadpackages();
     }

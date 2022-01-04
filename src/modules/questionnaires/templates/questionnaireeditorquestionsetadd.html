@@ -1,1 +1,1 @@
-<button (click)="addQuestionset()" class="slds-button slds-button--neutral" [disabled]="disabled"><system-button-icon icon="add" [position]="'left'"></system-button-icon><system-label label="LBL_QUESTIONSET"></system-label></button>
+<button (click)="addQuestionset()" class="slds-button slds-button--neutral" [disabled]="disabled || !canAdd"><system-button-icon icon="add" [position]="'left'"></system-button-icon><system-label label="LBL_QUESTIONSET"></system-label></button>

@@ -18,7 +18,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: '[salesdocs-item-container]',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemcontainer.html',
+    templateUrl: '../templates/salesdocsitemcontainer.html',
     providers: [model, view]
 })
 export class SalesDocsItemContainer implements OnInit, OnDestroy {
@@ -26,50 +26,50 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
     /**
      * the item to be displayed
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the view fromt eh parent .. to link the two
      */
-    @Input() private parentview: view;
+    @Input() public parentview: view;
 
     /**
      * the salesdoc model
      */
-    @Input() private salesdoc: any;
+    @Input() public salesdoc: any;
 
     /**
      * emit when the item has been recalculated
      */
-    @Output() private recalculated: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public recalculated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     /**
      * if the item type has a details view
      */
-    private hasDetailsView: boolean = false;
+    public hasDetailsView: boolean = false;
 
     /**
      * holds the subscrptions
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private elementRef: ElementRef,
-        private model: model,
-        private userpreferences: userpreferences,
-        private view: view,
-        private configuration: configurationService,
-        private salesdocrecord: salesdocrecord
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public elementRef: ElementRef,
+        public model: model,
+        public userpreferences: userpreferences,
+        public view: view,
+        public configuration: configurationService,
+        public salesdocrecord: salesdocrecord
     ) {
         this.view.displayLabels = false;
 
@@ -171,11 +171,11 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
      *
      * @param number
      */
-    private formatNumber(number) {
+    public formatNumber(number) {
         return this.userpreferences.formatMoney(parseFloat(number));
     }
 
-    private getUOMLabel(item) {
+    public getUOMLabel(item) {
         let uoms = this.configuration.getData('uomunits');
         let unit = uoms.find(uom => uom.id == item.uom_id);
         if (unit) {
@@ -188,7 +188,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
     /**
      * marks the item as deleted
      */
-    private deleteItem() {
+    public deleteItem() {
         this.item.deleted = 1;
     }
 
@@ -204,14 +204,14 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
     /**
      * toggels the expanded flag and shows the details or hides them
      */
-    private toggleDetails() {
+    public toggleDetails() {
         this.item.expanded = !this.item.expanded;
     }
 
     /**
      * triggered when a recalculate of the complete salesdoc is required
      */
-    private recalculate() {
+    public recalculate() {
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
             if (this.item.gross_priced) {
                 this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
@@ -237,7 +237,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         this.recalculated.emit(true);
     }
 
-    private redetermineTax() {
+    public redetermineTax() {
         // get the tax category
         let new_taxcategory = this.salesdocrecord.getTaxCategory(this.item.producttaxcategory);
         if (new_taxcategory != this.item.tax_category) {
@@ -250,7 +250,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
      * gets the tax percentage for a given category
      * @param taxcategory
      */
-    private getTaxPercentage(taxcategory) {
+    public getTaxPercentage(taxcategory) {
         let taxpercentage = 0;
 
         this.taxcategories.some(record => {

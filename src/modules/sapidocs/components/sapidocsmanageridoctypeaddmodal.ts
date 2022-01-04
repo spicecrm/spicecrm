@@ -7,19 +7,19 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 import {sapIDOCSegmentI, sapIDOCSegmentRelationI} from "../../../modules/sapidocs/interfaces/moudesapidocs.interfaces";
 
 @Component({
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanageridoctypeaddmodal.html'
+    templateUrl: '../templates/sapidocsmanageridoctypeaddmodal.html'
 })
 export class SAPIDOCsManagerIDOCTypeAddModal implements OnInit {
 
-    private self: any;
+    public self: any;
 
-    private segmentRelation: sapIDOCSegmentRelationI;
-    private segment: sapIDOCSegmentI;
+    public segmentRelation: sapIDOCSegmentRelationI;
+    public segment: sapIDOCSegmentI;
 
-    @Input() private idoctyp: string = '';
-    @Input() private mestyp: string = '';
+    @Input() public idoctyp: string = '';
+    @Input() public mestyp: string = '';
 
-    constructor(private sapIdocsManager: sapIdocsManager, private helper: helper) {
+    constructor(public sapIdocsManager: sapIdocsManager, public helper: helper) {
 
     }
 
@@ -30,7 +30,7 @@ export class SAPIDOCsManagerIDOCTypeAddModal implements OnInit {
     /**
      * initializes the segment
      */
-    private initializeType() {
+    public initializeType() {
         let segmentId = this.helper.generateGuid();
         this.segmentRelation = {
             id: this.helper.generateGuid(),
@@ -53,14 +53,14 @@ export class SAPIDOCsManagerIDOCTypeAddModal implements OnInit {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * adds the segment and closes the modal
      */
-    private add() {
+    public add() {
         this.sapIdocsManager.addIdocType(this.segmentRelation, this.segment);
         this.close();
     }

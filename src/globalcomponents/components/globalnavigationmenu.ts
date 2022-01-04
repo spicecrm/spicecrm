@@ -10,7 +10,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-navigation-menu',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenu.html',
+    templateUrl: '../templates/globalnavigationmenu.html',
     host: {
         '(window:resize)': 'handleResize()'
     }
@@ -19,50 +19,50 @@ export class GlobalNavigationMenu implements AfterViewInit {
     /**
      * a reference to the container with the menu items
      */
-    @ViewChild('menucontainer', {read: ViewContainerRef, static: true}) private menucontainer: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: true})public menucontainer: ViewContainerRef;
 
     /**
      * a referenmce to the container with the m,ore items
      */
-    @ViewChild('morecontainer', {read: ViewContainerRef, static: true}) private morecontainer: ViewContainerRef;
+    @ViewChild('morecontainer', {read: ViewContainerRef, static: true})public morecontainer: ViewContainerRef;
 
     /**
      * the refgerence to the more item once the more component has been rendered
      */
-    private moreComponentRef: any = undefined;
+   public moreComponentRef: any = undefined;
 
     /**
      * the menu items derived from the role
      */
-    private menuItems: any[] = [];
+   public menuItems: any[] = [];
 
     /**
      * the rendered menu items
      */
-    private renderedItems: any[] = [];
+   public renderedItems: any[] = [];
 
     /**
      * the rendered more items
      */
-    private moreItems: any[] = [];
+   public moreItems: any[] = [];
 
     /**
      * inidcvates that an item is moved to the active state
      */
-    private movingActive: boolean = false;
+   public movingActive: boolean = false;
 
     /**
      * indicates that we are in teh rendering and calculation process
      */
-    private rendering: boolean = false;
+   public rendering: boolean = false;
 
 
     /**
      * timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
      */
-    private resizeTimeOut: any = undefined;
+   public resizeTimeOut: any = undefined;
 
-    constructor(private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
+    constructor(public metadata: metadata,public elementRef: ElementRef,public broadcast: broadcast,public navigation: navigation) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -78,7 +78,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         this.renderMenu();
     }
 
-    private buildMenuItems() {
+   public buildMenuItems() {
         this.menuItems = [];
 
         let modules = this.metadata.getRoleModules(true);
@@ -87,14 +87,14 @@ export class GlobalNavigationMenu implements AfterViewInit {
         }
     }
 
-    private handleResize() {
+   public handleResize() {
         this.buildMenuItems();
 
         if (this.resizeTimeOut) window.clearTimeout(this.resizeTimeOut);
         this.resizeTimeOut = window.setTimeout(() => this.renderMenu(), 250);
     }
 
-    private checkActiveModule(): boolean {
+   public checkActiveModule(): boolean {
         if (this.movingActive || this.rendering) return false;
 
         let activeIndex = this.menuItems.indexOf(this.navigation.activeModule);
@@ -127,7 +127,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         return true;
     }
 
-    private destroyMenu() {
+   public destroyMenu() {
         for (let item of this.renderedItems) {
             item.componentRef.destroy();
         }
@@ -139,7 +139,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
 
     }
 
-    private renderMenu() {
+   public renderMenu() {
         // destroy the current menu
         this.destroyMenu();
 
@@ -148,7 +148,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         this.addMenuItem(this.menuItems[0], this.menuItems[0]);
     }
 
-    private addMenuItem(module, name) {
+   public addMenuItem(module, name) {
         this.metadata.addComponentDirect('GlobalNavigationMenuItem', this.menucontainer).subscribe(componentRef => {
             componentRef.instance.item = {
                 module,
@@ -162,7 +162,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         });
     }
 
-    private addMoreItem() {
+   public addMoreItem() {
         // check if we have a more item .. if yes destroy it
         this.destroyMoreItem();
 
@@ -184,14 +184,14 @@ export class GlobalNavigationMenu implements AfterViewInit {
         });
     }
 
-    private destroyMoreItem() {
+   public destroyMoreItem() {
         if (this.moreComponentRef) {
             this.moreComponentRef.componentRef.destroy();
             this.moreComponentRef = undefined;
         }
     }
 
-    private getRenderedWidth() {
+   public getRenderedWidth() {
         let renderedWidth = 0;
         for (let item of this.renderedItems) {
             renderedWidth += item.width;
@@ -200,7 +200,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         return renderedWidth;
     }
 
-    private handleMessage(message) {
+   public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':

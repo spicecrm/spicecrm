@@ -23,7 +23,7 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'workflow-panel-task',
-    templateUrl: './src/modules/workflow/templates/workflowpaneltask.html'
+    templateUrl: '../templates/workflowpaneltask.html'
 
 })
 export class WorkflowPanelTask implements OnChanges, AfterViewInit {
@@ -43,26 +43,26 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
      * view container reference to the container element of the type component
      * @private
      */
-    @ViewChild('typeComponentContainer', {read: ViewContainerRef}) private typeComponentContainer: ViewContainerRef;
+    @ViewChild('typeComponentContainer', {read: ViewContainerRef}) public typeComponentContainer: ViewContainerRef;
     /**
      * holds the workflow data
      * @private
      */
-    @Input() private workflow: any = {};
+    @Input() public workflow: any = {};
     /**
      * holds a reference of the task type component
      * @private
      */
-    private typeComponentRef: ComponentRef<any>;
+    public typeComponentRef: ComponentRef<any>;
 
-    constructor(private model: model,
-                private workflowservice: workflow,
-                private language: language, private broadcast: broadcast,
-                private configurationService: configurationService,
-                private toast: toast,
-                private metadata: metadata,
-                private injector: Injector,
-                private modelutilities: modelutilities) {
+    constructor(public model: model,
+                public workflowservice: workflow,
+                public language: language, public broadcast: broadcast,
+                public configurationService: configurationService,
+                public toast: toast,
+                public metadata: metadata,
+                public injector: Injector,
+                public modelutilities: modelutilities) {
 
     }
 
@@ -102,9 +102,8 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
 
     /**
      * render the workflow task type component
-     * @private
      */
-    private renderTypeComponent() {
+    public renderTypeComponent() {
 
         if (!this.typeComponentContainer) return;
 
@@ -129,7 +128,7 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
      * destroy the rendered type component
      * @private
      */
-    private destroyRenderedComponent() {
+    public destroyRenderedComponent() {
         if (this.typeComponentRef) {
             this.typeComponentRef.destroy();
             this.typeComponentRef = undefined;

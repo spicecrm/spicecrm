@@ -7,14 +7,17 @@ import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
+import {session} from "../../../services/session.service";
+
+declare var libphonenumber: any;
 
 /**
  * renders a modal to update the phone fields on a module
  */
 @Component({
     selector: 'telephony-call-model-update',
-    templateUrl: './src/modules/telephony/templates/telephonycallmodelupdate.html',
-    providers: [model, view]
+    templateUrl: '../templates/telephonycallmodelupdate.html',
+    providers: [ view]
 })
 export class TelephonyCallModelUpdate implements OnInit {
 
@@ -22,34 +25,35 @@ export class TelephonyCallModelUpdate implements OnInit {
      * reference to the modal itself
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the calldata object passed in
      *
      * @private
      */
-    @Input() private calldata: any;
+    @Input() public calldata: any;
 
     /**
      * an event emitter when we need to handle the update
      *
      * @private
      */
-    @Output() private updated: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public updated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * an array with the fields for the phone
      *
      * @private
      */
-    private phoneFields: any[] = [];
+    public phoneFields: any[] = [];
 
     constructor(
-        private modal: modal,
-        private model: model,
-        private view: view,
-        private metadata: metadata
+        public modal: modal,
+        public model: model,
+        public view: view,
+        public session: session,
+        public metadata: metadata
     ) {
         this.view.displayLabels = false;
         this.view.isEditable = true;
@@ -62,7 +66,7 @@ export class TelephonyCallModelUpdate implements OnInit {
 
         // initialize the model if we have any phone fields
         if (this.phoneFields.length > 0) {
-            this.initializeModel();
+            this.model.startEdit();
         } else {
             this.close();
         }
@@ -73,7 +77,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      *
      * @private
      */
-    private getPhoneFields() {
+    public getPhoneFields() {
         let fields = this.metadata.getModuleFields(this.calldata.relatedmodule);
         for (let field in fields) {
             if (fields[field].type == 'phone' && fields[field].phonesearch) {
@@ -86,11 +90,25 @@ export class TelephonyCallModelUpdate implements OnInit {
      * load the module fresh from thebackend
      * @private
      */
-    private initializeModel() {
+    public initializeModel() {
         // let await = this.modal.await('LBL_LOADING_DATA');
         this.model.module = this.calldata.relatedmodule;
         this.model.id = this.calldata.relatedid;
+        this.model.initialize();
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.calldata.relateddata);
         this.model.startEdit();
+    }
+
+    /**
+     * gets a formatted MSISDN
+     */
+    get msisdnFormatted() {
+        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.session.authData.address_country && this.calldata.msisdn.length > 5) {
+            let msisdn = this.calldata.msisdn;
+            return libphonenumber.parsePhoneNumberFromString(msisdn, this.session.authData.address_country).formatInternational();
+        } else {
+            return this.calldata.msisdn;
+        }
     }
 
     /**
@@ -100,8 +118,8 @@ export class TelephonyCallModelUpdate implements OnInit {
         return this.model.isDirty();
     }
 
-    private copy2Field(field) {
-        this.model.setField(field, this.calldata.msisdn);
+    public copy2Field(field) {
+        this.model.setField(field, this.msisdnFormatted);
     }
 
     /**
@@ -109,7 +127,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      *
      * @private
      */
-    private updateModel() {
+    public updateModel() {
         this.model.save();
         this.updated.emit(true);
         this.self.destroy();
@@ -120,7 +138,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.updated.emit(false);
 
         this.self.destroy();

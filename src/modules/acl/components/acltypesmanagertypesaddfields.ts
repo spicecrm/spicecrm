@@ -17,55 +17,55 @@ import {modelutilities} from '../../../services/modelutilities.service';
  */
 @Component({
     selector: 'acltypes-manager-types-add-fields',
-    templateUrl: './src/modules/acl/templates/acltypesmanagertypesaddfields.html',
+    templateUrl: '../templates/acltypesmanagertypesaddfields.html',
 })
 export class ACLTypesManagerTypesAddFields implements OnInit {
 
     /**
      * the module
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * reference to self for the modal
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * an array with already used fields
      */
-    private currentfields: any[] = [];
+    public currentfields: any[] = [];
 
     /**
      * all selected fields
      */
-    private selectedfields: any[] = [];
+    public selectedfields: any[] = [];
 
     /**
      * the fields to be presented as selection options
      */
-    private fields: any[] = [];
+    public fields: any[] = [];
 
     /**
      * event emitter provided to be subscribed by the component opening the modal
      */
-    private addfields: EventEmitter<any> = new EventEmitter<any>();
+    public addfields: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * parameter to set to true if no filter for nondb or orhter shoudlk be added.
      *
      * Since the same dialog is also used for the screen control this is then set accordingly
      */
-    private showAll: boolean = false;
+    public showAll: boolean = false;
 
 
     /**
      * Flag: if true, the select all checkbox is checked!
      */
-    private selectAllChecked: boolean = false;
+    public selectAllChecked: boolean = false;
 
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
 
     }
 
@@ -91,7 +91,7 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
      *
      * @param field the fieldname
      */
-    private allowField(field) {
+    public allowField(field) {
         return field.source != 'non-db' && field.type != 'link' && field.type != 'relate';
     }
 
@@ -100,28 +100,28 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
      *
      * @param field the field name
      */
-    private getFieldDisplayName(field) {
+    public getFieldDisplayName(field) {
         return this.language.getFieldDisplayName(this.module, field);
     }
 
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * handler when the add buton is pushed
      */
-    private add() {
+    public add() {
         this.addfields.emit(this.selectedfields);
         this.close();
     }
 
 
 
-    private getFieldDisplay(fieldname) {
+    public getFieldDisplay(fieldname) {
         for (let currentField of this.currentfields) {
             if (currentField.name == fieldname && currentField.hide) {
                 return true;
@@ -130,7 +130,7 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
         return false;
     }
 
-    private getFieldValue(fieldname) {
+    public getFieldValue(fieldname) {
 
         for (let field of this.selectedfields) {
             if (field == fieldname) {
@@ -139,7 +139,7 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
         }
         return false;
     }
-    private setFieldValue(fieldname, event) {
+    public setFieldValue(fieldname, event) {
         // stop propagation
         event.preventDefault();
 
@@ -156,7 +156,7 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
     }
 
 
-    private toggleSelectAll(event) {
+    public toggleSelectAll(event) {
         // stop propagation
         event.preventDefault();
 

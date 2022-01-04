@@ -8,7 +8,7 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: "[serviceorder-equipment-item]",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceorderequipmentitem.html",
+    templateUrl: "../templates/serviceorderequipmentitem.html",
     providers: [model, view]
 })
 export class ServiceOrderEquipmentItem implements OnInit  {
@@ -21,7 +21,7 @@ export class ServiceOrderEquipmentItem implements OnInit  {
     /**
      * the relation_link_name
      */
-     @Input() public  relationlinkname: "serviceequipments";
+     @Input() public  relationlinkname = "serviceequipments";
 
     /**
      * the serviceorder model
@@ -37,19 +37,19 @@ export class ServiceOrderEquipmentItem implements OnInit  {
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     /**
      * true if selected
      */
-    private is_selected: boolean = false;
+    public is_selected: boolean = false;
 
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private model: model,
-        private view: view
+        public metadata: metadata,
+        public language: language,
+        public model: model,
+        public view: view
     ) {
     }
 
@@ -62,7 +62,7 @@ export class ServiceOrderEquipmentItem implements OnInit  {
     /**
      * set the model data for the item
      */
-    private setItemModelData() {
+    public setItemModelData() {
         this.model.module = 'ServiceEquipments';
         this.model.id = this.item.id;
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
@@ -71,7 +71,7 @@ export class ServiceOrderEquipmentItem implements OnInit  {
     /**
      * view mode subscriptions (manage edit/view mode)
      */
-    private viewSubscriptions() {
+    public viewSubscriptions() {
         this.view.displayLabels = false;
         // link the two views
         this.view.isEditable = this.parentview.isEditable;
@@ -103,7 +103,7 @@ export class ServiceOrderEquipmentItem implements OnInit  {
     /**
      * set the configuration
      */
-    private setConfig() {
+    public setConfig() {
         let config = this.metadata.getComponentConfig('ServiceOrderEquipmentPanel', this.serviceorder.module);
         if (config.fieldset) {
             this.fieldsetItems = this.metadata.getFieldSetItems(config.fieldset);
@@ -124,7 +124,7 @@ export class ServiceOrderEquipmentItem implements OnInit  {
     /**
      * change selection-flag and emit the information to the parent
      */
-    private changeSelection() {
+    public changeSelection() {
         this.item.selected = !this.item.selected;
         if(this.item.selected) {
             this.serviceorder.addRelatedRecords(this.relationlinkname, [this.item], false);

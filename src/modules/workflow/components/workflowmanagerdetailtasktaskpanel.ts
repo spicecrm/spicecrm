@@ -8,11 +8,11 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasktaskpanel.html'
+    templateUrl: '../templates/workflowmanagerdetailtasktaskpanel.html'
 })
 export class WorkflowManagerDetailTaskTaskpanel {
 
-    constructor(private metadata: metadata, private model: model, private workflowManagerService: WorkflowManagerService) {
+    constructor(public metadata: metadata, public model: model, public workflowManagerService: WorkflowManagerService) {
 
     }
 

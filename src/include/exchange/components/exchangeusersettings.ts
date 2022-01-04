@@ -15,38 +15,38 @@ declare var _: any;
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/include/exchange/templates/exchangeusersettings.html',
+    templateUrl: '../templates/exchangeusersettings.html',
 })
 export class ExchangeUserSettings implements OnInit {
 
     /**
      * holds the folders that can be subscribed to
      */
-    private subscriptionOptions: any[] = ['contacts', 'calendar', 'tasks'];
+    public subscriptionOptions: any[] = ['contacts', 'calendar', 'tasks'];
 
     /**
      * a list of actrive subscriptions
      */
-    private subscriptions: any[] = [];
+    public subscriptions: any[] = [];
 
     /**
      * the timeout for the subscritpion in munutes
      * withing that timeframe we always ecpet an update on the subscription from the server
      * if it is not we will indicate that the subscription is dead and needs to be renewed
      */
-    private subscriptiontimeout: number;
+    public subscriptiontimeout: number;
 
     /**
      * holds an array wuith modules that can be synced with Exchange
      */
-    private modules: any[] = [];
+    public modules: any[] = [];
 
     /**
      * the config for the user
      */
-    private userconfig: any[] = [];
+    public userconfig: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private backend: backend, private configuration: configurationService) {
+    constructor(public metadata: metadata, public model: model, public backend: backend, public configuration: configurationService) {
         let ewsconfig = this.configuration.getCapabilityConfig('ewsconfig');
         if (ewsconfig && ewsconfig.subscriptiontimeout) {
             this.subscriptiontimeout = parseInt(ewsconfig.subscriptiontimeout, 10);
@@ -63,7 +63,7 @@ export class ExchangeUserSettings implements OnInit {
     /**
      * loads the config from the backend
      */
-    private getConfig() {
+    public getConfig() {
         this.backend.getRequest(`spicecrmexchange/config/${this.model.id}`).subscribe(response => {
             this.modules = response.modules;
             this.userconfig = response.userconfig;
@@ -75,7 +75,7 @@ export class ExchangeUserSettings implements OnInit {
      * returns if the last date + the
      * @param lastdate
      */
-    private timedout(lastdate) {
+    public timedout(lastdate) {
         let now = new moment();
         let last = new moment(lastdate).add(this.subscriptiontimeout, 'm');
         return last.isBefore(now);
@@ -87,7 +87,7 @@ export class ExchangeUserSettings implements OnInit {
      *
      * @param folder_id
      */
-    private lastActive(folder_id) {
+    public lastActive(folder_id) {
         let sub = this.subscriptions.find(sub => sub.folder_id == folder_id);
         return sub ? sub.last_active : '';
     }
@@ -97,7 +97,7 @@ export class ExchangeUserSettings implements OnInit {
      *
      * @param sysmoduleid
      */
-    private getModuleNameById(sysmoduleid: string) {
+    public getModuleNameById(sysmoduleid: string) {
         return this.metadata.getModuleById(sysmoduleid);
     }
 
@@ -106,7 +106,7 @@ export class ExchangeUserSettings implements OnInit {
      *
      * @param sysmoduleid
      */
-    private isActive(sysmoduleid: string) {
+    public isActive(sysmoduleid: string) {
         return this.userconfig && this.userconfig.findIndex(r => r.sysmodule_id == sysmoduleid) >= 0;
     }
 
@@ -116,7 +116,7 @@ export class ExchangeUserSettings implements OnInit {
      * @param sysmoduleid
      * @param e
      */
-    private toggleActive(sysmoduleid: string, e: MouseEvent) {
+    public toggleActive(sysmoduleid: string, e: MouseEvent) {
         if (e) {
             this.backend.postRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
                 this.userconfig = res.userconfig;

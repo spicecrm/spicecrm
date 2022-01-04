@@ -12,30 +12,30 @@ import {session} from "../../../services/session.service";
  * renders a componentn in the global toolbar on top to display if a cr is active
  */
 @Component({
-    templateUrl: "./src/modules/deployment/templates/deploymentcractive.html"
+    templateUrl: "../templates/deploymentcractive.html"
 })
 export class DeploymentCRActive implements OnDestroy {
 
     /**
      * the active id
      */
-    private activeID = "";
+    public activeID = "";
 
     /**
      * the active name
      */
-    private activeName = "";
+    public activeName = "";
 
     /**
      * a subscription handler for the global broadcast message service to catchj if the active CR changes
      */
-    private broadcastsubscription: any = null;
+    public broadcastsubscription: any = null;
 
-    constructor(private language: language,
-                private backend: backend,
-                private session: session,
-                private broadcast: broadcast,
-                private router: Router) {
+    constructor(public language: language,
+                public backend: backend,
+                public session: session,
+                public broadcast: broadcast,
+                public router: Router) {
 
         // get from the backend if a CR is active currently
         this.backend.getRequest("module/SystemDeploymentCRs/active").subscribe(crresponse => {
@@ -100,7 +100,7 @@ export class DeploymentCRActive implements OnDestroy {
     /**
      * navigates to the CR or the list of CRs
      */
-    private goCR() {
+    public goCR() {
         this.router.navigate(["/module/SystemDeploymentCRs" + (this.activeID ? "/" + this.activeID : "")]);
     }
 }

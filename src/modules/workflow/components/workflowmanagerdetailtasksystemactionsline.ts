@@ -9,16 +9,16 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[workflow-manager-detail-tasksystemactions-line]',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksystemactionsline.html'
+    templateUrl: '../templates/workflowmanagerdetailtasksystemactionsline.html'
 })
 export class WorkflowManagerDetailTaskSystemactionsLine {
 
     @Input() public systemaction: any = {};
-    @Input() private field: string = '';
+    @Input() public field: string = '';
 
-    constructor(private modal: modal,
-                private language: language,
-                private model: model,
+    constructor(public modal: modal,
+                public language: language,
+                public model: model,
                 public workflowManagerService: WorkflowManagerService) {
     }
 

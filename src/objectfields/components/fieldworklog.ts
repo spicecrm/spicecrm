@@ -25,12 +25,12 @@ declare var moment: any;
  */
 @Component({
     selector: "field-worklog",
-    templateUrl: "./src/objectfields/templates/fieldworklog.html"
+    templateUrl: "../templates/fieldworklog.html"
 })
 export class fieldWorklog extends fieldGeneric {
-    private _new_log_entry: string;
-    private origin_logs = [];
-    private initialized = false;
+    public _new_log_entry: string;
+    public origin_logs = [];
+    public initialized = false;
 
     constructor(
         public model: model,
@@ -38,7 +38,7 @@ export class fieldWorklog extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private session: session,
+        public session: session,
         public userpreferences: userpreferences
     ) {
         super(model, view, language, metadata, router);
@@ -117,7 +117,7 @@ export class fieldWorklog extends fieldGeneric {
         return styles;
     }
 
-    private formatTimestamp(ts) {
+    public formatTimestamp(ts) {
         let mts = moment(ts);
         return this.userpreferences.formatDateTime(mts);
     }

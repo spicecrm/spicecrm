@@ -1,8 +1,9 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['CompanyCode'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
     'table' => 'companycodes',
     'audited' => true,
     'fields' => [
@@ -14,33 +15,33 @@ $dictionary['CompanyCode'] = [
         ],
         'vatid' => [
             'name' => 'vatid',
-            'vname' => 'LBL_VATID',
+            'vname' => 'LBL_VAT_NR',
             'type' => 'varchar',
             'len' => 40
         ],
         'company_address_street' =>
             [
                 'name' => 'company_address_street',
-                'vname' => 'LBL_COMPANY_ADDRESS_STREET',
+                'vname' => 'LBL_STREET',
                 'type' => 'varchar',
                 'len' => '150'
             ],
         'company_address_street_number' => [
             'name' => 'company_address_street_number',
-            'vname' => 'LBL_COMPANY_ADDRESS_STREET_NUMBER',
+            'vname' => 'LBL_STREET_NUMBER',
             'type' => 'varchar',
             'len' => 10
         ],
         'company_address_street_number_suffix' => [
             'name' => 'company_address_street_number_suffix',
-            'vname' => 'LBL_COMPANY_ADDRESS_STREET_NUMBER_SUFFIX',
+            'vname' => 'LBL_STREET_NUMBER_SUFFIX',
             'type' => 'varchar',
             'len' => 25,
             'comment' => 'additonal info to the street like Appartmnent, Floor, etc'
         ],
         'company_address_attn' => [
             'name' => 'company_address_attn',
-            'vname' => 'LBL_COMPANY_ADDRESS_ATTN',
+            'vname' => 'LBL_ATTN',
             'type' => 'varchar',
             'len' => '150',
             'comment' => 'additonal attention field for the address',
@@ -49,20 +50,20 @@ $dictionary['CompanyCode'] = [
         'company_address_city' =>
             [
                 'name' => 'company_address_city',
-                'vname' => 'LBL_COMPANY_ADDRESS_CITY',
+                'vname' => 'LBL_CITY',
                 'type' => 'varchar',
                 'len' => '100'
             ],
         'company_address_state' =>
             [
                 'name' => 'company_address_state',
-                'vname' => 'LBL_COMPANY_ADDRESS_STATE',
+                'vname' => 'LBL_STATE',
                 'type' => 'varchar',
                 'len' => '100'
             ],
         'company_address_district' => [
             'name' => 'company_address_district',
-            'vname' => 'LBL_COMPANY_ADDRESS_DISTRICT',
+            'vname' => 'LBL_DISTRICT',
             'type' => 'varchar',
             'len' => 100,
             'comment' => 'The district used for the billing address',
@@ -70,26 +71,26 @@ $dictionary['CompanyCode'] = [
         'company_address_postalcode' =>
             [
                 'name' => 'company_address_postalcode',
-                'vname' => 'LBL_COMPANY_ADDRESS_POSTALCODE',
+                'vname' => 'LBL_POSTALCODE',
                 'type' => 'varchar',
                 'len' => '20'
             ],
         'company_address_country' =>
             [
                 'name' => 'company_address_country',
-                'vname' => 'LBL_COMPANY_ADDRESS_COUNTRY',
+                'vname' => 'LBL_COUNTRY',
                 'type' => 'varchar',
                 'len' => 30
             ],
         'tel' => [
             'name' => 'tel',
-            'vname' => 'LBL_TEL',
+            'vname' => 'LBL_PHONE_NUMBER',
             'type' => 'varchar',
             'len' => 50
         ],
         'fax' => [
             'name' => 'fax',
-            'vname' => 'LBL_FAX',
+            'vname' => 'LBL_PHONE_FAX',
             'type' => 'varchar',
             'len' => 50
         ],
@@ -101,7 +102,7 @@ $dictionary['CompanyCode'] = [
         ],
         'www' => [
             'name' => 'www',
-            'vname' => 'LBL_WWW',
+            'vname' => 'LBL_WEBSITE',
             'type' => 'varchar',
             'len' => 50
         ],
@@ -113,13 +114,13 @@ $dictionary['CompanyCode'] = [
         ],
         'bank_bic' => [
             'name' => 'bank_bic',
-            'vname' => 'LBL_BANK_BIC',
+            'vname' => 'LBL_BIC',
             'type' => 'varchar',
             'len' => 50
         ],
         'bank_iban' => [
             'name' => 'bank_iban',
-            'vname' => 'LBL_BANK_IBAN',
+            'vname' => 'LBL_IBAN',
             'type' => 'varchar',
             'len' => 50
         ],
@@ -154,7 +155,7 @@ $dictionary['CompanyCode'] = [
             'link_type' => 'one',
             'relationship' => 'cfperiods_companycodes',
             'source' => 'non-db',
-            'coment' => 'Link to CompanyFiscalPeriods module'
+            'comment' => 'Link to CompanyFiscalPeriods module'
         ],
         'companycode' => [
             'name' => 'companycode',
@@ -170,10 +171,44 @@ $dictionary['CompanyCode'] = [
             'rname' => 'name',
             'source' => 'non-db',
             'module' => 'Shops',
-        ]
+        ],
+        // CR1000674
+        'currency_id' => [
+            'name' => 'currency_id',
+            'type' => 'id',
+            'group' => 'currency_id',
+            'vname' => 'LBL_CURRENCY',
+            'reportable' => false,
+            'comment' => 'ID of currency used'
+        ],
+        'currency_name' => [
+            'name' => 'currency_name',
+            'rname' => 'name',
+            'id_name' => 'currency_id',
+            'vname' => 'LBL_CURRENCY',
+            'type' => 'relate',
+            'isnull' => 'true',
+            'table' => 'currencies',
+            'module' => 'Currencies',
+            'source' => 'non-db',
+            'comment' => 'Currency'
+        ],
+        'currency_symbol' => [
+            'name' => 'currency_symbol',
+            'rname' => 'symbol',
+            'id_name' => 'currency_id',
+            'vname' => 'LBL_CURRENCY_SYMBOL',
+            'type' => 'relate',
+            'isnull' => 'true',
+            'table' => 'currencies',
+            'module' => 'Currencies',
+            'source' => 'non-db',
+            'comment' => 'Currency symbole'
+        ],
     ],
     'indices' => [
         ['name' => 'idx_companycodes_id_del', 'type' => 'index', 'fields' => ['id', 'deleted'],],
+        ['name' => 'idx_companycodes_currency_del', 'type' => 'index', 'fields' => ['currency_id', 'deleted'],],
     ],
     'relationships' => [
         'companycodes_accountkpis' =>
@@ -201,5 +236,3 @@ $dictionary['CompanyCode'] = [
 ];
 
 VardefManager::createVardef('CompanyCodes', 'CompanyCode', ['default', 'assignable']);
-global $dictionary; //COMPAT php7.1
-$dictionary['CompanyCode']['fields']['name']['vname'] = 'LBL_COMPANYCODE';

@@ -11,22 +11,22 @@ import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'knowledge-browser',
-    templateUrl: "./src/modules/knowledge/templates/knowledgebrowser.html",
+    templateUrl: "../templates/knowledgebrowser.html",
     providers: [KnowledgeService, model]
 })
 export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public activeTab: string = "tree";
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
-    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) private tabsHeaderContainer: ViewContainerRef;
+    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) public maincontainer: ViewContainerRef;
+    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) public tabsHeaderContainer: ViewContainerRef;
 
-    constructor(private language: language,
-                private model: model,
-                private metadata: metadata,
-                private navigationTab: navigationtab,
-                private knowledgeService: KnowledgeService) {
+    constructor(public language: language,
+                public model: model,
+                public metadata: metadata,
+                public navigationTab: navigationtab,
+                public knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
         this.loadReleasedFilter();
     }
@@ -60,7 +60,7 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
         return this.knowledgeService.isDocumentLoading;
     }
 
-    private loadReleasedFilter() {
+    public loadReleasedFilter() {
         let conf = this.metadata.getComponentConfig("KnowledgeBrowser", this.model.module);
         this.knowledgeService.moduleFilter = conf.modulefilter || "";
     }

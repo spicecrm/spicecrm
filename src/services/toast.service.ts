@@ -20,7 +20,7 @@ export class toast {
      *  Therefore the toast service triggers the change detection manually, with appref.tick().
      */
 
-    constructor(private modelutilities: modelutilities, private appref: ApplicationRef ) { }
+    constructor(public modelutilities: modelutilities, public appref: ApplicationRef ) { }
 
     /**
      * a generic function to send a toast
@@ -57,7 +57,7 @@ export class toast {
      * @param autoClose if set to true the toast will automatically close itself after 5 seconds
      * @param uniqueMessageCode a string that unuqely identifies the type oif a message. If that is sent this ensuires that this type of message is sent to the user only once. This makes e.g. sense if the user is logged off .. then the toast that the user has been logged out might be sent several times. With the unique id this is only sent once to the user
      */
-    private addToast(text: string, theme: 'toast' | 'alert' = 'toast', type: "default" | "warning" | "info" | "success" | "error" = "default", description: string = "", autoClose: boolean | number = true, uniqueMessageCode?: string): string {
+    public addToast(text: string, theme: 'toast' | 'alert' = 'toast', type: "default" | "warning" | "info" | "success" | "error" = "default", description: string = "", autoClose: boolean | number = true, uniqueMessageCode?: string): string {
         // check if a unique message code has been passed in .. if that is the case check if a toast with this unique id is active already
         if (uniqueMessageCode && this.activeToasts.filter(toast => toast.code == uniqueMessageCode).length > 0) {
             return '';

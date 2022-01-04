@@ -18,22 +18,22 @@ import {language} from '../../../services/language.service';
 
 
 @Component({
-    templateUrl: './src/modules/emails/templates/emailspopoverbody.html',
+    templateUrl: '../templates/emailspopoverbody.html',
 })
 export class EmailsPopoverBody {
 
     /**
      *
      */
-    private _sanitizedValue;
+    public _sanitizedValue;
 
     /**
      * the cached full html code to prevent "flickering" of the iframe (change detection)
      */
-    private fullValue_cached: string;
-    private fullValue: string = '';
+    public fullValue_cached: string;
+    public fullValue: string = '';
 
-    constructor(private model: model, private language: language, private sanitized: DomSanitizer) {
+    constructor(public model: model, public language: language, public sanitized: DomSanitizer) {
     }
 
 

@@ -20,7 +20,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: 'workflow-manager-detail-task',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtask.html',
+    templateUrl: '../templates/workflowmanagerdetailtask.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
@@ -28,26 +28,26 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
     public activeTab: string = 'T';
     /**
      * holds a reference to the type component to enable destroy on change
-     * @private
+     * @public
      */
-    private typeComponentRef: ComponentRef<any>;
+    public typeComponentRef: ComponentRef<any>;
     /**
      * holds the task data
-     * @private
+     * @public
      */
-    @Input() private task: any = {};
+    @Input() public task: any = {};
     /**
      * view container reference to the container element of the type component
-     * @private
+     * @public
      */
-    @ViewChild('typeComponentContainer', {read: ViewContainerRef}) private typeComponentContainer: ViewContainerRef;
+    @ViewChild('typeComponentContainer', {read: ViewContainerRef}) public typeComponentContainer: ViewContainerRef;
 
-    constructor(private metadata: metadata,
-                private model: model,
-                private view: view,
-                private injector: Injector,
-                private workflowManagerService: WorkflowManagerService,
-                private modelutilities: modelutilities) {
+    constructor(public metadata: metadata,
+                public model: model,
+                public view: view,
+                public injector: Injector,
+                public workflowManagerService: WorkflowManagerService,
+                public modelutilities: modelutilities) {
         this.model.module = 'WorkflowTaskDefinitions';
         this.model.startEdit();
         this.initializeView();
@@ -71,9 +71,9 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
 
     /**
      * render the workflow task type component
-     * @private
+     * @public
      */
-    private renderTypeComponent() {
+    public renderTypeComponent() {
 
         if (!this.typeComponentContainer) return;
 
@@ -90,9 +90,9 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
 
     /**
      * destroy the rendered type component
-     * @private
+     * @public
      */
-    private destroyRenderedComponent() {
+    public destroyRenderedComponent() {
         if (this.typeComponentRef) {
             this.typeComponentRef.destroy();
             this.typeComponentRef = undefined;
@@ -101,9 +101,9 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
 
     /**
      * initialize the view service
-     * @private
+     * @public
      */
-    private initializeView() {
+    public initializeView() {
         this.view.isEditable = true;
         this.view.setEditMode();
         this.view.displayLabels = false;
@@ -111,9 +111,9 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
 
     /**
      * initialize the model data from the task
-     * @private
+     * @public
      */
-    private setModelData() {
+    public setModelData() {
 
         if (!this.task.type_config) {
             this.task.type_config = {};

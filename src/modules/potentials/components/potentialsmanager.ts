@@ -16,7 +16,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {ObjectRelatedCardHeader} from "../../../objectcomponents/components/objectrelatedcardheader";
 
 @Component({
-    templateUrl: "./src/modules/potentials/templates/potentialsmanager.html",
+    templateUrl: "../templates/potentialsmanager.html",
     providers: [relatedmodels],
     animations: [
         trigger('displaycard', [
@@ -37,22 +37,22 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     /**
      * a selector for the Header in teh card. This will trigger the open or collapsed stated
      */
-    @ViewChild(ObjectRelatedCardHeader, {static: false}) private cardheaders: ObjectRelatedCardHeader;
+    @ViewChild(ObjectRelatedCardHeader, {static: false}) public cardheaders: ObjectRelatedCardHeader;
 
     /**
      * holds the curent compüanycode as filter criteria for the list
      */
-    private _companyCode: string;
+    public _companyCode: string;
 
     /**
      * holds the revenues in all productgropups for this accounts and companycode
      */
-    private cc_revenues: any[] = [];
+    public cc_revenues: any[] = [];
 
     /**
      * an indicator that the revenues are loading
      */
-    private cc_revenues_loading: boolean = true;
+    public cc_revenues_loading: boolean = true;
 
     /**
      * holds an array of currencies
@@ -64,10 +64,10 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
         public metadata: metadata,
         public relatedmodels: relatedmodels,
         public model: model,
-        private configuration: configurationService,
-        private backend: backend,
-        private currency: currency,
-        private userpreferences: userpreferences,
+        public configuration: configurationService,
+        public backend: backend,
+        public currency: currency,
+        public userpreferences: userpreferences,
         public cdref: ChangeDetectorRef
     ) {
         super(language, metadata, relatedmodels, model, cdref);
@@ -121,7 +121,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     /**
      * loads the revenues for the companycde
      */
-    private getRevenues() {
+    public getRevenues() {
         this.cc_revenues = [];
         this.cc_revenues_loading = true;
         this.backend.getRequest("module/Accounts/" + this.model.id + "/related/potentials/revenues/" + this._companyCode ).subscribe(revenues => {
@@ -194,7 +194,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     /**
      * a simpel function to return a aprsed money value
      */
-    private parseCurrencyValue(fieldval) {
+    public parseCurrencyValue(fieldval) {
         if (fieldval === undefined) return '';
         let val = parseFloat(fieldval);
         if (isNaN(val)) return '';
@@ -206,7 +206,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
      *
      * @param productgroup_id the id of the prodzuctgroup of this record
      */
-    private canAddPotential(productgroup_id) {
+    public canAddPotential(productgroup_id) {
         // if related models are loading disable buttons
         if (this.relatedmodels.isloading) return false;
 

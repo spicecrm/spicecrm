@@ -14,13 +14,13 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-salesdoc-types',
-    templateUrl: './src/modules/salesdocs/templates/fieldsalesdoctaxcategories.html'
+    templateUrl: '../templates/fieldsalesdoctaxcategories.html'
 })
 export class fieldSalesdocTaxCategories extends fieldGeneric {
 
     public options: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService, @Optional() private salesdocrecord: salesdocrecord) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public configuration: configurationService, @Optional() public salesdocrecord: salesdocrecord) {
         super(model, view, language, metadata, router);
     }
 

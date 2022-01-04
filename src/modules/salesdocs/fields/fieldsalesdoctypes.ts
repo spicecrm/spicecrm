@@ -18,7 +18,7 @@ declare var _: any;
 
 @Component({
     selector: 'field-salesdoc-types',
-    templateUrl: './src/modules/salesdocs/templates/fieldsalesdoctypes.html'
+    templateUrl: '../templates/fieldsalesdoctypes.html'
 })
 export class fieldSalesdocTypes extends fieldGeneric {
 
@@ -27,9 +27,9 @@ export class fieldSalesdocTypes extends fieldGeneric {
     /**
      * Keep the language subscription the unsubscribe at component end.
      */
-    private languageSubscription: Subscription = new Subscription();
+    public languageSubscription: Subscription = new Subscription();
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public configuration: configurationService) {
         super(model, view, language, metadata, router);
         // Keep the language subscription the unsubscribe at component end:
         this.languageSubscription = this.language.currentlanguage$.subscribe( () => this.translateAndSortOptions() );

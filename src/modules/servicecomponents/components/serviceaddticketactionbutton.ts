@@ -8,14 +8,14 @@ import {model} from '../../../services/model.service';
 
 @Component({
     selector: 'service-add-ticket-action-button',
-    templateUrl: './src/modules/servicecomponents/templates/serviceaddticketactionbutton.html',
+    templateUrl: '../templates/serviceaddticketactionbutton.html',
     providers: [model]
 })
 export class ServiceAddTicketActionButton {
 
     public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, @SkipSelf() private servicecall: model, private model: model, private language: language) {}
+    constructor(public metadata: metadata, @SkipSelf() public servicecall: model, public model: model, public language: language) {}
 
     public execute(){
         this.servicecall.save().subscribe(servicecall => {

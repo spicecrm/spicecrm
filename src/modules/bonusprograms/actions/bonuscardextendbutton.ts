@@ -19,7 +19,7 @@ declare var moment;
  * a button to display an extend modal for the bonus card
  */
 @Component({
-    templateUrl: './src/modules/bonusprograms/templates/bonuscardextendbutton.html',
+    templateUrl: '../templates/bonuscardextendbutton.html',
     providers: [model]
 })
 export class BonusCardExtendButton {
@@ -76,11 +76,13 @@ export class BonusCardExtendButton {
                 this.bonusCardModel.setField('valid_until', newUntilDate);
                 this.bonusCardModel.save();
 
+                this.extensionModel.reset();
                 this.extensionModel.module = 'BonusCardExtensions';
                 this.extensionModel.initialize();
                 this.extensionModel.setFields({
                     valid_until: newUntilDate,
-                    bonuscard_id: this.bonusCardModel.id
+                    bonuscard_id: this.bonusCardModel.id,
+                    name: `${this.bonusCardModel.data.summary_text} - ${newUntilDate.format(this.userpreferences.getDateFormat())}`
                 });
                 this.extensionModel.save();
             }

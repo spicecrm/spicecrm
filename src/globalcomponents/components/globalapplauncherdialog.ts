@@ -6,30 +6,32 @@ import {Router} from '@angular/router';
 import {broadcast} from '../../services/broadcast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {userpreferences} from "../../services/userpreferences.service";
 
 /**
  * the app launcher dialog that renders the users roles and also the users modules. Allows filering and navigating to a specific module/application
  */
 @Component({
     selector: 'global-app-launcher-dialog',
-    templateUrl: './src/globalcomponents/templates/globalapplauncherdialog.html'
+    templateUrl: '../templates/globalapplauncherdialog.html'
 })
 export class GlobalAppLauncherDialog {
 
     /**
      * @ignore
      */
-    private searchTerm: string = '';
+   public searchTerm: string = '';
     /**
      * @ignore
      */
     public self: any = undefined;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private router: Router,
-        private broadcast: broadcast
+       public metadata: metadata,
+       public language: language,
+       public router: Router,
+       public broadcast: broadcast,
+       public userpreferences: userpreferences
     ) {
     }
 
@@ -43,7 +45,7 @@ export class GlobalAppLauncherDialog {
     /**
      * closes the modal window and destroys the component
      */
-    private close() {
+   public close() {
         this.self.destroy();
     }
 
@@ -51,7 +53,7 @@ export class GlobalAppLauncherDialog {
     /**
      * fecthes the available roles for the user
      */
-    private getRoles() {
+   public getRoles() {
         return this.metadata.getRoles();
     }
 
@@ -60,8 +62,11 @@ export class GlobalAppLauncherDialog {
      *
      * @param roleid the selected roleid
      */
-    private setRole(roleid) {
+   public setRole(roleid) {
         this.metadata.setActiveRole(roleid);
+
+        // set the role to the preferences
+        this.userpreferences.setPreference('userrole', roleid)
 
         // navigate home and broadcast the message
         this.broadcast.broadcastMessage('applauncher.setrole', roleid);
@@ -73,7 +78,7 @@ export class GlobalAppLauncherDialog {
     /**
      * gets the modules from the metadata service and returns them for rendering in the modal
      */
-    private getModules() {
+   public getModules() {
         let menuItems = [];
 
         for (let module of this.metadata.getModules()) {
@@ -94,7 +99,7 @@ export class GlobalAppLauncherDialog {
      *
      * @param module the module to navigate to
      */
-    private gotoModule(module) {
+   public gotoModule(module) {
         this.router.navigate(['/module/' + module]);
         this.close();
     }

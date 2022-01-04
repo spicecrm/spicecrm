@@ -14,14 +14,14 @@ import {fieldAddress} from "../../../objectfields/components/fieldaddress";
 import {backend} from "../../../services/backend.service";
 
 @Component({
-    templateUrl: './src/modules/sap/templates/fieldsapaddress.html'
+    templateUrl: '../templates/fieldsapaddress.html'
 })
 export class fieldSAPAddress extends fieldAddress {
 
     /**
      * holds the list of countries
      */
-    private countries: any[] = [];
+    public countries: any[] = [];
 
     constructor(
         public model: model,

@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-enum-radio',
-    templateUrl: './src/objectfields/templates/fieldenumradio.html'
+    templateUrl: '../templates/fieldenumradio.html'
 })
 export class fieldEnumRadio extends fieldGeneric {
 

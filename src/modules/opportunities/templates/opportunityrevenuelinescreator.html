@@ -78,7 +78,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="slds-hint-parent" opportunity-revenue-line-item *ngFor="let revenueLine of revenueLines" [revenueLine]="revenueLine" [closeDate]="closeDate" [totalAmount]="totalAmount" (delete)="deleteLine(revenueLine.id)"></tr>
+                    <tr class="slds-hint-parent" opportunity-revenue-line-item *ngFor="let revenueLine of revenueLines" [revenueLine]="revenueLine" [closeDate]="model.data.date_closed" [totalAmount]="model.data.amount" (delete)="deleteLine(revenueLine.id)"></tr>
                 </tbody>
             </table>
         </system-collapsable-tab>

@@ -9,17 +9,17 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
 
 @Component({
     selector: 'spice-importer-check',
-    templateUrl: './src/include/spiceimporter/templates/spiceimportercheck.html',
+    templateUrl: '../templates/spiceimportercheck.html',
 })
 
 export class SpiceImporterCheck {
-    @Input() private currentImportStep;
+    @Input() public currentImportStep;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private spiceImporter: SpiceImporterService,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public spiceImporter: SpiceImporterService,
     ) {
     }
 
@@ -36,7 +36,7 @@ export class SpiceImporterCheck {
         this.setCheckFields(action);
     }
 
-    private setCheckFields(action) {
+    public setCheckFields(action) {
 
         if (action == 'log') {
             this.spiceImporter.checkFields = [];

@@ -11,7 +11,7 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
 
 @Component({
     selector: "[projectwbs-hierarchy-node]",
-    templateUrl: "./src/modules/projects/templates/projectwbshierarchynode.html",
+    templateUrl: "../templates/projectwbshierarchynode.html",
     providers: [model, view],
     host: {
         "[attr.aria-level]": "nodedata.level"
@@ -32,9 +32,9 @@ export class ProjectWBSHierarchyNode implements OnInit {
      *
      * @private
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private view: view) {
+    constructor(public language: language, public metadata: metadata, public projectwbsHierarchy: projectwbsHierarchy, public model: model, public view: view) {
         this.view.displayLabels = false;
     }
 
@@ -52,7 +52,7 @@ export class ProjectWBSHierarchyNode implements OnInit {
      * returns information if node is expanded or not
      * @private
      */
-    private isExpandedNode() {
+    public isExpandedNode() {
         return this.nodedata.expanded;
     }
 
@@ -60,7 +60,7 @@ export class ProjectWBSHierarchyNode implements OnInit {
      * expands or collapses node depending on current state
      * @private
      */
-    private expandNode() {
+    public expandNode() {
         if (this.isExpandedNode()) {
             this.projectwbsHierarchy.collapse(this.nodedata.id);
         } else {

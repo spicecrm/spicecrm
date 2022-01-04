@@ -14,22 +14,22 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: "Knowledge-document-related-list",
-    templateUrl: "./src/modules/knowledge/templates/knowledgedocumentrelatedlist.html",
+    templateUrl: "../templates/knowledgedocumentrelatedlist.html",
     providers: [relatedmodels]
 })
 export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
     public componentconfig: any = {};
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private relatedmodels: relatedmodels,
-        private knowledgeService: KnowledgeService,
-        private location: Location,
-        private router: Router,
-        private model: model,
-        private modal: modal,
+        public language: language,
+        public metadata: metadata,
+        public relatedmodels: relatedmodels,
+        public knowledgeService: KnowledgeService,
+        public location: Location,
+        public router: Router,
+        public model: model,
+        public modal: modal,
     ) {
         this.relatedmodels.module = "KnowledgeDocuments";
         this.relatedmodels.relatedModule = "KnowledgeDocuments";
@@ -75,12 +75,12 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
         });
     }
 
-    private navigateTo(id) {
+    public navigateTo(id) {
         this.knowledgeService.selectedDoc = id;
         this.location.replaceState("/module/KnowledgeDocuments/" + id);
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

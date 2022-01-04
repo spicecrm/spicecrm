@@ -8,32 +8,32 @@ import { userpreferences } from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'questionnaire-entire-evaluation',
-    templateUrl: './src/modules/questionnaires/templates/questionnaireentireevaluation.html'
+    templateUrl: '../templates/questionnaireentireevaluation.html'
 })
 export class QuestionnaireEntireEvaluation implements OnInit {
 
     @Input('questionnaireId') public inputQuestionnaireId: string;
 
-    private questionnaireId: string;
+    public questionnaireId: string;
 
-    private questionnaire: any;
-    private questionsets: any[] = [];
-    private questions = {};
-    private options = {};
+    public questionnaire: any;
+    public questionsets: any[] = [];
+    public questions = {};
+    public options = {};
 
-    private answers: any = {};
-    private countQuestionnaireParticipations: number;
+    public answers: any = {};
+    public countQuestionnaireParticipations: number;
 
-    private isLoadingQuestionnaire: boolean; // = true;
-    private isLoadingQuestionsets: boolean; // = true;
-    private isLoadingAnswers: boolean; // = true;
+    public isLoadingQuestionnaire: boolean; // = true;
+    public isLoadingQuestionsets: boolean; // = true;
+    public isLoadingAnswers: boolean; // = true;
 
-    private imageWidthQuestion = 200;
-    private imageWidthOption = 200;
+    public imageWidthQuestion = 200;
+    public imageWidthOption = 200;
 
-    private relativeTo = 'questionnaires'; // questionnaires fill out | questions fill out
+    public relativeTo = 'questionnaires'; // questionnaires fill out | questions fill out
 
-    constructor( private backend: backend, private model: model, private userPreferences: userpreferences ) { }
+    constructor( public backend: backend, public model: model, public userPreferences: userpreferences ) { }
 
     public ngOnInit(): void {
         this.questionnaireId = this.inputQuestionnaireId !== undefined ? this.inputQuestionnaireId : this.model.id;
@@ -44,7 +44,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
 
     }
 
-    private loadQuestionnaire() {
+    public loadQuestionnaire() {
         if ( this.isLoadingQuestionnaire ) return;
         this.isLoadingQuestionnaire = true;
         if ( this.questionnaireId ) {
@@ -58,7 +58,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    private loadAnwers(): void {
+    public loadAnwers(): void {
         if ( this.isLoadingAnswers ) return;
         this.isLoadingAnswers = true;
         this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/answers/allParticipations' ).subscribe( data => {
@@ -68,15 +68,15 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         } );
     }
 
-    private get isLoading(): boolean {
+    public get isLoading(): boolean {
         return this.isLoadingQuestionsets || this.isLoadingQuestionnaire || this.isLoadingAnswers;
     }
 
-    private loadQuestionsets(): void {
+    public loadQuestionsets(): void {
         if ( this.isLoadingQuestionsets ) return;
         this.isLoadingQuestionsets = true;
         this.questionsets = [];
-        this.backend.getRequest('module/Questionnaires/'+this.questionnaireId+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
+        this.backend.getRequest('module/Questionnaires/'+this.questionnaireId+'/related/questionsets', { limit: 999, forceResolveLinks: 1 }).subscribe( questionsets => {
 
             for ( let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
             this.questionsets.sort(( a, b ) => a.position - b.position );
@@ -147,7 +147,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         });
     }
 
-    private getEvaluationValue( questionId: string, optionId: string ): number {
+    public getEvaluationValue( questionId: string, optionId: string ): number {
         try {
             return this.answers[questionId].optionCounts[optionId] === undefined ? 0 : this.answers[questionId].optionCounts[optionId];
         } catch (e) {
@@ -155,7 +155,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    private countQuestionParticipations( questionId: string ): number {
+    public countQuestionParticipations( questionId: string ): number {
         try {
             return this.answers[questionId].countParticipations;
         } catch (e) {
@@ -171,7 +171,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    private getQuestionParticipationBarWidth( questionId ) {
+    public getQuestionParticipationBarWidth( questionId ) {
         try {
             return {
                 width: this.countQuestionParticipations( questionId ) / this.countQuestionnaireParticipations * 100 + '%'
@@ -181,7 +181,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    private getAnswerBarWidth( questionId, optionId ) {
+    public getAnswerBarWidth( questionId, optionId ) {
         try {
             return {
                 width: ( this.answers[questionId].optionCounts[optionId] === undefined ? 0 : this.answers[questionId].optionCounts[optionId] ) / ( this.relativeTo === 'questionnaires' ? this.countQuestionnaireParticipations : this.answers[questionId].countParticipations ) * 100 + '%'
@@ -191,7 +191,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    private getQuestionParticipationsInPercent( questionId: string ): string {
+    public getQuestionParticipationsInPercent( questionId: string ): string {
         try {
             return ( this.userPreferences.formatMoney( this.answers[questionId].countParticipations / this.countQuestionnaireParticipations * 100, 2 ));
         } catch (e) {
@@ -199,14 +199,14 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    private allOptionsNumeric( questionId: string ): boolean {
+    public allOptionsNumeric( questionId: string ): boolean {
         for ( let option of this.options[questionId] ) {
             if ( isNaN( option.name )) return false;
         }
         return true;
     }
 
-    private averageOfAnswers( questionId: string ): string {
+    public averageOfAnswers( questionId: string ): string {
         try {
             return (this.userPreferences.formatMoney( this.answers[questionId].answer_value / this.answers[questionId].countParticipations, 2 ));
         } catch (e) {
@@ -214,11 +214,11 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    private questionIsToShow( question: any ): boolean {
+    public questionIsToShow( question: any ): boolean {
         return /^ratinggroup|rating|nps|single|multi|binary$/.test( question.questiontype );
     }
 
-    private questionsetIsToShow( questionset: any ): boolean {
+    public questionsetIsToShow( questionset: any ): boolean {
         for ( let id in questionset.questions.beans ) {
             if ( /^ratinggroup|rating|nps|single|multi|binary$/.test( questionset.questions.beans[id].questiontype )) return true;
         }

@@ -13,13 +13,13 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-salesdoc-item-types',
-    templateUrl: './src/modules/salesdocs/templates/fieldsalesdocitemtypes.html'
+    templateUrl: '../templates/fieldsalesdocitemtypes.html'
 })
 export class fieldSalesdocItemTypes extends fieldGeneric {
 
     public options: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public configuration: configurationService) {
         super(model, view, language, metadata, router);
     }
 

@@ -13,11 +13,11 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     selector: 'aclobjects-manager-object-fields',
-    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobjectfields.html'
+    templateUrl: '../templates/aclobjectsmanagerobjectfields.html'
 })
 export class ACLObjectsManagerObjectFields {
 
-    constructor(private modal: modal, private model: model, private language: language) {
+    constructor(public modal: modal, public model: model, public language: language) {
 
     }
 
@@ -49,7 +49,7 @@ export class ACLObjectsManagerObjectFields {
      *
      * @param field the name of the field
      */
-    private getFieldControl(field) {
+    public getFieldControl(field) {
         let fields = this.model.getFieldValue('fieldcontrols');
         for (let thisfield of fields) {
             if (thisfield.field == field) {
@@ -65,7 +65,7 @@ export class ACLObjectsManagerObjectFields {
      * @param field fieldname
      * @param event the event
      */
-    private setFieldControl(field, event) {
+    public setFieldControl(field, event) {
         let fields = this.model.getFieldValue('fieldcontrols');
         for (let thisfield of fields) {
             if (thisfield.field == field) {
@@ -80,7 +80,7 @@ export class ACLObjectsManagerObjectFields {
      *
      * @param field the name fo the field
      */
-    private removeField(field) {
+    public removeField(field) {
         let fields = this.model.getFieldValue('fieldcontrols');
         let i = 0;
         for (let thisfield of fields) {
@@ -96,7 +96,7 @@ export class ACLObjectsManagerObjectFields {
     /**
      * called to add a Field
      */
-    private addField() {
+    public addField() {
         let module = this.model.getFieldValue('spiceacltype_module');
         let currentFields = [];
         let fields = this.model.getFieldValue('fieldcontrols');

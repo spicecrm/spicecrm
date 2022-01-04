@@ -7,8 +7,8 @@ import {ServiceOrderEffortItem} from "./serviceordereffortitem";
 
 @Component({
     selector: "[serviceorder-effort-confirmation-item]",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortconfirmationitem.html",
-    providers: [view]
+    templateUrl: "../templates/serviceordereffortconfirmationitem.html",
+    providers: [model, view]
 })
 export class ServiceOrderEffortConfirmationItem extends ServiceOrderEffortItem implements OnInit  {
 

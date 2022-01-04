@@ -20,7 +20,7 @@ declare var _: any;
  */
 @Component({
     selector: 'groupware-detail-pane-header',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpaneheader.html',
+    templateUrl: '../templates/groupwaredetailpaneheader.html',
     providers: [view]
 })
 export class GroupwareDetailPaneHeader extends ObjectPageHeader {

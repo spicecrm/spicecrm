@@ -13,11 +13,11 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'field-report-category',
-    templateUrl: './src/modules/reports/templates/fieldreportcategory.html',
+    templateUrl: '../templates/fieldreportcategory.html',
 })
 export class FieldReportCategory extends fieldGeneric {
 
-    protected categories: any[] = [];
+    public categories: any[] = [];
 
     constructor(public language: language,
                 public router: Router,
@@ -47,7 +47,7 @@ export class FieldReportCategory extends fieldGeneric {
     /**
      * load reports categories from backend
      */
-    private loadCategories() {
+    public loadCategories() {
         const categories = this.configuration.getData('reportcategories');
         if (!categories) {
             this.backend.getRequest('module/KReports/categoriesmanager/categories').subscribe(categories => {

@@ -10,6 +10,7 @@ import {GSuiteAttachmentI, GSuiteMessageI} from "../interfaces/gsuite.interfaces
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
+import {broadcast} from "../../../services/broadcast.service";
 
 declare var _: any;
 
@@ -31,15 +32,16 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
     /**
      * hold subscription for unsubscribe
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
     constructor(public backend: backend,
-                private gSuiteBroker: GSuiteBrokerService,
+                public gSuiteBroker: GSuiteBrokerService,
                 public model: model,
                 public metadata: metadata,
-                private router: Router) {
+                public broadcast: broadcast,
+                public router: Router) {
 
-        super(backend, model);
+        super(backend, model, broadcast);
         this.subscribeToGSuiteChanges();
     }
 
@@ -250,7 +252,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
     /**
      * subscribe to GSuite changes and reload
      */
-    private subscribeToGSuiteChanges() {
+    public subscribeToGSuiteChanges() {
 
         this.subscription = this.gSuiteBroker.gSuiteUpdatesEmitter().subscribe(res => {
 
@@ -294,7 +296,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
      * push related beans from backend response to array
      * @param res
      */
-    private pushRelatedBeans(res) {
+    public pushRelatedBeans(res) {
         for (let item in res) {
             if (!res.hasOwnProperty(item) || this.checkRelatedBeans(res[item])) continue;
             this.relatedBeans.push(res[item]);

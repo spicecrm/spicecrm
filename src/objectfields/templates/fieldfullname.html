@@ -7,31 +7,31 @@
 <div *ngIf="isEditable() && isEditMode()">
     <div class="slds-grid slds-grid_vertical-align-center slds-wrap">
         <div class="slds-col slds-form-element__control slds-align-top" [ngClass]="getClassesForSubField(fieldsalutation)">
-            <field-label [fieldname]="fieldsalutation"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fieldsalutation"></field-label>
             <div class="slds-select_container slds-p-vertical--xxx-small">
                 <select class="slds-select" [(ngModel)]="salutation">
-                    <option *ngFor="let o of getSalutations()" [value]="o.value">{{o.display}}</option>
+                    <option *ngFor="let o of getSalutations()" [ngValue]="o.value">{{o.display}}</option>
                 </select>
             </div>
             <field-messages [fieldname]="fieldsalutation"></field-messages>
         </div>
         <div *ngIf="!isSimple" class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fielddegree)">
-            <field-label [fieldname]="fielddegree"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fielddegree"></field-label>
             <input class="slds-input slds-p-vertical--xxx-small" type="text" [(ngModel)]="degree1"/>
             <field-messages [fieldname]="fielddegree"></field-messages>
         </div>
         <div class="slds-col slds-form-element__control slds-align-top" [ngClass]="getClassesForSubField(fieldfirstname)">
-            <field-label [fieldname]="fieldfirstname"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fieldfirstname"></field-label>
             <input class="slds-input slds-p-vertical--xxx-small" type="text" [(ngModel)]="first_name" [ngModelOptions]="{updateOn: 'blur'}"/>
             <field-messages [fieldname]="fieldfirstname"></field-messages>
         </div>
         <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlastname)">
-            <field-label [fieldname]="fieldlastname"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fieldlastname"></field-label>
             <input #focus class="slds-input slds-p-vertical--xxx-small" type="text" [(ngModel)]="last_name" [ngModelOptions]="{updateOn: 'blur'}"/>
             <field-messages [fieldname]="fieldlastname"></field-messages>
         </div>
         <div *ngIf="!isSimple" class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlasttitle)">
-            <field-label [fieldname]="fieldlasttitle"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fieldlasttitle"></field-label>
             <input class="slds-input slds-p-vertical--xxx-small" type="text" [(ngModel)]="degree2"/>
             <field-messages [fieldname]="fieldlasttitle"></field-messages>
         </div>

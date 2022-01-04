@@ -21,7 +21,7 @@ declare var _;
  * manage workflow and tasks definitions
  */
 @Component({
-    templateUrl: './src/modules/workflow/templates/workflowmanager.html',
+    templateUrl: '../templates/workflowmanager.html',
     providers: [WorkflowManagerService, model]
 })
 export class WorkflowManager implements OnInit {
@@ -34,15 +34,15 @@ export class WorkflowManager implements OnInit {
      */
     public currentWorkflow: { id: string, data: any };
 
-    constructor(private backend: backend,
-                private metadata: metadata,
-                private language: language,
-                private utils: modelutilities,
-                private modal: modal,
-                private toast: toast,
-                private configurationService: configurationService,
+    constructor(public backend: backend,
+                public metadata: metadata,
+                public language: language,
+                public utils: modelutilities,
+                public modal: modal,
+                public toast: toast,
+                public configurationService: configurationService,
                 public model: model,
-                private workflowManagerService: WorkflowManagerService) {
+                public workflowManagerService: WorkflowManagerService) {
     }
 
     /**
@@ -198,7 +198,7 @@ export class WorkflowManager implements OnInit {
         });
     }
 
-    private getModuleFields(module: string): Array<{ name: string, label: string }> {
+    public getModuleFields(module: string): Array<{ name: string, label: string }> {
 
         return _.toArray(this.metadata.getModuleFields(module))
             .map(f => ({
@@ -214,7 +214,7 @@ export class WorkflowManager implements OnInit {
      * remove current workflow from list
      * @private
      */
-    private removeCurrentWorkflowFromList() {
+    public removeCurrentWorkflowFromList() {
         this.workflowManagerService.currentModule.workflowDefinitions = this.workflowManagerService.currentModule.workflowDefinitions.filter(e => e.id != this.model.id);
     }
 
@@ -222,7 +222,7 @@ export class WorkflowManager implements OnInit {
      * load the workflow task types from backend
      * @private
      */
-    private loadTypes() {
+    public loadTypes() {
         const types = this.configurationService.getData('workflowtasktypes');
         this.workflowManagerService.types = Array.isArray(types) ? types : [];
     }
@@ -231,7 +231,7 @@ export class WorkflowManager implements OnInit {
      * get workflow definitions for the current module
      * @private
      */
-    private getWorkflowDefinitions() {
+    public getWorkflowDefinitions() {
         this.backend.getRequest('module/WorkflowDefinitions/' + this.currentModule).subscribe(wfd => {
             this.workflowManagerService.currentModule.workflowDefinitions = wfd;
         });
@@ -242,7 +242,7 @@ export class WorkflowManager implements OnInit {
      * @param id
      * @private
      */
-    private getCurrentWorkflowData(id: string): any {
+    public getCurrentWorkflowData(id: string): any {
         const data = this.workflowManagerService.currentModule.workflowDefinitions.find(data => data.id == id);
         return this.utils.backendModel2spice('WorkflowDefinitions', {...data});
     }

@@ -13,7 +13,7 @@ import {view} from '../../services/view.service';
  * renders a modal with the GDPR Details
  */
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectgdprmodal.html',
+    templateUrl: '../templates/objectgdprmodal.html',
     providers: [view]
 })
 export class ObjectGDPRModal implements OnInit {
@@ -21,14 +21,14 @@ export class ObjectGDPRModal implements OnInit {
     /**
      * holds the componentconfig to be reetireved on ngInit
      */
-    private componentconfig: any = {}
+    public componentconfig: any = {}
 
     /**
      * @ignore
      *
      * reference to self to allow destroying itself
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the gdpr log as returned from the reference call
@@ -41,10 +41,10 @@ export class ObjectGDPRModal implements OnInit {
     public gdprAuditLog: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private view: view
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public view: view
     ) {
         this.view.isEditable = false;
     }
@@ -63,7 +63,7 @@ export class ObjectGDPRModal implements OnInit {
     /**
      * hides the modal
      */
-    private hideGDPRLog() {
+    public hideGDPRLog() {
         this.self.destroy();
     }
 
@@ -72,7 +72,7 @@ export class ObjectGDPRModal implements OnInit {
      *
      * @param data the audit data record
      */
-    private getModelData(data) {
+    public getModelData(data) {
         let dataObject = {
             module: this.model.module,
             id: this.model.id

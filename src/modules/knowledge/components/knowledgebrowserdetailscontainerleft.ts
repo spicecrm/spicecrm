@@ -10,21 +10,21 @@ import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
     selector: "knowledge-browser-details-container-left",
-    templateUrl: "./src/modules/knowledge/templates/knowledgebrowserdetailscontainerleft.html"
+    templateUrl: "../templates/knowledgebrowserdetailscontainerleft.html"
 })
 export class KnowledgeBrowserDetailsContainerLeft {
 
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
-    @Input("breadcrumbs") private breadcrumbs: any[] = [];
-    @Input("html") private html: any = '';
-    @HostBinding('style') private height: string = '100%';
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) public headerContainer: ViewContainerRef;
+    @Input("breadcrumbs") public breadcrumbs: any[] = [];
+    @Input("html") public html: any = '';
+    @HostBinding('style') public height: string = '100%';
 
-    constructor(private language: language,
-                private model: model,
-                private modal: modal,
-                private sanitizer: DomSanitizer,
-                private viewContainerRef: ViewContainerRef,
-                private knowledgeService: KnowledgeService) {
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public sanitizer: DomSanitizer,
+                public viewContainerRef: ViewContainerRef,
+                public knowledgeService: KnowledgeService) {
     }
 
     get iframeContainerStyle() {
@@ -45,7 +45,7 @@ export class KnowledgeBrowserDetailsContainerLeft {
         }
     }
 
-    private setHtmlValue() {
+    public setHtmlValue() {
     let regexp = /<code>[\s\S]*?<\/code>/g;
     let match = regexp.exec(this.html);
     while (match != null) {
@@ -58,7 +58,7 @@ export class KnowledgeBrowserDetailsContainerLeft {
     this.html = this.sanitizer.bypassSecurityTrustHtml(this.html);
 }
 
-    private encodeHtml(value) {
+    public encodeHtml(value) {
         return String(value)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -66,15 +66,15 @@ export class KnowledgeBrowserDetailsContainerLeft {
             .replace(/"/g, '&quot;');
     }
 
-    private navigateTo(id) {
+    public navigateTo(id) {
         this.knowledgeService.selectedDoc = id;
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
-    private print() {
+    public print() {
         this.modal.openModal('ObjectActionOutputBeanModal', true, this.viewContainerRef.injector);
     }
 }

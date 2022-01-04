@@ -10,20 +10,20 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'language-label-modal',
-    templateUrl: './src/workbench/templates/languagelabelmodal.html',
+    templateUrl: '../templates/languagelabelmodal.html',
 })
 export class LanguageLabelModal {
-    @Input() private label: any = {};
+    @Input() public label: any = {};
     @Output('label') public label$ = new EventEmitter();
     @Output('close') public close$ = new EventEmitter();
 
-    private languages = [];
+    public languages = [];
     public self;
 
     constructor(
-        private utils: modelutilities,
-        private language: language,
-        private backend: backend,
+        public utils: modelutilities,
+        public language: language,
+        public backend: backend,
     ) {
         this.languages = this.language.getAvialableLanguages(true);
     }
@@ -58,7 +58,7 @@ export class LanguageLabelModal {
         this.label.scope = val;
     }
 
-    private validate() {
+    public validate() {
         // validation...
         if (!this.label.name) {
             return false;
@@ -76,7 +76,7 @@ export class LanguageLabelModal {
         return true;
     }
 
-    private save() {
+    public save() {
         this.label.name = this.label.name.toUpperCase();
 
         let valid = this.validate();
@@ -99,7 +99,7 @@ export class LanguageLabelModal {
         );
     }
 
-    private getcurrentLanguageTranslations(){
+    public getcurrentLanguageTranslations(){
         let translations = this.translations;
         let currenttranslation = {default: '', short: '', long: ''};
         translations.some(translation => {
@@ -113,18 +113,18 @@ export class LanguageLabelModal {
         return currenttranslation;
     }
 
-    private cancelDialog() {
+    public cancelDialog() {
         this.label = {};
         this.label$.emit(null);
         this.close$.emit('cancel');
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.cancelDialog();
     }
 
-    private addTranslation(language_name: string = null) {
+    public addTranslation(language_name: string = null) {
         if (!language_name) {
             let langs = this.getMissingLanguages();
             language_name = langs[0];
@@ -137,7 +137,7 @@ export class LanguageLabelModal {
         });
     }
 
-    private getMissingLanguages(scope: string = null): any[] {
+    public getMissingLanguages(scope: string = null): any[] {
         if (!scope) {
             scope = this.scope;
         }
@@ -153,7 +153,7 @@ export class LanguageLabelModal {
         return missing_langs;
     }
 
-    private getLangText(language) {
+    public getLangText(language) {
         return this.language.getLangText(language);
     }
 }

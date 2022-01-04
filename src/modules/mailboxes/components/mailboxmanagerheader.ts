@@ -11,7 +11,7 @@ import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomp
 
 @Component({
     selector: 'mailbox-manager-header',
-    templateUrl: './src/modules/mailboxes/templates/mailboxmanagerheader.html',
+    templateUrl: '../templates/mailboxmanagerheader.html',
 })
 export class MailboxManagerHeader implements OnInit {
 
@@ -24,12 +24,12 @@ export class MailboxManagerHeader implements OnInit {
     /**
      * the selected mailbox
      */
-    private _mailbox: string;
+    public _mailbox: string;
 
     /**
      * indicates that emaisl are being fetched in the background
      */
-    private isFetching: boolean = false;
+    public isFetching: boolean = false;
 
     /**
      * a getter for the openness
@@ -57,10 +57,10 @@ export class MailboxManagerHeader implements OnInit {
 
 
     constructor(
-        private language: language,
-        private mailboxesEmails: mailboxesEmails,
-        private metadata: metadata,
-        private navigationtab: navigationtab,
+        public language: language,
+        public mailboxesEmails: mailboxesEmails,
+        public metadata: metadata,
+        public navigationtab: navigationtab,
     ) {
 
         // load default settings for the openness selection and the unread only flag
@@ -116,14 +116,14 @@ export class MailboxManagerHeader implements OnInit {
     /**
      * reloads the emails list
      */
-    private reloadList() {
+    public reloadList() {
         this.mailboxesEmails.loadMessages();
     }
 
     /**
      * fetches emails in teh backend
      */
-    private fetchEmails() {
+    public fetchEmails() {
         this.isFetching = true;
         this.mailboxesEmails.fetchEmails().subscribe(
             success => {
