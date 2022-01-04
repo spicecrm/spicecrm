@@ -95,7 +95,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
     public ngOnInit() {
         this.model.module = this.modellist.module;
         this.model.id = this.listItem.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.modellist.module, this.listItem);
+        this.model.setData(this.listItem);
         this.model.initializeFieldsStati();
 
         this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');

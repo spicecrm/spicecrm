@@ -345,9 +345,9 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         this.records = [{
             id: this.model.id,
             module: this.model.module,
-            title: '' + this.model.data.summary_text,
-            lng: +this.model.data[this.lngName],
-            lat: +this.model.data[this.latName],
+            title: '' + this.model.getField('summary_text'),
+            lng: +this.model.getField(this.lngName),
+            lat: +this.model.getField(this.latName),
             color: color
         }];
         this.cdRef.detectChanges();

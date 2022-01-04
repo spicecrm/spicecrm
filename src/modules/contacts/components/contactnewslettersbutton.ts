@@ -34,6 +34,6 @@ export class ContactNewslettersButton implements OnInit {
     }
 
     public handleDisabled() {
-        this.disabled = !this.model.data.email1 || this.model.isEditing || !this.model.checkAccess('edit') ? true : false;
+        this.disabled = !this.model.getField('email1') || this.model.isEditing || !this.model.checkAccess('edit') ? true : false;
     }
 }

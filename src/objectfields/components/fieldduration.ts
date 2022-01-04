@@ -42,9 +42,9 @@ export class fieldDuration extends fieldGeneric {
     }
 
     public getDisplay() {
-        if (this.model.data[this.fieldminutes] || this.model.data[this.fieldhours]) {
+        if (this.model.getField(this.fieldminutes) || this.model.getField(this.fieldhours)) {
             // return this.model.data[this.fieldhours] + ':' + this.model.data[this.fieldminutes];
-            return ("00" + this.model.data[this.fieldhours]).slice(-2)  + ':' + ("00" + this.model.data[this.fieldminutes]).slice(-2);
+            return ("00" + this.model.getField(this.fieldhours)).slice(-2)  + ':' + ("00" + this.model.getField(this.fieldminutes)).slice(-2);
         }
     }
 
@@ -54,7 +54,7 @@ export class fieldDuration extends fieldGeneric {
 
 
     get editDurationHours() {
-        return this.model.data[this.fieldhours];
+        return this.model.getField(this.fieldhours);
     }
 
     set editDurationHours(hours) {
@@ -62,7 +62,7 @@ export class fieldDuration extends fieldGeneric {
     }
 
     get editDurationMinutes() {
-        return this.model.data[this.fieldminutes];
+        return this.model.getField(this.fieldminutes);
     }
 
     set editDurationMinutes(minutes) {

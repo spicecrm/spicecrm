@@ -55,7 +55,7 @@ export class SpiceFavoritesItem implements OnInit {
     public initializeModel() {
         this.model.module = this.item.module_name;
         this.model.id = this.item.item_id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item.data);
+        this.model.setData(this.item.data);
     }
 
     /**

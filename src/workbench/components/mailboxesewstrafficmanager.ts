@@ -28,7 +28,7 @@ export class MailboxesEWSTrafficManager {
     ) {
         let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
-            this.model.data.settings = {
+            this.model.setField('settings',  {
                 ews_host: "",
                 ews_username: "",
                 ews_password: "",
@@ -36,7 +36,7 @@ export class MailboxesEWSTrafficManager {
                 ews_folder: "",
                 ews_subscriptionid: "",
                 ews_push: false
-            };
+            });
         }
     }
 
@@ -91,6 +91,6 @@ export class MailboxesEWSTrafficManager {
     }
 
     get foldername() {
-        return this.model.data.settings.ews_folder ? this.model.data.settings.ews_folder.name : '';
+        return this.model.getField('settings').ews_folder ? this.model.getField('settings').ews_folder.name : '';
     }
 }

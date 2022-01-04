@@ -120,7 +120,7 @@ export class ObjectTimelineItemModule {
     public ngOnInit() {
         this.model.module = this.record.module;
         this.model.id = this.record.id;
-        this.model.data = this.record.data;
+        this.model.setData(this.record.data);
 
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;

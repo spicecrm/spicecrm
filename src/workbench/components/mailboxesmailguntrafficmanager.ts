@@ -25,14 +25,14 @@ export class MailboxesMailgunTrafficManager {
     ) {
         let settings = this.model.getField('settings')
         if (!settings || (settings && settings.length == 0)) {
-            this.model.data.settings = {
+            this.model.setField('settings', {
                 api_key: "",
                 domain: "",
                 imap_pop3_display_name: "",
                 imap_pop3_username: "",
                 reply_to: "",
                 region: "",
-            };
+            });
         }
     }
 

@@ -93,14 +93,14 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      */
     public setInitialFieldValue() {
 
-        if (!this.model.data.recipient_addresses) {
-            this.model.data.recipient_addresses = [];
+        if (!this.model.getField('recipient_addresses')) {
+            this.model.setField('recipient_addresses', []);
         }
 
         this.setDisplayValue();
 
         // check if any condition si met so no determination shoudl happen on the addresses
-        if (this.model.data.recipient_addresses.length > 0 || this.fieldconfig.nodetermination === true || this.fieldconfig.addresstype != 'to' || !this.model.getField('parent_type') || !this.model.getField('parent_id')) return;
+        if (this.model.getField('recipient_addresses').length > 0 || this.fieldconfig.nodetermination === true || this.fieldconfig.addresstype != 'to' || !this.model.getField('parent_type') || !this.model.getField('parent_id')) return;
 
         // try to determine addresses from Parent
         this.backend.getRequest(`module/${(this.model.getField('parent_type'))}/${(this.model.getField('parent_id'))}`).subscribe(parent => {
@@ -121,7 +121,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * set the display value
      */
     public setDisplayValue() {
-        this.displayValue = this.model.data.recipient_addresses
+        this.displayValue = this.model.getField('recipient_addresses')
             .filter(address => {
                 return this.fieldconfig.addresstype == 'to' ? ['to', 'cc', 'bcc'].indexOf(address.address_type) > -1 : address.address_type == (this.fieldconfig.addresstype || 'from');
 
