@@ -28,6 +28,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserAccessLog'] = [
             'type' => 'varchar',
             'len' => 30
         ],
+        'assigned_user_id' => [ // create it manually
+            'name' => 'assigned_user_id',
+            'vname' => 'LBL_ASSIGNED_USER_ID',
+            'type' => 'id',
+            'comment' => 'id of current user'
+        ],
         'impersonating_user_id' => [
             'name' => 'impersonating_user_id',
             'vname' => 'LBL_IMPERSONATING_USER_ID',
@@ -82,7 +88,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserAccessLog'] = [
             'name' => 'idx_useraccesslogsusername',
             'type' => 'index',
             'fields' => ['login_name']
-        ]
+        ],
+        [
+            'name' => 'idx_useraccesslogs_assigned',
+            'type' => 'index',
+            'fields' => ['assigned_user_id', 'deleted']
+        ],
+        [
+            'name' => 'idx_useraccesslogs_impersonate',
+            'type' => 'index',
+            'fields' => ['impersonating_user_id', 'deleted']
+        ],
     ]
 ];
 
