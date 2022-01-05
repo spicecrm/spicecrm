@@ -68,6 +68,16 @@ module.exports = {
        ),
         new HtmlWebpackPlugin(
             generateOptions({name: "../outlookcrm.html", template: "assets/outlook/outlookcrm.html"})
+        ),
+        new HtmlWebpackPlugin(
+            {
+                filename: "../copyright.html",
+                template: "assets/copyright.html",
+                inject: false,
+                minify: false,
+                aacServices: aacService,
+                buildNumber: `${global.build.releaseNumber}.${now}`
+            }
         )
     ],
 };
