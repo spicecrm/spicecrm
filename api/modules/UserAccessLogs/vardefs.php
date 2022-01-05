@@ -90,11 +90,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserAccessLog'] = [
             'fields' => ['login_name']
         ],
         [
-            'name' => 'idx_useraccesslogs_assigned',
-            'type' => 'index',
-            'fields' => ['assigned_user_id', 'deleted']
-        ],
-        [
             'name' => 'idx_useraccesslogs_impersonate',
             'type' => 'index',
             'fields' => ['impersonating_user_id', 'deleted']
