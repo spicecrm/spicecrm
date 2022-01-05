@@ -75,7 +75,7 @@ export class SpiceImporterFixed {
     }
 
     public removeFixed(index) {
-        this.model.data = _.omit(this.model.data, this.spiceImport.fixedFields[index].field);
+        this.model.setData(_.omit(this.model.data, this.spiceImport.fixedFields[index].field));
         this.spiceImport.removeFixed(index);
     }
 

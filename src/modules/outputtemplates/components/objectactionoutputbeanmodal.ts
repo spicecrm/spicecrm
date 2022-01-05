@@ -283,7 +283,7 @@ export class ObjectActionOutputBeanModal {
             a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
 
             // genereate a filename
-            a.download = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
+            a.download = this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format;
 
             // start download and then remove the element from the document again
             a.click();
@@ -347,7 +347,7 @@ export class ObjectActionOutputBeanModal {
         if(this.emailInitialized) {
             this.filelist = [{
                 size: this.contentForHandBack.length,
-                name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+                name: this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format,
                 type: "application/" + this.selected_format,
                 filecontent: this.contentForHandBack
             }];

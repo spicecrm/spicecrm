@@ -155,7 +155,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
 
         this.model.id = accountdata.id;
         this.model.isNew = false;
-        this.model.data = this.model.utils.backendModel2spice('Accounts', accountdata);
+        this.model.setData(accountdata);
         this.lead.setFields({
             account_id: this.model.id,
             account_linked_name: this.model.getField('name')

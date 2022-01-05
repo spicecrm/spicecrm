@@ -28,7 +28,7 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
 
     public email_model: any = null;
     public self: any = null;
-    public componentRefs: Array<any> = [];
+    public componentRefs: any[] = [];
     @Output() public save$ = new EventEmitter();
 
     @Input() public object_module_name: string;
@@ -54,10 +54,12 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
         if(this.object_predefined_fields)
         {
             // set them in model.data...
+            let fields: any = {};
             for(let fieldname in this.object_predefined_fields)
             {
-                this.model.data[fieldname] = this.object_predefined_fields[fieldname];
+                fields[fieldname] = this.object_predefined_fields[fieldname];
             }
+            this.model.setFields(fields);
         }
 
         this.view.isEditable = true;

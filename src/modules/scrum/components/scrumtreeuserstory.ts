@@ -29,7 +29,7 @@ export class ScrumTreeUserStory implements OnInit, OnDestroy {
         this.model.module = 'ScrumUserStories';
         this.model.initialize();
         this.model.id = this.userstory.id;
-        this.model.data = this.userstory;
+        this.model.setData(this.userstory);
     }
 
     /**

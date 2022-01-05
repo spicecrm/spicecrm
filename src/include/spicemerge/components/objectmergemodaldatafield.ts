@@ -29,7 +29,7 @@ export class ObjectMergeModalDataField implements OnInit {
     }
 
     public ngOnInit() {
-        this.model.data = this.fielddata;
+        this.model.setData(this.fielddata, false);
     }
 
 }

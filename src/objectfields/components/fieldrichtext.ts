@@ -29,7 +29,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     /**
      * holds the available signatures
      */
-    public signatures: Array<{ label: string, content: string, id: string }> = [];
+    public signatures: { label: string, content: string, id: string }[] = [];
     /**
      * holds the spice page builder html code
      * @private
@@ -105,8 +105,8 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * getter for the stylesheet id from the fiels
      */
     get stylesheetId(): string {
-        if (!_.isEmpty(this.model.data[this.stylesheetField])) {
-            return this.model.data[this.stylesheetField];
+        if (!_.isEmpty(this.model.getField(this.stylesheetField))) {
+            return this.model.getField(this.stylesheetField);
         }
         return this.stylesheetId = this.stylesheetToUse;
     }
@@ -341,14 +341,14 @@ export class fieldRichText extends fieldGeneric implements OnInit {
 
     public save(content) {
         let toSave = {
-            date_modified: this.model.data.date_modified,
+            date_modified: this.model.getField('date_modified'),
             [this.fieldname]: content
         };
         this.backend.save(this.model.module, this.model.id, toSave)
             .subscribe(
                 (res: any) => {
                     this.model.endEdit();
-                    this.model.data.date_modified = res.date_modified;
+                    this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
                     this.model.startEdit();
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");

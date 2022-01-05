@@ -84,16 +84,21 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
         this.model.module = "Emails";
 
         this.model.initialize(this.parent);
-        this.model.data.parent_type = this.parent.module;
-        this.model.data.parent_id = this.parent.data.id;
-        this.model.data.parent_name = this.parent.data.name;
-        this.model.isNew = true;
-        this.model.data.assigned_user_id = this.session.authData.userId;
-        this.model.data.assigned_user_name = this.session.authData.userName;
-        this.model.data.modified_by_id = this.session.authData.userId;
-        this.model.data.modified_by_name = this.session.authData.userName;
-        this.model.data.date_entered = new Date();
-        this.model.data.date_modified = new Date();
+
+        // set the new model data
+        let modelData: any = {};
+        modelData.parent_type = this.parent.module;
+        modelData.parent_id = this.parent.data.id;
+        modelData.parent_name = this.parent.data.name;
+        modelData.isNew = true;
+        modelData.assigned_user_id = this.session.authData.userId;
+        modelData.assigned_user_name = this.session.authData.userName;
+        modelData.modified_by_id = this.session.authData.userId;
+        modelData.modified_by_name = this.session.authData.userName;
+        modelData.date_entered = new Date();
+        modelData.date_modified = new Date();
+        this.model.setFields(modelData);
+
         this.model.startEdit();
     }
 
@@ -111,10 +116,12 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
             this.sending = true;
-            this.model.setField('type', 'out');
-            this.model.setField('to_be_sent', '1');
-            this.model.setField('from_addr', this.model.data.from_addr_name);
-            this.model.setField('to_addrs', this.model.data.to_addrs_names);
+            this.model.setFields({
+                type: 'out',
+                to_be_sent: '1',
+                from_addr: this.model.getField('from_addr_name'),
+                to_addrs: this.model.getField('to_addrs_names')
+            });
 
             this.model.save().subscribe(
                 success => {
