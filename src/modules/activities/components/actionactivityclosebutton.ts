@@ -55,7 +55,7 @@ export class ActionActivityCloseButton implements OnInit, OnDestroy {
     public ngOnInit() {
         this.componentconfig = this.metadata.getComponentConfig('ActionActivityCloseButton', this.model.module);
 
-        if(this.model.data[this.componentconfig.statusField] == this.componentconfig.statusValues) {
+        if(this.model.getField(this.componentconfig.statusField) == this.componentconfig.statusValues) {
             this.handleDisabled('display');
         }
 

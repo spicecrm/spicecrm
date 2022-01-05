@@ -55,7 +55,7 @@ export class ActivityParticipationPanelParticipant implements OnInit {
     public ngOnInit(): void {
         this.model.module = this.participant.module;
         this.model.id = this.participant.id;
-        this.model.data = this.model.utils.backendModel2spice(this.module, this.participant.data);
+        this.model.setData(this.participant.data);
         this.model.parentmodel = this.parent;
 
         // get the fields for the fieldset

@@ -54,7 +54,7 @@ export class MailboxManagerEmail implements OnInit {
     public ngOnInit() {
         this.model.module = "Emails";
         this.model.id = this.email.id;
-        this.model.data = this.modelutilities.backendModel2spice("Emails", this.email);
+        this.model.setData(this.email);
     }
 
     /**

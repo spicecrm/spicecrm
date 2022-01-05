@@ -54,7 +54,7 @@ export class MailboxManagerTextMessage implements OnInit {
     public ngOnInit() {
         this.model.module = "TextMessages";
         this.model.id = this.message.id;
-        this.model.data = this.modelutilities.backendModel2spice("TextMessages", this.message);
+        this.model.setData(this.message);
     }
 
     /**

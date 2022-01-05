@@ -26,12 +26,12 @@ export class fieldTitle extends fieldGeneric {
     }
 
     get titledddisplay() {
-        return this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.data[this.fielddd]);
+        return this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.getField(this.fielddd));
     }
 
     get value(){
-        return (this.model.data[this.fielddd] ? this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.data[this.fielddd]) : '') +
-            (this.model.data[this.fieldtxt] ? ' ' + this.model.data[this.fieldtxt] : '');
+        return (this.model.getField(this.fielddd) ? this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.getField(this.fielddd)) : '') +
+            (this.model.getField(this.fieldtxt) ? ' ' + this.model.getField(this.fieldtxt) : '');
     }
 
     /*
@@ -45,14 +45,14 @@ export class fieldTitle extends fieldGeneric {
 
     // overwrite get Field Class
     getFieldClass() {
-        let classes: Array<string> = [];
+        let classes: string[] = [];
         if (!this.isValid) classes.push('slds-has-error');
         return classes;
     }
 
-    getTitles(): Array<any>{
+    getTitles(): any[]{
         let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldconfig['field_dd'] ? this.fieldconfig['field_dd'] : 'title_dd');
+        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldconfig.field_dd ? this.fieldconfig.field_dd : 'title_dd');
         for(let optionVal in options){
             retArray.push({
                 value: optionVal,

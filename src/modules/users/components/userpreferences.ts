@@ -141,7 +141,7 @@ export class UserPreferences implements OnDestroy {
      */
     public loadInitialValues() {
         this.view.isEditable = true;
-        this.isCurrentUser = this.session.authData.userId == this.model.data.id;
+        this.isCurrentUser = this.session.authData.userId == this.model.getField('id');
 
         // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
         // CR1000463: use spiceacl to enable editing
@@ -190,7 +190,7 @@ export class UserPreferences implements OnDestroy {
             this.preferencesService.getPreferences(this.loadedSubscription);
 
         } else if (this.canEdit) {
-            this.backend.getRequest('module/Users/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
+            this.backend.getRequest(`module/Users/${this.model.id}/preferences/global`, {}).subscribe(prefs => {
                     this.isLoading = false;
                     this.preferences = prefs;
 
@@ -256,7 +256,7 @@ export class UserPreferences implements OnDestroy {
     public save() {
 
         if (!this.isCurrentUser) {
-            this.backend.postRequest('module/Users/' + this.model.data.id + '/preferences/global', {}, this.preferences).subscribe(
+            this.backend.postRequest(`module/Users/${this.model.id}/preferences/global`, {}, this.preferences).subscribe(
                 savedprefs => {
                     this.preferences = savedprefs;
                     this.view.setViewMode();

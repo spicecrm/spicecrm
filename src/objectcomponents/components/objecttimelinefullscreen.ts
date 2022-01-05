@@ -29,8 +29,8 @@ export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
     }
 
     get parentName() {
-        console.log(this.parent.data);
-        return this.parent.data.name;
+
+        return this.parent.getField('name');
     }
 
     get displayDetailsPanel() {
@@ -84,7 +84,7 @@ export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
         this.timeline.parent = this.parent;
         this.parent.getData(true, '', true).subscribe(data => {
             // set the tab params
-            this.timeline.parent.data = data;
+            this.timeline.parent.setData(data);
             this.navigationTab.setTabInfo({displayname: this.parent.getField('summary_text') + ' • timeline'});
         });
     }
