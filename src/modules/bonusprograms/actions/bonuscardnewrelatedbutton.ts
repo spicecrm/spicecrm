@@ -55,8 +55,8 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
             };
         }
 
-        if (!this.parentModel.data.id) {
-            this.parentModel.data.id = this.parentModel.id;
+        if (!this.parentModel.getField('id')) {
+            this.parentModel.setField('id', this.parentModel.id);
         }
 
         this.model.addModel('', this.parentModel, presets).subscribe(response => {

@@ -42,7 +42,7 @@ export class CampaignTaskExportButton {
      * only show for campaign tasks of type email
      */
     get hidden() {
-        return this.model.data.campaigntask_type == 'Email';
+        return this.model.getField('campaigntask_type') == 'Email';
     }
 
 

@@ -33,7 +33,7 @@ export class QuestionsManagerEditOptionSingleMulti implements OnInit {
     public ngOnInit(): void {
         this.model.module = 'QuestionOptions';
         this.model.id = this.option.id;
-        this.model.data = this.option;
+        this.model.setData(this.option);
         if ( this.option.text?.length < 1 ) this.option.text = this.option.name;
         this.textIsMultiline = this.option.text && ( this.option.text.length > 80 || this.option.text.indexOf("\n") > -1 );
     }
@@ -67,11 +67,11 @@ export class QuestionsManagerEditOptionSingleMulti implements OnInit {
     }
 
     public get canEditOption(): boolean {
-        return this.model.data.new_with_id || this.model.checkAccess('edit');
+        return this.model.getField('new_with_id') || this.model.checkAccess('edit');
     }
 
     public get canDeleteOption(): boolean {
-        return this.model.data.new_with_id || this.model.checkAccess('delete');
+        return this.model.getField('new_with_id') || this.model.checkAccess('delete');
     }
 
     public get canMoveOption(): boolean {

@@ -32,7 +32,7 @@ export class SalesDocsItemRejectContainer implements OnInit {
     public ngOnInit(): void {
         this.model.module = 'SalesDocItems';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
 
         let componentconfig = this.metadata.getComponentConfig('SalesDocsItemRejectContainer', this.model.module);
         this.fieldset = componentconfig.fieldset;

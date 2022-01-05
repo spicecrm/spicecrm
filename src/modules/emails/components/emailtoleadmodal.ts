@@ -61,7 +61,7 @@ export class EmailToLeadModal implements OnInit, AfterViewInit {
     }
 
     public setField(fieldData) {
-        this.model.data[fieldData.field] = fieldData.value;
+        this.model.setField(fieldData.field, fieldData.value);
     }
 
     public saveLead() {

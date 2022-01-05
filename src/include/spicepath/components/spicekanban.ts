@@ -450,7 +450,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
             this.model.module = this.modellist.module;
             this.model.initialize();
             this.model.id = event.item.data.id;
-            this.model.data = this.model.utils.backendModel2spice(this.modellist.module, _.clone(event.item.data));
+            this.model.setData(_.clone(event.item.data));
 
             // initialize the field statis
             this.model.initializeFieldsStati();

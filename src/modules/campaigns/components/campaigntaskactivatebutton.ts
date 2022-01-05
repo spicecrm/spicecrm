@@ -31,7 +31,7 @@ export class CampaignTaskActivateButton {
      * only show for campaign tasks of type email
      */
     get hidden() {
-        return this.model.data.campaigntask_type == 'Email';
+        return this.model.getField('campaigntask_type') == 'Email';
     }
 
 
@@ -49,7 +49,7 @@ export class CampaignTaskActivateButton {
             return;
         }
 
-        this.disabled = this.model.isEditing || this.model.data.activated === true ? true : false;
+        this.disabled = this.model.isEditing || this.model.getField('activated') === true ? true : false;
     }
 
     public execute() {

@@ -52,7 +52,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
      */
     get territories() {
         try {
-            return JSON.parse(this.model.data.spiceacl_secondary_territories)
+            return JSON.parse(this.model.getField('spiceacl_secondary_territories'))
         } catch (e) {
             return [];
         }
@@ -64,7 +64,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
      * @param value an array of territory ids
      */
     set territories(value) {
-        this.model.data.spiceacl_secondary_territories = JSON.stringify(value ? value : []);
+        this.model.setField('spiceacl_secondary_territories',JSON.stringify(value ? value : []));
     }
 
     /**

@@ -83,7 +83,7 @@ export class FieldDunsNumber extends fieldGeneric {
     */
     public getResults(modalRef) {
         let params = {
-            name: this.model.data.name,
+            name: this.model.getField('name'),
             street: (this.model.getField(this.fieldStreet) ? this.model.getField(this.fieldStreet) + (this.model.getField(this.fieldHouseNumber) ? ' ' + this.model.getField(this.fieldHouseNumber) : '') : ''),
             city: (this.model.getField(this.fieldCity) ? this.model.getField(this.fieldCity) : ''),
             postalcode: (this.model.getField(this.fieldPostalCode) ? this.model.getField(this.fieldPostalCode) : ''),

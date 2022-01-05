@@ -26,18 +26,18 @@ export class QuestionsetTypeParametersText implements OnInit {
     }
 
     public parseParams(): void {
-        if ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ) {
-            let config = JSON.parse( this.model.data.questiontypeparameter );
+        if ( this.model.getField('questiontypeparameter') && this.model.getField('questiontypeparameter') !== '' ) {
+            let config = JSON.parse( this.model.getField('questiontypeparameter') );
             if ( config.text ) this.sequenced = config.text.sequenced;
         }
     }
 
     public writeSettings(): void {
-        let config =  ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ? JSON.parse( this.model.data.questiontypeparameter ) : {} );
+        let config =  ( this.model.getField('questiontypeparameter') && this.model.getField('questiontypeparameter') !== '' ? JSON.parse( this.model.getField('questiontypeparameter') ) : {} );
         config.text = {
             sequenced: this.sequenced
         };
-        this.model.data.questiontypeparameter = JSON.stringify( config );
+        this.model.setField('questiontypeparameter', JSON.stringify( config ));
     }
 
     public click(): void {

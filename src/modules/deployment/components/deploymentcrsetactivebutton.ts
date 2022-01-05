@@ -54,7 +54,7 @@ export class DeploymentCRSetActiveButton {
                     this.broadcast.broadcastMessage('cr.setactive', {
                         module: this.model.module,
                         id: this.model.id,
-                        name: this.model.data.name
+                        name: this.model.getField('name')
                     });
                 }
             });

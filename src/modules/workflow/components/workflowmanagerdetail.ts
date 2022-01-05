@@ -58,8 +58,8 @@ export class WorkflowManagerDetail implements OnChanges {
         if (this.modeldata.id) {
             // this.model.module = this.module;
             this.model.id = this.modeldata.id;
-            this.model.data = this.model.utils.backendModel2spice('WorkflowDefinitions', this.modeldata);
-            this.model.data.acl = {
+            this.model.setData(this.modeldata);
+            this.model.acl = {
                 create: true,
                 edit: true
             };

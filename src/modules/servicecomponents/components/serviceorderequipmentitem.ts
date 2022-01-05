@@ -65,7 +65,7 @@ export class ServiceOrderEquipmentItem implements OnInit  {
     public setItemModelData() {
         this.model.module = 'ServiceEquipments';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
     }
 
     /**

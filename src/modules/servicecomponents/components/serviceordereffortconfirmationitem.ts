@@ -42,7 +42,7 @@ export class ServiceOrderEffortConfirmationItem extends ServiceOrderEffortItem i
      * enable detele only for the items added in the confirmation
      */
     get candelete() {
-        return this.model.data.confirmadded;
+        return this.model.getField('confirmadded');
     }
 
 }

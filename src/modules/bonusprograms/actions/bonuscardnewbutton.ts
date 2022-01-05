@@ -46,8 +46,8 @@ export class BonusCardNewButton implements OnInit {
         if (this.parentModel.module == 'BonusPrograms' && this.parentModel.id) {
             program = {
                 id: this.parentModel.id,
-                name: this.parentModel.data.summary_text,
-                validity_date_editable: this.parentModel.data.validity_date_editable,
+                name: this.parentModel.getField('summary_text'),
+                validity_date_editable: this.parentModel.getField('validity_date_editable')
             };
         } else {
             program = await this.promptProgramSelection();

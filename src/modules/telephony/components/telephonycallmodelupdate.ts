@@ -95,7 +95,7 @@ export class TelephonyCallModelUpdate implements OnInit {
         this.model.module = this.calldata.relatedmodule;
         this.model.id = this.calldata.relatedid;
         this.model.initialize();
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.calldata.relateddata);
+        this.model.setData(this.calldata.relateddata);
         this.model.startEdit();
     }
 

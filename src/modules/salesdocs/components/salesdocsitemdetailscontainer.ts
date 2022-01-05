@@ -34,7 +34,7 @@ export class SalesDocsItemDetailsContainer implements OnInit {
     public ngOnInit(): void {
         this.model.module = 'SalesDocItems';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
 
         // determine if we have a detail component set to be rendered
         let itemTypes = this.configuration.getData('salesdocitemtypes');

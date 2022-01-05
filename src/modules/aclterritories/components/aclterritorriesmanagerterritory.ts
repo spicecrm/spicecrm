@@ -30,7 +30,7 @@ export class ACLTerritorriesManagerTerritory implements OnChanges {
     @Input() public modelid;
 
     /**
-     * input for the data of thje selöected territory
+     * input for the data of thje selected territory
      */
     @Input() public modeldata;
 
@@ -64,7 +64,7 @@ export class ACLTerritorriesManagerTerritory implements OnChanges {
      */
     public handleChanges(){
         this.model.id = this.modelid;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.modeldata);
+        this.model.setData( this.modeldata);
 
         // load type
         if (this.territorytype != '' && this.territorytype != this.loadedterritorytype) {

@@ -136,7 +136,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
 
         this.model.id = contactdata.id;
         this.model.isNew = false;
-        this.model.data = this.model.utils.backendModel2spice('Contacts', contactdata);
+        this.model.setData(contactdata);
         this.view.isEditable = false;
 
         this.contact.emit(this.model);

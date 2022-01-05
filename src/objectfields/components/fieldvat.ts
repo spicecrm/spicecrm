@@ -36,7 +36,7 @@ export class fieldVat extends fieldGeneric {
                     if (response.data.valid !== true) {
                         this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');
                     }
-                    this.model.data.vat_details = JSON.stringify(response.data);
+                    this.model.setField('vat_details', JSON.stringify(response.data));
                 } else {
                     this.toast.sendToast(this.language.getLabel('ERR_CHECK_VAT'), 'error');
                 }

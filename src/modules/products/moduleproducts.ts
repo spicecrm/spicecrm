@@ -60,7 +60,6 @@ import /*embed*/ {ProductVariantsAttributeDI} from './components/productvariants
 import /*embed*/ {ProductVariantsAttributeN} from './components/productvariantsattributen';
 import /*embed*/ {ProductVariantsAttributeF} from './components/productvariantsattributef';
 import /*embed*/ {ProductVariantsAttributeSS} from "./components/productvariantsattributess";
-import /*embed*/ {ProductTextGenerator} from './components/producttextgenerator';
 import /*embed*/ {ProductGroupsContentCodeAssignments} from './components/productgroupscontentcodeassignments';
 import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/productgroupslongtextcodeassignments';
 import /*embed*/ {ProductGroupManagerDetailsAttributesValidationItem} from "./components/productgroupmanagerdetailsattributesvalidationitem";
@@ -107,7 +106,6 @@ import /*embed*/ {ProductUOMConversions} from "./components/productuomconversion
         ProductVariantsAttributeSS,
         ProductVariantsAttributesTable,
         ProductVariantsAttributes,
-        ProductTextGenerator,
         ProductGroupsContentCodeAssignments,
         ProductGroupsLongtextCodeAssignments,
         ProductUOMConversions,

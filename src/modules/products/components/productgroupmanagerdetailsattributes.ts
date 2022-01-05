@@ -80,7 +80,7 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
     }
 
     public handleAddEvent(item) {
-        item.parent_name = this.productFinder.searchfocus.object.id != this.model.id ? this.model.data.summary_text : '';
+        item.parent_name = this.productFinder.searchfocus.object.id != this.model.id ? this.model.getField('summary_text') : '';
         item.parent_id = this.model.id;
         this.attributes = [...this.attributes, item];
         this.attributes = this.sortAttributes(this.attributes);

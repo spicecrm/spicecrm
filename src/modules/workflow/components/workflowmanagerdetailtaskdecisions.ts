@@ -29,7 +29,7 @@ export class WorkflowManagerDetailTaskDecisions {
      * adds a new decision
      */
     public addDecision() {
-        this.model.data.decisions.push({
+        this.model.getField('decisions').push({
             id: this.modelutilities.generateGuid(),
             workflowtaskdefinition_id: this.model.id,
             deleted: 0,

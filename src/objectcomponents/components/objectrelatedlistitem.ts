@@ -53,7 +53,7 @@ export class ObjectRelatedListItem implements OnInit {
         // initialize the model
         this.model.module = this.module;
         this.model.id = this.listitem.id;
-        this.model.data = this.model.utils.backendModel2spice(this.module, this.listitem);
+        this.model.setData(this.listitem);
 
         // load the componentconfig from ObjectRelatedListItem ... if input itemactionset is not defined
         this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedListItem', this.model.module);
@@ -90,7 +90,7 @@ export class ObjectRelatedListItem implements OnInit {
                 this.metadata.addComponentDirect("ObjectEditModalWReference", this.footer.footercontainer).subscribe(editModalRef => {
                     editModalRef.instance.model.module = this.module;
                     editModalRef.instance.model.id = this.model.id;
-                    editModalRef.instance.model.data = this.model.data;
+                    editModalRef.instance.model.setData(this.model.data, false);
 
                     if (this.editcomponentset && this.editcomponentset != "") {
                         editModalRef.instance.componentSet = this.editcomponentset;

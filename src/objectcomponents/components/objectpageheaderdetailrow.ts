@@ -57,11 +57,11 @@ export class ObjectPageHeaderDetailRow implements OnInit {
     public getFields() {
         let fieldsetFields = this.metadata.getFieldSetFields(this.fieldSet);
 
-        if (this.model.data && this.model.data.acl_fieldcontrol) {
+        if (this.model.acl_fieldcontrol) {
             let thisFieldsetFields = [];
             for (let fieldsetFieldIndex in fieldsetFields) {
                 if (this.metadata.hasField(this.model.module, fieldsetFields[fieldsetFieldIndex].field)) {
-                    if (!(this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] && this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] === '1')) {
+                    if (!(this.model.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] && this.model.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] === '1')) {
                         thisFieldsetFields.push(fieldsetFields[fieldsetFieldIndex]);
                     }
                 }

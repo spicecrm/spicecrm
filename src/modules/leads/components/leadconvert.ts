@@ -79,7 +79,7 @@ export class LeadConvert {
         this.model.getData(true, 'detailview').subscribe(data => {
             this.model.startEdit();
             this.navigationtab.setTabInfo({
-                displayname: this.language.getLabel('LBL_CONVERT_LEAD') + ': ' + this.model.data.summary_text,
+                displayname: this.language.getLabel('LBL_CONVERT_LEAD') + ': ' + this.model.getField('summary_text'),
                 displaymodule: 'Leads'
             });
         });
@@ -221,7 +221,7 @@ export class LeadConvert {
         this.modal.openModal('LeadConvertModal', false).subscribe(modalref => {
             modalref.instance.saveactions = createSaveActions;
             modalref.instance.completed.subscribe(completed => {
-                this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
+                this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.getField('summary_text') + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
 
                 // close the tab
                 this.navigationtab.closeTab();

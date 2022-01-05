@@ -41,7 +41,7 @@ export class PotentialsOpportunityAllocationLineItem implements OnChanges {
 
     public ngOnChanges(changes: SimpleChanges): void {
         this.model.id = this.potential.id;
-        this.model.data = this.potential;
+        this.model.setData(this.potential);
 
         // check if we have a potentiual maintianed on the opportunity
         let activepotentials = this.opportunity.getFieldValue('opportunitypotentials');

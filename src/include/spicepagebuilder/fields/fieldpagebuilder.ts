@@ -105,14 +105,14 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
         const bodySPBFieldName = this.fieldconfig.bodySPBField || 'body_spb';
         this.modal.openModal('SpicePageBuilder', true, this.injector).subscribe(modalRef => {
             if (!!this.value) {
-                modalRef.instance.spicePageBuilderService.page = JSON.parse(JSON.stringify(this.model.data[bodySPBFieldName]));
+                modalRef.instance.spicePageBuilderService.page = JSON.parse(JSON.stringify(this.model.getField(bodySPBFieldName)));
             }
             modalRef.instance.spicePageBuilderService.response.subscribe(res => {
                 if (!res) return;
                 this.model.setField(bodySPBFieldName, res);
                 const loadingModal = this.modal.await('LBL_PARSING_HTML');
 
-                this.backend.postRequest('common/mjml/json2html', {}, {json: this.model.data[bodySPBFieldName]}).subscribe(res => {
+                this.backend.postRequest('common/mjml/json2html', {}, {json: this.model.getField(bodySPBFieldName)}).subscribe(res => {
                     if (!res || !res.html) {
                         this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                         loadingModal.emit(true);
