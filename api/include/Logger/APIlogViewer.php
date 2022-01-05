@@ -40,7 +40,7 @@ class APIlogViewer {
         $db = DBManagerFactory::getInstance();
         $response = [];
 
-
+        $filter = [];
         if ( isset( $queryParams['method'][0])) $filter[] = "a.method = '{$db->quote($queryParams['method'])}'";
         if ( !empty($queryParams['filter'])){
             $subFilter = [];
@@ -69,7 +69,7 @@ class APIlogViewer {
         if ( !empty( $queryParams['direction'])) $filter[] = "a.direction = '{$db->quote($queryParams['direction'])}'";
         if ( !empty( $queryParams['end'])) $filter[] = "a.date_entered <= '{$db->quote($queryParams['end'])}'";
 
-        if (is_array($filter) &&  count( $filter ) > 0) {
+        if (count( $filter) > 0) {
             $whereClause = 'WHERE ' . implode(' AND ', $filter);
         }
 
