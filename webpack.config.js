@@ -61,6 +61,9 @@ module.exports = {
             generateOptions({name: "../index.html", template: "assets/index.html"})
         ),
         new HtmlWebpackPlugin(
+            generateOptions({name: "../copyright.html", template: "assets/copyright.html"})
+        ),
+        new HtmlWebpackPlugin(
             generateOptions({name: "../outlook.html", template: "assets/outlook/outlook.html"})
        ),
         new HtmlWebpackPlugin(
