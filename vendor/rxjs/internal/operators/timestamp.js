@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var async_1=require("../scheduler/async"),map_1=require("./map");function timestamp(t){return void 0===t&&(t=async_1.async),map_1.map(function(e){return new Timestamp(e,t.now())})}exports.timestamp=timestamp;var Timestamp=function(e,t){this.value=e,this.timestamp=t};exports.Timestamp=Timestamp;
