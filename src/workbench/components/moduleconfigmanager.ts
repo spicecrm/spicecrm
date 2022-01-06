@@ -31,7 +31,7 @@ export class ModuleConfigManager {
     allowCopyButton: boolean = true;
     allowGlobalModal: boolean = false;
 
-    sysModules: Array<any> = [];
+    sysModules: any[] = [];
     sysRoles: any = {};
     currentModule: string = '';
     currentComponent: any = '';
@@ -40,13 +40,13 @@ export class ModuleConfigManager {
 
     newComponent: any = {};
 
-    componentTree: Array<any> = [];
+    componentTree: any[] = [];
     currentTableActive: string = '';
 
-    componentModuleList: Array<any> = [];
+    componentModuleList: any[] = [];
 
 
-    treelist: Array<any> = [];
+    treelist: any[] = [];
 
     public initialized: boolean = false;
 
@@ -64,13 +64,22 @@ export class ModuleConfigManager {
         public modal: modal
     ) {
         // get roles
+        /*
         this.backend.getRequest('configuration/configurator/entries/sysuiroles').subscribe(roles => {
             this.sysRoles['*'] = '*';
             for (let role of roles) {
                 this.sysRoles[role.id] = role.name;
             }
         });
+        */
 
+        let roles = this.metadata.getRoles();
+        this.sysRoles['*'] = '*';
+        for (let role of roles) {
+            this.sysRoles[role.id] = role.name;
+        }
+
+        /*
         this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
@@ -79,6 +88,14 @@ export class ModuleConfigManager {
             this.currentModule = "*";
             this.selectedModule();
         });
+         */
+
+        this.sysModules = this.metadata.getModules();
+        this.sysModules.sort();
+        this.initialized = true;
+
+        this.currentModule = "*";
+        this.selectedModule();
 
         // view.setEditMode(); //quickfix
         this.checkMode();
@@ -87,8 +104,9 @@ export class ModuleConfigManager {
     get getAllowCopyButton() {
         if (Object.keys(this.selectedComponent).length === 0 && this.selectedComponent.constructor === Object) {
             return false;
-        } else
-            return this.allowCopyButton;
+        }
+
+        return this.allowCopyButton;
     }
 
     checkMode() {
