@@ -115,7 +115,9 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
+import /*embed*/ {ObjectTabContainer} from './components/objecttabcontainer';
+import /*embed*/ {ObjectTabContainerItem} from './components/objecttabcontaineritem';
+import /*embed*/ {ObjectTabContainerItemHeader} from './components/objecttabcontaineritemheader';
 import /*embed*/ {ObjectVerticalTabContainer} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverticaltabcontaineritem';
 import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
