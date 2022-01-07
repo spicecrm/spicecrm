@@ -8,9 +8,6 @@ import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-
-
-import {Subject} from 'rxjs';
 import {modal} from "../../services/modal.service";
 import {ModuleConfigAddDialog} from "./moduleconfigadddialog";
 import {configurationService} from "../../services/configuration.service";
@@ -59,7 +56,7 @@ export class ModuleConfigManager {
         public language: language,
         public toast: toast,
         public modalservice: modal,
-        public configurationService: configurationService,
+        public configuration: configurationService,
         public view: view,
         public modal: modal
     ) {
@@ -110,8 +107,8 @@ export class ModuleConfigManager {
     }
 
     checkMode() {
-        this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
-        this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
+        this.edit_mode = this.configuration.getCapabilityConfig('core').edit_mode;
+        this.change_request_required = this.configuration.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
 
         if (!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')) {
             this.edit_mode = 'custom';
