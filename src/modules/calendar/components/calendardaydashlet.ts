@@ -10,7 +10,7 @@ import {calendar} from '../services/calendar.service';
  */
 @Component({
     selector: 'calendar-day-dashlet',
-    templateUrl: './src/modules/calendar/templates/calendardaydashlet.html',
+    templateUrl: '../templates/calendardaydashlet.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [calendar]
 })
@@ -19,15 +19,15 @@ export class CalendarDayDashlet {
     /**
      * reference of calendar content div
      */
-    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarContent: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) public calendarContent: ViewContainerRef;
     /**
      * holds the dashlet label
      */
-    private dashletLabel: any = null;
+    public dashletLabel: any = null;
 
-    constructor(private language: language,
-                private elementRef: ElementRef,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public elementRef: ElementRef,
+                public calendar: calendar) {
         this.calendar.isDashlet = true;
         this.calendar.sheetType = 'Day';
         this.calendar.sheetHourHeight = 50;

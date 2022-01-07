@@ -6,14 +6,14 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'dashboard-componentset',
-    templateUrl: "./src/modules/dashboard/templates/dashboardcomponentset.html",
+    templateUrl: "../templates/dashboardcomponentset.html",
 })
 export class DashboardComponentset implements AfterViewInit, OnDestroy {
-    @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) private componentcontainer: ViewContainerRef;
-    private dashletconfig: any;
-    private componentRefs: Array<any> = [];
+    @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) public componentcontainer: ViewContainerRef;
+    public dashletconfig: any;
+    public componentRefs: Array<any> = [];
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
     }
 
     public ngAfterViewInit() {
@@ -26,7 +26,7 @@ export class DashboardComponentset implements AfterViewInit, OnDestroy {
         }
     }
 
-    private renderComnponentset() {
+    public renderComnponentset() {
         if (this.dashletconfig && this.dashletconfig.componentset) {
             for (let component of this.metadata.getComponentSetObjects(this.dashletconfig.componentset)) {
                 this.metadata.addComponent(component.component, this.componentcontainer)

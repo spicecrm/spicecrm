@@ -11,7 +11,7 @@ import {
  */
 @Component({
     selector: 'system-installer-component',
-    templateUrl: './src/systemcomponents/templates/systeminstallercomponent.html'
+    templateUrl: '../templates/systeminstallercomponent.html'
 })
 
 export class SystemInstallerComponent {

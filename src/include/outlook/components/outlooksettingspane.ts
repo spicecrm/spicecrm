@@ -13,27 +13,27 @@ import {OutlookConfiguration} from '../services/outlookconfiguration.service';
  */
 @Component({
     selector: 'outlook-read-pane-settings',
-    templateUrl: './src/include/outlook/templates/outlooksettingspane.html'
+    templateUrl: '../templates/outlooksettingspane.html'
 })
 export class OutlookSettingsPane {
-    private submitSettingsString: string = "Save Settings";
+    public submitSettingsString: string = "Save Settings";
     /**
      * Error message.
      */
-    private errormessage: any;
+    public errormessage: any;
     /**
      * Is the add-in already configured.
      */
-    private isconfigured: boolean;
+    public isconfigured: boolean;
     /**
      * A loading indicator.
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     constructor(
-        private configuration: OutlookConfiguration,
-        private router: Router,
-        private language: language
+        public configuration: OutlookConfiguration,
+        public router: Router,
+        public language: language
     ) {
         this.isconfigured = this.configuration.hasSettings();
     }
@@ -41,7 +41,7 @@ export class OutlookSettingsPane {
     /**
      * Saves the settings.
      */
-    private saveSettings() {
+    public saveSettings() {
         this.loading = true;
         this.configuration.testSettings().subscribe(
             success => {
@@ -65,7 +65,7 @@ export class OutlookSettingsPane {
     /**
      * Cancels out of the setting container.
      */
-    private cancel() {
+    public cancel() {
         this.configuration.loadSettings();
         this.router.navigate(['mailitem']);
     }

@@ -181,8 +181,8 @@ class ContactsPortalController {
             throw ( new BadRequestException('User name already taken.'))->setErrorCode('usernameAlreadyTaken');
         if ( empty( $this->bodyParams['username'] ))
             throw ( new BadRequestException('Missing user name.'))->setErrorCode('missingUserName');
-        # if ( strlen( $this->bodyParams['username'] ) > $GLOBALS['dictionary']['User']['fields']['user_name']['len'] )
-        #    throw ( new BadRequestException('User name to long (max. '.$GLOBALS['dictionary']['User']['fields']['user_name']['len'].' chars).'))->setErrorCode('usernameToLong');
+        # if ( strlen( $this->bodyParams['username'] ) > SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['user_name']['len'] )
+        #    throw ( new BadRequestException('User name to long (max. '.SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['user_name']['len'].' chars).'))->setErrorCode('usernameToLong');
         $user->user_name = $this->bodyParams['username'];
         # if ( empty( $this->bodyParams['aclRole'] ))
         #    throw ( new BadRequestException('Missing acl role.'))->setErrorCode('missingAclRole');

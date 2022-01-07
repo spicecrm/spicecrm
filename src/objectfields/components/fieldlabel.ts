@@ -11,22 +11,22 @@ import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
     selector: 'field-label',
-    templateUrl: './src/objectfields/templates/fieldlabel.html'
+    templateUrl: '../templates/fieldlabel.html'
 })
 export class fieldLabel {
-    @Input() private fieldname: string = '';
-    @Input() private fieldconfig: any = {};
-    @Input() private addclasses: string = 'slds-form-element__label';
-    private showHelp: boolean = false;
+    @Input() public fieldname: string = '';
+    @Input() public fieldconfig: any = {};
+    @Input() public addclasses: string = 'slds-form-element__label';
+    public showHelp: boolean = false;
 
     constructor(
-        private model: model,
-        private metadata: metadata,
-        private view: view,
-        private userPreferences: userpreferences,
-        private language: language,
-        private footer: footer,
-        private injector: Injector
+        public model: model,
+        public metadata: metadata,
+        public view: view,
+        public userPreferences: userpreferences,
+        public language: language,
+        public footer: footer,
+        public injector: Injector
     ) {
     }
 
@@ -45,11 +45,11 @@ export class fieldLabel {
         return stati;
     }
 
-    private isRequired() {
+    public isRequired() {
         return this.stati.editable && this.stati.required;
     }
 
-    private isEditable() {
+    public isEditable() {
         return this.stati.editable;
         /*
         if (!this.view.isEditable || this.fieldconfig.readonly)
@@ -59,7 +59,7 @@ export class fieldLabel {
         */
     }
 
-    private isEditMode() {
+    public isEditMode() {
         if (this.view.isEditMode() && this.isEditable()) {
             return true;
         } else {
@@ -102,7 +102,7 @@ export class fieldLabel {
      * display a context menu
      * @param e
      */
-    private showContext(e) {
+    public showContext(e) {
         // currently do nothing .. need to finish this
         return;
 

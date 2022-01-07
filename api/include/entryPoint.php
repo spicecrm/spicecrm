@@ -42,7 +42,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 // load the config files
 SpiceConfig::getInstance()->loadConfigFromDB();
@@ -81,12 +81,9 @@ if (empty($GLOBALS['installing'])) {
     // load the config from the db and populate to \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config
     SpiceConfig::getInstance()->loadConfigFromDB();
 
-    $GLOBALS['timedate'] = TimeDate::getInstance();
-
     $current_user = BeanFactory::getBean('Users');//todo-uebelmar clarify... no global $current_user .. this variable has no usage and no scope
     $system_config = BeanFactory::getBean('Administration');
     $system_config->retrieveSettings();
 
-    LogicHook::initialize()->call_custom_logic('', 'after_entry_point');
 }
 

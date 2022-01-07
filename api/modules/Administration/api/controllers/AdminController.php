@@ -7,6 +7,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -19,7 +20,7 @@ use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\modules\Configurator\Configurator;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
@@ -43,20 +44,8 @@ class AdminController
 
         $dbSize = 0;
         $dbCount = 0;
-        $stats = $db->query("SHOW TABLE STATUS");
-        while ($stat = $db->fetchByAssoc($stats)) {
-
-            $recordCount = $db->fetchByAssoc($db->query("SELECT count(*) records FROM {$stat['Name']}"));
-
-            $statsArray['database'][] = [
-                'name' => $stat['Name'],
-                'records' => (int)$recordCount['records'],
-                'size' => $stat['Data_length'] + $stat['Index_length']
-            ];
-            $dbCount += (int)$recordCount['records'];
-            $dbSize += (int)$stat['Data_length'] + (int)$stat['Index_length'];
-        }
-
+        $dbStats = $db->getStats();
+        $statsArray['database'] = $dbStats['tables'];
         // get the fts stats
         $statsArray['elastic'] = SpiceFTSHandler::getInstance()->getStats();
 
@@ -65,7 +54,7 @@ class AdminController
         $params = $req->getQueryParams();
         if ($params['summary']) {
             return $res->withJson([
-                'database' => ['size' => $dbSize, 'count' => $dbCount],
+                'database' => ['size' => $dbStats['size'], 'count' => $dbStats['count']],
                 'uploadfiles' => $statsArray['uploadfiles'],
                 'elastic' => ['size' => $statsArray['elastic']['_all']['total']['store']['size_in_bytes'], 'count' => $statsArray['elastic']['_all']['total']['docs']['count']],
                 'users' => $db->fetchByAssoc($db->fetchByAssoc("SELECT count(id) usercount FROM users WHERE status='Active'"))['usercount']
@@ -136,12 +125,7 @@ class AdminController
      * @throws ForbiddenException
      */
     public function writeGeneralSettings(Request $req, Response $res, array $args): Response {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-
-        if (!$current_user->is_admin) {
-            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
-        }
 
         $diffArray = [];
 
@@ -153,14 +137,13 @@ class AdminController
                 switch ($itemname) {
                     case 'name':
                         SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
-                        $query = "UPDATE config SET value = '$itemvalue' WHERE categroy = 'system' AND name = '$itemname'";
+                        $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
                         $db->query($query);
                         break;
                     default:
                         SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
                         $diffArray[$itemname] = $itemvalue;
                 }
-
             }
 
             // handle advanced settings
@@ -187,21 +170,20 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
-        global $moduleList, $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
         if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
             SpiceDictionaryVardefs::loadDictionaries();
             // save cache to DB
-            foreach ($dictionary as $dict) {
+            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
 
         $repairedTables = [];
         $sql = '';
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
                 $sql .= $db->repairTable($focus, $execute);
@@ -214,7 +196,7 @@ class AdminController
             }
         }
 
-        foreach ($dictionary as $meta) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
             $tablename = $meta['table'];
@@ -241,14 +223,13 @@ class AdminController
      * @throws \Exception
      */
     public function buildSQLArray(Request $req, Response $res, array $args): Response {
-        global $moduleList, $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
         if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
             SpiceDictionaryVardefs::loadDictionaries();
             // save cache to DB
-            foreach ($dictionary as $dict) {
+            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -256,13 +237,7 @@ class AdminController
         $repairedTables = [];
         $sql = '';
 
-        // moduleList might be empty at that time. Make a full reload.
-        // Grabbing from session won't be enough
-        if(empty($moduleList)){
-            SpiceModules::getInstance()->loadModules(true);
-        }
-
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
                 $sql .= $db->repairTable($focus, $execute);
@@ -275,7 +250,7 @@ class AdminController
             }
         }
 
-        foreach ($dictionary as $meta) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
             $tablename = $meta['table'];
@@ -397,32 +372,33 @@ class AdminController
     }
 
     /**
-     * rebuilds relationships
+     * rebuilds relationships from dictionary definitions
      *
      * ToDo: remove the need to have this
      */
     public function rebuildRelationships()
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
+        $this->rebuildDictionaryRelationships();
+
         // using sysdictionary
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            $this->rebuildDictionaryRelationships();
-        } else { // old fashioned way
-            foreach ($GLOBALS['moduleList'] as $module) {
-                $focus = BeanFactory::getBean($module);
-                if (!$focus) continue;
-                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => $dictionary[$focus->object_name]], $focus->module_dir);
-            }
-
-            // rebuild the metadata relationships as well
-            $this->rebuildMetadataRelationships();
-
-            // rebuild relationship cache
-            $rel = new Relationship();
-            $rel->build_relationship_cache();
-        }
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+//            $this->rebuildDictionaryRelationships();
+//        } else { // old fashioned way
+//            foreach ($GLOBALS['moduleList'] as $module) {
+//                $focus = BeanFactory::getBean($module);
+//                if (!$focus) continue;
+//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => SpiceDictionaryHandler::getInstance()->dictionary[$focus->object_name]], $focus->module_dir);
+//            }
+//
+//            // rebuild the metadata relationships as well
+//            $this->rebuildMetadataRelationships();
+//
+//            // rebuild relationship cache
+//            $rel = new Relationship();
+//            $rel->build_relationship_cache();
+//        }
     }
 
     /**
@@ -432,9 +408,10 @@ class AdminController
      */
     public function rebuildDictionaryRelationships()
     {
+        unset($_SESSION['relationships']);
         // rebuild relationship cache
         $rel = new Relationship();
-        $rel->build_dictionary_relationship_cache();
+        $rel->build_relationship_cache();
     }
 
     /**
@@ -444,10 +421,9 @@ class AdminController
      */
     private function rebuildMetadataRelationships()
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
-        $rel_dictionary = $dictionary;
+        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
         foreach ($rel_dictionary as $rel_name => $rel_data) {
             $table = isset($rel_data ['table']) ? $rel_data ['table'] : "";
             SugarBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
@@ -465,14 +441,15 @@ class AdminController
     public function repairLanguage(Request $req, Response $res, array $args): Response {
         $appListStrings = [];
         $appLang = [];
-        $languages = SpiceConfig::getInstance()->config['languages'];
         $langs = LanguageManager::getLanguages();
-        foreach ($languages as $language => $value) {
 
-            $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-
-            $appListStrings[$language][] = return_app_list_strings_language($language);
-            $appLang[$language][] = $this->loadLanguage($language);
+        foreach ($langs['available'] as $lang) {
+            if($lang['system_language']){
+                $language = $lang['language_code'];
+                $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
+                $appListStrings[$language][] = return_app_list_strings_language($language);
+                $appLang[$language][] = $this->loadLanguage($language);
+            }
         }
 
         if (!empty($appListStrings) && !empty($appLang)) {
@@ -518,9 +495,7 @@ class AdminController
      */
     private function merge_files($path, $name, $filter = '')
     {
-        global $moduleList;
-
-        foreach ($moduleList as $module) {
+        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $extension = "<?php \n //WARNING: The contents of this file are auto-generated\n";
             $extpath = "modules/$module/$path";
             $module_install = 'custom/Extension/' . $extpath;
@@ -605,34 +580,33 @@ class AdminController
      * @return false|Response|string
      */
     public function repairACLRoles(Request $req, Response $res, array $args) {
-        global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $repairedACLs = [];
         $ACLActions = ACLAction::getDefaultActions();
         if (SpiceUtils::isAdmin($current_user)) {
             if (!empty($ACLActions)) {
                 foreach ($ACLActions as $action) {
-                    if (!isset($beanList[$action->category])) {
+                    if (empty(SpiceModules::getInstance()->getBeanName($action->category))) {
                         ACLAction::removeActions($action->category);
                     }
 
                 }
             } else {
-                foreach ($beanList as $module => $class) {
-                    if (empty($repairedACLs[$class]) && isset($beanFiles[$class]) && file_exists($beanFiles[$class])) {
-                        $current_module = BeanFactory::getBean($module);
-                        if ($current_module->bean_implements('ACL') && empty($current_module->acl_display_only)) {
-                            if (!empty($current_module->acltype)) {
-                                ACLAction::addActions($current_module->getACLCategory(), $current_module->acltype);
+                foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
+                    $beanName = SpiceModules::getInstance()->getBeanName($module);
+                    if (empty($repairedACLs[$beanName]) && class_exists($beanClass)) {
+                        $currentModule = BeanFactory::getBean($module);
+                        if ($currentModule->bean_implements('ACL') && empty($currentModule->acl_display_only)) {
+                            if (!empty($currentModule->acltype)) {
+                                ACLAction::addActions($currentModule->getACLCategory(), $currentModule->acltype);
                             } else {
-                                ACLAction::addActions($current_module->getACLCategory());
+                                ACLAction::addActions($currentModule->getACLCategory());
                             }
 
-                            $repairedACLs[$class] = true;
+                            $repairedACLs[$beanName] = true;
                         }
                     }
                 }
-
             }
         }
         if ($res) {
@@ -685,11 +659,14 @@ class AdminController
      * @return Response
      */
     public function repairCache(Request $req, Response $res, array $args): Response {
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            return $this->repairCacheFromDb($req, $res, $args);
-        } else {
-            return $this->repairCacheFromFiles($req, $res, $args);
-        }
+
+        return $this->repairCacheFromDb($req, $res, $args);
+
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+//            return $this->repairCacheFromDb($req, $res, $args);
+//        } else {
+//            return $this->repairCacheFromFiles($req, $res, $args);
+//        }
     }
 
     /**
@@ -826,5 +803,68 @@ class AdminController
         }
         throw new UnauthorizedException();
 
+    }
+
+    /**
+     * Converts the DB charset and collation
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function convertDatabase(Request $req, Response $res, array $args): Response {
+        $db = DBManagerFactory::getInstance();
+        $body = $req->getParsedBody();
+        $result = $db->convertDBCharset($body['charset'], $this->getCollation($body['charset']));
+
+        return $res->withJson($result);
+    }
+
+    /**
+     * Convert the charset and collation of the given tables
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function convertTables(Request $req, Response $res, array $args): Response {
+        $body = $req->getParsedBody();
+        $db = DBManagerFactory::getInstance();
+
+        foreach ($body['tables'] as $table) {
+            $db->convertTableCharset($table, $body['charset'], $this->getCollation($body['charset']));
+        }
+
+        return $res->withJson(true);
+    }
+
+    /**
+     * Returns the charset and collation info for the database and its tables
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function getDatabaseCharsetInfo(Request $req, Response $res, array $args): Response {
+        $db = DBManagerFactory::getInstance();
+        $result = $db->getDatabaseCharsetInfo();
+
+        return $res->withJson($result);
+    }
+
+    private function getCollation(string $charset): string {
+        switch ($charset) {
+            case 'utf8mb4':
+                return 'utf8mb4_general_ci';
+            case 'utf8':
+            default:
+                return 'utf8_general_ci';
+        }
     }
 }

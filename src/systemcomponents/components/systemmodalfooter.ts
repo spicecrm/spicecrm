@@ -5,6 +5,6 @@ import {Component} from '@angular/core';
 
 @Component({
     selector: 'system-modal-footer',
-    templateUrl: './src/systemcomponents/templates/systemmodalfooter.html'
+    templateUrl: '../templates/systemmodalfooter.html'
 })
 export class SystemModalFooter {}

@@ -12,7 +12,7 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: '[potentials-opportunity-allocation-line-item]',
-    templateUrl: "./src/modules/potentials/templates/potentialsopportunityallocationlineitem.html",
+    templateUrl: "../templates/potentialsopportunityallocationlineitem.html",
     providers: [model]
 })
 export class PotentialsOpportunityAllocationLineItem implements OnChanges {
@@ -20,19 +20,19 @@ export class PotentialsOpportunityAllocationLineItem implements OnChanges {
     /**
      * the potential to be displayed
      */
-    @Input() private potential: any;
+    @Input() public potential: any;
 
     /**
      * the opportunity
      */
-    @Input() private opportunity: model;
+    @Input() public opportunity: model;
 
     /**
      * the current allocated amount
      */
-    private current_amount: any = 0;
+    public current_amount: any = 0;
 
-    constructor(private language: language, private model: model, private view: view) {
+    constructor(public language: language, public model: model, public view: view) {
         this.model.module = 'Potentials';
         this.model.data$.subscribe(data => {
             this.updateOpportunity();
@@ -41,7 +41,7 @@ export class PotentialsOpportunityAllocationLineItem implements OnChanges {
 
     public ngOnChanges(changes: SimpleChanges): void {
         this.model.id = this.potential.id;
-        this.model.data = this.potential;
+        this.model.setData(this.potential);
 
         // check if we have a potentiual maintianed on the opportunity
         let activepotentials = this.opportunity.getFieldValue('opportunitypotentials');
@@ -64,7 +64,7 @@ export class PotentialsOpportunityAllocationLineItem implements OnChanges {
     /**
      * update the opportunity
      */
-    private updateOpportunity() {
+    public updateOpportunity() {
         // opportunity might not be set yet
         if (!this.opportunity) return;
 

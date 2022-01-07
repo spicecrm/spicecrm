@@ -15,7 +15,7 @@ import {model} from "../../services/model.service";
  */
 @Component({
     selector: 'field-icon-condition',
-    templateUrl: './src/objectfields/templates/fieldiconcondition.html',
+    templateUrl: '../templates/fieldiconcondition.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class fieldIconCondition extends fieldGeneric {
@@ -58,15 +58,11 @@ export class fieldIconCondition extends fieldGeneric {
                 public metadata: metadata,
                 public backend: backend,
                 public router: Router,
-                private cdRef: ChangeDetectorRef) {
+                public cdRef: ChangeDetectorRef) {
         super(model, view, language, metadata, router);
         this.subscriptions.add(
             this.subscribeToModelChanges()
         );
-    }
-
-    public ngAfterViewChecked() {
-        console.log('checked');
     }
 
     /**
@@ -81,7 +77,7 @@ export class fieldIconCondition extends fieldGeneric {
      * subscribe to model data changes the call set values
      * @private
      */
-    private subscribeToModelChanges() {
+    public subscribeToModelChanges() {
         return this.model.data$.subscribe(() => {
             this.setValues();
         });
@@ -91,7 +87,7 @@ export class fieldIconCondition extends fieldGeneric {
      * set the icon, the color class and the label based on the module filter match
      * @private
      */
-    private setValues() {
+    public setValues() {
 
         window.clearTimeout(this.setterTimeout);
 

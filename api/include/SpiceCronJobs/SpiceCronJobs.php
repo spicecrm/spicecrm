@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceCronJobs;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
@@ -19,6 +20,9 @@ class SpiceCronJobs
     {
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
+
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
 
         if (empty($jobId)) {
             $jobs = $this->loadJobs();
@@ -41,7 +45,7 @@ class SpiceCronJobs
     {
         $db = DBManagerFactory::getInstance();
         $job = BeanFactory::newBean('SchedulerJobs');
-        return $job->get_full_list('schedulerjobs.priority', "schedulerjobs.next_run_date <= {$db->now()} AND schedulerjobs.job_status = 'Active'");
+        return $job->get_full_list('schedulerjobs.priority', "schedulerjobs.next_run_date <= {$db->now()} AND schedulerjobs.job_status = 'Active'") ?? [];
     }
 
     /**
@@ -70,7 +74,6 @@ class SpiceCronJobs
 
         foreach ($jobs as $job) {
 
-            $job->afterRun();
 
             $tasks = $job->get_linked_beans('schedulerjobtasks', null, [], 0, -1, 0, "schedulerjobtasks.jobtask_status != '$onHold'");
 
@@ -78,6 +81,9 @@ class SpiceCronJobs
                 $task->next_run_date = $job->next_run_date;
                 $task->resolve(SchedulerJobTask::JOB_TASK_RESOLUTION_FAILURE, $lastError['message']);
             }
+
+            $lastTask = end($tasks);
+            $job->afterRun($lastTask);
         }
     }
 }

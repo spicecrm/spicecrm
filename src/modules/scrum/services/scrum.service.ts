@@ -16,7 +16,7 @@ export class scrum {
     /**
      * the currently selected Object with type and ID
      */
-    private _selectedObject: scrumobject;
+    public _selectedObject: scrumobject;
 
     /**
      * emits whenever an object is loaded
@@ -25,7 +25,7 @@ export class scrum {
 
 
     constructor(
-        private backend: backend,
+        public backend: backend,
     ) {
         this._selectedObject = {id: undefined, type: ''};
 

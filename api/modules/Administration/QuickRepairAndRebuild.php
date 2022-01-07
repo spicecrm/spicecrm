@@ -34,10 +34,13 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class RepairAndClear
 {
@@ -97,7 +100,7 @@ class RepairAndClear
 
 	public function repairDatabase()
 	{
-		global $dictionary, $mod_strings;
+		global $mod_strings;
 		if(false == $this->show_output)
 			$_REQUEST['repair_silent']='1';
 		$_REQUEST['execute']=$this->execute;
@@ -108,8 +111,8 @@ class RepairAndClear
 
 	public function repairDatabaseSelectModules()
 	{
-		global $mod_strings, $dictionary;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+		global $mod_strings;
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		set_time_limit(3600);
 
 		$db = DBManagerFactory::getInstance();
@@ -125,25 +128,24 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	    	$sql = '';
 			if($this->module_list && !in_array($mod_strings['LBL_ALL_MODULES'],$this->module_list))
 			{
-				$repair_related_modules = array_keys($dictionary);
+				$repair_related_modules = array_keys(SpiceDictionaryHandler::getInstance()->dictionary);
 				//repair DB
 				$dm = inDeveloperMode();
 				SpiceConfig::getInstance()->config['developerMode'] = true;
 				foreach($this->module_list as $bean_name)
 				{
+                    if (class_exists(SpiceModules::getInstance()->getModuleName($bean_name))) {
 
-					if (isset($beanFiles[$bean_name]) && file_exists($beanFiles[$bean_name]))
-					{
-						require_once($beanFiles[$bean_name]);
 						$GLOBALS['reload_vardefs'] = true;
-						$focus = new $bean_name ();
+
+						$focus = new (SpiceModules::getInstance()->getBeanClassForBeanName($bean_name))();
 						#30273
-						if($focus->disable_vardefs == false) {
-							include(get_custom_file_if_exists('modules/' . $focus->module_dir . '/vardefs.php'));
+						if ($focus->disable_vardefs == false) {
+							include(SpiceUtils::getCustomFileIfExists('modules/' . $focus->module_dir . '/vardefs.php'));
 
-
-							if($this->show_output)
-								print_r("<p>" .$mod_strings['LBL_REPAIR_DB_FOR'].' '. $bean_name . "</p>");
+							if ($this->show_output) {
+                                print_r("<p>" .$mod_strings['LBL_REPAIR_DB_FOR'].' '. $bean_name . "</p>");
+                            }
 							$sql .= $db->repairTable($focus, $this->execute);
 						}
 					}
@@ -389,28 +391,31 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
 	//////////////////////////////////////////////////////////////
 	/////REPAIR AUDIT TABLES
-	public function rebuildAuditTables()
-	{
+	public function rebuildAuditTables() {
 		global $mod_strings;
-		if($this->show_output) echo "<h3> {$mod_strings['LBL_QR_REBUILDAUDIT']}</h3>";
+		if ($this->show_output) {
+            echo "<h3> {$mod_strings['LBL_QR_REBUILDAUDIT']}</h3>";
+        }
 
-		if(!in_array( translate('LBL_ALL_MODULES'), $this->module_list) && !empty($this->module_list))
-		{
-			foreach ($this->module_list as $bean_name){
-				if( isset($beanFiles[$bean_name]) && file_exists($beanFiles[$bean_name])) {
-					require_once($beanFiles[$bean_name]);
-				    $this->_rebuildAuditTablesHelper(new $bean_name());
-				}
+		if (!in_array(SpiceUtils::translate('LBL_ALL_MODULES'), $this->module_list) && !empty($this->module_list)) {
+			foreach ($this->module_list as $bean_name) {
+			    $beanClass = SpiceModules::getInstance()->getBeanClassForBeanName($bean_name);
+
+			    if (class_exists($beanClass)) {
+			        $this->_rebuildAuditTablesHelper(new $beanClass());
+                }
 			}
-		} else if(in_array(translate('LBL_ALL_MODULES'), $this->module_list)) {
-			foreach ($beanFiles as $bean => $file){
-				if( file_exists($file)) {
-					require_once($file);
-				    $this->_rebuildAuditTablesHelper(new $bean());
-				}
-			}
+		} elseif (in_array(SpiceUtils::translate('LBL_ALL_MODULES'), $this->module_list)) {
+		    foreach (SpiceModules::getInstance()->getBeanClasses() as $beanClass) {
+		        if (class_exists($beanClass)) {
+		            $this->_rebuildAuditTablesHelper(new $beanClass());
+                }
+            }
 		}
-		if($this->show_output) echo $mod_strings['LBL_DONE'];
+
+		if ($this->show_output) {
+            echo $mod_strings['LBL_DONE'];
+        }
 	}
 
 	private function _rebuildAuditTablesHelper($focus)
@@ -461,12 +466,12 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	////////
 	private function _getModuleNamePlural($module_name_singular)
 	{
-		global $beanList;
-		while ($curr_module = current($beanList))
+		$globalBeanList = SpiceModules::getInstance()->getBeanList();
+		while ($curr_module = current($globalBeanList))
 		{
 			if ($curr_module == $module_name_singular)
-				return key($beanList); //name of the module, plural.
-			next($beanList);
+				return key($globalBeanList); //name of the module, plural.
+			next($globalBeanList);
 		}
 	}
 

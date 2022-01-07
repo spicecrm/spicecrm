@@ -25,15 +25,21 @@ import /*embed*/ {EmailForwardButton} from "./components/emailforwardbutton";
 import /*embed*/ {EmailForwardModal} from "./components/emailforwardmodal";
 import /*embed*/ {EmailSendButton} from "./components/emailsendbutton";
 import /*embed*/ {EmailSchedulesButton} from "./components/emailschedulesbutton";
+import /*embed*/ {EmailSchedulesCancelButton} from "./components/emailschedulescancelbutton";
 import /*embed*/ {EmailSchedulesModal} from "./components/emailschedulesmodal";
 import /*embed*/ {EmailSchedulesRelatedButton} from "./components/emailschedulesrelatedbutton";
 import /*embed*/ {EmailSchedulesRelatedModal} from "./components/emailschedulesrelatedmodal";
 import /*embed*/ {EmailSchedulesView} from "./components/emailschedulesview";
+import /*embed*/ {EmailSchedulesBeans} from "./components/emailschedulesbeans";
 import /*embed*/ {EmailActionSetReadButton} from "./components/emailactionsetreadbutton";
 import /*embed*/ {EmailTemplatesEditor} from "./components/emailtemplateseditor";
 import /*embed*/ {EmailTemplatesPreview} from "./components/emailtemplatespreview";
 import /*embed*/ {fieldEmailSubject} from "./fields/fieldemailsubject";
 import /*embed*/ {fieldEmailActivityOpenness} from "./fields/fieldemailactivityopenness";
+import /*embed*/ {EmailParentAddressesModal} from "./components/emailparentaddressesmodal";
+import /*embed*/ {EmailToLeadModal} from "./components/emailtoleadmodal";
+import /*embed*/ {EmailToLeadEmailText} from "./components/emailtoleademailtext";
+import /*embed*/ {EmailToLeadButton} from "./components/emailtoleadbutton";
 
 @NgModule({
     imports: [
@@ -61,13 +67,19 @@ import /*embed*/ {fieldEmailActivityOpenness} from "./fields/fieldemailactivityo
         EmailSchedulesButton,
         EmailSchedulesModal,
         EmailSchedulesRelatedButton,
+        EmailSchedulesCancelButton,
         EmailSchedulesRelatedModal,
         EmailSchedulesView,
+        EmailSchedulesBeans,
         EmailActionSetReadButton,
         EmailTemplatesEditor,
         EmailTemplatesPreview,
+        EmailParentAddressesModal,
         fieldEmailSubject,
-        fieldEmailActivityOpenness
+        fieldEmailActivityOpenness,
+        EmailToLeadModal,
+        EmailToLeadEmailText,
+        EmailToLeadButton
     ]
 })
 export class ModuleEmails {}

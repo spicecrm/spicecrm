@@ -12,7 +12,9 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\UploadFile;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
 use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachment;
@@ -152,7 +154,7 @@ class SpiceAttachments
         }
 
         $filename = $upload_file->get_stored_file_name();
-        $file_mime_type = $file['filemimetype'] ?: $upload_file->getMimeSoap($filename);
+        $file_mime_type = $file['filemimetype'] ?: SpiceFileUtils::getMimeSoap($filename);
         $filesize = strlen($decodedFile);
         $filemd5 = md5($decodedFile);
 
@@ -170,7 +172,7 @@ class SpiceAttachments
             'id' => $guid,
             'user_id' => $current_user->id,
             'user_name' => $current_user->user_name,
-            'date' => $GLOBALS['timedate']->nowDb(),
+            'date' => TimeDate::getInstance()->nowDb(),
             'text' => nl2br($file['text']),
             'filename' => $filename,
             'filesize' => $filesize,
@@ -267,6 +269,46 @@ class SpiceAttachments
 
 
         return $attachment->save();
+    }
+
+    public static function saveMailgunAttachment(Email $email, $payload): bool
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
+        $guid = SpiceUtils::createGuid();
+
+        // if we have an image create a thumbnail
+        $thumbnail = self::createThumbnail($payload['md5'], $payload['content-type']);
+
+        $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type)
+                        VALUES ('{$guid}', 'Emails', '{$email->id}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "',
+                        '{$payload['name']}', '{$payload['size']}', '{$payload['md5']}', '', '{$thumbnail}', 0, '{$payload['content-type']}')");
+
+        return true;
+    }
+
+    public static function saveBase64File(string $fileContent): string {
+        $md5 = md5($fileContent);
+        $filepath = 'upload://' . $md5;
+        touch($filepath);
+
+        file_put_contents($filepath, $fileContent);
+
+        return $md5;
+    }
+
+    public static function saveDocumentRevisionAttachment($beanName, $beanId, DocumentRevision $doc): void {
+        $db          = DBManagerFactory::getInstance();
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $guid        = SpiceUtils::createGuid();
+        $trdate      = gmdate('Y-m-d H:i:s');
+        $fileSize    = (int)$doc->file_size;
+
+        $sql = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5,
+                file_mime_type, deleted) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '{$currentUser->id}',
+                '{$trdate}', '{$doc->file_name}', {$fileSize}, '{$doc->file_md5}', '{$doc->file_mime_type}',
+                '0')";
+        $db->query($sql);
     }
 
     /**

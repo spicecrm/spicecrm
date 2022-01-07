@@ -15,21 +15,21 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'workflow-manager-detail-tasks',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasks.html',
+    templateUrl: '../templates/workflowmanagerdetailtasks.html',
 })
 export class WorkflowManagerDetailTasks implements OnChanges {
 
     /**
      * the tasks for the selected workflow
      */
-    @Input() private tasks: any[] = [];
+    @Input() public tasks: any[] = [];
 
     /**
      * the curently selectd task
      */
-    private selectedTask: string = '';
+    public selectedTask: string = '';
 
-    constructor(private model: model, private view: view, private language: language) {
+    constructor(public model: model, public view: view, public language: language) {
     }
 
     /**
@@ -50,7 +50,7 @@ export class WorkflowManagerDetailTasks implements OnChanges {
     /**
      * sorts the tasks by the sequence
      */
-    private sortTasksBySequence() {
+    public sortTasksBySequence() {
         if (this.tasks) {
             this.tasks.sort((a, b) => {
                 return a.sequence > b.sequence ? 1 : -1;
@@ -61,7 +61,7 @@ export class WorkflowManagerDetailTasks implements OnChanges {
     /**
      * adds a task
      */
-    private addTask() {
+    public addTask() {
         let newGuid = this.model.utils.generateGuid();
         this.tasks.push({
             id: newGuid,
@@ -80,7 +80,7 @@ export class WorkflowManagerDetailTasks implements OnChanges {
     /**
      * helper function that loops over the tasks and gets the next available sequence number in an incremtne of 10
      */
-    private getNextSequence() {
+    public getNextSequence() {
         let highestSequence = 0;
 
         for (let task of this.tasks) {

@@ -11,11 +11,11 @@ import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
 })
 export class SystemOverlayLoadingSpinnerDirective {
 
-    private overlayElement: HTMLElement;
+    public overlayElement: HTMLElement;
 
     constructor(
-        private renderer: Renderer2,
-        private elementRef: ElementRef
+        public renderer: Renderer2,
+        public elementRef: ElementRef
     ) {
         this.defineOverlayElement();
     }
@@ -28,7 +28,7 @@ export class SystemOverlayLoadingSpinnerDirective {
     /**
      * define an overlay div
      */
-    private defineOverlayElement() {
+    public defineOverlayElement() {
         this.overlayElement = this.renderer.createElement('div');
         this.renderer.setStyle(this.overlayElement, 'position', 'absolute');
         this.renderer.addClass(this.overlayElement, 'slds-align--absolute-center');
@@ -37,6 +37,7 @@ export class SystemOverlayLoadingSpinnerDirective {
         this.renderer.setStyle(this.overlayElement, 'z-index', '999');
         this.renderer.setStyle(this.overlayElement, 'top', '0');
         this.renderer.setStyle(this.overlayElement, 'left', '0');
+        this.renderer.setStyle(this.overlayElement, 'background-color', 'rgb(0,0,0,0.075)');
         let spinnerContainer = this.renderer.createElement('div');
         this.renderer.setProperty(this.overlayElement, 'innerHTML', `
             <div style="border-radius: 50%; box-shadow: 0 0 5px 0 #555; padding:.75rem; background-color:#fff; color:#080707">

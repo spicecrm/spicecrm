@@ -8,7 +8,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "workbench-config-option-module-filter",
-    templateUrl: "./src/workbench/templates/workbenchconfigoptionmodulefilter.html"
+    templateUrl: "../templates/workbenchconfigoptionmodulefilter.html"
 })
 export class WorkbenchConfigOptionModulefilter {
 
@@ -17,13 +17,13 @@ export class WorkbenchConfigOptionModulefilter {
 
     public modules: any[] = [];
     public modulefilters: any[] = [];
-    private module: string = "";
+    public module: string = "";
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private cdRef: ChangeDetectorRef,
-        private view: view
+        public language: language,
+        public metadata: metadata,
+        public cdRef: ChangeDetectorRef,
+        public view: view
     ) {
     }
 

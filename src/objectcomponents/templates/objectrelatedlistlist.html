@@ -1,4 +1,4 @@
-<object-related-card [componentconfig]="componentconfig">
+<object-related-card [ngClass]="{'slds-hide': hide}" [componentconfig]="componentconfig">
     <ng-container *ngIf="aclAccess; else noaccess">
         <div class="slds-border--top">
             <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset" [sequencefield]="componentconfig.sequencefield" [listitemactionset]="listitemactionset"></object-relatedlist-table>

@@ -15,7 +15,7 @@ import {loggerService} from '../../services/logger.service';
  */
 @Component({
     selector: 'object-relatedlist-table',
-    templateUrl: './src/objectcomponents/templates/objectrelatedlisttable.html'
+    templateUrl: '../templates/objectrelatedlisttable.html'
 })
 export class ObjectRelatedlistTable implements OnInit {
 
@@ -27,37 +27,37 @@ export class ObjectRelatedlistTable implements OnInit {
     /**
      * set to true if inline editing shoudlbe enabled for the table
      */
-    @Input() private editable: boolean = false;
+    @Input() public editable: boolean = false;
 
     /**
      * define a separate edit componentset that will be rendered with the edit dialog if the user chooses to edit a record
      *
      * typical usecase is to add fields fromt eh linkl (e.g. in the buying center) to the fieldset. Those fields are specific to a relationship and can only be added as part of that
      */
-    @Input() private editcomponentset: boolean = false;
+    @Input() public editcomponentset: boolean = false;
 
     /**
      * set one field as the one holding a sequence
      */
-    @Input() private sequencefield: string = null;
+    @Input() public sequencefield: string = null;
 
     /**
      * set to true to hide the actionset menu item being display
      */
-    @Input() private hideActions: boolean = false;
+    @Input() public hideActions: boolean = false;
 
     /**
      * the list item actionset
      */
-    @Input() private listitemactionset: string;
+    @Input() public listitemactionset: string;
 
     /**
      * set if no access to the related odule is allowed
      */
-    private noAccess: boolean = false;
+    public noAccess: boolean = false;
 
-    private nowDragging = false;
-    private isSequenced = false;
+    public nowDragging = false;
+    public isSequenced = false;
 
     constructor(
         public language: language,
@@ -66,7 +66,7 @@ export class ObjectRelatedlistTable implements OnInit {
         public model: model,
         public layout: layout,
         public backend: backend,
-        private logger: loggerService) {
+        public logger: loggerService) {
     }
 
     public ngOnInit() {
@@ -105,7 +105,7 @@ export class ObjectRelatedlistTable implements OnInit {
      * @param column
      * @private
      */
-    private getColumnStyle(column) {
+    public getColumnStyle(column) {
 
         // check that we have a dimension
         if (column.fieldconfig?.widthdimension && column.fieldconfig?.width) {
@@ -118,30 +118,30 @@ export class ObjectRelatedlistTable implements OnInit {
 
     }
 
-    private isSortable(field): boolean {
+    public isSortable(field): boolean {
         if (this.relatedmodels.sortBySequencefield) return false;
         return field.fieldconfig.sortable === true;
     }
 
-    private setSortField(field): void {
+    public setSortField(field): void {
         if (this.relatedmodels.sortBySequencefield) return;
         if (this.isSortable(field)) {
             this.relatedmodels.sortfield = field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field;
         }
     }
 
-    private getSortIcon(field): string {
+    public getSortIcon(field): string {
         if (this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field)) {
             return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowdown' : 'arrowup';
         }
         return '';
     }
 
-    private getIdOfRow(index, item) {
+    public getIdOfRow(index, item) {
         return item.id;
     }
 
-    private drop(event) {
+    public drop(event) {
         let previousItem = this.relatedmodels.items.splice(event.previousIndex, 1);
         this.relatedmodels.items.splice(event.currentIndex, 0, previousItem[0]);
 
@@ -156,12 +156,12 @@ export class ObjectRelatedlistTable implements OnInit {
         this.relatedmodels.updateItems(updateArray);
     }
 
-    private dragStarted(e) {
+    public dragStarted(e) {
         this.nowDragging = true;
         e.source.element.nativeElement.classList.add('slds-is-selected');
     }
 
-    private dragEnded(e) {
+    public dragEnded(e) {
         this.nowDragging = false;
         e.source.element.nativeElement.classList.remove('slds-is-selected');
     }

@@ -16,7 +16,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a status field for the participation status
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/fieldactivityparticipationstatus.html'
+    templateUrl: '../templates/fieldactivityparticipationstatus.html'
 })
 export class fieldActivityParticipationStatus extends fieldGeneric implements OnInit {
 
@@ -29,7 +29,7 @@ export class fieldActivityParticipationStatus extends fieldGeneric implements On
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
                 public modal: modal,
-                private session: session) {
+                public session: session) {
 
         super(model, view, language, metadata, router);
 

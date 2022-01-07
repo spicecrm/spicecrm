@@ -14,12 +14,12 @@ export class GSuiteBrokerService implements OnDestroy {
     /**
      * holds the message update event listener
      */
-    private messageUpdateListener;
+    public messageUpdateListener;
 
     /**
      * subject requests instance
      */
-    private requests = {};
+    public requests = {};
 
     /**
      * define an observable to exchange data between the system and the wrapper

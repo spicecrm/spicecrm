@@ -30,9 +30,11 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+
 class SpiceFTSRESTManager
 {
 
@@ -59,7 +61,6 @@ class SpiceFTSRESTManager
      */
     function initialize()
     {
-        global $moduleList;
         $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
@@ -382,9 +383,9 @@ class SpiceFTSRESTManager
         $nodeModule = BeanFactory::getBean($module);
         if ($nodeModule) {
             $nodeModule->load_relationships();
-            // print_r($GLOBALS['dictionary']);//
+            // print_r(SpiceDictionaryHandler::getInstance()->dictionary);//
             // 2011-07-21 add audit table
-            if (isset($GLOBALS['dictionary'][$nodeModule->object_name]['audited']) && $GLOBALS['dictionary'] [$nodeModule->object_name]['audited'])
+            if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->object_name]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->object_name]['audited'])
                 $functionsArray[] = [
                     'path' => /* ($requester != '' ? $requester. '#': '') . */
                         'audit:' . $module . ':audit',

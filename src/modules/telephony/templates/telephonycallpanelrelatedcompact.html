@@ -1,4 +1,7 @@
-<h3 class="slds-text-heading_small">
+<h3 class="slds-text-heading_small slds-truncate slds-grid slds-grid--vertical-align-center">
     <object-record-fieldset-horizontal-list [fieldset]="mainfieldset"></object-record-fieldset-horizontal-list>
+    <button *ngIf="canClear" class="slds-button slds-button--icon slds-p-around--xxx-small"><system-button-icon (click)="clear()" icon="clear"></system-button-icon></button>
 </h3>
-<object-record-fieldset-horizontal-list *ngIf="subfieldset" [fieldset]="subfieldset"></object-record-fieldset-horizontal-list>
+<div class="slds-truncate slds-size--1-of-1">
+    <object-record-fieldset-horizontal-list *ngIf="subfieldset" [fieldset]="subfieldset"></object-record-fieldset-horizontal-list>
+</div>

@@ -63,6 +63,8 @@ import /*embed*/ {AdministrationDictRepairACLRoles} from "./components/administr
 import /*embed*/ {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
 import /*embed*/ {AdministrationDictRepairDbColumns} from "./components/administrationdictrepairdbcolumns";
 import /*embed*/ {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
+import /*embed*/ {AdministrationDictRepairConvertDBCharset} from "./components/administrationdictrepairconvertdbcharset";
+import /*embed*/ {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
 import /*embed*/ { AdministrationJobMethods } from './components/administrationjobmethods';
@@ -79,10 +81,16 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
-import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
+import /*embed*/ {AdministrationUserAccessLogViewer} from './components/administrationuseraccesslogviewer';
 
+import /*embed*/ {AdministrationLoginRestriction} from './components/administrationloginrestriction';
+import /*embed*/ {AdministrationLoginRestrictionIpAddresses} from './components/administrationloginrestrictionipaddresses';
+import /*embed*/ {AdministrationLoginRestrictionIpAddressesRow} from './components/administrationloginrestrictionipaddressesrow';
+import /*embed*/ {AdministrationPasswordConfig} from './components/administrationpasswordconfig';
+import /*embed*/ {AdministrationBlockedUsers} from './components/administrationblockedusers';
+import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
 
-
+import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 
 @NgModule({
     imports: [
@@ -101,6 +109,7 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationAPIInspectorDetails,
         AdministrationapiinspectorMethodResponses,
         AdministrationApiInspectorMethodTest,
+        AdministrationGDPRRetentionManager,
         AdministrationMain,
         AdministrationMenu,
         AdministrationMenuRouteItem,
@@ -149,7 +158,15 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationGeneralSettings,
         AdministrationLanguages,
         AdministrationDefaultPreferences,
-        UserAccessLogViewer
+        AdministrationUserAccessLogViewer,
+        AdministrationDictRepairConvertDBCharset,
+        AdministrationDictRepairConvertDBCharsetModal,
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
     ],
     entryComponents: [
         AdministrationMain,
@@ -163,9 +180,14 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDictionaryManagerItemField,
         AdministrationDefaultPreferences,
         AdministrationJobRunningList,
-        AdministrationJobFailedList
-    ],
-    exports: [],
+        AdministrationJobFailedList,
+        AdministrationLoginRestriction,
+        AdministrationLoginRestrictionIpAddresses,
+        AdministrationLoginRestrictionIpAddressesRow,
+        AdministrationPasswordConfig,
+        AdministrationBlockedUsers,
+        AdministrationLoginManagement
+    ]
 
 })
 export class AdminComponentsModule {

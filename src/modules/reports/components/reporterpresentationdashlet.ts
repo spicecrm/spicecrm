@@ -18,7 +18,7 @@ import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-presentation-dashlet',
-    templateUrl: './src/modules/reports/templates/reporterpresentationdashlet.html',
+    templateUrl: '../templates/reporterpresentationdashlet.html',
     providers: [model, reporterconfig],
     styles: [
         ':host {width:100%; height: 100%;}'
@@ -31,28 +31,28 @@ export class ReporterPresentationDashlet implements AfterViewInit {
     @ViewChild('presentationcontainer', {
         read: ViewContainerRef,
         static: true
-    }) private presentationcontainer: ViewContainerRef;
+    }) public presentationcontainer: ViewContainerRef;
 
-    @Input() private parentModule: string = '';
-    @Input() private parentId: string = '';
-    @Input() private displayheader: boolean = true;
+    @Input() public parentModule: string = '';
+    @Input() public parentId: string = '';
+    @Input() public displayheader: boolean = true;
 
-    @Input() private componentconfig: any = {};
+    @Input() public componentconfig: any = {};
 
     /**
      * emites the title after the report is loaded
      */
-    @Output() private dashletTitle: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public dashletTitle: EventEmitter<string> = new EventEmitter<string>();
 
-    private presComponent: any = undefined;
+    public presComponent: any = undefined;
 
     /**
      * emit if a no access or not found error has been raised by the backend
      * allows to hide the container for the report dashlet
      */
-    @Output() private noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private model: model, private metadata: metadata, private elementRef: ElementRef) {
+    constructor(public model: model, public metadata: metadata, public elementRef: ElementRef) {
     }
 
     public ngAfterViewInit() {
@@ -94,20 +94,20 @@ export class ReporterPresentationDashlet implements AfterViewInit {
     /**
      * opens the report
      */
-    private openReport() {
+    public openReport() {
         this.model.goDetail();
     }
 
     /**
      * renders the presentation
      */
-    private renderPresentation() {
+    public renderPresentation() {
         if (this.presComponent) {
             this.presComponent.destroy();
             this.presComponent = undefined;
         }
 
-        let presentationParams = this.model.data.presentation_params;
+        let presentationParams = this.model.getField('presentation_params');
 
         let presentationComponent = '';
         switch (presentationParams.plugin) {

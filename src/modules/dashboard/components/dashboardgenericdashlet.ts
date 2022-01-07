@@ -13,7 +13,7 @@ import {layout} from "../../../services/layout.service";
 
 @Component({
     selector: "dashboard-generic-dashlet",
-    templateUrl: "./src/modules/dashboard/templates/dashboardgenericdashlet.html",
+    templateUrl: "../templates/dashboardgenericdashlet.html",
     providers: [model, view]
 })
 export class DashboardGenericDashlet implements OnInit, OnDestroy {
@@ -65,19 +65,19 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
      * the dashlet config passed from the parent component
      * @private
      */
-    private dashletconfig: any = null;
+    public dashletconfig: any = null;
     /**
      * saved subscriptions to help unsubscribe on destroy
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private backend: backend,
-                private model: model,
-                private layout: layout,
-                private broadcast: broadcast) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public backend: backend,
+                public model: model,
+                public layout: layout,
+                public broadcast: broadcast) {
 
     }
 
@@ -124,7 +124,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
      * subscribe to broadcast message to handle updating the list
      * @private
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(message => {
 
@@ -158,7 +158,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
      * set the module, the load limit and the sort params
      * @private
      */
-    private setInitialValues() {
+    public setInitialValues() {
 
         this.model.module = this.dashletModule;
         this.sortparams.sortfield = this.dashletconfig.sortfield;
@@ -211,7 +211,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
      * load more records
      * @private
      */
-    private loadMore() {
+    public loadMore() {
 
         const canLoadMore = this.recordTotal > this.records.length;
 
@@ -249,7 +249,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
      * @return boolean
      * @param field the field from the fieldset
      */
-    private isSortable(field: { fieldconfig: { sortable: boolean } }): boolean {
+    public isSortable(field: { fieldconfig: { sortable: boolean } }): boolean {
         return field.fieldconfig?.sortable === true;
     }
 
@@ -257,7 +257,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
      * sets the field as sort parameter
      * @param field the field from the fieldset
      */
-    private setSortField(field: { field: string, fieldconfig: { sortable: boolean } }) {
+    public setSortField(field: { field: string, fieldconfig: { sortable: boolean } }) {
 
         if (!this.isSortable(field)) return;
 

@@ -14,7 +14,7 @@ import {modellist} from "../../../services/modellist.service";
  */
 @Component({
     selector: 'spice-google-maps-record-container',
-    templateUrl: './src/include/spicemap/templates/spicegooglemapsrecordcontainer.html',
+    templateUrl: '../templates/spicegooglemapsrecordcontainer.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [modellist]
 })
@@ -30,13 +30,13 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
     /**
      * save the has geo data value to hide/show map
      */
-    protected hasGeoData: boolean = false;
+    public hasGeoData: boolean = false;
 
-    constructor(private model: model,
-                private cdRef: ChangeDetectorRef,
-                private broadcast: broadcast,
-                private modelList: modellist,
-                private metadata: metadata) {
+    constructor(public model: model,
+                public cdRef: ChangeDetectorRef,
+                public broadcast: broadcast,
+                public modelList: modellist,
+                public metadata: metadata) {
 
     }
 
@@ -67,7 +67,7 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
     /**
      * set the module for the module list service and activate cache
      */
-    private initializeModelList() {
+    public initializeModelList() {
         // set the module in an embedded mode so not the full list is loaded
         this.modelList.initialize(this.model.module, 'SpiceGoogleMapsRecordContainer');
     }
@@ -109,7 +109,7 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
     /**
      * subscribe to model save to recheck the geo data
      */
-    private subscribeToModelChanges() {
+    public subscribeToModelChanges() {
         this.subscription = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == 'model.save' && msg.messagedata.module === this.model.module) {
                 this.checkModelHasGeoData();
@@ -120,7 +120,7 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
     /**
      * check if model has geo data
      */
-    private checkModelHasGeoData() {
+    public checkModelHasGeoData() {
         const moduleDefs = this.metadata.getModuleDefs(this.model.module);
 
         if (!!moduleDefs && !!moduleDefs.ftsgeo) {

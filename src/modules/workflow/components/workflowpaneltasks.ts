@@ -14,7 +14,7 @@ import {broadcast} from '../../../services/broadcast.service';
  */
 @Component({
     selector: 'workflow-panel-tasks',
-    templateUrl: './src/modules/workflow/templates/workflowpaneltasks.html'
+    templateUrl: '../templates/workflowpaneltasks.html'
 
 })
 export class WorkflowPanelTasks {
@@ -22,8 +22,8 @@ export class WorkflowPanelTasks {
     /**
      * an array of workflow tasks
      */
-    @Input() private workflowtasks: any[] = [];
+    @Input() public workflowtasks: any[] = [];
 
-    constructor(private model: model, private workflow: workflow, private language: language, private broadcast: broadcast) {
+    constructor(public model: model, public workflow: workflow, public language: language, public broadcast: broadcast) {
     }
 }

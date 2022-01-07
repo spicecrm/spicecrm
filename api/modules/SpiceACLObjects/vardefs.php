@@ -1,8 +1,9 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary ['SpiceACLObject'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLObject'] = [
     'table' => 'spiceaclobjects',
     'fields' => [
         'sysmodule_id' => [
@@ -94,4 +95,3 @@ $dictionary ['SpiceACLObject'] = [
 ];
 
 VardefManager::createVardef('SpiceACLObjects', 'SpiceACLObject', ['default']);
-

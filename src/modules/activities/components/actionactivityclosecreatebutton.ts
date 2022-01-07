@@ -14,7 +14,7 @@ import {modalwindow} from "../../../services/modalwindow.service";
  */
 @Component({
     selector: 'action-activity-close-create-button',
-    templateUrl: './src/modules/activities/templates/actionactivityclosecreatebutton.html'
+    templateUrl: '../templates/actionactivityclosecreatebutton.html'
 })
 export class ActionActivityCloseCreateButton implements OnInit {
 
@@ -26,21 +26,21 @@ export class ActionActivityCloseCreateButton implements OnInit {
     /**
      * to sneure the user cannot click twice
      */
-    private saving: boolean = false;
+    public saving: boolean = false;
 
     /**
      * is set in ngInit to check if in the subsequent modal per the configuration there is at least one type the user can create
      * otherwise it does not make sense to offer him the create new option as an empty modal woudl be rendered next
      */
-    private canCreate: boolean = false;
+    public canCreate: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector,
-        @Optional() private modalwindow: modalwindow
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector,
+        @Optional() public modalwindow: modalwindow
     ) {
 
     }

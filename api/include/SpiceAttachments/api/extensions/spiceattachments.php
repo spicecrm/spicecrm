@@ -291,17 +291,11 @@ $routes = [
                 'description' => 'GUID of bean it is cloned from',
                 'required' => true
             ],
-            'save' => [
-                'in' => 'path',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'description' => 'either to save the cloned attachments or the just retrieve the cloned array',
-                'required' => true
-            ],
             'categoryId' => [
                 'in' => 'path',
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'description' => 'GUID of a category to be cloned',
-                'required' => true
+                'required' => false
             ]
         ]
     ],

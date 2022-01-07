@@ -7,18 +7,18 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'reports-designer-integrate-item',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitem.html'
+    templateUrl: '../templates/reportsdesignerintegrateitem.html'
 })
 export class ReportsDesignerIntegrateItem implements AfterViewInit {
 
     /**
      * @input component: string
      */
-    @Input() private component: string = '';
-    @ViewChild('itemContainer', {static: true, read: ViewContainerRef}) private itemContainer: ViewContainerRef;
-    private componentRef: any;
+    @Input() public component: string = '';
+    @ViewChild('itemContainer', {static: true, read: ViewContainerRef}) public itemContainer: ViewContainerRef;
+    public componentRef: any;
 
-    constructor(private language: language, private metadata: metadata) {
+    constructor(public language: language, public metadata: metadata) {
     }
 
     /**
@@ -38,7 +38,7 @@ export class ReportsDesignerIntegrateItem implements AfterViewInit {
     /**
      * render the component in the container
      */
-    private render() {
+    public render() {
         this.metadata.addComponent(this.component, this.itemContainer)
             .subscribe(componentRef => this.componentRef = componentRef);
     }

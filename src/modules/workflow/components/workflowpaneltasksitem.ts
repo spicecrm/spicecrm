@@ -13,22 +13,22 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: '[workflow-panel-tasks-item]',
-    templateUrl: './src/modules/workflow/templates/workflowpaneltasksitem.html',
+    templateUrl: '../templates/workflowpaneltasksitem.html',
     providers:[view]
 
 })
 export class WorkflowPanelTasksItem implements OnInit{
 
-    constructor(private model: model, private language: language, private view: view) {
+    constructor(public model: model, public language: language, public view: view) {
         this.view.displayLabels = false;
     }
 
     public ngOnInit(): void {
-        this.model.data._displayComments = false;
+        this.model.setField('_displayComments', false, true);
     }
 
-    private toggleComments(){
-        this.model.data._displayComments = !this.model.data._displayComments;
+    public toggleComments(){
+        this.model.setField('_displayComments', this.model.getField('_displayComments'), true);
     }
 
     /**

@@ -14,7 +14,7 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'spice-map-geo-data-field',
-    templateUrl: './src/include/spicemap/templates/spicemapgeodatafield.html',
+    templateUrl: '../templates/spicemapgeodatafield.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -22,16 +22,16 @@ export class SpiceMapGeoDataField implements OnInit {
     /**
      * to activate/deactivate the action emitter
      */
-    private hasGeoData: boolean = false;
+    public hasGeoData: boolean = false;
 
     constructor(
-        private model: model,
-        private metadata: metadata,
-        private navigation: navigation,
-        private broadcast: broadcast,
-        private modal: modal,
-        private injector: Injector,
-        private cdRef: ChangeDetectorRef
+        public model: model,
+        public metadata: metadata,
+        public navigation: navigation,
+        public broadcast: broadcast,
+        public modal: modal,
+        public injector: Injector,
+        public cdRef: ChangeDetectorRef
     ) {
     }
 
@@ -45,7 +45,7 @@ export class SpiceMapGeoDataField implements OnInit {
     /**
      * set has geo data to true
      */
-    protected setHasGeoData() {
+    public setHasGeoData() {
         this.hasGeoData = true;
         this.cdRef.detectChanges();
     }
@@ -53,7 +53,7 @@ export class SpiceMapGeoDataField implements OnInit {
     /**
      * emit broadcast message map.focus to be received by the map
      */
-    private emitBroadcastMessage() {
+    public emitBroadcastMessage() {
         const data = {
             tabId: this.navigation.activeTabObject.id,
             record: this.model.data
@@ -64,7 +64,7 @@ export class SpiceMapGeoDataField implements OnInit {
     /**
      * get the geo data fields names from module defs and check model geo data from
      */
-    private checkModelGeoData() {
+    public checkModelGeoData() {
         const moduleDefs = this.metadata.getModuleDefs(this.model.module);
         if (!!moduleDefs && !!moduleDefs.ftsgeo) {
             const longitudeField = this.model.getField(moduleDefs.ftsgeo.longitude_field);
@@ -80,7 +80,7 @@ export class SpiceMapGeoDataField implements OnInit {
     /**
      * open direction modal
      */
-    private openDirectionModal() {
+    public openDirectionModal() {
         this.modal.openModal('SpiceGoogleMapsDirectionModal', true, this.injector);
     }
 }

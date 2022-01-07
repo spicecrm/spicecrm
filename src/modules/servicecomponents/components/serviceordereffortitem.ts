@@ -6,8 +6,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: "[serviceorder-effort-item]",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortitem.html",
-    providers: [view]
+    templateUrl: "../templates/serviceordereffortitem.html",
+    providers: [model, view]
 })
 export class ServiceOrderEffortItem implements OnInit  {
 
@@ -45,7 +45,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     }
 
     public ngOnInit(): void {
-        // this.setItemModelData();
+        this.setItemModelData();
         this.viewSubscriptions();
         this.setConfig();
     }
@@ -53,16 +53,16 @@ export class ServiceOrderEffortItem implements OnInit  {
     /**
      * set the model data for the item
      */
-    private setItemModelData() {
+    public setItemModelData() {
         this.model.module = 'ServiceOrderEfforts';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
     }
 
     /**
      * view mode subscriptions (manage edit/view mode)
      */
-    private viewSubscriptions() {
+    public viewSubscriptions() {
         this.view.displayLabels = false;
         // link the two views
         this.view.isEditable = this.parentview.isEditable;
@@ -111,7 +111,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     /**
      * marks the item as deleted
      */
-    private deleteItem() {
+    public deleteItem() {
         this.serviceorder.removeRelatedRecords(this.relationlinkname, [this.item.id]);
         this.serviceorder.data[this.relationlinkname].beans_relations_to_delete[this.item.id] = this.item;
 
@@ -130,7 +130,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     /**
      * toggels the expanded flag and shows the details or hides them
      */
-    private toggleDetails() {
+    public toggleDetails() {
         this.item.expanded = !this.item.expanded;
     }
 

@@ -171,7 +171,64 @@ $routes = [
         'description' => 'repairs the database and loads the core package',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => []
-    ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/admin/charset/database',
+        'class'       => AdminController::class,
+        'function'    => 'getDatabaseCharsetInfo',
+        'description' => 'returns information on the charset and collation of a database and its tables',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters'  => [],
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/convert/database',
+        'class'       => AdminController::class,
+        'function'    => 'convertDatabase',
+        'description' => 'converts the DB charset and collation',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'charset' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'the target charset for the tables',
+            ],
+        ],
+        'example'     => '{
+                            "charset": "utf8mb4",
+                            "collation": "utf8mb4_general_ci"
+                        }',
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/convert/tables',
+        'class'       => AdminController::class,
+        'function'    => 'convertTables',
+        'description' => 'converts the charset of the given tables',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'tables' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'subtype'     => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'an array with the names of the tables to be converted',
+            ],
+            'charset' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'the target charset for the tables',
+            ],
+        ],
+        'example'     => '{
+                            "charset": "utf8mb4",
+                            "collation": "utf8mb4_general_ci",
+                            "tables": ["accounts", "contacts"]
+                        }',
+    ],
 ];
 
 /**

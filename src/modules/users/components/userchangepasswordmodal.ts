@@ -15,7 +15,7 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: "user-changepassword-modal",
-    templateUrl: "./src/modules/users/templates/userchangepasswordmodal.html"
+    templateUrl: "../templates/userchangepasswordmodal.html"
 })
 export class UserChangePasswordModal {
 
@@ -24,31 +24,31 @@ export class UserChangePasswordModal {
      *
      * @private
      */
-    private password: string = "";
+    public password: string = "";
 
     /**
      * the new password
      * @private
      */
-    private newPassword: string = "";
+    public newPassword: string = "";
 
     /**
      * the new password repeated
      * @private
      */
-    private repeatPassword: string = "";
+    public repeatPassword: string = "";
 
     /**
      * a regex for the password check that is built from the password requirements
      * @private
      */
-    private pwdCheck: RegExp = new RegExp("//");
+    public pwdCheck: RegExp = new RegExp("//");
 
     /**
      * the password guideline in human readable format
      * @private
      */
-    private pwdGuideline: string = "";
+    public pwdGuideline: string = "";
 
     /**
      * indicates that the user has reentered the password
@@ -57,20 +57,20 @@ export class UserChangePasswordModal {
      *
      * @private
      */
-    private repFieldVisited = false;
+    public repFieldVisited = false;
 
     /**
-     * reference toe hte modal itself
+     * reference to the modal itself
      */
     public self: any = undefined;
 
     /**
-     * indicates that the modalis posting
+     * indicates that the modal is posting
      * @private
      */
-    private posting: boolean = false;
+    public posting: boolean = false;
 
-    constructor(private http: HttpClient, private language: language, private session: session, private toast: toast, private configuration: configurationService) {
+    constructor(public http: HttpClient, public language: language, public session: session, public toast: toast, public configuration: configurationService) {
     }
 
     public ngOnInit() {
@@ -95,7 +95,7 @@ export class UserChangePasswordModal {
      * close the modal
      * @private
      */
-    private close(): void {
+    public close(): void {
         this.self.destroy();
     }
 
@@ -103,7 +103,7 @@ export class UserChangePasswordModal {
      * check if the user can save the new password
      * @private
      */
-    private canSave(): boolean {
+    public canSave(): boolean {
         return this.password && this.newPassword && this.pwderror === false && this.newPassword !== this.password && this.pwdreperror === false;
     }
 
@@ -113,7 +113,7 @@ export class UserChangePasswordModal {
      *
      * @private
      */
-    private save(): void {
+    public save(): void {
         if (this.canSave()) {
             this.http.post(this.configuration.getBackendUrl() + '/authentication/changepassword', {
                 username: this.session.authData.userName,
@@ -121,7 +121,7 @@ export class UserChangePasswordModal {
                 newPassword: this.newPassword
             }).subscribe(
                 (res) => {
-                    this.toast.sendToast(this.language.getLabel("MSG_PWD_CHANGED_SUCCESSFULLY"), 'info');
+                    this.toast.sendToast(this.language.getLabel("MSG_PWD_CHANGED_SUCCESSFULLY"), 'success');
                     this.close();
                 },
                 (err: any) => {
@@ -137,7 +137,7 @@ export class UserChangePasswordModal {
      *
      * @private
      */
-    private getInfo() {
+    public getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheck = new RegExp(extConf.regex);
 
@@ -145,6 +145,7 @@ export class UserChangePasswordModal {
         if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
         if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
         if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
         if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');

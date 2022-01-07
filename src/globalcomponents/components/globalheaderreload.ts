@@ -9,30 +9,29 @@ import {metadata} from '../../services/metadata.service';
 import {loader} from '../../services/loader.service';
 import {toast} from "../../services/toast.service";
 import {configurationService} from "../../services/configuration.service";
-import {ɵResourceLoaderImpl} from "@angular/platform-browser-dynamic";
 
 @Component({
     selector: 'global-header-reload',
-    templateUrl: './src/globalcomponents/templates/globalheaderreload.html'
+    templateUrl: '../templates/globalheaderreload.html'
 })
 export class GlobalHeaderReload {
 
-    private loadTasks: boolean = false;
+   public loadTasks: boolean = false;
 
-    constructor( private session: session,
-                 private router: Router,
-                 private language: language,
-                 private loader: loader,
-                 private configuration: configurationService,
-                 private toast: toast,) {
+    constructor(public session: session,
+                public router: Router,
+                public language: language,
+                public loader: loader,
+                public configuration: configurationService,
+                public toast: toast,) {
 
     }
 
-    private isAdmin() {
+   public isAdmin() {
         return this.session.isAdmin;
     }
 
-    private reloadConf() {
+   public reloadConf() {
         this.loadTasks = true;
         this.loader.load().subscribe((val) => {
             if (val === true) {

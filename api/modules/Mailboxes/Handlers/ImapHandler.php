@@ -1,7 +1,10 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
+use SpiceCRM\includes\Logger\APILogEntryHandler;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -200,7 +203,7 @@ class ImapHandler extends TransportHandler
 
                 $email->body = $structure->getEmailBody();
                 try {
-                    $email->save();
+                    $email->save(false, true, false);
                 } catch (Exception $e) {
                     LoggerManager::getLogger()->error('Could not save email: ' . $email->name);
                     continue;
@@ -277,8 +280,7 @@ class ImapHandler extends TransportHandler
                     continue;
                 }
 
-                $email->deleted = 1;
-                $email->save();
+                $email->mark_deleted($email->id);
 
                 ++$deleted_mail_count;
             }
@@ -552,18 +554,18 @@ class ImapHandler extends TransportHandler
     }
 
     /**
-     * dispatch
-     *
      * Sends the converted Email
      *
      * @param $message
      * @return array
+     * @throws Exception
      */
-    protected function dispatch($message)
-    {
+    protected function dispatch($message) {
+        $logEntryHandler = new APILogEntryHandler();
         try {
             // todo Call to undefined method Swift_RfcComplianceException::isFatal()
             // this error message shows on the first try
+            $logEntryHandler->generateSmtpLogEntry($message, $this->mailbox,  'smtp_send');
             $result = [
                 'result'     => $this->transport_handler->send($message),
                 'message_id' => $message->getId(),
@@ -574,25 +576,33 @@ class ImapHandler extends TransportHandler
                 'result' => false,
                 'errors' => $exception->getMessage(),
             ];
+            $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Swift_TransportException $exception) {
             $result = [
                 'result' => false,
                 'errors' => "Cannot inititalize connection.",
             ];
+            $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Exception $exception) {
             $result = [
                 'result' => false,
                 'errors' => $exception->getMessage(),
             ];
+            $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         }
 
-        if (($result['result'] == true || $result == true) && $this->mailbox->imap_sent_dir != '') {
-            $msg = $message->toString();
-            imap_append($this->getImapStream(), $this->mailbox->getSentFolder(), $msg . "\r\n");
+        if (($result['result'] == true || $result == true)) {
+            $logEntryHandler->updateSmtpLogEntry($result);
+            if ($this->mailbox->imap_sent_dir != '') {
+                $msg = $message->toString();
+                imap_append($this->getImapStream(), $this->mailbox->getSentFolder(), $msg . "\r\n");
+            }
         }
+
+        $logEntryHandler->writeSmtpLogEntry();
 
         return $result;
     }

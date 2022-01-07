@@ -19,11 +19,11 @@ import {fieldGeneric} from './fieldgeneric';
  */
 @Component({
     selector: 'field-companies',
-    templateUrl: './src/objectfields/templates/fieldcompanies.html'
+    templateUrl: '../templates/fieldcompanies.html'
 })
 export class fieldCompanies extends fieldGeneric implements OnInit {
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private configuration: configurationService, private userpreferences: userpreferences) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend, public configuration: configurationService, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
 
@@ -34,8 +34,8 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
     /**
      * sets the first one by default if no value is set in edit mode
      */
-    private setDefault() {
-        if (this.view.isEditMode() && !this.model.data[this.fieldname]) {
+    public setDefault() {
+        if (this.view.isEditMode() && !this.model.getField(this.fieldname)) {
             if (this.userpreferences.companyCodeId) {
                 this.value = this.userpreferences.companyCodeId;
             } else {
@@ -55,7 +55,7 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
     get companyName() {
         let companyName = '';
         this.configuration.getData('companycodes').some(company => {
-            if (company.id == this.model.data[this.fieldname]) {
+            if (company.id == this.model.getField(this.fieldname)) {
                 companyName = company.name;
                 return true;
             }

@@ -47,11 +47,11 @@
                    class="slds-input" [(ngModel)]="this.configuration.password"/>
         </div>
     </div>
-    <div *ngIf="saveFailed" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+    <div *ngIf="!!errormessage" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
          role="alert">
         <span class="slds-assistive-text"><system-label label="LBL_ERROR"></system-label></span>
         <system-utility-icon icon="error"></system-utility-icon>
-        <h2>{{ errorMessage }}</h2>
+        <h2>{{ errormessage }}</h2>
         <div class="slds-notify__close">
             <button class="slds-button slds-button_icon slds-button_icon-small slds-button_icon-inverse" title="Close">
                 <system-button-icon icon="close"></system-button-icon>

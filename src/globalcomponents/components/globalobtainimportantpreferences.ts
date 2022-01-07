@@ -20,28 +20,28 @@ declare var moment: any;
  */
 @Component({
     selector: 'global-obtain-important-preferences',
-    templateUrl: './src/globalcomponents/templates/globalobtainimportantpreferences.html',
+    templateUrl: '../templates/globalobtainimportantpreferences.html',
 })
 export class GlobalObtainImportantPreferences implements OnInit {
 
-    private self: any;
-    private componentId = _.uniqueId();
+   public self: any;
+   public componentId = _.uniqueId();
 
     @Input() public namesOfMissingPrefs: string[] = [];
     @Input() public timeshift = 0;
 
-    private preferences: any = {};
-    private timezones: object;
-    private timezoneKeys: string[];
-    private navigateToUserPrefs = false;
+   public preferences: any = {};
+   public timezones: object;
+   public timezoneKeys: string[];
+   public navigateToUserPrefs = false;
 
-    private guessedTimezone = moment.tz.guess();
-    private guessedTimezoneGmtDiff = moment.tz(this.guessedTimezone).format('Z');
-    private configuredTimezone: string;
-    private timeshiftAction = 'takeSelected';
-    private selectedTimezone: string;
+   public guessedTimezone = moment.tz.guess();
+   public guessedTimezoneGmtDiff = moment.tz(this.guessedTimezone).format('Z');
+   public configuredTimezone: string;
+   public timeshiftAction = 'takeSelected';
+   public selectedTimezone: string;
 
-    private dateFormatList = [
+   public dateFormatList = [
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y-m-d")), value: "Y-m-d"},
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m-d-Y")), value: "m-d-Y"},
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d-m-Y")), value: "d-m-Y"},
@@ -52,7 +52,7 @@ export class GlobalObtainImportantPreferences implements OnInit {
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d.m.Y")), value: "d.m.Y"},
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m.d.Y")), value: "m.d.Y"}
     ];
-    private timeFormatList = [
+   public timeFormatList = [
         {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("H:i")), value: "H:i"},
         {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:ia")), value: "h:ia"},
         {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:iA")), value: "h:iA"},
@@ -65,14 +65,14 @@ export class GlobalObtainImportantPreferences implements OnInit {
         {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i A")), value: "h.i A"}
     ];
 
-    constructor( private backend: backend, private lang: language, private prefservice: userpreferences, private session: session, private router: Router, private toastservice: toast ) { }
+    constructor(public backend: backend,public lang: language,public prefservice: userpreferences,public session: session,public router: Router,public toastservice: toast ) { }
 
     public ngOnInit() {
         if ( this.timeshift ) this.selectedTimezone = this.configuredTimezone = this.prefservice.unchangedPreferences.global.timezone;
         for ( let name of this.namesOfMissingPrefs ) this.preferences[name] = this.prefservice.defaults[name];
     }
 
-    private save() {
+   public save() {
         if ( this.timeshift ) {
             if ( this.timeshiftAction === 'takeSelected' && this.configuredTimezone !== this.selectedTimezone ) this.preferences.timezone = this.selectedTimezone;
             if ( this.timeshiftAction === 'takeGuessed' ) this.preferences.timezone = this.guessedTimezone;
@@ -86,14 +86,14 @@ export class GlobalObtainImportantPreferences implements OnInit {
         this.self.destroy();
     }
 
-    private canSave() {
+   public canSave() {
         if ( this.namesOfMissingPrefs ) {
             for ( let pref of this.namesOfMissingPrefs ) if ( !this.preferences[pref] ) return false;
         }
         return true;
     }
 
-    private isPrefMissing( prefName ) {
+   public isPrefMissing( prefName ) {
         return this.namesOfMissingPrefs.indexOf( prefName ) !== -1;
     }
 

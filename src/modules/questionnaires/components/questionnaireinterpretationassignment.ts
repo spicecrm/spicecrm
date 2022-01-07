@@ -11,7 +11,7 @@ import { configurationService } from '../../../services/configuration.service';
 
 @Component({
     selector: 'questionnaire-interpretation-assignment',
-    templateUrl: './src/modules/questionnaires/templates/questionnaireinterpretationassignment.html',
+    templateUrl: '../templates/questionnaireinterpretationassignment.html',
     styles: [
         "ul.interpretations { margin-right: -1rem; }",
         "ul.interpretations > li { float: left; width: 50%; }",
@@ -21,26 +21,26 @@ import { configurationService } from '../../../services/configuration.service';
 })
 export class QuestionnaireInterpretationAssignment implements OnInit {
 
-    private self: any = null;
+    public self: any = null;
 
     public reference_id: string;
     public reference_module: string;
 
-    private isLoading = true;
-    private nrAssignedInterpretationsChanged = 0;
-    private suggestedInterpretations = [];
-    private meta = {};
-    private assignedInterpretations = [];
-    private evaluationIsOpen = true;
-    private allInterpretations = [];
-    private questionnaireId: string;
-    private clickListener: any;
-    private offeredInterpretationsAreExpanded = false;
-    private someExtraTextIsChanged = false;
+    public isLoading = true;
+    public nrAssignedInterpretationsChanged = 0;
+    public suggestedInterpretations = [];
+    public meta = {};
+    public assignedInterpretations = [];
+    public evaluationIsOpen = true;
+    public allInterpretations = [];
+    public questionnaireId: string;
+    public clickListener: any;
+    public offeredInterpretationsAreExpanded = false;
+    public someExtraTextIsChanged = false;
 
-    @ViewChild( 'divOfferedInterpretations', {read: ViewContainerRef, static: true}) private divOfferedInterpretations: ViewContainerRef;
+    @ViewChild( 'divOfferedInterpretations', {read: ViewContainerRef, static: false}) public divOfferedInterpretations: ViewContainerRef;
 
-    constructor( private conf: configurationService, private language: language, private backend: backend, private metadata: metadata, public sanitized: DomSanitizer, private toast: toast, private renderer: Renderer2 ) { }
+    constructor( public conf: configurationService, public language: language, public backend: backend, public metadata: metadata, public sanitized: DomSanitizer, public toast: toast, public renderer: Renderer2 ) { }
 
     public ngOnInit(): void {
 
@@ -63,11 +63,11 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
 
     }
 
-    private isAssigned( interpretationId: string ): boolean {
+    public isAssigned( interpretationId: string ): boolean {
         return this.meta[interpretationId] && this.meta[interpretationId].assigned === true;
     }
 
-    private assign( interpretation: any, initial = false ): void {
+    public assign( interpretation: any, initial = false ): void {
         if( !this.meta[interpretation.id] ) {
             this.meta[interpretation.id] = { id: interpretation.id, nativelyAssigned: initial, object: interpretation };
         }
@@ -82,11 +82,11 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         if ( this.meta[interpretation.id].nativelyAssigned === false ) this.nrAssignedInterpretationsChanged++;
     }
 
-    private addOffered( interpretation: any ): void {
+    public addOffered( interpretation: any ): void {
         if ( !this.isAssigned( interpretation.id )) this.assign( interpretation );
     }
 
-    private get offeredInterpretations(): any[] {
+    public get offeredInterpretations(): any[] {
         let out = [];
         for ( let interpretation of this.allInterpretations ) {
             if( !this.isAssigned( interpretation.id )) out.push( interpretation );
@@ -94,7 +94,7 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         return out;
     }
 
-    private complementWithSuggestion(): void {
+    public complementWithSuggestion(): void {
         this.backend.getRequest( 'module/QuestionnaireParticipations/byParent/'+this.reference_module+'/'+this.reference_id+'/interpretationsSuggested').subscribe(( data: any ) => {
             this.suggestedInterpretations = data;
             if ( this.suggestedInterpretations.length === 0 ) {
@@ -115,7 +115,7 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         });
     }
 
-    private removeSingle( index: number ): void {
+    public removeSingle( index: number ): void {
         let interpretation = this.assignedInterpretations[index];
         if ( !this.isAssigned( interpretation.id )) return;
         this.meta[interpretation.id].assigned = false;
@@ -125,7 +125,7 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         this.assignedInterpretations.splice( index, 1 );
     }
 
-    private closeModal(): void {
+    public closeModal(): void {
         let toDelete = [];
         let toAdd = [];
         let toUpdateExtraText = [];
@@ -159,15 +159,15 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         this.self.destroy();
     }
 
-    private cancelModal(): void {
+    public cancelModal(): void {
         this.self.destroy();
     }
 
-    private toggleEvaluation(): void {
+    public toggleEvaluation(): void {
         this.evaluationIsOpen = !this.evaluationIsOpen;
     }
 
-    private getEvaluationStyle(): object {
+    public getEvaluationStyle(): object {
         if ( !this.evaluationIsOpen ) {
             return {
                 height: '0px',
@@ -184,15 +184,15 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         }
     }
 
-    private toggleOfferedInterpretations(): void {
+    public toggleOfferedInterpretations(): void {
         if ( this.offeredInterpretationsAreExpanded ) this.closeOfferedInterpretations();
         else this.openOfferedInterpretations();
     }
-    private openOfferedInterpretations(): void {
+    public openOfferedInterpretations(): void {
         this.offeredInterpretationsAreExpanded = true;
         this.clickListener = this.renderer.listen('document', 'click', event => this.onClick(event));
     }
-    private closeOfferedInterpretations(): void {
+    public closeOfferedInterpretations(): void {
         this.offeredInterpretationsAreExpanded = false;
         if ( this.clickListener ) this.clickListener();
     }
@@ -201,17 +201,17 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
     }
 
-    private updateField( index ): void {
+    public updateField( index ): void {
         if ( this.meta[this.assignedInterpretations[index].id].nativelyTextExtra !== this.assignedInterpretations[index].text_extra ) {
             this.someExtraTextIsChanged = true;
         }
     }
 
-    private toggleEditMode( interpretationId: string ): void {
+    public toggleEditMode( interpretationId: string ): void {
         this.meta[interpretationId].editMode = !this.meta[interpretationId].editMode;
     }
 
-    private closeEditMode( interpretationId: string ): void {
+    public closeEditMode( interpretationId: string ): void {
         this.meta[interpretationId].editMode = false;
     }
 

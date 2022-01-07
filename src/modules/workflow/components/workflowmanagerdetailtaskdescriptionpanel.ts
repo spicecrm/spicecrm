@@ -13,12 +13,12 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-detail-task-descriptionpanel',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtaskdescriptionpanel.html'
+    templateUrl: '../templates/workflowmanagerdetailtaskdescriptionpanel.html'
 })
 export class WorkflowManagerDetailTaskDescriptionpanel {
 
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
 
     }
 

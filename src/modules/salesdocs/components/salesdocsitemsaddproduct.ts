@@ -8,7 +8,7 @@ import {
     ViewChild,
     ViewContainerRef,
     EventEmitter,
-    Output
+    Output, Optional
 } from '@angular/core';
 
 
@@ -20,9 +20,10 @@ import {metadata} from '../../../services/metadata.service';
 import {layout} from '../../../services/layout.service';
 import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {modelutilities} from "../../../services/modelutilities.service";
+import {salesdocrecord} from "../services/salesdocrecord";
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
+    templateUrl: '../../../objectcomponents/templates/objectmodalmodulelookup.html',
     providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
@@ -33,8 +34,7 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
 
     @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
-
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout, @Optional() public salesdocrecord: salesdocrecord) {
         super(language, modellist, metadata, modelutilities, model, layout);
 
         // set module to Products
@@ -54,9 +54,9 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
         this.self.destroy();
     }
 
-    private productSelected(product) {
+    public productSelected(product) {
 
-        let itemData = {
+        let itemData: any = {
             acl: {
                 create: true,
                 edit: true
@@ -85,22 +85,8 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
             }
         }
 
-        // ompose the items to be added
-        /*
-        itemData = {
-            parent_type: 'Products',
-            parent_id: product.id,
-            product_id: product.id,
-            productgroup_id: product.productgroup_id,
-            parent_name: product.name,
-            product_name: product.name,
-            productgroup_name: product.productgroup_name,
-            name: product.name,
-            uom_id: product.base_uom_id,
-            amount_net_per_uom: product.std_price,
-            purchase_price: product.purchase_price
-        }
-         */
+        // get the tax category
+        itemData.tax_category = this.salesdocrecord.getTaxCategory(product.taxcategory);
 
         this.additem.emit(itemData);
 

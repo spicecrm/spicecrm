@@ -11,11 +11,11 @@ import {backend} from '../../../services/backend.service';
  * a button in an actionset to activate a tenant
  */
 @Component({
-    templateUrl: './src/modules/systemtenants/templates/systemtenantloaddemodatabutton.html'
+    templateUrl: '../templates/systemtenantloaddemodatabutton.html'
 })
 export class SystemTenantLoadDemoDataButton {
 
-    constructor(private model: model, private modal: modal, private backend: backend) {
+    constructor(public model: model, public modal: modal, public backend: backend) {
     }
 
     public execute() {

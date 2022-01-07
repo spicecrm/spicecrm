@@ -13,7 +13,7 @@ import {metadata} from '../../../services/metadata.service';
  * renders a bar with quick add sysmbols to be rendered in the model popover
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/fieldactivitiesaddactions.html',
+    templateUrl: '../templates/fieldactivitiesaddactions.html',
 })
 export class fieldActivitiesAddActions {
 
@@ -25,9 +25,9 @@ export class fieldActivitiesAddActions {
     /**
      * an array with the names of the mopdules to be displayxed as quick add buttons
      */
-    private modules: string[] = [];
+    public modules: string[] = [];
 
-    constructor(private model: model, private language: language, private metadata: metadata) {
+    constructor(public model: model, public language: language, public metadata: metadata) {
     }
 
     public ngOnInit(): void {

@@ -12,32 +12,32 @@ import {backend} from '../../../services/backend.service';
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: './src/include/evalanche/templates/evalanchemailingmodal.html'
+    templateUrl: '../templates/evalanchemailingmodal.html'
 })
 export class EvalancheMailingModal {
 
-    private self: any = {};
-    private templates: any = [];
-    private name: string = "";
-    private template: string = "";
-    private targetlists: any = [];
-    private subjectline: string = "";
-    private loading: boolean = false;
+    public self: any = {};
+    public templates: any = [];
+    public name: string = "";
+    public template: string = "";
+    public targetlists: any = [];
+    public subjectline: string = "";
+    public loading: boolean = false;
 
 
     constructor(
-        private language: language,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast
+        public language: language,
+        public router: Router,
+        public metadata: metadata,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast
     ) {
     }
 
 
-    private submit() {
+    public submit() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             const selected = this.targetlists.filter(list => list.selected).map(list => list.id);
             let body = {
@@ -59,7 +59,7 @@ export class EvalancheMailingModal {
         });
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

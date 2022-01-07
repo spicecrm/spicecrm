@@ -16,8 +16,8 @@ export class priceconditonsconfiguration {
     public loaded$: BehaviorSubject<boolean>;
 
     constructor(
-        private backend: backend,
-        private configuration: configurationService,
+        public backend: backend,
+        public configuration: configurationService,
     ) {
         this.loaded$ = new BehaviorSubject<boolean>(false);
 
@@ -28,7 +28,7 @@ export class priceconditonsconfiguration {
     /**
      * loads the config from the backend
      */
-    private getConfig() {
+    public getConfig() {
         this.config = this.configuration.getData('priceconditonsconfiguration');
         if(_.isEmpty(this.config)) {
             this.backend.getRequest(`configuration/priceconditions`).subscribe(config => {

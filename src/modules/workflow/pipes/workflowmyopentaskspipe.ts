@@ -13,7 +13,7 @@ import {session} from '../../../services/session.service';
 })
 export class WorkflowMyOpenTasksPipe {
 
-    constructor(private session: session) {
+    constructor(public session: session) {
 
     }
 

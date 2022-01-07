@@ -14,7 +14,7 @@ declare var moment: any;
 
 @Component({
     selector: 'tele-sales-cockpit-add-meeting-button',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitaddmeetingbutton.html',
+    templateUrl: '../templates/telesalescockpitaddmeetingbutton.html',
     providers: [model]
 })
 export class TeleSalesCockpitAddMeetingButton {
@@ -22,9 +22,9 @@ export class TeleSalesCockpitAddMeetingButton {
     public parent: any = undefined;
 
     constructor(public telecockpitservice: telecockpitservice,
-                private language: language,
-                private toast: toast,
-                private model: model) {
+                public language: language,
+                public toast: toast,
+                public model: model) {
         this.model.module = 'Meetings';
 
     }

@@ -8,7 +8,7 @@ import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclobjectsmanagerobjectterritoriesmodal.html'
+    templateUrl: '../templates/aclobjectsmanagerobjectterritoriesmodal.html'
 })
 export class ACLObjectsManagerObjectTerritoriesModal {
 
@@ -17,7 +17,7 @@ export class ACLObjectsManagerObjectTerritoriesModal {
     @Input() currentValues: Array<any> = [];
     @Output() setValues: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language, private modelutilities: modelutilities) {
+    constructor(public language: language, public modelutilities: modelutilities) {
     }
 
     close(){

@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef, EventEmitter,
-    Input, OnInit, Output
+    Input, OnDestroy, OnInit, Output
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -13,45 +13,64 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {salesdocrecord} from '../services/salesdocrecord';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: '[salesdocs-item-container]',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemcontainer.html',
+    templateUrl: '../templates/salesdocsitemcontainer.html',
     providers: [model, view]
 })
-export class SalesDocsItemContainer implements OnInit {
+export class SalesDocsItemContainer implements OnInit, OnDestroy {
 
     /**
      * the item to be displayed
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the view fromt eh parent .. to link the two
      */
-    @Input() private parentview: view;
+    @Input() public parentview: view;
 
     /**
      * the salesdoc model
      */
-    @Input() private salesdoc: any;
+    @Input() public salesdoc: any;
 
     /**
      * emit when the item has been recalculated
      */
-    @Output() private recalculated: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public recalculated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     /**
      * if the item type has a details view
      */
-    private hasDetailsView: boolean = false;
+    public hasDetailsView: boolean = false;
 
-    constructor(private metadata: metadata, private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configuration: configurationService) {
+    /**
+     * holds the subscrptions
+     *
+     * @private
+     */
+    public subscriptions: Subscription = new Subscription();
+
+    constructor(
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public elementRef: ElementRef,
+        public model: model,
+        public userpreferences: userpreferences,
+        public view: view,
+        public configuration: configurationService,
+        public salesdocrecord: salesdocrecord
+    ) {
         this.view.displayLabels = false;
 
         // check if the model has changed and recalculate
@@ -59,13 +78,18 @@ export class SalesDocsItemContainer implements OnInit {
             this.recalculate();
         });
 
+        this.subscriptions.add(
+            this.salesdocrecord.taxchange.subscribe(() => {
+                this.redetermineTax();
+            })
+        );
 
     }
 
     public ngOnInit(): void {
         this.model.module = 'SalesDocItems';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
 
         // link the two views
         this.view.isEditable = this.parentview.isEditable;
@@ -108,7 +132,7 @@ export class SalesDocsItemContainer implements OnInit {
 
         // determine if we can open details
         let itemTypes = this.configuration.getData('salesdocitemtypes');
-        if(itemTypes){
+        if (itemTypes) {
             let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
             if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
 
@@ -127,6 +151,13 @@ export class SalesDocsItemContainer implements OnInit {
         this.recalculate();
     }
 
+    /**
+     * unsubscribe from all subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
     get editing() {
         return this.view.isEditMode();
     }
@@ -140,11 +171,11 @@ export class SalesDocsItemContainer implements OnInit {
      *
      * @param number
      */
-    private formatNumber(number) {
+    public formatNumber(number) {
         return this.userpreferences.formatMoney(parseFloat(number));
     }
 
-    private getUOMLabel(item) {
+    public getUOMLabel(item) {
         let uoms = this.configuration.getData('uomunits');
         let unit = uoms.find(uom => uom.id == item.uom_id);
         if (unit) {
@@ -157,7 +188,7 @@ export class SalesDocsItemContainer implements OnInit {
     /**
      * marks the item as deleted
      */
-    private deleteItem() {
+    public deleteItem() {
         this.item.deleted = 1;
     }
 
@@ -173,21 +204,30 @@ export class SalesDocsItemContainer implements OnInit {
     /**
      * toggels the expanded flag and shows the details or hides them
      */
-    private toggleDetails() {
+    public toggleDetails() {
         this.item.expanded = !this.item.expanded;
     }
 
     /**
      * triggered when a recalculate of the complete salesdoc is required
      */
-    private recalculate() {
+    public recalculate() {
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
-            this.item.amount_net = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
+            if (this.item.gross_priced) {
+                this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
 
-            let taxpercentage = this.getTaxPercentage(this.item.tax_category);
+                let taxpercentage = this.getTaxPercentage(this.item.tax_category);
 
-            this.item.amount_gross = this.item.amount_net * (100 + taxpercentage) / 100;
-            this.item.tax_amount = this.item.amount_net * taxpercentage / 100;
+                this.item.amount_net = this.item.amount_gross * 100 / (100 + taxpercentage);
+                this.item.tax_amount = this.item.amount_gross - this.item.amount_net;
+            } else {
+                this.item.amount_net = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
+
+                let taxpercentage = this.getTaxPercentage(this.item.tax_category);
+
+                this.item.amount_gross = this.item.amount_net * (100 + taxpercentage) / 100;
+                this.item.tax_amount = this.item.amount_net * taxpercentage / 100;
+            }
         } else {
             this.item.amount_net = 0;
             this.item.amount_gross = 0;
@@ -197,11 +237,20 @@ export class SalesDocsItemContainer implements OnInit {
         this.recalculated.emit(true);
     }
 
+    public redetermineTax() {
+        // get the tax category
+        let new_taxcategory = this.salesdocrecord.getTaxCategory(this.item.producttaxcategory);
+        if (new_taxcategory != this.item.tax_category) {
+            this.item.tax_category = new_taxcategory;
+            this.recalculate();
+        }
+    }
+
     /**
      * gets the tax percentage for a given category
      * @param taxcategory
      */
-    private getTaxPercentage(taxcategory) {
+    public getTaxPercentage(taxcategory) {
         let taxpercentage = 0;
 
         this.taxcategories.some(record => {

@@ -21,7 +21,7 @@ import {ServiceDocSignatureContent} from "./servicedocsignaturecontent";
 
 @Component({
     selector: 'service-docs-signature-modal',
-    templateUrl: './src/modules/servicecomponents/templates/servicedocsignaturemodal.html',
+    templateUrl: '../templates/servicedocsignaturemodal.html',
     providers: [view],
     animations: [
         trigger('slideInOut', [
@@ -64,8 +64,11 @@ export class ServiceDocSignatureModal {
     public noDownload = false;
     public handBack: EventEmitter<any>;
     public buttonText: string;
-    private contentForHandBack: string;
-
+    public contentForHandBack: string;
+    /**
+     * if true send the bean data to the backend to handle live compiling the template content
+     */
+    public liveCompile: boolean = false;
     /**
      * the window itsel .. resp the containing modal container
      */
@@ -74,34 +77,34 @@ export class ServiceDocSignatureModal {
     /**
      * the list of templates
      */
-    private templates = [];
+    public templates = [];
 
     /**
      * the selected template
      */
-    private _selected_template = null;
+    public _selected_template = null;
 
     /**
      * the selected output format
      */
-    private _selected_format: 'html' | 'pdf' = 'pdf';
+    public _selected_format: 'html' | 'pdf' = 'pdf';
 
     /**
      * the response of the compiler
      */
-    private compiled_selected_template: string = '';
+    public compiled_selected_template: string = '';
 
     /**
      * flag is the oputput is loading
      */
-    private loading_output: boolean = false;
+    public loading_output: boolean = false;
 
 
 
     /**
      * fieldset
      */
-    private fieldset: string = '';
+    public fieldset: string = '';
 
     /**
      * the pdf file
@@ -111,32 +114,32 @@ export class ServiceDocSignatureModal {
     /**
      * flag to show the email-content
      */
-    private showsendemail: boolean = true;
+    public showsendemail: boolean = true;
     /**
      * expanded content status
      */
-    private expanded: string = "open";
+    public expanded: string = "open";
     /**
      * expanded content flag
      */
-    private mobile: boolean = false;
+    public mobile: boolean = false;
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
-    private blobUrl: any;
+    public blobUrl: any;
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata,
-        private modal: modal,
-        private view: view,
-        private backend: backend,
-        private sanitizer: DomSanitizer,
-        private cdRef: ChangeDetectorRef,
-        private viewContainerRef: ViewContainerRef,
-        private layout: layout
+        public language: language,
+        public model: model,
+        public metadata: metadata,
+        public modal: modal,
+        public view: view,
+        public backend: backend,
+        public sanitizer: DomSanitizer,
+        public cdRef: ChangeDetectorRef,
+        public viewContainerRef: ViewContainerRef,
+        public layout: layout
     ) {
         // get the fieldset of the email area
         let componentconfig = this.metadata.getComponentConfig('ServiceDocSignatureModal', this.model.module);
@@ -163,7 +166,7 @@ export class ServiceDocSignatureModal {
      * If there is no button text given from outside, use the default text
      * Set the output format in case it is given from outside
      */
-    private setModalData() {
+    public setModalData() {
         if ( !this.modalTitle ) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_SIGN'));
         if ( !this.buttonText ) this.buttonText = this.language.getLabel( this.noDownload  ? 'LBL_OK':'LBL_DOWNLOAD' );
         if ( this.forcedFormat ) this._selected_format = this.forcedFormat;
@@ -172,7 +175,7 @@ export class ServiceDocSignatureModal {
     /**
      * see if we have a relate to an output template
      */
-    private setSelectedTemplate() {
+    public setSelectedTemplate() {
         let fields = this.metadata.getModuleFields(this.model.module);
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
@@ -211,7 +214,7 @@ export class ServiceDocSignatureModal {
     /**
      * backend call to render the template and return the content
      */
-    private rendertemplate() {
+    public rendertemplate() {
         this.loading_output = true;
 
         this.blobUrl = null;
@@ -219,7 +222,9 @@ export class ServiceDocSignatureModal {
 
         switch (this.selected_format) {
             case 'pdf':
-                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
+                const body = {bean_data: this.liveCompile ? this.model.data : null};
+
+                this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
                         let blob = this.datatoBlob( atob( pdf.content ) );
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
@@ -250,11 +255,11 @@ export class ServiceDocSignatureModal {
     /**
      * called from reload button to re render the template
      */
-    private reload() {
+    public reload() {
         this.rendertemplate();
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -275,7 +280,7 @@ export class ServiceDocSignatureModal {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -298,7 +303,7 @@ export class ServiceDocSignatureModal {
     /**
      * open/close content
      */
-    private openContentArea() {
+    public openContentArea() {
         if(this.expanded == 'closed' || this.expanded == 'closed_mobile') {
             this.expanded = 'open' + (this.mobile? '_mobile':'');
         } else {
@@ -309,11 +314,11 @@ export class ServiceDocSignatureModal {
     /**
      * call the child method that will send the mail
      */
-    private saveSignature() {
+    public saveSignature() {
         this.signatureContent.saveSignature();
     }
 
-    private onAnimationDone() {
+    public onAnimationDone() {
         this.cdRef.detectChanges();
     }
 }

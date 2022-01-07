@@ -13,7 +13,7 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'spice-favorites-item',
-    templateUrl: './src/include/spicefavorites/templates/spicefavoritesitem.html',
+    templateUrl: '../templates/spicefavoritesitem.html',
     providers: [model, view]
 })
 export class SpiceFavoritesItem implements OnInit {
@@ -21,19 +21,19 @@ export class SpiceFavoritesItem implements OnInit {
     /**
      * thjt eitem that is passed in with the data for the favorite
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the main fieldset that is rendered in the upper line. If none is found teh summary_text is rendered
      */
-    private mainfieldset: string;
+    public mainfieldset: string;
 
     /**
      * the sub fieldset rendered in the sub-line
      */
-    private subfieldsetfields: any[];
+    public subfieldsetfields: any[];
 
-    constructor(private model: model, private language: language, private metadata: metadata, private view: view, private favorite: favorite) {
+    constructor(public model: model, public language: language, public metadata: metadata, public view: view, public favorite: favorite) {
         this.view.displayLabels = false;
     }
 
@@ -52,16 +52,16 @@ export class SpiceFavoritesItem implements OnInit {
     /**
      * initializes the model from the input item
      */
-    private initializeModel() {
+    public initializeModel() {
         this.model.module = this.item.module_name;
         this.model.id = this.item.item_id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item.data);
+        this.model.setData(this.item.data);
     }
 
     /**
      * loads the componentconfig and sets the variables
      */
-    private loadConfig() {
+    public loadConfig() {
 
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.model.module);
@@ -73,7 +73,7 @@ export class SpiceFavoritesItem implements OnInit {
     /**
      * delete favorite
      */
-    private deleteFavorite() {
+    public deleteFavorite() {
         this.favorite.deleteFavorite(this.model.module, this.model.id);
     }
 }

@@ -1,7 +1,7 @@
 /**
  * @module ModuleDocuments
  */
-import {Component, Directive, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -9,13 +9,15 @@ import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
-import {trigger, transition, animate, style, state} from '@angular/animations';
 
 import {ObjectActionOutputBeanModal} from "../../../modules/outputtemplates/components/objectactionoutputbeanmodal";
 
+import {outputModalService} from "../../../modules/outputtemplates/services/outputmodal.service";
+import {modelutilities} from "../../../services/modelutilities.service";
+
 @Component({
     selector: 'object-action-output-bean-modal',
-    templateUrl: './src/modules/documents/templates/documentcreaterevisionmodal.html',
+    templateUrl: '../templates/documentcreaterevisionmodal.html',
     providers: [view],
 
 })
@@ -29,9 +31,11 @@ export class DocumentCreateRevisionModal extends ObjectActionOutputBeanModal {
         public view: view,
         public backend: backend,
         public sanitizer: DomSanitizer,
-        public viewContainerRef: ViewContainerRef
+        public viewContainerRef: ViewContainerRef,
+        public outputModalService: outputModalService,
+        public modelutilities: modelutilities
     ) {
-        super(language, model, metadata, modal, view, backend, sanitizer, viewContainerRef);
+        super(language, model, metadata, modal, view, backend, outputModalService, sanitizer, viewContainerRef, modelutilities);
     }
 
     public create() {

@@ -16,7 +16,7 @@ import {navigationtab} from '../../services/navigationtab.service';
  */
 @Component({
     selector: 'object-action-delete-button',
-    templateUrl: './src/objectcomponents/templates/objectactiondeletebutton.html',
+    templateUrl: '../templates/objectactiondeletebutton.html',
     providers: [helper]
 })
 export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
@@ -34,14 +34,14 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     /**
      * holds the subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * holds the action config
      */
     public actionconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model, @Optional() private navigationtab: navigationtab, private router: Router, private helper: helper, private injector: Injector) {
+    constructor(public language: language, public metadata: metadata, public model: model, @Optional() public navigationtab: navigationtab, public router: Router, public helper: helper, public injector: Injector) {
 
         // handleDisabled on on model.mode changes
         this.subscriptions.add(
@@ -100,7 +100,7 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     * @model.delete
     * @navigate to list view
     */
-    private delete() {
+    public delete() {
         this.model.delete().subscribe(status => {
             this.completeAction();
         });
@@ -109,7 +109,7 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     /**
      * completes and redirects to the list except other set in the config
      */
-    private completeAction() {
+    public completeAction() {
         // if no redirect is supposed to happen return true
         if (this.actionconfig.noredirectoncomplete == true) return;
 
@@ -128,7 +128,7 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     * @set disabled
     * @delete if answer is true
     */
-    private handleDisabled(mode) {
+    public handleDisabled(mode) {
         if (!this.canDelete) {
             this.disabled = true;
             return;

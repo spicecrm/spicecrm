@@ -15,14 +15,14 @@ import {Subscription} from "rxjs";
  * renders a button that toggles the exchange sync state
  */
 @Component({
-    templateUrl: "./src/modules/contacts/templates/contactexchangesyncbutton.html"
+    templateUrl: "../templates/contactexchangesyncbutton.html"
 })
 export class ContactExchangeSyncButton implements OnDestroy {
 
     /**
      * indicates that the systemis loading and executing a request
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
 
     /**
      * the hidden status
@@ -32,10 +32,10 @@ export class ContactExchangeSyncButton implements OnDestroy {
     /**
      * the subscrtiptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     // public disabled: boolean = true;
-    constructor(private metadata: metadata, private toast: toast, private language: language, private model: model, private modal: modal, private backend: backend, private configuration: configurationService) {
+    constructor(public metadata: metadata, public toast: toast, public language: language, public model: model, public modal: modal, public backend: backend, public configuration: configurationService) {
 
         // set the hidden flag
         this.setHidden();
@@ -54,7 +54,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    private setHidden() {
+    public setHidden() {
         let config = this.configuration.getData('exchangeuserconfig');
         let moduleData = this.metadata.getModuleDefs('Contacts');
 

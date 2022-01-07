@@ -32,6 +32,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class SpiceFTSUtils
 {
@@ -259,7 +260,7 @@ class SpiceFTSUtils
                         $valueBean = BeanFactory::getBean($valueBean->{$pathRecordDetails[2]}->getRelatedModuleName());
                     }
                     else {
-                        LoggerManager::getLogger()->fatal(__CLASS__. '::'.__FUNCTION__.'() Could not load '.$pathRecordDetails[2]. ' for '.get_class($valueBean));
+                        LoggerManager::getLogger()->fatal(__CLASS__. '::'.__FUNCTION__.'() Could not load '.$pathRecordDetails[2]. ' for '.print_r($valueBean, true));
                     }
                     break;
                 case 'field':
@@ -272,8 +273,6 @@ class SpiceFTSUtils
 
     static function getActivityModules($scope = 'Activities')
     {
-
-        global $moduleList;
         $db = DBManagerFactory::getInstance();
         $modules = [];
 
@@ -282,7 +281,7 @@ class SpiceFTSUtils
             $moduleSettings = json_decode(html_entity_decode($moduleProperty['settings']), true);
             if ($moduleSettings[strtolower($scope) . 'search']) {
                 // check if module is loaded (because of core/more edition)
-                if(in_array($moduleProperty['module'], $moduleList)) {
+                if(in_array($moduleProperty['module'], SpiceModules::getInstance()->getModuleList())) {
                     $modules[$moduleProperty['module']] = [
                         'settings' => $moduleSettings,
                         'ftsfields' => json_decode(html_entity_decode($moduleProperty['ftsfields']), true),
@@ -296,8 +295,6 @@ class SpiceFTSUtils
 
     static function getTimelineModules()
     {
-
-        global $moduleList;
         $db = DBManagerFactory::getInstance();
         $modules = [];
 
@@ -306,7 +303,7 @@ class SpiceFTSUtils
             $moduleSettings = json_decode(html_entity_decode($moduleProperty['settings']), true);
             if ($moduleSettings['timelinesearch']) {
                 // check if module is loaded (because of core/more edition)
-                if(in_array($moduleProperty['module'], $moduleList)) {
+                if(in_array($moduleProperty['module'], SpiceModules::getInstance()->getModuleList())) {
                     $modules[$moduleProperty['module']] = [
                         'settings' => $moduleSettings,
                         'ftsfields' => json_decode(html_entity_decode($moduleProperty['ftsfields']), true),

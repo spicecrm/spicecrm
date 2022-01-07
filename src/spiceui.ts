@@ -4,10 +4,10 @@
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {BrowserModule, Title} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {environment} from 'environments/environment';
 import {
     NgModule,
     Component,
-    SystemJsNgModuleLoader,
     Renderer2,
     enableProdMode, ViewChild
 } from "@angular/core";
@@ -57,7 +57,9 @@ import {SystemInstallerComponent} from "./systemcomponents/components/systeminst
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
-
+import {activitiytimeline} from "./services/activitiytimeline.service";
+import {googleapiloader} from "./services/apiloader";
+import {mediafiles} from "./services/mediafiles.service";
 
 // declarations for TS
 /**
@@ -87,9 +89,9 @@ export class SpiceUI {
     /**
      * reference to the module menu item
      */
-    @ViewChild(GlobalHeader) private globalHeader: GlobalHeader;
+    @ViewChild(GlobalHeader) public globalHeader: GlobalHeader;
 
-    constructor(private render: Renderer2) {
+    constructor(public render: Renderer2) {
         // stop just dropping files on the app
         this.render.listen('window', 'dragover', e => {
             e.preventDefault();
@@ -134,7 +136,6 @@ export class SpiceUI {
         )
     ],
     declarations: [SpiceUI],
-    entryComponents: [],
     bootstrap: [SpiceUI],
     providers: [
         aclCheck,
@@ -180,8 +181,9 @@ export class SpiceUI {
 })
 export class SpiceUIModule {
     constructor(
-        private socket: socket,
-        private assistant: assistant
+        public socket: socket,
+        public assistant: assistant,
+        public reminder: reminder
     ) {
 
     }

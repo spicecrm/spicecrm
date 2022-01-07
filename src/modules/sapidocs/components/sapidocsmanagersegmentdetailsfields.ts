@@ -11,15 +11,15 @@ import {sapIDOCFieldI, sapIDOCSegmentI} from "../../../modules/sapidocs/interfac
 
 @Component({
     selector: 'sapidocs-manager-segment-details-fields',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetailsfields.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetailsfields.html'
 })
 export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
 
-    private segmentFields: sapIDOCFieldI[];
+    public segmentFields: sapIDOCFieldI[];
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language, private modal: modal, private injector: Injector, private backend: backend, private sapIdocsManager: sapIdocsManager, private cdRef: ChangeDetectorRef) {
+    constructor(public language: language, public modal: modal, public injector: Injector, public backend: backend, public sapIdocsManager: sapIdocsManager, public cdRef: ChangeDetectorRef) {
         this.subscriptions.add(
             this.sapIdocsManager.selectedsegment$.subscribe(segmentid => {
                 this.segmentFields = this.sapIdocsManager.getFields(segmentid);
@@ -37,14 +37,14 @@ export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
         this.sapIdocsManager.selectField(undefined);
     }
 
-    private selectField(fieldid) {
+    public selectField(fieldid) {
         this.sapIdocsManager.selectField(fieldid);
     }
 
     /**
      * adds a field
      */
-    private add() {
+    public add() {
         this.modal.openModal('SAPIDOCsManagerFieldAddModal', true, this.injector).subscribe(componentRef => {
             componentRef.instance.added.subscribe((added: sapIDOCFieldI) => {
                 // get the children
@@ -61,7 +61,7 @@ export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
      *
      * @param fieldid
      */
-    private delete(fieldid) {
+    public delete(fieldid) {
         this.sapIdocsManager.deletefield(fieldid);
         this.segmentFields = this.sapIdocsManager.getFields();
     }
@@ -71,7 +71,7 @@ export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
      *
      * @param field
      */
-    private sortBy(field) {
+    public sortBy(field) {
         this.segmentFields.sort((a, b) => {
             if(!b[field]) return 1;
             if(!a[field]) return -1;

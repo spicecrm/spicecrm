@@ -8,14 +8,14 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-list-item--field',
-    templateUrl: './src/objectcomponents/templates/objectlistitemfield.html'
+    templateUrl: '../templates/objectlistitemfield.html'
 })
 export class ObjectListItemField implements AfterViewInit{
     @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) fieldcontainer: ViewContainerRef;
 
     @Input() field: string = '';
 
-    constructor(private model: model, private language: language, private metadata: metadata) {
+    constructor(public model: model, public language: language, public metadata: metadata) {
 
     }
 

@@ -3,18 +3,46 @@
         <object-action-container-item [actionitem]="actionitem" [displayasicon]="displayasicon" (actionemitter)="emitaction($event)"></object-action-container-item>
     </button>
     <div *ngIf="hasAddItems" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
-        <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" [disabled]="opendisabled" [title]="language.getLabel('LBL_MORE')" >
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" [disabled]="opendisabled" system-title="LBL_MORE" >
             <system-button-icon icon="down"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_MORE"></system-label></span>
         </button>
-        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
-            <ul class="slds-dropdown__list" role="menu">
-                <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of addactionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
-                    <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                        <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
-                    </a>
-                </li>
-            </ul>
+        <!-- grouped actions
+        <div *ngIf="actionGroups.length > 0" class="slds-dropdown slds-dropdown_right slds-dropdown_actions" style="max-width: inherit">
+            <div class="slds-grid">
+                <ng-container *ngFor="let actionGroup of actionGroups" >
+                    <ul class="slds-border--right" style="min-width: 150px">
+                        <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of groupedAddActionItems(actionGroup)" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+                            <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                                <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                            </a>
+                        </li>
+                    </ul>
+                </ng-container>
+                <ul class="slds-dropdown__list" role="menu" style="min-width: 150px">
+                    <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of groupedAddActionItems()" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                            <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        -->
+        <!-- standard actions -->
+        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions slds-p-around--none" [class.slds-grid]="grouped == 'horizontal'" style="max-width: initial;">
+            <div *ngFor="let group of groups; let last = last" [class.slds-hide]="group.hidden" [class.slds-border--right]="!last && grouped == 'horizontal'" [style.width]="grouped == 'horizontal' ? '160px' : 'initial'" [style.min-width]="grouped == 'horizontal' ? '160px' : 'initial'">
+                <div *ngIf="groups.length > 1" class="slds-p-around--x-small slds-theme--shade slds-text-title--caps">
+                    <system-label [label]="group.name == 'undefined' ? 'LBL_DEFAULT' : group.name"></system-label>
+                </div>
+                <ul [class.slds-hide]="group.hidden" class="slds-dropdown__list" role="menu">
+                    <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of group.items" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                            <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

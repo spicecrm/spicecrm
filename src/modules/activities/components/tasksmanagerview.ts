@@ -13,21 +13,21 @@ import {ListTypeI} from "../../../services/interfaces.service";
  */
 @Component({
 
-    templateUrl: './src/modules/activities/templates/tasksmanagerview.html',
+    templateUrl: '../templates/tasksmanagerview.html',
 })
 export class TasksManagerView implements OnDestroy {
 
     /**
      * holds the subscription to the model changes
      */
-    private modellistsubscribe: any = {};
+    public modellistsubscribe: any = {};
 
     /**
      * identifies the currrent selected task that is focused
      */
-    private focus: string = null;
+    public focus: string = null;
 
-    constructor(private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private model: model, private modellist: modellist) {
+    constructor(public broadcast: broadcast, public navigation: navigation, public elementRef: ElementRef, public model: model, public modellist: modellist) {
 
         // subscribe to changes of the listtype
         this.modellistsubscribe = this.modellist.listType$.subscribe(newType =>
@@ -47,7 +47,7 @@ export class TasksManagerView implements OnDestroy {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         if (newType.listcomponent != 'TasksManagerView') return;
         this.loadList();
     }
@@ -55,7 +55,7 @@ export class TasksManagerView implements OnDestroy {
     /**
      * loads the lost of tasks from the modellist service
      */
-    private loadList() {
+    public loadList() {
         this.focus = null;
         this.modellist.setSortField('date_due', 'ASC');
         this.modellist.getListData();
@@ -66,7 +66,7 @@ export class TasksManagerView implements OnDestroy {
      *
      * @param id the id of the selected task. This is emitted by the underlying component
      */
-    private taskSelected(id) {
+    public taskSelected(id) {
         this.focus = id;
     }
 }

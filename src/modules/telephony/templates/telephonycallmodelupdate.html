@@ -1,0 +1,15 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()"><system-label label="LBL_UPDATE"></system-label></system-modal-header>
+    <system-modal-content>
+        <div *ngFor="let phoneField of phoneFields" class="slds-grid slds-grid--vertical-align-center">
+            <system-label-fieldname [module]="model.module" [field]="phoneField.name"></system-label-fieldname>
+            <field-container class="slds-col--bump-left" [field]="phoneField.name"></field-container>
+            <button class="slds-button slds-button--icon" (click)="copy2Field(phoneField.name)"><system-button-icon icon="left"></system-button-icon></button>
+            <input class="slds-input slds-size--1-of-3 slds-m-left--xx-small" type="text" disabled [ngModel]="msisdnFormatted">
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!isDirty" (click)="updateModel()"><system-label label="LBL_UPDATE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

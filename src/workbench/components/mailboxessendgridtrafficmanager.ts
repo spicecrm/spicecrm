@@ -9,16 +9,16 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailboxes-sendgrid-traffic-manager",
-    templateUrl: "./src/workbench/templates/mailboxessendgridtrafficmanager.html",
+    templateUrl: "../templates/mailboxessendgridtrafficmanager.html",
 })
 export class MailboxesSendgridTrafficManager {
 
     constructor(
-        private language: language,
-        private model: model,
-        private modal: modal,
-        private view: view,
-        private injector: Injector
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public view: view,
+        public injector: Injector
     ) {
         let settings = this.model.getField('settings')
         if (!settings || (settings && settings.length == 0)) {

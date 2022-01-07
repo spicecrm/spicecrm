@@ -31,6 +31,15 @@ $app_list_strings = [
         'C' => 'Privatkunde',
     ],
 
+    'dayofweek_dom' => [
+        '0' => 'Sonntag',
+        '1' => 'Montag',
+        '2' => 'Dienstag',
+        '3' => 'Mittwoch',
+        '4' => 'Donnerstag',
+        '5' => 'Freitag',
+        '6' => 'Samstag'
+    ],
     //e.g. en franï¿½ais 'Analyst'=>'Analyste',
     'account_type_dom' => [
         '' => '',
@@ -406,6 +415,7 @@ $app_list_strings = [
     'gender_list' => [
         'male' => 'Männlich',
         'female' => 'Weiblich',
+        'diverse' => 'Divers'
     ],
     //Note:  do not translate case_status_default_key
 //       it is the key for the default case_status_dom value
@@ -428,6 +438,7 @@ $app_list_strings = [
         'RegularUser' => 'Standardbenutzer',
         'PortalUser' => 'Portalbenutzer',
         'Administrator' => 'Administrator',
+        'APIuser' => 'API-Benutzer'
     ],
     'calendar_type_dom' =>
         [
@@ -499,9 +510,22 @@ $app_list_strings = [
         'Medium' => 'Mittel',
         'Low' => 'Niedrig',
     ],
+    'projects_plannedactivity_status_dom' => [
+        'planned' => 'geplant',
+        'released' => 'freigegeben',
+        'active' => 'aktiv',
+        'onhold' => 'in Warteschleife',
+        'completed' => 'abgeschlossen',
+        'cancelled' => 'abgesagt'
+    ],
     'projects_activity_status_dom' => [
         'created' => 'erfasst',
         'settled' => 'abgerechnet'
+    ],
+    'projects_activity_settlement_types_dom' => [
+        'regular' => 'normal',
+        'goodwill' => 'kulanz',
+        'exclude' => 'exkludiert'
     ],
     'mailbox_message_types' => [
         'sms' => 'Text Messages',
@@ -518,7 +542,6 @@ $app_list_strings = [
         'Sending' => 'Wird gesendet',
     ],
     'campaign_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
@@ -530,11 +553,11 @@ $app_list_strings = [
         'NewsLetter' => 'Newsletter',
     ],
     'campaigntask_type_dom' => [
-        '' => '',
         'Event' => 'Event',
         'Telesales' => 'Telesales',
         'Mail' => 'Mail',
         'Email' => 'Email',
+        'mailmerge' => 'Serienbrief',
         'Feedback' => 'Umfrage',
         'Print' => 'Print',
         'Web' => 'Web',
@@ -633,6 +656,10 @@ $app_list_strings = [
         'unread' => 'Ungelesen',
         'bounced' => 'nicht Zustellbar'
     ],
+    'dom_letter_status' => [
+        'sent' => 'gesendet',
+        'draft' => 'Entwurf'
+    ],
     'dom_textmessage_status' => [
         'archived' => 'Archiviert',
         'closed' => 'Geschlossen',
@@ -714,6 +741,7 @@ $app_list_strings = [
     ],
     'document_revisionstatus_dom' => [
         'c' => 'angelegt',
+        'q' => 'Freigabe angefordert',
         'r' => 'freigegeben',
         'a' => 'archiviert',
     ],
@@ -766,7 +794,18 @@ $app_list_strings = [
     ],
     'emailschedule_status_dom' => [
         'queued' => 'in der Warteschlange',
-        'sent' => 'gesendet'],
+        'cancelled' => 'abgebrochen',
+        'sent' => 'gesendet'
+    ],
+
+    'email_schedule_status_dom' => [
+        'open' => 'offen',
+        'processing' => 'in Bearbeitung',
+        'done' => 'abgeschlossen',
+        'cancelled' => 'abgebrochen',
+        'done_with_errors' => 'abgeschlossen mit Fehlern',
+        'record_not_loaded' => 'Datensätze nicht geladen',
+    ],
 
 // deferred
     /*// QUEUES MODULE DOMs
@@ -870,10 +909,10 @@ $app_list_strings = [
         'p' => 'Prozentsatz'
     ],
     'salesdoc_status_dom' => [
-        'vsnew' => 'new',
-        'vscreated' => 'created',
-        'vspaid' => 'paid',
-        'vscancelled' => 'cancelled'
+        'vsnew' => 'Neu',
+        'vscreated' => 'Erstellt',
+        'vspaid' => 'Bezahlt',
+        'vscancelled' => 'Storniert'
     ],
     'salesvoucher_status_dom' => [
         'created' => 'Erstellt',
@@ -1435,6 +1474,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'New' => 'Neu',
         'Assigned' => 'Zugewiesen',
         'Closed' => 'Geschlossen',
+        'In Process' => 'in Bearbeitung',
         'Pending Input' => 'Rückmeldung ausstehend',
         'Rejected' => 'Abgelehnt',
         'Duplicate' => 'Duplicate',
@@ -1567,6 +1607,13 @@ $app_list_strings['product_status_dom'] = [
     'draft' => 'Entwurf',
     'active' => 'Aktiv',
     'inactive' => 'Inaktiv',
+];
+
+
+$app_list_strings['product_tax_categories_dom'] = [
+    '0' => 'steuerfrei',
+    '1' => 'normal Steuersatz',
+    '2' => 'reduzierter Steuersatz',
 ];
 
 $app_list_strings['textmessage_direction'] = [
@@ -1781,4 +1828,9 @@ $app_list_strings['systemdeploymentsystems_type_dom'] = [
     'stage' => 'Stufe',
     'development' => 'entwicklung',
     'productivity' => 'produktivität'
+];
+
+$app_list_strings['bonuscard_extension_status_enum'] = [
+    'initial' => 'initial',
+    'sent' => 'gesendet'
 ];

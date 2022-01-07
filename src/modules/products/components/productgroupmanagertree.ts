@@ -20,7 +20,7 @@ declare var _;
 
 @Component({
     selector: 'product-group-manager-tree',
-    templateUrl: './src/modules/products/templates/productgroupmanagertree.html'
+    templateUrl: '../templates/productgroupmanagertree.html'
 
 })
 
@@ -30,53 +30,53 @@ export class ProductGroupManagerTree implements OnDestroy {
      * an emitter when the selection changs
      * @private
      */
-    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * an option to disable the productfinder that loads parameters when a group is selected
      *
      * @private
      */
-    @Input() private productFinderActive: boolean = true;
+    @Input() public productFinderActive: boolean = true;
 
     /**
      * the raw product groups retrieved in array list form
      * @private
      */
-    private productGroups: any[] = [];
+    public productGroups: any[] = [];
 
     /**
      * the prduct groups traversed into a tree structure
      *
      * @private
      */
-    private productGroupTree: any[] = [];
+    public productGroupTree: any[] = [];
 
     /**
      * the current selected id
      *
      * @private
      */
-    private selectedId: string = '';
+    public selectedId: string = '';
 
     /**
      * set to the current loading ID so wecan not load further nodes and also indicate which tree node is currently in loading state
      * @private
      */
-    private isLoading: string = '';
+    public isLoading: string = '';
 
     /**
      * any subscriptions the component might have to be unsubscribed whent he component is destroyed
      *
      * @private
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private backend: backend,
-                private elementRef: ElementRef,
-                private broadcast: broadcast,
-                private productfinder: productfinder) {
+    constructor(public language: language,
+                public backend: backend,
+                public elementRef: ElementRef,
+                public broadcast: broadcast,
+                public productfinder: productfinder) {
         this.subscribeModelChanges();
         this.getProductGroups();
     }
@@ -95,7 +95,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      * @param item
      * @private
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -104,7 +104,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      *
      * @private
      */
-    private subscribeModelChanges() {
+    public subscribeModelChanges() {
         this.subscription = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == 'model.save' && msg.messagedata.module == 'ProductGroups') {
                 let found = this.productGroups.some((group) => {
@@ -147,7 +147,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      * @param parentId
      * @private
      */
-    private getProductGroups(parentId = '') {
+    public getProductGroups(parentId = '') {
         this.isLoading = parentId;
         this.backend.getRequest('module/ProductGroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
             for (let item of items) {
@@ -172,7 +172,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      *
      * @private
      */
-    private sortProductGroups() {
+    public sortProductGroups() {
         this.productGroups.sort((a, b) => {
             if (!isNaN(a.sortseq) && !isNaN(b.sortseq) && a.sortseq != b.sortseq) {
                 return +a.sortseq > +b.sortseq ? 1 : -1;
@@ -189,7 +189,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      * @param e
      * @private
      */
-    private toggle(productgroup, e) {
+    public toggle(productgroup, e) {
         this.productGroups.some(item => {
                 if (item.id == productgroup.id) {
                     item.expanded = !item.expanded;
@@ -217,7 +217,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      *
      * @private
      */
-    private buildTree() {
+    public buildTree() {
         this.productGroupTree = [];
         this.sortProductGroups();
         this.addTreeNode();
@@ -230,7 +230,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      * @param level
      * @private
      */
-    private addTreeNode(parentId = '', level = 1) {
+    public addTreeNode(parentId = '', level = 1) {
         for (let productgroup of this.productGroups) {
             if (productgroup.parent_productgroup_id == parentId) {
                 productgroup.level = level;
@@ -248,7 +248,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      * @param group
      * @private
      */
-    private selectGroup(group) {
+    public selectGroup(group) {
         // define the object type
         let obj = {type: 'ProductGroup', object: group};
 
@@ -270,7 +270,7 @@ export class ProductGroupManagerTree implements OnDestroy {
      * @param id
      * @private
      */
-    private isSelected(id) {
+    public isSelected(id) {
         return this.selectedId == id;
     }
 }

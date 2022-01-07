@@ -333,17 +333,12 @@ class ElasticHandler
 
     function searchModule($module, $queryParam, $size = 25, $from = 0)
     {
-
-        $db = DBManagerFactory::getInstance();
-
         $response = json_decode($this->query('POST', $this->indexPrefix . strtolower($module) . '/_search', [], $queryParam), true);
         return $response;
     }
 
     function searchModules($modules, $queryParam, $size = 25, $from = 0)
     {
-        $db = DBManagerFactory::getInstance();
-
         $modString = '';
         foreach ($modules as $module) {
             if ($modString !== '') $modString .= ',';
@@ -572,7 +567,7 @@ class ElasticHandler
      */
     private function addLogEntry($method, $url, $status = null, $request, $response) # , $rtlocal, $rtremote )
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance('spicelogger');
         //catch installation process and abort. table sysftslog will not exist at the point during installation
         if (!empty($GLOBALS['installing']))

@@ -13,22 +13,22 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'prospectlists-to-cleverreach-modal',
-    templateUrl: './src/include/cleverreach/templates/prospectliststocleverreachmodal.html'
+    templateUrl: '../templates/prospectliststocleverreachmodal.html'
 })
 export class ProspectListsToCleverReachModal implements OnInit {
 
-    private self: any = {};
-    public statistics: any[] = [];
-    private module: string = '';
+    public self: any = {};
+    public statistics: any = [];
+    public module: string = '';
 
     constructor(
-        private language: language,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast
+        public language: language,
+        public router: Router,
+        public metadata: metadata,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast
     ) {
     }
 
@@ -38,7 +38,7 @@ export class ProspectListsToCleverReachModal implements OnInit {
      * once completed the modal destroys itself
      */
 
-    private initialize() {
+    public initialize() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
@@ -55,7 +55,7 @@ export class ProspectListsToCleverReachModal implements OnInit {
      * else an error message is sent
      */
 
-    private transferToCleverReach() {
+    public transferToCleverReach() {
         this.backend.postRequest(`channels/emarketing/cleverreach/${this.model.module}/${this.model.id}/transfer`).subscribe(result => {
             if (result.status == 'success') {
                 this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
@@ -71,7 +71,7 @@ export class ProspectListsToCleverReachModal implements OnInit {
      * modal instance self destroys when clicking the close button
      */
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

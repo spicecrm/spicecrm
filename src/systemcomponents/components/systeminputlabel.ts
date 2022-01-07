@@ -14,7 +14,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: "system-input-label",
-    templateUrl: "./src/systemcomponents/templates/systeminputlabel.html",
+    templateUrl: "../templates/systeminputlabel.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -25,26 +25,26 @@ import {modal} from "../../services/modal.service";
 })
 export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
-    private _time: any = {
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
+    public _time: any = {
         display: '',
         moment: null,
         offset: 0,
         valid: true
     };
 
-    private label: string = '';
+    public label: string = '';
 
     // for the dropdown
-    private _searchterm: string = '';
-    private clickListener: any;
-    private foundlabels: string[] = [];
+    public _searchterm: string = '';
+    public clickListener: any;
+    public foundlabels: any[] = [];
 
     constructor(
-        private language: language,
-        private modal: modal,
-        private modelutilities: modelutilities
+        public language: language,
+        public modal: modal,
+        public modelutilities: modelutilities
     ) {
     }
 
@@ -67,11 +67,11 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private onBlur() {
+    public onBlur() {
         this._searchterm = '';
     }
 
-    private dosearch() {
+    public dosearch() {
         if (this._searchterm) {
             this.foundlabels = this.language.searchLabel(this._searchterm, 50);
         } else {
@@ -79,18 +79,18 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private selectLabel(label) {
+    public selectLabel(label) {
         this.label = label;
         this._searchterm = '';
         this.onChange(label);
     }
 
-    private clearField() {
+    public clearField() {
         this.label = '';
         this.onChange('');
     }
 
-    private keyup(_e) {
+    public keyup(_e) {
         switch (_e.key) {
             case 'Enter':
                 this.label = this._searchterm;
@@ -100,7 +100,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private addLabel() {
+    public addLabel() {
         let label = {
             id: this.modelutilities.generateGuid(),
             name: '',

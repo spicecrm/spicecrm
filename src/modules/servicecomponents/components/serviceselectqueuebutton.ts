@@ -11,21 +11,21 @@ import {ServiceSelectQueueModal} from "./serviceselectqueuemodal";
 
 @Component({
     selector: 'service-select-queue-button',
-    templateUrl: './src/modules/servicecomponents/templates/serviceselectqueuebutton.html'
+    templateUrl: '../templates/serviceselectqueuebutton.html'
 })
 export class ServiceSelectQueueButton {
     constructor(
-        private model: model,
-        private metadata: metadata,
-        private language: language,
-        private modal: modal,
-        private injector: Injector
+        public model: model,
+        public metadata: metadata,
+        public language: language,
+        public modal: modal,
+        public injector: Injector
     ) {
 
     }
 
     get canChange() {
-        if (this.model.data.acl && !this.model.data.acl.edit) return false;
+        if (!this.model.checkAccess('edit')) return false;
 
         let resolveDate = this.model.getField('resolve_date');
         if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {
@@ -35,13 +35,13 @@ export class ServiceSelectQueueButton {
         return this.model.isEditing ? false : true;
     }
 
-    private showModal() {
+    public showModal() {
         if (this.canChange) {
             this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }
     }
 
-    private getDisplay() {
+    public getDisplay() {
         return this.canChange ? 'inherit' : 'none';
     }
 }

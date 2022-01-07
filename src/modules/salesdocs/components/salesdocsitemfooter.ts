@@ -11,7 +11,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: '[salesdocs-item-footer]',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemfooter.html',
+    templateUrl: '../templates/salesdocsitemfooter.html',
     providers: [view]
 })
 export class SalesDocsItemFooter {
@@ -19,19 +19,19 @@ export class SalesDocsItemFooter {
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     /**
      * if the parent vioew is editing
      */
-    @Input() private editing: boolean;
+    @Input() public editing: boolean;
 
     /**
      * eventemitter when a new item shoudl be added
      */
-    @Output() addItem: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public addItem: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language) {
         // hide labels
         this.view.displayLabels = false;
 

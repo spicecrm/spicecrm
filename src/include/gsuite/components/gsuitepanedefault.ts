@@ -16,7 +16,7 @@ import {GSuiteGroupware} from "../services/gsuitegroupware.service";
  */
 @Component({
     selector: 'gsuite-pane-default',
-    templateUrl: './src/include/gsuite/templates/gsuitepanedefault.html'
+    templateUrl: '../templates/gsuitepanedefault.html'
 })
 export class GSuitePaneDefault {
 }

@@ -25,58 +25,58 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/starface/templates/starfacetoolbarindicator.html'
+    templateUrl: '../templates/starfacetoolbarindicator.html'
 })
 export class StarfaceToolbarIndicator implements OnDestroy {
 
 
-    private username: string;
+    public username: string;
 
     /**
      * the status of the connection
      */
-    private starfacestatus: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
+    public starfacestatus: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
 
 
     /**
      * the socket status
      */
-    private socketconnected: boolean = false;
+    public socketconnected: boolean = false;
 
     /**
      * holds the subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * an interval function to keep the login alive
      */
-    private keepAlive: any;
+    public keepAlive: any;
 
     /**
      * allows to track if we are ina  keep alive loop currently
      *
      * @private
      */
-    private inKeepAlive: boolean = false;
+    public inKeepAlive: boolean = false;
 
     /**
      * indicator if the subscriptions for the events are active
      */
-    private starfacesubscription: boolean = false;
+    public starfacesubscription: boolean = false;
 
-    private _enabled: boolean = true;
+    public _enabled: boolean = true;
 
     constructor(
-        private language: language,
-        private configuration: configurationService,
-        private modal: modal,
-        private modelutilities: modelutilities,
-        private backend: backend,
-        private toast: toast,
-        private session: session,
-        private socket: socket,
-        private telephony: telephony
+        public language: language,
+        public configuration: configurationService,
+        public modal: modal,
+        public modelutilities: modelutilities,
+        public backend: backend,
+        public toast: toast,
+        public session: session,
+        public socket: socket,
+        public telephony: telephony
     ) {
         this.initialize();
     }
@@ -113,7 +113,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         }
     }
 
-    private toggleconnection() {
+    public toggleconnection() {
         this.enabled = !this.enabled;
     }
 
@@ -134,7 +134,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * get the prefs and login
      */
-    private initialize() {
+    public initialize() {
 
         this.getPreferences().subscribe(username => {
             this.login();
@@ -144,7 +144,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private getPreferences(): Observable<string> {
+    public getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
         this.backend.getRequest('channels/voice/StarFaceVOIP/preferences').subscribe(prefs => {
             if (prefs.username) {
@@ -159,7 +159,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private setPreferences() {
+    public setPreferences() {
         this.modal.openModal('StarfacePreferences').subscribe(componentRef => {
             componentRef.instance.saved$.subscribe(saved => {
                 this.getPreferences().subscribe(username => {
@@ -172,7 +172,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * login to the UC
      */
-    private login() {
+    public login() {
         // unsubscribe from all subscriptions
         this.subscriptions.unsubscribe();
         this.subscriptions = new Subscription();
@@ -216,7 +216,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * disconnects
      */
-    private disconnect() {
+    public disconnect() {
         this.starfacestatus = 'disconnected';
         this.starfacesubscription = false;
         if (this.keepAlive) {
@@ -233,7 +233,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      *
      * @private
      */
-    private keepalive() {
+    public keepalive() {
         if(this.inKeepAlive) return;
 
         this.inKeepAlive = true;
@@ -263,7 +263,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * connect to the socket
      */
-    private connectSocket() {
+    public connectSocket() {
 
         this.subscriptions.add(
             this.socket.initializeNamespace('starface').subscribe(event => {
@@ -283,7 +283,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * disconnect from the socket
      */
-    private disconnectSocket() {
+    public disconnectSocket() {
         if (this.socket) {
             this.socket.leaveRoom('starface', `starface::${this.username}`);
             this.socketconnected = false;
@@ -295,7 +295,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      *
      * @param eventData
      */
-    private handleCallEvent(eventData: any) {
+    public handleCallEvent(eventData: any) {
         let call = this.telephony.calls.find(c => c.callid == eventData.id);
         if (call) {
             call.status = this.translateStatus(eventData.state);
@@ -320,7 +320,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      *
      * @param eventData
      */
-    private addCall(eventData) {
+    public addCall(eventData) {
         /*
         let util = libphonenumber.PhoneNumberUtil.getInstance();
         let msisdn = eventData.direction == 'inbound' ? eventData.callernumber : eventData.callednumber;
@@ -335,7 +335,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         });
     }
 
-    private translateStatus(status) {
+    public translateStatus(status) {
         switch (status) {
             case 'PROCEEDING':
                 return 'initial';
@@ -359,7 +359,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      * @param relatedmodule
      * @param relatedrecord
      */
-    private initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
+    public initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
 
         // create a call and push to the telphony service
         let callid = this.modelutilities.generateGuid();
@@ -392,7 +392,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      *
      * @param call
      */
-    private terminateCall(call: telephonyCallI) {
+    public terminateCall(call: telephonyCallI) {
         if (call.callid) {
             this.backend.deleteRequest(`channels/voice/StarFaceVOIP/call/${call.callid}`).subscribe(deleted => {
                 call.status = 'disconnected';
@@ -401,7 +401,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     }
 
     /* automatically done on teh backend
-    private subscribe() {
+    public subscribe() {
         this.backend.postRequest('StarFaceVOIP/events').subscribe(res => {
             if (res.status == 'success') {
                 this.starfacesubscription = true;
@@ -409,7 +409,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         });
     }
 
-    private unsubscribe() {
+    public unsubscribe() {
         this.backend.deleteRequest('StarFaceVOIP/events').subscribe(res => {
             if (res.status == 'success') {
                 this.starfacesubscription = false;

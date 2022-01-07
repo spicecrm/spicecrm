@@ -9,7 +9,7 @@ import {view} from "../../../services/view.service";
 declare var _: any;
 
 @Component({
-    templateUrl: "./src/modules/salesdocs/templates/salesvoucherredeemmodal.html",
+    templateUrl: "../templates/salesvoucherredeemmodal.html",
     providers: [model, view]
 })
 export class SalesVoucherRedeemModal {
@@ -17,14 +17,14 @@ export class SalesVoucherRedeemModal {
     /**
      * reference to the modal itself to be able to close it
      */
-    private self: any;
+    public self: any;
 
     /**
      * the componentset to be rendered
      */
-    private componentset: string;
+    public componentset: string;
 
-    constructor(public metadata: metadata, private view: view, public model: model, @SkipSelf() private parent: model) {
+    constructor(public metadata: metadata, public view: view, public model: model, @SkipSelf() public parent: model) {
 
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -44,11 +44,11 @@ export class SalesVoucherRedeemModal {
         return this.model.getField('redemption_amount') > this.parent.getField('voucher_value_open');
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private save() {
+    public save() {
         if(!this.overspent && this.model.validate()) {
             this.model.save().subscribe(saved => {
                 this.parent.getData(false);

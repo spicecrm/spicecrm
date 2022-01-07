@@ -9,11 +9,11 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaign-export-button',
-    templateUrl: './src/modules/campaigns/templates/campaignexportbutton.html'
+    templateUrl: '../templates/campaignexportbutton.html'
 })
 export class CampaignExportButton {
 
-    constructor(private language: language, private model: model, private injector: Injector, private modal: modal) {
+    constructor(public language: language, public model: model, public injector: Injector, public modal: modal) {
 
     }
 

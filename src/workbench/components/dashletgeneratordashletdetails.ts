@@ -15,22 +15,22 @@ declare var _;
 
 @Component({
     selector: 'dashlet_generator_dashlet-details',
-    templateUrl: './src/workbench/templates/dashletgeneratordashletdetails.html',
+    templateUrl: '../templates/dashletgeneratordashletdetails.html',
     providers: [view]
 })
 export class DashletGeneratorDashletDetails implements OnChanges {
 
     @Input() public dashlet: any;
-    private sysModule: string;
+    public sysModule: string;
     public sysModules: any[] = [];
     public configValues: any = {};
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private metadata: metadata,
-        private toast: toast,
-        private view: view,
+        public backend: backend,
+        public language: language,
+        public metadata: metadata,
+        public toast: toast,
+        public view: view,
     ) {
         this.view.setEditMode();
         this.sysModules = this.metadata.getSystemModules();
@@ -48,7 +48,7 @@ export class DashletGeneratorDashletDetails implements OnChanges {
         }
     }
 
-    private save() {
+    public save() {
         this.dashlet.componentconfig = JSON.stringify(this.configValues);
         this.backend.postRequest('module/Dashboards/dashlets/' + this.dashlet.id, {}, this.dashlet)
             .subscribe(res => this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success"));

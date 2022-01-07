@@ -14,22 +14,30 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {modal} from '../../../services/modal.service';
+import {model} from '../../../services/model.service';
+import {salesdocrecord} from "../services/salesdocrecord";
 
 @Component({
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsaddproductvariant.html'
+    templateUrl: '../templates/salesdocsitemsaddproductvariant.html',
 })
 export class SalesDocsItemsAddProductVariant implements AfterViewInit {
 
-    @ViewChild('productselector', {read: ViewContainerRef, static: true}) private productselector: ViewContainerRef;
+    @ViewChild('productselector', {read: ViewContainerRef, static: true}) public productselector: ViewContainerRef;
 
-    @Output() private additem: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
-    @Input() private items: any[] = [];
+    @Input() public items: any[] = [];
 
-    private self: any = undefined;
-    private parentitem_id: string = '';
+    public self: any = undefined;
+    public parentitem_id: string = '';
 
-    constructor(private metadata: metadata, private language: language, private backend: backend, private modal: modal) {
+    constructor(
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public modal: modal,
+        public salesdocrecord: salesdocrecord
+    ) {
 
     }
 
@@ -41,7 +49,7 @@ export class SalesDocsItemsAddProductVariant implements AfterViewInit {
         });
     }
 
-    private close() {
+    public close() {
         // emit the value
         this.additem.emit(false);
 
@@ -49,33 +57,49 @@ export class SalesDocsItemsAddProductVariant implements AfterViewInit {
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.close();
     }
 
-    private productSelected(productvariant) {
+    public productSelected(productvariant) {
         if (productvariant.type == 'ProductVariant') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(loadModal => {
                 productvariant.object.getData(false).subscribe(data => {
 
-                    // compose the items to be added
-                    let itemData = {
-                        parent_type: 'ProductVariants',
-                        parent_id: productvariant.object.id,
-                        productvariant_id: productvariant.object.id,
-                        parent_name: productvariant.object.getField('name'),
-                        productvariant_name: productvariant.object.getField('name'),
-                        name: productvariant.object.getField('name'),
-                        uom_id: productvariant.object.getField('base_uom_id'),
-                        amount_net_per_uom: productvariant.object.getField('std_price'),
-                        purchase_price: productvariant.object.getField('purchase_price'),
+                    let itemData: any = {
                         acl: {
                             create: true,
                             edit: true
                         }
                     };
 
+                    // get generic copy rules
+                    let copyrules = this.metadata.getCopyRules("*", 'SalesDocItems');
+                    for (let copyrule of copyrules) {
+                        if (copyrule.tofield && copyrule.fixedvalue) {
+                            itemData[copyrule.tofield] = copyrule.fixedvalue;
+                        } else if (copyrule.tofield && copyrule.calculatedvalue) {
+                            itemData[copyrule.tofield] = productvariant.object.getCalculatedValue(copyrule);
+                        }
+                    }
+
+                    // apply parent specific copy rules
+                    copyrules = this.metadata.getCopyRules('ProductVariants', 'SalesDocItems');
+                    for (let copyrule of copyrules) {
+                        if (copyrule.fromfield && copyrule.tofield) {
+                            itemData[copyrule.tofield] = data[copyrule.fromfield];
+                        } else if (copyrule.tofield && copyrule.calculatedvalue) {
+                            itemData[copyrule.tofield] = productvariant.object.getCalculatedValue(copyrule);
+                        } else if (copyrule.tofield && copyrule.fixedvalue) {
+                            itemData[copyrule.tofield] = copyrule.fixedvalue;
+                        }
+                    }
+
+                    // get the tax category
+                    itemData.tax_category = this.salesdocrecord.getTaxCategory(data.taxcategory);
+
                     this.additem.emit(itemData);
+
 
                     // destroy the laod modal
                     loadModal.instance.self.destroy();

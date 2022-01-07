@@ -8,13 +8,13 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-visualize-item-google-charts',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignervisualizeitemgooglecharts.html'
+    templateUrl: '../templates/reportsdesignervisualizeitemgooglecharts.html'
 })
 export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
 
-    protected contextOptions: any[] = [];
+    public contextOptions: any[] = [];
 
-    protected dimensionsOptions: any[] = [
+    public dimensionsOptions: any[] = [
         {
             value: '111',
             name: `1 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
@@ -39,7 +39,7 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
             name: `3 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
         }];
 
-    protected typeOptions = [{
+    public typeOptions = [{
         dimensions: ['111', '10N', '221', '21N'],
         value: 'Area',
         name: this.language.getLabel('LBL_AREA_CHART')
@@ -86,7 +86,7 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
     }];
 
 
-    constructor(private language: language, private model: model, private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
 
     }
 
@@ -104,7 +104,7 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
     /**
      * set the initial plugin properties data and load the context options
      */
-    private initializeProperties() {
+    public initializeProperties() {
         this.contextOptions = this.model.getField('whereconditions')
             .filter(condition => !!condition.context)
             .map(condition => condition.context);
@@ -133,7 +133,7 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
      * @param name: string
      * @param bool: boolean
      */
-    private setPropertiesOption(name, bool) {
+    public setPropertiesOption(name, bool) {
         this.properties.googlecharts.options[name] = bool ? 'on' : 'off';
     }
 }

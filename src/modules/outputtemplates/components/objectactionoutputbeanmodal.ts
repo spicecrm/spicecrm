@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Directive, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, EventEmitter, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -9,13 +9,15 @@ import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
-import {trigger, transition, animate, style, state} from '@angular/animations';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ObjectActionOutputBeanModalEmailContent} from "./objectactionoutputbeanmodalemailcontent";
+import {outputModalService} from "../services/outputmodal.service";
+import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'object-action-output-bean-modal',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodal.html',
-    providers: [view],
+    templateUrl: '../templates/objectactionoutputbeanmodal.html',
+    providers: [view, outputModalService],
     animations: [
         trigger('slideInOut', [
             state('open', style({width: '50%'})),
@@ -48,6 +50,14 @@ export class ObjectActionOutputBeanModal {
     public handBack: EventEmitter<any>;
     public buttonText: string;
     public contentForHandBack: string;
+    /**
+     * if true send the bean data to the backend to handle live compiling the template content
+     */
+    public liveCompile: boolean = false;
+    /**
+     * holds an actionset id to be rendered in the footer
+     */
+    public customActionsetId: string;
 
     /**
      * the window itsel .. resp the containing modal container
@@ -57,33 +67,33 @@ export class ObjectActionOutputBeanModal {
     /**
      * the list of templates
      */
-    private templates = [];
+    public templates = [];
 
     /**
      * the selected template
      */
-    private _selected_template = null;
+    public _selected_template = null;
 
     /**
      * the selected output format
      */
-    private _selected_format: 'html' | 'pdf' = 'pdf';
+    public _selected_format: 'html' | 'pdf' = 'pdf';
 
     /**
      * the response of the compiler
      */
-    private compiled_selected_template: string = '';
+    public compiled_selected_template: string = '';
 
     /**
      * flag is the oputput is loading
      */
-    private loading_output: boolean = false;
+    public loading_output: boolean = false;
 
 
     /**
      * fieldset of the email area
      */
-    private fieldset_email: string = '';
+    public fieldset_email: string = '';
 
     /**
      * the pdf file
@@ -98,12 +108,12 @@ export class ObjectActionOutputBeanModal {
     /**
      * flag to show the email-content
      */
-    private showsendemail: boolean = false;
+    public showsendemail: boolean = false;
 
     /**
      * expanded email-content flag
      */
-    private expanded: boolean = false;
+    public expanded: boolean = false;
 
     /**
      * keeps a flag if the email panel has been initialized
@@ -111,12 +121,12 @@ export class ObjectActionOutputBeanModal {
      *
      * @private
      */
-    private emailInitialized: boolean = false;
+    public emailInitialized: boolean = false;
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
-    private blobUrl: any;
+    public blobUrl: any;
 
     constructor(
         public language: language,
@@ -125,8 +135,10 @@ export class ObjectActionOutputBeanModal {
         public modal: modal,
         public view: view,
         public backend: backend,
+        public outputModalService: outputModalService,
         public sanitizer: DomSanitizer,
-        public viewContainerRef: ViewContainerRef
+        public viewContainerRef: ViewContainerRef,
+        public modelutilities: modelutilities
     ) {
         // get the fieldset of the email area
         let componentconfig = this.metadata.getComponentConfig('ObjectActionOutputBeanModal');
@@ -149,7 +161,7 @@ export class ObjectActionOutputBeanModal {
      * If there is no button text given from outside, use the default text
      * Set the output format in case it is given from outside
      */
-    private setModalData() {
+    public setModalData() {
         if (!this.modalTitle) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
         if (!this.buttonText) this.buttonText = this.language.getLabel(this.noDownload ? 'LBL_OK' : 'LBL_DOWNLOAD');
         if (this.forcedFormat) this._selected_format = this.forcedFormat;
@@ -158,7 +170,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * see if we have a relate to an output template
      */
-    private setSelectedTemplate() {
+    public setSelectedTemplate() {
         let fields = this.metadata.getModuleFields(this.model.module);
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
@@ -173,6 +185,7 @@ export class ObjectActionOutputBeanModal {
 
     set selected_template(val) {
         this._selected_template = val;
+        this.outputModalService.selectedTemplate = val;
         this.rendertemplate();
     }
 
@@ -197,7 +210,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * backend call to render the template and return the content
      */
-    private rendertemplate() {
+    public rendertemplate() {
         this.loading_output = true;
 
         this.blobUrl = null;
@@ -205,7 +218,11 @@ export class ObjectActionOutputBeanModal {
 
         switch (this.selected_format) {
             case 'pdf':
-                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
+                const body = {
+                    bean_data: this.liveCompile ? this.modelutilities.spiceModel2backend(this.model.module, this.model.data) : null
+                };
+
+                this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
                         let blob = this.datatoBlob(atob(pdf.content));
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
@@ -238,11 +255,15 @@ export class ObjectActionOutputBeanModal {
     /**
      * called from reload button to re render the template
      */
-    private reload() {
+    public reload() {
         this.rendertemplate();
     }
 
     public close() {
+        this.outputModalService.modalResponse$.next('close');
+        this.outputModalService.modalResponse$.complete();
+
+
         this.self.destroy();
     }
 
@@ -257,15 +278,12 @@ export class ObjectActionOutputBeanModal {
             // generate a blob file from the content
             // base64 decode in case wehave a PDF
             let blob = this.datatoBlob(this.selected_format == 'pdf' ? atob(this.contentForHandBack) : this.contentForHandBack);
-            let blobUrl =URL.createObjectURL(blob);
-
             // set as href and set the type
-            a.href = blobUrl;
+            a.href = URL.createObjectURL(blob);
             a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
 
             // genereate a filename
-            let fileName = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
-            a.download = fileName;
+            a.download = this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format;
 
             // start download and then remove the element from the document again
             a.click();
@@ -290,7 +308,7 @@ export class ObjectActionOutputBeanModal {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -306,15 +324,14 @@ export class ObjectActionOutputBeanModal {
             byteArrays.push(byteArray);
         }
 
-        let blob = new Blob(byteArrays, {type: contentType});
-        return blob;
+        return new Blob(byteArrays, {type: contentType});
     }
 
     // --------------------------------EMAIL SECTION -------------------------------------
     /**
      * open/close email-content
      */
-    private openEmailArea() {
+    public openEmailArea() {
         if (!this.emailInitialized) {
             this.emailInitialized = true;
             this.setEmailAttachmentData();
@@ -326,11 +343,11 @@ export class ObjectActionOutputBeanModal {
     /**
      * set the filelist for the email attachment panel and reset the email-content
      */
-    private setEmailAttachmentData() {
+    public setEmailAttachmentData() {
         if(this.emailInitialized) {
             this.filelist = [{
                 size: this.contentForHandBack.length,
-                name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+                name: this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format,
                 type: "application/" + this.selected_format,
                 filecontent: this.contentForHandBack
             }];
@@ -347,7 +364,17 @@ export class ObjectActionOutputBeanModal {
     /**
      * call the child method that will send the mail
      */
-    private sendEmail() {
+    public sendEmail() {
         this.emailContent.sendEmail();
+    }
+
+    public handleAction(action: {close: boolean, name: string}) {
+
+        this.outputModalService.modalResponse$.next(action.name);
+
+        if (!!action.close) {
+            this.model.cancelEdit();
+            this.close();
+        }
     }
 }

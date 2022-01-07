@@ -15,7 +15,7 @@ import { modal } from '../../services/modal.service';
 import {SelectTreeAddDialog} from "./selecttreeadddialog";
 
 @Component({
-    templateUrl: './src/workbench/templates/selecttree.html',
+    templateUrl: '../templates/selecttree.html',
 })
 export class SelectTreeComponent {
     currentSelectTree: string = '';
@@ -25,37 +25,37 @@ export class SelectTreeComponent {
     max_levels = 4;
     loading = true;
     selected_categorys = [];
-    edit_category: object = null;
+    edit_category: any = null;
     service_queues = [];
     trees = [];
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private config: configurationService,
-        private utils: modelutilities,
-        private toast: toast,
-        private modalservice: modal
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public config: configurationService,
+        public utils: modelutilities,
+        public toast: toast,
+        public modalservice: modal
     ) {
         this.loadTrees(true);
     }
 
 
-    private addTree() {
+    public addTree() {
         this.modalservice.openModal('SelectTreeAddDialog').subscribe( modal => {
             modal.instance.tree$.subscribe( event => { this.updateTree(event); });
         });
     }
 
-    private updateTree(e) {
+    public updateTree(e) {
         this.loadTrees();
         this.currentSelectTree = e.id;
         this.loadSelectTree(this.currentSelectTree);
     }
 
 
-    private loadTrees(selectloadfirst = false) {
+    public loadTrees(selectloadfirst = false) {
         if( !this.config.getData('select_trees')) {
             this.backend.getRequest('configuration/spiceui/core/selecttree/trees').subscribe(
                 (res: any) => {
@@ -75,7 +75,7 @@ export class SelectTreeComponent {
         }
     }
 
-    private loadSelectTree(currentSelectTree) {
+    public loadSelectTree(currentSelectTree) {
 
         this.edit_category = null;
 
@@ -89,7 +89,7 @@ export class SelectTreeComponent {
 
 
 
-    private initializeTree(tree) {
+    public initializeTree(tree) {
         this.category_tree = tree;
 
 
@@ -106,7 +106,7 @@ export class SelectTreeComponent {
     }
 
 
-    private resetLevels(start_lvl = 0) {
+    public resetLevels(start_lvl = 0) {
         for(let lvl = start_lvl; lvl < this.max_levels; lvl++) {
             this.levels[lvl] = [];
         }
@@ -116,7 +116,7 @@ export class SelectTreeComponent {
     /**
      * triggered on mouseenter, selects a category to go deeper
      */
-    private select(cat) {
+    public select(cat) {
         this.selected_categorys[cat.level] = cat;
         if(cat.childs) {
             this.levels[cat.level + 1] = cat.childs;
@@ -126,7 +126,7 @@ export class SelectTreeComponent {
         }
     }
 
-    private addCategory(parent = null) {
+    public addCategory(parent = null) {
         let cat = {
             id: this.utils.generateGuid(),
             name: 'new Field...',
@@ -158,7 +158,7 @@ export class SelectTreeComponent {
         this.edit(cat);
     }
 
-    private removeCategory(cat) {
+    public removeCategory(cat) {
         if( cat.childs ) {
             let r = confirm('Are you sure you want to delete this Category? There are '+cat.childs.length+' Subcategories which will be get deleted too!');
             if( !r ) {
@@ -196,12 +196,12 @@ export class SelectTreeComponent {
             return false;
         }
     }
-    private edit(cat) {
+    public edit(cat) {
         this.selected_categorys[cat.level] = cat;
         this.edit_category = cat;
     }
 
-    private save() {
+    public save() {
         this.backend.postRequest('configuration/spiceui/core/selecttree/tree', null, this.category_tree).subscribe(
             (success) => {
 
@@ -214,7 +214,7 @@ export class SelectTreeComponent {
         );
     }
 
-    private isCategorySelected(cat): boolean {
+    public isCategorySelected(cat): boolean {
         for(let c of this.selected_categorys)
         {
             if( c.id == cat.id ) {

@@ -15,12 +15,12 @@ import {toast} from "../../../services/toast.service";
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/workflow/templates/workflowcloseworkflowbutton.html',
+    templateUrl: '../templates/workflowcloseworkflowbutton.html',
 
 })
 export class WorkflowCloseWorkflowButton {
 
-    constructor(private model: model, private modal: modal, private backend: backend, private session: session, private language: language, private toast: toast) {
+    constructor(public model: model, public modal: modal, public backend: backend, public session: session, public language: language, public toast: toast) {
     }
 
     /**

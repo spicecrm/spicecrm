@@ -16,13 +16,13 @@ declare var _: any;
 
 @Component({
     selector: 'global-navigation-menu-item-action-new',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemactionnew.html'
+    templateUrl: '../../../globalcomponents/templates/globalnavigationmenuitemactionnew.html'
 })
 export class SalesDocsGlobalNavigationMenuItemActionNew extends GlobalNavigationMenuItemActionNew implements OnInit {
 
     public actionconfig: any = {};
 
-    constructor(public language: language, public model: model, public metadata: metadata, private modal: modal, private injector: Injector) {
+    constructor(public language: language, public model: model, public metadata: metadata, public modal: modal, public injector: Injector) {
         super(language, model, metadata);
     }
 

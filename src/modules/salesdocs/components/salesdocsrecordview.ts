@@ -9,34 +9,36 @@ import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 import {model} from "../../../services/model.service";
 import {configurationService} from "../../../services/configuration.service";
+import {salesdocrecord} from "../services/salesdocrecord";
 
 /**
  * a specific recordview for the SalesDocs
  */
 @Component({
     selector: 'salesdocs-record-view',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsrecordview.html',
+    templateUrl: '../templates/salesdocsrecordview.html',
+    providers: [salesdocrecord]
 })
 export class SalesDocsRecordView {
 
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
     /**
      * the rendered doc type
      */
-    private _salesdoctype: string;
+    public _salesdoctype: string;
 
     /**
      * the componentset to render above the items
      */
-    private headerComponentset: string = '';
+    public headerComponentset: string = '';
 
     /**
      * teh compopnentset to render below the items
      */
-    private footerComponentset: string = '';
+    public footerComponentset: string = '';
 
-    constructor(private metadata: metadata, private language: language, private view: view, private model: model, private configuration: configurationService) {
+    constructor(public metadata: metadata, public language: language, public view: view, public model: model, public configuration: configurationService, public salesdocrecord: salesdocrecord) {
         this.model.data$.subscribe(recordData => {
             let docType = this.model.getField('salesdoctype');
             if (docType && docType != this._salesdoctype) {
@@ -45,13 +47,16 @@ export class SalesDocsRecordView {
                 this.renderDefaultView();
             }
         });
+
+        this.salesdocrecord.salesDoc = this.model;
+
     }
 
 
     /**
      * renders the view once receivede
      */
-    private renderViewForDocType() {
+    public renderViewForDocType() {
         let docTypes = this.configuration.getData('salesdoctypes');
         if (docTypes && docTypes.find(docType => docType.name == this.model.getField('salesdoctype'))) {
             let docType = docTypes.find(docType => docType.name == this.model.getField('salesdoctype'));
@@ -78,7 +83,7 @@ export class SalesDocsRecordView {
     /**
      * renders a default view
      */
-    private renderDefaultView() {
+    public renderDefaultView() {
         let componentConf = this.metadata.getComponentConfig('SalesDocsRecordView', this.model.module);
         this.headerComponentset = componentConf.headercomponentset;
         this.footerComponentset = componentConf.footercomponentset;

@@ -16,18 +16,18 @@ import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/salesplanning/templates/salesplanningreporterintegrationexportbutton.html'
+    templateUrl: '../templates/salesplanningreporterintegrationexportbutton.html'
 })
 export class SalesPlanningReporterIntegrationExportButton {
 
-    constructor(private language: language, private injector: Injector, private backend: backend, private model: model, private modal: modal, private reporterconfig: reporterconfig) {
+    constructor(public language: language, public injector: Injector, public backend: backend, public model: model, public modal: modal, public reporterconfig: reporterconfig) {
     }
 
     get canExport() {
         return this.model.checkAccess('export');
     }
 
-    private export() {
+    public export() {
         this.modal.openModal('SalesPlanningReporterIntegrationExportModal', true, this.injector)
     }
 }

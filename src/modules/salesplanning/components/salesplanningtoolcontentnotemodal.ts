@@ -7,7 +7,7 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    templateUrl: './src/modules/salesplanning/templates/salesplanningtoolcontentnotemodal.html',
+    templateUrl: '../templates/salesplanningtoolcontentnotemodal.html',
 })
 
 export class SalesPlanningToolContentNoteModal {
@@ -17,7 +17,7 @@ export class SalesPlanningToolContentNoteModal {
     public doSave: Observable<boolean> = new Observable<boolean>();
     public doSaveSubject: Subject<boolean> = new Subject<boolean>();
 
-    constructor(private language: language) {
+    constructor(public language: language) {
         this.doSave = this.doSaveSubject.asObservable();
 
     }
@@ -25,7 +25,7 @@ export class SalesPlanningToolContentNoteModal {
     /*
     * @reset notice
     */
-    private clear() {
+    public clear() {
         if (!this.canEdit) return;
         this.nodeInfo.notice = '';
     }
@@ -33,7 +33,7 @@ export class SalesPlanningToolContentNoteModal {
     /*
     * @destroy self
     */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -42,7 +42,7 @@ export class SalesPlanningToolContentNoteModal {
     * @complete doSaveSubject
     * @close
     */
-    private save() {
+    public save() {
         if (!this.canEdit) return;
         this.doSaveSubject.next(true);
         this.doSaveSubject.complete();

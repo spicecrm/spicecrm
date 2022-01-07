@@ -9,14 +9,14 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaign-send-mail-button',
-    templateUrl: './src/modules/campaigns/templates/campaignsendmailbutton.html'
+    templateUrl: '../templates/campaignsendmailbutton.html'
 })
 export class CampaignSendMailButton {
 
-    private sending: boolean = false;
+    public sending: boolean = false;
     public disabled: boolean = true;
 
-    constructor(private language: language, private model: model, private backend: backend, private toast: toast) {
+    constructor(public language: language, public model: model, public backend: backend, public toast: toast) {
         this.model.mode$.subscribe(mode => {
             this.handleDisabled();
         });
@@ -43,13 +43,13 @@ export class CampaignSendMailButton {
      * only show for campaign tasks of type email
      */
     get hidden() {
-        return this.model.data.campaigntask_type !== 'Email';
+        return this.model.getField('campaigntask_type') !== 'Email';
     }
 
     /**
      * handle the disabled status
      */
-    private handleDisabled() {
+    public handleDisabled() {
 
         // not if activated already
         if (this.model.getField('activated')) {
@@ -58,19 +58,19 @@ export class CampaignSendMailButton {
         }
 
         // not if editing
-        if (this.model.data.acl && !this.model.data.acl.edit) {
+        if (!this.model.checkAccess('edit')) {
             this.disabled = true;
             return;
         }
 
         // only for email
-        if (this.model.data.campaigntask_type !== 'Email') {
+        if (this.model.getField('campaigntask_type') !== 'Email') {
             this.disabled = true;
             return;
         }
 
         // mailrelais is set
-        if (!this.model.data.mailbox_id) {
+        if (!this.model.getField('mailbox_id')) {
             this.disabled = true;
             return;
         }

@@ -14,25 +14,25 @@ import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objecteditmodalwreference.html',
+    templateUrl: '../templates/objecteditmodalwreference.html',
     providers: [model, view]
 })
 export class ObjectEditModalWReference {
     @ViewChild('modalContent', {read: ViewContainerRef, static: true}) modalContent: ViewContainerRef;
-    componentRefs: Array<any> = [];
-    componentSet: String = '';
-    module: String = '';
+    componentRefs: any[] = [];
+    componentSet: string = '';
+    module: string = '';
     reference: string = '';
     showDuplicates: boolean = false;
 
     doDuplicateCheck: boolean = true;
-    duplicates: Array<any> = [];
+    duplicates: any[] = [];
 
     modalAction$: EventEmitter<any> = new EventEmitter<any>();
 
     self: any = {};
 
-    constructor(private router: Router, private language: language, private model: model, private view: view, private metadata: metadata, private elementref: ElementRef) {
+    constructor(public router: Router, public language: language, public model: model, public view: view, public metadata: metadata, public elementref: ElementRef) {
         this.view.isEditable = true;
         this.view.setEditMode();
 
@@ -48,10 +48,7 @@ export class ObjectEditModalWReference {
 
     save(goDetail: boolean = false) {
         if (this.model.validate()) {
-                this.modalAction$.emit(this.model.data);
-        }
-        else {
-            console.log(this.model.messages);
+            this.modalAction$.emit(this.model.data);
         }
     }
 

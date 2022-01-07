@@ -25,7 +25,7 @@ export class QuestionsManagerEditBasic implements OnInit {
     /**
      * A unique ID for the component. Used for the attributes "id" and "for" in html elements.
      */
-    private compId = _.uniqueId();
+    public compId = _.uniqueId();
 
     /**
      * The name field is required. Missing?
@@ -43,8 +43,8 @@ export class QuestionsManagerEditBasic implements OnInit {
     }
 
     public ngOnInit(): void {
-        if ( !this.model.data.questionparameter || this.model.data.questionparameter.length === 0 ) {
-            this.model.data.questionparameter = '{}';
+        if ( !this.model.getField('questionparameter') || this.model.getField('questionparameter').length === 0 ) {
+            this.model.setField('questionparameter', '{}');
         }
         this.getQuestionparametersFromModel();
     }

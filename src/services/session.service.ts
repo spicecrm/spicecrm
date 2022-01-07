@@ -31,6 +31,9 @@ interface authDataIf {
     tenant_name: string;
     obtainGDPRconsent: boolean;
     canchangepassword: boolean;
+    address_country?: string;
+    expiringPasswordValidityDays: boolean | number;
+    renewPass?: boolean;
 }
 
 /**
@@ -58,22 +61,23 @@ export class session {
         tenant_id: '',
         tenant_name: '',
         obtainGDPRconsent: false,
-        canchangepassword: false
+        canchangepassword: false,
+        expiringPasswordValidityDays: false
     };
 
     /**
      * an object any component can write data into and read data from. Helpful to keep sessiondata
      */
-    private sessionData: any = {};
+    public sessionData: any = {};
 
 
     // public footercontainer: any = null;
 
     // add an observable for the auth data
-    // private authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
-    // private authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
+    // public authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
+    // public authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
 
-    constructor( private logger: loggerService, private broadcast: broadcast ) {
+    constructor( public logger: loggerService, public broadcast: broadcast ) {
         this.logger.setSession(this);
     }
 
@@ -175,6 +179,7 @@ export class session {
         this.authData.companycode_id = '';
         this.authData.obtainGDPRconsent = false;
         this.authData.canchangepassword = false;
+        this.authData.expiringPasswordValidityDays = false;
 
         this.sessionData = {};
 

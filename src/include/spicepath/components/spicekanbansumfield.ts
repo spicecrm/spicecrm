@@ -12,16 +12,16 @@ declare var _: any;
  */
 @Component({
     selector: 'spice-kanban-sumfield',
-    templateUrl: './src/include/spicepath/templates/spicekanbansumfield.html'
+    templateUrl: '../templates/spicekanbansumfield.html'
 })
 export class SpiceKanbanSumField {
 
     /**
      * the number to be displayed
      */
-    @Input() private value: any;
-    @Input() private title: string;
-    @Input() private symbol: string;
+    @Input() public value: any;
+    @Input() public title: string;
+    @Input() public symbol: string;
 
 
     /**

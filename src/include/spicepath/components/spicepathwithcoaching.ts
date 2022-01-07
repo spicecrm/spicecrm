@@ -22,7 +22,7 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: "spice-path-with-coaching",
-    templateUrl: "./src/include/spicepath/templates/spicepathwithcoaching.html",
+    templateUrl: "../templates/spicepathwithcoaching.html",
     animations: [
         trigger('displaycoaching', [
             transition(':enter', [
@@ -52,21 +52,21 @@ export class SpicePathWithCoaching {
     /**
      * determines if the coaching is visible or not
      */
-    private coachingVisible: boolean = false;
+    public coachingVisible: boolean = false;
 
     /**
      * holds the current active stage if the user clicks on another stage
      */
-    private activeStage: string;
+    public activeStage: string;
 
     /**
      * holds current results for the checks
      */
-    private beanStagesChecksResults: any[];
+    public beanStagesChecksResults: any[];
 
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private configuration: configurationService, private model: model, private language: language, private backend: backend, private metadata: metadata) {
+    constructor(public configuration: configurationService, public model: model, public language: language, public backend: backend, public metadata: metadata) {
         this.componentconfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
         if (this.componentconfig && this.componentconfig.coachingVisible) {
             this.coachingVisible = this.componentconfig.coachingVisible;
@@ -113,14 +113,14 @@ export class SpicePathWithCoaching {
         return this.model.getField(this.statusfield);
     }
 
-    private toggleCoaching() {
+    public toggleCoaching() {
         this.coachingVisible = !this.coachingVisible;
     }
 
     /**
      * event handler when the active stage is set in the path component
      */
-    private setActiveStage(stage) {
+    public setActiveStage(stage) {
         this.activeStage = stage;
     }
 

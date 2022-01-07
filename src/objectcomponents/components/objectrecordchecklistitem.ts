@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-checklist-item',
-    templateUrl: './src/objectcomponents/templates/objectrecordchecklistitem.html',
+    templateUrl: '../templates/objectrecordchecklistitem.html',
     providers: [view]
 })
 export class ObjectRecordChecklistItem {
@@ -18,16 +18,16 @@ export class ObjectRecordChecklistItem {
     @Input() checkitem: any = {};
     @Input() checkfield: string = '';
 
-    private checkid: string = '';
+    public checkid: string = '';
 
 
-    constructor(private view: view, private model: model, private modelutilities: modelutilities, private language: language, private backend: backend) {
+    constructor(public view: view, public model: model, public modelutilities: modelutilities, public language: language, public backend: backend) {
         this.checkid = this.modelutilities.generateGuid();
     }
 
     get checked() {
         try {
-            let values = JSON.parse(this.model.data[this.checkfield]);
+            let values = JSON.parse(this.model.getField(this.checkfield));
             return values[this.checkitem.item];
         } catch (e) {
             return false;
@@ -37,18 +37,20 @@ export class ObjectRecordChecklistItem {
     checkItem(event) {
         let values = {};
         try {
-            values = JSON.parse(this.model.data[this.checkfield]);
+            values = JSON.parse(this.model.getField(this.checkfield));
         } catch (e) {
+            values = {};
         }
 
         values[this.checkitem.item] = event.target.checked;
-        this.model.data[this.checkfield] = JSON.stringify(values);
+        this.model.setField(this.checkfield, JSON.stringify(values));
 
         // update the backend
-        if (event.target.checked)
+        if (event.target.checked) {
             this.backend.postRequest('module/' + this.model.module + '/' + this.model.id + '/checklist/' + this.checkfield + '/' + this.checkitem.item);
-        else
+        }else {
             this.backend.deleteRequest('module/' + this.model.module + '/' + this.model.id + '/checklist/' + this.checkfield + '/' + this.checkitem.item);
+        }
     }
 
     get disabled(){

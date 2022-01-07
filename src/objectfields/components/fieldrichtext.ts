@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {ChangeDetectorRef, Component, Injector} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector, OnInit} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -19,9 +19,9 @@ declare var _;
 
 @Component({
     selector: 'field-richtext',
-    templateUrl: './src/objectfields/templates/fieldrichtext.html',
+    templateUrl: '../templates/fieldrichtext.html',
 })
-export class fieldRichText extends fieldGeneric {
+export class fieldRichText extends fieldGeneric implements OnInit {
     /**
      * holds the selected signature id
      */
@@ -29,48 +29,48 @@ export class fieldRichText extends fieldGeneric {
     /**
      * holds the available signatures
      */
-    public signatures: Array<{ label: string, content: string, id: string }> = [];
+    public signatures: { label: string, content: string, id: string }[] = [];
     /**
      * holds the spice page builder html code
      * @private
      */
-    private parsedHtml: SafeHtml = '';
+    public parsedHtml: SafeHtml = '';
     /**
      * holds the sanitized value for the iframe
      * @private
      */
-    private sanitizedValue: SafeHtml;
+    public sanitizedValue: SafeHtml;
     /**
      * the cached full html code to prevent "flickering" of the iframe (change detection)
      */
-    private fullValue_cached: string;
+    public fullValue_cached: string;
     /**
      * holds the full value for the iframe
      * @private
      */
-    private fullValue: string = '';
+    public fullValue: string = '';
     /**
      * holds the stylesheet field name
      * @private
      */
-    private stylesheetField: string = '';
+    public stylesheetField: string = '';
     /**
      * holds the stylesheet to be used in the iframe
      * @private
      */
-    private stylesheetToUse: string = '';
+    public stylesheetToUse: string = '';
     /**
      * holds a list of the saved stylesheets
      * @private
      */
-    private stylesheets: any[];
+    public stylesheets: any[];
     /**
      * when true use stylesheets in iframe
      * @private
      */
-    private useStylesheets: boolean;
+    public useStylesheets: boolean;
 
-    private signaturePreviousPosition: number = -1;
+    public signaturePreviousPosition: number = -1;
 
     constructor(public model: model,
                 public view: view,
@@ -86,7 +86,6 @@ export class fieldRichText extends fieldGeneric {
                 public cdRef: ChangeDetectorRef,
                 public sanitized: DomSanitizer) {
         super(model, view, language, metadata, router);
-        this.modelChangesSubscriber();
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
 
@@ -106,8 +105,8 @@ export class fieldRichText extends fieldGeneric {
      * getter for the stylesheet id from the fiels
      */
     get stylesheetId(): string {
-        if (!_.isEmpty(this.model.data[this.stylesheetField])) {
-            return this.model.data[this.stylesheetField];
+        if (!_.isEmpty(this.model.getField(this.stylesheetField))) {
+            return this.model.getField(this.stylesheetField);
         }
         return this.stylesheetId = this.stylesheetToUse;
     }
@@ -123,6 +122,23 @@ export class fieldRichText extends fieldGeneric {
     }
 
     /**
+     * a getter for the value bound top the model
+     */
+    get value() {
+        return this.model.getField(this.fieldname);
+    }
+
+    /**
+     * a setter that returns the value to the model and triggers the validation
+     *
+     * @param val the new value
+     */
+    set value(val) {
+        this.model.setField(this.fieldname, val);
+        this.setHtmlValue();
+    }
+
+    /**
      * call to load the initial values
      */
     public async ngOnInit() {
@@ -133,6 +149,7 @@ export class fieldRichText extends fieldGeneric {
             await this.loadMailboxSignature();
             this.loadUserSignature();
         }
+        this.modelChangesSubscriber();
     }
 
     /**
@@ -165,7 +182,7 @@ export class fieldRichText extends fieldGeneric {
         this.cdRef.detectChanges();
     }
 
-    protected encodeHtml(value) {
+    public encodeHtml(value) {
         return String(value)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -178,7 +195,7 @@ export class fieldRichText extends fieldGeneric {
      * push the signature option
      * @private
      */
-    private loadMailboxSignature(): Promise<any> | void {
+    public loadMailboxSignature(): Promise<any> | void {
 
         if (!this.isEditMode()) return;
 
@@ -208,7 +225,7 @@ export class fieldRichText extends fieldGeneric {
      * push the signature data to the signature array
      * @private
      */
-    private addSignature(id: string, content: string, label: string) {
+    public addSignature(id: string, content: string, label: string) {
         const existingSignature = this.signatures.find(s => s.id == id);
         if (!existingSignature) {
             this.signatures.push({id, content, label});
@@ -221,7 +238,7 @@ export class fieldRichText extends fieldGeneric {
      * load the user signatures from the backend
      * @private
      */
-    private loadUserSignature() {
+    public loadUserSignature() {
 
         if (!this.isEditMode()) return;
 
@@ -239,7 +256,7 @@ export class fieldRichText extends fieldGeneric {
      * clear the signature from the body
      * @private
      */
-    private clearSignature() {
+    public clearSignature() {
 
         if (!this.value) return;
 
@@ -254,14 +271,14 @@ export class fieldRichText extends fieldGeneric {
         this.value = tempElement.innerHTML;
     }
 
-    private setStylesheetField() {
+    public setStylesheetField() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
             this.stylesheetField = fieldDefs.stylesheet_id_field;
         }
     }
 
-    private setStylesheetsToUse() {
+    public setStylesheetsToUse() {
         this.useStylesheets = !_.isEmpty(this.stylesheetField) && !_.isEmpty(this.stylesheets);
         if (this.useStylesheets) {
             if (this.stylesheets.length === 1) {
@@ -279,7 +296,7 @@ export class fieldRichText extends fieldGeneric {
      * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should only be rebuild on change
      * @returns {any}
      */
-    private setSanitizedValue() {
+    public setSanitizedValue() {
         if (this.value) {
             if (this.value.includes('</html>')) {
                 this.fullValue = this.value;
@@ -297,16 +314,18 @@ export class fieldRichText extends fieldGeneric {
         return this.sanitizedValue;
     }
 
-    private modelChangesSubscriber() {
-        this.subscriptions.add(this.model.data$.subscribe(data => {
+    public modelChangesSubscriber() {
+        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe(value => {
             this.setHtmlValue();
-            if (this.fieldconfig?.useSignature && !!data.mailbox_id && !this.signatures.some(s => s.id == data.mailbox_id)) {
+        }));
+        this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe(mailboxId => {
+            if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
                 this.loadMailboxSignature();
             }
         }));
     }
 
-    private setHtmlValue() {
+    public setHtmlValue() {
         let regexp = /<code>[\s\S]*?<\/code>/g;
         let match = regexp.exec(this.value);
         while (match != null) {
@@ -320,16 +339,16 @@ export class fieldRichText extends fieldGeneric {
         this.setSanitizedValue();
     }
 
-    private save(content) {
+    public save(content) {
         let toSave = {
-            date_modified: this.model.data.date_modified,
+            date_modified: this.model.getField('date_modified'),
             [this.fieldname]: content
         };
         this.backend.save(this.model.module, this.model.id, toSave)
             .subscribe(
                 (res: any) => {
                     this.model.endEdit();
-                    this.model.data.date_modified = res.date_modified;
+                    this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
                     this.model.startEdit();
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
