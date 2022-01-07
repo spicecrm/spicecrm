@@ -1,1 +1,1 @@
-{"version":3,"file":"envirnoment.prod.js","sourceRoot":"","sources":["envirnoment.prod.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,WAAW,GAAG;IACvB,UAAU,EAAE,IAAI;CACnB,CAAA"}
+{"version":3,"file":"environment.prod.js","sourceRoot":"","sources":["environment.prod.ts"],"names":[],"mappings":"AACA,MAAM,CAAC,MAAM,WAAW,GAAG;IACvB,UAAU,EAAE,IAAI;IAChB,WAAW,EAAE,2BAA2B;IACxC,SAAS,EAAE,uDAAuD;CACjE,CAAA"}
