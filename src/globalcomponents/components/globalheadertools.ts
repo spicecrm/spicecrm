@@ -8,16 +8,22 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {broadcast} from '../../services/broadcast.service';
 
+
+/**
+ * renders the components as part of the globak Headerr tools in the upper right corner of the app
+ */
 @Component({
     selector: 'global-header-tools',
     templateUrl: '../templates/globalheadertools.html'
 })
 export class GlobalHeaderTools implements AfterViewInit {
 
-    @ViewChild('toolcontainer', {read: ViewContainerRef, static: true})public toolcontainer: ViewContainerRef;
-   public containerItems: any[] = [];
+    /**
+     * the componentset to be rendered
+     */
+    public componentset: string;
 
-    constructor(public session: session,public metadata: metadata,public router: Router,public language: language,public broadcast: broadcast) {
+    constructor(public session: session, public metadata: metadata, public router: Router, public language: language, public broadcast: broadcast) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -27,7 +33,7 @@ export class GlobalHeaderTools implements AfterViewInit {
         this.buildTools();
     }
 
-   public handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':
@@ -37,22 +43,9 @@ export class GlobalHeaderTools implements AfterViewInit {
         }
     }
 
-   public buildTools() {
-
-        // destrioy the current container
-        this.containerItems.forEach(item => {
-            item.destroy();
-        });
-        this.containerItems = [];
-
+    public buildTools() {
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderTools');
-        if (!componentconfig.componentset) return false;
-        let components = this.metadata.getComponentSetObjects(componentconfig.componentset);
-        for (let component of components) {
-            this.metadata.addComponent(component.component, this.toolcontainer).subscribe(itemRef => {
-                this.containerItems.push(itemRef);
-            });
-        }
+        this.componentset = componentconfig.componentset;
     }
 
 }
