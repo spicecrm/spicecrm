@@ -15,22 +15,22 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-currencies',
-    templateUrl: './src/objectfields/templates/fieldcurrencies.html'
+    templateUrl: '../templates/fieldcurrencies.html'
 })
 export class fieldCurrencies extends fieldGeneric {
 
-    private currencies: any[] = [];
+    public currencies: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private currency: currency) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency) {
         super(model, view, language, metadata, router);
 
         this.currencies = this.currency.getCurrencies();
     }
 
-    private getCurrencySymbol() {
+    public getCurrencySymbol() {
         let currencyid = -99;
 
-        if (this.model.data[this.fieldname]) currencyid = this.model.data[this.fieldname];
+        if (this.model.getField(this.fieldname)) currencyid = this.model.getField(this.fieldname);
         return this.currency.getCurrencySmbol(currencyid);
     }
 }

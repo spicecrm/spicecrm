@@ -8,7 +8,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'global-navigation-tabbed',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbed.html',
+    templateUrl: '../templates/globalnavigationtabbed.html',
 })
 export class GlobalNavigationTabbed implements OnDestroy {
     /**
@@ -21,11 +21,11 @@ export class GlobalNavigationTabbed implements OnDestroy {
     public displaySubTabs: boolean = false;
 
 
-    private subscriptions: Subscription = new Subscription();
+   public subscriptions: Subscription = new Subscription();
 
-    constructor(private metadata: metadata,
-                private navigation: navigation,
-                private cdRef: ChangeDetectorRef) {
+    constructor(public metadata: metadata,
+               public navigation: navigation,
+               public cdRef: ChangeDetectorRef) {
 
     }
 
@@ -46,7 +46,7 @@ export class GlobalNavigationTabbed implements OnDestroy {
     /**
      * set the display sub tabs value
      */
-    private setDisplaySubTabs(activeTab) {
+   public setDisplaySubTabs(activeTab) {
         this.displaySubTabs = this.navigation.navigationparadigm == 'subtabbed' && !!activeTab && (!!activeTab.parentid || this.navigation.getSubTabs(activeTab.id).length > 0);
         this.cdRef.detectChanges();
     }
@@ -56,15 +56,15 @@ export class GlobalNavigationTabbed implements OnDestroy {
      * @param activeTab
      * @private
      */
-    private setParentTab(activeTab) {
-        this.parentTab = activeTab.parentid ? this.navigation.getTabById(activeTab.parentid) : activeTab;
+   public setParentTab(activeTab) {
+        this.parentTab = (activeTab && activeTab.parentid) ? this.navigation.getTabById(activeTab.parentid) : activeTab;
     }
 
     /**
      * subscribe to navigation changes to set local values
      * @private
      */
-    private subscribeToNavigationChanges() {
+   public subscribeToNavigationChanges() {
         this.subscriptions.add(
             this.navigation.activeTab$.subscribe((tabId: string) => {
                 this.handleNavigationChanges(tabId);
@@ -82,7 +82,7 @@ export class GlobalNavigationTabbed implements OnDestroy {
      * @param tabId
      * @private
      */
-    private handleNavigationChanges(tabId: string) {
+   public handleNavigationChanges(tabId: string) {
         const activeTab = this.navigation.getTabById(tabId);
         this.setParentTab(activeTab);
         this.setDisplaySubTabs(activeTab);

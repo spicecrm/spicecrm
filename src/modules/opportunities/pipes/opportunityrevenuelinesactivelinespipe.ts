@@ -8,7 +8,7 @@ import {Pipe} from '@angular/core';
     pure: false
 })
 export class OpportunityRevenueLinesActiveLinesPipe {
-    public transform(values, module) {
+    public transform(values) {
         let retValues = [];
         for (let value of values) {
             if (value.deleted != true) {

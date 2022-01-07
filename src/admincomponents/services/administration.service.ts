@@ -29,14 +29,14 @@ export class administration implements OnDestroy {
     /**
      * the subscription to the broadfast service for laoder changes
      */
-    private broadcastsubscription: any;
+    public broadcastsubscription: any;
 
 
 
     /**
      * the current admin
      */
-    private admincomponent: any = {
+    public admincomponent: any = {
         component: 'AdministrationHomeScreen',
         componentconfig: {}
     };
@@ -52,9 +52,9 @@ export class administration implements OnDestroy {
     public itemfilter: string = '';
 
     constructor(
-        private backend: backend,
-        private broadcast: broadcast,
-        private language: language
+        public backend: backend,
+        public broadcast: broadcast,
+        public language: language
     ) {
         // initialize the beh subject
         this.admincomponent$ = new BehaviorSubject<any>(this.admincomponent);
@@ -81,7 +81,7 @@ export class administration implements OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'loader.reloaded':
                 this.loadNavigation();
@@ -92,7 +92,7 @@ export class administration implements OnDestroy {
     /**
      * loads nav items for the admin from the backend
      */
-    private loadNavigation() {
+    public loadNavigation() {
         this.loading = true;
         this.backend.getRequest('system/spiceui/admin/navigation').subscribe(
             nav => {

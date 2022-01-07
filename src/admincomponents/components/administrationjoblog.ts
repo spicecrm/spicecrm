@@ -22,7 +22,7 @@ declare var moment;
  */
 @Component({
     selector: 'administration-job-log',
-    templateUrl: './src/admincomponents/templates/administrationjoblog.html',
+    templateUrl: '../templates/administrationjoblog.html',
     animations: [
         trigger('animateicon', [
             state('open', style({ transform: 'scale(1, 1)'})),
@@ -52,27 +52,27 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
     /**
      * holds the job log entries
      */
-    public jobLogs: Array<{ id, name, schedulerjob_id, schedulerjobtask_id, message, rel_id, rel_module, resolution, executed_on, resolutionClass? }> = [];
+    public jobLogs: { id, name, schedulerjob_id, schedulerjobtask_id, message, rel_id, rel_module, resolution: 'failed' | 'done', executed_on, resolutionClass? }[] = [];
     /**
      * ture if we are loading from backend
      * @private
      */
-    private isLoading = false;
+    public isLoading = false;
     /**
      * true if we are reloading the entries from backend
      * @private
      */
-    private isReloading = false;
+    public isReloading = false;
     /**
      * holds a subscription to enable unsubscribe
      * @private
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
     /**
      * total limit of the loaded entries
      * @private
      */
-    private totalLimit: number = 10;
+    public totalLimit: number = 10;
     /**
      * total count of the log entries
      */
@@ -112,7 +112,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * @param text
      * @param resolution
      */
-    public openMessageInModal(text: string, resolution: 'failed' | 'done') {
+    public openMessageInModal(text: string, resolution: any) {
         const theme = resolution == 'failed' ? 'error' : 'success';
         this.modal.info(text, this.language.getLabel('LBL_MESSAGE'), theme);
     }
@@ -124,7 +124,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * @param item
      * @return item.id
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -132,7 +132,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * subscribe to job actions to reload the list
      * @private
      */
-    private subscribeToJobActions() {
+    public subscribeToJobActions() {
         this.subscription = this.broadcast.message$.subscribe(res => {
             if (res.messagetype == 'job.run') {
                 this.reloadData();
@@ -144,7 +144,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * load the log entries from backend
      * @private
      */
-    private getData() {
+    public getData() {
         let params = {
             offset: 0,
             limit: 10
@@ -165,7 +165,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * get more log entries
      * @private
      */
-    private getMoreData() {
+    public getMoreData() {
         let params = {
             sort: {
                 sortfield: 'executed_on',
@@ -191,7 +191,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * reload the log entries
      * @private
      */
-    private reloadData() {
+    public reloadData() {
 
         if (this.isLoading) return;
         this.jobLogs = [];
@@ -216,7 +216,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * @param list
      * @private
      */
-    private mapList(list: any[]) {
+    public mapList(list: any[]) {
         return list.map(i => {
             i.executed_on = moment(moment.utc(i.executed_on)).tz(this.userpreferences.toUse.timezone)
                 .format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
@@ -229,14 +229,14 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * sort the list by the execution date
      * @private
      */
-    private sortList() {
+    public sortList() {
         this.jobLogs.sort((a, b) => a.executed_on < b.executed_on ? 1 : a.executed_on > b.executed_on ? -1 : 0);
     }
 
     /**
      * toggle expanding the card
      */
-    private toggleExpand(e: MouseEvent) {
+    public toggleExpand(e: MouseEvent) {
         e.stopPropagation();
         this.expanded = !this.expanded;
     }

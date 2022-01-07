@@ -9,7 +9,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-input-text',
-    templateUrl: './src/systemcomponents/templates/systeminputtext.html',
+    templateUrl: '../templates/systeminputtext.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -23,48 +23,48 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * the internal value
      * @private
      */
-    private _value: string;
+    public _value: string;
 
     /**
      * optionally set disabled
      * @private
      */
-    @Input() private disabled: boolean = false;
+    @Input() public disabled: boolean = false;
 
     /**
      * the placeholder string
      * @private
      */
-    @Input() private placeholder: string;
+    @Input() public placeholder: string;
 
     /**
      * the max length attribute
      * @private
      */
-    @Input() private maxlengt: number;
+    @Input() public maxlength: number;
 
     /**
      * to disable autocomplete set value to off or set a specific value
      *
      * @private
      */
-    @Input() private autocomplete: string;
+    @Input() public autocomplete: string;
 
     /**
      * a string to break the autocomplete
      *
      * @private
      */
-    private autocompletebreaker: string = '';
+    public autocompletebreaker: string = '';
 
-    constructor(private modelutilities: modelutilities) {
+    constructor(public modelutilities: modelutilities) {
 
     }
 

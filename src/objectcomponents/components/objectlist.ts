@@ -6,9 +6,9 @@ import {
     ChangeDetectorRef,
     Component,
     Injector,
+    Input,
     OnDestroy,
-    OnInit,
-    ViewChild
+    OnInit
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
@@ -19,14 +19,13 @@ import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
 import {modal} from "../../services/modal.service";
 import {skip} from "rxjs/operators";
-import {CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 
 /**
  * renders the modellist
  */
 @Component({
     selector: 'object-list',
-    templateUrl: './src/objectcomponents/templates/objectlist.html',
+    templateUrl: '../templates/objectlist.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
@@ -35,34 +34,15 @@ export class ObjectList implements OnDestroy, OnInit {
      * the subscription to the modellist
      */
     public subscriptions: Subscription = new Subscription();
-    public virtualScrolling: boolean = true;
-    /**
-     * true if the scrollbar in the table is visible
-     */
-    public scrollbarVisible: boolean = false;
     /**
      * the componentconfig
      */
     public componentconfig: any = {};
-    /**
-     * holds the item height
-     */
-    public itemHeight: number = 33;
-    /**
-     * holds the scroll timeout
-     */
-    public scrollTimeout: number;
-    /**
-     * holds page's current position
-     */
-    public currentPosition = window.pageYOffset;
-
 
     /**
-     * holds a reference to the virtual scroll viewport component
-     * @private
+     * Show drag handle and provide drag&drop functionality.
      */
-    @ViewChild(CdkVirtualScrollViewport) private scrollViewport: CdkVirtualScrollViewport;
+    @Input() public dragAndDrop = false;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -155,41 +135,22 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * handle viewport scroll to load more entries
+     * load more items from teh manual pushed button
+     *
+     * @private
      */
-    public onViewportScroll(index: number) {
-
-        // tracking the scrolling direction
-        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
-
-        if (index === 0) {
-            return;
-        }
-
-        if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
-
-        this.scrollTimeout = window.setTimeout(() => {
-
-                if (this.modellist.listData.list.length <= this.scrollViewport.getRenderedRange().end) {
-
-                    if (scroll >= this.currentPosition) {
-
-                        this.modellist.offset = this.modellist.listData.list.length;
-
-                        // logic for loadlimit -- loading either 50 items, or when end is hit load the rest
-                        this.modellist.loadlimit = this.modellist.listData.totalcount - this.modellist.offset < this.modellist.loadlimit ? this.modellist.listData.totalcount - this.modellist.offset : 50;
-
-                        this.modellist.loadMoreList();
-                    }
-
-                    // save the new scroll position
-                    this.currentPosition = scroll;
-
-                }
-            }
-            , 500);
+    public loadMore() {
+        this.modellist.loadMoreList();
     }
 
+    /**
+     * manages the scroll event for the infinite Scroll
+     */
+    public onScroll() {
+        if (!this.noAutoLoad) {
+            this.modellist.loadMoreList();
+        }
+    }
 
     /**
      * trackby function to optimize performance onm the for loop
@@ -197,7 +158,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 
@@ -207,7 +168,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * call to get the list data
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         this.loadComponentConfig();
 
@@ -215,6 +176,9 @@ export class ObjectList implements OnDestroy, OnInit {
 
         // set the limit for the loading
         this.modellist.loadlimit = 50;
+
+        // set the buckets to null
+        this.modellist.buckets = {};
 
         if (!this.modellist.loadFromSession()) {
             this.getListData();
@@ -228,8 +192,6 @@ export class ObjectList implements OnDestroy, OnInit {
 
         this.subscriptions.add(
             this.modellist.listDataChanged$.subscribe(() => {
-
-                this.scrollbarVisible = (this.modellist.listData.list.length * this.itemHeight) > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
                 this.cdRef.detectChanges();
             })
         );
@@ -240,7 +202,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         this.cdRef.detectChanges();
         if (newType.listcomponent != 'ObjectList') return;
         this.chooseFields();
@@ -251,7 +213,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * load the component config and set the disable autoload value from the model list service if undefined
      * @private
      */
-    private loadComponentConfig() {
+    public loadComponentConfig() {
         this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         if ('disableAutoloadListAll' in this.componentconfig) return;
         this.componentconfig.disableAutoloadListAll = this.modellist.disableAutoloadListAll;
@@ -261,7 +223,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * trigger get list data on the service if autoload is not disabled and the list type is not "all" or reset the list data
      * @private
      */
-    private getListData() {
+    public getListData() {
         if (this.modellist.currentList.id != 'all' || !this.componentconfig?.disableAutoloadListAll) {
             this.modellist.getListData().subscribe(() =>
                 this.cdRef.detectChanges()
@@ -272,30 +234,11 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * load more items from teh manual pushed button
-     *
-     * @private
-     */
-    private loadMore() {
-        this.modellist.loadMoreList();
-    }
-
-    /**
-     * manages the scroll event for the infinite Scroll
-     */
-    private onScroll() {
-        if (!this.noAutoLoad) {
-            this.modellist.loadMoreList();
-        }
-    }
-
-    /**
      * opens the modal allowing the user to choose and select the display fields when no field defs are defined and no current list fields are defined
      */
-    private chooseFields() {
+    public chooseFields() {
         if (this.modellist.isCustomList() && this.modellist.listfields.length == 0 && this.modellist.getFieldDefs()?.length == 0 && this.modellist.checkAccess('edit')) {
             this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
         }
     }
-
 }

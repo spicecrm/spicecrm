@@ -11,17 +11,17 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailboxes-processors",
-    templateUrl: "./src/workbench/templates/mailboxesprocessors.html",
+    templateUrl: "../templates/mailboxesprocessors.html",
 })
 export class MailboxesProcessors {
     public processors: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private model: model,
-        private view: view,
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public model: model,
+        public view: view,
     ) {
         this.model.module = "Mailboxes";
         this.view.isEditable = true;
@@ -30,11 +30,11 @@ export class MailboxesProcessors {
     }
 
     public addProcessor() {
-        if (!this.model.data.mailbox_processors) {
-            this.model.data.mailbox_processors = [];
+        if (!this.model.getField('mailbox_processors')) {
+            this.model.setField('mailbox_processors',  []);
         }
 
-        this.model.data.mailbox_processors.push({
+        this.model.getField('mailbox_processors').push({
             id: this.model.generateGuid(),
             class: "",
             method: "",
@@ -45,7 +45,7 @@ export class MailboxesProcessors {
     }
 
     public removeProcessor(processor_id: string) {
-        this.model.data.mailbox_processors.forEach(function(processor) {
+        this.model.getField('mailbox_processors').forEach(function(processor) {
             if (processor.id === processor_id) {
                 processor.deleted = true;
             }
@@ -53,7 +53,7 @@ export class MailboxesProcessors {
     }
 
     get processorsvisible() {
-        return this.model.data.mailbox_processors.length > 0;
+        return this.model.getField('mailbox_processors').length > 0;
     }
 
     public getProcessorMethods(classname: string) {
@@ -65,8 +65,8 @@ export class MailboxesProcessors {
         return [];
     }
 
-    private getProcessors(): Observable<any> {
-        let responseSubject = new Subject<Array<any>>();
+    public getProcessors(): Observable<any> {
+        let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest("module/Mailboxes/processors")
             .subscribe((response: any) => {

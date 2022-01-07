@@ -11,16 +11,16 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'object-edit-modal-dialog-container',
-    templateUrl: './src/objectcomponents/templates/objecteditmodaldialogcontainer.html'
+    templateUrl: '../templates/objecteditmodaldialogcontainer.html'
 })
 export class ObjectEditModalDialogContainer implements OnInit {
     /**
      * an optional input for a componentset to be rendered
      * @private
      */
-    @Input() private componentSet: string = '';
+    @Input() public componentSet: string = '';
 
-    constructor(private model: model, private metadata: metadata) {
+    constructor(public model: model, public metadata: metadata) {
 
     }
 

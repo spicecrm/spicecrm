@@ -5,10 +5,10 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-card-header',
-    templateUrl: './src/systemcomponents/templates/systemcardheader.html',
+    templateUrl: '../templates/systemcardheader.html',
 })
 export class SystemCardHeader {
-    @Input() private icon: string;
-    @Input() private module: string;
-    @Input() private cardtitel: string;
+    @Input() public icon: string;
+    @Input() public module: string;
+    @Input() public cardtitel: string;
 }

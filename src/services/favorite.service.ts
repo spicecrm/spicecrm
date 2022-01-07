@@ -28,10 +28,10 @@ export class favorite {
     public id: string = '';
 
     constructor(
-        private backend: backend,
-        private broadcast: broadcast,
-        private configuration: configurationService,
-        private session: session
+        public backend: backend,
+        public broadcast: broadcast,
+        public configuration: configurationService,
+        public session: session
     ) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
@@ -55,7 +55,7 @@ export class favorite {
      * message handler for the save message. If the data is stored in the service and the model is updated this als updates the model data in teh fav service
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         switch (message.messagetype) {
 
             case 'model.save':

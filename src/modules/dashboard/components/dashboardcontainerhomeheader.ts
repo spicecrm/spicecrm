@@ -13,20 +13,20 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-container-homeheader',
-    templateUrl: './src/modules/dashboard/templates/dashboardcontainerhomeheader.html',
+    templateUrl: '../templates/dashboardcontainerhomeheader.html',
 })
 export class DashboardContainerHomeHeader  {
 
-    @Input() private dashboardid: string = '';
+    @Input() public dashboardid: string = '';
 
-    constructor(private dashboardlayout: dashboardlayout, private language: language, private router: Router) {
+    constructor(public dashboardlayout: dashboardlayout, public language: language, public router: Router) {
     }
 
     get dashboardname(){
         return this.dashboardlayout.model.getFieldValue('name');
     }
 
-    private goDashboards(){
+    public goDashboards(){
         this.router.navigate(['/module/Dashboards']);
     }
 }

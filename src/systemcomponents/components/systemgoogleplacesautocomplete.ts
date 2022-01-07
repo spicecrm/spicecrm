@@ -8,26 +8,26 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: "system-googleplaces-autocomplete",
-    templateUrl: "./src/systemcomponents/templates/systemgoogleplacesautocomplete.html"
+    templateUrl: "../templates/systemgoogleplacesautocomplete.html"
 })
 export class SystemGooglePlacesAutocomplete implements OnDestroy {
-    @Output() private address: EventEmitter<any> = new EventEmitter<any>();
-    @Input() private disabled: boolean = false;
+    @Output() public address: EventEmitter<any> = new EventEmitter<any>();
+    @Input() public disabled: boolean = false;
 
-    private isenabled: boolean = false;
-    private autocompletesearchterm: string = '';
-    private autocompleteTimeout: any = undefined;
-    private autocompleteResults: any[] = [];
-    private autocompleteClickListener: any = undefined;
-    private displayAutocompleteResults: boolean = false;
-    private isSearching: boolean = false;
+    public isenabled: boolean = false;
+    public autocompletesearchterm: string = '';
+    public autocompleteTimeout: any = undefined;
+    public autocompleteResults: any[] = [];
+    public autocompleteClickListener: any = undefined;
+    public displayAutocompleteResults: boolean = false;
+    public isSearching: boolean = false;
 
-    constructor(private language: language,
-                private backend: backend,
-                private configuration: configurationService,
-                private elementref: ElementRef,
-                private cdRef: ChangeDetectorRef,
-                private renderer: Renderer2) {
+    constructor(public language: language,
+                public backend: backend,
+                public configuration: configurationService,
+                public elementref: ElementRef,
+                public cdRef: ChangeDetectorRef,
+                public renderer: Renderer2) {
         let googleAPIConfig = this.configuration.getCapabilityConfig('google_api');
         if (googleAPIConfig.key && googleAPIConfig.key != '') {
             this.isenabled = true;
@@ -54,13 +54,13 @@ export class SystemGooglePlacesAutocomplete implements OnDestroy {
         }
     }
 
-    private onSearchFocus() {
+    public onSearchFocus() {
         if (this.autocompletesearchterm.length > 1 && this.autocompleteResults.length > 0) {
             this.openSearchResults();
         }
     }
 
-    private openSearchResults() {
+    public openSearchResults() {
         this.displayAutocompleteResults = true;
         this.autocompleteClickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
         this.cdRef.detectChanges();
@@ -73,7 +73,7 @@ export class SystemGooglePlacesAutocomplete implements OnDestroy {
         }
     }
 
-    private closeSearchResutls() {
+    public closeSearchResutls() {
         if (this.autocompleteClickListener) {
             this.autocompleteClickListener();
         }
@@ -81,7 +81,7 @@ export class SystemGooglePlacesAutocomplete implements OnDestroy {
         this.cdRef.detectChanges();
     }
 
-    private doAutocomplete() {
+    public doAutocomplete() {
         if (this.autocompletesearchterm.length > 5) {
             this.isSearching = true;
             const term = encodeURIComponent(this.autocompletesearchterm);
@@ -106,7 +106,7 @@ export class SystemGooglePlacesAutocomplete implements OnDestroy {
         }
     }
 
-    private getAddressDetail(placeid) {
+    public getAddressDetail(placeid) {
         this.displayAutocompleteResults = false;
         this.autocompletesearchterm = '';
         this.backend.getRequest('channels/groupware/gsuite/places/' + placeid).subscribe((res: any) => {

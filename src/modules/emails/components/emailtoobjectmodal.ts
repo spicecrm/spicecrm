@@ -19,16 +19,16 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: "email-to-object-modal",
-    templateUrl: "./src/modules/emails/templates/emailtoobjectmodal.html",
+    templateUrl: "../templates/emailtoobjectmodal.html",
     providers: [model, view]
 })
 export class EmailToObjectModal implements OnInit, AfterViewInit {
 
-    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
-    private email_model: any = null;
-    private self: any = null;
-    private componentRefs: Array<any> = [];
+    public email_model: any = null;
+    public self: any = null;
+    public componentRefs: any[] = [];
     @Output() public save$ = new EventEmitter();
 
     @Input() public object_module_name: string;
@@ -37,11 +37,11 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
     @Input() public object_predefined_fields: any[];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private view: view,
-        private model: model,
-        private backend: backend,
+        public language: language,
+        public metadata: metadata,
+        public view: view,
+        public model: model,
+        public backend: backend,
     ) {
 
     }
@@ -54,10 +54,12 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
         if(this.object_predefined_fields)
         {
             // set them in model.data...
+            let fields: any = {};
             for(let fieldname in this.object_predefined_fields)
             {
-                this.model.data[fieldname] = this.object_predefined_fields[fieldname];
+                fields[fieldname] = this.object_predefined_fields[fieldname];
             }
+            this.model.setFields(fields);
         }
 
         this.view.isEditable = true;
@@ -68,11 +70,11 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
         this.buildContainer();
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private buildContainer() {
+    public buildContainer() {
         // reset any rendered component
         for (let component of this.componentRefs) {
             component.destroy();
@@ -88,11 +90,11 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
         }
     }
 
-    private setField(data) {
+    public setField(data) {
         this.model.setField(data.field, data.value);
     }
 
-    private save() {
+    public save() {
         if(this.model.validate()) {
             this.model.save().subscribe(
                 res => {

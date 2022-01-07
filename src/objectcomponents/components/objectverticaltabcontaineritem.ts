@@ -19,25 +19,25 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
  */
 @Component({
     selector: 'object-vertical-tab-container-item',
-    templateUrl: './src/objectcomponents/templates/objectverticaltabcontaineritem.html',
+    templateUrl: '../templates/objectverticaltabcontaineritem.html',
     providers: [fielderrorgrouping]
 })
 export class ObjectVerticalTabContainerItem implements OnInit, AfterViewInit {
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
     // initialized: boolean = false;
 
     /**
      * the componentset to be rendered in the tab
      */
-    @Input() private componentset: string;
+    @Input() public componentset: string;
 
     /**
      * errors on the tabs
      */
-    @Output() private taberrors = new EventEmitter();
+    @Output() public taberrors = new EventEmitter();
 
-    constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping ) {
+    constructor(public metadata: metadata, public fielderrorgroup: fielderrorgrouping ) {
     }
 
     /**

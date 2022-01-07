@@ -8,11 +8,11 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'global-header-top',
-    templateUrl: './src/globalcomponents/templates/globalheadertop.html'
+    templateUrl: '../templates/globalheadertop.html'
 })
 export class GlobalHeaderTop {
 
-    constructor(private metadata: metadata, private layout: layout) {
+    constructor(public metadata: metadata,public layout: layout) {
 
     }
 

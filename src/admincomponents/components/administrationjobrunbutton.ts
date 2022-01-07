@@ -15,7 +15,7 @@ import {broadcast} from "../../services/broadcast.service";
  */
 @Component({
     selector: 'administration-job-run-button',
-    templateUrl: './src/admincomponents/templates/administrationjobrunbutton.html'
+    templateUrl: '../templates/administrationjobrunbutton.html'
 })
 export class AdministrationJobRunButton {
 
@@ -38,6 +38,8 @@ export class AdministrationJobRunButton {
             this.backend.postRequest('module/SchedulerJobs/' + this.model.id + '/run').subscribe(res => {
 
                 modalRef.instance.self.destroy();
+                this.model.getData();
+
                 if (res) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                 } else {

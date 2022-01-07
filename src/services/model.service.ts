@@ -55,7 +55,7 @@ export class model implements OnDestroy {
     /**
      * @ignore
      */
-    private _module: string = "";
+    public _module: string = "";
 
     /**
      * the id of the record in the backend held internally
@@ -69,26 +69,27 @@ export class model implements OnDestroy {
     public acl: any = {};
 
     /**
-     * the data object.
-     *
-     * ToDo: make a private property
+     * an object holding the acl field control data
      */
-    public data: any = {
-        acl: {
-            edit: true
-        }
-    };
+    public acl_fieldcontrol: any = {};
 
     /**
-     * a private element that holds a copy of the data and is created when the model is set to editmode. This is internal only and used for the assessment of dirty fields
+     * the data object.
+     *
+     * ToDo: make a public property
      */
-    private backupData: any = {};
+    public data: any = {};
+
+    /**
+     * a public element that holds a copy of the data and is created when the model is set to editmode. This is internal only and used for the assessment of dirty fields
+     */
+    public backupData: any = {};
 
     /**
      * an event emitter. this is called every time when a value to the model is set or the validation is changed. Otheer components can subscribe to this emitter and get the current data passed out in the event that a change occured
      *
      * ```typescript
-     * constructor(private model: model) {
+     * constructor(public model: model) {
      *        this.model.data$.subscribe(data => {
      *            this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
      *         });
@@ -123,14 +124,14 @@ export class model implements OnDestroy {
      * an behaviour Subject that fires when te mode of the model changes between display and editing. Components can subscribe to this to get notified when the mode is triggerd by the application or by the user
      *
      * ```typescript
-     * constructor(private model: model) {
+     * constructor(public model: model) {
      *        this.model.mode$.subscribe(mode => {
      *            this.handleDisabled(mode);
      *        });
      *}
      *```
      */
-    public mode$: EventEmitter<string> = new EventEmitter();
+    public mode$: EventEmitter<'edit'|'display'> = new EventEmitter();
 
     /**
      * fires when the editing of the model is cancelled
@@ -167,32 +168,32 @@ export class model implements OnDestroy {
      *
      * @ToDo: add documentation
      */
-    private _fields_stati: any = []; // will be build by initialization of the model
+    public _fields_stati: any = []; // will be build by initialization of the model
 
     /**
      * @ignore
      *
      * @ToDo: add documentation
      */
-    private _fields_stati_tmp: any = []; // will be erased when evaluateValidationRules() is called
+    public _fields_stati_tmp: any = []; // will be erased when evaluateValidationRules() is called
 
     /**
      * @ignore
      *
      * @ToDo: add documentation
      */
-    private _model_stati_tmp: any = [];  // will be erased when evaluateValidationRules() is called
+    public _model_stati_tmp: any = [];  // will be erased when evaluateValidationRules() is called
 
     /**
      * holds any collected messages during validation or propagation
      */
-    private _messages: any = [];
+    public _messages: any = [];
 
     /**
      * @ToDo: add documentation
      */
-    private reference: string = "";
-    private _fields: any = [];
+    public reference: string = "";
+    public _fields: any = [];
     public messageChange$ = new EventEmitter<boolean>();
 
     /**
@@ -228,7 +229,7 @@ export class model implements OnDestroy {
     /**
      * ToDo add documentation on how to use this
      */
-    private modelRegisterId: number;
+    public modelRegisterId: number;
 
     /**
      * ToDo: add documentation how to use this
@@ -239,28 +240,28 @@ export class model implements OnDestroy {
      * any subscriptions the service might have to be collected here
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * indicates that we had an error loading the modal and will retry on the proper event
      *
      * @private
      */
-    private loadingError: boolean = false;
+    public loadingError: boolean = false;
 
     constructor(
         public backend: backend,
-        private broadcast: broadcast,
+        public broadcast: broadcast,
         public metadata: metadata,
         public utils: modelutilities,
-        private session: session,
-        private recent: recent,
-        private router: Router,
-        private toast: toast,
+        public session: session,
+        public recent: recent,
+        public router: Router,
+        public toast: toast,
         public language: language,
-        private modal: modal,
-        private navigation: navigation,
-        private configuration: configurationService,
+        public modal: modal,
+        public navigation: navigation,
+        public configuration: configurationService,
         public injector: Injector,
         public socket: socket
     ) {
@@ -299,7 +300,7 @@ export class model implements OnDestroy {
      *
      * @private
      */
-    private registerModel() {
+    public registerModel() {
         if (this.module && this._id && !this.navigation.modelregister.find(m => m.model._id == this._id && m.model.module == this.module)) {
             this.modelRegisterId = this.navigation.registerModel(this);
         }
@@ -334,7 +335,7 @@ export class model implements OnDestroy {
      * @param event
      * @private
      */
-    private handleSocketEvents(event: SocketEventI) {
+    public handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
                 // check that we have a match on id and moduel and come from another session
@@ -424,17 +425,11 @@ export class model implements OnDestroy {
      * @param access a strting with the access to be checked. Can be literally any acl string. standard are edit, display, list .. they are deifned in the backend
      */
     public checkAccess(access): boolean {
-        if (this.data && this.data.acl) {
-            // legacy handling for view & detail
-            // ToDo: clean this up and make view or detail in general
-            if (access == 'detail' || access == 'view') {
-                return this.data.acl.detail || this.data.acl.view;
-            } else {
-                return this.data.acl[access];
-            }
-
+        // ToDo: clean this up and make view or detail in general
+        if (access == 'detail' || access == 'view') {
+            return this.acl.detail || this.acl.view;
         } else {
-            return false;
+            return this.acl[access];
         }
     }
 
@@ -490,13 +485,18 @@ export class model implements OnDestroy {
 
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
+
+                // set data and acl
                 this.data = res;
+                this.acl = res.acl;
+                this.acl_fieldcontrol = res.acl_fieldcontrol;
+
                 this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
-                this.evaluateValidationRules(null, "init");
+                this.evaluateValidationRules(null, 'initialize');
                 this.isLoading = false;
                 this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
@@ -576,7 +576,7 @@ export class model implements OnDestroy {
      * @param {string} field
      * @returns {fieldstati}
      */
-    private evaluateFieldStati(field: string) {
+    public evaluateFieldStati(field: string) {
         let stati = this.getDefaultStati();
 
         // editable... acl check?!
@@ -596,7 +596,7 @@ export class model implements OnDestroy {
         return stati;
     }
 
-    private resetFieldStati(field: string) {
+    public resetFieldStati(field: string) {
         this._fields_stati[field] = this.evaluateFieldStati(field);
         // tmp stati
         this._fields_stati_tmp[field] = {...this._fields_stati[field]};
@@ -690,11 +690,7 @@ export class model implements OnDestroy {
                 // check conditions...
                 for (let condition of validation.conditions) {
                     let result = false;
-                    if (condition.onchange == 1 && field && condition.fieldname != field) {
-                        result = false;
-                    } else {
-                        result = this.evaluateCondition(condition);
-                    }
+                    result = this.evaluateCondition(condition);
                     checksum += result ? 1 : 0;
                     if (
                         checksum > 0 &&
@@ -882,7 +878,7 @@ export class model implements OnDestroy {
         }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
-        this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
+        this.navigation.addModelEditing(this, this.getFieldValue('summary_text'));
     }
 
 
@@ -929,13 +925,16 @@ export class model implements OnDestroy {
      * @param field
      * @param value
      */
-    public setField(field, value) {
+    public setField(field, value, silent: boolean = false) {
         if (!field) return false;
         if(this.data[field] !== value) {
             this.field$.next({field, value});
         }
         this.data[field] = value;
-        this.data$.next(this.data);
+
+        if(silent !== true) {
+            this.data$.next(this.data);
+        }
 
         this.evaluateValidationRules(field, "change");
 
@@ -956,7 +955,7 @@ export class model implements OnDestroy {
      *
      * @param fieldData a simple object with the fieldname and the value to be set
      */
-    public setFields(fieldData) {
+    public setFields(fieldData, silent: boolean = false) {
         let changedFields = [];
         for (let fieldName in fieldData) {
             if (!fieldData.hasOwnProperty(fieldName)) continue;
@@ -968,7 +967,10 @@ export class model implements OnDestroy {
             this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
-        this.data$.next(this.data);
+
+        if(silent !== true) {
+            this.data$.next(this.data);
+        }
         this.evaluateValidationRules(null, "change");
 
         // run the duplicate check
@@ -980,7 +982,7 @@ export class model implements OnDestroy {
       * @param data
      * @private
      */
-    private emitFieldsChanges(data) {
+    public emitFieldsChanges(data) {
         for (let fieldName in data) {
             if (!data.hasOwnProperty(fieldName)) continue;
             this.field$.next({field: fieldName, value: data[fieldName]});
@@ -1025,7 +1027,8 @@ export class model implements OnDestroy {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            // if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || !_.isEqual(this.data[property], this.backupData[property]))) {
                 d[property] = this.data[property];
             }
         }
@@ -1164,7 +1167,7 @@ export class model implements OnDestroy {
         this.id = null;
         this.module = null;
         this._fields_stati_tmp = this._fields_stati = [];
-
+        this._fields = [];
         this.isLoading = false;
         this.isEditing = false;
         this.mode$.emit('display');
@@ -1238,20 +1241,44 @@ export class model implements OnDestroy {
         this.evaluateValidationRules();
 
         // set default acl to allow editing
-        this.data.acl = {
+        this.acl = {
             create: true,
             edit: true,
             detail: true
         };
 
+        // get the field control
+        this.acl_fieldcontrol = this.metadata.moduleDefs[this.module]?.acl_fieldcontrol ?? [];
+
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
-        this.evaluateValidationRules(null, "init");
+        this.evaluateValidationRules(null, 'initialize');
 
         // set the parent model from the intialized one in the call
         this.parentmodel = parent;
     }
 
+    /**
+     * sets the model data from teh backend
+     * also extracts the acl data from teh backend response
+     *
+     * @param data
+     * @param transform .. set to false to not transform the data
+     * @param silent .. st to true to not emit data after setting the data on teh model
+     */
+    public setData(data: any, transform = true, silent?: boolean){
+        if(data.acl) this.acl = data.acl;
+        if(data.acl_fieldcontrol) this.acl_fieldcontrol = data.acl_fieldcontrol;
+        this.data = transform ?  this.utils.backendModel2spice(this.module, data) : data;
+
+        // emit the data changes
+        if(silent !== true){
+            this.data$.next(this.data);
+        }
+
+        // initialize the field stati
+        this.initializeFieldsStati();
+    }
 
     /**
      * adds a model
@@ -1336,7 +1363,7 @@ export class model implements OnDestroy {
      * set fields default values from the fields definitions
      * @private
      */
-    private setFieldsDefaultValues() {
+    public setFieldsDefaultValues() {
         const moduleFields = this.metadata.getModuleFields(this.module);
         if (!moduleFields) return;
         _.each(moduleFields, fieldDefs => {
@@ -1383,7 +1410,7 @@ export class model implements OnDestroy {
      * @param params
      * @private
      */
-    private copyValue(toField, value, params: any = {}) {
+    public copyValue(toField, value, params: any = {}) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
         // if not found just set the field attribute
         if (!fieldDef) {
@@ -1394,16 +1421,16 @@ export class model implements OnDestroy {
         // handle links
         switch (fieldDef.type) {
             case 'link':
-                if (params?.generatenewid) {
-                    if (_.isObject(value) && value.beans) {
-                        const newLink = {beans: {}};
-                        for (let relId in value.beans) {
-                            if (!value.beans.hasOwnProperty(relId)) continue;
-
-                            const newId = this.utils.generateGuid();
-                            newLink.beans[newId] = {...value.beans[relId]};
-                            newLink.beans[newId].id = newId;
+                if (_.isObject(value) && value.beans) {
+                    const newLink = {beans: {}};
+                    for (let relId in value.beans) {
+                        if (!value.beans.hasOwnProperty(relId)) continue;
+                        let newId = relId;
+                        if (params?.generatenewid) {
+                            newId = this.utils.generateGuid();
                         }
+                        newLink.beans[newId] = {...value.beans[relId]};
+                        newLink.beans[newId].id = newId;
                         this.setField(toField, newLink);
                     }
                 }
@@ -1420,7 +1447,7 @@ export class model implements OnDestroy {
      * @param toField
      * @param value
      */
-    private setFixedValue(toField, value) {
+    public setFixedValue(toField, value) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
 
         // if no field definition found just set the field attribute
@@ -1445,7 +1472,7 @@ export class model implements OnDestroy {
      */
     public getCalculatedValue(copyRule: {fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any}, fromField?: string) {
 
-        let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+        let timeZone = this.session.getSessionData('timezone', false) || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
             case "now":
                 return new moment.utc().tz(timeZone);
@@ -1517,7 +1544,7 @@ export class model implements OnDestroy {
      *
      *  @param changedFields an array with fieldnames that has been changed in order to allow the method to determine the scope fo the change and if a duplicate check shoudl be performed
      */
-    private duplicateCheckOnChange(changedFields: string[]): Observable<boolean> {
+    public duplicateCheckOnChange(changedFields: string[]): Observable<boolean> {
         if (this.isNew && this.metadata.getModuleDuplicatecheck(this.module)) {
             let dupCheckFields = this.metadata.getModuleDuplicateCheckFields(this.module);
 
@@ -1612,7 +1639,7 @@ export class model implements OnDestroy {
      * @param {string} source can be any identifying string, by default it is "validation", so it can be erased only be validation
      * @returns {boolean}
      */
-    private addMessage(type: "error" | "warning" | "notice", message: string, ref: string = null, source = "validation"): boolean {
+    public addMessage(type: "error" | "warning" | "notice", message: string, ref: string = null, source = "validation"): boolean {
         this._messages.push({
             type,
             message,
@@ -1677,7 +1704,7 @@ export class model implements OnDestroy {
         return true;
     }
 
-    private resetMessages(type?: string, source: string = "validation"): boolean {
+    public resetMessages(type?: string, source: string = "validation"): boolean {
         if (this._messages.length == 0) {
             return true;
         }
@@ -1695,7 +1722,7 @@ export class model implements OnDestroy {
     }
 
 
-    private isFieldARelationLink(field_name) {
+    public isFieldARelationLink(field_name) {
         try {
             return (this.fields[field_name].type == "link");
         } catch (e) {
@@ -1841,7 +1868,7 @@ export class model implements OnDestroy {
      * @param group
      * @returns {boolean}
      */
-    private checkModuleFilterGroupMatch(group) {
+    public checkModuleFilterGroupMatch(group) {
         if (group.groupscope == 'own' && this.data.assigned_user_id != this.session.authData.userId) return false;
 
         let conditionMet = false;
@@ -1868,7 +1895,7 @@ export class model implements OnDestroy {
      * @param condition
      * @returns {boolean}
      */
-    private checkModuleFilterConditionMatch(condition) {
+    public checkModuleFilterConditionMatch(condition) {
         switch (condition.operator) {
             case 'empty':
                 return this.getFieldValue(condition.field) == '' || this.getFieldValue(condition.field) == null;
@@ -1924,7 +1951,7 @@ export class model implements OnDestroy {
      * Deep cloning of an object. Minds also moment objects.
      * @param object The object to clone.
      */
-    private buildBackup(object) {
+    public buildBackup(object) {
         let clone = {};
         _.each(object, (value, key) => {
             if (_.isObject(value)) {

@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SchedulerJobs;
 
@@ -90,9 +90,7 @@ class SchedulerJob extends SugarBean
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        if (empty($this->next_run_date)) {
-            $this->next_run_date = $this->getNextRunDate();
-        }
+        $this->next_run_date = $this->getNextRunDate();
         return parent::save($check_notify, $fts_index_bean);
     }
 
@@ -243,7 +241,7 @@ class SchedulerJob extends SugarBean
     {
         if ($this->notify_user != 1) return;
 
-        $user = BeanFactory::getBean('Users', $this->assigned_user_id);
+        $user = BeanFactory::getBean('Users', $this->created_by);
         $mailbox = Mailbox::getDefaultMailbox();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $currentUserName = empty($currentUser) ? 'Unknown' : "{$currentUser->user_name} ({$currentUser->first_name} {$currentUser->last_name})";

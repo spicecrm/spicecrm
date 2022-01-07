@@ -21,7 +21,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-docked-composer-modal',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposermodal.html'
+    templateUrl: '../templates/globaldockedcomposermodal.html'
 })
 export class GlobalDockedComposerModal implements OnInit {
 
@@ -30,7 +30,7 @@ export class GlobalDockedComposerModal implements OnInit {
      *
      * @private
      */
-    private self: any = {};
+   public self: any = {};
 
 
     /**
@@ -38,9 +38,9 @@ export class GlobalDockedComposerModal implements OnInit {
      *
      * @private
      */
-    private componentconfig: any;
+   public componentconfig: any;
 
-    constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, public modal: modal, public model: model, private view: view) {
+    constructor(public metadata: metadata,public dockedComposer: dockedComposer,public language: language, public modal: modal, public model: model,public view: view) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -55,7 +55,7 @@ export class GlobalDockedComposerModal implements OnInit {
      *
      * @private
      */
-    private loadConfig(){
+   public loadConfig(){
         this.componentconfig = this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module);
     }
 
@@ -63,7 +63,7 @@ export class GlobalDockedComposerModal implements OnInit {
      * returns the display label
      */
     get displayLabel() {
-        return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
+        return this.model.getField('name') ? this.model.getField('name') : this.language.getModuleName(this.model.module, true);
     }
 
     /**
@@ -73,7 +73,7 @@ export class GlobalDockedComposerModal implements OnInit {
      *
      * @private
      */
-    private minimize() {
+   public minimize() {
         // if we do not yet have a composer .. create one
         if(!this.dockedComposer.composers.find(c => c.id == this.model.id)){
             this.dockedComposer.addComposer(this.model.module, this.model);
@@ -87,7 +87,7 @@ export class GlobalDockedComposerModal implements OnInit {
      *
      * @private
      */
-    private promptClose() {
+   public promptClose() {
         this.modal.prompt('confirm', this.language.getLabel('MSG_CANCEL', '', 'long'), this.language.getLabel('MSG_CANCEL')).subscribe(answer => {
             if (answer) {
                 this.closeComposer();
@@ -99,7 +99,7 @@ export class GlobalDockedComposerModal implements OnInit {
      * closes the composer and the modal window
      * @private
      */
-    private closeComposer() {
+   public closeComposer() {
         for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
             if (this.dockedComposer.composers[i].id === this.model.id) {
                 this.dockedComposer.composers.splice(i, 1);
@@ -114,7 +114,7 @@ export class GlobalDockedComposerModal implements OnInit {
      * @param action
      * @private
      */
-    private handleaction(action) {
+   public handleaction(action) {
         switch (action) {
             case 'savegodetail':
                 this.model.goDetail();

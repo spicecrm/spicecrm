@@ -1,11 +1,12 @@
 <?php
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -308,10 +309,10 @@ class SugarBean
      */
     public function initialize_bean()
     {
-        global $dictionary;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         static $loaded_defs = [];
         $this->db = DBManagerFactory::getInstance();
+        $dictHandler = SpiceDictionaryHandler::getInstance();
         if (empty($this->module_name))
             $this->module_name = $this->module_dir;
         if ((false == $this->disable_vardefs && empty($loaded_defs[$this->object_name])) || !empty($GLOBALS['reload_vardefs'])) {
@@ -321,8 +322,8 @@ class SugarBean
             $this->call_custom_logic('create_vardefs');
 
             // build $this->column_fields from the field_defs if they exist
-            if (!empty($dictionary[$this->object_name]['fields'])) {
-                foreach ($dictionary[$this->object_name]['fields'] as $key => $value_array) {
+            if (!empty($dictHandler->dictionary[$this->object_name]['fields'])) {
+                foreach ($dictHandler->dictionary[$this->object_name]['fields'] as $key => $value_array) {
                     $column_fields[] = $key;
                     if (!empty($value_array['required']) && !empty($value_array['name'])) {
                         $this->required_fields[$value_array['name']] = 1;
@@ -339,11 +340,11 @@ class SugarBean
             if (empty($this->required_fields))
                 $this->required_fields = $this->_loadCachedArray($this->module_dir, $this->object_name, 'required_fields');
 
-            if (isset($GLOBALS['dictionary'][$this->object_name]) && !$this->disable_vardefs) {
-                $this->field_name_map = $dictionary[$this->object_name]['fields'];
-                $this->field_defs = $dictionary[$this->object_name]['fields'];
+            if (isset($dictHandler->dictionary[$this->object_name]) && !$this->disable_vardefs) {
+                $this->field_name_map = $dictHandler->dictionary[$this->object_name]['fields'];
+                $this->field_defs = $dictHandler->dictionary[$this->object_name]['fields'];
 
-                if (!empty($dictionary[$this->object_name]['optimistic_locking'])) {
+                if (!empty($dictHandler->dictionary[$this->object_name]['optimistic_locking'])) {
                     $this->optimistic_lock = true;
                 }
             }
@@ -352,13 +353,13 @@ class SugarBean
             $this->field_name_map = &$loaded_defs[$this->object_name]['field_name_map'];
             $this->field_defs = &$loaded_defs[$this->object_name]['field_defs'];
 
-            if (!empty($dictionary[$this->object_name]['optimistic_locking'])) {
+            if (!empty($dictHandler->dictionary[$this->object_name]['optimistic_locking'])) {
                 $this->optimistic_lock = true;
             }
         }
 
         if ($this->bean_implements('ACL') && !empty(AuthenticationController::getInstance()->getCurrentUser())) {
-            $this->acl_fields = (isset($dictionary[$this->object_name]['acl_fields']) && $dictionary[$this->object_name]['acl_fields'] === false) ? false : true;
+            $this->acl_fields = (isset($dictHandler->dictionary[$this->object_name]['acl_fields']) && $dictHandler->dictionary[$this->object_name]['acl_fields'] === false) ? false : true;
         }
         $this->populateDefaultValues();
     }
@@ -616,8 +617,8 @@ class SugarBean
         if (isset($this->table_name)) {
             return $this->table_name;
         }
-        global $dictionary;
-        return $dictionary[$this->getObjectName()]['table'];
+
+        return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['table'];
     }
 
     /**
@@ -652,9 +653,8 @@ class SugarBean
      */
     function getIndices()
     {
-        global $dictionary;
-        if (isset($dictionary[$this->getObjectName()]['indices'])) {
-            return $dictionary[$this->getObjectName()]['indices'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'])) {
+            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'];
         }
         return [];
     }
@@ -770,8 +770,8 @@ class SugarBean
             if (file_exists(($iscustom ? $filename : get_custom_file_if_exists($filename)))) {
                 include($filename);
                 // cn: bug 7679 - dictionary entries defined as $GLOBALS['name'] not found
-                if (empty($dictionary) || !empty($GLOBALS['dictionary'][$key])) {
-                    $dictionary = $GLOBALS['dictionary'];
+                if (empty($dictionary) || !empty(SpiceDictionaryHandler::getInstance()->dictionary[$key])) {
+                    $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
                 }
             } else {
                 LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : get_custom_file_if_exists($filename)));
@@ -788,8 +788,7 @@ class SugarBean
                 $RelationshipDefs = $dictionary[$key]['relationships'];
 
                 $delimiter = ',';
-                global $beanList;
-                $beanList_ucase = array_change_key_case($beanList, CASE_UPPER);
+                $beanList_ucase = array_change_key_case(SpiceModules::getInstance()->getBeanList(), CASE_UPPER);
                 foreach ($RelationshipDefs as $rel_name => $rel_def) {
                     if (isset($rel_def['lhs_module']) and !isset($beanList_ucase[strtoupper($rel_def['lhs_module'])])) {
                         LoggerManager::getLogger()->debug('skipping orphaned relationship record ' . $rel_name . ' lhs module is missing ' . $rel_def['lhs_module']);
@@ -1117,10 +1116,8 @@ class SugarBean
      */
     function create_tables()
     {
-        global $dictionary;
-
         $key = $this->getObjectName();
-        if (!array_key_exists($key, $dictionary)) {
+        if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal("create_tables: Metadata for table " . $this->table_name . " does not exist");
             display_notice("meta data absent for table " . $this->table_name . " keyed to $key ");
         } else {
@@ -1165,9 +1162,8 @@ class SugarBean
      */
     function is_AuditEnabled()
     {
-        global $dictionary;
-        if (isset($dictionary[$this->getObjectName()]['audited'])) {
-            return $dictionary[$this->getObjectName()]['audited'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'])) {
+            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'];
         } else {
             return false;
         }
@@ -1232,7 +1228,6 @@ class SugarBean
      */
     function create_audit_table()
     {
-        global $dictionary;
         $table_name = $this->get_audit_table_name();
 
         require('metadata/audit_templateMetaData.php');
@@ -1243,8 +1238,8 @@ class SugarBean
             require($custom);
         }
 
-        $fieldDefs = $dictionary['audit']['fields'];
-        $indices = $dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1255,10 +1250,10 @@ class SugarBean
         }
 
         $engine = null;
-        if (isset($dictionary['audit']['engine'])) {
-            $engine = $dictionary['audit']['engine'];
-        } else if (isset($dictionary[$this->getObjectName()]['engine'])) {
-            $engine = $dictionary[$this->getObjectName()]['engine'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'];
+        } else if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'];
         }
 
         $this->db->createTableParams($table_name, $fieldDefs, $indices, $engine);
@@ -1272,8 +1267,6 @@ class SugarBean
      */
     function update_audit_table($execute = true)
     {
-
-        global $dictionary;
         $table_name = $this->get_audit_table_name();
 
         require('metadata/audit_templateMetaData.php');
@@ -1284,8 +1277,8 @@ class SugarBean
             require($custom);
         }
 
-        $fieldDefs = $dictionary['audit']['fields'];
-        $indices = $dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1303,9 +1296,8 @@ class SugarBean
      */
     function drop_tables()
     {
-        global $dictionary;
         $key = $this->getObjectName();
-        if (!array_key_exists($key, $dictionary)) {
+        if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal("drop_tables: Metadata for table " . $this->table_name . " does not exist");
             echo "meta data absent for table " . $this->table_name . "<br>\n";
         } else {
@@ -1457,7 +1449,6 @@ class SugarBean
         }
 
         $this->call_custom_logic('after_save', '');
-
         // call fts manager to index the bean
         if ($fts_index_bean) {
 
@@ -1611,9 +1602,8 @@ class SugarBean
 
             //method defined in 'include/utils/LogicHook.php'
 
-            $logicHook = new LogicHook();
-            $logicHook->setBean($this);
-            $logicHook->call_custom_logic($this->module_dir, $event, $arguments);
+            $logicHook = LogicHook::getInstance();
+            $logicHook->call_custom_logic($this->module_dir, $this, $event, $arguments);
             $this->logicHookDepth[$event]--;
         }
     }
@@ -2322,7 +2312,7 @@ class SugarBean
                         $this->fill_in_link_field($field['id_name'], $field);
                     }
                     if (!empty($this->{$field['id_name']}) && ($this->object_name != $field['module'] || ($this->object_name == $field['module'] && $this->{$field['id_name']} != $this->id))) {
-                        if (isset($GLOBALS['beanList'][$field['module']])) {
+                        if (SpiceModules::getInstance()->getBeanName($field['module'])) {
 
                                 // change to use of BeanFactory
                                 $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
@@ -2477,8 +2467,17 @@ class SugarBean
      */
     function mark_deleted($id)
     {
+        // make sure that we retrieve before we continue in case we did not retrieve before calling this function
+        if (empty($this->id)) {
+            $bean = BeanFactory::getBean($this->module_name, $id, ['relationships' => false ]);
+            // check if retrieve succeed to prevent recursion
+            if (!empty($bean->id)) {
+                $bean->mark_deleted($id);
+                return;
+            }
+        }
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         if (isset($_SESSION['show_deleted'])) {
             $this->mark_undeleted($id);
         } else {
@@ -2532,7 +2531,7 @@ class SugarBean
         $custom_logic_arguments['id'] = $id;
         $this->call_custom_logic("before_restore", $custom_logic_arguments);
 
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         $query = "UPDATE $this->table_name set deleted=0 , date_modified = '$date_modified' where id='$id'";
         $this->db->query($query, true, "Error marking record undeleted: ");
 
@@ -2876,7 +2875,7 @@ class SugarBean
         $where = '';
 
         // make sure there is a date modified
-        $date_modified = $this->db->convert("'" . $GLOBALS['timedate']->nowDb() . "'", 'datetime');
+        $date_modified = $this->db->convert("'" . TimeDate::getInstance()->nowDb() . "'", 'datetime');
 
         $row = null;
         if ($check_duplicates) {
@@ -3018,10 +3017,8 @@ class SugarBean
      */
     public function checkForDuplicates()
     {
-        global $beanList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $module = array_search($this->object_name, $beanList);
-
+        $module = array_search($this->object_name, SpiceModules::getInstance()->getBeanList());
 
         $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this);
 
@@ -3153,7 +3150,7 @@ class SugarBean
         $clone->cloningData['count']++;
         $clone->new_with_id = true;
         $clone->update_date_entered = true;
-        $clone->date_entered = $GLOBALS['timedate']->nowDb();
+        $clone->date_entered = TimeDate::getInstance()->nowDb();
         $clone->onClone();
         $clone->save();
 

@@ -33,8 +33,8 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
-//$dictionary['Administration'] = array('table' => 'config', 'comment' => 'System table containing system-wide definitions'
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+//SpiceDictionaryHandler::getInstance()->dictionary['Administration'] = array('table' => 'config', 'comment' => 'System table containing system-wide definitions'
 //                               ,'fields' => array (
 //  'category' =>
 //  array (
@@ -61,9 +61,8 @@
 //  ),
 //
 //), 'indices'=>array( array('name'=>'idx_config_cat', 'type'=>'index',  'fields'=>array('category')),)
-//                            );
-global $dictionary;
-$dictionary['UpgradeHistory'] = [
+//
+SpiceDictionaryHandler::getInstance()->dictionary['UpgradeHistory'] = [
     'table'  => 'upgrade_history', 'comment' => 'Tracks Sugar upgrades made over time; used by Upgrade Wizard and Module Loader',
     'fields' => [
         'id' => [
@@ -143,6 +142,3 @@ $dictionary['UpgradeHistory'] = [
 
     ],
 ];
-
-
-?>

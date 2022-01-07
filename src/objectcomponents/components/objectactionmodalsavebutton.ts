@@ -14,7 +14,7 @@ import {modal} from "../../services/modal.service";
  */
 @Component({
     selector: 'object-action-modal-save-button',
-    templateUrl: './src/objectcomponents/templates/objectactionmodalsavebutton.html',
+    templateUrl: '../templates/objectactionmodalsavebutton.html',
     providers: [helper]
 })
 export class ObjectActionModalSaveButton {
@@ -24,9 +24,9 @@ export class ObjectActionModalSaveButton {
      */
     @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    private actionconfig: any = {};
+    public actionconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal,  @Optional()private modalwindow: modalwindow) {}
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal,  @Optional()public modalwindow: modalwindow) {}
 
     get displayLabel() {
         // see if we have a abel configured
@@ -66,7 +66,7 @@ export class ObjectActionModalSaveButton {
      *
      * @param goDetail if set to true the system will naviaget to the detail fo teh record after saving
      */
-    private saveModel() {
+    public saveModel() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
             this.model.save(true).subscribe(status => {

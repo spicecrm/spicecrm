@@ -37,11 +37,11 @@
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-global $moduleList;
 $current_user = AuthenticationController::getInstance()->getCurrentUser();
 set_time_limit(3600);
 
@@ -111,7 +111,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 		VardefManager::clearVardef();
 		$repairedTables = [];
 
-		foreach ($moduleList as $module) {
+		foreach (\SpiceCRM\includes\SugarObjects\SpiceModules::getInstance()->getModuleList() as $module) {
 
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
@@ -146,12 +146,12 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 //				}
 
 
-        $olddictionary = $dictionary;
+        $olddictionary = SpiceDictionaryHandler::getInstance()->dictionary;
 
-		unset ($dictionary);
+		unset (SpiceDictionaryHandler::getInstance()->dictionary);
 		include ('modules/TableDictionary.php');
 
-		foreach ($dictionary as $meta) {
+		foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
 
 			if ( !isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
@@ -164,7 +164,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 			$repairedTables[$tablename] = true;
 		}
 
-		$dictionary = $olddictionary;
+		SpiceDictionaryHandler::getInstance()->dictionary = $olddictionary;
 
 
 

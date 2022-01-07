@@ -694,7 +694,7 @@ class SpiceUtils
      * @return mixed
      */
     public static function createDate($year = null, $mnth = null, $day = null) {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
         $now = $timedate->getNow();
         if ($day==null) {
             $day=$now->day+mt_rand(0,365);
@@ -744,14 +744,14 @@ class SpiceUtils
      * @return string The generated key.
      */
     public static function generateShortUrlKey($length = 6): string {
-        // chars to select from (without specific characters to prevent confusion when reading and retyping the password)
+        // chars to select from (without specific characters to prevent confusion when reading and retyping the key)
         $LOWERCASE = 'abcdefghijkmnopqrstuvwxyz'; // without "l"!
         $NUMBER = '23456789'; // without "0" and "1"!
         $UPPERCASE = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // without "O" and "I"!
         $charBKT = $UPPERCASE . $LOWERCASE . $NUMBER;
 
         $key = '';
-        for ($i = 0; $i < $length; $i++) {  // loop and create password
+        for ($i = 0; $i < $length; $i++) {  // loop and create key
             $key = $key . substr($charBKT, rand() % strlen($charBKT), 1);
         }
         return $key;
@@ -1245,5 +1245,46 @@ class SpiceUtils
         }
 
         return $return_value;
+    }
+
+    /**
+     * helper function to truncate the last 3 characters of a string
+     *
+     * @param string $string
+     * @param int $limit
+     * @return string
+     */
+
+    public static function truncateString(string $string, int $limit): string {
+        if(strlen($string) <= $limit) {
+            return $string;
+        }
+        $newString = substr(html_entity_decode(strip_tags($string)), 0, $limit -3);
+
+
+        return self::removeInvalidCharacter($newString).'…';
+
+    }
+
+    /**
+     * removing the last characters if they are not regex
+     *
+     * @param string $string
+     * @param int $limit
+     * @return string
+     */
+
+    public static function removeInvalidCharacter(string $string): string {
+
+        $subString = substr($string,-1);
+
+        if(preg_match('/[^a-z_\-0-9]/i', $subString)){
+            $subString = substr($string,0,-1);
+
+            if(strlen($string) === 1) return '';
+
+            $string = self::removeInvalidCharacter($subString);
+        }
+        return $string;
     }
 }

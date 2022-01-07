@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'global-login-image',
-    templateUrl: './src/globalcomponents/templates/globalloginimage.html',
+    templateUrl: '../templates/globalloginimage.html',
     // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalLoginImage implements OnDestroy, AfterViewInit {
@@ -16,20 +16,20 @@ export class GlobalLoginImage implements OnDestroy, AfterViewInit {
     /**
      * The default image url.
      */
-    private defaultImageUrl = 'config/loginimage';
+   public defaultImageUrl = 'config/loginimage';
 
     /**
      * The URL for the image tag:
      * Either a base64 string from the CRM config (if available) or the default image url.
      */
-    private imageUrl: SafeResourceUrl | string = this.defaultImageUrl;
+   public imageUrl: SafeResourceUrl | string = this.defaultImageUrl;
 
     /**
      * Subscription to configuration service.
      */
-    private subscriptions: Subscription = new Subscription();
+   public subscriptions: Subscription = new Subscription();
 
-    constructor( private sanitizer: DomSanitizer, private configuration: configurationService, private cdRef: ChangeDetectorRef ) {
+    constructor(public sanitizer: DomSanitizer,public configuration: configurationService,public cdRef: ChangeDetectorRef ) {
     }
 
     public ngAfterViewInit(): void {
@@ -47,7 +47,7 @@ export class GlobalLoginImage implements OnDestroy, AfterViewInit {
         this.subscriptions.unsubscribe();
     }
 
-    private setImageUrl(): void {
+   public setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific login image defined.
         if ( this.configuration.getCapabilityConfig('theme').login_image ) {
             this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('theme').login_image );

@@ -15,7 +15,7 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-textmessage-templates',
-    templateUrl: './src/objectfields/templates/fieldtextmessagetemplates.html'
+    templateUrl: '../templates/fieldtextmessagetemplates.html'
 })
 
 /**
@@ -28,8 +28,8 @@ import {configurationService} from "../../services/configuration.service";
  */
 export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
 
-    private isLoaded: boolean = false;
-    private availableTemplates: any[] = [];
+    public isLoaded: boolean = false;
+    public availableTemplates: any[] = [];
 
     constructor(
         public model: model,
@@ -37,9 +37,9 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private modal: modal,
-        private configuration: configurationService
+        public backend: backend,
+        public modal: modal,
+        public configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
@@ -52,7 +52,7 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
         return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
     }
 
-    private getValue() {
+    public getValue() {
         for (let template of this.availableTemplates) {
             if (template.id == this.value) {
                 return template.name;
@@ -63,7 +63,7 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
     public ngOnInit() {
         let textMessageTemplates = this.configuration.getData('TextMessageTemplates');
         if (textMessageTemplates) {
-            this.availableTemplates = textMessageTemplates.filter(et => (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
+            this.availableTemplates = textMessageTemplates.filter(tpl => (tpl.parent_type == '*' || tpl.parent_type == this.model.getFieldValue('parent_type')));
             this.isLoaded = true;
         } else {
             let params = {
@@ -77,7 +77,7 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
                     this.configuration.setData('TextMessageTemplates', data.list);
 
                     // set the templates internally
-                    this.availableTemplates = data.list.filter(et => (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
+                    this.availableTemplates = data.list.filter(tpl => (tpl.parent_type == '*' || tpl.parent_type == this.model.getFieldValue('parent_type')));
 
                     this.isLoaded = true;
                 }

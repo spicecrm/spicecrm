@@ -8,7 +8,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-model-footer-popover',
-    templateUrl: './src/objectfields/templates/fieldmodelfooterpopover.html',
+    templateUrl: '../templates/fieldmodelfooterpopover.html',
     providers: [model, view]
 })
 export class fieldModelFooterPopover implements OnInit {
@@ -18,9 +18,9 @@ export class fieldModelFooterPopover implements OnInit {
     public styles = null;
     public mouseover: boolean = false;
 
-    private hidePopoverTimeout: any = {};
+    public hidePopoverTimeout: any = {};
 
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
 
     public parentElementRef: any = null;
     public self: any = null;
@@ -29,18 +29,18 @@ export class fieldModelFooterPopover implements OnInit {
     public fields: Array<any> = [];
 
     constructor(
-        private model: model,
-        private view: view,
-        private metadata: metadata,
+        public model: model,
+        public view: view,
+        public metadata: metadata,
     ) {
 
     }
 
-    private goDetail() {
+    public goDetail() {
         this.model.goDetail();
     }
 
-    private onMouseOver() {
+    public onMouseOver() {
         this.mouseover = true;
 
         if (this.hidePopoverTimeout) {
@@ -48,7 +48,7 @@ export class fieldModelFooterPopover implements OnInit {
         }
     }
 
-    private onMouseOut() {
+    public onMouseOut() {
         this.mouseover = false;
         this.self.destroy();
         // this.self.destroy();
@@ -96,7 +96,7 @@ export class fieldModelFooterPopover implements OnInit {
         this.styles = this.popoverStyle;
     }
 
-    private getNubbinClass() {
+    public getNubbinClass() {
         return this.popoverside == 'left' ? 'slds-nubbin--right' : 'slds-nubbin--left';
     }
 

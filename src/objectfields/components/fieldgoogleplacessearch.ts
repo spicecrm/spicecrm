@@ -16,7 +16,7 @@ import {configurationService} from "../../services/configuration.service";
 declare var _: any;
 @Component({
     selector: 'field-google-places-search',
-    templateUrl: './src/objectfields/templates/fieldgoogleplacessearch.html'
+    templateUrl: '../templates/fieldgoogleplacessearch.html'
 })
 export class fieldGooglePlacesSearch extends fieldGeneric {
 
@@ -33,7 +33,7 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
 
     }
 
-    private setDetails(details){
+    public setDetails(details){
         let changedFields = {};
         if(this.fieldconfig.formatted_phone_number && details.formatted_phone_number) {
             changedFields[this.fieldconfig.formatted_phone_number] = details.formatted_phone_number;
@@ -83,7 +83,7 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
      * a getter to hide the field
      */
     get hideStreetNumber() {
-        const addressConfig = JSON.parse(this.configurationService.data.backendextensions.address_format?.config || '{}');
+        const addressConfig = JSON.parse(this.configurationService.data.backendextensions.address_format?.config?.format || '{}');
         if (addressConfig?.hidestreetnumber) return true;
         return false;
     }

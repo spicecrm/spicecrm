@@ -13,79 +13,89 @@ declare var _;
  */
 @Component({
     selector: 'system-prompt',
-    templateUrl: './src/systemcomponents/templates/systemprompt.html'
+    templateUrl: '../templates/systemprompt.html'
 })
 export class SystemPrompt implements OnInit, AfterViewInit {
 
     /**
      * the type of prompt
      */
-    @Input() private type: 'info'|'input'|'confirm';
+    @Input() public type: 'info'|'input'|'input_date'|'confirm';
 
     /**
      * the text that is rendered in the popup
      */
-    @Input() private text: string;
+    @Input() public text: string;
 
     /**
      * the header for the popup in the modal
      */
-    @Input() private headertext: string;
+    @Input() public headertext: string;
 
     /**
      * theme according to lightning design -> https://www.lightningdesignsystem.com/utilities/themes/
      */
-    @Input() private theme: string;
+    @Input() public theme: string;
     /**
      * the value to be set
      */
-    protected radioGroupName: string;
+    public radioGroupName: string;
     /**
      * ???
      */
-    @Input() private value: string|number = null;
+    @Input() public value: string|number = null;
 
     /**
      * an array of options .. if sent rather than an input in the type input a select option is rendered
      */
-    @Input() private options: Array<{value: string, display: string}>;
+    @Input() public options: {value: string, display: string}[];
 
     /**
      * if true display the input options as radio group
      */
-    @Input() private optionsAsRadio: boolean = false;
+    @Input() public optionsAsRadio: boolean = false;
 
     /**
      * the observabkle for the answer
      */
-    private answer: Observable<boolean> = null;
+    public answer: Observable<boolean> = null;
 
     /**
      * the subject for the answer
      */
-    private answerSubject: Subject<any> = null;
+    public answerSubject: Subject<any> = null;
+
+    /**
+     * an optional regex to match the input against
+     */
+    public regex: string;
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
     /**
      * reference to the cancel button .. allows focussing when the modal is rendered
      */
-    @ViewChild('cancelButton', {static: false}) private cancelButton;
+    @ViewChild('cancelButton', {static: false}) public cancelButton;
 
     /**
      * reference to the ok button .. allows focussing when the modal is rendered
      */
-    @ViewChild('okButton', {static: false}) private okButton;
+    @ViewChild('okButton', {static: false}) public okButton;
 
     /**
      * reference to the input field .. allows focussing when the modal is rendered
      */
-    @ViewChild('inputField', {static: false}) private inputField;
+    @ViewChild('inputField', {static: false}) public inputField;
 
-    constructor( private language: language ) {
+    /**
+     * reference to the select field .. allows focussing when the modal is rendered
+     */
+    @ViewChild('selectField', {static: false}) public selectField;
+
+    constructor( public language: language ) {
         this.answerSubject = new Subject<any>();
         this.answer = this.answerSubject.asObservable();
         this.radioGroupName = _.uniqueId('system-prompt-group-name-');
@@ -101,14 +111,35 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     public ngAfterViewInit() {
         if ( this.type === 'confirm' ) this.cancelButton.nativeElement.focus();
         else if ( this.type === 'info' ) this.okButton.nativeElement.focus();
-        else if ( this.type === 'input' ) this.inputField.nativeElement.focus();
+        else if ( this.type.startsWith('input') ) {
+            if ( this.inputField ) this.inputField.nativeElement.focus();
+            else if ( this.selectField ) this.selectField.nativeElement.focus();
+        }
+    }
+
+    /**
+     * checks that ok is enabled
+     */
+    get canSubmit(){
+        // only check for input and input data
+        if((this.type != 'input'&& this.type != 'input_date')) return true;
+
+        // value needs to be set
+        if (!this.value ) return false;
+
+        if(this.regex){
+            let reg = new RegExp(this.regex);
+            return reg.test(String(this.value));
+        }
+
+        return true;
     }
 
     /**
      * when ok is clicked
      */
-    private clickOK() {
-        if ( this.type === 'input' ) this.answerSubject.next( this.value );
+    public clickOK() {
+        if (this.type.startsWith('input')) this.answerSubject.next( this.value );
         else this.answerSubject.next( true );
         this.answerSubject.complete();
         this.self.destroy();
@@ -117,7 +148,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * issue cancel and close the modal
      */
-    private clickCancel() {
+    public clickCancel() {
         this.answerSubject.next( false );
         this.answerSubject.complete();
         this.self.destroy();

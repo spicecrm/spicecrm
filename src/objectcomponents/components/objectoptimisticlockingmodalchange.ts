@@ -18,15 +18,15 @@ declare var moment: any;
 
 @Component({
     selector: 'object-optimisitclocking-modal-change',
-    templateUrl: './src/objectcomponents/templates/objectoptimisticlockingmodalchange.html',
+    templateUrl: '../templates/objectoptimisticlockingmodalchange.html',
     providers: [view]
 })
 export class ObjectOptimisticLockingModalChange {
 
-    constructor(private model: model, private language: language,  private userpreferences: userpreferences) {
+    constructor(public model: model, public language: language,  public userpreferences: userpreferences) {
     }
 
-    @Input() private change: any = {};
+    @Input() public change: any = {};
 
     get changeDate() {
         // return timestamp.fromNow();

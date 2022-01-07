@@ -9,16 +9,16 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'object-listview-container',
-    templateUrl: './src/objectcomponents/templates/objectlistviewcontainer.html'
+    templateUrl: '../templates/objectlistviewcontainer.html'
 })
 export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
-    private moduleName: any = '';
-    private initialized: boolean = false;
-    private componentRefs: any = [];
-    private componentSubscriptions: any[] = [];
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
+    public moduleName: any = '';
+    public initialized: boolean = false;
+    public componentRefs: any = [];
+    public componentSubscriptions: any[] = [];
 
-    constructor(private metadata: metadata, private broadcast: broadcast, private navigation: navigation, private navigationtab: navigationtab) {
+    constructor(public metadata: metadata, public broadcast: broadcast, public navigation: navigation, public navigationtab: navigationtab) {
         // subscribe to route params.module changes
         this.navigationtab.activeRoute$.subscribe(route=>{
             this.moduleName = route.params.module;
@@ -55,7 +55,7 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
     * @pass componentconfig to componentRef
     * @push componentRef to componentRefs
     */
-    private buildContainer() {
+    public buildContainer() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
@@ -80,7 +80,7 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
     * @param message: object
     * @buildContainer
     */
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
                 this.buildContainer();

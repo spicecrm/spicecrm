@@ -8,15 +8,15 @@ import {reporterconfig} from "../services/reporterconfig";
 
 @Component({
     selector: 'reporter-filter-item-function',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemfunction.html'
+    templateUrl: '../templates/reporterfilteritemfunction.html'
 })
 export class ReporterFilterItemFunction {
     /**
      * whereCondition: object
      */
-    @Input() private whereCondition: any = {};
+    @Input() public whereCondition: any = {};
 
-    constructor(private language: language, private reporterconfig: reporterconfig) {
+    constructor(public language: language, public reporterconfig: reporterconfig) {
     }
 
     set functionField(value: string) {

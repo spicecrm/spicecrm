@@ -5,7 +5,7 @@
                 <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
                 <div class="slds-form-element__control slds-size--1-of-2">
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="sysModule" [disabled]="generic">
+                        <select class="slds-select" [(ngModel)]="sysModule">
                             <option *ngFor="let sysModule of sysModules" [value]="sysModule.id">{{sysModule.module}}</option>
                         </select>
                     </div>

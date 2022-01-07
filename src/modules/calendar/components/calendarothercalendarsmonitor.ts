@@ -17,14 +17,14 @@ declare var _: any;
  */
 @Component({
     selector: 'calendar-other-calendars-monitor',
-    templateUrl: './src/modules/calendar/templates/calendarothercalendarsmonitor.html',
+    templateUrl: '../templates/calendarothercalendarsmonitor.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarOtherCalendarsMonitor {
     /**
      * holds the other user calendars
      */
-    @Input() private usersCalendars: any[] = [];
+    @Input() public usersCalendars: any[] = [];
     /**
      * emit a boolean to show/hide google events
      */
@@ -60,16 +60,16 @@ export class CalendarOtherCalendarsMonitor {
     /**
      * reference for the input container
      */
-    @ViewChild('inputcontainer', {read: ViewContainerRef, static: true}) private inputContainer: ViewContainerRef;
+    @ViewChild('inputcontainer', {read: ViewContainerRef, static: true}) public inputContainer: ViewContainerRef;
     /**
      * holds the google is visible boolean
      */
-    private googleIsVisible: boolean = true;
+    public googleIsVisible: boolean = true;
 
-    constructor(private language: language,
-                private recent: recent,
-                private calendar: calendar,
-                private fts: fts) {
+    constructor(public language: language,
+                public recent: recent,
+                public calendar: calendar,
+                public fts: fts) {
         this.getRecent();
     }
 
@@ -131,7 +131,7 @@ export class CalendarOtherCalendarsMonitor {
     /**
      * get recently viewed users
      */
-    private getRecent() {
+    public getRecent() {
         this.recent.getModuleRecent('Users')
             .subscribe(recent => this.filterRecent(recent));
     }
@@ -140,7 +140,7 @@ export class CalendarOtherCalendarsMonitor {
      * filter recently viewed users
      * @param recent
      */
-    private filterRecent(recent) {
+    public filterRecent(recent) {
         this.recentUsers = recent.filter(user => user.item_id != this.calendar.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined);
     }
 
@@ -148,7 +148,7 @@ export class CalendarOtherCalendarsMonitor {
      * filter results list from the owner
      * @param resultsList
      */
-    private filterResultsList(resultsList) {
+    public filterResultsList(resultsList) {
         this.resultsList = resultsList.filter(user => user.id != this.calendar.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
     }
 
@@ -159,7 +159,7 @@ export class CalendarOtherCalendarsMonitor {
      * @param item
      * @return item.id
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -168,7 +168,7 @@ export class CalendarOtherCalendarsMonitor {
      * @param id
      * @param name
      */
-    private addUserCalendar(id, name) {
+    public addUserCalendar(id, name) {
         this.calendar.addUserCalendar(id, name);
         this.filterRecent(this.recentUsers);
         this.filterResultsList(this.resultsList);
@@ -178,7 +178,7 @@ export class CalendarOtherCalendarsMonitor {
      * remove user calendar
      * @param id
      */
-    private removeUserCalendar(id) {
+    public removeUserCalendar(id) {
         this.calendar.removeUserCalendar(id);
     }
 
@@ -187,7 +187,7 @@ export class CalendarOtherCalendarsMonitor {
      * @param id
      * @param type
      */
-    private toggleVisible(id, type) {
+    public toggleVisible(id, type) {
         switch (type) {
             case 'Owner':
                 this.calendar.toggleOwnerCalendarVisible();
@@ -206,7 +206,7 @@ export class CalendarOtherCalendarsMonitor {
      * @param id
      * @param color
      */
-    private setUserColor(id, color) {
+    public setUserColor(id, color) {
         this.calendar.setUserColor(id, color);
     }
 }

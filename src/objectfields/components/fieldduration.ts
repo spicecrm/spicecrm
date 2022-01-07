@@ -20,13 +20,13 @@ declare var moment: any;
 
 @Component({
     selector: 'field-duration',
-    templateUrl: './src/objectfields/templates/fieldduration.html',
+    templateUrl: '../templates/fieldduration.html',
 
 })
 export class fieldDuration extends fieldGeneric {
-    private isValid: boolean = true;
-    private durationHours: string[] = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-    private durationMinutes: string[] = ['00', '15', '30', '45'];
+    public isValid: boolean = true;
+    public durationHours: string[] = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+    public durationMinutes: string[] = ['00', '15', '30', '45'];
 
     get fieldminutes() {
         return this.fieldconfig.field_minutes ? this.fieldconfig.field_minutes : 'duration_minutes';
@@ -41,10 +41,10 @@ export class fieldDuration extends fieldGeneric {
 
     }
 
-    private getDisplay() {
-        if (this.model.data[this.fieldminutes] || this.model.data[this.fieldhours]) {
+    public getDisplay() {
+        if (this.model.getField(this.fieldminutes) || this.model.getField(this.fieldhours)) {
             // return this.model.data[this.fieldhours] + ':' + this.model.data[this.fieldminutes];
-            return ("00" + this.model.data[this.fieldhours]).slice(-2)  + ':' + ("00" + this.model.data[this.fieldminutes]).slice(-2);
+            return ("00" + this.model.getField(this.fieldhours)).slice(-2)  + ':' + ("00" + this.model.getField(this.fieldminutes)).slice(-2);
         }
     }
 
@@ -54,7 +54,7 @@ export class fieldDuration extends fieldGeneric {
 
 
     get editDurationHours() {
-        return this.model.data[this.fieldhours];
+        return this.model.getField(this.fieldhours);
     }
 
     set editDurationHours(hours) {
@@ -62,7 +62,7 @@ export class fieldDuration extends fieldGeneric {
     }
 
     get editDurationMinutes() {
-        return this.model.data[this.fieldminutes];
+        return this.model.getField(this.fieldminutes);
     }
 
     set editDurationMinutes(minutes) {

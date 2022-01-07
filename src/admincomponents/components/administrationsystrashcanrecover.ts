@@ -26,7 +26,7 @@ import {toast} from '../../services/toast.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationsystrashcanrecover.html'
+    templateUrl: '../templates/administrationsystrashcanrecover.html'
 })
 export class AdministrationSysTrashcanRecover implements OnInit {
 
@@ -38,7 +38,7 @@ export class AdministrationSysTrashcanRecover implements OnInit {
     public recovering: boolean = false;
     public recovered: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private metadata: metadata, private backend: backend, private language: language, private toast: toast) {
+    constructor(public metadata: metadata, public backend: backend, public language: language, public toast: toast) {
     }
 
     public ngOnInit() {
@@ -56,12 +56,12 @@ export class AdministrationSysTrashcanRecover implements OnInit {
             });
     }
 
-    private close() {
+    public close() {
         this.recovered.emit(false);
         this.self.destroy();
     }
 
-    private getModule(singular) {
+    public getModule(singular) {
         return this.metadata.getModuleFromSingular(singular);
     }
 
@@ -69,7 +69,7 @@ export class AdministrationSysTrashcanRecover implements OnInit {
         return this.relatedRecords.length == 0;
     }
 
-    private doRecover() {
+    public doRecover() {
         this.recovering = true;
         this.backend.postRequest('admin/systrashcan/recover/' + this.record.id, {recoverrelated: this.recoverrelated}).subscribe(result => {
             this.toast.sendToast('record ' + this.record.recordname + ' recovered');

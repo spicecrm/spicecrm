@@ -11,7 +11,7 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'object-model-popover',
-    templateUrl: './src/objectcomponents/templates/objectmodelpopover.html',
+    templateUrl: '../templates/objectmodelpopover.html',
     providers: [view]
 })
 export class ObjectModelPopover implements OnInit {
@@ -35,21 +35,21 @@ export class ObjectModelPopover implements OnInit {
      *
      * @private
      */
-    private hidePopoverTimeout: any = {};
+    public hidePopoverTimeout: any = {};
 
     /**
      * reference to the popover for calculaiton of the size and position
      *
      * @private
      */
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
 
     /**
      * the related container if there are related elements rendered
      *
      * @private
      */
-    @ViewChild('relatedcontainer', {read: ViewContainerRef, static: true}) private relatedContainer: ViewContainerRef;
+    @ViewChild('relatedcontainer', {read: ViewContainerRef, static: true}) public relatedContainer: ViewContainerRef;
 
     /**
      * the elementref to the parent element. Passd in when the modal is rendered to get the position for the overlay
@@ -86,14 +86,14 @@ export class ObjectModelPopover implements OnInit {
      *
      * @private
      */
-    private heightcorrection = 30;
+    public heightcorrection = 30;
 
     /**
      * needed to position the poopover properly
      *
      * @private
      */
-    private widthcorrection = 30;
+    public widthcorrection = 30;
 
     constructor(
         public model: model,
@@ -115,7 +115,7 @@ export class ObjectModelPopover implements OnInit {
      *
      * @private
      */
-    private onMouseOver() {
+    public onMouseOver() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
@@ -126,7 +126,7 @@ export class ObjectModelPopover implements OnInit {
      *
      * @private
      */
-    private onMouseOut() {
+    public onMouseOut() {
         this.closePopover();
     }
 
@@ -190,7 +190,7 @@ export class ObjectModelPopover implements OnInit {
      *
      * @private
      */
-    private getNubbinClass() {
+    public getNubbinClass() {
         return (this.popoverside == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverpos;
     }
 

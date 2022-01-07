@@ -14,7 +14,7 @@ export class recent {
     // public items: any[] = [];
     public moduleItems: any = {};
 
-    constructor(private backend: backend, private broadcast: broadcast, private configuration: configurationService, private session: session) {
+    constructor(public backend: backend, public broadcast: broadcast, public configuration: configurationService, public session: session) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
@@ -23,7 +23,7 @@ export class recent {
         return recentItems ? recentItems : [];
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         switch (message.messagetype) {
             case 'model.save':
                 let item = this.items.find(i => i.module_name == message.messagedata.module && i.item_id == message.messagedata.id);

@@ -10,28 +10,28 @@ import {userpreferences} from '../../../services/userpreferences.service';
  */
 @Component({
     selector: 'reporter-field-currency',
-    templateUrl: './src/modules/reports/templates/reporterfieldcurrency.html',
+    templateUrl: '../templates/reporterfieldcurrency.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldCurrency implements OnInit {
     /**
      * report full record
      */
-    private record: any = {};
+    public record: any = {};
     /**
      * report field
      */
-    private field: any = {};
+    public field: any = {};
     /**
      * display value
      */
-    private value: string = '';
+    public value: string = '';
     /**
      * display currency symbol
      */
-    private currencySymbol: string = '';
+    public currencySymbol: string = '';
 
-    constructor(private currency: currency, private userpreferences: userpreferences) {
+    constructor(public currency: currency, public userpreferences: userpreferences) {
 
     }
 
@@ -46,7 +46,7 @@ export class ReporterFieldCurrency implements OnInit {
     /**
      * set currency symbol
      */
-    private setCurrencySymbol() {
+    public setCurrencySymbol() {
 
         if (!this.record[this.field.fieldid]) return;
 
@@ -65,7 +65,7 @@ export class ReporterFieldCurrency implements OnInit {
     /**
      * set formatted field value
      */
-    private setFormattedFieldValue() {
+    public setFormattedFieldValue() {
 
         if (this.record[this.field.fieldid]) {
             this.value = this.userpreferences.formatMoney(parseFloat(this.record[this.field.fieldid]));

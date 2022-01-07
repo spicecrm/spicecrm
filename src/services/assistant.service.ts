@@ -41,7 +41,7 @@ export class assistant {
      *
      * @private
      */
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
     /**
      * inidicates that the service is loading
@@ -53,9 +53,9 @@ export class assistant {
      *
      * @private
      */
-    private reminder: any = null;
+    public reminder: any = null;
 
-    constructor(private modelutilities: modelutilities, private backend: backend, private broadcast: broadcast, private session: session, private notification: notification) {
+    constructor(public modelutilities: modelutilities, public backend: backend, public broadcast: broadcast, public session: session, public notification: notification) {
         // subscribe to the broadcast service
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
@@ -66,7 +66,7 @@ export class assistant {
         }
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         let itemIndex = 0;
         switch (message.messagetype) {
             case 'logout':
@@ -112,7 +112,7 @@ export class assistant {
     }
 
 
-    private remind() {
+    public remind() {
         // get a now timestamp
         let now = moment.utc();
         for (let i of this.assitantItems) {
@@ -165,7 +165,7 @@ export class assistant {
             this.assitantItems = newItems;
 
             // set the modules
-            this.assistantModules = retData.modules;
+            this.assistantModules = retData.modules ? retData.modules : [];
 
             retSubject.next(this.assitantItems);
             retSubject.complete();

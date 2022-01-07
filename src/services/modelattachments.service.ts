@@ -58,12 +58,12 @@ export class modelattachments {
     public loaded$: BehaviorSubject<boolean>;
 
     constructor(
-        private backend: backend,
-        private configurationService: configurationService,
-        private session: session,
-        private toast: toast,
-        private broadcast: broadcast,
-        private language: language
+        public backend: backend,
+        public configurationService: configurationService,
+        public session: session,
+        public toast: toast,
+        public broadcast: broadcast,
+        public language: language
     ) {
         this.loaded$ = new BehaviorSubject<boolean>(false);
     }
@@ -90,7 +90,7 @@ export class modelattachments {
     /**
      * broadcasts the number of open workflows found
      */
-    private broadcastAttachmentCount() {
+    public broadcastAttachmentCount() {
         this.broadcast.broadcastMessage('attachments.loaded', {
             module: this.module,
             id: this.id,
@@ -422,7 +422,7 @@ export class modelattachments {
      * loads the file locally using the HTML5 FileReader
      * @param file
      */
-    private readFile(file): Observable<any> {
+    public readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader: any = new FileReader();
         reader.file = file;
@@ -528,7 +528,7 @@ export class modelattachments {
      * @param contentType
      * @param sliceSize
      */
-    private b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+    public b64toBlob(b64Data, contentType = '', sliceSize = 512) {
 
         let byteCharacters = atob(b64Data);
         let byteArrays = [];

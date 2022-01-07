@@ -15,13 +15,13 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'objectrepositorymanager-add-module',
-    templateUrl: './src/workbench/templates/objectrepositorymanageraddmodule.html',
+    templateUrl: '../templates/objectrepositorymanageraddmodule.html',
     styles: [
-        ':host >>> .mce-ico{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-text{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-btn button{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-tinymce{border-radius: 4px}',
-        ':host >>> .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
+        ':host  .mce-ico{font-size: 12px; color: #54698d;}',
+        ':host  .mce-text{font-size: 12px; color: #54698d;}',
+        ':host  .mce-btn button{font-size: 12px; color: #54698d;}',
+        ':host  .mce-tinymce{border-radius: 4px}',
+        ':host  .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
     ]
 })
 export class ObjectRepositoryManagerAddModule implements OnInit {
@@ -37,10 +37,10 @@ export class ObjectRepositoryManagerAddModule implements OnInit {
         version: "",
         scope: "custom"
     };
-    private self;
-    private scopes: Array<any> = ["custom", "global"];
+    public self;
+    public scopes: Array<any> = ["custom", "global"];
 
-    constructor(private backend: backend, private language: language, private modelutilities: modelutilities) {}
+    constructor(public backend: backend, public language: language, public modelutilities: modelutilities) {}
 
     public ngOnInit() {
         if(this.edit_mode == "custom") {
@@ -49,15 +49,15 @@ export class ObjectRepositoryManagerAddModule implements OnInit {
             this.scopes = ["custom", "global"];
         }
     }
-    private closeDialog() {
+    public closeDialog() {
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.closeDialog();
     }
 
-    private add() {
+    public add() {
         this.closedialog.emit(true);
         this.self.destroy();
     }

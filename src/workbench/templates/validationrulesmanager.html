@@ -1,7 +1,9 @@
 <workbench-header titlelabel="LBL_VALIDATIONRULES_MANAGER"></workbench-header>
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-form-element">
-        <label class="slds-form-element__label">Module</label>
+        <label class="slds-form-element__label">
+            <system-label label="LBL_MODULE"></system-label>
+        </label>
         <div class="slds-form-element__control" style="min-width:250px;">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="current_module">
@@ -12,7 +14,9 @@
         </div>
     </div>
     <div *ngIf="current_module" class="slds-form-element">
-        <label class="slds-form-element__label">Rule</label>
+        <label class="slds-form-element__label">
+            <system-label label="LBL_RULE"></system-label>
+        </label>
         <div class="slds-form-element__control" style="min-width:250px;">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="current_rule">
@@ -41,13 +45,19 @@
 
         <ul class="slds-tabs_default__nav" role="tablist">
             <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': current_tab == 'details' || !current_tab}" role="presentation" (click)="current_tab = 'details'">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Details</a>
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                    <system-label label="LBL_DETAILS"></system-label>
+                </a>
             </li>
             <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': current_tab == 'conditions'}" role="presentation" (click)="current_tab = 'conditions'">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Conditions</a>
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                    <system-label label="LBL_CONDITIONS"></system-label>
+                </a>
             </li>
             <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': current_tab == 'actions'}" role="presentation" (click)="current_tab = 'actions'">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Actions</a>
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                    <system-label label="LBL_ACTIONS"></system-label>
+                </a>
             </li>
         </ul>
 
@@ -56,19 +66,40 @@
         <div *ngIf="current_tab == 'details'" id="tab-default-1" class="slds-tabs_default__content" role="tabpanel">
             <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small">
                 <div class="slds-form-element slds-m-vertical--xxx-small">
-                    <label class="slds-form-element__label" >Name:</label>
+                    <label class="slds-form-element__label" >
+                        <system-label label="LBL_NAME"></system-label>
+                    </label>
                     <div class="slds-form-element__control">
                         <input type="text" class="slds-input" [(ngModel)]="current_rule_data.name"/>
                     </div>
                 </div>
-                <div class="slds-form-element slds-m-vertical--xxx-small">
-                    <label class="slds-form-element__label" >OnEvents:</label>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="current_rule_data.onevents"/>
+                <div class="slds-grid slds-m-vertical--small">
+                    <div class="slds-form-element slds-m-right_xx-large">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_ACTIVE"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <system-checkbox [(ngModel)]="current_rule_data.active"></system-checkbox>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" >
+                            <system-label label="LBL_ON_EVENTS"></system-label>
+                        </label>
+                        <system-checkbox-group [(ngModel)]="current_rule_data.onevents" class="spice-display-block">
+                            <system-checkbox-group-checkbox value="initialize">
+                                <system-label label="LBL_INITIALIZE"></system-label>
+                            </system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="change">
+                                <system-label label="LBL_CHANGE"></system-label>
+                            </system-checkbox-group-checkbox>
+                        </system-checkbox-group>
                     </div>
                 </div>
                 <div class="slds-form-element slds-m-vertical--xxx-small">
-                    <label class="slds-form-element__label" >Logic Operator:</label>
+                    <label class="slds-form-element__label" >
+                        <system-label label="LBL_OPERATOR"></system-label>
+                    </label>
                     <div class="slds-form-element__control">
                         <select class="slds-select" [(ngModel)]="current_rule_data.logicoperator">
                             <option *ngFor="let opt of logicoperator_options" value="{{opt.value}}">{{opt.display}}</option>
@@ -76,15 +107,11 @@
                     </div>
                 </div>
                 <div class="slds-form-element slds-m-vertical--xxx-small">
-                    <label class="slds-form-element__label" >Priority:</label>
+                    <label class="slds-form-element__label" >
+                        <system-label label="LBL_PRIORITY"></system-label>
+                    </label>
                     <div class="slds-form-element__control">
                         <input type="number" min="0" max="99" class="slds-input" [(ngModel)]="current_rule_data.priority"/>
-                    </div>
-                </div>
-                <div class="slds-form-element">
-                    <label class="slds-form-element__label">Active:</label>
-                    <div class="slds-form-element__control">
-                        <system-checkbox [(ngModel)]="current_rule_data.active"></system-checkbox>
                     </div>
                 </div>
             </div>

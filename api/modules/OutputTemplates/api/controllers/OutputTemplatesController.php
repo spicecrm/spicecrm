@@ -1,15 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maretval
- * Date: 07.05.2019
- * Time: 13:20
- */
+/***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\ConflictException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceSocket\SpiceSocket;
+use SpiceCRM\KREST\handlers\ModuleHandler;
 
 class OutputTemplatesController
 {
@@ -67,10 +70,21 @@ class OutputTemplatesController
     }
 
     public function convertToBase64(Request $req, Response $res, array $args): Response {
-        $bean = BeanFactory::getBean('OutputTemplates', $args['id']);
-        $bean->bean_id = $args['bean_id'];
-        $file = $bean->getPdfContent();
-        return $res->withJson(['content' => base64_encode($file)]);
+
+        $params = $req->getParsedBody();
+
+        $outputTemplate = BeanFactory::getBean('OutputTemplates', $args['id']);
+        $outputTemplate->bean_id = $args['bean_id'];
+
+        if (is_array($params['bean_data']) && count($params['bean_data']) > 0) {
+
+            $params['bean_data']['id'] = $args['bean_id'];
+            $content = $this->liveCompile($outputTemplate, $params['bean_data']);
+        } else {
+            $content = $outputTemplate->getPdfContent();
+        }
+
+        return $res->withJson(['content' => base64_encode($content)]);
     }
 
     public function getModuleTemplates(Request $req, Response $res, array $args): Response {
@@ -85,5 +99,49 @@ class OutputTemplatesController
             ];
         };
         return $res->withJson($templates);
+    }
+
+    public function getTemplateFunctions( Request $req, Response $res, array $args ): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $functions = [ 'pipe' => [], 'noPipe' => [] ];
+        $dbResult = $db->query('SELECT name, no_pipe, param_configs FROM systemplatefunctions UNION SELECT name, no_pipe, param_configs FROM syscustomtemplatefunctions');
+        while ( $function = $db->fetchByAssoc( $dbResult )) {
+            if ( $function['no_pipe'] === '1' ) $functions['noPipe'][] = ['name'=>$function['name'],'paramConfigs'=>json_decode($function['param_configs'])];
+            else $functions['pipe'][] = ['name'=>$function['name'],'paramConfigs'=>json_decode($function['param_configs'])];
+        }
+        return $res->withJson( $functions );
+    }
+
+    /**
+     * save the bean data temporary to generate the template content from and rollback the changes
+     * @param $outputTemplate
+     * @param array $beanData
+     * @return string
+     * @throws ConflictException
+     * @throws Exception
+     * @throws NotFoundException
+     */
+    public function liveCompile($outputTemplate, array $beanData): string
+    {
+
+        $db = DBManagerFactory::getInstance();
+
+        $moduleHandler = new ModuleHandler();
+        $moduleHandler->add_bean($outputTemplate->module_name, $beanData['id'], $beanData);
+
+        $content = $outputTemplate->getPdfContent();
+
+        // rollback all transactions to prevent saving the temporary data we got for the pdf content
+        $db->transactionRollback();
+        SpiceFTSHandler::getInstance()->rollbackTransaction();
+        SpiceSocket::getInstance()->rollbackTransaction();
+
+        // start new transactions again for further processing
+        $db->transactionStart();
+        SpiceFTSHandler::getInstance()->startTransaction();
+        SpiceSocket::getInstance()->startTransaction();
+
+        return $content;
     }
 }

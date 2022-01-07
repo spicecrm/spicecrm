@@ -10,7 +10,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[object-popover-body-item]',
-    templateUrl: './src/objectcomponents/templates/objectpopoverbodyitem.html',
+    templateUrl: '../templates/objectpopoverbodyitem.html',
     providers:[model, view],
     host:{
         'class' : 'slds-popover__body-list'
@@ -23,7 +23,7 @@ export class ObjectPopoverBodyItem implements OnInit{
     modelIsLoading: boolean = true;
 
     fields: Array<any> = [];
-    constructor(private language: language, private model: model, private metadata: metadata) {
+    constructor(public language: language, public model: model, public metadata: metadata) {
 
     }
 

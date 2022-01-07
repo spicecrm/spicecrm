@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['ProspectListFilter'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['ProspectListFilter'] = [
     'table' => 'prospect_list_filters',
     'comment' => 'ProspectListFilters Module',
     'audited' =>  false,

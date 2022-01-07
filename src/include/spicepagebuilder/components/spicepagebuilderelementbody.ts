@@ -11,28 +11,28 @@ import {BodyI} from "../interfaces/spicepagebuilder.interfaces";
  */
 @Component({
     selector: 'spice-page-builder-element-body',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementbody.html',
+    templateUrl: '../templates/spicepagebuilderelementbody.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
     /**
      * body to be rendered
      */
-    @Input() protected readonly body: BodyI;
+    @Input() public readonly body: BodyI;
     /**
      * holds the drag entered value
      */
-    private dragEntered: boolean = false;
+    public dragEntered: boolean = false;
     /**
      * read drop list dom element to be added to the group
      */
-    @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
+    @ViewChild('dropList', {read: CdkDropList, static: false}) public dropList: CdkDropList;
     /**
      * hold the style object for the element
      */
-    private style = {};
+    public style = {};
 
-    constructor(private spicePageBuilderService: SpicePageBuilderService) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -56,19 +56,19 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /** Predicate method that only allows sections to be dropped into a list. */
-    protected sectionPredicate(item: CdkDrag<any>) {
+    public sectionPredicate(item: CdkDrag<any>) {
         return item.data.tagName == 'section';
     }
 
     /**
      * generate body style object
      */
-    private generateStyle() {
+    public generateStyle() {
         this.style = {
             'background-color': this.body.attributes['background-color'],
             'width': this.body.attributes.width
@@ -79,7 +79,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      * handle deleting section from body
      * @param section
      */
-    private onSectionDelete(section) {
+    public onSectionDelete(section) {
         this.body.children = this.body.children.filter(item => item != section);
     }
 
@@ -87,7 +87,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      * push the dropped item to the container array
      * @param event
      */
-    private onDrop(event: CdkDragDrop<any>) {
+    public onDrop(event: CdkDragDrop<any>) {
 
         if (event.previousContainer != event.container) {
             // remove placeholder element

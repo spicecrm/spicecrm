@@ -13,13 +13,13 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'groupware-email-archive-pane-linked',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepanelinked.html'
+    templateUrl: '../templates/groupwareemailarchivepanelinked.html'
 })
 export class GroupwareEmailArchivePaneLinked {
 
     constructor(
-        private groupware: GroupwareService,
-        private language: language
+        public groupware: GroupwareService,
+        public language: language
     ) {}
 
     /**

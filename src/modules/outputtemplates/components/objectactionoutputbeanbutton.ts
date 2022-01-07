@@ -10,7 +10,7 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanbutton.html'
+    templateUrl: '../templates/objectactionoutputbeanbutton.html'
 })
 export class ObjectActionOutputBeanButton {
 
@@ -20,14 +20,18 @@ export class ObjectActionOutputBeanButton {
     public noDownload: boolean;
     public handBack: EventEmitter<string>;
     public buttonText: string;
+    /**
+     * holds the action config
+     */
+    public actionconfig: {modal_actionset: string};
 
     constructor(
-        protected language: language,
-        protected model: model,
-        protected modal: modal,
-        protected backend: backend,
-        protected configuration: configurationService,
-        protected viewContainerRef: ViewContainerRef
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public configuration: configurationService,
+        public viewContainerRef: ViewContainerRef
     ) {
 
     }
@@ -64,7 +68,6 @@ export class ObjectActionOutputBeanButton {
         }
     }
 
-
     public openOutput() {
         if (this.templates.length > 0) {
             // sort the templates
@@ -76,6 +79,7 @@ export class ObjectActionOutputBeanButton {
                 outputModal.instance.modalTitle = this.modalTitle;
                 outputModal.instance.noDownload = this.noDownload;
                 outputModal.instance.handBack = this.handBack;
+                outputModal.instance.customActionsetId = this.actionconfig.modal_actionset;
                 outputModal.instance.buttonText = this.buttonText;
             });
         } else {

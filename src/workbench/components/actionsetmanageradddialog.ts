@@ -16,7 +16,7 @@ import {configurationService} from '../../services/configuration.service';
 
 @Component({
     selector: 'actionsetmanager-add-dialog',
-    templateUrl: './src/workbench/templates/actionsetmanageradddialog.html'
+    templateUrl: '../templates/actionsetmanageradddialog.html'
 })
 export class ActionsetManagerAddDialog implements OnInit  {
 
@@ -28,15 +28,15 @@ export class ActionsetManagerAddDialog implements OnInit  {
 
     @Output() public closedialog: EventEmitter<any> = new EventEmitter<any>();
 
-    private actionsetType: string = 'custom';
+    public actionsetType: string = 'custom';
 
-    private globalEdit: boolean = false;
+    public globalEdit: boolean = false;
 
-    private modalTitle: string = "";
+    public modalTitle: string = "";
 
-    private self;
+    public self;
 
-    constructor(private backend: backend, private metadata: metadata, private language: language) {}
+    constructor(public backend: backend, public metadata: metadata, public language: language) {}
 
     public ngOnInit() {
         if(this.mode == "copy") {
@@ -46,15 +46,15 @@ export class ActionsetManagerAddDialog implements OnInit  {
         }
     }
 
-    private closeDialog() {
+    public closeDialog() {
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.closeDialog();
     }
 
-    private add() {
+    public add() {
         this.closedialog.emit({name: this.actionsetName, type: this.actionsetType, module: this.actionsetModule});
         this.self.destroy();
     }

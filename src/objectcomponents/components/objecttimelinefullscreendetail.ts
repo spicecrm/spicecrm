@@ -13,25 +13,25 @@ import {timeline} from "../../services/timeline.service";
 
 @Component({
     selector: 'object-timeline-full-screen-detail',
-    templateUrl: './src/objectcomponents/templates/objecttimelinefullscreendetail.html',
+    templateUrl: '../templates/objecttimelinefullscreendetail.html',
     providers: [model]
 })
 export class ObjecttimelineFullScreenDetail implements OnChanges {
-    @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) private detailContainer: ViewContainerRef;
+    @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) public detailContainer: ViewContainerRef;
 
-    @Input() private module: string;
-    @Input() private id: string;
-    @Input() private data: object;
-    private componentRefs: any[] = [];
+    @Input() public module: string;
+    @Input() public id: string;
+    @Input() public data: object;
+    public componentRefs: any[] = [];
 
-    constructor(private metadata: metadata, private parent: model, private model: model, private language: language, private timeline: timeline, private activatedRoute: ActivatedRoute) {
+    constructor(public metadata: metadata, public parent: model, public model: model, public language: language, public timeline: timeline, public activatedRoute: ActivatedRoute) {
 
     }
 
     public ngOnChanges() {
         this.model.module = this.module;
         this.model.id = this.id;
-        this.model.data = this.data;
+        this.model.setData(this.data);
 
         for (let component of this.componentRefs) {
             component.destroy();

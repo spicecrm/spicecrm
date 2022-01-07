@@ -10,20 +10,20 @@ import {accountHierarchy} from "../services/accounthierarchy.service";
 
 @Component({
     selector: "account-hierarchy",
-    templateUrl: "./src/modules/accounts/templates/accounthierarchy.html",
+    templateUrl: "../templates/accounthierarchy.html",
     providers: [accountHierarchy]
 })
 export class AccountHierarchy implements OnInit {
-    private componentconfig: any = {};
-    private fieldsetFields: Array<any> = [];
+    public componentconfig: any = {};
+    public fieldsetFields: Array<any> = [];
 
-    private loading: boolean = false;
+    public loading: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private accountHierarchy: accountHierarchy, private model: model) {
+    constructor(public language: language, public metadata: metadata, public accountHierarchy: accountHierarchy, public model: model) {
 
     }
 
-    private loadHierarchy() {
+    public loadHierarchy() {
         this.accountHierarchy.parentId = this.model.id;
         this.accountHierarchy.requestedFields = this.fieldsetFields;
 

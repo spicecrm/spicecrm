@@ -18,7 +18,7 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'reporter-integration-tools-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationtoolsbutton.html',
+    templateUrl: '../templates/reporterintegrationtoolsbutton.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterIntegrationToolsButton implements OnChanges, AfterViewInit {
@@ -28,18 +28,18 @@ export class ReporterIntegrationToolsButton implements OnChanges, AfterViewInit 
     @ViewChild('actionItemsContainer', {
         read: ViewContainerRef,
         static: false
-    }) private actionItemsContainer: ViewContainerRef;
+    }) public actionItemsContainer: ViewContainerRef;
     /**
      * integration params of the report to handle the plugins
      */
-    @Input() private integrationParams: any = {};
+    @Input() public integrationParams: any = {};
     /**
      * to save the action component references
      */
-    private actionComponentRefs: any[] = [];
+    public actionComponentRefs: any[] = [];
 
-    constructor(private language: language,
-                private metadata: metadata) {
+    constructor(public language: language,
+                public metadata: metadata) {
     }
 
     /**
@@ -76,7 +76,7 @@ export class ReporterIntegrationToolsButton implements OnChanges, AfterViewInit 
     /**
      * rerender the action items and push the component reference to array
      */
-    private renderActionItems() {
+    public renderActionItems() {
         this.actionComponentRefs.forEach(ref => ref.destroy());
         this.actionComponentRefs = [];
 

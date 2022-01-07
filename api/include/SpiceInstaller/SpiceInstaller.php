@@ -3,10 +3,15 @@
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
+use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\Users\User;
@@ -16,7 +21,6 @@ use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 require_once('modules/TableDictionary.php');
 
@@ -71,7 +75,7 @@ class SpiceInstaller
     {
         $requirements = [];
         // check php version
-        if (version_compare(phpversion(), '7.0', '<')) {
+        if (version_compare(phpversion(), '7.2', '<')) {
             $requirements['php'] = false;
         } else {
             $requirements['php'] = true;
@@ -278,13 +282,13 @@ class SpiceInstaller
         $response = $this->curlCall($this->curl, $url);
 
         if (!empty($response)) {
-            if ($response->version->number >= 6.4) {
-                $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
-            } else {
+            if (version_compare($response->version->number, '7.5', '<')) {
                 $errors = ['version not supported'];
+            } else {
+                $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
             }
         } else {
-            $errors = ['invalid url'];
+            $errors = ['invalid url', $response];
         }
 
         if (!empty($errors)) {
@@ -342,42 +346,30 @@ class SpiceInstaller
             'dbconfigoption' => $postData['dboptions'],
             'fts' => $postData['fts'],
             'site_url' => $postData['backendconfig']['backendUrl'],
-            'developerMode' => (empty($postData['backendconfig']['developerMode']) || $postData['backendconfig']['developerMode'] == 'false' ? false : true),
+            'developerMode' => false,
             'cache_dir' => 'cache/',
-            'log_dir' => '.',
-            'log_file' => 'spicecrm.log',
             'session_dir' => '',
-            'sugar_version' => '2020.01.00',
-            'default_language' => $postData['language']['language_code'],
             'tmp_dir' => 'cache/xml/',
             'media_files_dir' => 'media/',
             'upload_dir' => 'upload/',
             'upload_maxsize' => 30000000,
             'import_max_records_per_file' => 500,
-            'unique_key' => md5(create_guid()),
+            'unique_key' => md5(SpiceUtils::createGuid()),
             'verify_client_ip' => false,
-            'krest' =>
-                [
-                    'error_reporting' => 22517,
-                    'display_errors' => 0,
-                ],
-            'languages' => [
-                $postData['language']['language_code'] => $postData['language']['language_name']
+            'krest' => [
+                'error_reporting' => 22517,
+                'display_errors' => 0,
             ],
             'logger' => [
-//                'default' => 'SpiceLogger',
-                'level' => 'error',
-//                'file' => [
-//                    'ext' => '.log',
-//                    'name' => 'sugarcrm',
-//                    'dateFormat' => '%c',
-//                    'maxSize' => '10MB',
-//                    'maxLogs' => 10,
-//                    'suffix' => '',
-//                ],
-//                'db' => [
-//                    'clean_interval' => '7 DAY',
-//                ],
+                'level' => 'fatal,error',
+                'file' => [
+                    'ext' => 'log',
+                    'name' => 'spicecrm',
+                    'dateFormat' => '%c',
+                    'maxSize' => '10MB',
+                    'maxLogs' => 10,
+                    'suffix' => '',
+                ]
             ],
             'frontend_url' => $postData['backendconfig']['frontendUrl']
         ];
@@ -389,14 +381,10 @@ class SpiceInstaller
      * @param $postData
      * @return boolean
      */
-    private function writeConfig($sugar_config)
+    private function writeConfig($spice_config)
     {
-        file_put_contents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$sugar_config=');
-        write_array_to_file("sugar_config", $sugar_config, 'config.php');
-        if (!file_exists('config_override.php')) {
-            $overrides = "\$sugar_config['syslanguages']['spiceuisource']='db';";
-            file_put_contents('config_override.php', '<?php' . PHP_EOL . '/***CONFIGURATOR***/' . PHP_EOL . $overrides . PHP_EOL . '/***CONFIGURATOR***/');
-        }
+        SpiceFileUtils::spiceFilePutContents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$sugar_config=');
+        SpiceFileUtils::spiceWriteArrayToFile("sugar_config", $spice_config, 'config.php');
         return true;
     }
 
@@ -437,7 +425,7 @@ class SpiceInstaller
 
         $db = $this->dbManagerFactory->getInstance();
 
-        if (!empty($db) && isset($postData['databaseuser']) && in_array( 'db_user_name' ,$postData['databaseuser'])) {
+        if (!empty($db) && isset($postData['databaseuser']) && in_array('db_user_name', $postData['databaseuser'])) {
             $db->createDBuser($dbconfig['db_name'], $dbconfig['db_host_name'], $postData['databaseuser']['db_user_name'], $postData['databaseuser']['db_password']);
         }
         return $db;
@@ -449,12 +437,11 @@ class SpiceInstaller
      */
     public function createTables($db)
     {
-        global $dictionary, $beanList, $beanClasses;
-        $beanList = [];
+        $globalBeanList = [];
         // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
-        $rel_dictionary = $dictionary;
+        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
         $vardef = new VardefManager();
         $vardef->clearVardef();
 
@@ -476,9 +463,12 @@ class SpiceInstaller
                 $base64conf = base64_decode($moduleConf);
                 if ($decodedConf = json_decode($base64conf, true)) {
                     if (!empty($decodedConf['bean'])) {
-                        $beanList[$decodedConf['module']] = $decodedConf['bean'];
+                        $globalBeanList[$decodedConf['module']] = $decodedConf['bean'];
                         //todo temporary bugfix, find correct solution?
-                        $beanClasses[$decodedConf['module']] = '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean'];
+                        SpiceModules::getInstance()->setBeanClass(
+                            $decodedConf['module'],
+                            '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean']
+                        );
                     }
                 }
             }
@@ -486,9 +476,9 @@ class SpiceInstaller
 
         // relationship workaround: relationship has to be the first table to be  created before module tables
         require_once('modules/Relationships/vardefs.php');
-        $table = $dictionary['Relationship']['table'];
-        $fields = $dictionary['Relationship']['fields'];
-        $indices = $dictionary['Relationship']['indices'];
+        $table   = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['table'];
+        $fields  = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['fields'];
+        $indices = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['indices'];
 
         if (!empty($table)) {
             if (!$db->tableExists($table)) {
@@ -496,9 +486,9 @@ class SpiceInstaller
                 $db->query($query);
             }
         }
-        ksort($beanList);
+        ksort($globalBeanList);
 
-        foreach ($beanList as $dir => $bean) {
+        foreach ($globalBeanList as $dir => $bean) {
             if ($bean == 'Administration') { // for core edition
                 require_once('metadata/system_config.php');
             } else {
@@ -511,12 +501,12 @@ class SpiceInstaller
                 }
             }
 
-            if ($dictionary[$bean]['table'] == 'does_not_exist') {
+            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
                 continue;
             }
-            $table = $dictionary[$bean]['table'];
-            $fields = $dictionary[$bean]['fields'];
-            $indices = $dictionary[$bean]['indices'];
+            $table   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'];
+            $fields  = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['fields'];
+            $indices = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['indices'];
 
             if (!empty($table)) {
                 if (!$db->tableExists($table)) {
@@ -526,11 +516,11 @@ class SpiceInstaller
             }
 
             // creates audit table if object is audited
-            if ($dictionary[$bean]['audited']) {
+            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['audited']) {
                 require('metadata/audit_templateMetaData.php');
-                $audit = $dictionary[$bean]['table'] . '_audit';
-                $fields = $dictionary['audit']['fields'];
-                $indices = $dictionary['audit']['indices'];
+                $audit   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] . '_audit';
+                $fields  = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+                $indices = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
 
                 foreach ($indices as $nr => $properties) {
                     $indices[$nr]['name'] = 'idx_' . strtolower($audit) . '_' . $properties['name'];
@@ -542,9 +532,15 @@ class SpiceInstaller
                 }
 
             }
-            SugarBean::createRelationshipMeta($bean, $db, $dictionary[$bean]['table'], '', $dir);
+            SugarBean::createRelationshipMeta(
+                $bean,
+                $db,
+                SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'],
+                '',
+                $dir
+            );
         }
-
+        SpiceModules::getInstance()->setBeanList($globalBeanList);
 
         ksort($rel_dictionary);
         foreach ($rel_dictionary as $rel_name => $rel_data) {
@@ -560,7 +556,7 @@ class SpiceInstaller
 
 
         $rel = new Relationship();
-        Relationship::delete_cache();
+//        Relationship::delete_cache();
         $rel->build_relationship_cache();
 
     }
@@ -662,13 +658,12 @@ class SpiceInstaller
     public function install($body)
     {
         set_time_limit(30000);
-        $GLOBALS['timedate'] = new TimeDate();
 
         $errors = [];
         $postData = $body->getParsedBody();
 
         //generate a new sugar_config
-        $newSugarConfig= $this->generateSugarConfig($postData);
+        $newSugarConfig = $this->generateSugarConfig($postData);
 
         //assign to global instance
         SpiceConfig::getInstance()->config = $this->generateSugarConfig($postData);

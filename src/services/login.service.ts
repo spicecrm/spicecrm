@@ -13,6 +13,7 @@ import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
+import {take} from 'rxjs/operators';
 
 interface loginAuthDataIf {
     userName: string;
@@ -41,12 +42,12 @@ export class loginService {
     public oauthIssuer: string = '';
 
     constructor(
-        private configurationService: configurationService,
-        private http: HttpClient,
-        private router: Router,
-        private loader: loader,
-        private toast: toast,
-        private helper: helper,
+        public configurationService: configurationService,
+        public http: HttpClient,
+        public router: Router,
+        public loader: loader,
+        public toast: toast,
+        public helper: helper,
         public session: session,
         public broadcast: broadcast,
         public modal: modal, public metadata: metadata
@@ -120,6 +121,7 @@ export class loginService {
                     this.session.authData.userimage = response.user_image;
                     this.session.authData.first_name = response.first_name;
                     this.session.authData.last_name = response.last_name;
+                    this.session.authData.address_country = response.address_country;
                     this.session.authData.display_name = response.display_name;
                     this.session.authData.email = response.email;
                     this.session.authData.admin = response.admin;
@@ -248,7 +250,9 @@ export class loginService {
      * starts the loaded upon successful login
      */
     public load() {
-        this.loader.load().subscribe((val) => this.redirect(val));
+        this.loader.load().subscribe((val) => {
+            this.redirect(val);
+        });
     }
 
     public redirect(val) {
@@ -292,7 +296,7 @@ export class loginService {
 
 @Injectable()
 export class loginCheck implements CanActivate {
-    constructor(private login: loginService, private session: session, private modal: modal, private router: Router, private loader: loader) {
+    constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
     }
 
     public canActivate(route, state) {

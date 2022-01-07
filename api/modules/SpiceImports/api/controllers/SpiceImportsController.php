@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\SpiceImports\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -64,7 +66,7 @@ class SpiceImportsController{
                 ->setErrorCode('noModuleDelete');
         }
 
-        $filemd5 = $req->getParams()['filemd5'];
+        $filemd5 = $req->getQueryParams()['filemd5'];
         $bean = BeanFactory::getBean('SpiceImports');
         return $res->withJson($bean->deleteImportFile($filemd5));
 

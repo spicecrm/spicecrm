@@ -1,0 +1,38 @@
+<div class="slds-grid slds-grid--vertical slds-p-around--medium" [system-overlay-loading-spinner]="isLoading" style="height:100%">
+  <div class="slds-grid slds-grid--align-spread" [ngClass]="{'slds-border-bottom':blockedUsers.length === 0}">
+    <div class="slds-text-heading_small slds-m-bottom--x-small"><system-label label="LBL_BLOCKED_USERS"></system-label></div>
+    <button (click)="loadBlockedUsers()" system-title="LBL_RELOAD" class="slds-button slds-button--icon slds-m-left--xx-small">
+      <system-button-icon icon="refresh"></system-button-icon>
+    </button>
+  </div>
+  <div class="slds-scrollable--y" [ngClass]="{'slds-grow':blockedUsers.length!==0}">
+    <table class="slds-table slds-table_bordered slds-table--header-fixed" [ngStyle]="{borderBottom:blockedUsers.length===0?'none':'auto'}">
+      <thead>
+        <tr class="slds-text-title--caps">
+          <th><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_USER_NAME"></system-label></div></th>
+          <th style="width:100%"><div class="slds-truncate slds-p-horizontal--x-small"><system-label label="LBL_PERMANENT" style="display:inline-block"></system-label>/<system-label label="LBL_UNTIL" style="display:inline-block"></system-label></div></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of blockedUsers; let i=index">
+          <td class="slds-p-right--x-small"><div class="slds-truncate">{{user.user_name}}</div></td>
+          <td class="slds-p-right--x-small">
+            <div class="slds-truncate"><ng-container *ngIf="user.login_blocked">permanent</ng-container> <ng-container *ngIf="!user.login_blocked && user.login_blocked_until"><system-display-datetime [date]="user.login_blocked_until"></system-display-datetime></ng-container></div>
+          </td>
+          <td>
+            <button *ngIf="!isUnblocking[user.id]" class="slds-button slds-button--icon" system-title="LBL_DELETE" (click)="unBlockUser(user.id,user.user_name)"><system-button-icon icon="delete"></system-button-icon></button>
+            <system-button-icon *ngIf="isUnblocking[user.id]" icon="spinner"></system-button-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="!isLoading && blockedUsers.length === 0" class="slds-grow slds-align--absolute-center">
+    <div class="slds-illustration slds-illustration_small">
+      <div class="slds-text-longform">
+        <h3 class="slds-text-heading_medium"><system-label label="MSG_NO_USERS_BLOCKED"></system-label></h3>
+      </div>
+    </div>
+  </div>
+</div>

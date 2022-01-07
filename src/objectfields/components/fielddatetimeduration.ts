@@ -11,33 +11,33 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
     selector: 'field-date-time-duration',
-    templateUrl: './src/objectfields/templates/fielddatetimeduration.html'
+    templateUrl: '../templates/fielddatetimeduration.html'
 })
 export class fieldDateTimeDuration extends fieldGeneric {
     /**
      * values for the duration in hours
      */
-    private durationHours: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+    public durationHours: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
     /**
      * values for the duration in minutes
      */
-    private durationMinutes: string[] = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+    public durationMinutes: string[] = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
 
     /**
-     * the duration, held intrnally so we can move the end date when the start date moves
+     * the duration, held internally so we can move the end date when the start date moves
      *
      * @private
      */
-    private duration: any;
+    public duration: any;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
 
@@ -100,7 +100,7 @@ export class fieldDateTimeDuration extends fieldGeneric {
      * returns the hours from teh duration object
      */
     get currentHours() {
-        if(!this.duration) return 0;
+        if (!this.duration) return 0;
         return this.duration.get('hours');
     }
 
@@ -108,7 +108,7 @@ export class fieldDateTimeDuration extends fieldGeneric {
      * returns the minuts from the duration object
      */
     get currentMinutes() {
-        if(!this.duration) return 0;
+        if (!this.duration) return 0;
         return this.duration.get('minutes');
     }
 
@@ -132,14 +132,14 @@ export class fieldDateTimeDuration extends fieldGeneric {
     }
 
     /**
-     * getter for teh duration minutes
+     * getter for the duration minutes
      */
     get editDurationMinutes() {
         return this.currentMinutes; // this.model.data[this.fieldminutes];
     }
 
     /**
-     * setter for the durtion minutes
+     * setter for the duration minutes
      *
      * @param minutes
      */

@@ -11,11 +11,11 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-multiple-enum-dropdown',
-    templateUrl: './src/objectfields/templates/fieldmultipleenumdropdown.html'
+    templateUrl: '../templates/fieldmultipleenumdropdown.html'
 })
 export class fieldMultipleEnumDropdown extends fieldGeneric implements OnInit, OnDestroy {
-    private valueArray = [];
-    private viewModeValueText = '';
+    public valueArray = [];
+    public viewModeValueText = '';
 
     constructor(
         public model: model,
@@ -35,7 +35,7 @@ export class fieldMultipleEnumDropdown extends fieldGeneric implements OnInit, O
     /**
      * Detect Changes
      */
-    private setSubscriptions() {
+    public setSubscriptions() {
         this.subscriptions.add(
             // Detect changement of model data.
             this.model.data$.subscribe(
@@ -63,7 +63,7 @@ export class fieldMultipleEnumDropdown extends fieldGeneric implements OnInit, O
     /**
      * Set the value field with the selected options delivered from systemmultipleselect.
      */
-    private setFieldValue(valueArray) {
+    public setFieldValue(valueArray) {
         this.value = valueArray.map(item => `^${item}^`).join(',');
         this.createValueArray();
         this.createViewModeValueText();
@@ -72,14 +72,14 @@ export class fieldMultipleEnumDropdown extends fieldGeneric implements OnInit, O
     /**
      * Create the array of selected options, from the field "value" (type text).
      */
-    private createValueArray() {
+    public createValueArray() {
         this.valueArray = this.value ? this.value.replace(/\^/g, '').split(',') : [];
     }
 
     /**
      * Create the text variant of the selected options.
      */
-    private createViewModeValueText() {
+    public createViewModeValueText() {
         let languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
         this.viewModeValueText = this.valueArray.map( item => languageOptions[item]).join(', ');
     }

@@ -19,7 +19,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-select-panel-add-button',
-    templateUrl: './src/modules/dashboard/templates/dashboardselectpaneladdbutton.html',
+    templateUrl: '../templates/dashboardselectpaneladdbutton.html',
     providers: [model]
 })
 export class DashboardSelectPanelAddButton {
@@ -27,9 +27,9 @@ export class DashboardSelectPanelAddButton {
      * emit when the dashboard is added to apply the necessary changes from parent
      * @private
      */
-    @Output() private dashboardAdded = new EventEmitter<{id: string}>();
+    @Output() public dashboardAdded = new EventEmitter<{id: string}>();
 
-    constructor(private model: model, private modellist: modellist, private dashboardlayout: dashboardlayout) {
+    constructor(public model: model, public modellist: modellist, public dashboardlayout: dashboardlayout) {
         this.model.module = 'Dashboards';
     }
 
@@ -37,7 +37,7 @@ export class DashboardSelectPanelAddButton {
      * add open add modal
      * @private
      */
-    private addDashboard() {
+    public addDashboard() {
         this.model.reset();
         this.model.module = 'Dashboards';
         this.model.addModel().subscribe(res => {

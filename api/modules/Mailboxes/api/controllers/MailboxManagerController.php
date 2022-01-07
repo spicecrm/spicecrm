@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -33,6 +35,8 @@ class MailboxManagerController
                 $mailbox->$name = $value;
             }
         }
+
+        $mailbox->initializeSettings();
 
         if (($mailbox->outbound_comm == 'single' || $mailbox->outbound_comm == 'mass') && empty($params['test_email'])) {
             return $res->withJson([

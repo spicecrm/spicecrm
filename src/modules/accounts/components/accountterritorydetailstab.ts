@@ -14,22 +14,22 @@ declare var _: any;
 
 @Component({
     selector: 'account-territory-details-tab',
-    templateUrl: './src/modules/accounts/templates/accountterritorydetailstab.html',
+    templateUrl: '../templates/accountterritorydetailstab.html',
     providers: [model]
 })
 
 export class AccountTerritoryDetailsTab {
 
-    @Input() private data: any = undefined;
+    @Input() public data: any = undefined;
 
-    @Input() private componentconfig: any = {};
+    @Input() public componentconfig: any = {};
 
-    private componentset: string;
+    public componentset: string;
 
-    constructor(private language: language,
-                private metadata: metadata,
-                @SkipSelf() private parent: model,
-                private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                @SkipSelf() public parent: model,
+                public model: model) {
 
         // set the model
         this.model.module = 'AccountCCDetails';
@@ -47,7 +47,7 @@ export class AccountTerritoryDetailsTab {
     * Set the model data
     * @return void
     * */
-    private setModelData() {
+    public setModelData() {
         if (this.data) {
             this.model.id = this.data.id;
             this.model.setFields(this.model.utils.backendModel2spice(this.model.module, this.data));
@@ -68,7 +68,7 @@ export class AccountTerritoryDetailsTab {
     * Render the configured component set
     * @return void
     * */
-    private renderView() {
+    public renderView() {
 
         if (_.isEmpty(this.componentconfig)) {
             // check to get the config
