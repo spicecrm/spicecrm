@@ -13,21 +13,21 @@ import {metadata} from '../../../services/metadata.service';
  * renders a bar with quick add sysmbols to be rendered in the model popover
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/activitiespopoveraddbar.html',
+    templateUrl: '../templates/activitiespopoveraddbar.html',
 })
 export class ActivitiesPopoverAddBar implements OnInit{
 
     /**
      * the component config
      */
-    private componentconfig: any;
+    public componentconfig: any;
 
     /**
      * an array with the names of the mopdules to be displayxed as quick add buttons
      */
-    private modules: string[] = [];
+    public modules: string[] = [];
 
-    constructor(private model: model, private language: language, private metadata: metadata) {
+    constructor(public model: model, public language: language, public metadata: metadata) {
     }
 
     public ngOnInit(): void {

@@ -11,7 +11,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-filter-builder-expression-fields',
-    templateUrl: './src/systemcomponents/templates/systemfilterbuilderfilterexpressionfields.html',
+    templateUrl: '../templates/systemfilterbuilderfilterexpressionfields.html',
     providers: [
     {
         provide: NG_VALUE_ACCESSOR,
@@ -25,8 +25,8 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * the module we are attaching this filter to
@@ -35,7 +35,7 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
 
     public fields: any[] = [];
 
-    private _field: string;
+    public _field: string;
 
 
     constructor(
@@ -86,7 +86,7 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
         this._field = value;
     }
 
-    private getFieldDisplayOptions() {
+    public getFieldDisplayOptions() {
         let retArray = [];
         let options = this.language.getFieldDisplayOptions(this.module, this.field);
         for (let optionVal in options) {

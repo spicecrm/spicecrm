@@ -51,7 +51,7 @@ use SpiceCRM\includes\Middleware\ModuleRouteMiddleware;
 use SpiceCRM\includes\Middleware\RequireAuthenticationMiddleware;
 use SpiceCRM\includes\Middleware\TransactionMiddleware;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
-use SpiceCRM\extensions\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 use SpiceCRM\includes\SpiceSwagger\SpiceSwaggerGenerator;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -286,7 +286,7 @@ class RESTManager
          */
         if($user || $token) {
             $authController = AuthenticationController::getInstance();
-            $impersonationUser = @SpiceConfig::getInstance()->config['system']['impersonation_enabled'] === true ? $_GET['impersonationuser'] : null;
+            $impersonationUser = @SpiceConfig::getInstance()->config['system']['impersonation_enabled'] == true ? $_GET['impersonationuser'] : null;
             return $authController->authenticate($user, $pass, $token, $tokenIssuer, $impersonationUser);
         }
     }
@@ -424,7 +424,7 @@ class RESTManager
     private function initExtensions() {
         // check if we have extension in the local path
         $checkRootPaths = ['include', 'modules',
-                            'extensions/includes', 'extensions/modules',
+                            'extensions/include', 'extensions/modules',
                             'custom/modules', 'custom/include'];
         foreach ($checkRootPaths as $checkRootPath) {
             $KRestDirHandle = opendir("./$checkRootPath");

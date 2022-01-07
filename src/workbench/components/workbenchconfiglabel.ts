@@ -7,11 +7,12 @@ import {
 } from '@angular/core';
 
 @Component({
-    templateUrl: './src/workbench/templates/workbenchconfiglabel.html',
+    templateUrl: '../templates/workbenchconfiglabel.html',
     selector: 'workbench-config-label'
 })
 
 export class WorkbenchConfigLabel {
-    @Input() private option: string = '';
-    @Input() private description: string = '';
+    @Input() public option: string = '';
+    @Input() public description: string = '';
+    public showInfo = false;
 }

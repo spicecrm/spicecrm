@@ -16,27 +16,27 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-manager-email",
-    templateUrl: "./src/modules/mailboxes/templates/mailboxmanageremail.html",
+    templateUrl: "../templates/mailboxmanageremail.html",
 })
 export class MailboxManagerEmail implements OnInit {
 
     /**
      * the email record
      */
-    @Input() private email: any = {};
+    @Input() public email: any = {};
 
     /**
      * the fieldset for the additonal fields
      */
-    private fieldset: string;
+    public fieldset: string;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private mailboxesEmails: mailboxesEmails,
-        private view: view,
-        private model: model,
-        private modelutilities: modelutilities
+        public metadata: metadata,
+        public language: language,
+        public mailboxesEmails: mailboxesEmails,
+        public view: view,
+        public model: model,
+        public modelutilities: modelutilities
     ) {
         // no links
         this.view.displayLinks = false;
@@ -54,14 +54,14 @@ export class MailboxManagerEmail implements OnInit {
     public ngOnInit() {
         this.model.module = "Emails";
         this.model.id = this.email.id;
-        this.model.data = this.modelutilities.backendModel2spice("Emails", this.email);
+        this.model.setData(this.email);
     }
 
     /**
      * emits when an email is selected
      * @param e
      */
-    private selectMail(e) {
+    public selectMail(e) {
         if (!this.mailboxesEmails.activeMessage || e.id != this.mailboxesEmails.activeMessage.id) {
             this.mailboxesEmails.activeMessage = e;
         }

@@ -8,14 +8,14 @@ import {assistant} from '../../../services/assistant.service';
 
 @Component({
     selector: 'home-assistant-filter',
-    templateUrl: './src/modules/home/templates/homeassistantfilter.html'
+    templateUrl: '../templates/homeassistantfilter.html'
 })
 export class HomeAssistantFilter {
 
-    private isOpen: boolean = false;
-    private clickListener: any;
+    public isOpen: boolean = false;
+    public clickListener: any;
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private metadata: metadata, private assistant: assistant) {
+    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language, public metadata: metadata, public assistant: assistant) {
 
     }
 
@@ -24,7 +24,7 @@ export class HomeAssistantFilter {
     }
 
 
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         // stop the event propagation
         e.stopPropagation();
 
@@ -58,7 +58,7 @@ export class HomeAssistantFilter {
      * @param e
      * @private
      */
-    private setFilter(filter, e) {
+    public setFilter(filter, e) {
         if (filter == 'all') {
             this.assistant.assistantFilters.objectfilters = [];
         } else {
@@ -77,7 +77,7 @@ export class HomeAssistantFilter {
      * @param filter
      * @private
      */
-    private getChecked(filter) {
+    public getChecked(filter) {
         if (filter == 'all') {
             return this.assistant.assistantFilters.objectfilters.length == 0 ? true : false;
         } else {
@@ -90,7 +90,7 @@ export class HomeAssistantFilter {
      *
      * @private
      */
-    private closeDialog() {
+    public closeDialog() {
         if (this.clickListener) {
             this.clickListener();
         }

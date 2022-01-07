@@ -23,7 +23,7 @@ export class dashboardlayout {
     public dashboardNotFound: boolean = false;
     public bodycontainerref: ViewContainerRef;
 
-    constructor(private backend: backend, public model: model, private modal: modal) {
+    constructor(public backend: backend, public model: model, public modal: modal) {
     }
 
     get bodyContainerRef() {

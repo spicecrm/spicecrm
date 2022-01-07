@@ -15,22 +15,22 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'actionsetmanager-action-details',
-    templateUrl: './src/workbench/templates/actionsetmanageractiondetails.html',
+    templateUrl: '../templates/actionsetmanageractiondetails.html',
     providers: [view]
 })
 export class ActionsetManagerActionDetails implements OnChanges {
 
     @Input() public action: any = {};
 
-    private component: string = "";
-    private component_backup: string = "";
-    private localcomponent: string = "";
+    public component: string = "";
+    public component_backup: string = "";
+    public localcomponent: string = "";
 
-    private systemmodule: string = '';
-    private systemmodules: any[] = [];
+    public systemmodule: string = '';
+    public systemmodules: any[] = [];
 
     // all standard actions! hardcoded :(
-    private standardActions = [
+    public standardActions = [
         {display: "NEW", value: "NEW", component: "ObjectActionNewButton"},
         {display: "DUPLICATE", value: "DUPLICATE", component: "ObjectActionDuplicateButton"},
         {display: "NEWRELATED", value: "NEWRELATED", component: "ObjectActionNewrelatedButton"},
@@ -48,7 +48,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
         {display: "SAVERELATED", value: "SAVERELATED", component: "ObjectActionSaveRelatedButton"}
     ];
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private view: view) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public view: view) {
         // get all system-modules
         this.systemmodules = this.metadata.getSystemModules();
     }
@@ -74,7 +74,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
     }
 
     // get the component-name with the deprecated info
-    private componentName(component) {
+    public componentName(component) {
         if(component) {
             if(component.deprecated == '1') {
                 return component.component + ' | dep.';
@@ -86,7 +86,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
     }
 
     // function which is called by changing standard-action
-    private setActionComponent() {
+    public setActionComponent() {
         if(this.action.action) {
             this.localcomponent = this.standardActions.find( action => action.value === this.action.action ).component;
         } else {
@@ -96,7 +96,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
         this.systemmodule = this.metadata.getSystemModuleByComponent(this.localcomponent);
     }
 // function which is called by changing component
-    private setComponent() {
+    public setComponent() {
         this.action.component = this.localcomponent;
     }
 }

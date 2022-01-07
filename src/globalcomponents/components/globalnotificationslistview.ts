@@ -12,14 +12,14 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'global-notifications-list-view',
-    templateUrl: './src/globalcomponents/templates/globalnotificationslistview.html'
+    templateUrl: '../templates/globalnotificationslistview.html'
 })
 export class GlobalNotificationsListView {
 
     constructor(public notificationService: notification,
-                private navigationTab: navigationtab,
-                private language: language,
-                private cdRef: ChangeDetectorRef,
+               public navigationTab: navigationtab,
+               public language: language,
+               public cdRef: ChangeDetectorRef,
                 public userPreferences: userpreferences) {
         this.setTabInfo();
     }
@@ -42,7 +42,7 @@ export class GlobalNotificationsListView {
      * set the navigation tab info
      * @private
      */
-    private setTabInfo() {
+   public setTabInfo() {
         this.navigationTab.setTabInfo({
             displayname: this.language.getLabel('LBL_NOTIFICATIONS'),
             displayicon: 'notification'
@@ -95,7 +95,7 @@ export class GlobalNotificationsListView {
      * @param value
      * @private
      */
-    private setDisplayDesktopNotification(value: boolean) {
+   public setDisplayDesktopNotification(value: boolean) {
 
         if (this.desktopNotificationsStatus === 'default') {
 

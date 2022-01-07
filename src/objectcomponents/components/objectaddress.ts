@@ -11,7 +11,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-address',
-    templateUrl: './src/objectcomponents/templates/objectaddress.html',
+    templateUrl: '../templates/objectaddress.html',
     providers: [model]
 })
 export class ObjectAddress implements OnInit{
@@ -21,19 +21,20 @@ export class ObjectAddress implements OnInit{
     @Input() parent: any = {};
     @Input() fieldset: string = '';
 
-    constructor( private language: language, private metadata: metadata, private model: model, private view: view, private modelutilities: modelutilities, private footer: footer) {
+    constructor( public language: language, public metadata: metadata, public model: model, public view: view, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'Addresses';
     }
 
     ngOnInit(){
         this.model.id = this.address.id;
-        this.model.data = this.modelutilities.backendModel2spice('Addresses', this.address);
+        this.model.setData(this.address);
 
         // see if we have a fieldset
         if(this.fieldset == undefined || this.fieldset == ''){
             let config = this.metadata.getComponentConfig('ObjectAddress', this.parent.module);
-            if(config.fieldset != undefined || config.fieldset != '')
+            if(config.fieldset != undefined || config.fieldset != '') {
                 this.fieldset = config.fieldset;
+            }
         }
 
     }
@@ -44,7 +45,7 @@ export class ObjectAddress implements OnInit{
             componenRef.instance.message = this.language.getLabel('LBL_DELETE_ADDRESS_TEXT', 'Addresses');
             componenRef.instance.answer.subscribe(decision => {
                 if (decision) {
-                    this.model.data.deleted = true;
+                    this.model.setField('deleted', true);
                 }
             });
         });

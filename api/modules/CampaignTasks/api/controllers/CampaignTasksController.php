@@ -1,21 +1,26 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\CampaignTasks\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\CampaignTasks\CampaignTask;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\TimeDate;
 
 
 class CampaignTasksController
 {
     public function getCampaignTaskItems(Request $req, Response $res, array $args): Response {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'detail', true))
             throw (new ForbiddenException("Forbidden for details in module CampaignTasks."))->setErrorCode('noModuleDetails');
@@ -145,6 +150,14 @@ class CampaignTasksController
         return $res->withJson(['html' => from_html(wordwrap($parsedTpl['body_html'], true))]);
     }
 
+    /**
+     * returns a list of reports that can be used to export a campaign task target list
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
     public function getExportReports(Request $req, Response $res, array $args): Response {
         $retArray = [];
 
@@ -162,5 +175,47 @@ class CampaignTasksController
         }
 
         return $res->withJson($retArray);
+    }
+
+    /**
+     * returns a mail merge PDF for the given campaign task
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws NotFoundException
+     */
+    public function mailmergeCampaignTask(Request $req, Response $res, array $args): Response {
+        $getParam = $req->getQueryParams();
+
+        /** @var CampaignTask $campaignTask */
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+        if(!$campaignTask){
+            throw new NotFoundException('CampaignTask not found');
+        }
+
+        // generate the PDF
+        return $res->withJson(['content' => base64_encode($campaignTask->mailMerge($getParam['start'], $getParam['limit']))]);
+    }
+
+    /**
+     * returns the number of targets ina  targetlist
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws NotFoundException
+     */
+    public function getTargetCount(Request $req, Response $res, array $args): Response {
+        /** @var CampaignTask $campaignTask */
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+        if(!$campaignTask){
+            throw new NotFoundException('CampaignTask not found');
+        }
+        return $res->withJson(['count' => $campaignTask->getTargetCount()]);
     }
 }

@@ -25,48 +25,48 @@ declare var _: any;
  */
 @Component({
     selector: 'global-login',
-    templateUrl: './src/globalcomponents/templates/globallogin.html',
+    templateUrl: '../templates/globallogin.html',
     host: {
         '(window:resize)': 'handleResize()'
     }
 })
 export class GlobalLogin {
-    private promptUser: boolean = false;
+   public promptUser: boolean = false;
 
     /**
      * the username
      */
-    private username: string = '';
+   public username: string = '';
 
     /**
      * the password
      */
-    private password: string = '';
+   public password: string = '';
 
     /**
      * variable for the selected language
      */
-    private _selectedlanguage: string = '';
+   public _selectedlanguage: string = '';
 
     /**
      * the selected site if multiple sites are available
      */
-    private selectedsite: string = '';
+   public selectedsite: string = '';
 
     // the last selected language .. loaded from the cookie
     // ToDo: should be changed to local store
-    private lastSelectedLanguage: string = null;
+   public lastSelectedLanguage: string = null;
 
     /**
      * determine if the forgotten password is open or not
      */
-    private showForgotPass: boolean = false;
+   public showForgotPass: boolean = false;
 
     /**
      * variable to hold if per config the extenral side bar shoudl be shown
      * ToDo: move to separate component
      */
-    private externalSidebarUrl: SafeResourceUrl = null;
+   public externalSidebarUrl: SafeResourceUrl = null;
 
 
     /**
@@ -74,31 +74,31 @@ export class GlobalLogin {
      *
      * @private
      */
-    private messageId: string;
+   public messageId: string;
 
     /**
      * indicator to show the new password dialog
      *
      * @private
      */
-    private renewpassword: boolean = false;
+   public renewpassword: boolean = false;
 
     /**
      * inidcates that we are in the login process
      *
      * @private
      */
-    private loggingIn: boolean = false;
+   public loggingIn: boolean = false;
 
-    constructor(private loginService: loginService,
-                private http: HttpClient,
-                private configuration: configurationService,
-                private session: session,
-                private toast: toast,
-                private language: language,
-                private broadcast: broadcast,
-                private sanitizer: DomSanitizer,
-                private changeDetectorRef: ChangeDetectorRef
+    constructor(public loginService: loginService,
+               public http: HttpClient,
+               public configuration: configurationService,
+               public session: session,
+               public toast: toast,
+               public language: language,
+               public broadcast: broadcast,
+               public sanitizer: DomSanitizer,
+               public changeDetectorRef: ChangeDetectorRef
     ) {
         if (sessionStorage['OAuth-Token']) {
             if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
@@ -137,14 +137,14 @@ export class GlobalLogin {
     /**
      * registerd to the resize event that handles if the news feed shoudl be shown or not
      */
-    private handleResize() {
+   public handleResize() {
         this.changeDetectorRef.detectChanges();
     }
 
     /**
      * triggers the actual login itself
      */
-    private login(token?, issuer?) {
+   public login(token?, issuer?) {
 
         if (token || (this.username && this.password)) {
             // clear the current messageid if one is set
@@ -224,7 +224,7 @@ export class GlobalLogin {
     /**
      * returns the available languages for the chosen backend system
      */
-    private getLanguages() {
+   public getLanguages() {
         let langArray = [];
 
         if (this.configuration.data.languages) {
@@ -237,13 +237,6 @@ export class GlobalLogin {
             }
         }
         return langArray;
-    }
-
-    /**
-     * only display the login image when the screenheight is large enough
-     */
-    get displayimage() {
-        return window.innerHeight > 800;
     }
 
     /**
@@ -260,7 +253,7 @@ export class GlobalLogin {
         return this.configuration.sites;
     }
 
-    private getBackendUrls() {
+   public getBackendUrls() {
         if (this.configuration.data.backendUrls) {
             return this.configuration.data.backendUrls;
         } else {
@@ -273,14 +266,14 @@ export class GlobalLogin {
      *
      * @param event
      */
-    private setSite(event) {
+   public setSite(event) {
         this.configuration.setSiteID(event.srcElement.value);
     }
 
     /**
      * toggles the forgotten password screen elements
      */
-    private showForgotPassword() {
+   public showForgotPassword() {
         if (this.showForgotPass) {
             this.showForgotPass = false;
         } else {
@@ -325,5 +318,13 @@ export class GlobalLogin {
 
     get showProgressBar() {
         return this.configuration.data.loginProgressBar;
+    }
+
+    public handleRenewDialogClose(password?: string) {
+        this.renewpassword = false;
+        if (!!password) {
+            this.password = password;
+            this.login();
+        }
     }
 }

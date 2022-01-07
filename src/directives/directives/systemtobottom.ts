@@ -13,7 +13,7 @@ import {
 import {footer} from "../../services/footer.service";
 
 /**
- * a directive that sets the height of an element to the bottom ov the vioewable viewport, renders the element as scrollable anbd also emits
+ * a directive that sets the height of an element to the bottom ov the vioewable viewport, renders the element as scrollable and also emits
  * an event when the content is close to the bottom so an infinite list can reload automatically
  */
 @Directive({
@@ -25,21 +25,21 @@ export class SystemToBottomDirective implements DoCheck {
      * an emitter that fires if the scrollable item is approaching the end of the list
      * this should trigger loading more
      */
-    @Output('system-to-bottom') private more: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output('system-to-bottom') public more: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * a margin in pixels fromt he bottom
      * @private
      */
-    @Input() private marginBottom = 0;
+    @Input() public marginBottom = 0;
 
-    constructor(private element: ElementRef, private renderer: Renderer2, private footer: footer) {
+    constructor(public element: ElementRef, public renderer: Renderer2, public footer: footer) {
     }
 
     /**
      * set the scrollable class
      */
-    @HostBinding('class.slds-scrollable--y') private elementClass = true;
+    @HostBinding('class.slds-scrollable--y') public elementClass = true;
 
     /**
      * triggering when the element is resized
@@ -56,7 +56,7 @@ export class SystemToBottomDirective implements DoCheck {
      * @param event
      */
     @HostListener('scroll', ['$event'])
-    private onScroll(event) {
+    public onScroll(event) {
         let element = this.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.more.emit(true);

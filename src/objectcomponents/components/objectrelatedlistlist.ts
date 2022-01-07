@@ -10,10 +10,14 @@ import {ObjectRelatedList} from './objectrelatedlist';
 
 @Component({
     selector: "object-relatedlist-list",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedlistlist.html",
+    templateUrl: "../templates/objectrelatedlistlist.html",
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistList extends ObjectRelatedList {
+
+    get hide(){
+        return this.componentconfig.hideempty && this.relatedmodels.count == 0;
+    }
 
     /**
      * a getter for the Title to be displayed. This either translates a tilte if set int he config or it renders the module name

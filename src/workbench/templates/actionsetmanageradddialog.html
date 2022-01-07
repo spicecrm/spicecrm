@@ -11,7 +11,7 @@
                 <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
                 <div class="slds-form-element__control" style="min-width:250px;">
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="actionsetModule" (change)="reset()" [disabled]="sysModules.length == 0">
+                        <select class="slds-select" [(ngModel)]="actionsetModule" [disabled]="sysModules.length == 0">
                             <option value="*">*</option>
                             <option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}
                             </option>
@@ -22,7 +22,7 @@
             <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_ITEM_NAME"></system-label></label>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" placeholder="name" [(ngModel)]="actionsetName" />
+                    <input type="text" class="slds-input" placeholder="name" [(ngModel)]="actionsetName">
                 </div>
             </div>
             <div class="slds-form-element">
@@ -39,7 +39,7 @@
         </div>
         <div class="slds-modal__footer">
             <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>
-            <button class="slds-button slds-button--brand" [disabled]="fieldsetname == ''" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+            <button class="slds-button slds-button--brand" [disabled]="actionsetName == ''" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
         </div>
     </div>
 </div>

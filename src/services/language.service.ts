@@ -28,7 +28,7 @@ export class language {
     /**
      * the current language e.g. 'en_us'
      */
-    private _currentlanguage: string = '';
+    public _currentlanguage: string = '';
 
     /**
      * an event emitter that is triggered if the language service has switched languages and teh language translations have been reloaded.
@@ -41,10 +41,10 @@ export class language {
     public inlineEditEnabled: boolean = false;
 
     constructor(
-        private http: HttpClient,
-        private configurationService: configurationService,
-        private session: session,
-        private metadata: metadata
+        public http: HttpClient,
+        public configurationService: configurationService,
+        public session: session,
+        public metadata: metadata
     ) {
     }
 
@@ -189,7 +189,7 @@ export class language {
      * @param label the label itsel e.g. 'LBL_OK'
      * @param length the length of the label
      */
-    private getNestedLabel(label, length: 'default' | 'long' | 'short' = 'default') {
+    public getNestedLabel(label, length: 'default' | 'long' | 'short' = 'default') {
         let foundlabel;
 
         // try to find a label
@@ -220,7 +220,7 @@ export class language {
      *
      * @param label the label
      */
-    private getNestedTags(label) {
+    public getNestedTags(label) {
         let curpos = label.indexOf('{LABEL:');
         let matches = [];
         while (curpos >= 0) {

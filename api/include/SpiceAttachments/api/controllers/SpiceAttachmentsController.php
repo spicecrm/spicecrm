@@ -204,7 +204,7 @@ class SpiceAttachmentsController
         }
         $params = $req->getParsedBody();
 
-        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], $args['save'], $params['categoryId']);
+        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId']);
         return $res->withJson($clonedAttachments);
     }
 

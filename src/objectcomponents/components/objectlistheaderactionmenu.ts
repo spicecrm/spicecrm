@@ -14,7 +14,7 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: 'object-list-header-actionmenu',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionmenu.html'
+    templateUrl: '../templates/objectlistheaderactionmenu.html'
 })
 export class ObjectListHeaderActionMenu extends ObjectActionContainer {
 
@@ -23,7 +23,7 @@ export class ObjectListHeaderActionMenu extends ObjectActionContainer {
      */
     public actionitems: any[] = [];
 
-    constructor(private modellist: modellist, public language: language, public metadata: metadata, public model: model, public ngZone: NgZone, public cdRef: ChangeDetectorRef, private modal: modal, private injector: Injector) {
+    constructor(public modellist: modellist, public language: language, public metadata: metadata, public model: model, public ngZone: NgZone, public cdRef: ChangeDetectorRef, public modal: modal, public injector: Injector) {
         super(language, metadata, model, ngZone, cdRef);
     }
 
@@ -64,7 +64,7 @@ export class ObjectListHeaderActionMenu extends ObjectActionContainer {
     /**
      * opens the modal allowing theuser to choose and select the display fields
      */
-    private chooseFields() {
+    public chooseFields() {
         if (!this.canChooseFields) {
             return false;
         }

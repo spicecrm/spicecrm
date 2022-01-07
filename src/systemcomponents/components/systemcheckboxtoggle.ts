@@ -9,7 +9,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
  */
 @Component({
     selector: 'system-checkbox-toggle',
-    templateUrl: './src/systemcomponents/templates/systemcheckboxtoggle.html',
+    templateUrl: '../templates/systemcheckboxtoggle.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
@@ -23,28 +23,28 @@ export class SystemCheckboxToggle implements ControlValueAccessor {
     /**
      * holds the checkbox label
      */
-    @Input() private label = '';
+    @Input() public label = '';
     /**
      * holds the disabled boolean for the checkbox
      */
-    @Input() private disabled = false;
+    @Input() public disabled = false;
     /**
      * holds the local value
      */
-    private localValue: boolean;
+    public localValue: boolean;
     /**
      * holds the onChange function for NG_VALUE_ACCESSOR service
      * @private
      */
-    private onChange: (val: string) => void;
+    public onChange: (val: string) => void;
     /**
      * holds the onTouched function for NG_VALUE_ACCESSOR service
      * @private
      */
-    private onTouched: (val: string) => void;
+    public onTouched: (val: string) => void;
 
     constructor(
-        private cdRef: ChangeDetectorRef) {
+        public cdRef: ChangeDetectorRef) {
     }
 
     /**

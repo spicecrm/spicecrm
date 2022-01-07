@@ -10,18 +10,18 @@ declare var moment: any;
 
 @Component({
     selector: 'global-newsfeed-item',
-    templateUrl: './src/globalcomponents/templates/globalnewsfeeditem.html',
+    templateUrl: '../templates/globalnewsfeeditem.html',
 
 })
 export class GlobalNewsFeedItem {
 
-    @Input() private item: any = {};
+    @Input()public item: any = {};
 
-    private getDate() {
+   public getDate() {
         return moment(this.item.date).fromNow();
     }
 
-    private getExcerpt() {
+   public getExcerpt() {
         return this.item.excerpt.rendered.replace('<a', '<a target="_blank"');
     }
 

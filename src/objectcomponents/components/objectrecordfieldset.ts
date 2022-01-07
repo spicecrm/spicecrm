@@ -17,44 +17,44 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-record-fieldset',
-    templateUrl: './src/objectcomponents/templates/objectrecordfieldset.html'
+    templateUrl: '../templates/objectrecordfieldset.html'
 })
 export class ObjectRecordFieldset implements OnInit {
 
     /**
      * the id of the fieldset to be rendered
      */
-    @Input() private fieldset: string = '';
+    @Input() public fieldset: string = '';
 
     /**
      * the direction to render this fieldset. Thsi decides if the start is vertical or horizontal. Typical for a listview it is horizontal, for a record it is vertical
      */
-    @Input() private direction: 'horizontal' | 'vertical' = 'horizontal';
+    @Input() public direction: 'horizontal' | 'vertical' = 'horizontal';
 
     /**
      * a padding class to be applied
      */
-    @Input() private fieldpadding: string = 'xx-small';
+    @Input() public fieldpadding: string = 'xx-small';
 
     /**
      * an optional set of classes that will be applied to fields in teh fieldset
      */
-    @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight';
+    @Input() public fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight';
 
 
     /**
      * internal array of the fieldset items
      */
-    private fieldsetitems: any[] = [];
+    public fieldsetitems: any[] = [];
 
     /**
      * @ignore
      *
      * helper for the number of columns
      */
-    private numberOfColumns: number = 0; // in grid
+    public numberOfColumns: number = 0; // in grid
 
-    constructor(private metadata: metadata, private model: model, private view: view) {
+    constructor(public metadata: metadata, public model: model, public view: view) {
     }
 
     /**
@@ -67,7 +67,7 @@ export class ObjectRecordFieldset implements OnInit {
         for (let item of this.fieldsetitems) {
             this.numberOfColumns = this.numberOfColumns + (item.fieldconfig.width ? item.fieldconfig.width * 1 : (item.fieldconfig.width = 1));
         }
-        if (!this.renderVertical && this.numberOfColumns > 8) console.warn('wrong fieldset grid (' + this.fieldset + ')');
+        if (!this.renderVertical && ( this.numberOfColumns > 8 && this.numberOfColumns !== 12 )) console.warn('wrong fieldset grid (' + this.fieldset + ')');
     }
 
     /**
@@ -77,7 +77,7 @@ export class ObjectRecordFieldset implements OnInit {
         return this.direction == 'vertical' ? true : false;
     }
 
-    private isField(fieldsetitem) {
+    public isField(fieldsetitem) {
         return fieldsetitem.field ? true : false;
     }
 
@@ -86,7 +86,7 @@ export class ObjectRecordFieldset implements OnInit {
      *
      * @param i the index of the item
      */
-    private sizeClass(i) {
+    public sizeClass(i) {
         // render vertical ... none
         if (this.renderVertical) return '';
 

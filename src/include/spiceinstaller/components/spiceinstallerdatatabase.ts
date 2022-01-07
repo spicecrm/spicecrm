@@ -10,34 +10,37 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-database',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallerdatabase.html'
+    templateUrl: '../templates/spiceinstallerdatabase.html'
 })
 
 export class SpiceInstallerDatabase {
     /**
      * condition booleans
      */
-    private hostNameCondition: boolean = true;
-    private userNameCondition: boolean = true;
-    private dbNameCondition: boolean = true;
+    public hostNameCondition: boolean = true;
+    public userNameCondition: boolean = true;
+    public dbNameCondition: boolean = true;
 
-    private loading: boolean = false;
+    public loading: boolean = false;
 
-    private charset: string = '';
+    public charset: string = '';
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public spiceinstaller: spiceinstaller
     ) {
-
+        // if we only have one ... set the extension by default
+        if(spiceinstaller.dbdrivers.length == 1){
+            spiceinstaller.db_type = spiceinstaller.dbdrivers[0].extension;
+        }
     }
 
     /**
      * checks if a connection with the database is possible with the inserted input,
      * saves the configuration
      */
-    private checkDB() {
+    public checkDB() {
         switch (this.spiceinstaller.db_type) {
             case 'mysql': // backward compatibility
             case 'mysqli':

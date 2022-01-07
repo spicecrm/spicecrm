@@ -9,15 +9,15 @@ import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: './src/objectcomponents/templates/objectactionvcardbutton.html'
+    templateUrl: '../templates/objectactionvcardbutton.html'
 })
 export class ObjectActionVCardButton {
 
     constructor(
-        protected language: language,
-        protected model: model,
-        protected modal: modal,
-        protected backend: backend,
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
     ) {
 
     }

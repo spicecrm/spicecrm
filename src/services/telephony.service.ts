@@ -4,6 +4,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {broadcast} from './broadcast.service';
 import {telephonyCallI} from "./interfaces.service";
+import {BehaviorSubject} from "rxjs";
 
 declare var moment: any;
 
@@ -31,18 +32,28 @@ export class telephony {
      */
     public terminateCall$: EventEmitter<telephonyCallI> = new EventEmitter<telephonyCallI>();
 
-    constructor(private broadcast: broadcast) {
+    /**
+     * actions that are possible. needs to be set by the call listener to enable thee actions
+     */
+    public actions: any = {
+        hangup: false,
+        transfer: false
+    };
+
+    constructor(public broadcast: broadcast) {
 
         // subscribe to the logout so we can remove all open composers
         this.broadcast.message$.subscribe(message => this.handleLogout(message));
     }
 
-    private handleLogout(message) {
+    public handleLogout(message) {
         if (message.messagetype == 'logout') {
             this.calls = [];
             this.isActive = false;
         }
     }
+
+
 
     /**
      * initiate the calling of an msisdn

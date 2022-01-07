@@ -18,7 +18,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'output-templates-preview',
-    templateUrl: "./src/modules/outputtemplates/templates/outputtemplatespreview.html",
+    templateUrl: "../templates/outputtemplatespreview.html",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OutputTemplatesPreview {
@@ -26,34 +26,34 @@ export class OutputTemplatesPreview {
     /**
      * the output format
      */
-    private _outputformat: 'html' | 'pdf' = 'pdf';
+    public _outputformat: 'html' | 'pdf' = 'pdf';
 
     /**
      * indicates that the system is rendering the preview
      */
-    private loading_output: boolean = false;
+    public loading_output: boolean = false;
 
     /**
      * any susbcriptions we might have
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * the selected item
      */
-    private selectedItem: any;
+    public selectedItem: any;
 
     /**
      * the response of the compiler
      */
-    private compiled_selected_template: string = '';
+    public compiled_selected_template: string = '';
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
-    private blobUrl: any;
+    public blobUrl: any;
 
-    constructor(private language: language, private backend: backend, private metadata: metadata, private model: model, private modal: modal, private sanitizer: DomSanitizer, private cdRef: ChangeDetectorRef, private toast: toast ) {
+    constructor(public language: language, public backend: backend, public metadata: metadata, public model: model, public modal: modal, public sanitizer: DomSanitizer, public cdRef: ChangeDetectorRef, public toast: toast ) {
         this.model.data$.subscribe(data => {
             this.checkModelChanges();
         });
@@ -93,7 +93,7 @@ export class OutputTemplatesPreview {
     /**
      * subscribe to model changes and reset the selecteditem if th emodulke changed in the template
      */
-    private checkModelChanges() {
+    public checkModelChanges() {
         if (this.selectedItem && this.selectedItem.module != this.module) {
             this.clearField();
         }
@@ -117,7 +117,7 @@ export class OutputTemplatesPreview {
     /**
      * opens a model search modal
      */
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.module;
             selectModal.instance.multiselect = false;
@@ -145,7 +145,7 @@ export class OutputTemplatesPreview {
     /**
      * clears the field with the selected parent
      */
-    private clearField() {
+    public clearField() {
         this.selectedItem = undefined;
         this.blobUrl = null;
         this.compiled_selected_template = null;
@@ -157,7 +157,7 @@ export class OutputTemplatesPreview {
     /**
      * renders the preview
      */
-    private rendertemplate() {
+    public rendertemplate() {
         this.loading_output = true;
 
         this.blobUrl = null;
@@ -223,7 +223,7 @@ export class OutputTemplatesPreview {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {

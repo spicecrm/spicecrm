@@ -15,7 +15,7 @@ declare var moment: any;
 
 @Component({
     selector: 'administration-quotamanager',
-    templateUrl: './src/admincomponents/templates/administrationquotamanager.html'
+    templateUrl: '../templates/administrationquotamanager.html'
 })
 export class AdministrationQuotaManager implements OnInit {
 
@@ -27,7 +27,7 @@ export class AdministrationQuotaManager implements OnInit {
     monthNamesList: Array<string> = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     yearsList: Array<number> = [];
 
-    constructor(private backend: backend) {
+    constructor(public backend: backend) {
     }
 
     ngOnInit(): void {

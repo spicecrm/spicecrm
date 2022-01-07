@@ -9,4 +9,6 @@ package-lock.json
 /dist
 documentation
 docs
-.angular/**
+.angular
+dev_server.url
+/**/.DS_store

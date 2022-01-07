@@ -1,0 +1,19 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label [label]="'LBL_SENDINBLUE'"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div *ngIf="contacts.length > 0">
+            {{contacts.length}} <system-label [label]="'MSG_SENDINBLUE_FOUND'"></system-label>
+            <system-label [label]="'MSG_SENDINBLUE_UPDATE_LIST'"></system-label>
+        </div>
+        <div *ngIf="contacts.length == 0">
+            <system-label [label]="'MSG_SENDINBLUE_UPDATE_LIST'"></system-label>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--brand" (click)="close()"><system-label [label]="'LBL_CANCEL'"></system-label></button>
+        <button class="slds-button slds-button--brand"  (click)="updateSendInBlueList()"><system-label [label]="'LBL_UPDATE'"></system-label></button>
+
+    </system-modal-footer>
+</system-modal>

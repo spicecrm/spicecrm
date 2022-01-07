@@ -6,7 +6,7 @@ import {administrationapiinspectorService} from "../services/administrationapiin
  */
 @Component({
     selector: 'administration-api-inspector-method-parameters',
-    templateUrl: './src/admincomponents/templates/administrationapiinspectormethodparameters.html'
+    templateUrl: '../templates/administrationapiinspectormethodparameters.html'
 })
 export class AdministrationApiInspectorMethodParameters implements OnChanges {
 
@@ -15,21 +15,21 @@ export class AdministrationApiInspectorMethodParameters implements OnChanges {
      *
      * @private
      */
-    private parameters: any[];
+    public parameters: any[];
 
     /**
      * the api method as input
      *
      * @private
      */
-    @Input() private apimethod: any;
+    @Input() public apimethod: any;
 
     /**
      * the path to filter by
      *
      * @private
      */
-    @Input() private in: 'path' | 'query' | 'body';
+    @Input() public in: 'path' | 'query' | 'body';
 
     /**
      * if this is set the component will render inputs for the paramaters to allow the usage of this as part of the testing
@@ -37,7 +37,7 @@ export class AdministrationApiInspectorMethodParameters implements OnChanges {
     @Input() public parameterCollector: any;
 
     constructor(
-        private apiinspector: administrationapiinspectorService
+        public apiinspector: administrationapiinspectorService
     ) {
     }
 

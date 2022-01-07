@@ -13,7 +13,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
-    templateUrl: './src/objectfields/templates/fieldtotalamount.html'
+    templateUrl: '../templates/fieldtotalamount.html'
 })
 export class fieldTotalAmount extends fieldCurrency {
 
@@ -50,7 +50,7 @@ export class fieldTotalAmount extends fieldCurrency {
         }
 
         // set it to the model
-        this.model.data[this.fieldname] = totalvalue;
+        this.model.setField(this.fieldname, totalvalue);
 
         // return the value
         return this.userpreferences.formatMoney(totalvalue);

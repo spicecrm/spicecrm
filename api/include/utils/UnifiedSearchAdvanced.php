@@ -37,6 +37,8 @@
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -91,8 +93,8 @@ class UnifiedSearchAdvanced {
 
 		require_once 'include/ListView/ListViewSmarty.php';
 
-		global $modListHeader, $beanList, $beanFiles, $current_language, $app_strings, $mod_strings;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+		global $modListHeader, $current_language, $app_strings, $mod_strings;
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$home_mod_strings = return_module_language($current_language, 'Home');
 
 		$this->query_string = DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($this->query_string, 'UNIFIED_SEARCH'))));
@@ -105,7 +107,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	            {
                     if (isset($unified_search_modules_display[$key]) && !empty($unified_search_modules_display[$key]['visible']))
                     {
-                        $modules_to_search[$key] = $beanList[$key];
+                        $modules_to_search[$key] = SpiceModules::getInstance()->getBeanName($key);
                     }
 	            }
 			}
@@ -120,13 +122,13 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 				// use user's previous selections
 			    foreach ( $users_modules as $key => $value ) {
 			    	if (isset($unified_search_modules_display[$key]) && !empty($unified_search_modules_display[$key]['visible'])) {
-		            	$modules_to_search[$key] = $beanList[$key];
+		            	$modules_to_search[$key] = SpiceModules::getInstance()->getBeanName($key);
 		        	}
 			    }
 			} else {
 				foreach($unified_search_modules_display as $module=>$data) {
 				    if (!empty($data['visible']) ) {
-				        $modules_to_search[$module] = $beanList[$module];
+				        $modules_to_search[$module] = SpiceModules::getInstance()->getBeanName($module);
 				    }
 				}
 			}
@@ -146,17 +148,17 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$module_counts = [];
 		$has_results = false;
 
-		if(!empty($this->query_string)) {
-			foreach($modules_to_search as $moduleName => $beanName) {
-                require_once $beanFiles[$beanName] ;
-                $seed = new $beanName();
+		if (!empty($this->query_string)) {
+			foreach ($modules_to_search as $moduleName => $beanName) {
+			    $beanClass = SpiceModules::getInstance()->getBeanClassForModule($moduleName);
+                $seed = new $beanClass();
 
                 $lv = new ListViewSmarty();
                 $lv->lvd->additionalDetails = false;
-                $mod_strings = return_module_language($current_language, $seed->module_dir);
+                $mod_strings = []; // return_module_language always returns an empty array anyway
 
                 //retrieve the original list view defs and store for processing in case of custom layout changes
-                require('modules/'.$seed->module_dir.'/metadata/listviewdefs.php');
+                require('modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
 				$orig_listViewDefs = $listViewDefs;
 
                 if(file_exists('custom/modules/'.$seed->module_dir.'/metadata/listviewdefs.php'))
@@ -213,8 +215,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
                  * Use searchForm2->generateSearchWhere() to create the search query, as it can generate SQL for the full set of comparisons required
                  * generateSearchWhere() expects to find the search conditions for a field in the 'value' parameter of the searchFields entry for that field
                  */
-                require_once $beanFiles[$beanName] ;
-                $seed = new $beanName();
+                $seed = new $beanClass();
                 
 				require_once $this->searchFormPath;
                 $searchForm = new $this->searchFormClass ( $seed, $moduleName ) ;
@@ -298,15 +299,13 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
 	function buildCache()
 	{
-
-		global $beanList, $beanFiles, $dictionary;
-
 		$supported_modules = [];
 
-		foreach($beanList as $moduleName=>$beanName)
-		{
-			if (!isset($beanFiles[$beanName]))
-				continue;
+		foreach (SpiceModules::getInstance()->getBeanList() as $moduleName => $beanName) {
+		    $beanClass = SpiceModules::getInstance()->getBeanClassForModule($moduleName);
+			if (!class_exists($beanClass)) {
+                continue;
+            }
 
 			$beanName = BeanFactory::getObjectName($moduleName);
 			$manager = new VardefManager( );
@@ -342,10 +341,10 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 			$isCustomModule = preg_match('/^([a-z0-9]{1,5})_([a-z0-9_]+)$/i' , $moduleName);
 
 			//If the bean supports unified search or if it's a custom module bean and unified search is not defined
-			if(!empty($dictionary[$beanName]['unified_search']) || $isCustomModule)
+			if(!empty(SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['unified_search']) || $isCustomModule)
 			{
 				$fields = [];
-				foreach ( $dictionary [ $beanName ][ 'fields' ] as $field => $def )
+				foreach (SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['fields'] as $field => $def)
 				{
 					// We cannot enable or disable unified_search for email in the vardefs as we don't actually have a vardef entry for 'email'
 					// the searchFields entry for 'email' doesn't correspond to any vardef entry. Instead it contains SQL to directly perform the search.
@@ -381,8 +380,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
 				if(count($fields) > 0) {
 					$supported_modules [$moduleName] ['fields'] = $fields;
-					if (isset($dictionary[$beanName]['unified_search_default_enabled']) && $dictionary[$beanName]['unified_search_default_enabled'] === TRUE)
-					{
+					if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['unified_search_default_enabled']) && SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['unified_search_default_enabled'] === TRUE) {
                         $supported_modules [$moduleName]['default'] = true;
                     } else {
                         $supported_modules [$moduleName]['default'] = false;

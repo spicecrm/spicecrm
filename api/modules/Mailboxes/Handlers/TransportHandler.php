@@ -1,7 +1,10 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\includes\TimeDate;
 use Exception;
 use SpiceCRM\includes\Logger\SpiceLogger;
 use SpiceCRM\modules\Mailboxes\MailboxLogTrait;
@@ -48,7 +51,7 @@ abstract class TransportHandler
 
     public function sendMail($email)
     {
-        global $timedate;
+        $timedate = TimeDate::getInstance();
 
         if ($this->mailbox->active == false) {
             return [

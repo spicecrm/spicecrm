@@ -9,7 +9,7 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 
 @Component({
     selector: 'field-messages',
-    templateUrl: './src/objectfields/templates/fieldmessages.html'
+    templateUrl: '../templates/fieldmessages.html'
 })
 export class FieldMessagesComponent implements OnInit, OnChanges {
     /**
@@ -17,36 +17,36 @@ export class FieldMessagesComponent implements OnInit, OnChanges {
      *
      * @private
      */
-    @Input() private fieldname: string = '';
+    @Input() public fieldname: string = '';
 
     /**
      * the messages collected
      * @private
      */
-    @Input('messages') private _messages = [];
+    @Input('messages') public _messages = [];
 
     /**
      * the errors
      *
      * @private
      */
-    private errors = [];
+    public errors = [];
 
     /**
      * the warnings
      *
      * @private
      */
-    private warnings = [];
+    public warnings = [];
 
     /**
      * notices
      *
      * @private
      */
-    private notices = [];
+    public notices = [];
 
-    constructor(private model: model, private view: view, private language: language, @Optional() private fielderrorgroup: fielderrorgrouping) {
+    constructor(public model: model, public view: view, public language: language, @Optional() public fielderrorgroup: fielderrorgrouping) {
     }
 
     public ngOnInit() {
@@ -63,7 +63,7 @@ export class FieldMessagesComponent implements OnInit, OnChanges {
         if (this.fielderrorgroup) this.fielderrorgroup.setError(this.fieldname, false);
     }
 
-    private updateMessages() {
+    public updateMessages() {
         let messages: any[];
         if (this._messages.length == 0 && this.fieldname) {
             messages = this.model.getFieldMessages(this.fieldname) || [];
@@ -76,7 +76,7 @@ export class FieldMessagesComponent implements OnInit, OnChanges {
         if (this.fielderrorgroup) this.fielderrorgroup.setError(this.fieldname, this.errors.length !== 0);
     }
 
-    private filterMessages(messages: any[], type?: string) {
+    public filterMessages(messages: any[], type?: string) {
         return messages.filter((e) => {
             return (!type || e.type == type);
         });

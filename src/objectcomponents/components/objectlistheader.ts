@@ -14,44 +14,49 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: '[object-list-header]',
-    templateUrl: './src/objectcomponents/templates/objectlistheader.html',
+    templateUrl: '../templates/objectlistheader.html',
     providers: [view]
 })
 export class ObjectListHeader implements OnDestroy{
 
-    @ViewChildren(SystemResizeDirective) private resizeElements: QueryList<SystemResizeDirective>;
+    @ViewChildren(SystemResizeDirective) public resizeElements: QueryList<SystemResizeDirective>;
 
     /**
      * a relaod timeout .. set when the sort is changed to reacxt to subsequent changes and not relaod immediately
      */
-    private reloadTimeOut: number;
+    public reloadTimeOut: number;
 
     /**
      * an action set ot be applied to the list actions
      */
-    @Input() private actionset: string = '';
+    @Input() public actionset: string = '';
 
     /**
      * show the select column as first column
      */
-    @Input() private showSelectColumn: boolean = true;
+    @Input() public showSelectColumn: boolean = true;
 
     /**
      * show the number column as first column
      */
-    @Input() private showRowNumber: boolean = false;
+    @Input() public showRowNumber: boolean = false;
+
+    /**
+     * show the number column as first column
+     */
+    @Input() public showDragHandle: boolean = false;
 
     /**
      * display the row action menu or hide the column
      */
-    @Input() private showRowActionMenu: boolean = true;
+    @Input() public showRowActionMenu: boolean = true;
 
     /**
      * keep all suibscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private modellist: modellist, private language: language, private view: view, private elementRef: ElementRef, private layout: layout, private cdref: ChangeDetectorRef) {
+    constructor(public modellist: modellist, public language: language, public view: view, public elementRef: ElementRef, public layout: layout, public cdref: ChangeDetectorRef) {
         this.view.labels = 'short';
 
         // register to listfield changes
@@ -90,7 +95,7 @@ export class ObjectListHeader implements OnDestroy{
      * return the column width if set
      * @param columnId
      */
-    private columnWidth(columnId?) {
+    public columnWidth(columnId?) {
         let listfield = this.listfields.find(lf => lf.id == columnId);
         return listfield.width ? listfield.width + '%' : (100 / this.listfields.length) + '%';
     }
@@ -100,7 +105,7 @@ export class ObjectListHeader implements OnDestroy{
      *
      * @param field the field from the fieldset
      */
-    private isSortable(field): boolean {
+    public isSortable(field): boolean {
         if (field.fieldconfig.sortable === true) {
             return true;
         } else {
@@ -113,7 +118,7 @@ export class ObjectListHeader implements OnDestroy{
      *
      * @param field the field from the fieldset
      */
-    private setSortField(field): void {
+    public setSortField(field): void {
         if (this.isSortable(field)) {
             this.modellist.setSortField(field.field);
             if (this.reloadTimeOut) window.clearTimeout(this.reloadTimeOut);
@@ -121,7 +126,7 @@ export class ObjectListHeader implements OnDestroy{
         }
     }
 
-    private onresize(e) {
+    public onresize(e) {
         let elementWidths = {};
         let totalwidth = 0;
 

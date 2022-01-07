@@ -9,10 +9,10 @@ import {loader} from '../../services/loader.service';
 
 @Component({
     selector: 'system-loader-progress',
-    templateUrl: './src/systemcomponents/templates/systemloaderprogress.html'
+    templateUrl: '../templates/systemloaderprogress.html'
 })
 export class SystemLoaderProgress {
-        constructor(private loader: loader) { }
+        constructor(public loader: loader) { }
 
 
 }

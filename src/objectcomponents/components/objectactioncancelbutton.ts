@@ -15,7 +15,7 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: 'object-action-cancel-button',
-    templateUrl: './src/objectcomponents/templates/objectactioncancelbutton.html',
+    templateUrl: '../templates/objectactioncancelbutton.html',
     providers: [helper]
 })
 export class ObjectActionCancelButton {
@@ -27,7 +27,7 @@ export class ObjectActionCancelButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view, @Optional() private modalwindow: modalwindow) {
+    constructor(public language: language, public metadata: metadata, public model: model, public router: Router, public helper: helper, public view: view, @Optional() public modalwindow: modalwindow) {
     }
 
     /**

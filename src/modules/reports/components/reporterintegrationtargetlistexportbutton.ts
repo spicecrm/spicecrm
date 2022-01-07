@@ -11,14 +11,14 @@ import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-integration-targetlistexport-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationtargetlistexportbutton.html'
+    templateUrl: '../templates/reporterintegrationtargetlistexportbutton.html'
 })
 export class ReporterIntegrationTargetlistexportButton {
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private reporterconfig: reporterconfig) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, public reporterconfig: reporterconfig) {
     }
 
-    private showModal(): void {
+    public showModal(): void {
         // build wherecondition
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {

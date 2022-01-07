@@ -12,23 +12,24 @@ import {toast} from "../../services/toast.service";
 
 
 @Component({
-    templateUrl: './src/workbench/templates/validationrulesmanager.html',
+    selector: 'validation-rules-manager',
+    templateUrl: '../templates/validationrulesmanager.html',
 })
 export class ValidationRulesManager {
     public rules: any[] = [];
-    private _backup_rules: any[] = [];
-    private _current_module: string;
-    private _current_rule: string;
-    private _current_rule_data: any = {};
+    public _backup_rules: any[] = [];
+    public _current_module: string;
+    public _current_rule: string;
+    public _current_rule_data: any = {};
     public logicoperator_options = [];
     public current_tab = 'details';
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
-        private toast: toast,
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
+        public toast: toast,
     ) {
         this.logicoperator_options = this.language.getDisplayOptions('logicoperators_dom', true);
     }
@@ -63,9 +64,13 @@ export class ValidationRulesManager {
 
     public getCurrentRuleData() {
         if (this.rules) {
-            return this.rules.find((e) => {
+            const rule = this.rules.find((e) => {
                 return e.id == this._current_rule;
             });
+            if (!!rule?.onevents) {
+                rule.onevents = rule.onevents.split(',');
+            }
+            return rule;
         } else {
             return '';
         }
@@ -89,6 +94,11 @@ export class ValidationRulesManager {
 
     public save() {
         let data = this.current_rule_data;
+
+        if (Array.isArray(data.onevents)) {
+            data.onevents = data.onevents.join(',');
+        }
+
         this.backend.postRequest('configuration/spiceui/core/modelvalidations', {}, data).subscribe(
             (success) => {
                 this.current_rule_data.isnewrecord = false;
@@ -129,7 +139,7 @@ export class ValidationRulesManager {
         this.current_rule = this.rules[this.rules.length - 1].id;
     }
 
-    private removeRule(id: string = this.current_rule): boolean {
+    public removeRule(id: string = this.current_rule): boolean {
         let idx = this.rules.findIndex((e) => {
             return e.id == id;
         });
@@ -140,14 +150,14 @@ export class ValidationRulesManager {
         return true;
     }
 
-    private resetCurrentRuleData() {
+    public resetCurrentRuleData() {
         let data = this._backup_rules.find((e) => {
             return e.id == this._current_rule;
         });
         this._current_rule_data = {...data};
     }
 
-    private copyRulesToBackup() {
+    public copyRulesToBackup() {
         this._backup_rules = [];
         for (let r of this.rules) {
             this._backup_rules.push({...r});

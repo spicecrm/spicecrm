@@ -19,26 +19,26 @@ declare var _: any;
  */
 @Component({
     selector: "user-roles",
-    templateUrl: "./src/modules/users/templates/userroles.html"
+    templateUrl: "../templates/userroles.html"
 })
 export class UserRoles {
 
-    private userRoles: any[] = [];
-    private noneUserRoles: any[] = [];
-    private componentId: string;
+    public userRoles: any[] = [];
+    public noneUserRoles: any[] = [];
+    public componentId: string;
 
     /**
      * inidcates that the roles are being laoded
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     constructor(
-        private backend: backend,
-        private toast: toast,
-        private modal: modal,
-        private model: model,
-        private session: session,
-        private language: language) {
+        public backend: backend,
+        public toast: toast,
+        public modal: modal,
+        public model: model,
+        public session: session,
+        public language: language) {
 
         this.componentId = _.uniqueId();
 
@@ -56,8 +56,9 @@ export class UserRoles {
 
             this.noneUserRoles = res.allRoles.filter(role => {
                 for (let userRole of this.userRoles) {
-                    if (role.id == userRole.id)
+                    if (role.id == userRole.id) {
                         return false;
+                    }
                 }
                 return true;
             });
@@ -75,7 +76,7 @@ export class UserRoles {
      *
      * @param roles
      */
-    private sortRoles( roles ): any[] {
+    public sortRoles( roles ): any[] {
         if(roles) {
             return roles.sort((a, b) => {
                 return this.language.getLabel(a.label).localeCompare(this.language.getLabel(b.label));
@@ -89,10 +90,10 @@ export class UserRoles {
      *
      * @param event
      */
-    private addRole(event) {
+    public addRole(event) {
         if (this.session.authData.admin) {
             this.modal.openModal("UserRolesAddModal").subscribe(addModalRef => {
-                addModalRef.instance.user_id = this.model.data.id;
+                addModalRef.instance.user_id = this.model.id;
                 addModalRef.instance.noneUserRoles = this.noneUserRoles;
                 addModalRef.instance.response.subscribe(res => {
                     if (res && typeof res === "object") {
@@ -117,14 +118,14 @@ export class UserRoles {
      * @param roleId
      * @param isDefaultRole
      */
-    private deleteRole(roleIndex, roleId, isDefaultRole) {
+    public deleteRole(roleIndex, roleId, isDefaultRole) {
         if (this.session.authData.admin && !isDefaultRole) {
             this.modal.confirm(
                 this.language.getLabel("MSG_DELETE_RECORD", "", "long"),
                 this.language.getLabel("MSG_DELETE_RECORD"))
                 .subscribe((answer) => {
                     if (answer) {
-                        this.backend.deleteRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.data.id}`)
+                        this.backend.deleteRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.id}`)
                             .subscribe(
                                 res => {
                                     if (res.status == "error") {
@@ -148,13 +149,13 @@ export class UserRoles {
      *
      * @param roleId
      */
-    private setDefaultRole(roleId) {
+    public setDefaultRole(roleId) {
         if (this.session.authData.admin) {
             this.userRoles.every(role => {
                 (role.id == roleId) ? role.defaultrole = "1" : role.defaultrole = "0";
                 return true;
             });
-            this.backend.postRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.data.id}/default`);
+            this.backend.postRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.id}/default`);
         }
     }
 }

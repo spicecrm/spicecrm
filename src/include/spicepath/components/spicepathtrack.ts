@@ -16,27 +16,27 @@ declare var _: any;
  */
 @Component({
     selector: "spice-path-track",
-    templateUrl: "./src/include/spicepath/templates/spicepathtrack.html",
+    templateUrl: "../templates/spicepathtrack.html",
 })
 export class SpicePathTrack implements OnInit{
 
     /**
      * holds the current active stage if the user clicks on another stage
      */
-    private activeStage: string;
+    public activeStage: string;
 
-    private beanGuideStatus: 'open' | 'won' | 'lost' = 'open';
+    public beanGuideStatus: 'open' | 'won' | 'lost' = 'open';
 
-    private _stages: any[] = [];
+    public _stages: any[] = [];
 
-    private _modelstage: string;
+    public _modelstage: string;
 
     /**
      * emits the curetn stage
      */
-    @Output() private activeStage$: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public activeStage$: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private configuration: configurationService, private model: model, private language: language) {
+    constructor(public configuration: configurationService, public model: model, public language: language) {
 
     }
 
@@ -56,7 +56,7 @@ export class SpicePathTrack implements OnInit{
     /**
      * builds the stages .. also grouped by the stage_bucket
      */
-    private buildstages() {
+    public buildstages() {
         let retArray = [];
         let stages = this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.model.module].stages : [];
 
@@ -112,7 +112,7 @@ export class SpicePathTrack implements OnInit{
      *
      * @param currentstage the stage to be evaluated for which the class is queried.
      */
-    private stageClass(currentstage) {
+    public stageClass(currentstage) {
 
         let itemstati = [];
 
@@ -161,7 +161,7 @@ export class SpicePathTrack implements OnInit{
      *
      * @param stage the selected stage
      */
-    private setActiveStage(stage) {
+    public setActiveStage(stage) {
         // only allow if status is open
         // if(this.beanGuideStatus != 'open') return;
 
@@ -178,7 +178,7 @@ export class SpicePathTrack implements OnInit{
      *
      * @param stagedata
      */
-    private getStageLabel(stagedata) {
+    public getStageLabel(stagedata) {
         if (stagedata.stage_label) {
             return this.language.getLabel(stagedata.stage_label);
         } else {

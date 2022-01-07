@@ -12,7 +12,7 @@ declare var moment;
 
 @Component({
     selector: 'object-timeline-full-screen',
-    templateUrl: './src/objectcomponents/templates/objecttimelinefullscreen.html',
+    templateUrl: '../templates/objecttimelinefullscreen.html',
     providers: [timeline, model]
 })
 export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
@@ -20,17 +20,17 @@ export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
     /**
      * a reference to the list container. Required to have a scroll handle and do the infinite scrolling
      */
-    @ViewChild('listContainer', {read: ViewContainerRef, static: true}) private listContainer: ViewContainerRef;
+    @ViewChild('listContainer', {read: ViewContainerRef, static: true}) public listContainer: ViewContainerRef;
 
-    private dateInput: any;
+    public dateInput: any;
 
-    constructor(private timeline: timeline, private parent: model, private navigationTab: navigationtab, private language: language, private layout: layout) {
+    constructor(public timeline: timeline, public parent: model, public navigationTab: navigationtab, public language: language, public layout: layout) {
 
     }
 
     get parentName() {
-        console.log(this.parent.data);
-        return this.parent.data.name;
+
+        return this.parent.getField('name');
     }
 
     get displayDetailsPanel() {
@@ -78,13 +78,13 @@ export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
         this.parent.goDetail();
     }
 
-    private initialize(params) {
+    public initialize(params) {
         this.parent.module = params.module;
         this.parent.id = params.id;
         this.timeline.parent = this.parent;
         this.parent.getData(true, '', true).subscribe(data => {
             // set the tab params
-            this.timeline.parent.data = data;
+            this.timeline.parent.setData(data);
             this.navigationTab.setTabInfo({displayname: this.parent.getField('summary_text') + ' • timeline'});
         });
     }
@@ -94,7 +94,7 @@ export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
      *
      * @param e the event emitted from teh DOM element
      */
-    private onScroll(e) {
+    public onScroll(e) {
         let element = this.listContainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             if (this.timeline.canLoadMore()) {
@@ -109,7 +109,7 @@ export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
     }
 
     @HostListener('window:resize', ['$event'])
-    private onResize() {
+    public onResize() {
         this.timeline.smartView = this.listContainer.element.nativeElement.clientWidth < 742;
         this.timeline.smartFontSize = this.listContainer.element.nativeElement.clientWidth < 413;
     }

@@ -13,7 +13,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
-    templateUrl: './src/objectfields/templates/fieldcurrency.html'
+    templateUrl: '../templates/fieldcurrency.html'
 })
 export class fieldCurrency extends fieldGeneric implements OnInit {
 
@@ -21,13 +21,13 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      * the reference to the input element
      * @private
      */
-    @ViewChild('floatinput', {static: false}) private inputel: ElementRef;
+    @ViewChild('floatinput', {static: false}) public inputel: ElementRef;
 
     /**
      * the formatted value
      * @private
      */
-    private textvalue: string = '';
+    public textvalue: string = '';
 
     /**
      * holds an array of currencies
@@ -37,7 +37,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
     /**
      * the reference to the field with the currency id
      */
-    private currencyidfield: string = '';
+    public currencyidfield: string = '';
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
@@ -72,7 +72,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      * sets a default currency id fromt he preferences or if nothing is set to -99
      * @private
      */
-    private setDefaultCurrencyId() {
+    public setDefaultCurrencyId() {
         if (this.currencyidfield) {
             if (!this.model.getField(this.currencyidfield)) {
                 let preferredCurrency = this.userpreferences.getPreference('currency');
@@ -110,12 +110,12 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
     /**
      * helper to get the currency symbol
      */
-    private getCurrencySymbol(): string {
+    public getCurrencySymbol(): string {
         let currencySymbol: string;
         let currencyid = -99;
         if (this.currencyidfield) {
-            if (!this.model.data[this.currencyidfield]) return '';
-            else currencyid = this.model.data[this.currencyidfield];
+            if (!this.model.getField(this.currencyidfield)) return '';
+            else currencyid = this.model.getField(this.currencyidfield);
         }
         this.currencies.some(currency => {
             if (currency.id == currencyid) {
@@ -126,14 +126,14 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         return currencySymbol;
     }
 
-    private getValAsText() {
+    public getValAsText() {
         if (this.value === undefined) return '';
         let val = parseFloat(this.value);
         if (isNaN(val)) return '';
         return this.userpreferences.formatMoney(val);
     }
 
-    private checkInput(e) {
+    public checkInput(e) {
         let allowedKeys = ['ArrowRight', 'ArrowLeft', 'Backspace', 'Delete'];
         let regex = /^[0-9.,]+$/;
         if (!regex.test(e.key) && allowedKeys.indexOf(e.key) < 0) {
@@ -142,7 +142,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         }
     }
 
-    private changed() {
+    public changed() {
         let curpos = this.inputel.nativeElement.selectionEnd;
         let val: any = this.textvalue;
         val = val.split(this.userpreferences.toUse.num_grp_sep).join('');
@@ -175,9 +175,9 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      * load currency id from user preferences
      * @private
      */
-    private setCurrencyFromPreferences() {
-        if (!!this.currencyidfield && !this.model.data[this.currencyidfield]) {
-            this.model.data[this.currencyidfield] = this.userpreferences.toUse.currency;
+    public setCurrencyFromPreferences() {
+        if (!!this.currencyidfield && !this.model.getField(this.currencyidfield)) {
+            this.model.setField(this.currencyidfield, this.userpreferences.toUse.currency);
         }
     }
 }

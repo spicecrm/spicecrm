@@ -6,7 +6,9 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SugarBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 /*********************************************************************************
  * Description: This file handles the Data base functionality for the application.
@@ -140,6 +142,32 @@ class MysqliManager extends DBManager
         'row_count' => 'mysqli_num_rows',
         'affected_row_count' => 'mysqli_affected_rows',
     ];
+
+    /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SHOW TABLE STATUS");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $recordCount = $this->fetchByAssoc($this->query("SELECT count(*) records FROM {$table['Name']}"));
+
+            $tablesArray[] = [
+                'name' => $table['Name'],
+                'records' => (int)$recordCount['records'],
+                'size' => $table['Data_length'] + $table['Index_length']
+            ];
+            $dbCount += (int)$recordCount['records'];
+            $dbSize += (int)$table['Data_length'] + (int)$table['Index_length'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
 
     /**
      * @see MysqlManager::query()
@@ -548,13 +576,22 @@ class MysqliManager extends DBManager
      *
      * @see DBManager::upsertQuery()
      */
-    public function upsertQuery($table, array $pks, array $data)
+    public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
+        // quote the names
         $cols = array_keys($data);
+        foreach ( $cols as $k => $v ) {
+            $cols[$k] = $this->quote($v);
+        }
+
+        // quote the values
         $vals = array_values($data);
-        foreach ( $cols as $k => $v ) $cols[$k] = $this->quote( $v );
-        foreach ( $vals as $k => $v ) $vals[$k] = is_null( $v ) ? 'null' : $this->quote( $v );
-        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES ('" . implode("','", $vals) . "')");
+        foreach ( $vals as $k => $v ) {
+            $vals[$k] = is_null($v) ? "null" : "'{$this->quote( $v )}'";
+        }
+
+        // run the query
+        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")");
     }
 
     /**
@@ -573,7 +610,7 @@ class MysqliManager extends DBManager
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
 
-        if(!empty($GLOBALS['sugar_config']['check_query'])){
+        if(!empty(SpiceConfig::getInstance()->config['check_query'])){
             $this->checkQuery($sql);
         }
         if(!$execute) {
@@ -612,7 +649,7 @@ class MysqliManager extends DBManager
         foreach($badQuery as $table=>$data ){
             if(!empty($data)){
                 $warning = ' Table:' . $table . ' Data:' . $data;
-                if(!empty($GLOBALS['sugar_config']['check_query_log'])){
+                if(!empty(SpiceConfig::getInstance()->config['check_query_log'])){
                     LoggerManager::getLogger()->fatal($sql);
                     LoggerManager::getLogger()->fatal('CHECK QUERY:' .$warning);
                 }
@@ -839,7 +876,7 @@ class MysqliManager extends DBManager
             case 'add_time':
                 return "DATE_ADD($string, INTERVAL + CONCAT({$additional_parameters[0]}, ':', {$additional_parameters[1]}) HOUR_MINUTE)";
             case 'add_tz_offset' :
-                $getUserUTCOffset = $GLOBALS['timedate']->getUserUTCOffset();
+                $getUserUTCOffset = TimeDate::getInstance()->getUserUTCOffset();
                 $operation = $getUserUTCOffset < 0 ? '-' : '+';
                 return $string . ' ' . $operation . ' INTERVAL ' . abs($getUserUTCOffset) . ' MINUTE';
             case 'avg':
@@ -868,10 +905,9 @@ class MysqliManager extends DBManager
 
     protected function getEngine($bean)
     {
-        global $dictionary;
         $engine = null;
-        if (isset($dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = $dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
         }
         return $engine;
     }
@@ -1543,5 +1579,73 @@ class MysqliManager extends DBManager
 
         return (strtolower($dbtype) == strtolower($fieldtype));
 
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function convertDBCharset($charset, $collation): bool {
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $sql = "ALTER DATABASE {$dbName} CHARACTER SET {$charset} COLLATE {$collation}";
+        $this->query($sql);
+
+       return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function convertTableCharset($tableName, $charset, $collation): bool {
+        $sql = "ALTER TABLE {$tableName} CONVERT TO CHARACTER SET {$charset} COLLATE {$collation}";
+        $this->query($sql);
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDatabaseCharsetInfo(): array {
+        return [
+            'tables'   => $this->getTablesCharsetInfo(),
+            'database' => $this->getDatabaseCharset(),
+        ];
+    }
+
+    /**
+     * Returns the charset and collation info for all tables
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getTablesCharsetInfo(): array {
+        $result = [];
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $sql = "SELECT table_name,CCSA.character_set_name, CCSA.collation_name FROM information_schema.TABLES T,
+                information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
+                WHERE CCSA.collation_name = T.table_collation
+                AND T.table_schema = '{$dbName}'";
+        $query = $this->query($sql);
+
+        while ($row = $this->fetchRow($query)) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns the charset and collation info for the database
+     *
+     * @return array|false
+     * @throws Exception
+     */
+    public function getDatabaseCharset(): array {
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $sql = "SELECT SCHEMA_NAME 'database', default_character_set_name 'charset', DEFAULT_COLLATION_NAME 'collation'
+                FROM information_schema.SCHEMATA WHERE schema_name='{$dbName}';";
+        $query = $this->query($sql);
+
+        return $this->fetchRow($query);
     }
 }

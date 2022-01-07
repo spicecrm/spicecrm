@@ -11,14 +11,14 @@ declare var _: any;
 
 @Component({
     selector: 'object-recordview-detail-2and1',
-    templateUrl: './src/objectcomponents/templates/objectrecordviewdetail2and1.html'
+    templateUrl: '../templates/objectrecordviewdetail2and1.html'
 
 })
 export class ObjectRecordViewDetail2and1 implements OnInit {
-    private initialized: boolean = false;
-    private componentconfig: any = {};
+    public initialized: boolean = false;
+    public componentconfig: any = {};
 
-    constructor(private metadata: metadata, private model: model) {
+    constructor(public metadata: metadata, public model: model) {
 
     }
 
@@ -26,7 +26,7 @@ export class ObjectRecordViewDetail2and1 implements OnInit {
             this.getComponentconfig();
     }
 
-    private getComponentconfig() {
+    public getComponentconfig() {
         if(_.isEmpty(this.componentconfig)) {
             this.componentconfig = this.metadata.getComponentConfig('ObjectRecordViewDetail2and1', this.model.module);
         }

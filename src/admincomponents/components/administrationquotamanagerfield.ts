@@ -7,7 +7,7 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: 'administration-quotamanager-field',
-    templateUrl: './src/admincomponents/templates/administrationquotamanagerfield.html'
+    templateUrl: '../templates/administrationquotamanagerfield.html'
 })
 export class AdministrationQuotaManagerField {
     @Input() userid: string = "";
@@ -15,7 +15,7 @@ export class AdministrationQuotaManagerField {
     @Input() year: number = 0;
     @Input() data: Array<any> = [];
 
-    constructor(private backend: backend) {
+    constructor(public backend: backend) {
     }
 
     get value() {

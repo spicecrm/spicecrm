@@ -40,12 +40,12 @@ export class domainmanager {
      */
     public currentDomainField: string;
 
-    private languagelabels: any[] = [];
-    private languagetranslations: any[] = [];
-    private languagecustomlabels: any[] = [];
-    private languagecustomtranslations: any[] = [];
+    public languagelabels: any[] = [];
+    public languagetranslations: any[] = [];
+    public languagecustomlabels: any[] = [];
+    public languagecustomtranslations: any[] = [];
 
-    private loaded: string;
+    public loaded: string;
 
     /**
      * the dbtypes
@@ -57,7 +57,7 @@ export class domainmanager {
      */
     public fieldtypes: string[] = [];
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
         this.loadDomains();
 
         for (let filedtype in this.metadata.fieldTypeMappings) {
@@ -70,7 +70,7 @@ export class domainmanager {
     /**
      * load the domains
      */
-    private loadDomains() {
+    public loadDomains() {
         this.backend.getRequest('dictionary/domains').subscribe(res => {
             this.domaindefinitions = res.domaindefinitions;
             this.domainfields = res.domainfields;
@@ -146,7 +146,7 @@ export class domainmanager {
     /**
      * check which records are changed
      */
-    private determineChangedRecords() {
+    public determineChangedRecords() {
         let loaded = JSON.parse(this.loaded);
         let changed = {
             domaindefinitions: [],

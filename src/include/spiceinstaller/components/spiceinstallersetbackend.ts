@@ -12,20 +12,20 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-set-backend',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallersetbackend.html',
+    templateUrl: '../templates/spiceinstallersetbackend.html',
 })
 
 export class SpiceInstallerSetBackEnd implements OnInit {
-    private checking: boolean = false;
-    private apiurl: string = "";
-    private apiFound: boolean = false;
+    public checking: boolean = false;
+    public apiurl: string = "";
+    public apiFound: boolean = false;
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public router: Router,
+        public configurationService: configurationService,
+        public spiceinstaller: spiceinstaller
     ) {
     }
 
@@ -49,12 +49,12 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                });
     }
 
-    private testConnection() {
+    public testConnection() {
         this.checking = true;
         if(!this.apiFound) {
             this.http.get('config/installercheck', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
                 (res: any) => {
-                    var response = res;
+                    let response = res;
                     if (response.success != true) {
                         this.toast.sendToast(response.message, 'error');
                         this.checking = false;
@@ -67,7 +67,8 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                             developerMode: this.spiceinstaller.systemdevmode,
                             loginProgressBar: this.spiceinstaller.systemloginprogressbar,
                             allowForgotPass: this.spiceinstaller.systemallowforgotpass,
-                            frontendUrl: this.spiceinstaller.frontendUrl
+                            frontendUrl: this.spiceinstaller.frontendUrl,
+                            displayLoginSidebar: this.spiceinstaller.systemloginsidebar
                         };
                         this.spiceinstaller.selectedStep.completed = true;
                         this.spiceinstaller.steps[0] = this.spiceinstaller.selectedStep;
@@ -81,7 +82,8 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                             developerMode: this.spiceinstaller.systemdevmode,
                             loginProgressBar: this.spiceinstaller.systemloginprogressbar,
                             allowForgotPass: this.spiceinstaller.systemallowforgotpass,
-                            frontendUrl: this.spiceinstaller.frontendUrl
+                            frontendUrl: this.spiceinstaller.frontendUrl,
+                            displayLoginSidebar: this.spiceinstaller.systemloginsidebar
                         };
                         this.saveConnection(body);
                     }
@@ -100,6 +102,7 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                 proxy: false,
                 developerMode: this.spiceinstaller.systemdevmode,
                 loginProgressBar: this.spiceinstaller.systemloginprogressbar,
+                loginSideBar: this.spiceinstaller.systemloginsidebar,
                 allowForgotPass: this.spiceinstaller.systemallowforgotpass,
                 frontendUrl: this.spiceinstaller.frontendUrl
             }
@@ -108,7 +111,7 @@ export class SpiceInstallerSetBackEnd implements OnInit {
 
     }
 
-    private saveConnection(body: Object) {
+    public saveConnection(body: object) {
         this.checking = true;
         this.http.post('config/set', body, {}).subscribe(
             (res: any) => {

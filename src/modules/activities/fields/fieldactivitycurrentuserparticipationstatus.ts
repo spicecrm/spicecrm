@@ -16,14 +16,14 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a status field for the participation status
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/fieldactivitycurrentuserparticipationstatus.html'
+    templateUrl: '../templates/fieldactivitycurrentuserparticipationstatus.html'
 })
 export class fieldActivityCurrentUserParticipationStatus extends fieldGeneric implements OnInit {
 
     /**
      * holds the participationrecord
      */
-    private partcipationRecord: any = undefined
+    public partcipationRecord: any = undefined
 
     constructor(public model: model,
                 public view: view,
@@ -34,7 +34,7 @@ export class fieldActivityCurrentUserParticipationStatus extends fieldGeneric im
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
                 public modal: modal,
-                private session: session) {
+                public session: session) {
 
         super(model, view, language, metadata, router);
 
@@ -71,7 +71,7 @@ export class fieldActivityCurrentUserParticipationStatus extends fieldGeneric im
     /**
      * determines and sets the participation
      */
-    private setParticipation() {
+    public setParticipation() {
         this.partcipationRecord = undefined;
 
         // do not set if the current user is the assgined user

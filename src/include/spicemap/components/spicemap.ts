@@ -23,38 +23,38 @@ declare var google: any;
 
 @Component({
     selector: 'spice-map',
-    templateUrl: './src/include/spicemap/templates/spicemap.html'
+    templateUrl: '../templates/spicemap.html'
 })
 export class SpiceMap implements AfterViewInit {
-    @ViewChild('mapelement', {read: ViewContainerRef, static: true}) private mapelement: ViewContainerRef;
+    @ViewChild('mapelement', {read: ViewContainerRef, static: true}) public mapelement: ViewContainerRef;
 
-    private componentconfig: any = {};
-    private map: any = {};
-    private circle: any = {};
-    private mousedown: boolean = false;
-    private mapBoundaries: any = {};
-    private modelMarker: any = {};
-    private surroundingFunction: any = {};
-    private surroundingMarkers: any[] = [];
-    private surroundingObjects: any[] = [];
+    public componentconfig: any = {};
+    public map: any = {};
+    public circle: any = {};
+    public mousedown: boolean = false;
+    public mapBoundaries: any = {};
+    public modelMarker: any = {};
+    public surroundingFunction: any = {};
+    public surroundingMarkers: any[] = [];
+    public surroundingObjects: any[] = [];
 
-    private listfields: any[] = [];
+    public listfields: any[] = [];
 
     constructor(
-        private zone: NgZone,
-        private language: language,
-        private model: model,
-        private modelutilities: modelutilities,
-        private backend: backend,
-        private router: Router,
-        private metadata: metadata,
-        private libloader: libloader
-        // private libloader: libloader
+        public zone: NgZone,
+        public language: language,
+        public model: model,
+        public modelutilities: modelutilities,
+        public backend: backend,
+        public router: Router,
+        public metadata: metadata,
+        public libloader: libloader
+        // public libloader: libloader
     ) {
 
     }
 
-    private getListFields() {
+    public getListFields() {
         return this.metadata.getFieldSetFields(this.componentconfig.fieldset);
     }
 
@@ -75,14 +75,14 @@ export class SpiceMap implements AfterViewInit {
     }
 
     get lat() {
-        return this.model.data[this.latField];
+        return this.model.getField(this.latField);
     }
 
     get lng() {
-        return this.model.data[this.lngField];
+        return this.model.getField(this.lngField);
     }
 
-    private renderMap() {
+    public renderMap() {
         let center = {lat: 48.2, lng: 16.3};
         if (this.lng && this.lat) {
             center = {
@@ -105,7 +105,7 @@ export class SpiceMap implements AfterViewInit {
                 map: this.map,
                 // icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
                 icon: 'https://maps.google.com/mapfiles/ms/micons/red-dot.png',
-                title: this.model.data.summary_text
+                title: this.model.getField('summary_text')
             });
         }
 
@@ -146,15 +146,15 @@ export class SpiceMap implements AfterViewInit {
         */
     }
 
-    private reCenter() {
+    public reCenter() {
         this.map.setCenter(this.modelMarker.position);
     }
 
-    private isApiLoaded(): boolean {
+    public isApiLoaded(): boolean {
         return (window as any).google && (window as any).google.maps;
     }
 
-    private getSurrounding() {
+    public getSurrounding() {
 
         // clear all curent markers
         for (let marker of this.surroundingMarkers) {
@@ -229,7 +229,7 @@ export class SpiceMap implements AfterViewInit {
 
     }
 
-    private mouseOver(id) {
+    public mouseOver(id) {
         this.surroundingMarkers.some(marker => {
             if (marker.sugarId === id) {
                 marker.setIcon('http://maps.google.com/mapfiles/ms/micons/yellow-dot.png')
@@ -238,7 +238,7 @@ export class SpiceMap implements AfterViewInit {
         });
     }
 
-    private mouseOut(id) {
+    public mouseOut(id) {
         this.surroundingMarkers.some(marker => {
             if (marker.sugarId === id) {
                 marker.setIcon('http://maps.google.com/mapfiles/ms/micons/green.png')

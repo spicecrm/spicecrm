@@ -8,7 +8,7 @@ import {model} from "../../services/model.service";
 import {session} from "../../services/session.service";
 
 @Component({
-    templateUrl: "./src/workbench/templates/mailboxesmanagertestmodal.html",
+    templateUrl: "../templates/mailboxesmanagertestmodal.html",
 })
 export class MailboxesmanagerTestModal implements OnInit {
 
@@ -20,7 +20,7 @@ export class MailboxesmanagerTestModal implements OnInit {
     /**
      * set to true when the test succeeds
      */
-    private validConnection: boolean = false;
+    public validConnection: boolean = false;
 
     /**
      * event emiter when the modal closes with the test status
@@ -30,17 +30,17 @@ export class MailboxesmanagerTestModal implements OnInit {
     /**
      * the tgest email address, in on init defaulted to the users email
      */
-    private testemailaddress: string = "";
+    public testemailaddress: string = "";
 
     /**
      * indicates that the test is running
      */
-    private testing: boolean = false;
+    public testing: boolean = false;
 
     /**
      * indicates that the test has been done
      */
-    private tested: boolean = false;
+    public tested: boolean = false;
 
     /**
      * the type of test .. sms or email
@@ -49,10 +49,10 @@ export class MailboxesmanagerTestModal implements OnInit {
     public testtype: 'email' | 'sms' = 'email';
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private model: model,
-        private session: session
+        public backend: backend,
+        public language: language,
+        public model: model,
+        public session: session
     ) {
 
     }
@@ -98,7 +98,7 @@ export class MailboxesmanagerTestModal implements OnInit {
     /**
      * closes the modal and emits the result
      */
-    private close() {
+    public close() {
         this.isvalid.emit(this.validConnection);
         this.self.destroy();
     }
