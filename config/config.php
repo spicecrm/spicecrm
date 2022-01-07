@@ -192,20 +192,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // get path to folder
 
                 $dir = dirname(__DIR__);
-                $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir . '/vendor/@angular'), RecursiveIteratorIterator::SELF_FIRST);
-                // loop results
-                foreach ($objects as $name => $object) {
-                    $pathinfo = pathinfo($object->getPathname());
-                    if (!is_dir($object->getPathname()) && $pathinfo['extension'] == 'js') {
-                        $file = file_get_contents($object->getPathname());
-                        preg_match("/\s\*\s@license\sAngular\sv(.*)/", $file, $matches, PREG_OFFSET_CAPTURE);
-                        $systemdetails['vendor']['angular'][] = [
-                            'name' => $pathinfo['filename'],
-                            'version' => $matches[1][0]
-                        ];
-                    }
-                }
-
 
                 // get lightening design version
                 // get path to folder
@@ -235,7 +221,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     if (!is_dir($object->getPathname()) && $pathinfo['extension'] == 'js') {
                         $file = file_get_contents($object->getPathname());
                         // find file header
-                        preg_match("@/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*\*/@", $file, $matches, PREG_OFFSET_CAPTURE);
+                        $matches = [];
+                        preg_match("@\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*\/@", $file, $matches, PREG_OFFSET_CAPTURE);
                         // check content of file header
                         $lines = preg_split('/\r\n|\r|\n/', $matches[0][0]);
 

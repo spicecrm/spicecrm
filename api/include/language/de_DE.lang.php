@@ -1823,6 +1823,13 @@ $app_list_strings['job_callback_on_dom'] = [
     'failure' => 'Fehlschlag',
 ];
 
+$app_list_strings['systemdeploymentsystems_type_dom'] = [
+    'test' => 'test',
+    'stage' => 'Stufe',
+    'development' => 'entwicklung',
+    'productivity' => 'produktivität'
+];
+
 $app_list_strings['bonuscard_extension_status_enum'] = [
     'initial' => 'initial',
     'sent' => 'gesendet'

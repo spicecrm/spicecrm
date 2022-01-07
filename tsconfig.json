@@ -23,7 +23,8 @@
   ],
   "include": [
     "src/**/*",
-    "environments/environment.ts"
+    "environments/environment.ts",
+    "environments/environment.prod.ts"
   ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
