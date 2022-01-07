@@ -2,19 +2,35 @@ const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const fs = require('fs');
 
 require('./gulpfile_globals.js');
 const moment = require("moment");
 const now = Date.now();
 const buildDate = moment().format('YYYY-MM-DD HH:mm:ss');
-const aacService = `© 2015 -  ${moment().format('YYYY')} aac services k.s. All rights reserved.`;
+const copyright = `© 2015 -  ${moment().format('YYYY')} aac services k.s. All rights reserved.`;
 
+/**
+ * write the environment file
+ */
+fs.writeFileSync('environments/environment.prod.ts', `
+export const environment = {
+    production: true,
+    buildNumber: "${global.build.releaseNumber}.${now}",
+    copyright: "${copyright}"
+    }
+`);
+
+/**
+ * generate options for HtmlWebpackPlugin
+ * @param file
+ */
 const generateOptions = (file) => ({
     filename: file.name,
     template: file.template,
     hash: true,
     minify: false,
-    aacServices: aacService,
+    aacServices: copyright,
     buildNumber: `${global.build.releaseNumber}.${now}`,
     chunksSortMode: (a) => a === 'scripts' ? -1 : 1
 });
@@ -22,7 +38,9 @@ const generateOptions = (file) => ({
 module.exports = {
     mode: "production",
     output: {
+        // needed to adjust the dynamic import path
         publicPath: "app/",
+        // modify the modules file name
         chunkFilename: (pathData) => {
             const path = pathData.chunk.id.split('_');
             if (path[0] === 'default-src') {
@@ -35,6 +53,7 @@ module.exports = {
         chunkIds: 'named',
         minimize: true,
         minimizer: [
+            // custom minimize to keep class names for lazy loading
             new TerserPlugin({
                 parallel: true,
                 extractComments: false,
@@ -43,6 +62,7 @@ module.exports = {
                     keep_classnames: true
                 },
             }),
+            // add spice header
             new webpack.BannerPlugin({
                 banner: () => {
                     return `
@@ -65,16 +85,6 @@ module.exports = {
        ),
         new HtmlWebpackPlugin(
             generateOptions({name: "../outlookcrm.html", template: "assets/outlook/outlookcrm.html"})
-        ),
-        new HtmlWebpackPlugin(
-            {
-                filename: "../copyright.html",
-                template: "assets/copyright.html",
-                inject: false,
-                minify: false,
-                aacServices: aacService,
-                buildNumber: `${global.build.releaseNumber}.${now}`
-            }
         )
     ],
 };
