@@ -601,6 +601,10 @@ class Email extends SugarBean
         }
         // END
 
+        if(!str_starts_with($this->body, '<html')) {
+            $this->body = '<html><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style><body>'.$this->body.'</body></html>';
+        }
+
         $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
