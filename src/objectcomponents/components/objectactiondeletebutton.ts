@@ -6,56 +6,44 @@ import {Router} from '@angular/router';
 import {Subscription} from "rxjs";
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {helper} from '../../services/helper.service';
-import {language} from '../../services/language.service';
+import {modal} from '../../services/modal.service';
+import {toast} from '../../services/toast.service';
 import {navigationtab} from '../../services/navigationtab.service';
-
 
 /**
  * standard actionset item to delete a model
  */
 @Component({
     selector: 'object-action-delete-button',
-    templateUrl: '../templates/objectactiondeletebutton.html',
-    providers: [helper]
+    templateUrl: '../templates/objectactiondeletebutton.html'
 })
-export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
-
-    /**
-     * defines if the delete ooptionis disabled. By defualt it is but this is checked on model load and model changes and set accordingly to ACL Rules there
-     */
-    public disabled: boolean = true;
+export class ObjectActionDeleteButton {
 
     /**
      * if set to true didpslay teh button as icon
      */
     public displayasicon: boolean = false;
 
-    /**
-     * holds the subscriptions
-     */
-    public subscriptions: Subscription = new Subscription();
 
     /**
      * holds the action config
      */
     public actionconfig: any = {};
 
-    constructor(public language: language, public metadata: metadata, public model: model, @Optional() public navigationtab: navigationtab, public router: Router, public helper: helper, public injector: Injector) {
+    constructor(
+        public metadata: metadata,
+        public model: model,
+        @Optional() public navigationtab: navigationtab,
+        public router: Router,
+        public modal: modal,
+        public toast: toast,
+        public injector: Injector
+    ) {
 
-        // handleDisabled on on model.mode changes
-        this.subscriptions.add(
-            this.model.mode$.subscribe(mode => {
-                this.handleDisabled(mode);
-            })
-        );
+    }
 
-        // handleDisabled on on model.data changes
-        this.subscriptions.add(
-            this.model.data$.subscribe(data => {
-                this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-            })
-        );
+    get disabled(){
+        return !this.canDelete;
     }
 
     /*
@@ -63,24 +51,10 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     */
     get canDelete() {
         try {
-            return this.model.checkAccess('delete');
+            return this.model.checkAccess('delete') && !this.model.isEditing;
         } catch (e) {
             return false;
         }
-    }
-
-    /*
-    * @handleDisabled
-    */
-    public ngAfterViewInit() {
-        this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-    }
-
-    /*
-    * @unsubscribe subscriptions
-    */
-    public ngOnDestroy() {
-        this.subscriptions.unsubscribe();
     }
 
     /*
@@ -88,7 +62,7 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     * @delete if answer is true
     */
     public execute() {
-        this.helper.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('MSG_DELETE_RECORD', 'long'))
+        this.modal.confirm('MSG_DELETE_RECORD', 'MSG_DELETE_RECORD')
             .subscribe(answer => {
                 if (answer) {
                     this.delete();
@@ -101,9 +75,14 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     * @navigate to list view
     */
     public delete() {
-        this.model.delete().subscribe(status => {
-            this.completeAction();
-        });
+        this.model.delete().subscribe(
+            status => {
+                this.completeAction();
+            },
+            () => {
+                this.toast.sendToast('LBL_ERROR_DELETING_RECORD', "error");
+            }
+        );
     }
 
     /**
@@ -113,9 +92,6 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
         // if no redirect is supposed to happen return true
         if (this.actionconfig.noredirectoncomplete == true) return;
 
-        // reditrect to the list
-        // this.router.navigate(['/module/' + this.model.module]);
-
         // close the tab if we have one
         if (this.navigationtab && this.navigationtab.tabid != 'main') {
             this.navigationtab.closeTab();
@@ -124,15 +100,4 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
         }
     }
 
-    /*
-    * @set disabled
-    * @delete if answer is true
-    */
-    public handleDisabled(mode) {
-        if (!this.canDelete) {
-            this.disabled = true;
-            return;
-        }
-        this.disabled = mode == 'edit';
-    }
 }

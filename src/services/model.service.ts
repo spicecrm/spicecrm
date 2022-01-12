@@ -1130,7 +1130,8 @@ export class model implements OnDestroy {
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(() => {
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(
+            () => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
                     module: this.module,
@@ -1138,6 +1139,9 @@ export class model implements OnDestroy {
                 });
                 responseSubject.next(true);
                 responseSubject.complete();
+            },
+            e => {
+                responseSubject.error('unable to delete record');
             }
         );
         return responseSubject.asObservable();
