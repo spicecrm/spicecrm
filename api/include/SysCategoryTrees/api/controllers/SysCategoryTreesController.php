@@ -43,8 +43,8 @@ class SysCategoryTreesController
         $return = [];
         $rows = $db->query("SELECT * FROM syscategorytreenodes WHERE syscategorytree_id = '{$args['id']}'");
         while ($row = $db->fetchByAssoc($rows)) {
-            $row['favorite'] = $row['favorite'] ? true : false;
-            $row['selectable'] = $row['selectable'] ? true : false;
+            $row['favorite'] = $row['favorite'] == 1 ? true : false;
+            $row['selectable'] = $row['selectable'] == 1 ? true : false;
             $return[] = $row;
         }
         return $res->withJson($return);
