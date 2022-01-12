@@ -62,12 +62,6 @@ export class activitiytimeline {
     public modules: activityTimeLineModules[] = ['Activities', 'History'];
 
     /**
-     * the modules to be loaded
-     * ToDo: replace this .. shoudl no longer be needed but be determined by the backend. Eventually we can load this in teh componentconfig
-     */
-    public timelineModules: string[] = ['Calls', 'Meetings', 'Tasks', 'Emails', 'Notes'];
-
-    /**
      * for sorting in new activities .. shoudl be replaced and triggered by the filter objects int he backend to keep it flexible
      */
     public activeStates: string[] = ['Planned', 'In Progress', 'Not Started', 'Pending Input'];
@@ -211,20 +205,10 @@ export class activitiytimeline {
                     break;
                 case 'delete':
                     let deleted = false;
-                    if (this.timelineModules.indexOf(message.messagedata.module) >= 0) {
-                        for (let module of this.modules) {
-                            this.activities[module].list.some((item, index) => {
-                                if (item.module === message.messagedata.module, item.id === message.messagedata.id) {
-                                    // remove the item
-                                    this.activities[module].list.splice(index, 1);
-                                    // reload silently
-                                    this.getTimeLineData(module, true);
-                                    // set that we deleted
-                                    deleted = true;
-                                    return true;
-                                }
-                            });
-                            if (deleted) return;
+                    for (let module of this.modules) {
+                        let itemIndex = this.activities[module].list.findIndex(i => i.module == message.messagedata.module && i.id == message.messagedata.id);
+                        if(itemIndex >= 0){
+                            this.activities[module].list.splice(itemIndex, 1);
                         }
                     }
                     break;
