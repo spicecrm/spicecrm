@@ -99,10 +99,10 @@ export class fieldCategoriesTree {
     public levelCategories(level) {
         switch (level) {
             case 0:
-                return this.categories.filter(c => !c.parent_id || c.parent_id == '');
+                return this.categories.filter(c => !c.parent_id || c.parent_id == '').sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1);
                 break;
             default:
-                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]): [];
+                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]).sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1 ) : [];
                 break;
         }
     }
