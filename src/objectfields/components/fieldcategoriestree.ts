@@ -113,13 +113,26 @@ export class fieldCategoriesTree {
      * @private
      */
     public getMatchedNodes() {
-        let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
+        return this.buildSelectableCategories().filter(i => {
+            return this.matchTerms(i.map(x => x.node_name).join(), this.searchTerm);
+        });
+    }
 
-        let fullcategories = []
-        for (let cat of cats) {
-            fullcategories.push(this.buildFullCategories(cat));
+    /**
+     * matches to multiple terms
+     *
+     * @param haystack
+     * @param needle
+     * @private
+     */
+    private matchTerms(haystack, needle){
+        let needles = needle.split(' ').map(x => x.trim());
+
+        for(let n of needles){
+            if(haystack.toLowerCase().indexOf(n.toLowerCase()) < 0) return false;
         }
-        return fullcategories;
+
+        return true;
     }
 
     /**
@@ -131,24 +144,47 @@ export class fieldCategoriesTree {
         // let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
         let cats = this.categories.filter(c => c.favorite);
 
-        // if we have a searchterm apply this as well
-        if (this.searchTerm) {
-            cats = cats.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
-        }
-
         let fullcategories = []
         for (let cat of cats) {
             fullcategories.push(this.buildFullCategories(cat));
         }
+
+        // if we have a searchterm filter by that
+        if (this.searchTerm) {
+            return fullcategories.filter(i => {
+                // return i.filter(sn => this.matchTerms(sn.node_name, this.searchTerm)).length > 0;
+                return this.matchTerms(i.map(x => x.node_name).join(), this.searchTerm);
+            });
+        }
+
         return fullcategories;
     }
 
-    public buildFullCategories(category, subnodes: boolean = false) {
+    /**
+     * builds the full aray for all selectable categories
+     *
+     * @private
+     */
+    private buildSelectableCategories(): any[]{
+        let sc = [];
+        for(let c of this.categories.filter(tc => tc.selectable)){
+            sc.push(this.buildFullCategories(c));
+        }
+        return sc;
+    }
+
+    /**
+     * builds the full categories by filling the array up
+     *
+     * @param category
+     */
+    public buildFullCategories(category) {
         let thisCategory = category;
         let item: any[] = [{id: thisCategory.id, node_name: thisCategory.node_name}];
 
         while (thisCategory.parent_id) {
-            thisCategory = this.categories.find(c => c.id == thisCategory.parent_id)
+            thisCategory = this.categories.find(c => c.id == thisCategory.parent_id);
+            if(!thisCategory) break;
             item.unshift({id: thisCategory.id, node_name: thisCategory.node_name})
         }
 
