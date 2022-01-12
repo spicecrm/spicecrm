@@ -185,9 +185,11 @@ export class fieldCategoriesTree {
      * @private
      */
     public choose(level, cat) {
-        this.select(level, cat);
-        this.category.emit([...this.levels]);
-        this.levels = [undefined, undefined, undefined, undefined];
+        if(cat.selectable) {
+            this.select(level, cat);
+            this.category.emit([...this.levels]);
+            this.levels = [undefined, undefined, undefined, undefined];
+        }
     }
 
     /**
