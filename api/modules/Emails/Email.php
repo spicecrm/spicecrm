@@ -601,6 +601,7 @@ class Email extends SugarBean
         }
         // END
 
+        // check if the string we have is HTML (shoudl start with an <html> tag). if not we add a default style so the UI can display it properly
         if(!str_starts_with($this->body, '<html')) {
             $this->body = '<html><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style><body>'.$this->body.'</body></html>';
         }
