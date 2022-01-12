@@ -162,7 +162,7 @@ export class CategoryTreeManager {
         this.loading = true;
         this.activeTreeNodes = [];
         this.selectedTreeNodes = [null, null, null, null];
-        this.backend.getRequest(`configuration/spiceui/core/categorytrees/${this.activeTree}/categorytreenodes`).subscribe(
+        this.backend.getRequest(`configuration/spiceui/core/categorytrees/${this.activeTree}/categorytreenodes`, {all: true}).subscribe(
             (treenodes: any) => {
                 //  this.config.setData('select_tree', treenodes);
                 this.activeTreeNodes = treenodes;

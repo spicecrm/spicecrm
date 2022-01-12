@@ -49,6 +49,11 @@ $routes = [
                 'in' => 'path',
                 'description' => 'the id of the tree',
                 'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'all' => [
+                'in' => 'query',
+                'description' => 'set to true to retuns all (active and inactive and invalid)',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ],
