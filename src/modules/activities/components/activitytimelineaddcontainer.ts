@@ -46,7 +46,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
             let componentsetComponents = this.metadata.getComponentSetObjects(config.componentset);
             for (let componentsetComponent of componentsetComponents) {
                 // check if we have erdit right on the module
-                if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'edit')) {
+                if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'create')) {
                     this.tabs.push({
                         module: componentsetComponent.componentconfig.module,
                         component: componentsetComponent.component,
