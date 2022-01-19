@@ -18,27 +18,27 @@ import {modelutilities} from '../../../services/modelutilities.service';
  */
 @Component({
     selector: 'aclterritorries-manager-territory-value',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritoryvalue.html'
+    templateUrl: '../templates/aclterritorriesmanagerterritoryvalue.html'
 })
 export class ACLTerritorriesManagerTerritoryValue {
 
     /**
      * the element itself
      */
-    @Input() private element: any = {};
+    @Input() public element: any = {};
 
     /**
      * the element values
      * ToDo: join with the element object
      */
-    @Input() private elementValues: any[] = [];
+    @Input() public elementValues: any[] = [];
 
     /**
      * boolean if field shoudl be editable
      */
-    @Input() private editable: boolean = true;
+    @Input() public editable: boolean = true;
 
-    constructor(private model: model, private view: view, private language: language) {
+    constructor(public model: model, public view: view, public language: language) {
     }
 
     /**

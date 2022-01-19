@@ -90,9 +90,7 @@ class SchedulerJob extends SugarBean
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        if (empty($this->next_run_date)) {
-            $this->next_run_date = $this->getNextRunDate();
-        }
+        $this->next_run_date = $this->getNextRunDate();
         return parent::save($check_notify, $fts_index_bean);
     }
 

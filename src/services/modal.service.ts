@@ -17,14 +17,14 @@ export class modal {
     /**
      * keeps an array of modals that are currently open
      */
-    private modalsArray: any[] = [];
+    public modalsArray: any[] = [];
 
     /**
      * keeps an array of the objects rendered as modals
      */
-    private modalsObject = {};
+    public modalsObject = {};
 
-    constructor(private metadata: metadata, private footer: footer, private toast: toast, private language: language) {
+    constructor(public metadata: metadata, public footer: footer, public toast: toast, public language: language) {
         window.addEventListener("keyup", (event) => {
             if (event.keyCode === 27 && this.modalsArray.length) {
                 event.stopImmediatePropagation();
@@ -82,7 +82,7 @@ export class modal {
      *
      * @param componentName the name of the component hat was intended to be rendered in the modal
      */
-    private sendError(componentName) {
+    public sendError(componentName) {
         this.toast.sendToast('Component "' + componentName + '" not found.', "error", "Misconfiguration on the system as the component should have been opened in a modal but is not avilable. Please contact your system administrator.");
     }
 
@@ -165,7 +165,7 @@ export class modal {
      * @param options options to be presented to the user
      * @param optionsAsRadio
      */
-    public prompt(type: 'info' | 'input' | 'input_date' | 'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: Array<{ value: string, display: string }> = null, optionsAsRadio?: boolean): Observable<any> {
+    public prompt(type: 'info' | 'input' | 'input_date' | 'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: { value: string, display: string}[] = null, optionsAsRadio?: boolean, regex?: string): Observable<any> {
         let responseSubject = new Subject();
         this.openModal("SystemPrompt").subscribe(component => {
             component.instance.type = type;
@@ -174,6 +174,7 @@ export class modal {
             component.instance.theme = theme;
             component.instance.value = defaultvalue;
             component.instance.options = options;
+            component.instance.regex = regex;
             component.instance.optionsAsRadio = optionsAsRadio;
             component.instance.answer.subscribe(answervalue => {
                 responseSubject.next(answervalue); // return the answer

@@ -14,7 +14,7 @@ import {model} from '../../services/model.service';
 })
 export class ObjectFieldFilterPipe implements PipeTransform {
 
-    constructor(private languange: language, private model: model) {
+    constructor(public languange: language, public model: model) {
 
     }
 

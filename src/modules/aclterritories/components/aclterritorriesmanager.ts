@@ -10,7 +10,7 @@ import {language} from '../../../services/language.service';
  * a manager component in the admin section for the sales territories
  */
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanager.html',
+    templateUrl: '../templates/aclterritorriesmanager.html',
 })
 export class ACLTerritorriesManager {
 
@@ -18,26 +18,26 @@ export class ACLTerritorriesManager {
     /**
      * the id of the current active territory
      */
-    private activeTerritoryId: string = '';
+    public activeTerritoryId: string = '';
 
     /**
      * the data of the current active territory
      */
-    private activeTerritoryData: any = {};
+    public activeTerritoryData: any = {};
 
     /**
      * the currently active territory type
      */
-    private activeTerritoryType: string = '';
+    public activeTerritoryType: string = '';
 
-    constructor(private language: language, private navigationtab: navigationtab, private backend: backend) {
+    constructor(public language: language, public navigationtab: navigationtab, public backend: backend) {
         this.setTabTitle();
     }
 
     /**
      * sets the tab title
      */
-    private setTabTitle() {
+    public setTabTitle() {
         this.navigationtab.setTabInfo({
             displayicon: 'settings',
             displayname: this.language.getLabel('LBL_SPICEACLTERRITORIES')
@@ -49,7 +49,7 @@ export class ACLTerritorriesManager {
      *
      * @param territory
      */
-    private setTerritory(territory){
+    public setTerritory(territory){
         this.activeTerritoryId = territory.id;
         this.activeTerritoryData = territory;
     }
@@ -58,7 +58,7 @@ export class ACLTerritorriesManager {
      * listens to the change event on the territories selector
      * @param type
      */
-    private setType(type){
+    public setType(type){
         this.activeTerritoryType = type;
     }
 

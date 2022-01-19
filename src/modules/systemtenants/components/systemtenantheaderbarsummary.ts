@@ -12,25 +12,25 @@ declare var moment: any;
  */
 @Component({
     selector: 'systemtenant-header-bar-summary',
-    templateUrl: './src/modules/systemtenants/templates/systemtenantheaderbarsummary.html'
+    templateUrl: '../templates/systemtenantheaderbarsummary.html'
 })
 export class SystemTenantHeaderBarSummary implements OnInit {
 
-    private usage = {
+    public usage = {
         database: 0,
         elastic: 0,
         uploadfiles: 0,
         users: 0
     };
 
-    private limits = {
+    public limits = {
         database: 0,
         elastic: 0,
         uploadfiles: 0,
         users:0
     };
 
-    constructor(private configuration: configurationService, private backend: backend) {
+    constructor(public configuration: configurationService, public backend: backend) {
 
     }
 
@@ -44,7 +44,7 @@ export class SystemTenantHeaderBarSummary implements OnInit {
      *
      * @private
      */
-    private getConfig(){
+    public getConfig(){
         let config = this.configuration.getData('tenantconfig');
         this.limits.database = config.limit_database ? parseInt(config.limit_database, 10) : 0;
         this.limits.elastic = config.limit_elastic ? config.limit_elastic : 0;
@@ -57,7 +57,7 @@ export class SystemTenantHeaderBarSummary implements OnInit {
      *
      * @private
      */
-    private getStats() {
+    public getStats() {
         if(this.limits.database > 0 ||this.limits.elastic > 0 ||this.limits.users > 0 ||this.limits.uploadfiles > 0) {
             this.backend.getRequest('configuration/systemstats', {summary: true}).subscribe(stats => {
                 if(this.limits.database > 0){

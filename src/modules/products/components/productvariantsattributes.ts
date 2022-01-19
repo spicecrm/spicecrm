@@ -12,7 +12,7 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'product-variants-attributes',
-    templateUrl: './src/modules/products/templates/productvariantsattributes.html'
+    templateUrl: '../templates/productvariantsattributes.html'
 })
 export class ProductVariantsAttributes implements OnDestroy {
     /***
@@ -22,17 +22,17 @@ export class ProductVariantsAttributes implements OnDestroy {
     /**
      * holds the parent id
      */
-    private parentId: string = '';
+    public parentId: string = '';
     /**
      * holds the loading boolean
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
     /**
      * subscription to unsubscribe on destroy
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private language: language, private model: model, private backend: backend) {
+    constructor(public language: language, public model: model, public backend: backend) {
         this.subscription = this.model.data$.subscribe(data => {
             this.loadAttributes(data);
         });
@@ -57,7 +57,7 @@ export class ProductVariantsAttributes implements OnDestroy {
      * load the attributes from backend
      * @param data
      */
-    private loadAttributes(data) {
+    public loadAttributes(data) {
         let parentField;
         let type;
         switch (this.model.module) {
@@ -89,9 +89,9 @@ export class ProductVariantsAttributes implements OnDestroy {
     /**
      * load the attribute values
      */
-    private loadAttributeValues() {
-        if (!this.model.data.productattributevalues) {
-            this.model.data.productattributevalues = {beans: {}};
+    public loadAttributeValues() {
+        if (!this.model.getField('productattributevalues')) {
+            this.model.setField('productattributevalues', {beans: {}});
         }
     }
 }

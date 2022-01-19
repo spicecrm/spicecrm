@@ -5,15 +5,15 @@ import {Component, Injector} from '@angular/core';
 import {modal} from "../../../services/modal.service";
 
 @Component({
-    templateUrl: './src/modules/sapidocs/templates/sapidocsviewerbutton.html'
+    templateUrl: '../templates/sapidocsviewerbutton.html'
 })
 export class SAPIDOCsViewerButton {
 
 
-    constructor(private modal: modal, private injector: Injector) {
+    constructor(public modal: modal, public injector: Injector) {
     }
 
-    private execute() {
+    public execute() {
         this.modal.openModal('SAPIDOCsViewer', true, this.injector);
     }
 

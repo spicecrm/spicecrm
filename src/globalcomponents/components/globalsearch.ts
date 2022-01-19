@@ -12,17 +12,17 @@ declare var _: any;
 
 @Component({
     selector: 'global-search',
-    templateUrl: './src/globalcomponents/templates/globalsearch.html',
+    templateUrl: '../templates/globalsearch.html',
     providers: [fts]
 })
 export class GlobalSearch implements OnDestroy, OnInit {
 
-    private searchScope: string = '*';
-    private searchTimeOut: any = undefined;
-    private searchTerm: string = '';
-    private routeSubscription: any;
+   public searchScope: string = '*';
+   public searchTimeOut: any = undefined;
+   public searchTerm: string = '';
+   public routeSubscription: any;
 
-    constructor(private navigation: navigation, private navigationtab: navigationtab, private elementref: ElementRef, router: Router, private activatedRoute: ActivatedRoute, private fts: fts, private language: language) {
+    constructor(public navigation: navigation,public navigationtab: navigationtab,public elementref: ElementRef, router: Router,public activatedRoute: ActivatedRoute,public fts: fts,public language: language) {
 
     }
 
@@ -48,7 +48,7 @@ export class GlobalSearch implements OnDestroy, OnInit {
         this.routeSubscription.unsubscribe();
     }
 
-    private search(_e) {
+   public search(_e) {
         // handle the key pressed
         switch (_e.key) {
             case 'Enter':
@@ -82,7 +82,7 @@ export class GlobalSearch implements OnDestroy, OnInit {
     /**
      * run the search
      */
-    private doSearch(): void {
+   public doSearch(): void {
         if (this.searchScope === '*') {
             this.fts.searchByModules({searchterm: this.searchTerm}).subscribe(results => {
                 let total = 0;
@@ -108,24 +108,24 @@ export class GlobalSearch implements OnDestroy, OnInit {
     /**
      * sets the tabname
      */
-    private setTabName(count?) {
+   public setTabName(count?) {
         this.navigationtab.setTabInfo({displayname: 'search ' + this.searchTerm + (count ? ' (' + count + ')' : ''), displayicon: 'search'});
     }
 
-    private getScopeClass(scope): string {
+   public getScopeClass(scope): string {
         if (scope === this.searchScope) {
             return 'slds-is-active';
         }
     }
 
-    private setSearchScope(scope): void {
+   public setSearchScope(scope): void {
         if (scope === this.searchScope) return;
 
         this.searchScope = scope;
         this.doSearch();
     }
 
-    private infiniteScroll(): boolean {
+   public infiniteScroll(): boolean {
         if (this.searchScope === '*') {
             return false;
         } else {

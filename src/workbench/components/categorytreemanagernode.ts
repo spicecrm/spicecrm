@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, EventEmitter,
+    Component, EventEmitter, OnInit,
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -14,11 +14,16 @@ import {configurationService} from "../../services/configuration.service";
 import {modal} from '../../services/modal.service';
 import {SelectTreeAddDialog} from "./selecttreeadddialog";
 
+/**
+ * @ignore
+ */
+declare var moment: any;
+
 @Component({
     selector: 'categgory-tree-manager-node',
-    templateUrl: './src/workbench/templates/categorytreemanagernode.html',
+    templateUrl: '../templates/categorytreemanagernode.html',
 })
-export class CategoryTreeManagerNode {
+export class CategoryTreeManagerNode implements OnInit{
 
 
     /**
@@ -26,23 +31,41 @@ export class CategoryTreeManagerNode {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the node
      *
      * @private
      */
-    private node: any = {};
+    public node: any = {};
 
     /**
      * an array of all current nodes to ensure it is unique
      *
      * @private
      */
-    private nodes: any[] = [];
+    public nodes: any[] = [];
 
-    private action: EventEmitter<boolean> = new EventEmitter<boolean>();
+    /**
+     * the add params component
+     *
+     * @private
+     */
+    public addParamsComponent: string;
+
+    /**
+     * the additonal params
+     * @private
+     */
+    public addParams: any;
+
+    /**
+     * an emitter for the action
+     *
+     * @private
+     */
+    public action: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * checks that we can save
@@ -58,12 +81,26 @@ export class CategoryTreeManagerNode {
         return this.node.node_key && this.nodes.filter(n => n.node_key == this.node.node_key && n.id != this.node.id).length == 0;
     }
 
+    public ngOnInit() {
+        if(this.node.add_params) this.addParams = JSON.parse(this.node.add_params);
+
+        // initialize the data
+        this.node.valid_from = moment(this.node.valid_from);
+        this.node.valid_to = moment(this.node.valid_to);
+
+    }
+
     /**
      * closes the modal
      *
      * @private
      */
-    private save(){
+    public save(){
+        this.node.add_params = JSON.stringify(this.addParams);
+
+        // format the dates back
+        this.node.valid_from = this.node.valid_from.format('YYYY-MM-DD HH:mm:ss');
+        this.node.valid_to = this.node.valid_to.format('YYYY-MM-DD HH:mm:ss');
         this.action.emit(true);
         this.self.destroy();
     }
@@ -73,7 +110,7 @@ export class CategoryTreeManagerNode {
      *
      * @private
      */
-    private close(){
+    public close(){
         this.action.emit(false);
         this.self.destroy();
     }

@@ -13,18 +13,18 @@ import {modal} from '../../../services/modal.service';
  */
 
 @Component({
-    templateUrl: './src/include/cleverreach/templates/createmailingbutton.html',
+    templateUrl: '../templates/createmailingbutton.html',
 })
 export class CreateMailingButton {
 
-    private disabled: boolean = false;
+    public disabled: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector
     ) {
         this.model.data$.subscribe(data => {
             this.disableButton();
@@ -36,7 +36,7 @@ export class CreateMailingButton {
      */
 
     public disableButton() {
-        if (this.model.data.mailing_id) {
+        if (this.model.getField('mailing_id')) {
             this.disabled = true;
             return;
         }

@@ -1,11 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-global $dictionary;
-
-$dictionary['Letter'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Letter'] = [
     'table' => 'letters',
     'fields' => [
         'name' => [

@@ -7,7 +7,7 @@ import {trigger, transition, animate, style, state} from '@angular/animations';
 
 @Component({
     selector: "[serviceorder-effort-item-details]",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortitemdetails.html",
+    templateUrl: "../templates/serviceordereffortitemdetails.html",
     providers: [view],
     animations: [
         trigger('slideInOut', [
@@ -39,13 +39,13 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private model: model,
-        private view: view
+        public metadata: metadata,
+        public language: language,
+        public model: model,
+        public view: view
     ) {
     }
 
@@ -57,7 +57,7 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
     /**
      * view mode subscriptions (manage edit/view mode)
      */
-    private viewSubscriptions() {
+    public viewSubscriptions() {
         // link the two views
 
         this.view.displayLabels = false;
@@ -92,7 +92,7 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
     /**
      * set the configuration
      */
-    private setConfig() {
+    public setConfig() {
         let config = this.metadata.getComponentConfig('ServiceOrderEffortPanel', this.serviceorder.module);
         if (config.fieldset) {
             this.fieldsetItems = this.metadata.getFieldSetItems(config.detail_fieldset);
@@ -118,7 +118,7 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
     /**
      * toggels the expanded flag and shows the details or hides them
      */
-    private toggleDetails() {
+    public toggleDetails() {
         this.item.expanded = !this.item.expanded;
     }
 

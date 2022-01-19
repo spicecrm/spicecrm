@@ -9,18 +9,25 @@ import {
     EventEmitter,
 } from '@angular/core';
 import {language} from '../../services/language.service';
+import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'fieldsetmanager-copy-dialog',
-    templateUrl: './src/workbench/templates/fieldsetmanagercopydialog.html'
+    templateUrl: '../templates/fieldsetmanagercopydialog.html'
 })
 export class FieldsetManagerCopyDialog implements OnInit{
 
-    @Input() metaFieldSets: Array<any> = [];
+    @Input() metaFieldSets: any[] = [];
     @Input() fieldset: string = '';
-    @Input() sysModules: any = [];
+
     @Input() edit_mode: string = '';
     @Output() closedialog: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * the list of modules
+     */
+    public modules: string[] = [];
+
 
     currentName: string = '';
     currentType: string = '';
@@ -29,7 +36,10 @@ export class FieldsetManagerCopyDialog implements OnInit{
 
     self;
 
-    constructor(private language: language) {
+    constructor(public language: language, private metadata: metadata) {
+
+        // get the modules fromt eh metadata service
+        this.modules = this.metadata.getModules().sort();
     }
 
     ngOnInit(){

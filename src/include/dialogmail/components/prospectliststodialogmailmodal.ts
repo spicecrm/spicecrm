@@ -13,26 +13,26 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'prospectlists-to-dialogmail-modal',
-    templateUrl: './src/include/dialogmail/templates/prospectliststodialogmailmodal.html'
+    templateUrl: '../templates/prospectliststodialogmailmodal.html'
 })
 export class ProspectListsToDialogMailModal {
 
-    private self: any = {};
-    public statistics: any[] = [];
-    private module: string = '';
+    public self: any = {};
+    public statistics: any = [];
+    public module: string = '';
 
     constructor(
-        private language: language,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast
+        public language: language,
+        public router: Router,
+        public metadata: metadata,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast
     ) {
     }
 
-    private initialize() {
+    public initialize() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
@@ -43,7 +43,7 @@ export class ProspectListsToDialogMailModal {
         });
     }
 
-    private transferToDialogMail() {
+    public transferToDialogMail() {
         this.backend.postRequest(`channels/emarketing/dialogmail/${this.model.module}/${this.model.id}/transfer`).subscribe(result => {
             if (result.status == 'success') {
                 this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
@@ -55,7 +55,7 @@ export class ProspectListsToDialogMailModal {
 
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

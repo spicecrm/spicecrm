@@ -6,90 +6,78 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'field-categories-tree',
-    templateUrl: './src/objectfields/templates/fieldcategoriestree.html'
+    templateUrl: '../templates/fieldcategoriestree.html',
+    animations: [
+        trigger('treeanimation', [
+            state('true', style({'margin-left': '-34%', 'margin-right': '34%'})),
+            state('false', style({'margin-left': '0px', 'margin-right': '0px'})),
+            transition('true => false', [
+                animate('.2s')
+            ]),
+            transition('false => true', [
+                animate('.2s'),
+            ])
+        ])
+    ]
 })
-export class fieldCategoriesTree implements OnInit {
+export class fieldCategoriesTree {
 
     /**
      * the selected levels
      */
-    levels: any[] = [];
+    levels: any[] = [undefined, undefined, undefined, undefined];
 
     /**
      * the emitter for the selected category
      */
     @Output() category: EventEmitter<any> = new EventEmitter<any>();
 
-    // loading indicator
-    private loading: boolean = true;
+    /**
+     * indicates that we are loading
+     *
+     * @private
+     */
+    public loading: boolean = true;
 
     /**
      * the categories
      *
      * @private
      */
-    @Input() private categories: any[] = [];
+    @Input() public categories: any[] = [];
 
     /**
      * a searchterm
      *
      * @private
      */
-    @Input() private searchTerm: string;
+    @Input() public searchTerm: string;
 
     /**
      * set to true to display the favorites and allow searching there
      *
      * @private
      */
-    @Input() private searchFavorites: boolean = false;
-
-    /**
-     * the depth of the current tree
-     *
-     * @private
-     */
-    private depth: number = 1;
-
+    @Input() public searchFavorites: boolean = false;
 
     constructor(
-        private model: model,
-        private backend: backend,
-        private config: configurationService,
-        private language: language,
+        public model: model,
+        public backend: backend,
+        public config: configurationService,
+        public language: language,
     ) {
 
     }
 
-    public ngOnInit() {
-        this.determineDepth();
-    }
-
-    private determineDepth() {
-        let level0 = this.categories.filter(c => !c.parent_id);
-        for (let level0Node of level0) {
-            let nodeLevel = this.getNodeDepth(level0Node, 1);
-            if (nodeLevel > this.depth) this.depth = nodeLevel;
-        }
-
-        this.levels = Array(this.depth).fill(null);
-    }
-
-    private getNodeDepth(node, level) {
-        let children = this.categories.filter(c => c.parent_id == node.id);
-        if (children.length > 0) {
-            level++;
-            for (let child of children) {
-                let totalLevel = this.getNodeDepth(child, level);
-                if (totalLevel > level) level = totalLevel;
-            }
-            return level;
-        } else {
-            return level;
-        }
+    /**
+     * determine if we shoudl display level 4 and there is a level 4
+     */
+    get shifttree() {
+        return !!this.levels[2] && this.categories.filter(c => c.parent_id == this.levels[2]).length > 0;
     }
 
     /**
@@ -98,7 +86,7 @@ export class fieldCategoriesTree implements OnInit {
      * @param node
      * @private
      */
-    private hasChildren(node) {
+    public hasChildren(node) {
         return this.categories.filter(c => c.parent_id == node.id).length > 0;
     }
 
@@ -108,13 +96,13 @@ export class fieldCategoriesTree implements OnInit {
      * @param level
      * @private
      */
-    private levelCategories(level) {
+    public levelCategories(level) {
         switch (level) {
             case 0:
-                return this.categories.filter(c => !c.parent_id);
+                return this.categories.filter(c => !c.parent_id || c.parent_id == '').sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1);
                 break;
             default:
-                return this.categories.filter(c => c.parent_id == this.levels[level - 1]);
+                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]).sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1 ) : [];
                 break;
         }
     }
@@ -124,14 +112,27 @@ export class fieldCategoriesTree implements OnInit {
      *
      * @private
      */
-    private getMatchedNodes() {
-        let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
+    public getMatchedNodes() {
+        return this.buildSelectableCategories().filter(i => {
+            return this.matchTerms(i.map(x => x.node_name).join(), this.searchTerm);
+        });
+    }
 
-        let fullcategories = []
-        for (let cat of cats) {
-            fullcategories.push(this.buildFullCategories(cat));
+    /**
+     * matches to multiple terms
+     *
+     * @param haystack
+     * @param needle
+     * @private
+     */
+    private matchTerms(haystack, needle){
+        let needles = needle.split(' ').map(x => x.trim());
+
+        for(let n of needles){
+            if(haystack.toLowerCase().indexOf(n.toLowerCase()) < 0) return false;
         }
-        return fullcategories;
+
+        return true;
     }
 
     /**
@@ -139,28 +140,51 @@ export class fieldCategoriesTree implements OnInit {
      *
      * @private
      */
-    private getFavoriteNodes() {
+    public getFavoriteNodes() {
         // let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
         let cats = this.categories.filter(c => c.favorite);
 
-        // if we have a searchterm apply this as well
-        if(this.searchTerm){
-            cats = cats.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
-        }
-
         let fullcategories = []
         for (let cat of cats) {
             fullcategories.push(this.buildFullCategories(cat));
         }
+
+        // if we have a searchterm filter by that
+        if (this.searchTerm) {
+            return fullcategories.filter(i => {
+                // return i.filter(sn => this.matchTerms(sn.node_name, this.searchTerm)).length > 0;
+                return this.matchTerms(i.map(x => x.node_name).join(), this.searchTerm);
+            });
+        }
+
         return fullcategories;
     }
 
-    private buildFullCategories(category, subnodes: boolean = false) {
+    /**
+     * builds the full aray for all selectable categories
+     *
+     * @private
+     */
+    private buildSelectableCategories(): any[]{
+        let sc = [];
+        for(let c of this.categories.filter(tc => tc.selectable)){
+            sc.push(this.buildFullCategories(c));
+        }
+        return sc;
+    }
+
+    /**
+     * builds the full categories by filling the array up
+     *
+     * @param category
+     */
+    public buildFullCategories(category) {
         let thisCategory = category;
         let item: any[] = [{id: thisCategory.id, node_name: thisCategory.node_name}];
 
         while (thisCategory.parent_id) {
-            thisCategory = this.categories.find(c => c.id == thisCategory.parent_id)
+            thisCategory = this.categories.find(c => c.id == thisCategory.parent_id);
+            if(!thisCategory) break;
             item.unshift({id: thisCategory.id, node_name: thisCategory.node_name})
         }
 
@@ -170,11 +194,11 @@ export class fieldCategoriesTree implements OnInit {
     /**
      * triggered on mouseenter, selects a category to go deeper
      */
-    private select(level, cat) {
+    public select(level, cat) {
         this.levels[level] = cat.id;
         // reset all selected levels higher than the current depth
         level++;
-        while (level < this.depth) {
+        while (level < 3) {
             this.levels[level] = undefined;
             level++;
         }
@@ -186,7 +210,7 @@ export class fieldCategoriesTree implements OnInit {
      * @param level
      * @param cat
      */
-    private isCategorySelected(level, cat): boolean {
+    public isCategorySelected(level, cat): boolean {
         return this.levels[level] == cat.id;
     }
 
@@ -196,9 +220,12 @@ export class fieldCategoriesTree implements OnInit {
      * @param cat
      * @private
      */
-    private choose(level, cat) {
-        this.select(level, cat);
-        this.category.emit(this.levels);
+    public choose(level, cat) {
+        if(cat.selectable) {
+            this.select(level, cat);
+            this.category.emit([...this.levels]);
+            this.levels = [undefined, undefined, undefined, undefined];
+        }
     }
 
     /**
@@ -207,9 +234,9 @@ export class fieldCategoriesTree implements OnInit {
      * @param node
      * @private
      */
-    private selectNode(node){
+    public selectNode(node) {
         let levels = [];
-        for(let cat of node){
+        for (let cat of node) {
             levels.push(cat.id);
         }
         this.category.emit(levels);

@@ -14,27 +14,27 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'prospectlists-to-evalanche-button',
-    templateUrl: './src/include/evalanche/templates/prospectlisttoevalanchebutton.html',
+    templateUrl: '../templates/prospectlisttoevalanchebutton.html',
 })
 export class ProspectListsToEvalancheButton {
-    private evalanche: any[] = [];
-    private spice: any[] = [];
-    private difference: any[] = [];
+    public evalanche: any[] = [];
+    public spice: any[] = [];
+    public difference: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector,
-        private backend: backend
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector,
+        public backend: backend
     ) {}
 
     public execute() {
-        let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        let loading = this.modal.await(this.language.getLabel('LBL_LOADING'));
 
         this.backend.postRequest(`/channels/emarketing/evalanche/${this.model.module}/${this.model.id}/stats`).subscribe(result => {
-            await.emit(true);
+            loading.emit(true);
             if(result) {
                 this.spice = result.spice;
                 this.evalanche = result.evalanche;

@@ -7,7 +7,7 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmodulesmanagermodulesaddmodal.html',
+    templateUrl: '../templates/aclterritorriesmodulesmanagermodulesaddmodal.html',
 })
 export class ACLTerritorriesModulesmanagerModulesAddModal implements OnInit{
 
@@ -23,7 +23,7 @@ export class ACLTerritorriesModulesmanagerModulesAddModal implements OnInit{
     relatefrom: string = '';
     @Output() newmodule: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private language: language, private metadata: metadata) {
+    constructor(public backend: backend, public language: language, public metadata: metadata) {
 
     }
 

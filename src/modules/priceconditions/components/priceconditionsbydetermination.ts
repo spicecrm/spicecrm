@@ -15,27 +15,27 @@ declare var _: any;
 
 @Component({
     selector: 'price-conditions-by-determination',
-    templateUrl: './src/modules/priceconditions/templates/priceconditionsbydetermination.html',
+    templateUrl: '../templates/priceconditionsbydetermination.html',
 })
 export class PriceConditionsByDetermination implements OnInit {
 
     /**
      * all loaded conditions
      */
-    @Input() private conditions: any[] = [];
+    @Input() public conditions: any[] = [];
 
     /**
      * the list of determinationtypes
      */
-    private determinationtypes: any[] = [];
+    public determinationtypes: any[] = [];
 
     /**
      * the current active condition type
      */
-    private activedeterminationtype: string;
+    public activedeterminationtype: string;
 
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private backend: backend, private configuration: configurationService, private priceconditonsconfiguration: priceconditonsconfiguration) {
+    constructor(public language: language, public metadata: metadata, public model: model, public router: Router, public backend: backend, public configuration: configurationService, public priceconditonsconfiguration: priceconditonsconfiguration) {
     }
 
     public ngOnInit(): void {
@@ -46,7 +46,7 @@ export class PriceConditionsByDetermination implements OnInit {
     /**
      * loads the conditions for the accounnt on the backend
      */
-    private analyzeConditions() {
+    public analyzeConditions() {
         this.determinationtypes = [];
         let determinationtypes = _.uniq(this.conditions.map(d => d.priceconditiontypedetermination_id));
         for (let determinationtype of determinationtypes) {
@@ -66,7 +66,7 @@ export class PriceConditionsByDetermination implements OnInit {
      *
      * @param determinationtypeid
      */
-    private setDeterminationType(determinationtypeid) {
+    public setDeterminationType(determinationtypeid) {
         this.activedeterminationtype = determinationtypeid;
     }
 
@@ -74,7 +74,7 @@ export class PriceConditionsByDetermination implements OnInit {
         return _.uniq(this.conditions.filter(c => c.priceconditiontype_id == this.activedeterminationtype).map(d => d.priceconditiontypedetermination_id));
     }
 
-    private conditonsForDeterminationId(determinationid) {
+    public conditonsForDeterminationId(determinationid) {
         return this.conditions.filter(c => c.priceconditiontypedetermination_id == determinationid);
     }
 }

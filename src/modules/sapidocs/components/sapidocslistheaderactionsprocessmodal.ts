@@ -20,26 +20,26 @@ import {backend} from '../../../services/backend.service';
  * renders in the list header action menu and offers the user the option to export the list to a targetlist
  */
 @Component({
-    templateUrl: './src/modules/sapidocs/templates/sapidocslistheaderactionsprocessmodal.html',
+    templateUrl: '../templates/sapidocslistheaderactionsprocessmodal.html',
 })
 export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
 
     /**
      * reference to the modal itsel
      */
-    private self: any;
+    public self: any;
 
-    private count: number = 0;
-    private processed: number = 0;
-    private processedcomplete: number = 0;
-    private processedfailed: number = 0;
+    public count: number = 0;
+    public processed: number = 0;
+    public processedcomplete: number = 0;
+    public processedfailed: number = 0;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private backend: backend,
-        private modellist: modellist,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public backend: backend,
+        public modellist: modellist,
     ) {
     }
 
@@ -57,7 +57,7 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
     /**
      * process the idocs sequentially
      */
-    private async processIDOCs(): Promise<boolean> {
+    public async processIDOCs(): Promise<boolean> {
         let ret = new Subject<boolean>();
         let selectedIds = this.modellist.getSelectedIDs();
         for (let selectedId of selectedIds) {
@@ -82,14 +82,14 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
     /**
      * close the window
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * processes a single idoc
      */
-    private async processIDOC(idocid): Promise<boolean> {
+    public async processIDOC(idocid): Promise<boolean> {
         let sub = new Subject<boolean>();
         this.backend.postRequest(`module/SAPIdocs/${idocid}/process`).subscribe(
             success => {

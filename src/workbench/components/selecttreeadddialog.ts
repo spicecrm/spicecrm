@@ -14,7 +14,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'selecttree-add-dialog',
-    templateUrl: './src/workbench/templates/selecttreeadddialog.html'
+    templateUrl: '../templates/selecttreeadddialog.html'
 })
 export class SelectTreeAddDialog{
 
@@ -26,7 +26,7 @@ export class SelectTreeAddDialog{
     fieldsettype: string = 'custom';
     self;
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private utils: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public utils: modelutilities) {
 
     }
 

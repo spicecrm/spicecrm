@@ -6,7 +6,7 @@ import {language} from '../../../services/language.service';
 import {Observable, Subject} from "rxjs";
 
 @Component({
-    templateUrl: './src/modules/salesplanning/templates/salesplanningtoolinputhelpermodal.html'
+    templateUrl: '../templates/salesplanningtoolinputhelpermodal.html'
 })
 
 export class SalesPlanningToolInputHelperModal {
@@ -18,7 +18,7 @@ export class SalesPlanningToolInputHelperModal {
     public response: Observable<any>;
     public responseSubject: Subject<any> = new Subject<object>();
 
-    constructor(private language: language) {
+    constructor(public language: language) {
         this.response = this.responseSubject.asObservable();
     }
 
@@ -45,7 +45,7 @@ export class SalesPlanningToolInputHelperModal {
     * @complete responseSubject
     * @destroy self
     */
-    private cancel() {
+    public cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
@@ -56,7 +56,7 @@ export class SalesPlanningToolInputHelperModal {
     * @complete responseSubject
     * @destroy self
     */
-    private execute() {
+    public execute() {
         this.responseSubject.next(this.data);
         this.responseSubject.complete();
         this.self.destroy();

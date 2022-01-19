@@ -12,9 +12,9 @@ import { Directive, HostListener, Input } from '@angular/core';
 })
 export class SystemTrimInputDirective {
 
-    @Input('system-trim-input') private trim: string;
+    @Input('system-trim-input') public trim: string;
 
-    private getCaret(el) {
+    public getCaret(el) {
 
         return {
             start: el.selectionStart,
@@ -23,7 +23,7 @@ export class SystemTrimInputDirective {
 
     }
 
-    private setCaret(el, start, end) {
+    public setCaret(el, start, end) {
 
         el.selectionStart = start;
         el.selectionEnd = end;
@@ -32,7 +32,7 @@ export class SystemTrimInputDirective {
 
     }
 
-    private dispatchEvent(el, eventType) {
+    public dispatchEvent(el, eventType) {
 
         const event = document.createEvent('Event');
         event.initEvent(eventType, false, false);
@@ -40,7 +40,7 @@ export class SystemTrimInputDirective {
 
     }
 
-    private trimValue(el, value) {
+    public trimValue(el, value) {
 
         el.value = value.trim();
 
@@ -49,7 +49,7 @@ export class SystemTrimInputDirective {
     }
 
     @HostListener('blur', ['$event.target', '$event.target.value'])
-    private onBlur(el: any, value: string): void {
+    public onBlur(el: any, value: string): void {
 
         if ((!this.trim || 'blur' === this.trim) && 'function' === typeof value.trim && value.trim() !== value) {
 
@@ -62,7 +62,7 @@ export class SystemTrimInputDirective {
 
     /*
     @HostListener('input', ['$event.target', '$event.target.value'])
-    private onInput(el: any, value: string): void {
+    public onInput(el: any, value: string): void {
 
         if (!this.trim && 'function' === typeof value.trim && value.trim() !== value) {
 

@@ -27,7 +27,7 @@ declare var _: any;
 
 @Component({
     selector: 'reporter-detail-visualization-google-maps',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailvisualizationgooglemaps.html',
+    templateUrl: '../templates/reporterdetailvisualizationgooglemaps.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnDestroy {
@@ -36,40 +36,40 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
     /**
      * google maps pin markers arry
      */
-    protected markers: any[] = [];
-    @ViewChild('mapContainer', {read: ViewContainerRef, static: false}) private mapContainer: ViewContainerRef;
-    @ViewChild('legendContainer') private legendContainer: TemplateRef<any>;
+    public markers: any[] = [];
+    @ViewChild('mapContainer', {read: ViewContainerRef, static: false}) public mapContainer: ViewContainerRef;
+    @ViewChild('legendContainer') public legendContainer: TemplateRef<any>;
     /**
      * google maps instance
      */
-    private map: any = {};
+    public map: any = {};
     /**
      * popup window instance for markers
      */
-    private infoWindow: any = {};
+    public infoWindow: any = {};
     /**
      * to ensure that the map is ready to handle panning and drawing actions
      */
-    private isMapIdled: boolean = false;
+    public isMapIdled: boolean = false;
     /**
      * to ensure that the map tiles are loaded to handle adding clusters
      */
-    private tilesLoaded: boolean = false;
+    public tilesLoaded: boolean = false;
     /**
      * event listener for the center control rendered on the map
      */
-    private centerControlListener: any;
+    public centerControlListener: any;
     /**
      * google.maps.LatLngBounds instance to fit the map zoom and position to markers or the defined center
      */
-    private mapBounds: any;
+    public mapBounds: any;
 
     constructor(
-        private language: language,
-        private model: model,
-        private libLoader: libloader,
-        private zone: NgZone,
-        private renderer: Renderer2
+        public language: language,
+        public model: model,
+        public libLoader: libloader,
+        public zone: NgZone,
+        public renderer: Renderer2
     ) {
     }
 
@@ -121,7 +121,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
     /**
      * remove re-center controll listener
      */
-    private removeReCenterControlListener() {
+    public removeReCenterControlListener() {
         if (!!this.centerControlListener) {
             this.centerControlListener();
             this.centerControlListener = null;
@@ -133,7 +133,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
      * add click event listener to the control to either fit the map bounds or reset the map to the center
      * append the re-center control to the map controls
      */
-    private defineReCenterControl() {
+    public defineReCenterControl() {
 
         const controlDiv = document.createElement('div');
         controlDiv.title = this.language.getLabel('LBL_RE_CENTER');
@@ -153,7 +153,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
      * @param color
      * @param letter
      */
-    protected generateMarkerIcon(color: string, letter?: string) {
+    public generateMarkerIcon(color: string, letter?: string) {
         const colorHex = color.indexOf('#') == 0 ? color : '#' + color;
         const textColor = color.indexOf('ffffff') > -1 ? '#404040' : '#ffffff';
         if (!letter) {
@@ -181,7 +181,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
      * check if the geo object latitude and longitude are correct
      * @param latLng
      */
-    protected verifyLatLng(latLng: { latitude: number, longitude: number }) {
+    public verifyLatLng(latLng: { latitude: number, longitude: number }) {
         return !!latLng.longitude && !isNaN(latLng.longitude) && !!latLng.latitude && !isNaN(latLng.latitude);
     }
 
@@ -189,7 +189,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
      * render google map and set the markers from report results
      * set legend if active
      */
-    private renderMap() {
+    public renderMap() {
 
         this.map = new google.maps.Map(this.mapContainer.element.nativeElement,
             {
@@ -228,7 +228,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
     /**
      * initialize MarkerClusterer and add markers to it
      */
-    private setMarkerCluster() {
+    public setMarkerCluster() {
 
         if (!this.isMapIdled || !(window as any).MarkerClusterer || this.markers.length == 0) return;
 
@@ -248,7 +248,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
     /**
      * set marker spiderfier and add markers to spiderfier
      */
-    private setMarkerSpiderfier() {
+    public setMarkerSpiderfier() {
 
         if (!this.isMapIdled || !(window as any).OverlappingMarkerSpiderfier || this.markers.length == 0) return;
 
@@ -271,7 +271,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
     /**
      * set legend for the map
      */
-    private setLegendFromTemplate() {
+    public setLegendFromTemplate() {
         const templateRef = this.legendContainer.createEmbeddedView(null);
         templateRef.detectChanges();
         this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(templateRef.rootNodes[0]);
@@ -286,7 +286,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
      * set marker cluster if it is active and the direction service is inactive
      * fit the map bounds to all rendered markers
      */
-    private setMarkers() {
+    public setMarkers() {
 
         this.mapBounds = new google.maps.LatLngBounds();
 
@@ -337,7 +337,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
     /**
      * fit the map bounds with less zoom if we have only one marker
      */
-    private fitMapBounds() {
+    public fitMapBounds() {
 
         this.map.setOptions({maxZoom: 14});
         this.map.fitBounds(this.mapBounds);

@@ -10,18 +10,18 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_log_call_button',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitlogcallbutton.html',
+    templateUrl: '../templates/telesalescockpitlogcallbutton.html',
     providers: [model]
 })
 export class TeleSalesCockpitLogCallButton {
 
-    private parent: any = undefined;
+    public parent: any = undefined;
 
-    constructor(private language: language,
-                private telecockpitservice: telecockpitservice,
-                private model: model,
-                private backend: backend,
-                private toast: toast) {
+    constructor(public language: language,
+                public telecockpitservice: telecockpitservice,
+                public model: model,
+                public backend: backend,
+                public toast: toast) {
         this.model.module = 'Calls';
     }
 
@@ -50,7 +50,7 @@ export class TeleSalesCockpitLogCallButton {
         });
     }
 
-    private updateItem() {
+    public updateItem() {
         let item = this.telecockpitservice.selectedListItem;
         item.hits++;
         item.related_id = this.model.id;

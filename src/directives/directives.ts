@@ -23,6 +23,7 @@ import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
 import /*embed*/ {SystemTitleDirective} from './directives/systemtitle';
 import /*embed*/ {SystemPlaceholderDirective} from './directives/systemplaceholder';
 import /*embed*/ {SystemMultiSelectCheckboxesDirective} from './directives/systemmultiselectcheckboxes';
+import /*embed*/ {SystemCalculatorTriggerDirective} from './directives/systemcalculatortrigger';
 
 /**
  * the angular module that collects all teh directives and can be imported by other modules to use the set of directives
@@ -48,7 +49,8 @@ import /*embed*/ {SystemMultiSelectCheckboxesDirective} from './directives/syste
         SystemResizeDirective,
         SystemPlaceholderDirective,
         SystemTitleDirective,
-        SystemMultiSelectCheckboxesDirective
+        SystemMultiSelectCheckboxesDirective,
+        SystemCalculatorTriggerDirective
     ],
     exports: [
         SystemModelPopOverDirective,
@@ -67,7 +69,8 @@ import /*embed*/ {SystemMultiSelectCheckboxesDirective} from './directives/syste
         SystemResizeDirective,
         SystemPlaceholderDirective,
         SystemTitleDirective,
-        SystemMultiSelectCheckboxesDirective
+        SystemMultiSelectCheckboxesDirective,
+        SystemCalculatorTriggerDirective
     ]
 })
 export class DirectivesModule {

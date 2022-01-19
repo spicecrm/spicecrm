@@ -20,7 +20,7 @@ export class salesdocrecord implements OnDestroy {
      *
      * @private
      */
-    private salesdoc: any;
+    public salesdoc: any;
 
     /**
      * an emitter that triggers if the tax information has beenchanged and a new tax determination shoudl be triggered by the tax fields
@@ -32,7 +32,7 @@ export class salesdocrecord implements OnDestroy {
      *
      * @private
      */
-    private taxedParty: any = {
+    public taxedParty: any = {
         module: null,
         id: null,
         data: null
@@ -43,13 +43,13 @@ export class salesdocrecord implements OnDestroy {
      *
      * @private
      */
-    private subscribptions: Subscription = new Subscription();
+    public subscribptions: Subscription = new Subscription();
 
     constructor(
-        private configuration: configurationService,
-        private backend: backend,
-        private language: language,
-        private modal: modal
+        public configuration: configurationService,
+        public backend: backend,
+        public language: language,
+        public modal: modal
     ) {
     }
 
@@ -158,7 +158,7 @@ export class salesdocrecord implements OnDestroy {
      * - first fromt ehsalesdoc
      * - then from the taxed party
      */
-    private taxedCountry(data?) {
+    public taxedCountry(data?) {
         // first try to use the shipping country fromt eh salesdoc
         if (this.salesdoc.getField('shipping_address_country')) {
             return this.salesdoc.getField('shipping_address_country');
@@ -182,7 +182,7 @@ export class salesdocrecord implements OnDestroy {
      *
      * @private
      */
-    private getTaxedParty(): Observable<boolean> {
+    public getTaxedParty(): Observable<boolean> {
 
         // only if we are editing
         if(!this.salesdoc.isEditing) return of(true);

@@ -23,7 +23,7 @@ declare var moment: any;
  * renders a list of activities on a WSB tio be settled
  */
 @Component({
-    templateUrl: './src/modules/projects/templates/projectsettlement.html',
+    templateUrl: '../templates/projectsettlement.html',
     providers: [model]
 })
 export class ProjectSettlement implements OnInit {
@@ -33,52 +33,52 @@ export class ProjectSettlement implements OnInit {
      *
      * @private
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     /**
      * the componentconfig
      *
      * @private
      */
-    private componentconfig: any;
+    public componentconfig: any;
 
     /**
      * the prohect activities loaded from teh backend
      *
      * @private
      */
-    private projectActivities: any[] = [];
+    public projectActivities: any[] = [];
 
     /**
      * the activity types loaded
      *
      * @private
      */
-    private projectActivityTypes: any[] = [];
+    public projectActivityTypes: any[] = [];
 
     /**
      * the planned activities loaded
      *
      * @private
      */
-    private projectPlannedActivities: any[] = [];
+    public projectPlannedActivities: any[] = [];
 
     /**
      * the WBS elements laoded to settle
      *
      * @private
      */
-    private projectWBSs: any[] = [];
+    public projectWBSs: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private modelutilities: modelutilities,
-        private backend: backend,
-        private parent: model,
-        private language: language,
-        private navigationtab: navigationtab,
-        private layout: layout,
-        private router: Router
+        public metadata: metadata,
+        public modelutilities: modelutilities,
+        public backend: backend,
+        public parent: model,
+        public language: language,
+        public navigationtab: navigationtab,
+        public layout: layout,
+        public router: Router
     ) {
     }
 
@@ -93,7 +93,7 @@ export class ProjectSettlement implements OnInit {
      *
      * @param params the Route Params returned
      */
-    private initialize(params: Params) {
+    public initialize(params: Params) {
         // get the bean details
         this.parent.module = 'Projects';
         this.parent.id = params.id;
@@ -113,7 +113,7 @@ export class ProjectSettlement implements OnInit {
      *
      * @private
      */
-    private loadUnsettledActivities(){
+    public loadUnsettledActivities(){
         this.loading = true;
         this.backend.getRequest(`module/Projects/${this.parent.id}/unsettletactivities`).subscribe(
             activities => {
@@ -146,7 +146,7 @@ export class ProjectSettlement implements OnInit {
      * @param projectWBS
      * @private
      */
-    private projectWBSActivities(projectWBS){
+    public projectWBSActivities(projectWBS){
         let plannedactivityIDs = this.projectPlannedActivities.filter(p => p.projectwbs_id == projectWBS.id).map(p => p.id);
         return this.projectActivities.filter(a => plannedactivityIDs.indexOf(a.projectplannedactivity_id) >=0);
     }
@@ -157,7 +157,7 @@ export class ProjectSettlement implements OnInit {
      * @param projectWBS
      * @private
      */
-    private projectWBSTotalSettlmentEffort(projectWBS){
+    public projectWBSTotalSettlmentEffort(projectWBS){
         let total = 0;
         let plannedactivityIDs = this.projectPlannedActivities.filter(p => p.projectwbs_id == projectWBS.id).map(p => p.id);
         for(let activity of this.projectActivities.filter(a => plannedactivityIDs.indexOf(a.projectplannedactivity_id) >=0)){
@@ -189,7 +189,7 @@ export class ProjectSettlement implements OnInit {
      *
      * @private
      */
-    private settle() {
+    public settle() {
         this.backend.postRequest(`module/Projects/${this.parent.id}/settletactivities`, {}, this.projectActivities.filter(a => a.selected)).subscribe(
             res => {
                 if (res.saledocid) {
@@ -206,7 +206,7 @@ export class ProjectSettlement implements OnInit {
      * @param end
      * @private
      */
-    private getDurationHours(start, end) {
+    public getDurationHours(start, end) {
         return Math.round(end.diff(start, 'hours', true) * 100) / 100;
     }
 
@@ -216,7 +216,7 @@ export class ProjectSettlement implements OnInit {
      * @param i
      * @param item
      */
-    private trackByFn(i, item) {
+    public trackByFn(i, item) {
         return item.id;
     }
 

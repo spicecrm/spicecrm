@@ -16,7 +16,7 @@ declare var moment;
  * a compo date field for validity
  */
 @Component({
-    templateUrl: './src/modules/bonusprograms/templates/bonuscardvaliditydatefield.html'
+    templateUrl: '../templates/bonuscardvaliditydatefield.html'
 })
 export class BonusCardValidityDateField extends fieldDateSpan {
 
@@ -33,7 +33,7 @@ export class BonusCardValidityDateField extends fieldDateSpan {
      * @param field
      */
     public isEditable(field: string = this.fieldname): boolean {
-        if (this.model.data.validity_date_editable != 1) return false;
+        if (this.model.getField('validity_date_editable') != 1) return false;
         return super.isEditable(field);
     }
 }

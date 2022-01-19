@@ -12,14 +12,14 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'field-quill-rich-text',
-    templateUrl: './src/include/quilleditor/templates/fieldquillrichtext.html'
+    templateUrl: '../templates/fieldquillrichtext.html'
 })
 export class fieldQuillRichText extends fieldGeneric implements OnInit {
 
     /**
      * hold internal height value
      */
-    private heightStyle: string = '300px';
+    public heightStyle: string = '300px';
 
     constructor(public model: model,
                 public view: view,
@@ -40,7 +40,7 @@ export class fieldQuillRichText extends fieldGeneric implements OnInit {
     /**
      * set editor height
      */
-    private setHeightStyle() {
+    public setHeightStyle() {
         this.heightStyle = !isNaN(parseInt(this.fieldconfig.height, 10)) ? parseInt(this.fieldconfig.height, 10) + 'px' : '300px';
     }
 }

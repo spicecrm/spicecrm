@@ -12,7 +12,7 @@ import {navigation} from '../../services/navigation.service';
 })
 export class SystemNavigationCollector {
 
-    constructor(private activatedRoute: ActivatedRoute, private navigation: navigation) {
+    constructor(public activatedRoute: ActivatedRoute, public navigation: navigation) {
         this.activatedRoute.params.subscribe(routeParams => {
             if(this.activatedRoute.routeConfig) {
                 this.navigation.handleNavigation(routeParams, this.activatedRoute.routeConfig, this.activatedRoute.snapshot);

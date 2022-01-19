@@ -14,7 +14,7 @@ import {outputModalService} from "../services/outputmodal.service";
 
 @Component({
     selector: 'object-action-mark-sent-bean-button',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionmarksentbeanbutton.html'
+    templateUrl: '../templates/objectactionmarksentbeanbutton.html'
 })
 export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton {
 
@@ -24,14 +24,14 @@ export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton
     @Output() public actionemitter = new EventEmitter<{close: boolean, name: string}>();
 
     constructor(
-        protected language: language,
-        protected model: model,
-        protected modal: modal,
-        protected backend: backend,
-        protected configuration: configurationService,
-        protected toast: toast,
-        protected outputModalService: outputModalService,
-        protected viewContainerRef: ViewContainerRef
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public configuration: configurationService,
+        public toast: toast,
+        public outputModalService: outputModalService,
+        public viewContainerRef: ViewContainerRef
     ) {
         super(language, model, modal, backend, configuration, viewContainerRef);
     }

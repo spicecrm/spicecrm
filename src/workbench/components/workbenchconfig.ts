@@ -14,7 +14,7 @@ import {language} from "../../services/language.service";
 import {backend} from "../../services/backend.service";
 
 @Component({
-    templateUrl: './src/workbench/templates/workbenchconfig.html',
+    templateUrl: '../templates/workbenchconfig.html',
     selector: 'workbench-config'
 })
 
@@ -29,9 +29,9 @@ export class WorkbenchConfig implements OnChanges {
     public optionsElements: any[] = [];
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language
+        public backend: backend,
+        public metadata: metadata,
+        public language: language
     ) {
     }
 

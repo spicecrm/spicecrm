@@ -7,19 +7,19 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 import {sapIDOCFieldI, sapIDOCSegmentI} from "../../../modules/sapidocs/interfaces/moudesapidocs.interfaces";
 
 @Component({
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagerfieldaddmodal.html'
+    templateUrl: '../templates/sapidocsmanagerfieldaddmodal.html'
 })
 export class SAPIDOCsManagerFieldAddModal implements OnInit {
 
-    private self: any;
+    public self: any;
 
-    private parentsegment_id: string;
+    public parentsegment_id: string;
 
-    private field: sapIDOCFieldI;
+    public field: sapIDOCFieldI;
 
-    private added: EventEmitter<sapIDOCFieldI> = new EventEmitter<sapIDOCFieldI>();
+    public added: EventEmitter<sapIDOCFieldI> = new EventEmitter<sapIDOCFieldI>();
 
-    constructor(private sapIdocsManager: sapIdocsManager, private helper: helper) {
+    constructor(public sapIdocsManager: sapIdocsManager, public helper: helper) {
 
     }
 
@@ -30,7 +30,7 @@ export class SAPIDOCsManagerFieldAddModal implements OnInit {
     /**
      * initializes the segment
      */
-    private initializeField() {
+    public initializeField() {
         this.field = {
             id: this.helper.generateGuid(),
             deleted: '0',
@@ -49,14 +49,14 @@ export class SAPIDOCsManagerFieldAddModal implements OnInit {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * adds the segment and closes the modal
      */
-    private add() {
+    public add() {
         this.sapIdocsManager.addField(this.field);
         this.added.emit(this.field);
         this.close();

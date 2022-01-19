@@ -569,10 +569,10 @@ class SpiceACLObject extends SugarBean
                     $whereClauses[] = "$table_name.{$fieldvalue['name']} = '{$fieldvalue['value1']}'";
                     break;
                 case 'ISEMPTY':
-                    $whereClauses[] = "($table_name.{$fieldvalue['name']} = '' OR $table_name.{$fieldvalue['name']} IS NULL";
+                    $whereClauses[] = "($table_name.{$fieldvalue['name']} = '' OR $table_name.{$fieldvalue['name']} IS NULL)";
                     break;
                 case 'ISNEMPTY':
-                    $whereClauses[] = "($table_name.{$fieldvalue['name']} != '' AND $table_name.{$fieldvalue['name']} IS NOT NULL";
+                    $whereClauses[] = "($table_name.{$fieldvalue['name']} != '' AND $table_name.{$fieldvalue['name']} IS NOT NULL)";
                     break;
                 case 'CU':
                     if (!empty($fieldvalue['value1'])) {
@@ -632,7 +632,6 @@ class SpiceACLObject extends SugarBean
                 }
             }
         }
-
 
         return implode(' AND ', $whereClauses) ?: '1=1';
     }

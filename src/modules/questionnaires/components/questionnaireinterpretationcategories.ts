@@ -9,31 +9,31 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'questionnaire-interpretation-categories',
-    templateUrl: './src/modules/questionnaires/templates/questionnaireinterpretationcategories.html',
+    templateUrl: '../templates/questionnaireinterpretationcategories.html',
     styles:['.slds-pill { padding: 0.25rem 0.5rem }','.slds-pill:hover { background-color: inherit; }']
 })
 export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy {
 
-    private listIsExpanded = false;
-    private sectionIsOpen = true;
+    public listIsExpanded = false;
+    public sectionIsOpen = true;
 
-    private hasFocus = false;
+    public hasFocus = false;
 
-    private allCategories = [];
-    private allCategoryNamesUpper = [];
+    public allCategories = [];
+    public allCategoryNamesUpper = [];
 
-    private selectedCategories = [];
+    public selectedCategories = [];
 
-    private presentedCategories = [];
-    private numPresentedCategories = 0;
+    public presentedCategories = [];
+    public numPresentedCategories = 0;
 
-    private clickListener: any;
+    public clickListener: any;
 
-    @ViewChild('inputField', {read: ViewContainerRef, static: false}) private inputField: ViewContainerRef;
+    @ViewChild('inputField', {read: ViewContainerRef, static: false}) public inputField: ViewContainerRef;
 
-    constructor( private language: language, private model: model, private view: view, private backend: backend, private renderer: Renderer2 ) { }
+    constructor( public language: language, public model: model, public view: view, public backend: backend, public renderer: Renderer2 ) { }
 
-    private get editing(): boolean {
+    public get editing(): boolean {
         return this.view.isEditMode();
     }
 
@@ -46,10 +46,10 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         });
     }
 
-    private get selectedCategories2(): any[] {
+    public get selectedCategories2(): any[] {
         this.selectedCategories = [];
-        if ( this.model.data.categories && this.model.data.categories != '' ) {
-            let categorypool = this.model.data.categories.split(',');
+        if ( this.model.getField('categories') && this.model.getField('categories') != '' ) {
+            let categorypool = this.model.getField('categories').split(',');
             for ( let category of this.allCategories ) {
                 for ( let categoryId of categorypool ) {
                     if ( category.id === categoryId ) this.selectedCategories.push( category );
@@ -59,15 +59,15 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         return this.selectedCategories;
     }
 
-    private deselectCategory( i: number ): void {
+    public deselectCategory( i: number ): void {
         this.selectedCategories.splice( i, 1 );
-        this.model.data.categories = this.makeCategoryString();
+        this.model.setField('categories', this.makeCategoryString());
     }
 
-    private selectCategory( i: number ): void {
+    public selectCategory( i: number ): void {
         if ( this.selectedCategories.indexOf( this.allCategories[i] ) === -1 ) {
             this.selectedCategories.push( this.allCategories[i] );
-            this.model.data.categories = this.makeCategoryString();
+            this.model.setField('categories', this.makeCategoryString());
             this.selectedCategories.sort( ( a: any, b: any ): number => {
                 const an = a.name.toLocaleLowerCase();
                 const bn = b.name.toLocaleLowerCase();
@@ -80,7 +80,7 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         }
     }
 
-    private makeCategoryString(): string {
+    public makeCategoryString(): string {
         let string = '';
         this.selectedCategories.some(( el ) => {
             string += ( ( string != '' ) ? ',':'' ) + el.id;
@@ -89,11 +89,11 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         return string;
     }
 
-    private openList(): void {
+    public openList(): void {
         this.listIsExpanded = true;
         this.clickListener = this.renderer.listen('document', 'click', event => this.onClick(event));
     }
-    private closeList(): void {
+    public closeList(): void {
         this.listIsExpanded = false;
         if ( this.clickListener ) this.clickListener();
     }
@@ -109,7 +109,7 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
     }
 
-    private change( event=null ): void {
+    public change( event=null ): void {
         let target = event.target;
         if ( event.keyCode === 38 || event.keyCode === 40 || event.keyCode === 13 ) { // down, up, enter
             target.blur();
@@ -130,22 +130,22 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         if ( this.listIsExpanded && this.numPresentedCategories === 0 ) this.closeList();
     }
 
-    private changeFocus( status: boolean, event = null ): void {
+    public changeFocus( status: boolean, event = null ): void {
         if ( status ) this.change(event);
         // else this.listIsExpanded = false; // blur/focusverlust wird leider auch bei click in die liste verursacht
         this.hasFocus = status;
     }
 
-    private setEditMode(): void {
+    public setEditMode(): void {
         this.model.startEdit();
         this.view.setEditMode();
     }
 
-    private toggleSection(): void {
+    public toggleSection(): void {
         this.sectionIsOpen = !this.sectionIsOpen;
     }
 
-    private getSectionStyle(): object {
+    public getSectionStyle(): object {
         if ( !this.sectionIsOpen ) {
             return {
                 height: '0px',

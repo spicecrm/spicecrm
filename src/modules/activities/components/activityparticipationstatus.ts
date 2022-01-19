@@ -14,7 +14,7 @@ import {view} from '../../../services/view.service';
  */
 @Component({
     selector: 'activity-participation-status',
-    templateUrl: './src/modules/activities/templates/activityparticipationstatus.html',
+    templateUrl: '../templates/activityparticipationstatus.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -28,34 +28,34 @@ export class ActivityParticipationStatus implements ControlValueAccessor {
     /**
      * the parent record - Meeting or Call
      */
-    @Input() private parent: model;
+    @Input() public parent: model;
 
     /**
      * the parent record - Contact or User
      */
-    @Input() private model: model;
+    @Input() public model: model;
 
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
+    public onChange: (value: string) => void;
 
     /**
      * for the value accessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
 
     /**
      * the acceptance status
      */
-    private status: 'none' | 'accept' | 'decline' | 'tentative' = 'none';
+    public status: 'none' | 'accept' | 'decline' | 'tentative' = 'none';
 
     /**
      * set when updating the backend
      */
-    private updating: boolean = false;
+    public updating: boolean = false;
 
-    constructor(private view: view, private session: session, private cdRef: ChangeDetectorRef, private backend: backend, private toast: toast) {
+    constructor(public view: view, public session: session, public cdRef: ChangeDetectorRef, public backend: backend, public toast: toast) {
     }
 
     /**
@@ -75,25 +75,25 @@ export class ActivityParticipationStatus implements ControlValueAccessor {
     /**
      * accepts the activity
      */
-    private accept() {
+    public accept() {
         this.setStatus('accept');
     }
 
     /**
      * declines the activity
      */
-    private decline() {
+    public decline() {
         this.setStatus('decline');
     }
 
     /**
      * marks the acceptnace as tentative
      */
-    private tentative() {
+    public tentative() {
         this.setStatus('tentative');
     }
 
-    private setStatus(status) {
+    public setStatus(status) {
         this.updating = true;
         this.backend.postRequest(`module/${this.parent.module}/${this.parent.id}/status/${this.model.id}/${status}`).subscribe(res => {
             this.status = status;

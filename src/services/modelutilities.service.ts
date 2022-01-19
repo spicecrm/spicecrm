@@ -20,9 +20,9 @@ moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 export class modelutilities {
 
     constructor(
-        private metadata: metadata,
-        private mathcomp: MathExpressionCompilerService,
-        private session: session
+        public metadata: metadata,
+        public mathcomp: MathExpressionCompilerService,
+        public session: session
     ) {
 
     }
@@ -30,11 +30,11 @@ export class modelutilities {
     /*
      * for the GUID Generation
      */
-    private getRand() {
+    public getRand() {
         return Math.random();
     }
 
-    private S4() {
+    public S4() {
         /* tslint:disable:no-bitwise */
         return (((1 + this.getRand()) * 0x10000) | 0).toString(16).substring(1);
         /* tslint:enable:no-bitwise */
@@ -166,7 +166,7 @@ export class modelutilities {
         }
     }
 
-    private formatDate(d) {
+    public formatDate(d) {
         return moment(d).format("YYYY-MM-DD");
     }
 

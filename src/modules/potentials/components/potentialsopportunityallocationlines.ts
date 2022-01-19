@@ -12,33 +12,33 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'potentials-opportunity-allocation-lines',
-    templateUrl: "./src/modules/potentials/templates/potentialsopportunityallocationlines.html"
+    templateUrl: "../templates/potentialsopportunityallocationlines.html"
 })
 export class PotentialsOpportunityAllocationLines implements OnChanges {
 
     /**
      * the account id passed in from the opportunity .. so we do not need to subscrbe to the model but react on teh onChanges Event
      */
-    @Input() private account_id: string;
+    @Input() public account_id: string;
 
     /**
      * the account_id we have loaded the potentials for
      */
-    private _account_id: string;
+    public _account_id: string;
 
     /**
      * the loaded potentials
      */
-    private account_potentials: any[];
+    public account_potentials: any[];
 
-    private companyCode: string = '';
+    public companyCode: string = '';
 
     /**
      * indicator if the potentials are loading
      */
-    private isLoading: boolean = true;
+    public isLoading: boolean = true;
 
-    constructor(private language: language, private model: model, private backend: backend) {
+    constructor(public language: language, public model: model, public backend: backend) {
 
     }
 
@@ -64,7 +64,7 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
     /**
      * loads the potentials for the account assigned to the opportunity
      */
-    private loadPotentials() {
+    public loadPotentials() {
         // set to laoding
         this.isLoading = true;
 
@@ -102,7 +102,7 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
      * @param index
      * @param item
      */
-    private trackItemFn(index, item) {
+    public trackItemFn(index, item) {
         return item.id;
     }
 

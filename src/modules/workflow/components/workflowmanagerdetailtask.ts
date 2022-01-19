@@ -15,17 +15,17 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-detail-task',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtask.html',
+    templateUrl: '../templates/workflowmanagerdetailtask.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailTask implements OnChanges {
 
-    @Input() private tasks: any = {};
-    @Input() private currenttask: string = '';
-    @Input() private module: string = '';
-    private activeTab: string = 'T';
+    @Input() public tasks: any = {};
+    @Input() public currenttask: string = '';
+    @Input() public module: string = '';
+    public activeTab: string = 'T';
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
         this.model.module = 'WorkflowTaskDefinitions';
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -37,8 +37,8 @@ export class WorkflowManagerDetailTask implements OnChanges {
         this.tasks.some(task => {
             if (task.id == this.currenttask) {
                 this.model.id = task.id;
-                this.model.data = this.modelutilities.backendModel2spice(this.model.module, task);
-                this.model.data.acl = {
+                this.model.setData(task);
+                this.model.acl = {
                     create: true,
                     edit: true
                 };

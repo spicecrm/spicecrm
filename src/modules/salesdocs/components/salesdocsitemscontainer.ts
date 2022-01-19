@@ -22,42 +22,42 @@ declare var moment: any;
 
 @Component({
     selector: 'salesdocs-items-container',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemscontainer.html'
+    templateUrl: '../templates/salesdocsitemscontainer.html'
 })
 export class SalesDocsItemsContainer implements OnInit, OnDestroy {
 
     /**
      * the items on the sales Document
      */
-    private items: any[] = [];
+    public items: any[] = [];
 
     /**
      * for the voucher handling
      */
-    private voucher: any = {};
+    public voucher: any = {};
 
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     /**
      * the columns to be displayed
      */
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
     constructor(
-        private userpreferences: userpreferences,
-        private injector: Injector,
-        private language: language,
-        private backend: backend,
-        private elementRef: ElementRef,
-        private model: model,
-        private modal: modal,
-        private view: view,
-        private configuration: configurationService,
-        private metadata: metadata,
-        private broadcast: broadcast,
+        public userpreferences: userpreferences,
+        public injector: Injector,
+        public language: language,
+        public backend: backend,
+        public elementRef: ElementRef,
+        public model: model,
+        public modal: modal,
+        public view: view,
+        public configuration: configurationService,
+        public metadata: metadata,
+        public broadcast: broadcast,
     ) {
         // build in any case if the items had already been passed in
         this.buildItems();
@@ -132,7 +132,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
     /**
      * recacluates the total document
      */
-    private recalculate() {
+    public recalculate() {
         this.model.setField('amount_net', this.totalnet);
         this.model.setField('amount_gross', this.totalgross);
     }
@@ -140,7 +140,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
     /**
      * build the items and render them in the container
      */
-    private buildItems(): boolean {
+    public buildItems(): boolean {
         if (!this.model.data?.salesdocitems) return false;
 
         this.items = [];
@@ -164,7 +164,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
     /**
      * gets the next item number
      */
-    private getNextItemNr() {
+    public getNextItemNr() {
         let lastitemnr = 0;
         for (let item of this.items) {
             let thisitemNr = parseInt(item.itemnr, 10);
@@ -180,7 +180,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
     /**
      * called to add an Item
      */
-    private addItem() {
+    public addItem() {
         this.modal.openModal('SalesDocsItemsAddTypeSelector', true, this.injector).subscribe(addItemModal => {
             addItemModal.instance.itemTypeSelected.subscribe(itemType => {
                 if (itemType) {
@@ -209,7 +209,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
      * handler to add the item
      * @param itemData
      */
-    private handleAddItem(itemData, itemType) {
+    public handleAddItem(itemData, itemType) {
         itemData.id = this.model.generateGuid();
         itemData.deleted = 0;
         itemData.salesdoc_id = this.model.id;

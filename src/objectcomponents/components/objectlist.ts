@@ -25,7 +25,7 @@ import {skip} from "rxjs/operators";
  */
 @Component({
     selector: 'object-list',
-    templateUrl: './src/objectcomponents/templates/objectlist.html',
+    templateUrl: '../templates/objectlist.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
@@ -42,7 +42,7 @@ export class ObjectList implements OnDestroy, OnInit {
     /**
      * Show drag handle and provide drag&drop functionality.
      */
-    @Input() private dragAndDrop = false;
+    @Input() public dragAndDrop = false;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -158,7 +158,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 
@@ -168,7 +168,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * call to get the list data
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         this.loadComponentConfig();
 
@@ -202,7 +202,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         this.cdRef.detectChanges();
         if (newType.listcomponent != 'ObjectList') return;
         this.chooseFields();
@@ -213,7 +213,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * load the component config and set the disable autoload value from the model list service if undefined
      * @private
      */
-    private loadComponentConfig() {
+    public loadComponentConfig() {
         this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         if ('disableAutoloadListAll' in this.componentconfig) return;
         this.componentconfig.disableAutoloadListAll = this.modellist.disableAutoloadListAll;
@@ -223,7 +223,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * trigger get list data on the service if autoload is not disabled and the list type is not "all" or reset the list data
      * @private
      */
-    private getListData() {
+    public getListData() {
         if (this.modellist.currentList.id != 'all' || !this.componentconfig?.disableAutoloadListAll) {
             this.modellist.getListData().subscribe(() =>
                 this.cdRef.detectChanges()
@@ -236,7 +236,7 @@ export class ObjectList implements OnDestroy, OnInit {
     /**
      * opens the modal allowing the user to choose and select the display fields when no field defs are defined and no current list fields are defined
      */
-    private chooseFields() {
+    public chooseFields() {
         if (this.modellist.isCustomList() && this.modellist.listfields.length == 0 && this.modellist.getFieldDefs()?.length == 0 && this.modellist.checkAccess('edit')) {
             this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
         }

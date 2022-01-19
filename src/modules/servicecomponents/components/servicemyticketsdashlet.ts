@@ -10,7 +10,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'service-my-tickets-dashlet',
-    templateUrl: './src/modules/servicecomponents/templates/servicemyticketsdashlet.html'
+    templateUrl: '../templates/servicemyticketsdashlet.html'
 })
 export class ServiceMyTicketsDashlet implements OnInit{
 
@@ -20,7 +20,7 @@ export class ServiceMyTicketsDashlet implements OnInit{
     totalcount: number = 0;
     isLoading: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private router: Router, private elementref: ElementRef) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public router: Router, public elementref: ElementRef) {
 
     }
 

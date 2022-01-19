@@ -9,7 +9,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-job-failed-list',
-    templateUrl: './src/admincomponents/templates/administrationjobfailedlist.html'
+    templateUrl: '../templates/administrationjobfailedlist.html'
 })
 export class AdministrationJobFailedList implements OnInit {
     /**
@@ -25,9 +25,9 @@ export class AdministrationJobFailedList implements OnInit {
         isLoading: false
     };
 
-    constructor(private language: language,
-                private modal: modal,
-                private metadata: metadata,
+    constructor(public language: language,
+                public modal: modal,
+                public metadata: metadata,
                 public backend: backend) {
     }
 
@@ -137,7 +137,7 @@ export class AdministrationJobFailedList implements OnInit {
      * @param item
      * @return item.id
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

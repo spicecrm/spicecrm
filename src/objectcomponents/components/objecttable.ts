@@ -22,27 +22,27 @@ declare var _;
  */
 @Component({
     selector: 'object-table',
-    templateUrl: './src/objectcomponents/templates/objecttable.html'
+    templateUrl: '../templates/objecttable.html'
 })
 export class ObjectTable implements OnInit {
     @Input() public fields = [];
     @Input() public objects = [];
     @Input() public selected_objects: any = [];
 
-    @Input("fieldset_id") private fieldset_id: string;
-    @Input("module") private module: string;
+    @Input("fieldset_id") public fieldset_id: string;
+    @Input("module") public module: string;
 
     @Output('selected_objectsChange') public selected_objects$ = new EventEmitter();
     @Input('max-selections') public max_selections = 0;
     @Output('select') public select$ = new EventEmitter();
-    private selectable = false;
-    private multiselect = false;
+    public selectable = false;
+    public multiselect = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        // @Attribute("fieldset_id") private fieldset_id: string,
-        // @Attribute("module") private module: string,
+        public language: language,
+        public metadata: metadata,
+        // @Attribute("fieldset_id") public fieldset_id: string,
+        // @Attribute("module") public module: string,
         @Attribute("selectable") selectable: string,
         @Attribute("multiselect") multiselect: string,
     ) {
@@ -102,7 +102,7 @@ export class ObjectTable implements OnInit {
         }
     }
 
-    private isObjectSelected(object) {
+    public isObjectSelected(object) {
         if (this.findSelectedObject(object)) {
             return true;
         } else {
@@ -110,11 +110,11 @@ export class ObjectTable implements OnInit {
         }
     }
 
-    private areAllObjectsSelected() {
+    public areAllObjectsSelected() {
         return this.selected_objects.length == this.objects.length;
     }
 
-    private findSelectedObject(object) {
+    public findSelectedObject(object) {
         return this.selected_objects.find(e => e.id == object.id);
     }
 

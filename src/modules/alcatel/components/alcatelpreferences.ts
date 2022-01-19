@@ -15,30 +15,30 @@ import {telephony} from "../../../services/telephony.service";
 declare var _: any;
 
 @Component({
-    templateUrl: './src/modules/alcatel/templates/alcatelpreferences.html'
+    templateUrl: '../templates/alcatelpreferences.html'
 })
 export class AlcatelPreferences {
 
     /**
      * reference to self as modal
      */
-    private self: any;
+    public self: any;
 
-    private verifying: boolean = false;
+    public verifying: boolean = false;
 
-    private saved$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public saved$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    private preferences: any = {
+    public preferences: any = {
         phoneusername: '',
         username: '',
         userpass: ''
     };
 
-    constructor(private language: language, private backend: backend, private toast: toast) {
+    constructor(public language: language, public backend: backend, public toast: toast) {
         this.getPreferences();
     }
 
-    private close() {
+    public close() {
         if(!this.verifying) {
             this.self.destroy();
         }
@@ -47,7 +47,7 @@ export class AlcatelPreferences {
     /**
      * get the preferences and check if we have a username set
      */
-    private getPreferences() {
+    public getPreferences() {
         this.backend.getRequest('channels/voice/alcatel/preferences').subscribe(prefs => {
             this.preferences.phoneusername = prefs.phoneusername;
             this.preferences.username = prefs.username;
@@ -61,7 +61,7 @@ export class AlcatelPreferences {
     /**
      * set the preferences and test them
      */
-    private setPreferences() {
+    public setPreferences() {
         if (this.canSet) {
             this.verifying = true;
             this.backend.postRequest('channels/voice/alcatel/preferences', {}, this.preferences).subscribe(

@@ -8,15 +8,15 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailbox-folders-modal",
-    templateUrl: "./src/workbench/templates/mailboxesewsselectfoldersmodal.html",
+    templateUrl: "../templates/mailboxesewsselectfoldersmodal.html",
 })
 export class MailboxesEWSSelectFoldersModal {
     public self; // needed for selfdestruction... will be set on creation...
 
-    private mailboxes: any[] = [];
+    public mailboxes: any[] = [];
 
     constructor(
-        private language: language,
+        public language: language,
         public model: model,
     ) {
 
@@ -28,7 +28,7 @@ export class MailboxesEWSSelectFoldersModal {
 
     get mailbox() {
         try {
-            return this.model.data.settings.ews_folder.id;
+            return this.model.getField('settings').ews_folder.id;
         } catch (e) {
             return '';
         }

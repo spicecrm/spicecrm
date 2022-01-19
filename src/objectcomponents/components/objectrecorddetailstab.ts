@@ -14,21 +14,21 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-record-details-tab',
-    templateUrl: './src/objectcomponents/templates/objectrecorddetailstab.html'
+    templateUrl: '../templates/objectrecorddetailstab.html'
 })
 export class ObjectRecordDetailsTab implements OnInit {
 
     /**
      * @ignore
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * defines if the panel is expanded or collapsed. Expanded by default
      */
-    private expanded: boolean = true;
+    public expanded: boolean = true;
 
-    constructor(private metadata: metadata, private model: model, private language: language) {
+    constructor(public metadata: metadata, public model: model, public language: language) {
     }
 
     /**

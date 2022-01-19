@@ -168,7 +168,7 @@ export class SpicePageBuilderService {
      */
     public defaultSuffix: 'px' | 'rem' = 'px';
 
-    constructor(private modal: modal) {
+    constructor(public modal: modal) {
         this.contentListId = _.uniqueId('panel-drop-list-');
     }
 

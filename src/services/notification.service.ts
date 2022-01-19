@@ -50,14 +50,14 @@ export class notification {
      */
     public newNotifications: NotificationI[] = [];
 
-    constructor(private backend: backend,
-                private broadcast: broadcast,
-                private configuration: configurationService,
-                private preferences: userpreferences,
-                private language: language,
-                private sanitizer: DomSanitizer,
-                private socket: socket,
-                private session: session) {
+    constructor(public backend: backend,
+                public broadcast: broadcast,
+                public configuration: configurationService,
+                public preferences: userpreferences,
+                public language: language,
+                public sanitizer: DomSanitizer,
+                public socket: socket,
+                public session: session) {
         this.initializeDesktopNotification().then(() =>
             this.loadNotifications()
         );
@@ -68,7 +68,7 @@ export class notification {
     /**
      * check if the notification api is supported by the browser and request permission if the user did not take action yet.
      */
-    protected initializeDesktopNotification() {
+    public initializeDesktopNotification() {
 
         if (!('Notification' in window)) {
 
@@ -166,7 +166,7 @@ export class notification {
      * load the notifications from the backend
      * @private
      */
-    private loadNotificationsFromBackend() {
+    public loadNotificationsFromBackend() {
 
         this.isLoading = true;
 
@@ -256,7 +256,7 @@ export class notification {
      * set the unread count
      * @private
      */
-    private setUnreadCount() {
+    public setUnreadCount() {
         this.unreadCount = this.unreadNotifications.length;
     }
 
@@ -265,7 +265,7 @@ export class notification {
      * @param data
      * @private
      */
-    private setInitialValues(data: { records: [], count: number }) {
+    public setInitialValues(data: { records: [], count: number }) {
 
         if (!data || !Array.isArray(data.records)) return;
 
@@ -279,10 +279,10 @@ export class notification {
     }
 
     /**
-     * initialize a socket connection and join the user private room
+     * initialize a socket connection and join the user public room
      * @private
      */
-    private initializeSocket() {
+    public initializeSocket() {
         this.socket.initializeNamespace('notifications').subscribe(e => this.handleSocketEvents(e));
         this.socket.joinRoom('notifications', this.session.authData.userId);
     }
@@ -292,7 +292,7 @@ export class notification {
      * @param n
      * @private
      */
-    private generateDesktopNotificationTitle(n: NotificationI): string {
+    public generateDesktopNotificationTitle(n: NotificationI): string {
         switch (n.notification_type) {
             case 'reminder':
                 return `${this.language.getLabel('LBL_REMINDER')} ${n.bean_name}\n${n.notification_date}`;
@@ -309,7 +309,7 @@ export class notification {
      * subscribe to broadcast message to initialize/disconnect a socket client
      * @private
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.broadcast.message$.subscribe(data => {
             if (data.messagetype === 'login') {
                 this.initializeSocket();
@@ -325,7 +325,7 @@ export class notification {
      * @param event
      * @private
      */
-    private handleSocketEvents(event: SocketEventI) {
+    public handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'new':
                 // push only if we also have event data
@@ -341,7 +341,7 @@ export class notification {
      * @private
      * @param n
      */
-    private parseNotification(n: NotificationI) {
+    public parseNotification(n: NotificationI) {
         const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
         const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
         let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);

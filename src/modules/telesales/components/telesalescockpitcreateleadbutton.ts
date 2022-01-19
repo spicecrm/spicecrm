@@ -7,14 +7,14 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'tele_sales_cockpit_create_lead_button',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitcreateleadbutton.html',
+    templateUrl: '../templates/telesalescockpitcreateleadbutton.html',
     providers: [model]
 })
 export class TeleSalesCockpitCreateLeadButton {
 
     public parent: any;
 
-    constructor(private language: language, private model: model) {
+    constructor(public language: language, public model: model) {
         this.model.module = 'Leads';
     }
 

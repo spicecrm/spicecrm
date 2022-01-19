@@ -12,7 +12,7 @@ declare var libphonenumber: any;
 
 @Component({
     selector: 'telephony-call-panel-related',
-    templateUrl: './src/modules/telephony/templates/telephonycallpanelrelated.html',
+    templateUrl: '../templates/telephonycallpanelrelated.html',
     providers: [view]
 })
 export class TelephonyCallPanelRelated implements OnInit {
@@ -21,14 +21,14 @@ export class TelephonyCallPanelRelated implements OnInit {
     /**
      * the main Fieldset
      */
-    private mainfieldset: string;
+    public mainfieldset: string;
 
     /**
      * the sub fieldset
      */
-    private subfieldset: string;
+    public subfieldset: string;
 
-    constructor(private model: model, private view: view, private metadata: metadata) {
+    constructor(public model: model, public view: view, public metadata: metadata) {
         // no labels
         this.view.displayLabels = false;
     }
@@ -41,7 +41,7 @@ export class TelephonyCallPanelRelated implements OnInit {
     /**
      * load the config and fieldsets
      */
-    private loadconfig() {
+    public loadconfig() {
         let config = this.metadata.getComponentConfig('TelephonyCallPanelRelated', this.model.module);
         this.mainfieldset = config.mainfieldset;
         this.subfieldset = config.subfieldset;

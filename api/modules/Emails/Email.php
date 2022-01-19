@@ -601,6 +601,11 @@ class Email extends SugarBean
         }
         // END
 
+        // check if the string we have is HTML (shoudl start with an <html> tag). if not we add a default style so the UI can display it properly
+        if(!str_starts_with($this->body, '<html')) {
+            $this->body = '<html><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style><body>'.$this->body.'</body></html>';
+        }
+
         $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
@@ -715,6 +720,18 @@ class Email extends SugarBean
     }
 
     /**
+     * generate a tracking pixel with blowfish hash and adds it to the email body
+     */
+    private function generateTrackingPixel() {
+        $key = '2fs5uhnjcnpxcpg9';
+        $method = 'blowfish';
+        $data = $this->_module .':'.$this->id;
+        $encrypted = openssl_encrypt($data, $method, $key);
+
+        $this->body .= '<img src="'.$this->tracking_url.base64_encode($encrypted) .'" height="1" width="1">';
+    }
+
+    /**
      * Send the Email
      *
      * @return mixed
@@ -744,6 +761,10 @@ class Email extends SugarBean
             } catch (Exception $exception) {
                 throw $exception;
             }
+        }
+
+        if($mailbox->track_mailbox) {
+           $this->generateTrackingPixel();
         }
 
         $mailbox->initTransportHandler();

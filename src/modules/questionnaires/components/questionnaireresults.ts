@@ -13,20 +13,20 @@ import { take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
-    templateUrl: './src/modules/questionnaires/templates/questionnaireresults.html'
+    templateUrl: '../templates/questionnaireresults.html'
 })
 export class QuestionnaireResults implements OnInit {
 
     /**
      * Is this component right now used for a QuestionnaireParticipation (or for a ServiceFeedback))?
      */
-    private isForParticipation: boolean;
+    public isForParticipation: boolean;
 
-    private questionnaireParticipation: questionnaireParticipationService;
+    public questionnaireParticipation: questionnaireParticipationService;
 
-    private subscription: Subscription;
+    public subscription: Subscription;
 
-    constructor( private model: model, private metadata: metadata, private language: language, private backend: backend, private modal: modal, private injector: Injector, private broadcast: broadcast ) { }
+    constructor( public model: model, public metadata: metadata, public language: language, public backend: backend, public modal: modal, public injector: Injector, public broadcast: broadcast ) { }
 
     public ngOnInit() {
         this.isForParticipation = ( this.model.module === 'QuestionnaireParticipations' );
@@ -52,7 +52,7 @@ export class QuestionnaireResults implements OnInit {
      * Is there a participation?
      * @private
      */
-    private get participationExists() {
+    public get participationExists() {
         if ( this.questionnaireParticipation?.isLoaded ) {
             if ( this.questionnaireParticipation.participationId ) return true;
             else return false;
@@ -63,7 +63,7 @@ export class QuestionnaireResults implements OnInit {
      * Reload the rendered questionnaire.
      * @private
      */
-    private reload(): void {
+    public reload(): void {
         this.questionnaireParticipation.reload();
     }
 
@@ -71,7 +71,7 @@ export class QuestionnaireResults implements OnInit {
      * Open the modal to fill out the questionnaire.
      * @private
      */
-    private fillOut(): void {
+    public fillOut(): void {
         this.modal.openModal('QuestionnaireFillOutModal')
             .pipe(take(1))
             .subscribe(modal => {

@@ -12,7 +12,7 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'salesdocs-item-reject-container',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemrejectcontainer.html',
+    templateUrl: '../templates/salesdocsitemrejectcontainer.html',
     providers: [model, view]
 })
 export class SalesDocsItemRejectContainer implements OnInit {
@@ -20,11 +20,11 @@ export class SalesDocsItemRejectContainer implements OnInit {
     /**
      * the item to be displayed
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private language: language, private model: model, private view: view, private metadata: metadata) {
+    constructor(public language: language, public model: model, public view: view, public metadata: metadata) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -32,7 +32,7 @@ export class SalesDocsItemRejectContainer implements OnInit {
     public ngOnInit(): void {
         this.model.module = 'SalesDocItems';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
 
         let componentconfig = this.metadata.getComponentConfig('SalesDocsItemRejectContainer', this.model.module);
         this.fieldset = componentconfig.fieldset;

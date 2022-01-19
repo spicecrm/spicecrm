@@ -15,16 +15,16 @@ declare var moment: any;
 
 @Component({
     selector: 'object-reminder-button',
-    templateUrl: './src/objectcomponents/templates/objectreminderbutton.html'
+    templateUrl: '../templates/objectreminderbutton.html'
 })
 export class ObjectReminderButton {
 
-    private showDialog: boolean = false;
-    private reminderDate: Date = new moment();
-    private hasReminder: boolean = false;
-    private clickListener: any;
+    public showDialog: boolean = false;
+    public reminderDate: Date = new moment();
+    public hasReminder: boolean = false;
+    public clickListener: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private renderer: Renderer2, private elementRef: ElementRef, private reminder: reminder, private userpreferences: userpreferences) {
+    constructor(public language: language, public metadata: metadata, public model: model, public renderer: Renderer2, public elementRef: ElementRef, public reminder: reminder, public userpreferences: userpreferences) {
 
         if (!this.reminder.loaded) {
             this.reminder.loaded$.subscribe(loaded => {
@@ -37,7 +37,7 @@ export class ObjectReminderButton {
 
     }
 
-    private loadReminder() {
+    public loadReminder() {
         let hasReminder = this.reminder.getReminder(this.model.module, this.model.id);
         if (hasReminder !== false) {
             this.hasReminder = true;
@@ -45,7 +45,7 @@ export class ObjectReminderButton {
         }
     }
 
-    private toggleDatePicker() {
+    public toggleDatePicker() {
         this.showDialog = !this.showDialog;
 
         // toggle the listener
@@ -67,19 +67,19 @@ export class ObjectReminderButton {
         return this.model.isEditing;
     }
 
-    private clearReminder() {
+    public clearReminder() {
         this.reminder.deleteReminder(this.model.module, this.model.id);
         this.hasReminder = false;
     }
 
-    private setReminder(event) {
+    public setReminder(event) {
         this.showDialog = false;
         this.hasReminder = true;
         this.reminderDate = new moment(event);
         this.reminder.setReminder(this.model, this.reminderDate);
     }
 
-    private getReminderDate() {
+    public getReminderDate() {
         // let date = new moment(this.reminderDate);
         return this.reminderDate.format(this.userpreferences.getDateFormat());
     }

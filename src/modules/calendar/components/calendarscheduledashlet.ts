@@ -16,7 +16,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-schedule-dashlet',
-    templateUrl: './src/modules/calendar/templates/calendarscheduledashlet.html',
+    templateUrl: '../templates/calendarscheduledashlet.html',
     providers: [calendar]
 })
 
@@ -28,13 +28,13 @@ export class CalendarScheduleDashlet {
     /**
      * dom reference for the header container
      */
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) public headerContainer: ViewContainerRef;
 
-    constructor(private language: language,
-                private navigation: navigation,
-                private elementRef: ElementRef,
-                private renderer: Renderer2,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public navigation: navigation,
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public calendar: calendar) {
         this.calendar.isDashlet = true;
         this.calendar.sheetType = 'Schedule';
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");

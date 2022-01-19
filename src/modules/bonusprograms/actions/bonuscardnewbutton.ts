@@ -15,7 +15,7 @@ declare var moment;
 
 @Component({
     selector: "bonus-cards-new-button",
-    templateUrl: "./src/modules/bonusprograms/templates/bonuscardnewbutton.html",
+    templateUrl: "../templates/bonuscardnewbutton.html",
     providers: [model]
 })
 export class BonusCardNewButton implements OnInit {
@@ -46,8 +46,8 @@ export class BonusCardNewButton implements OnInit {
         if (this.parentModel.module == 'BonusPrograms' && this.parentModel.id) {
             program = {
                 id: this.parentModel.id,
-                name: this.parentModel.data.summary_text,
-                validity_date_editable: this.parentModel.data.validity_date_editable,
+                name: this.parentModel.getField('summary_text'),
+                validity_date_editable: this.parentModel.getField('validity_date_editable')
             };
         } else {
             program = await this.promptProgramSelection();
@@ -99,7 +99,7 @@ export class BonusCardNewButton implements OnInit {
     /**
      * prompt to select a program and then open the add modal.
      */
-    private async promptProgramSelection(): Promise<{ id: string, name: string, validity_date_editable: number }> {
+    public async promptProgramSelection(): Promise<{ id: string, name: string, validity_date_editable: number }> {
 
         const params = {
             start: 0,

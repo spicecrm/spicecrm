@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var mergeMap_1=require("./mergeMap");function mergeMapTo(e,r,t){return void 0===t&&(t=Number.POSITIVE_INFINITY),"function"==typeof r?mergeMap_1.mergeMap(function(){return e},r,t):mergeMap_1.mergeMap(function(){return e},t="number"==typeof r?r:t)}exports.mergeMapTo=mergeMapTo;

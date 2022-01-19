@@ -12,15 +12,15 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'field-servicequeue',
-    templateUrl: './src/modules/servicecomponents/templates/fieldservicequeue.html'
+    templateUrl: '../templates/fieldservicequeue.html'
 })
 export class fieldServiceQueue extends fieldGeneric {
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private modal: modal, private injector: Injector) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public modal: modal, public injector: Injector) {
         super(model, view, language, metadata, router);
     }
     get canChange() {
-        if (this.model.data.acl && !this.model.data.acl.edit) return false;
+        if (!this.model.checkAccess('edit')) return false;
 
         let resolveDate = this.model.getField('resolve_date');
         if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {
@@ -30,7 +30,7 @@ export class fieldServiceQueue extends fieldGeneric {
         return this.model.isEditing ? false : true;
     }
 
-    private selectQueue() {
+    public selectQueue() {
         if(this.canChange) {
             this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }

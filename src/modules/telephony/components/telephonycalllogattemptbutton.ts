@@ -10,14 +10,14 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'telephony-call-panel-log-attempt-button',
-    templateUrl: './src/modules/telephony/templates/telephonycalllogattemptbutton.html',
+    templateUrl: '../templates/telephonycalllogattemptbutton.html',
     providers: [model]
 })
 export class TelephonyCallLogAttemptButton {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(@SkipSelf() private parent: model, private model: model) {
+    constructor(@SkipSelf() public parent: model, public model: model) {
 
     }
 
@@ -28,7 +28,7 @@ export class TelephonyCallLogAttemptButton {
     /**
      * save the call in the model history
      */
-    private execute() {
+    public execute() {
         this.model.module = 'CallAttempts';
         this.model.initialize(this.parent);
 

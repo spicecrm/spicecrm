@@ -21,7 +21,7 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'object-status-network-button-item',
-    templateUrl: './src/objectcomponents/templates/objectstatusnetworkbuttonitem.html'
+    templateUrl: '../templates/objectstatusnetworkbuttonitem.html'
 })
 export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
 
@@ -31,21 +31,21 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
     @ViewChild("componentcontainer", {
         read: ViewContainerRef,
         static: true
-    }) private componentcontainer: ViewContainerRef;
+    }) public componentcontainer: ViewContainerRef;
 
     /**
      * the item
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the rendered action component if there is one rendered
      */
-    private actioncomponent: any;
+    public actioncomponent: any;
 
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private modal: modal, private model: model, private injector: Injector) {
+    constructor(public language: language, public metadata: metadata, public modal: modal, public model: model, public injector: Injector) {
 
     }
 
@@ -113,7 +113,7 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
      *
      * @param statusfield
      */
-    private executeChange(statusfield) {
+    public executeChange(statusfield) {
         if(this.actioncomponent && this.actioncomponent.execute) {
             this.actioncomponent.execute();
         } else {

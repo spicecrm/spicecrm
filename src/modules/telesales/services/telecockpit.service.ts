@@ -18,9 +18,9 @@ export class telecockpitservice {
     public selectedcampaigntask: any = {};
     public selectedListItem: any;
     public selectedItemSubject: Subject<any> = new Subject<any>();
-    private renderedMainComponents: any[] = [];
+    public renderedMainComponents: any[] = [];
 
-    constructor(private backend: backend, private metadata: metadata, private language: language) {
+    constructor(public backend: backend, public metadata: metadata, public language: language) {
         this.getCampaignTasks();
     }
 

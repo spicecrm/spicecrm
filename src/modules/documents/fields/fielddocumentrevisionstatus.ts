@@ -18,19 +18,19 @@ import {navigation} from "../../../services/navigation.service";
 
 
 @Component({
-    templateUrl: './src/modules/documents/templates/fielddocumentrevisionstatus.html'
+    templateUrl: '../templates/fielddocumentrevisionstatus.html'
 })
 
 export class fieldDocumentRevisionStatus extends fieldGeneric {
-    private parent:any;
-    constructor(public model: model, private navigation: navigation, view: view, public language: language, public metadata: metadata, public router: Router, public modal: modal, public relatedmodels: relatedmodels, public backend: backend) {
+    public parent:any;
+    constructor(public model: model, public navigation: navigation, view: view, public language: language, public metadata: metadata, public router: Router, public modal: modal, public relatedmodels: relatedmodels, public backend: backend) {
         super(model, view, language, metadata, router);
 
 
     }
     public ngOnInit() {
         super.ngOnInit();
-        this.parent = this.navigation.getRegisteredModel(this.model.data.document_id, 'Documents');
+        this.parent = this.navigation.getRegisteredModel(this.model.getField('document_id'), 'Documents');
         this.subscriptions.add(
             this.parent.observeFieldChanges('status_id').subscribe(value => {
                 if(value == 'Expired') {
@@ -68,7 +68,7 @@ export class fieldDocumentRevisionStatus extends fieldGeneric {
                         if(!this.parent) {
                             return;
                         }
-                        this.parent.setField('revision', this.model.data.revision);
+                        this.parent.setField('revision', this.model.getField('revision'));
                     });
                 }
             }

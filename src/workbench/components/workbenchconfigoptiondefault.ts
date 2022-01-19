@@ -9,7 +9,7 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'workbench-config-option-default',
-    templateUrl: './src/workbench/templates/workbenchconfigoptiondefault.html'
+    templateUrl: '../templates/workbenchconfigoptiondefault.html'
 })
 export class WorkbenchConfigOptionDefault {
 

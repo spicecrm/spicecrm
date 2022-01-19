@@ -9,17 +9,17 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'reports-designer-more-integrate-item-snapshots',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemsnapshots.html'
+    templateUrl: '../templates/reportsdesignermoreintegrateitemsnapshots.html'
 })
 export class ReportsDesignerMoreIntegrateItemSnapshots {
 
-    protected snapshots: any[];
-    protected isLoading: boolean = false;
+    public snapshots: any[];
+    public isLoading: boolean = false;
 
-    constructor(private language: language,
-                private model: model,
-                private backend: backend,
-                private modal: modal) {
+    constructor(public language: language,
+                public model: model,
+                public backend: backend,
+                public modal: modal) {
     }
 
     /**
@@ -32,7 +32,7 @@ export class ReportsDesignerMoreIntegrateItemSnapshots {
     /**
      * load the snapshots from backend
      */
-    private loadSnapshots() {
+    public loadSnapshots() {
         this.isLoading = true;
         this.backend.getRequest(`module/KReports/${this.model.id}/snapshots`).subscribe(snapshots => {
             if (!!snapshots) this.snapshots = snapshots;
@@ -44,7 +44,7 @@ export class ReportsDesignerMoreIntegrateItemSnapshots {
      * delete the snapshot with the given id
      * @param snapshotId: string
      */
-    private deleteSnapshot(snapshotId) {
+    public deleteSnapshot(snapshotId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 this.backend.deleteRequest(`module/KReports/${this.model.id}/snapshot/${snapshotId}`).subscribe(res => {
@@ -63,7 +63,7 @@ export class ReportsDesignerMoreIntegrateItemSnapshots {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.snapshot;
     }
 }

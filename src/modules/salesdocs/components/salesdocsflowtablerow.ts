@@ -10,7 +10,7 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: '[salesdocs-flow-table-row]',
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsflowtablerow.html",
+    templateUrl: "../templates/salesdocsflowtablerow.html",
     providers: [model, view]
 })
 export class SalesDocsFlowTableRow implements OnInit {
@@ -19,15 +19,15 @@ export class SalesDocsFlowTableRow implements OnInit {
      *
      * @private
      */
-    @Input() private data: any;
+    @Input() public data: any;
 
     /**
      * the fields to be displayed in the table
      * @private
      */
-    @Input() private fields: any[] = [];
+    @Input() public fields: any[] = [];
 
-    constructor(public model: model, private view: view) {
+    constructor(public model: model, public view: view) {
         this.view.displayLabels = false;
     }
 
@@ -38,7 +38,7 @@ export class SalesDocsFlowTableRow implements OnInit {
         this.model.module = 'SalesDocs';
         this.model.id = this.data.id;
         this.model.initialize();
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.data);
+        this.model.setData(this.data);
     }
 
 

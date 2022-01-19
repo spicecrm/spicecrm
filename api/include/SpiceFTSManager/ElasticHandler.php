@@ -333,17 +333,12 @@ class ElasticHandler
 
     function searchModule($module, $queryParam, $size = 25, $from = 0)
     {
-
-        $db = DBManagerFactory::getInstance();
-
         $response = json_decode($this->query('POST', $this->indexPrefix . strtolower($module) . '/_search', [], $queryParam), true);
         return $response;
     }
 
     function searchModules($modules, $queryParam, $size = 25, $from = 0)
     {
-        $db = DBManagerFactory::getInstance();
-
         $modString = '';
         foreach ($modules as $module) {
             if ($modString !== '') $modString .= ',';

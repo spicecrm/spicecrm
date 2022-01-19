@@ -19,21 +19,21 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 @Component({
     selector: 'activitytimeline-add-container',
-    templateUrl: './src/modules/activities/templates/activitytimelineaddcontainer.html'
+    templateUrl: '../templates/activitytimelineaddcontainer.html'
 })
 export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDestroy {
 
-    @ViewChildren('maintabs', {read: ViewContainerRef}) private maintabs: QueryList<any>;
-    @ViewChildren('moretabs', {read: ViewContainerRef}) private moretabs: QueryList<any>;
-    @ViewChild('moretab', {read: ViewContainerRef, static: false}) private moretab: ViewContainerRef;
+    @ViewChildren('maintabs', {read: ViewContainerRef}) public maintabs: QueryList<any>;
+    @ViewChildren('moretabs', {read: ViewContainerRef}) public moretabs: QueryList<any>;
+    @ViewChild('moretab', {read: ViewContainerRef, static: false}) public moretab: ViewContainerRef;
 
-    private currenttab: string = '';
-    private tabs: any[] = [];
-    private resizeListener: any;
-    private moreOpen: boolean = false;
-    private moreModules: string[] = [];
+    public currenttab: string = '';
+    public tabs: any[] = [];
+    public resizeListener: any;
+    public moreOpen: boolean = false;
+    public moreModules: string[] = [];
 
-    constructor(private model: model, private language: language, private activitiytimeline: activitiytimeline, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer2) {
+    constructor(public model: model, public language: language, public activitiytimeline: activitiytimeline, public metadata: metadata, public elementRef: ElementRef, public renderer: Renderer2) {
         this.resizeListener = this.renderer.listen('window', 'resize', e => {
             this.handleOverflow();
         });
@@ -46,7 +46,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
             let componentsetComponents = this.metadata.getComponentSetObjects(config.componentset);
             for (let componentsetComponent of componentsetComponents) {
                 // check if we have erdit right on the module
-                if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'edit')) {
+                if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'create')) {
                     this.tabs.push({
                         module: componentsetComponent.componentconfig.module,
                         component: componentsetComponent.component,
@@ -69,7 +69,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
         this.resizeListener();
     }
 
-    private handleOverflow() {
+    public handleOverflow() {
         this.moreModules = [];
         // make sure we set all to hidden
         this.maintabs.forEach(thisitem => {
@@ -118,11 +118,11 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     }
 
-    private setTab(object) {
+    public setTab(object) {
         this.currenttab = object;
     }
 
-    private checkTab(object) {
+    public checkTab(object) {
         return this.currenttab == object;
     }
 
@@ -130,11 +130,11 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
         return this.moreModules.indexOf(this.currenttab) >= 0;
     }
 
-    private tabClass(object) {
+    public tabClass(object) {
         return this.currenttab == object.module ? 'slds-show' : 'slds-hide';
     }
 
-    private toggleOpen() {
+    public toggleOpen() {
         this.moreOpen = !this.moreOpen;
     }
 }

@@ -9,7 +9,7 @@ import {TelephonyCallPanelRelated} from "./telephonycallpanelrelated";
 
 @Component({
     selector: 'telephony-call-panel-related-compact',
-    templateUrl: './src/modules/telephony/templates/telephonycallpanelrelatedcompact.html',
+    templateUrl: '../templates/telephonycallpanelrelatedcompact.html',
     providers: [view]
 })
 export class TelephonyCallPanelRelatedCompact extends TelephonyCallPanelRelated {
@@ -19,9 +19,9 @@ export class TelephonyCallPanelRelatedCompact extends TelephonyCallPanelRelated 
      *
      * @private
      */
-    @Input() private canClear: boolean = false;
+    @Input() public canClear: boolean = false;
 
-    @Output() private unlink: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public unlink: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public clear(){
         this.unlink.emit(true);

@@ -10,7 +10,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'system-input-relate',
-    templateUrl: './src/systemcomponents/templates/systeminputrelate.html',
+    templateUrl: '../templates/systeminputrelate.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -24,36 +24,36 @@ export class SystemInputRelate implements ControlValueAccessor {
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * the module so the enum can be determined
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * The field of the related name.
      */
-    @Input() private nameField = 'summary_text';
+    @Input() public nameField = 'summary_text';
 
     /**
      * the related id
      */
-    private _relatedid: string;
+    public _relatedid: string;
 
     /**
      * the related id
      */
-    private _relatedname: string;
+    public _relatedname: string;
 
 
-    constructor(private language: language, private modal: modal
+    constructor(public language: language, public modal: modal
     ) {
 
     }
 
-    private clearField() {
+    public clearField() {
         this._relatedid = undefined;
         this._relatedname = undefined;
         this.onChange(undefined);
@@ -97,7 +97,7 @@ export class SystemInputRelate implements ControlValueAccessor {
     /**
      * opens a search modal
      */
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.module;
             selectModal.instance.multiselect = false;

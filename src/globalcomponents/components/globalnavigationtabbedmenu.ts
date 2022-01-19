@@ -16,7 +16,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'global-navigation-tabbed-menu',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedmenu.html',
+    templateUrl: '../templates/globalnavigationtabbedmenu.html',
     host: {
         '(window:resize)': 'handleResize()'
     }
@@ -26,34 +26,34 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
     /**
      * reference to the module menu item
      */
-    @ViewChild(GlobalNavigationTabbedMenuModules) private menuModules: GlobalNavigationTabbedMenuModules;
+    @ViewChild(GlobalNavigationTabbedMenuModules)public menuModules: GlobalNavigationTabbedMenuModules;
 
     /**
      * reference to the navigation tabs
      */
-    @ViewChildren(GlobalNavigationTabbedMenuTab) private menuTabs: QueryList<GlobalNavigationTabbedMenuTab>;
+    @ViewChildren(GlobalNavigationTabbedMenuTab)public menuTabs: QueryList<GlobalNavigationTabbedMenuTab>;
 
     /**
      * reference to the more item
      */
-    @ViewChild(GlobalNavigationTabbedMoreTab) private menuMore: GlobalNavigationTabbedMoreTab;
+    @ViewChild(GlobalNavigationTabbedMoreTab)public menuMore: GlobalNavigationTabbedMoreTab;
 
     /**
      * reference to the more item
      */
-    @ViewChild(GlobalNavigationTabbedBrowser) private menuBrowser: GlobalNavigationTabbedBrowser;
+    @ViewChild(GlobalNavigationTabbedBrowser)public menuBrowser: GlobalNavigationTabbedBrowser;
 
     /**
      * timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
      */
-    private resizeTimeOut: any = undefined;
+   public resizeTimeOut: any = undefined;
 
     /**
      * the component subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+   public subscriptions: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
+    constructor(public metadata: metadata,public elementRef: ElementRef,public broadcast: broadcast,public navigation: navigation) {
         this.subscriptions.add(
             this.navigation.objectTabsChange$.subscribe(changed => {
                 // little bit of an ugly trick to come after the change detection run
@@ -89,14 +89,14 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
      * @param index
      * @param item
      */
-    private trackByFn(index, item) {
+   public trackByFn(index, item) {
         return item.id;
     }
 
     /**
      * handle the resize and calculöate the total width as well as overflow
      */
-    private handleResize() {
+   public handleResize() {
 
         // caluclate the width of the various items
         let left = this.elementRef.nativeElement.getBoundingClientRect().left;

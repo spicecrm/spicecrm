@@ -11,7 +11,7 @@ import {metadata} from '../../../services/metadata.service';
  */
 @Component({
     selector: '[activity-participation-panel-participant]',
-    templateUrl: './src/modules/activities/templates/activityparticipationpanelparticipant.html',
+    templateUrl: '../templates/activityparticipationpanelparticipant.html',
     providers: [model]
 })
 export class ActivityParticipationPanelParticipant implements OnInit {
@@ -19,34 +19,34 @@ export class ActivityParticipationPanelParticipant implements OnInit {
     /**
      * the participant data as object
      */
-    @Input() private participant: any = {};
+    @Input() public participant: any = {};
 
     /**
      * the module for the record
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * if the record is in editmode and the remove btton should be rendered
      */
-    @Input() private editmode: boolean = false;
+    @Input() public editmode: boolean = false;
 
     /**
      * the fieldset to be displayed. This needs to work for users and contacts
      */
-    @Input() private fieldset: string;
+    @Input() public fieldset: string;
 
     /**
      * the fields in the fieldset
      */
-    private fieldsetfields: any[] = [];
+    public fieldsetfields: any[] = [];
 
     /**
      * an event emitter when the item shoudl be removed
      */
-    @Output() private remove: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public remove: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private model: model, @SkipSelf() private parent: model, private metadata: metadata, private view: view) {
+    constructor(public model: model, @SkipSelf() public parent: model, public metadata: metadata, public view: view) {
     }
 
     /**
@@ -55,7 +55,7 @@ export class ActivityParticipationPanelParticipant implements OnInit {
     public ngOnInit(): void {
         this.model.module = this.participant.module;
         this.model.id = this.participant.id;
-        this.model.data = this.model.utils.backendModel2spice(this.module, this.participant.data);
+        this.model.setData(this.participant.data);
         this.model.parentmodel = this.parent;
 
         // get the fields for the fieldset
@@ -66,7 +66,7 @@ export class ActivityParticipationPanelParticipant implements OnInit {
      * handles the click on teh remove button and emits the event
      * @param event
      */
-    private removeItem(event) {
+    public removeItem(event) {
         event.stopPropagation();
         if (this.editmode) {
             this.remove.emit(true);

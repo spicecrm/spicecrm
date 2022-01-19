@@ -6,21 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#CA1B1F">
         <link rel="SHORTCUT ICON" href="config/favicon">
-        <link rel="stylesheet" href="sldassets/styles/salesforce-lightning-design-system.min.css?v={{ buildNumber}}">
         <link rel="stylesheet" href="./config/stylesheet">
-        <script src="vendor/underscorejs/underscore-min.js"></script>
-        <script src="vendor/core-js/client/shim.min.js"></script>
-        <script src="vendor/zone.js/dist/zone.min.js"></script>
-        <script src="vendor/reflect-metadata/Reflect.js"></script>
-        <script src="vendor/systemjs/system.js"></script>
-        <script src="vendor/moment/moment.min.js"></script>
-        <script src="vendor/moment/moment-timezone.min.js"></script>
-        <script src="systemjs.config.js?v={{ buildNumber}}"></script>
-        <script>
-            System.import('app').catch(function (err) {
-                console.error(err);
-            });
-        </script>
     </head>
     <body>
         <spicecrm>
@@ -43,8 +29,8 @@
                     <div id="loadermessage" class="slds-text-align_center slds-is-relative slds-p-around--medium slds-text-heading--medium slds-text-color--error"></div>
                 </div>
                 <div class="slds-is-absolute" style="bottom: 10px;">
-                    <div class="slds-align_absolute-center">{{ aacservices }}</div>
-                    <div class="slds-align_absolute-center">{{ buildNumber }}</div>
+                    <div class="slds-align_absolute-center"><%= htmlWebpackPlugin.options.aacServices %></div>
+                    <div class="slds-align_absolute-center"><%= htmlWebpackPlugin.options.buildNumber %></div>
                 </div>
             </div>
         </spicecrm>

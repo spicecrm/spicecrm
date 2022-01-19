@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'projectwbs-quote-button',
-    templateUrl: './src/modules/projects/templates/projectwbsquotebutton.html',
+    templateUrl: '../templates/projectwbsquotebutton.html',
     providers: [model]
 })
 export class ProjectWBSQuoteButton {
@@ -30,13 +30,13 @@ export class ProjectWBSQuoteButton {
     public hidden: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        @SkipSelf() private parent: model,
-        private model: model,
-        private backend: backend,
-        @Optional() private navigationtab: navigationtab,
-        private router: Router
+        public language: language,
+        public metadata: metadata,
+        @SkipSelf() public parent: model,
+        public model: model,
+        public backend: backend,
+        @Optional() public navigationtab: navigationtab,
+        public router: Router
     ) {
         // only enable if the user can create Sales Documents
         this.disabled = !this.metadata.checkModuleAcl('SalesDocs', 'create');
@@ -51,7 +51,7 @@ export class ProjectWBSQuoteButton {
                 this.model.module = 'SalesDocs';
                 this.model.id = res.data.id;
                 this.model.startEdit();
-                this.model.data = this.model.utils.backendModel2spice('SalesDocs', res.data);
+                this.model.setData(res.data);
                 this.model.edit();
             }
         )

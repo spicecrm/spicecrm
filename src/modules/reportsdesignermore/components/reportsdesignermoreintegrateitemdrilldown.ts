@@ -9,18 +9,18 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-integrate-item-drilldown',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemdrilldown.html',
+    templateUrl: '../templates/reportsdesignermoreintegrateitemdrilldown.html',
     providers: [model]
 })
 export class ReportsDesignerMoreIntegrateItemDrilldown {
 
-    private expandedId: string = '';
+    public expandedId: string = '';
 
-    constructor(private language: language,
-                @SkipSelf() private model: model,
-                private modal: modal,
-                private otherModel: model,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                @SkipSelf() public model: model,
+                public modal: modal,
+                public otherModel: model,
+                public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -45,7 +45,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
     /**
      * set the initial plugin properties
      */
-    private initializeProperties() {
+    public initializeProperties() {
         const integrationParams = this.model.getField('integration_params');
         if (!integrationParams.kpdrilldown) {
             integrationParams.kpdrilldown = [];
@@ -58,7 +58,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
      * @param data
      * @return newDrilldown: object
      */
-    private generateDrilldown(data) {
+    public generateDrilldown(data) {
         return {
             linkid: this.reportsDesignerService.generateGuid(),
             reportid: data.id,
@@ -74,7 +74,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
      * @param data
      * @return mappingData: object
      */
-    private generateMappingData(data) {
+    public generateMappingData(data) {
         return {
             id: this.reportsDesignerService.generateGuid(),
             whereid: data.fieldid, // fieldid for the other report
@@ -88,7 +88,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
      * initialize drilldown mappingData
      * @param drilldown: object
      */
-    private initializeDrilldownMapping(drilldown) {
+    public initializeDrilldownMapping(drilldown) {
         this.otherModel.resetData();
         this.otherModel.id = drilldown.reportid;
         this.otherModel.getData().subscribe(data => {
@@ -108,7 +108,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
     /**
      * add new drilldown to the kpdrilldown list
      */
-    private addDrilldown() {
+    public addDrilldown() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
             selectModal.instance.module = 'KReports';
             selectModal.instance.multiselect = false;
@@ -125,7 +125,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
      * delete the drilldown with the given id
      * @param drilldownId: string
      */
-    private deleteDrilldown(drilldownId) {
+    public deleteDrilldown(drilldownId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 const integrationParams = this.model.getField('integration_params');
@@ -142,7 +142,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -150,7 +150,7 @@ export class ReportsDesignerMoreIntegrateItemDrilldown {
      * initialize the drilldown mapping data and toggle expansion
      * @param drilldown: object
      */
-    private toggleExpandMapping(drilldown) {
+    public toggleExpandMapping(drilldown) {
         this.expandedId = this.expandedId == drilldown.linkid ? '' : drilldown.linkid;
         if (this.expandedId.length > 0) {
             this.initializeDrilldownMapping(drilldown);

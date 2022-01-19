@@ -24,12 +24,12 @@ import {ObjectActionContainer} from "./objectactioncontainer";
 
 @Component({
     selector: 'object-action-menu',
-    templateUrl: './src/objectcomponents/templates/objectactionmenu.html',
+    templateUrl: '../templates/objectactionmenu.html',
     providers: [helper]
 })
 export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
 
-    @Input() private buttonsize: string = '';
+    @Input() public buttonsize: string = '';
 
     @Input() public actionset: string = '';
 
@@ -41,14 +41,14 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
     public componentconfig: any = {};
 
     constructor(public language: language,
-                private broadcast: broadcast,
+                public broadcast: broadcast,
                 public model: model,
-                private view: view,
+                public view: view,
                 public metadata: metadata,
-                private elementRef: ElementRef,
-                private renderer: Renderer2,
-                private helper: helper,
-                private layout: layout,
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public helper: helper,
+                public layout: layout,
                 public cdRef: ChangeDetectorRef,
                 public ngZone: NgZone) {
         super(language, metadata, model,  ngZone, cdRef);
@@ -98,7 +98,7 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
         return true;
     }
 
-    private getButtonSizeClass() {
+    public getButtonSizeClass() {
         if (this.buttonsize !== '') {
             return 'slds-button--icon-' + this.buttonsize;
         }

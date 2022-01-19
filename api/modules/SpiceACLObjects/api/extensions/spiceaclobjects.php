@@ -48,7 +48,7 @@ $routes = [
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'createDefaultObjects',
         'description' => 'Create default ACL objects',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
         'parameters'  => [
             'moduleid' => [
                 'in' => 'body',
@@ -108,7 +108,7 @@ $routes = [
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'addACLModuleField',
         'description' => 'Create  field entry for specified module',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
         'parameters'   => [
             'moduleid' => [
                 'in' => 'path',
@@ -133,7 +133,7 @@ $routes = [
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'deleteACLModuleField',
         'description' => 'Delete field entry for specified module',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
         'parameters'   => [
             'moduleid' => [
                 'in' => 'path',
@@ -176,7 +176,7 @@ $routes = [
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'addACLModuleAction',
         'description' => 'Create ACL action for specified module',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
         'parameters'   => [
             'moduleid' => [
                 'in' => 'path',
@@ -191,6 +191,12 @@ $routes = [
                 'description' => 'action itself',
                 'example' => 'edit',
                 'required' => true
+            ],
+            'description' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'a textual description for the acl action',
+                'required' => false
             ]
         ]
     ],
@@ -201,7 +207,7 @@ $routes = [
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'deleteACLModuleAction',
         'description' => 'Delete action for specified module',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
         'parameters'   => [
             'moduleid' => [
                 'in' => 'path',

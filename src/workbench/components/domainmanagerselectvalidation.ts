@@ -10,18 +10,18 @@ import {domainmanager} from '../services/domainmanager.service';
  * a modal to select a validation defined in the system and add it to a domain field
  */
 @Component({
-    templateUrl: './src/workbench/templates/domainmanagerselectvalidation.html'
+    templateUrl: '../templates/domainmanagerselectvalidation.html'
 })
 export class DomainManagerSelectValidation {
 
     /**
      * reference to the modal itself
      */
-    private self: any;
+    public self: any;
 
-    private validations: any[] = [];
+    public validations: any[] = [];
 
-    constructor(private domainmanager: domainmanager) {
+    constructor(public domainmanager: domainmanager) {
         this.validations = domainmanager.domainfieldvalidations.filter(d => d.deleted == 0).sort((a, b) => a.name > b.name ? 1 : -1);
     }
 
@@ -30,7 +30,7 @@ export class DomainManagerSelectValidation {
      *
      * @param id
      */
-    private selectValidation(id){
+    public selectValidation(id){
         this.domainmanager.domainfields.find(f => f.id == this.domainmanager.currentDomainField).sysdomainfieldvalidation_id = id;
         this.close();
     }
@@ -38,7 +38,7 @@ export class DomainManagerSelectValidation {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

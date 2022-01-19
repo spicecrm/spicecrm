@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-$GLOBALS['dictionary']['UserAccessLog'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['UserAccessLog'] = [
     'table' => 'useraccesslogs',
     'fields' => [
         'id' => [
@@ -28,19 +28,25 @@ $GLOBALS['dictionary']['UserAccessLog'] = [
             'type' => 'varchar',
             'len' => 30
         ],
+//        'assigned_user_id' => [ // create it manually
+//            'name' => 'assigned_user_id',
+//            'vname' => 'LBL_ASSIGNED_USER_ID',
+//            'type' => 'id',
+//            'comment' => 'id of current user'
+//        ],
         'impersonating_user_id' => [
             'name' => 'impersonating_user_id',
             'vname' => 'LBL_IMPERSONATING_USER_ID',
             'type' => 'id',
             'comment' => 'In case of an impersonation login the ID of the impersonating user.'
         ],
-        'user' => [
-            'name' => 'user',
-            'type' => 'link',
-            'relationship' => 'users_useraccesslogs',
-            'source' => 'non-db',
-            'vname' => 'LBL_USER',
-        ],
+//        'user' => [
+//            'name' => 'user',
+//            'type' => 'link',
+//            'relationship' => 'users_useraccesslogs',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_USER',
+//        ],
         'impersonating_user' => [
             'name' => 'impersonating_user',
             'type' => 'link',
@@ -56,16 +62,16 @@ $GLOBALS['dictionary']['UserAccessLog'] = [
         ],
     ],
     'relationships' => [
-        'users_useraccesslogs' =>
-            [
-                'lhs_module' => 'Users',
-                'lhs_table' => 'users',
-                'lhs_key' => 'id',
-                'rhs_module' => 'UserAccessLogs',
-                'rhs_table' => 'useraccesslogs',
-                'rhs_key' => 'assigned_user_id',
-                'relationship_type' => 'one-to-many'
-            ],
+//        'users_useraccesslogs' =>
+//            [
+//                'lhs_module' => 'Users',
+//                'lhs_table' => 'users',
+//                'lhs_key' => 'id',
+//                'rhs_module' => 'UserAccessLogs',
+//                'rhs_table' => 'useraccesslogs',
+//                'rhs_key' => 'assigned_user_id',
+//                'relationship_type' => 'one-to-many'
+//            ],
         'users_useraccesslogs_impersonation' =>
             [
                 'lhs_module' => 'Users',
@@ -82,7 +88,12 @@ $GLOBALS['dictionary']['UserAccessLog'] = [
             'name' => 'idx_useraccesslogsusername',
             'type' => 'index',
             'fields' => ['login_name']
-        ]
+        ],
+        [
+            'name' => 'idx_useraccesslogs_impersonate',
+            'type' => 'index',
+            'fields' => ['impersonating_user_id', 'deleted']
+        ],
     ]
 ];
 

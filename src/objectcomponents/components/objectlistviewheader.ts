@@ -14,7 +14,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
  */
 @Component({
     selector: 'object-listview-header',
-    templateUrl: './src/objectcomponents/templates/objectlistviewheader.html',
+    templateUrl: '../templates/objectlistviewheader.html',
     animations: [
         trigger('animatepanel', [
             transition(':enter', [
@@ -33,12 +33,12 @@ export class ObjectListViewHeader {
     /**
      * the actionset to be rendered
      */
-    private actionSet: any = {};
+    public actionSet: any = {};
 
     /**
      * the search timeout triggered by the keyup in the search box
      */
-    private searchTimeOut: any;
+    public searchTimeOut: any;
 
     /**
      * indicates if the entered searchterms woudl provoke any error
@@ -46,14 +46,14 @@ export class ObjectListViewHeader {
      * would certainly not pfind any results
      * @private
      */
-    private searchTermError: boolean = false;
+    public searchTermError: boolean = false;
 
     constructor(
-        private metadata: metadata,
-        private configuration: configurationService,
-        private modellist: modellist,
-        private language: language,
-        private model: model
+        public metadata: metadata,
+        public configuration: configurationService,
+        public modellist: modellist,
+        public language: language,
+        public model: model
     ) {
         let componentconfig = this.metadata.getComponentConfig('ObjectListViewHeader', this.model.module);
         this.actionSet = componentconfig.actionset;
@@ -84,7 +84,7 @@ export class ObjectListViewHeader {
      * @param searchTerm
      * @private
      */
-    private searchTermsValid(searchTerm) {
+    public searchTermsValid(searchTerm) {
         let config = this.configuration.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
         let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
@@ -96,7 +96,7 @@ export class ObjectListViewHeader {
      * clears the searchterm
      * @private
      */
-    private clearSearchTerm() {
+    public clearSearchTerm() {
         this.searchTerm = '';
     }
 
@@ -104,7 +104,7 @@ export class ObjectListViewHeader {
      * reload the model list on 1 second timeout
      * @private
      */
-    private reloadList() {
+    public reloadList() {
         if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
         this.searchTimeOut = window.setTimeout(() => this.modellist.reLoadList(), 1000);
     }

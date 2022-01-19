@@ -3,7 +3,7 @@
     <system-modal-content>
         <h3 class="slds-text-heading--small slds-p-vertical--small"><system-label label="LBL_SELECT_MODULE"></system-label></h3>
         <div class="slds-grid slds-grid--vertical">
-            <system-input-radio *ngFor="let module of modules" name="callcreatemodule" [value]="module" [(ngModel)]="selectedModule"><system-label-modulename [module]="module"></system-label-modulename></system-input-radio>
+            <system-input-radio *ngFor="let module of modules" name="callcreatemodule" [value]="module" [(ngModel)]="selectedModule" [disabled]="!this.metadata.checkModuleAcl(module, 'create')"><system-label-modulename [module]="module"></system-label-modulename></system-input-radio>
         </div>
     </system-modal-content>
     <system-modal-footer>

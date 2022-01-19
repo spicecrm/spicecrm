@@ -1,10 +1,10 @@
 <div class="slds-form-element">
-    <label *ngIf="showLabel" class="slds-form-element__label" for="questionsmanagereditcategories"><system-label [label]="'LBL_CATEGORIES'"></system-label></label>
+    <label *ngIf="showLabel" class="slds-form-element__label" for="{{compId}}-categories"><system-label [label]="'LBL_CATEGORIES'"></system-label></label>
     <div class="slds-form-element__control">
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-picklist" role="combobox" [ngClass]="{'slds-is-open':listIsExpanded}">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" (click)="toggleList()">
-                    <input type="text" class="slds-input slds-combobox__input" autocomplete="off" placeholder="{{names}}" readonly="" id="{{compId}}-categories"><!--(blur)="closeList()"-->
+                    <input type="text" class="slds-input slds-combobox__input" autocomplete="off" placeholder="{{names}}" readonly="" id="{{compId}}-categories" [disabled]="disabled"><!--(blur)="closeList()"-->
                     <span class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right" title="">
                         <system-utility-icon icon="down" size="x-small"></system-utility-icon>
                         <span class="slds-assistive-text">Open</span>

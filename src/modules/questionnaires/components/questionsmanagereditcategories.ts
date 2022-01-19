@@ -11,7 +11,7 @@ declare var _;
 
 @Component({
     selector: 'questions-manager-edit-categories',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditcategories.html'
+    templateUrl: '../templates/questionsmanagereditcategories.html'
 })
 export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
 
@@ -19,26 +19,27 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
     @Input() public option: any; // {}
     @Output() public change = new EventEmitter();
     @Input() public showLabel = false;
+    @Input() public disabled = false;
 
-    private selectedCategories = [];
+    public selectedCategories = [];
 
-    private listIsExpanded = false;
-    private clickListener: any;
+    public listIsExpanded = false;
+    public clickListener: any;
 
-    private names = '';
+    public names = '';
 
     /**
      * A unique ID for the component. Used for the attributes "id" and "for" in html elements.
      */
-    private compId = _.uniqueId();
+    public compId = _.uniqueId();
 
     /**
      * holds escape key listener
      * @private
      */
-    private escKeyListener: any;
+    public escKeyListener: any;
 
-    constructor( private language: language, private renderer: Renderer2, private elementRef: ElementRef ) {
+    constructor( public language: language, public renderer: Renderer2, public elementRef: ElementRef ) {
         this.escKeyListener = this.renderer.listen('document', 'keyup', (event: KeyboardEvent) => {
             if ( this.listIsExpanded && event.key === 'Escape' ) {
                 this.listIsExpanded = false;
@@ -56,7 +57,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         }
     }
 
-    private doSelectedCategories(): void {
+    public doSelectedCategories(): void {
         this.selectedCategories.length = 0;
         for ( let listitem of this.categorypool.list ) {
             for ( let categoryId of this.option.categories.split( ',' )) {
@@ -66,15 +67,16 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         this.names = this.makeNameString();
     }
 
-    private toggleList() {
+    public toggleList() {
         if ( this.listIsExpanded ) this.closeList();
         else this.openList();
     }
-    private closeList() {
+    public closeList() {
         this.listIsExpanded = false;
         if ( this.clickListener ) this.clickListener();
     }
-    private openList() {
+    public openList() {
+        if ( this.disabled ) return;
         this.listIsExpanded = true;
         this.clickListener = this.renderer.listen( 'document', 'click', event => this.onClick( event ));
     }
@@ -86,12 +88,13 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         }
     }
 
-    private toggleCategory( i: number ): void {
+    public toggleCategory( i: number ): void {
+        if ( this.disabled ) return;
         if ( this.hasCategory(i) ) this.removeCategory(this.categorypool.list[i].id);
         else this.addCategory(i);
     }
 
-    private addCategory( i: number ): void {
+    public addCategory( i: number ): void {
         this.selectedCategories.push( this.categorypool.list[i] );
         this.selectedCategories.sort( ( a: any, b: any ): number => {
             let an = a.name.toLocaleLowerCase();
@@ -103,7 +106,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         this.names = this.makeNameString();
     }
 
-    private removeCategory( id: string ): void {
+    public removeCategory( id: string ): void {
         this.selectedCategories.some( ( category, i: number ) => {
             if ( id === category.id ) {
                 this.selectedCategories.splice( i, 1 );
@@ -116,11 +119,11 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         this.names = this.makeNameString();
     }
 
-    private hasCategory( i: number ): boolean {
+    public hasCategory( i: number ): boolean {
         return this.selectedCategories.indexOf( this.categorypool.list[i] ) !== -1;
     }
 
-    private makeIdString(): string {
+    public makeIdString(): string {
         let string = '';
         this.selectedCategories.some( el => {
             string += ( ( string != '' ) ? ',':'' ) + el.id;
@@ -129,7 +132,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         return string;
     }
 
-    private makeNameString(): string {
+    public makeNameString(): string {
         let string = '';
         this.selectedCategories.some( el => {
             string += ( ( string != '' ) ? ', ':'' ) + el.name;

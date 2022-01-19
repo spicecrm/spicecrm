@@ -6,15 +6,16 @@ import { model } from '../../../services/model.service';
 import { language } from '../../../services/language.service';
 import { view } from '../../../services/view.service';
 import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasicwithoptions';
+import { metadata } from '../../../services/metadata.service';
 
 @Component({
     selector: 'questions-manager-edit-single',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditsingle.html',
+    templateUrl: '../templates/questionsmanagereditsingle.html',
 })
 export class QuestionsManagerEditSingle extends QuestionsManagerEditBasicWithOptions implements OnInit {
 
-    constructor( public language: language, public model: model, public view: view  ) {
-        super( language, model, view );
+    constructor( public language: language, public model: model, public view: view, public metadata: metadata ) {
+        super( language, model, view, metadata );
         this.view.isEditable = true;
         this.view.setEditMode();
     }

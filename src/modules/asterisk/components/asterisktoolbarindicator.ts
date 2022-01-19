@@ -15,23 +15,23 @@ import {dockedComposer} from '../../../services/dockedcomposer.service';
 import {telephony} from '../../../services/telephony.service';
 
 @Component({
-    templateUrl: './src/modules/asterisk/templates/asterisktoolbarindicator.html'
+    templateUrl: '../templates/asterisktoolbarindicator.html'
 })
 export class AsteriskToolbarIndicator implements OnDestroy {
 
-    private socket: any;
-    private status: string = 'initial';
-    private callevent: string = '';
-    private extension: string = '';
+    public socket: any;
+    public status: string = 'initial';
+    public callevent: string = '';
+    public extension: string = '';
 
-    private activeCall: any = {
+    public activeCall: any = {
         callnumber: '',
         callevent: '',
         callid: '',
         direction: ''
     };
 
-    constructor(private language: language, private backend: backend, private toast: toast, private dockedComposer: dockedComposer, private telephony: telephony) {
+    constructor(public language: language, public backend: backend, public toast: toast, public dockedComposer: dockedComposer, public telephony: telephony) {
         this.backend.getRequest('asterisk/userext').subscribe(resp => {
             if (resp.extension) {
                 this.extension = resp.extension;
@@ -40,7 +40,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
         });
     }
 
-    private connect() {
+    public connect() {
         this.socket = socketIo('http://asterisk.spicecrm.io:3000?room=' + this.extension);
 
         this.socket.on('connect', (socket) => {
@@ -86,7 +86,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
         */
     }
 
-    private toggleconnect() {
+    public toggleconnect() {
         if (this.status == 'connected') {
             this.socket.disconnect();
         } else {
@@ -94,7 +94,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
         }
     }
 
-    private setCallStatus(message) {
+    public setCallStatus(message) {
         this.callevent = message.event ? message.event : '';
 
         this.activeCall.callevent = message.event;
@@ -110,7 +110,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
         }
     }
 
-    private simulatecall() {
+    public simulatecall() {
         /*
         this.activeCall.callevent = 'RING';
         this.activeCall.callid = '66475757';

@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <button *ngIf="!editing" class="slds-button slds-button--icon slds-m-top--medium" style="float:right" (click)="setEditMode()">
+        <button *ngIf="!editing && canEdit" class="slds-button slds-button--icon slds-m-top--medium" style="float:right" (click)="setEditMode()">
             <system-button-icon [icon]="'edit'"></system-button-icon>
         </button>
         <ng-container *ngIf="selectedCategories2.length;else noCategories">

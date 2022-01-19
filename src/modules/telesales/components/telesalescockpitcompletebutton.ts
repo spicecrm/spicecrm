@@ -9,14 +9,14 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_complete_button',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitccompletebutton.html'
+    templateUrl: '../templates/telesalescockpitccompletebutton.html'
 })
 export class TeleSalesCockpitCompleteButton {
 
-    constructor(private language: language,
-                private toast: toast,
-                private backend: backend,
-                private telecockpitservice: telecockpitservice) {
+    constructor(public language: language,
+                public toast: toast,
+                public backend: backend,
+                public telecockpitservice: telecockpitservice) {
     }
 
     public execute() {
@@ -33,7 +33,7 @@ export class TeleSalesCockpitCompleteButton {
                 }, err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
     }
 
-    private removeItem(item) {
+    public removeItem(item) {
         let index = this.telecockpitservice.listItems.indexOf(item);
         if (index < 0) {
             return;

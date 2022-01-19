@@ -12,24 +12,24 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: "mailboxes-a1sms-traffic-manager",
-    templateUrl: "./src/workbench/templates/mailboxesa1smstrafficmanager.html",
+    templateUrl: "../templates/mailboxesa1smstrafficmanager.html",
 })
 export class MailboxesA1SmsTrafficManager {
 
     constructor(
-        private language: language,
-        private model: model,
-        private modal: modal,
-        private view: view,
-        private injector: Injector
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public view: view,
+        public injector: Injector
     ) {
         let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
-            this.model.data.settings = {
+            this.model.setField('settings',  {
                 a1_username: "",
                 a1_password: "",
                 a1_sender: "",
-            };
+            });
         }
     }
 

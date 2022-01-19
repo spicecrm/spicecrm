@@ -11,14 +11,14 @@ import {backend} from "../../../services/backend.service";
  * renders a table with potentials for the account and allows allocation of the opportunity to specific potentials
  */
 @Component({
-    templateUrl: "./src/modules/potentials/templates/potentialsopportunityallocationtab.html"
+    templateUrl: "../templates/potentialsopportunityallocationtab.html"
 })
 export class PotentialsOpportunityAllocationTab {
 
-    private account_id: string;
-    private account_potentials: any[];
+    public account_id: string;
+    public account_potentials: any[];
 
-    constructor(private language: language, private metadata: metadata, private model: model, private backend: backend) {
+    constructor(public language: language, public metadata: metadata, public model: model, public backend: backend) {
         this.model.data$.subscribe(data => {
             this.loadPotentials();
         });
@@ -35,7 +35,7 @@ export class PotentialsOpportunityAllocationTab {
     /**
      * loads the potentials for the account assigned to the opportunity
      */
-    private loadPotentials() {
+    public loadPotentials() {
         this.account_id = this.model.getFieldValue('account_id');
     }
 

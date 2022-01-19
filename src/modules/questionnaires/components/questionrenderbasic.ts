@@ -44,7 +44,7 @@ export class QuestionRenderBasic implements OnInit {
         this.questionparameter = !_.isEmpty( this.question.questionparameter ) ? this.question.questionparameter : this.questionset.questiontypeparameter;
     }
 
-    private isDisabled(): boolean {
+    public isDisabled(): boolean {
         return this.questionMeta.readonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
     }
 

@@ -9,7 +9,7 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: "system-button-icon",
-    templateUrl: "./src/systemcomponents/templates/systembuttonicon.html",
+    templateUrl: "../templates/systembuttonicon.html",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemButtonIcon implements OnChanges {
@@ -22,41 +22,41 @@ export class SystemButtonIcon implements OnChanges {
      *  - it can hold sprite, icon and size override. e.g. 'standard:decision:medium'
      *
      */
-    @Input() private icon: string = "";
+    @Input() public icon: string = "";
 
     /**
      * the sprite the icon is found in
      */
-    @Input() private sprite: string = "utility";
+    @Input() public sprite: string = "utility";
 
-    @Input() private size: ''|'large' | 'small' | 'x-small' | 'xx-small' = "";
+    @Input() public size: ''|'large' | 'small' | 'x-small' | 'xx-small' = "";
 
     /**
      * a module name if the icon shoudl be loaded from teh metadata
      */
-    @Input() private module: string = "";
+    @Input() public module: string = "";
 
     /**
      * the position of the button icon
      */
-    @Input() private position: ''|'left'|'right' = "";
+    @Input() public position: ''|'left'|'right' = "";
 
     /**
      * if the icon shoudl be rendered inverted
      */
-    @Input() private inverse: boolean = false;
+    @Input() public inverse: boolean = false;
 
     /**
      * a title for the icon
      */
-    @Input() private title: string = undefined;
+    @Input() public title: string = undefined;
 
     /**
      * any additonal classes that shoudl be applied to the button
      */
-    @Input() private addclasses: string = "";
+    @Input() public addclasses: string = "";
 
-    constructor(private metadata: metadata, private cdref: ChangeDetectorRef) {
+    constructor(public metadata: metadata, public cdref: ChangeDetectorRef) {
     }
 
     /**
@@ -70,14 +70,14 @@ export class SystemButtonIcon implements OnChanges {
     /**
      * loads the SVG ref for the svg in the button
      */
-    private getSvgHRef() {
+    public getSvgHRef() {
         return "./vendor/sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
     }
 
     /**
      * loads the icon to be added with the svg
      */
-    private getIcon() {
+    public getIcon() {
         if (this.icon) {
             return this.icon.indexOf(":") > 0 ? this.icon.split(":")[1] : this.icon;
         }
@@ -94,7 +94,7 @@ export class SystemButtonIcon implements OnChanges {
     /**
      * returns the sprite
      */
-    private getSprite() {
+    public getSprite() {
         if(this.icon && this.icon.indexOf(":") > 0) {
             return this.icon.split(":")[0];
         } else if (this.module && this.metadata.getModuleIcon(this.module) && this.metadata.getModuleIcon(this.module).indexOf(":") > 0) {
@@ -109,7 +109,7 @@ export class SystemButtonIcon implements OnChanges {
     /**
      * builds a string with additonal classes
      */
-    private getClass() {
+    public getClass() {
         let classList: string[] = [];
         if (this.size != "") {
             classList.push("slds-button__icon--" + this.size);

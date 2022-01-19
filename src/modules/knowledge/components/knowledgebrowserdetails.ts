@@ -10,25 +10,25 @@ import {KnowledgeBrowserDetailsContainerRight} from "./knowledgebrowserdetailsco
 
 @Component({
     selector: "knowledge-browser-details",
-    templateUrl: "./src/modules/knowledge/templates/knowledgebrowserdetails.html"
+    templateUrl: "../templates/knowledgebrowserdetails.html"
 })
 export class KnowledgeBrowserDetails implements OnChanges {
 
-    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) private detailsContainer: ViewContainerRef;
-    @ViewChild(KnowledgeBrowserDetailsContainerRight, {static: true}) private rightPanelContainer;
+    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) public detailsContainer: ViewContainerRef;
+    @ViewChild(KnowledgeBrowserDetailsContainerRight, {static: true}) public rightPanelContainer;
 
-    @Input("selectedDoc") private docId: string = "";
-    @Input() private inAddModal: boolean = false;
-    @Input() private footerContainer: any;
+    @Input("selectedDoc") public docId: string = "";
+    @Input() public inAddModal: boolean = false;
+    @Input() public footerContainer: any;
 
-    constructor(private language: language,
-                private favorite: favorite,
-                private knowledgeService: KnowledgeService,
-                private model: model) {
+    constructor(public language: language,
+                public favorite: favorite,
+                public knowledgeService: KnowledgeService,
+                public model: model) {
         this.model.module = "KnowledgeDocuments";
     }
 
-    private _breadcrumbs: any[] = [];
+    public _breadcrumbs: any[] = [];
 
     get containerLeftClass() {
         return this.inAddModal ? 'slds-size--1-of-1' : 'slds-size--2-of-3';

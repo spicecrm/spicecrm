@@ -15,26 +15,26 @@ declare var html_beautify: any;
  * a modal that displays an IDOC formatted properly and allows reprocessing the IDOC
  */
 @Component({
-    templateUrl: './src/modules/sapidocs/templates/sapidocsviewer.html'
+    templateUrl: '../templates/sapidocsviewer.html'
 })
 export class SAPIDOCsViewer implements AfterViewInit {
 
     /**
      * reference to self as the modal
      */
-    private self: any;
+    public self: any;
 
     /**
      * the xml string to be rendered
      */
-    private xml: string;
+    public xml: string;
 
     /**
      * indicator when an idoc is beoing processed
      */
-    private processing: boolean = false;
+    public processing: boolean = false;
 
-    constructor(private backend: backend, private metadata: metadata, private toast: toast, private modellist: modellist, private model: model, private libloader: libloader, private renderer: Renderer2) {
+    constructor(public backend: backend, public metadata: metadata, public toast: toast, public modellist: modellist, public model: model, public libloader: libloader, public renderer: Renderer2) {
         this.formatIdoc();
     }
 
@@ -46,7 +46,7 @@ export class SAPIDOCsViewer implements AfterViewInit {
     /**
      * loads the formatter and formats the idoc
      */
-    private formatIdoc() {
+    public formatIdoc() {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.xml = html_beautify(this.model.getField('idoc'), {
                 indent_size: 4,
@@ -75,14 +75,14 @@ export class SAPIDOCsViewer implements AfterViewInit {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * processes the idoc
      */
-    private processIDOC() {
+    public processIDOC() {
         this.processing = true;
         this.backend.postRequest(`module/SAPIdocs/${this.model.id}/process`).subscribe(
             success => {

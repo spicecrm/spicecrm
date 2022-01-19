@@ -33,6 +33,7 @@ interface authDataIf {
     canchangepassword: boolean;
     address_country?: string;
     expiringPasswordValidityDays: boolean | number;
+    renewPass?: boolean;
 }
 
 /**
@@ -67,16 +68,16 @@ export class session {
     /**
      * an object any component can write data into and read data from. Helpful to keep sessiondata
      */
-    private sessionData: any = {};
+    public sessionData: any = {};
 
 
     // public footercontainer: any = null;
 
     // add an observable for the auth data
-    // private authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
-    // private authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
+    // public authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
+    // public authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
 
-    constructor( private logger: loggerService, private broadcast: broadcast ) {
+    constructor( public logger: loggerService, public broadcast: broadcast ) {
         this.logger.setSession(this);
     }
 

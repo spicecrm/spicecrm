@@ -8,13 +8,13 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-progress-indicator',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallerprogressindicator.html',
+    templateUrl: '../templates/spiceinstallerprogressindicator.html',
 })
 
 export class SpiceInstallerProgressIndicator {
 
     constructor(
-        private spiceinstaller: spiceinstaller,
+        public spiceinstaller: spiceinstaller,
     ) {
     }
 
@@ -22,7 +22,7 @@ export class SpiceInstallerProgressIndicator {
      * passes the clicked step as an object whose component is then rendered in the container
      * @param step
      */
-    private render(step) {
+    public render(step) {
         if (step.completed) {
             this.spiceinstaller.selectedStep = step;
         }

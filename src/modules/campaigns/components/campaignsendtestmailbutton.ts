@@ -10,14 +10,14 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaign-send-test-mail-button',
-    templateUrl: './src/modules/campaigns/templates/campaignsendtestmailbutton.html'
+    templateUrl: '../templates/campaignsendtestmailbutton.html'
 })
 export class CampaignSendTestMailButton {
 
-    private sending: boolean = false;
+    public sending: boolean = false;
     public disabled: boolean = true;
 
-    constructor(private language: language, private model: model, private modal: modal, private backend: backend, private toast: toast) {
+    constructor(public language: language, public model: model, public modal: modal, public backend: backend, public toast: toast) {
         this.model.mode$.subscribe(mode => {
             this.handleDisabled();
         });
@@ -31,13 +31,13 @@ export class CampaignSendTestMailButton {
      * renders a modal and sends the test emails
      */
     public execute() {
-        let await = this.modal.await('LBL_SENDING');
+        let loading = this.modal.await('LBL_SENDING');
         if (!this.sending) {
             this.sending = true;
             this.backend.postRequest(`module/CampaignTasks/${this.model.id}/sendtestmail`).subscribe(
                 (results: any) => {
                     this.sending = false;
-                    await.emit(true);
+                    loading.emit(true);
                     if(results.status == 'success') {
                         this.toast.sendToast('Mails sent');
                     } else {
@@ -45,7 +45,7 @@ export class CampaignSendTestMailButton {
                     }
                 },
                 error => {
-                    await.emit(true);
+                    loading.emit(true);
                     this.sending = false;
                     this.toast.sendToast('ERROR');
                 });
@@ -56,13 +56,13 @@ export class CampaignSendTestMailButton {
      * only show for campaign tasks of type email
      */
     get hidden() {
-        return this.model.data.campaigntask_type !== 'Email';
+        return this.model.getField('campaigntask_type') !== 'Email';
     }
 
     /**
      * handle the disabled status
      */
-    private handleDisabled() {
+    public handleDisabled() {
         // not if activated already
         if (this.model.getField('activated')) {
             this.disabled = true;
@@ -70,19 +70,19 @@ export class CampaignSendTestMailButton {
         }
 
         // not if editing
-        if (this.model.data.acl && !this.model.data.acl.edit) {
+        if (!this.model.checkAccess('edit')) {
             this.disabled = true;
             return;
         }
 
         // only for email
-        if (this.model.data.campaigntask_type !== 'Email') {
+        if (this.model.getField('campaigntask_type') !== 'Email') {
             this.disabled = true;
             return;
         }
 
         // mailbox is set
-        if (!this.model.data.mailbox_id) {
+        if (!this.model.getField('mailbox_id')) {
             this.disabled = true;
             return;
         }

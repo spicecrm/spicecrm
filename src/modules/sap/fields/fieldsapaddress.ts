@@ -14,14 +14,14 @@ import {fieldAddress} from "../../../objectfields/components/fieldaddress";
 import {backend} from "../../../services/backend.service";
 
 @Component({
-    templateUrl: './src/modules/sap/templates/fieldsapaddress.html'
+    templateUrl: '../templates/fieldsapaddress.html'
 })
 export class fieldSAPAddress extends fieldAddress {
 
     /**
      * holds the list of countries
      */
-    private countries: any[] = [];
+    public countries: any[] = [];
 
     constructor(
         public model: model,
@@ -41,7 +41,7 @@ export class fieldSAPAddress extends fieldAddress {
      * a getter for the street
      */
     get street_2() {
-        return this.model.data[this.addresskey + 'address_street_2'];
+        return this.model.getField(this.addresskey + 'address_street_2');
     }
 
     /**
@@ -57,7 +57,7 @@ export class fieldSAPAddress extends fieldAddress {
      * a getter for the street
      */
     get street_3() {
-        return this.model.data[this.addresskey + 'address_street_3'];
+        return this.model.getField(this.addresskey + 'address_street_3');
     }
 
     /**

@@ -18,17 +18,17 @@ import {modal} from '../../../services/modal.service';
  * renders in the list header action menu and offers the user the option to export the list to a targetlist
  */
 @Component({
-    templateUrl: './src/modules/sapidocs/templates/sapidocslistheaderactionsprocessbutton.html',
+    templateUrl: '../templates/sapidocslistheaderactionsprocessbutton.html',
 })
 export class SAPIDOCsListHeaderActionsProcessButton {
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal,
+        public injector: Injector
     ) {
     }
 

@@ -16,22 +16,22 @@ import {GSuiteGroupware} from "../services/gsuitegroupware.service";
  */
 @Component({
     selector: 'gsuite-pane-footer',
-    templateUrl: './src/include/gsuite/templates/gsuitepanefooter.html'
+    templateUrl: '../templates/gsuitepanefooter.html'
 })
 export class GSuitePaneFooter implements AfterViewInit, OnDestroy {
 
-    @ViewChild('footer', {static: false}) private footerElement;
+    @ViewChild('footer', {static: false}) public footerElement;
 
     constructor(
-        private router: Router,
-        private metadata: metadata,
-        private language: language,
-        @Inject(GroupwareService) private groupware: GSuiteGroupware,
-        private footer: footer
+        public router: Router,
+        public metadata: metadata,
+        public language: language,
+        @Inject(GroupwareService) public groupware: GSuiteGroupware,
+        public footer: footer
     ) {
     }
 
-    private _currentroute: string = 'mailitem';
+    public _currentroute: string = 'mailitem';
 
     get currentroute() {
         return this._currentroute;
@@ -73,7 +73,7 @@ export class GSuitePaneFooter implements AfterViewInit, OnDestroy {
      * Call an action.
      * @param action
      */
-    private callAction(action) {
+    public callAction(action) {
         if (!this.groupware.threadId) return;
         this.router.navigate([action.actionconfig.route]);
     }
@@ -81,7 +81,7 @@ export class GSuitePaneFooter implements AfterViewInit, OnDestroy {
     /**
      * calculates the height of the panel element and sets it to the footer service
      */
-    private setFooterHeight() {
+    public setFooterHeight() {
         let cRect = this.footerElement.nativeElement.getBoundingClientRect();
         this.footer.visibleFooterHeight = cRect.height;
     }
@@ -89,7 +89,7 @@ export class GSuitePaneFooter implements AfterViewInit, OnDestroy {
     /**
      * sets the footer height in the sevrice back to 0
      */
-    private clearFooterHeight() {
+    public clearFooterHeight() {
         this.footer.visibleFooterHeight = 0;
     }
 }
