@@ -33,11 +33,11 @@ export class fieldServiceEnhancedCategories extends fieldCategories {
         super(model, view, language, metadata, router, backend, config, elementRef, renderer);
     }
 
-    public chooseCategories(categories) {
-        super.chooseCategories(categories);
+    public chooseCategories(selected) {
+        super.chooseCategories(selected);
 
         // set the queue
-        let addParams = JSON.parse(categories.addparams);
+        let addParams = JSON.parse(selected.category.add_params);
         if(addParams.servicequeue_id){
             this.queue.module = 'ServiceQueues';
             this.queue.id = addParams.servicequeue_id;
