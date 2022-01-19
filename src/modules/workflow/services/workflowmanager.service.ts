@@ -29,6 +29,14 @@ export class WorkflowManagerService {
     }
 
     /**
+     * @return WorkflowTaskTypeI
+     * @param id
+     */
+    public getType(id): WorkflowTaskTypeI {
+        return this.types.find(t => t.id == id);
+    }
+
+    /**
      * @return any[] tasks in model data
      */
     get modelTasks() {

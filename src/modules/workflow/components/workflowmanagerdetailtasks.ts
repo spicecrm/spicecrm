@@ -78,7 +78,6 @@ export class WorkflowManagerDetailTasks implements OnInit {
             const newTask = this.workflowManagerService.generateNewTask(type);
             this.tasks = [...this.tasks, newTask];
             this.selectedTask = newTask;
-            this.workflowDiagramService.createDiagramElementFromTask(newTask);
         });
     }
 
