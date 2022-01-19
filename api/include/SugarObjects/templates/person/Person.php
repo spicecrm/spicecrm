@@ -192,15 +192,6 @@ class Person extends Basic
         if (!$relationExists) {
             $relFieldsValues['primary_address'] = 1;
             $this->email_addresses->add($primaryEmailAddressId, $relFieldsValues);
-            $data = [
-                'id' => $this->email_addresses->relationship->relid,
-                'email_address_id' => $primaryEmailAddressId,
-                'bean_id' => $this->id,
-                'bean_module' => $this->_module,
-                'opt_in_status' => $relFieldsValues['opt_in_status'],
-                'primary_address' => $relFieldsValues['primary_address']
-            ];
-            EmailAddress::writeRelationshipAudit($data, $data);
         }
     }
 
