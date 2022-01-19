@@ -8,16 +8,13 @@ import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-
-
-import {Subject} from 'rxjs';
 import {modal} from "../../services/modal.service";
 import {ModuleConfigAddDialog} from "./moduleconfigadddialog";
 import {configurationService} from "../../services/configuration.service";
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: './src/workbench/templates/moduleconfigmanager.html',
+    templateUrl: '../templates/moduleconfigmanager.html',
     providers: [view]
 })
 export class ModuleConfigManager {
@@ -31,7 +28,7 @@ export class ModuleConfigManager {
     allowCopyButton: boolean = true;
     allowGlobalModal: boolean = false;
 
-    sysModules: Array<any> = [];
+    sysModules: any[] = [];
     sysRoles: any = {};
     currentModule: string = '';
     currentComponent: any = '';
@@ -40,37 +37,46 @@ export class ModuleConfigManager {
 
     newComponent: any = {};
 
-    componentTree: Array<any> = [];
+    componentTree: any[] = [];
     currentTableActive: string = '';
 
-    componentModuleList: Array<any> = [];
+    componentModuleList: any[] = [];
 
 
-    treelist: Array<any> = [];
+    treelist: any[] = [];
 
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
-    @ViewChild("treecontainer", {read: ViewContainerRef, static: true}) private treecontainer: ViewContainerRef;
-    @ViewChild("addconfigcontainer", {read: ViewContainerRef, static: true}) private addconfigcontainer: ViewContainerRef;
+    @ViewChild("treecontainer", {read: ViewContainerRef, static: true}) public treecontainer: ViewContainerRef;
+    @ViewChild("addconfigcontainer", {read: ViewContainerRef, static: true}) public addconfigcontainer: ViewContainerRef;
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private toast: toast,
-        private modalservice: modal,
-        private configurationService: configurationService,
-        private view: view,
-        private modal: modal
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public toast: toast,
+        public modalservice: modal,
+        public configuration: configurationService,
+        public view: view,
+        public modal: modal
     ) {
         // get roles
+        /*
         this.backend.getRequest('configuration/configurator/entries/sysuiroles').subscribe(roles => {
             this.sysRoles['*'] = '*';
             for (let role of roles) {
                 this.sysRoles[role.id] = role.name;
             }
         });
+        */
 
+        let roles = this.metadata.getRoles();
+        this.sysRoles['*'] = '*';
+        for (let role of roles) {
+            this.sysRoles[role.id] = role.name;
+        }
+
+        /*
         this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
@@ -79,6 +85,14 @@ export class ModuleConfigManager {
             this.currentModule = "*";
             this.selectedModule();
         });
+         */
+
+        this.sysModules = this.metadata.getModules();
+        this.sysModules.sort();
+        this.initialized = true;
+
+        this.currentModule = "*";
+        this.selectedModule();
 
         // view.setEditMode(); //quickfix
         this.checkMode();
@@ -87,13 +101,14 @@ export class ModuleConfigManager {
     get getAllowCopyButton() {
         if (Object.keys(this.selectedComponent).length === 0 && this.selectedComponent.constructor === Object) {
             return false;
-        } else
-            return this.allowCopyButton;
+        }
+
+        return this.allowCopyButton;
     }
 
     checkMode() {
-        this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
-        this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
+        this.edit_mode = this.configuration.getCapabilityConfig('core').edit_mode;
+        this.change_request_required = this.configuration.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
 
         if (!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')) {
             this.edit_mode = 'custom';
@@ -289,7 +304,7 @@ export class ModuleConfigManager {
     // }
 
 
-    private buildTreeList(data) {
+    public buildTreeList(data) {
 
         let components = [];
         for (let entry of data) {

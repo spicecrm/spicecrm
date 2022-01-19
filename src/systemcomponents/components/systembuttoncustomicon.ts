@@ -6,23 +6,23 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-button-custom-icon",
-    templateUrl: "./src/systemcomponents/templates/systembuttoncustomicon.html"
+    templateUrl: "../templates/systembuttoncustomicon.html"
 })
 export class SystemButtonCustomIcon {
-    @Input() private icon: string;
-    @Input() private size: string;
-    @Input() private position: string;
-    @Input() private inverse = false;
-    @Input() private title = '';
-    @Input() private file: string = './assets/icons/spicecrm.svg';
+    @Input() public icon: string;
+    @Input() public size: string;
+    @Input() public position: string;
+    @Input() public inverse = false;
+    @Input() public title = '';
+    @Input() public file: string = './assets/icons/spicecrm.svg';
 
-    constructor(private metadata: metadata) { }
+    constructor(public metadata: metadata) { }
 
-    private getSvgHRef() {
+    public getSvgHRef() {
         return this.file + '#' + this.icon;
     }
 
-    private getClass() {
+    public getClass() {
         let classList: string[] = [];
         if ( this.size ) {
             classList.push("slds-button__icon--" + this.size);

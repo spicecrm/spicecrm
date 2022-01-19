@@ -7,11 +7,11 @@ import {
 
 @Component({
     selector: 'reporter-field-Color',
-    templateUrl: './src/modules/reports/templates/reporterfieldcolor.html'
+    templateUrl: '../templates/reporterfieldcolor.html'
 })
 export class ReporterFieldColor {
 
-    private record: any = {};
-    private field: any = {};
+    public record: any = {};
+    public field: any = {};
 
 }

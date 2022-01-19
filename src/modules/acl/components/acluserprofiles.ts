@@ -18,32 +18,32 @@ declare var _: any;
  * rendered as part of the user profile to display the profiles assigned to the user
  */
 @Component({
-    templateUrl: "./src/modules/acl/templates/acluserprofiles.html"
+    templateUrl: "../templates/acluserprofiles.html"
 })
 export class ACLUserProfiles {
 
     /**
      * the array with the profiles for the user
      */
-    private userProfiles: any[] = [];
+    public userProfiles: any[] = [];
 
     /**
      * the id of the currently selected profile
      */
-    private selectedProfileId: string = '';
+    public selectedProfileId: string = '';
 
     /**
      * the objects for the selected profile
      */
-    private profileObjects: any[] = []
+    public profileObjects: any[] = []
 
     constructor(
-        private backend: backend,
-        private toast: toast,
-        private modal: modal,
-        private model: model,
-        private session: session,
-        private language: language
+        public backend: backend,
+        public toast: toast,
+        public modal: modal,
+        public model: model,
+        public session: session,
+        public language: language
     ) {
         // load the profiles for the user
         this.backend.getRequest("module/Users/" + this.model.id + "/related/spiceaclprofiles").subscribe(res => {
@@ -51,7 +51,7 @@ export class ACLUserProfiles {
         });
     }
 
-    private selectProfile(profileid) {
+    public selectProfile(profileid) {
         if (this.selectedProfileId != profileid) {
             this.selectedProfileId = profileid;
             this.profileObjects = [];

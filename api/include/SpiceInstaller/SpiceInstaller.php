@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SpiceInstaller;
 
 use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -20,7 +21,6 @@ use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 require_once('modules/TableDictionary.php');
 
@@ -437,12 +437,11 @@ class SpiceInstaller
      */
     public function createTables($db)
     {
-        global $dictionary;
         $globalBeanList = [];
         // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
-        $rel_dictionary = $dictionary;
+        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
         $vardef = new VardefManager();
         $vardef->clearVardef();
 
@@ -477,9 +476,9 @@ class SpiceInstaller
 
         // relationship workaround: relationship has to be the first table to be  created before module tables
         require_once('modules/Relationships/vardefs.php');
-        $table = $dictionary['Relationship']['table'];
-        $fields = $dictionary['Relationship']['fields'];
-        $indices = $dictionary['Relationship']['indices'];
+        $table   = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['table'];
+        $fields  = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['fields'];
+        $indices = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['indices'];
 
         if (!empty($table)) {
             if (!$db->tableExists($table)) {
@@ -502,12 +501,12 @@ class SpiceInstaller
                 }
             }
 
-            if ($dictionary[$bean]['table'] == 'does_not_exist') {
+            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
                 continue;
             }
-            $table = $dictionary[$bean]['table'];
-            $fields = $dictionary[$bean]['fields'];
-            $indices = $dictionary[$bean]['indices'];
+            $table   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'];
+            $fields  = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['fields'];
+            $indices = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['indices'];
 
             if (!empty($table)) {
                 if (!$db->tableExists($table)) {
@@ -517,11 +516,11 @@ class SpiceInstaller
             }
 
             // creates audit table if object is audited
-            if ($dictionary[$bean]['audited']) {
+            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['audited']) {
                 require('metadata/audit_templateMetaData.php');
-                $audit = $dictionary[$bean]['table'] . '_audit';
-                $fields = $dictionary['audit']['fields'];
-                $indices = $dictionary['audit']['indices'];
+                $audit   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] . '_audit';
+                $fields  = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+                $indices = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
 
                 foreach ($indices as $nr => $properties) {
                     $indices[$nr]['name'] = 'idx_' . strtolower($audit) . '_' . $properties['name'];
@@ -533,7 +532,13 @@ class SpiceInstaller
                 }
 
             }
-            SugarBean::createRelationshipMeta($bean, $db, $dictionary[$bean]['table'], '', $dir);
+            SugarBean::createRelationshipMeta(
+                $bean,
+                $db,
+                SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'],
+                '',
+                $dir
+            );
         }
         SpiceModules::getInstance()->setBeanList($globalBeanList);
 

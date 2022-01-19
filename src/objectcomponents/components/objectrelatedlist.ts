@@ -17,7 +17,7 @@ declare var _: any;
  */
 @Component({
     selector: "object-related-list",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedlist.html",
+    templateUrl: "../templates/objectrelatedlist.html",
     providers: [relatedmodels]
 })
 export class ObjectRelatedList implements OnInit {
@@ -30,26 +30,26 @@ export class ObjectRelatedList implements OnInit {
     /**
      * the listfields
      */
-    private listfields: any[] = [];
+    public listfields: any[] = [];
 
     /**
      * can hold a separate editcomponentset if the editing modal shoudl be specifically configured
      */
-    private editcomponentset: string = "";
+    public editcomponentset: string = "";
 
     /**
      * if set to true no actions are displayed in the table lines
      */
-    private hideactions: boolean = false;
+    public hideactions: boolean = false;
 
     /**
      * a load subscription that awaitsa the model to be loaded before triggering the load of the subpanels
      *
      * @private
      */
-    private loadsubscription: Subscription = new Subscription();
+    public loadsubscription: Subscription = new Subscription();
 
-    private loaded: boolean = false;
+    public loaded: boolean = false;
 
     constructor(
         public language: language,
@@ -67,7 +67,7 @@ export class ObjectRelatedList implements OnInit {
      * if the link field is turned off .. the acl access is not granted
      */
     get aclAccess() {
-        let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule.toLowerCase();
+        let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule?.toLowerCase();
         return (this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, "listrelated") || this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, "list")) && this.model.checkFieldAccess(linkField);
     }
 
@@ -90,7 +90,7 @@ export class ObjectRelatedList implements OnInit {
     /**
      * loads the list fields from the componentconfig
      */
-    private loadConfig() {
+    public loadConfig() {
         let fieldset = this.componentconfig.fieldset;
         this.listfields = this.metadata.getFieldSetFields(fieldset);
 
@@ -104,7 +104,7 @@ export class ObjectRelatedList implements OnInit {
     /**
      * initializes the related model service
      */
-    private initializeRelatedModelService() {
+    public initializeRelatedModelService() {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
 

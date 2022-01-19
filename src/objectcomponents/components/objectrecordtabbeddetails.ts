@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-tabbed-details',
-    templateUrl: './src/objectcomponents/templates/objectrecordtabbeddetails.html',
+    templateUrl: '../templates/objectrecordtabbeddetails.html',
     // providers: [view],
     styles: [
         '.slds-badge { font-weight: bold; background-color: #c00; color: #fff; padding: .125rem .4rem; }'
@@ -22,7 +22,7 @@ export class ObjectRecordTabbedDetails implements OnInit {
     public activatedTabs: any = [0];
     public componentTabs: any = [];
 
-    constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language) {
+    constructor(public view: view, public metadata: metadata, public componentFactoryResolver: ComponentFactoryResolver, public model: model, public language: language) {
         this.view.isEditable = true;
     }
 

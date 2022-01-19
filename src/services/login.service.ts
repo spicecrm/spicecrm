@@ -42,12 +42,12 @@ export class loginService {
     public oauthIssuer: string = '';
 
     constructor(
-        private configurationService: configurationService,
-        private http: HttpClient,
-        private router: Router,
-        private loader: loader,
-        private toast: toast,
-        private helper: helper,
+        public configurationService: configurationService,
+        public http: HttpClient,
+        public router: Router,
+        public loader: loader,
+        public toast: toast,
+        public helper: helper,
         public session: session,
         public broadcast: broadcast,
         public modal: modal, public metadata: metadata
@@ -296,7 +296,7 @@ export class loginService {
 
 @Injectable()
 export class loginCheck implements CanActivate {
-    constructor(private login: loginService, private session: session, private modal: modal, private router: Router, private loader: loader) {
+    constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
     }
 
     public canActivate(route, state) {

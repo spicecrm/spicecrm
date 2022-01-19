@@ -19,7 +19,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'field-date',
-    templateUrl: './src/objectfields/templates/fielddate.html'
+    templateUrl: '../templates/fielddate.html'
 })
 export class fieldDate extends fieldGeneric {
 

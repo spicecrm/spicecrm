@@ -9,31 +9,31 @@ import {model} from '../../../services/model.service';
 
 @Component({
     selector: 'scrum-tree-additem',
-    templateUrl: './src/modules/scrum/templates/scrumtreeadditem.html',
+    templateUrl: '../templates/scrumtreeadditem.html',
     providers: [model],
 })
 export class ScrumTreeAddItem {
 
-    @Input() private title: string = '';
+    @Input() public title: string = '';
 
     /**
      * input for the module
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * emitter of the new item
      */
-    @Output() private newitem: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public newitem: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(@SkipSelf() private parent: model, private model: model) {
+    constructor(@SkipSelf() public parent: model, public model: model) {
     }
 
 
     /**
      * add child-item to parent, subscribe to model observable and emit change
      */
-    private addItem() {
+    public addItem() {
         this.model.id = undefined;
         this.model.module = this.module;
         this.model.addModel('', this.parent).subscribe(

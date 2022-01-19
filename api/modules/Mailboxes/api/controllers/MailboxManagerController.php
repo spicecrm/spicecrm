@@ -36,6 +36,8 @@ class MailboxManagerController
             }
         }
 
+        $mailbox->initializeSettings();
+
         if (($mailbox->outbound_comm == 'single' || $mailbox->outbound_comm == 'mass') && empty($params['test_email'])) {
             return $res->withJson([
                 'result' => false,

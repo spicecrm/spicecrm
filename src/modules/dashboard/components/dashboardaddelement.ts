@@ -8,25 +8,25 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'dashboard-add-element',
-    templateUrl: './src/modules/dashboard/templates/dashboardaddelement.html'
+    templateUrl: '../templates/dashboardaddelement.html'
 })
 export class DashboardAddElement {
 
     public self: any = {};
     public kreports: any[] = [];
-    private dashboarddashlets: any[] = [];
-    private dashletName: string = '';
-    private searchKey: string = '';
-    private dashlettype: string = 'Generic';
-    private dashletModule: string = '*';
-    private isLoading: boolean = false;
-    private canLoadMore: boolean = true;
-    private loadLimit: number = 40;
-    private addDashlet: EventEmitter<any> = new EventEmitter<any>();
-    private searchTimeout: any;
-    private modules = [];
+    public dashboarddashlets: any[] = [];
+    public dashletName: string = '';
+    public searchKey: string = '';
+    public dashlettype: string = 'Generic';
+    public dashletModule: string = '*';
+    public isLoading: boolean = false;
+    public canLoadMore: boolean = true;
+    public loadLimit: number = 40;
+    public addDashlet: EventEmitter<any> = new EventEmitter<any>();
+    public searchTimeout: any;
+    public modules = [];
 
-    constructor(private language: language, private metadata: metadata, private backend: backend) {
+    constructor(public language: language, public metadata: metadata, public backend: backend) {
     }
 
     get kReports() {
@@ -60,24 +60,24 @@ export class DashboardAddElement {
         this.modules = this.metadata.getModules().sort();
     }
 
-    private resetValues() {
+    public resetValues() {
         this.dashletModule = '*';
         this.searchKey = '';
         this.canLoadMore = true;
     }
 
-    private search() {
+    public search() {
         if (this.dashletType !== 'Generic') {
             if (this.searchTimeout) window.clearTimeout(this.searchTimeout);
             this.searchTimeout = window.setTimeout(() => this.getKReports(), 600);
         }
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
-    private getDashlets() {
+    public getDashlets() {
         this.isLoading = true;
         this.dashboarddashlets = [];
         this.backend.getRequest('module/Dashboards/dashlets')
@@ -87,7 +87,7 @@ export class DashboardAddElement {
             });
     }
 
-    private getKReports() {
+    public getKReports() {
         this.isLoading = true;
         this.kreports = [];
         let params = {
@@ -102,7 +102,7 @@ export class DashboardAddElement {
             });
     }
 
-    private getMoreKReports() {
+    public getMoreKReports() {
         if (!this.canLoadMore || this.isLoading) return;
         this.isLoading = true;
         let params = {
@@ -117,21 +117,21 @@ export class DashboardAddElement {
             });
     }
 
-    private getIcon(icon) {
+    public getIcon(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[1] : icon;
     }
 
-    private getSprite(icon) {
+    public getSprite(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[0] : 'standard';
     }
 
-    private onScroll(scrollElement) {
+    public onScroll(scrollElement) {
         if (scrollElement.scrollTop + scrollElement.clientHeight >= scrollElement.scrollHeight) {
             this.getMoreKReports();
         }
     }
 
-    private add(dashlet) {
+    public add(dashlet) {
         if (!dashlet) return;
         let name = this.dashletName;
         let component = '';
@@ -180,7 +180,7 @@ export class DashboardAddElement {
         this.self.destroy();
     }
 
-    private close() {
+    public close() {
         this.addDashlet.emit(false);
         this.self.destroy();
     }

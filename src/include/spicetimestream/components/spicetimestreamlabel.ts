@@ -14,7 +14,7 @@ import {footer} from '../../../services/footer.service';
 
 @Component({
     selector: '[spice-timestream-label]',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestreamlabel.html',
+    templateUrl: '../templates/spicetimestreamlabel.html',
     providers: [model, view]
 })
 export class SpiceTimestreamLabel implements OnInit {
@@ -24,22 +24,22 @@ export class SpiceTimestreamLabel implements OnInit {
      *
      * @private
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the module
      *
      * @private
      */
-    @Input() private module: any = {};
+    @Input() public module: any = {};
 
-    constructor(private elementRef: ElementRef, private metadata: metadata, private model: model, private footer: footer) {
+    constructor(public elementRef: ElementRef, public metadata: metadata, public model: model, public footer: footer) {
 
     }
 
     public ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.module, this.item);
+        this.model.setData(this.item);
     }
 }

@@ -11,20 +11,20 @@ import {recent} from '../../services/recent.service';
  */
 @Component({
     selector: 'field-lookup-recent',
-    templateUrl: './src/objectfields/templates/fieldlookuprecent.html'
+    templateUrl: '../templates/fieldlookuprecent.html'
 })
 export class fieldLookupRecent implements OnChanges {
 
     /**
      * the module for the recent items
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * emits the selectes item
      */
-    @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
-    private recentItems: any[] = [];
+    @Output() public selectedObject: EventEmitter<any> = new EventEmitter<any>();
+    public recentItems: any[] = [];
 
     constructor(public model: model, public recent: recent, public language: language) {
 
@@ -43,7 +43,7 @@ export class fieldLookupRecent implements OnChanges {
      * @param event
      * @param recentItem
      */
-    private setParent(event, recentItem) {
+    public setParent(event, recentItem) {
         // stop the event
         event.preventDefault();
 
@@ -53,7 +53,7 @@ export class fieldLookupRecent implements OnChanges {
     /**
      * get the recent items filtered by the module
      */
-    private getRecent() {
+    public getRecent() {
         this.recentItems = [];
         let recent = this.recent.getModuleRecent(this.module).subscribe(recentItems => {
             this.recentItems = recentItems;

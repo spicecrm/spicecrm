@@ -17,21 +17,21 @@ declare var _;
 
 @Component({
     selector: 'package-loader-language',
-    templateUrl: './src/systemcomponents/templates/packageloaderlanguage.html',
+    templateUrl: '../templates/packageloaderlanguage.html',
 })
 export class PackageLoaderLanguage {
 
-    @Input() private package: any;
-    @Input() private repository: any;
+    @Input() public package: any;
+    @Input() public repository: any;
 
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     constructor(
-        private language: language,
-        protected backend: backend,
-        private configurationService: configurationService,
-        private loader: loader,
-        private broadcast: broadcast
+        public language: language,
+        public backend: backend,
+        public configurationService: configurationService,
+        public loader: loader,
+        public broadcast: broadcast
     ) {
 
     }
@@ -47,13 +47,13 @@ export class PackageLoaderLanguage {
         return this.repository && this.repository.id ? '/' + this.repository.id : '';
     }
 
-    private setDefault() {
+    public setDefault() {
         if (!this.isDefault) {
             this.language.setDefaultLanguage(this.package.language_code);
         }
     }
 
-    private loadLanguage(languagecode) {
+    public loadLanguage(languagecode) {
 
         this.loading = true;
         this.backend.getRequest('configuration/packages/language/' + languagecode + this.repositoryaddurl).subscribe(response => {
@@ -72,7 +72,7 @@ export class PackageLoaderLanguage {
         });
     }
 
-    private deleteLanguage(languagecode) {
+    public deleteLanguage(languagecode) {
 
         this.loading = true;
         this.backend.deleteRequest('configuration/packages/language/' + languagecode).subscribe(response => {

@@ -11,14 +11,14 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane-item',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepaneitem.html'
+    templateUrl: '../templates/groupwareemailarchivepaneitem.html'
 })
 export class GroupwareEmailArchivePaneItem {
 
     /**
      * the component config
      */
-    @Input() private componentconfig: any = [];
+    @Input() public componentconfig: any = [];
 
 
 }

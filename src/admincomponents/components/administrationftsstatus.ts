@@ -13,19 +13,19 @@ import set = Reflect.set;
 
 @Component({
     selector: '[administration-ftsstatus]',
-    templateUrl: './src/admincomponents/templates/administrationftsstatus.html'
+    templateUrl: '../templates/administrationftsstatus.html'
 })
 export class AdministrationFTSStatus {
 
     /**
      * holds the stats and status retrieved from teh backend
      */
-    private version: any = {};
+    public version: any = {};
 
     /**
      * holds the stats and status retrieved from teh backend
      */
-    private stats: any = {
+    public stats: any = {
         docs: 0,
         size: 0
     };
@@ -33,21 +33,21 @@ export class AdministrationFTSStatus {
     /**
      * indicates that we are loading the stats
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     /**
      * holds the information on all teh indices
      */
-    private indices: any[] = [];
+    public indices: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private modal: modal,
-        private backend: backend,
-        private helper: helper,
-        private toast: toast,
-        private injector: Injector
+        public metadata: metadata,
+        public language: language,
+        public modal: modal,
+        public backend: backend,
+        public helper: helper,
+        public toast: toast,
+        public injector: Injector
     ) {
         this.loadstatus();
     }
@@ -55,7 +55,7 @@ export class AdministrationFTSStatus {
     /**
      * gets the status details from teh backend
      */
-    private loadstatus() {
+    public loadstatus() {
 
         // set to loading
         this.loading = true;
@@ -108,7 +108,7 @@ export class AdministrationFTSStatus {
      * unlocks the complete index from a lock entry
      * @private
      */
-    private unlock() {
+    public unlock() {
         this.backend.putRequest('admin/elastic/unblock').subscribe(resp => {
             console.log(resp);
             this.loadstatus();

@@ -16,45 +16,45 @@ declare var _: any;
  */
 @Component({
     selector: 'groupware-email-archive-pane-search',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepanesearch.html'
+    templateUrl: '../templates/groupwareemailarchivepanesearch.html'
 })
 export class GroupwareEmailArchivePaneSearch {
     /**
      * Input string used for searching.
      */
-    private searchTerm: string = "";
+    public searchTerm: string = "";
 
     /**
      * A list of found beans.
      */
-    private beans: any[] = [];
+    public beans: any[] = [];
 
     /**
      * A boolean used to indicate if a search is currently running.
      */
-    private searching: boolean = false;
+    public searching: boolean = false;
 
     /**
      * a timeout to react to the users input and only search after a specific time passed
      */
-    private searchTimeOut: any = undefined;
+    public searchTimeOut: any = undefined;
 
     /**
      * the current sleected search module
      */
-    private _searchmodule: string = 'all';
+    public _searchmodule: string = 'all';
 
     /**
      * a random generated id to break automcomplete on the serach fields
      */
-    private autocompleteid: string = _.uniqueId();
+    public autocompleteid: string = _.uniqueId();
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private metadata: metadata,
-        private groupware: GroupwareService,
-        private fts: fts
+        public backend: backend,
+        public language: language,
+        public metadata: metadata,
+        public groupware: GroupwareService,
+        public fts: fts
     ) {
     }
 
@@ -135,7 +135,7 @@ export class GroupwareEmailArchivePaneSearch {
      * Handles the keyboard input into the search field.
      * @param _e
      */
-    private search(_e) {
+    public search(_e) {
         // handle the key pressed
         switch (_e.key) {
             case 'ArrowDown':
@@ -158,7 +158,7 @@ export class GroupwareEmailArchivePaneSearch {
     /**
      * Performs the search in SpiceCRM.
      */
-    private searchSpice() {
+    public searchSpice() {
         // set to searching is true
         this.searching = true;
 

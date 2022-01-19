@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Address'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Address'] = [
     'table' => 'addresses',
     'audited' => true,
     'unified_search' => true,
@@ -157,5 +157,4 @@ VardefManager::createVardef('Addresses', 'Address', ['default', 'assignable', 'b
 
 // name is not required
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
-$dictionary['Address']['fields']['name']['required'] = false;
+SpiceDictionaryHandler::getInstance()->dictionary['Address']['fields']['name']['required'] = false;

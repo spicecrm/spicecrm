@@ -11,7 +11,7 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "object-timeline-auditlog-modal",
-    templateUrl: "./src/objectcomponents/templates/objecttimelineauditlogmodal.html"
+    templateUrl: "../templates/objecttimelineauditlogmodal.html"
 })
 export class ObjectTimelineAuditlogModal implements OnInit {
 
@@ -25,7 +25,7 @@ export class ObjectTimelineAuditlogModal implements OnInit {
      *
      * @private
      */
-    private auditLog;
+    public auditLog;
 
 
     /**
@@ -33,11 +33,11 @@ export class ObjectTimelineAuditlogModal implements OnInit {
      *
      * @private
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
-    private moduleFields: any[] = [];
+    public moduleFields: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, @Optional() private model: model) {
+    constructor(public language: language, public metadata: metadata, @Optional() public model: model) {
     }
 
     public ngOnInit() {
@@ -56,7 +56,7 @@ export class ObjectTimelineAuditlogModal implements OnInit {
         this.loading = false;
     }
 
-    private hideAuditLog() {
+    public hideAuditLog() {
         this.self.destroy();
     }
 }

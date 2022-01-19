@@ -16,7 +16,7 @@ declare var moment: any;
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/workbench/templates/crmlogviewer.html'
+    templateUrl: '../templates/crmlogviewer.html'
 })
 export class CRMLogViewer {
 
@@ -24,34 +24,34 @@ export class CRMLogViewer {
      * Reference to the log level checkbox group.
      * @private
      */
-    @ViewChild('loglevelsCheckboxes') private loglevelsCheckboxes;
+    @ViewChild('loglevelsCheckboxes') public loglevelsCheckboxes;
 
     /**
      * filter
      * @private
      */
-    private filter = { loglevels: [], pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
-    private filterUserName: string;
+    public filter = { loglevels: [], pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    public filterUserName: string;
 
     /**
      * Limit: maximal entries from the backend.
      * @private
      */
-    private limit = '250';
+    public limit = '250';
 
-    private load$ = new EventEmitter();
+    public load$ = new EventEmitter();
 
     /**
      * The number of entries got from the backend.
      * @private
      */
-    private countEntries: number;
+    public countEntries: number;
 
     /**
      * Set the filter field "end" to now.
      * @private
      */
-    private setNow() {
+    public setNow() {
         this.filter.end = new moment();
     }
 
@@ -60,7 +60,7 @@ export class CRMLogViewer {
      * @param idAndName
      * @private
      */
-    private set filterUser( idAndName: string ) {
+    public set filterUser( idAndName: string ) {
         if (!idAndName) {
             this.filter.user_id = '';
             this.filterUserName = undefined;
@@ -75,18 +75,18 @@ export class CRMLogViewer {
      * Get the value from filter field "user".
      * @private
      */
-    private get filterUser(): string {
+    public get filterUser(): string {
         if ( !this.filter.user_id ) return undefined;
         return this.filter.user_id+'::'+this.filterUserName;
     }
 
-    constructor( private lang: language, private backend: backend, private modal: modal, private toast: toast, private userpreferences: userpreferences ) { }
+    constructor( public lang: language, public backend: backend, public modal: modal, public toast: toast, public userpreferences: userpreferences ) { }
 
     /**
      * Are all the inputs correct and ready for the backend request?
      * @private
      */
-    private canLoad() {
+    public canLoad() {
         if ( this.filter.pid && !this.filter.pid.match(/\d$/) ) return false;
         return true;
     }
@@ -94,7 +94,7 @@ export class CRMLogViewer {
     /**
      * Load button was pressed.
      */
-    private buttonLoad() {
+    public buttonLoad() {
         this.load$.emit();
     }
 
@@ -104,7 +104,7 @@ export class CRMLogViewer {
      * @param value The value.
      * @private
      */
-    private valueClicked( type: string, value: any ) {
+    public valueClicked( type: string, value: any ) {
         switch ( type ) {
             case 'date_entered':
                 this.filter.end = new moment.utc( value ).tz( this.userpreferences.toUse.timezone ); break;
@@ -127,7 +127,7 @@ export class CRMLogViewer {
      * truncates the log
      * @private
      */
-    private truncate() {
+    public truncate() {
         this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Empty the API Log?').subscribe(
             res => {
                 if (res) {

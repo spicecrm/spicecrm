@@ -15,19 +15,19 @@ import {popup} from "../../services/popup.service";
  */
 @Component({
     selector: 'field-time-difference',
-    templateUrl: './src/objectfields/templates/fieldtimedifference.html'
+    templateUrl: '../templates/fieldtimedifference.html'
 })
 export class fieldTimeDifference extends fieldGeneric {
 
     /**
      * internal to keep the unit
      */
-    private _timedifferenceunit: string;
+    public _timedifferenceunit: string;
 
     /**
      * internal to keep the span
      */
-    private _timedifferencespan: number;
+    public _timedifferencespan: number;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
@@ -78,7 +78,7 @@ export class fieldTimeDifference extends fieldGeneric {
     /**
      * sets the model value via the value setter on the generic field
      */
-    private updateModel() {
+    public updateModel() {
         if (this._timedifferencespan > 0 && this.timedifferenceunit) {
             this.value = this.timedifferencespan + ' ' + this._timedifferenceunit;
         } else {

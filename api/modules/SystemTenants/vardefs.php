@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['SystemTenant'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
     'table' => 'systemtenants',
     'comment' => 'SystemTenants Module',
     'fields' => [
@@ -20,6 +20,11 @@ $dictionary['SystemTenant'] = [
             'type' => 'varchar',
             'len' => 5,
             'comment' => 'status of the tenant',
+        ],
+        'initialized' => [
+            'name'  => 'initialized',
+            'vname' => 'LBL_INITIALIZED',
+            'type'  => 'bool',
         ],
         'is_trial' => [
             'name' => 'is_trial',
@@ -64,7 +69,15 @@ $dictionary['SystemTenant'] = [
             'relationship' => 'systemtenant_users',
             'module' => 'Users',
             'source' => 'non-db'
-        ]
+        ],
+        'deploymentpackages' => [
+            'name'         => 'deploymentpackages',
+            'vname'        => 'LBL_SYSTEMDEPLOYMENTPACKAGES',
+            'type'         => 'link',
+            'module'       => 'SystemDeploymentPackages',
+            'source'       => 'non-db',
+            'relationship' => 'tenants_deploymentpackages',
+        ],
     ],
     'indices' => [],
     'relationships' => [

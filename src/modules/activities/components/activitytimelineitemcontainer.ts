@@ -7,24 +7,24 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'activitytimeline-item-container',
-    templateUrl: './src/modules/activities/templates/activitytimelineitemcontainer.html'
+    templateUrl: '../templates/activitytimelineitemcontainer.html'
 })
 export class ActivityTimelineItemContainer implements OnInit {
 
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
     /**
      * the activity
      */
-    @Input() private activity: any = {};
+    @Input() public activity: any = {};
 
     /**
      * the module to be displayed
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
 
-    constructor(private metadata: metadata) {}
+    constructor(public metadata: metadata) {}
 
     public ngOnInit() {
         let componentconfig = this.metadata.getComponentConfig('ActivityTimelineItemContainer', this.activity.module);

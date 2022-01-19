@@ -16,7 +16,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'system-preferences-panel',
-    templateUrl: './src/systemcomponents/templates/systempreferencespanel.html'
+    templateUrl: '../templates/systempreferencespanel.html'
 })
 export class SystemPreferencesPanel implements OnChanges {
 
@@ -24,17 +24,17 @@ export class SystemPreferencesPanel implements OnChanges {
      * holds a list of currency signification digits
      * @protected
      */
-    protected currencySignificantDigitsList: string[] = ['1', '2', '3', '4', '5', '6'];
+    public currencySignificantDigitsList: string[] = ['1', '2', '3', '4', '5', '6'];
     /**
      * holds a list of the thousand delimiters
      * @protected
      */
-    protected thousandDelimiterList: string[] = [',', '.'];
+    public thousandDelimiterList: string[] = [',', '.'];
     /**
      * holds a list of time formats
      * @protected
      */
-    protected timeFormatList: Array<{ name: string, value: string }> = [
+    public timeFormatList: Array<{ name: string, value: string }> = [
         {name: moment().format('HH:mm'), value: 'H:i'},
         {name: moment().format('hh:mma'), value: 'h:ia'},
         {name: moment().format('hh:mmA'), value: 'h:iA'},
@@ -46,7 +46,7 @@ export class SystemPreferencesPanel implements OnChanges {
         {name: moment().format('hh.mm a'), value: 'h.i a'},
         {name: moment().format('hh.mm A'), value: 'h.i A'}
     ];
-    protected dateFormatList: Array<{ name: string, value: string }> = [
+    public dateFormatList: Array<{ name: string, value: string }> = [
         {name: moment().format('YYYY-MM-DD'), value: 'Y-m-d'},
         {name: moment().format('MM-DD-YYYY'), value: 'm-d-Y'},
         {name: moment().format('DD-MM-YYYY'), value: 'd-m-Y'},
@@ -61,39 +61,39 @@ export class SystemPreferencesPanel implements OnChanges {
      * holds a list of currencies
      * @protected
      */
-    protected currencyList: any[] = [];
+    public currencyList: any[] = [];
     /**
      * holds the preferences from parent
      */
-    @Input() private preferences: any = {};
+    @Input() public preferences: any = {};
     /**
      * holds the start days options for calendar
      */
-    private weekDayStartList = ['Sunday', 'Monday'];
+    public weekDayStartList = ['Sunday', 'Monday'];
     /**
      * holds the week days count for calendar
      * @private
      */
-    private weekDaysCountList = [5, 6, 7];
+    public weekDaysCountList = [5, 6, 7];
     /**
      * holds a list of the day hours for calendar
      * @private
      */
-    private dayHoursList = [];
+    public dayHoursList = [];
     /**
      * holds the reminder time options
      * @private
      */
-    private reminderTimeOptions = this.language.getDisplayOptions('reminder_time_options', true);
+    public reminderTimeOptions = this.language.getDisplayOptions('reminder_time_options', true);
     /**
      * holds a list of the delimiters
      * @private
      */
-    private exportDelimiterList = [',', ';'];
+    public exportDelimiterList = [',', ';'];
     /**
      * holds a list of charsets
      */
-    private charsetList = [
+    public charsetList = [
         'BIG-5', 'CP1251', 'CP1252', 'EUC-CN', 'EUC-JP', 'EUC-KR', 'EUC-TW', 'ISO-2022-JP',
         'ISO-2022-KR', 'ISO-8859-1', 'ISO-8859-2', 'ISO-8859-3', 'ISO-8859-4', 'ISO-8859-5',
         'ISO-8859-6', 'ISO-8859-7', 'ISO-8859-8', 'ISO-8859-9', 'ISO-8859-10', 'ISO-8859-13',
@@ -102,7 +102,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * holds a list of formatting numbers examples
      * @private
      */
-    private formattingOfNumbersList = [
+    public formattingOfNumbersList = [
         {
             show: '1.000.000,00',
             num_grp_sep: '.',
@@ -118,35 +118,35 @@ export class SystemPreferencesPanel implements OnChanges {
      * holds the name formats
      * @private
      */
-    private nameFormats: Array<{ name: string, example: string }> = [];
+    public nameFormats: Array<{ name: string, example: string }> = [];
 
     /**
      * holds the example text for the name
      * @private
      */
-    private nameExampleText: string;
+    public nameExampleText: string;
     /**
      * holds the local numbers formatting
      * @private
      */
-    private numbersFormatting: { show: string, num_grp_sep: string, dec_sep: string };
+    public numbersFormatting: { show: string, num_grp_sep: string, dec_sep: string };
     /**
      * holds the local data format
      * @private
      */
-    private dateFormat: string = '';
+    public dateFormat: string = '';
     /**
      * holds the local time format
      * @private
      */
-    private timeFormat: string = '';
+    public timeFormat: string = '';
 
     constructor(
-        private backend: backend,
-        private view: view,
-        private toast: toast,
-        private currency: currency,
-        private language: language) {
+        public backend: backend,
+        public view: view,
+        public toast: toast,
+        public currency: currency,
+        public language: language) {
         this.loadInitialValues();
     }
 
@@ -168,7 +168,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * load initial values
      * @private
      */
-    private loadInitialValues() {
+    public loadInitialValues() {
         this.view.isEditable = true;
 
         this.setNameFormats();
@@ -184,7 +184,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * loads the name formats
      * @private
      */
-    private setNameFormats() {
+    public setNameFormats() {
 
         const formats = [
             's f l', 'f l', 's l', 'l, s f', 'l, f', 's l, f', 'l s f', 'l f s'
@@ -208,7 +208,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * @param value
      * @private
      */
-    private setDateFormat(value: string) {
+    public setDateFormat(value: string) {
         this.preferences.datef = value;
         this.dateFormat = !value ? '' : moment().format(
             value.replace('Y', 'YYYY').replace('m', 'MM').replace('d', 'DD')
@@ -220,7 +220,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * @param value
      * @private
      */
-    private setTimeFormat(value: string) {
+    public setTimeFormat(value: string) {
         this.preferences.timef = value;
         this.timeFormat = !value ? '' : moment().format(
             value.replace('H', 'HH').replace('h', 'hh').replace('i', 'mm')
@@ -231,7 +231,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * set formatting of numbers
      * @param value
      */
-    private setNumbersFormatting(value: { show: string, num_grp_sep: string, dec_sep: string }) {
+    public setNumbersFormatting(value: { show: string, num_grp_sep: string, dec_sep: string }) {
         this.numbersFormatting = value;
         this.preferences.num_grp_sep = !value ? null : value.num_grp_sep;
         this.preferences.dec_sep = !value ? null : value.dec_sep;
@@ -242,7 +242,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * @param name
      * @private
      */
-    private setNameExampleText(name: string) {
+    public setNameExampleText(name: string) {
         this.preferences.default_locale_name_format = name;
 
         if (!name || !this.nameFormats) return this.nameExampleText = '';

@@ -9,7 +9,7 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: "object-action-newrelated-button",
-    templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html",
+    templateUrl: "../templates/objectactionnewbutton.html",
     providers: [model]
 })
 export class ObjectActionNewrelatedButton implements OnInit {
@@ -21,7 +21,7 @@ export class ObjectActionNewrelatedButton implements OnInit {
      */
     public displayasicon: boolean = false;
 
-    constructor(@SkipSelf() private parent: model, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
+    constructor(@SkipSelf() public parent: model, public language: language, public metadata: metadata, public model: model, public relatedmodels: relatedmodels) {
 
     }
 
@@ -34,8 +34,8 @@ export class ObjectActionNewrelatedButton implements OnInit {
 
     public execute() {
 
-        if (!this.parent.data.id) {
-            this.parent.data.id = this.parent.id;
+        if (!this.parent.getField('id')) {
+            this.parent.setField('id', this.parent.id);
         }
 
         // make sure we have no id so a new on gets issues

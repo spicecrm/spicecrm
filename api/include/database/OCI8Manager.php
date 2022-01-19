@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
@@ -175,6 +176,31 @@ class OCI8Manager extends DBManager
 
     public $transactional = false;
 
+    /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SELECT table_name, num_rows FROM user_tables ORDER BY table_name");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $size = $this->fetchByAssoc($this->query("SELECT segment_name,sum(bytes) bytes FROM user_segments WHERE segment_type='TABLE' AND segment_name=upper('{$table['table_name']}') GROUP BY segment_name"));
+
+            $tablesArray[] = [
+                'name' => strtolower($table['table_name']),
+                'records' => (int)$table['num_rows'],
+                'size' => (int)$size['bytes']
+            ];
+            $dbCount += (int)$table['num_rows'];
+            $dbSize += (int)$size['bytes'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
 
     //--------------------------------------------------------------------------
     //   Extended the functionality of implemented functions in DB Manager
@@ -1461,12 +1487,11 @@ class OCI8Manager extends DBManager
      */
     public function insertQuery($table, array $data, $execute = true)
     {
-        global $dictionary;
         $copy = array_merge([], $data);
         $lob_fields = [];
         $lob_dataType = [];
         // find the dictionary table
-        foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
                     if ($this->type_map[$vardef['type']] == 'clob') {
@@ -1501,14 +1526,13 @@ class OCI8Manager extends DBManager
      */
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
-        global $dictionary;
         $retVal = false;
 
         $copy = array_merge([], $data);
         $lob_fields = [];
         $lob_dataType = [];
 
-        foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
 
 

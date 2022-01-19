@@ -15,7 +15,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'object-edit-modal-dialog-duplicates',
-    templateUrl: './src/objectcomponents/templates/objecteditmodaldialogduplicates.html'
+    templateUrl: '../templates/objecteditmodaldialogduplicates.html'
 })
 export class ObjectEditModalDialogDuplicates implements OnInit {
 
@@ -23,7 +23,7 @@ export class ObjectEditModalDialogDuplicates implements OnInit {
     @Input() duplicates: Array<any> = [];
     fieldset: String = '';
 
-    constructor(private model: model, private metadata: metadata, private language: language) {
+    constructor(public model: model, public metadata: metadata, public language: language) {
 
     }
 

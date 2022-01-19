@@ -35,61 +35,61 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
     /**
      * the module for the popover
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * the if od the model for the popover
      */
-    @Input() private id: string;
+    @Input() public id: string;
 
     /**
      * if set to true the item is presented as a link
      */
-    @Input() private enablelink: boolean = true;
+    @Input() public enablelink: boolean = true;
 
     /**
      * if the modelpopover shoudl be enabled or not
      * this allows to add the directive but disable it by a parameter on the component if e.g. the popover shoudl be displayed conditional
      */
-    @Input('system-model-popover') private modelPopOver: boolean = true;
+    @Input('system-model-popover') public modelPopOver: boolean = true;
 
     /**
      * the popover that is rendered
      */
-    private popoverCmp = null;
+    public popoverCmp = null;
 
     /**
      * a timeout that renders the component only when the user hovers ovet eh component and does not leave short time after
      * this prevents a somehwta too nervous loading of popovers
      */
-    private showPopoverTimeout: any = {};
+    public showPopoverTimeout: any = {};
 
 
-    private popoverModelInitialized: boolean = false;
+    public popoverModelInitialized: boolean = false;
 
     constructor(
-        private metadata: metadata,
-        private footer: footer,
-        @Optional() @SkipSelf() private model: model,
-        @Optional() private navigationtab: navigationtab,
-        private popovermodel: model,
-        private elementRef: ElementRef,
-        @Optional() private view: view,
-        private router: Router,
-        private injector: Injector
+        public metadata: metadata,
+        public footer: footer,
+        @Optional() @SkipSelf() public model: model,
+        @Optional() public navigationtab: navigationtab,
+        public popovermodel: model,
+        public elementRef: ElementRef,
+        @Optional() public view: view,
+        public router: Router,
+        public injector: Injector
     ) {
 
     }
 
     @HostListener('mouseenter')
-    private onMouseOver() {
+    public onMouseOver() {
         if (this.modelPopOver !== false) {
             this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 1000);
         }
     }
 
     @HostListener('mouseleave')
-    private onMouseOut() {
+    public onMouseOut() {
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
         }
@@ -103,7 +103,7 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
      * react to the click and if the link is there navigate to the record
      */
     @HostListener('click')
-    private goRelated() {
+    public goRelated() {
         if (this.modelPopOver === false || this.disableLink) return false;
 
         // if we have apopover close it
@@ -139,7 +139,7 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
     /**
      * renders the popover if a footer container if in the footer service
      */
-    private renderPopover() {
+    public renderPopover() {
         if (this.footer.footercontainer) {
 
             // if we are no initialized load the data
@@ -148,7 +148,7 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
                     this.popovermodel.module = this.model.module;
                     this.popovermodel.id = this.model.id;
                     this.popovermodel.initialize();
-                    this.popovermodel.data = this.model.data;
+                    this.popovermodel.setData(this.model.data, false);
                     this.popoverModelInitialized = true;
                 } else {
                     this.popovermodel.getData().subscribe(() => {

@@ -16,7 +16,7 @@ import {Subject} from 'rxjs';
 
 @Component({
     selector: 'fieldsetmanager-fieldset-details',
-    templateUrl: './src/workbench/templates/fieldsetmanagerfieldsetdetails.html',
+    templateUrl: '../templates/fieldsetmanagerfieldsetdetails.html',
     providers: [view]
 })
 export class FieldsetManagerFieldsetDetails implements OnChanges {
@@ -26,7 +26,7 @@ export class FieldsetManagerFieldsetDetails implements OnChanges {
     currentFieldSet: any = {};
     currentFieldSetConfig: any = {};
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private view: view) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public view: view) {
 
     }
 

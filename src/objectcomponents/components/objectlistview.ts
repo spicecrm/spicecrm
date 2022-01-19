@@ -17,7 +17,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'object-listview',
-    templateUrl: './src/objectcomponents/templates/objectlistview.html',
+    templateUrl: '../templates/objectlistview.html',
     providers: [modellist, model]
 })
 export class ObjectListView implements AfterViewInit, OnDestroy {
@@ -25,31 +25,31 @@ export class ObjectListView implements AfterViewInit, OnDestroy {
     /**
      * an elament ref to the container to render the compoonentsets
      */
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
     /**
      * holds references to the rendered components. if rerendering they need to be destoryed when the route changes
      */
-    private componentRefs: any = [];
+    public componentRefs: any = [];
 
     /**
      * true if the angular view has been initialized
      * @private
      */
-    private viewInitialized: boolean = false;
+    public viewInitialized: boolean = false;
 
     /**
      * the subscription to the list view changes since the component is rendered here
      */
-    private modellistSubscription = new Subscription();
+    public modellistSubscription = new Subscription();
 
-    constructor(private navigation: navigation,
-                private navigationtab: navigationtab,
-                private activatedRoute: ActivatedRoute,
-                private metadata: metadata,
-                private modellist: modellist,
-                private model: model,
-                private userpreferences: userpreferences) {
+    constructor(public navigation: navigation,
+                public navigationtab: navigationtab,
+                public activatedRoute: ActivatedRoute,
+                public metadata: metadata,
+                public modellist: modellist,
+                public model: model,
+                public userpreferences: userpreferences) {
         this.initialize();
     }
 
@@ -57,7 +57,7 @@ export class ObjectListView implements AfterViewInit, OnDestroy {
      * set the model list data and subscribe to list type changes
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         // get the module from teh activated route
         this.model.module = this.navigationtab.activeRoute.params.module;
@@ -74,7 +74,7 @@ export class ObjectListView implements AfterViewInit, OnDestroy {
      * set the component name build the container if the view is initialized
      * @private
      */
-    private handleListTypeChange() {
+    public handleListTypeChange() {
         if (!this.viewInitialized) return;
         this.buildContainer();
     }
@@ -98,7 +98,7 @@ export class ObjectListView implements AfterViewInit, OnDestroy {
      * renders a compoentnset in the container
      *
      */
-    private buildContainer() {
+    public buildContainer() {
         if (!this.modellist.currentList?.listcomponent) {
             return;
         }

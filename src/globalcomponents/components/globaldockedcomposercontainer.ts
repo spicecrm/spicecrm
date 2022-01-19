@@ -12,7 +12,7 @@ import {telephony} from '../../services/telephony.service';
  */
 @Component({
     selector: 'global-docked-composer-container',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposercontainer.html',
+    templateUrl: '../templates/globaldockedcomposercontainer.html',
     host: {
         '[class.slds-docked_container]': 'isVisible',
         'style': 'z-index: 9999'
@@ -20,7 +20,7 @@ import {telephony} from '../../services/telephony.service';
 })
 export class GlobalDockedComposerContainer {
 
-    constructor(private dockedComposer: dockedComposer, private telephony: telephony) {
+    constructor(public dockedComposer: dockedComposer,public telephony: telephony) {
 
     }
 
@@ -37,7 +37,7 @@ export class GlobalDockedComposerContainer {
      *
      * @param composerindex the index of the composer
      */
-    private getComposerStyle(composerindex): any {
+   public getComposerStyle(composerindex): any {
         if (composerindex >= this.dockedComposer.maxComposers - this.telephony.calls.length) {
             return {
                 display: 'none'

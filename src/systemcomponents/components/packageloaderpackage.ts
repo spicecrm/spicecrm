@@ -9,6 +9,7 @@ import {language} from '../../services/language.service';
 import {configurationService} from '../../services/configuration.service';
 import {loader} from '../../services/loader.service';
 import {broadcast} from '../../services/broadcast.service';
+import {modal} from "../../services/modal.service";
 
 /**
  * @ignore
@@ -17,24 +18,25 @@ declare var _;
 
 @Component({
     selector: 'package-loader-package',
-    templateUrl: './src/systemcomponents/templates/packageloaderpackage.html',
+    templateUrl: '../templates/packageloaderpackage.html',
 })
 export class PackageLoaderPackage implements OnInit {
 
-    @Input() private package: any;
-    @Input() private packages: any[] = [];
-    @Input() private repository: any;
-    private extensions: any[] = [];
-    private requiredpackages: any[] = [];
-    // private disabled: boolean = true;
-    private loading: string = '';
+    @Input() public package: any;
+    @Input() public packages: any[] = [];
+    @Input() public repository: any;
+    public extensions: any[] = [];
+    public requiredpackages: any[] = [];
+    // public disabled: boolean = true;
+    public loading: string = '';
 
     constructor(
-        private language: language,
-        protected backend: backend,
-        private configurationService: configurationService,
-        private loader: loader,
-        private broadcast: broadcast
+        public language: language,
+        public backend: backend,
+        public configurationService: configurationService,
+        public loader: loader,
+        public modal: modal,
+        public broadcast: broadcast
     ) {
 
     }
@@ -75,7 +77,7 @@ export class PackageLoaderPackage implements OnInit {
         }
     }
 
-    private loadPackage(packagename) {
+    public loadPackage(packagename) {
         this.loading = 'package';
         this.backend.getRequest('configuration/packages/package/' + packagename + this.repositoryaddurl).subscribe(
             response => {
@@ -87,11 +89,37 @@ export class PackageLoaderPackage implements OnInit {
                 });
             },
             error => {
+                this.executeDB();
                 this.loading = '';
             });
     }
 
-    private deletePackage(packagename) {
+    /**
+     * calls the backend repair method that delivers the sql string, injects it in the modal
+     */
+    public executeDB() {
+
+        this.modal.confirm('MSG_PACKAGE_REPAIR_DB', 'LBL_REPAIR_DATABASE', 'error').subscribe(answer => {
+
+            if (!answer) return;
+
+            const loadingModal = this.modal.await(this.language.getLabel('LBL_PROCESSING'));
+
+            this.backend.getRequest('admin/repair/sql').subscribe(result => {
+                loadingModal.next();
+                loadingModal.complete();
+                if(result) {
+                    this.modal.openModal('AdministrationDictRepairModal', true).subscribe(modal => {
+                        modal.instance.sql = result.sql;
+                        modal.instance.wholeSQL = result.wholeSQL;
+                    });
+                }
+            });
+        });
+    }
+
+
+    public deletePackage(packagename) {
         this.loading = 'package';
         this.backend.deleteRequest('configuration/packages/package/' + packagename).subscribe(response => {
             this.loading = 'configuration';

@@ -14,7 +14,7 @@ import {modellist} from "../../services/modellist.service";
  */
 @Component({
     selector: 'object-action-deactivate-beans-button',
-    templateUrl: './src/objectcomponents/templates/objectactiondeactivatebeansbutton.html'
+    templateUrl: '../templates/objectactiondeactivatebeansbutton.html'
 })
 export class ObjectActionDeactivateBeansButton {
 
@@ -26,17 +26,17 @@ export class ObjectActionDeactivateBeansButton {
     /**
      * to sneure the user cannot click twice
      */
-    private saving: boolean = false;
+    public saving: boolean = false;
 
-    private selectedItems: any = [];
+    public selectedItems: any = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private modal: modal,
-        private injector: Injector,
-        private modellist: modellist,
-        @Optional() private modalwindow: modalwindow
+        public language: language,
+        public metadata: metadata,
+        public modal: modal,
+        public injector: Injector,
+        public modellist: modellist,
+        @Optional() public modalwindow: modalwindow
     ) {
 
     }

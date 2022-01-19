@@ -1,10 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
 
-$dictionary['SchedulerJob'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
     'table' => 'schedulerjobs',
 	'fields' => [
 		'date_time_start' => [

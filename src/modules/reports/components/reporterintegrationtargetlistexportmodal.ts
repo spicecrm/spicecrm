@@ -10,24 +10,24 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'reporter-integration-targetlistexport-modal',
-    templateUrl: './src/modules/reports/templates/reporterintegrationtargetlistexportmodal.html'
+    templateUrl: '../templates/reporterintegrationtargetlistexportmodal.html'
 })
 export class ReporterIntegrationTargetlistexportModal {
 
-    private self: any = {};
-    private model: any = {};
-    private whereConditions: any = {};
+    public self: any = {};
+    public model: any = {};
+    public whereConditions: any = {};
 
-    private targetlistname: string = '';
+    public targetlistname: string = '';
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private modal: modal) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public modal: modal) {
     }
 
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
-    private exportTargetList() {
+    public exportTargetList() {
 
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             // set the loading popover message

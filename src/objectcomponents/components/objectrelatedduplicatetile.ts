@@ -14,7 +14,7 @@ import {modal} from "../../services/modal.service";
  */
 @Component({
     selector: 'object-related-duplicate-tile',
-    templateUrl: './src/objectcomponents/templates/objectrelatedduplicatetile.html',
+    templateUrl: '../templates/objectrelatedduplicatetile.html',
     providers: [view]
 })
 export class ObjectRelatedDuplicateTile implements OnInit {
@@ -22,19 +22,19 @@ export class ObjectRelatedDuplicateTile implements OnInit {
     /**
      * to enable the link on the tile
      */
-    @Input() private enableLink: boolean = true;
+    @Input() public enableLink: boolean = true;
 
     /**
      * show a button .. used in the edit modal since the link would lead to leavin gthe modal and navigate in teh back behind the modal
      */
-    @Input() private enableButtonLink: boolean = false;
+    @Input() public enableButtonLink: boolean = false;
 
     /**
      * the fieldset from the config
      */
-    private fieldset: string = '';
+    public fieldset: string = '';
 
-    constructor(private model: model, private modal: modal, private view: view, private language: language, private metadata: metadata) {
+    constructor(public model: model, public modal: modal, public view: view, public language: language, public metadata: metadata) {
         this.view.displayLabels = false;
     }
 
@@ -51,14 +51,14 @@ export class ObjectRelatedDuplicateTile implements OnInit {
     /**
      * returns the fields
      */
-    private getFields() {
+    public getFields() {
         return this.metadata.getFieldSetFields(this.fieldset);
     }
 
     /**
      *
      */
-    private navigateDetails() {
+    public navigateDetails() {
         this.modal.closeAllModals();
         this.model.goDetail();
     }
