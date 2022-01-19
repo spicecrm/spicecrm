@@ -367,7 +367,7 @@ class EmailAddress extends SugarBean
 
         if ($dataBefore['opt_in_status'] == $dataAfter['opt_in_status']) return;
 
-        $fieldType = $dictionary['email_addr_bean_rel']['fields']['opt_in_status']['type'];
+        $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields']['opt_in_status']['type'];
         $insertData = [
             'id' => SpiceUtils::createGuid(),
             'parent_id' => $dataAfter['id'],
