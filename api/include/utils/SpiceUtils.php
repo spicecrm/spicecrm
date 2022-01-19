@@ -744,14 +744,14 @@ class SpiceUtils
      * @return string The generated key.
      */
     public static function generateShortUrlKey($length = 6): string {
-        // chars to select from (without specific characters to prevent confusion when reading and retyping the password)
+        // chars to select from (without specific characters to prevent confusion when reading and retyping the key)
         $LOWERCASE = 'abcdefghijkmnopqrstuvwxyz'; // without "l"!
         $NUMBER = '23456789'; // without "0" and "1"!
         $UPPERCASE = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // without "O" and "I"!
         $charBKT = $UPPERCASE . $LOWERCASE . $NUMBER;
 
         $key = '';
-        for ($i = 0; $i < $length; $i++) {  // loop and create password
+        for ($i = 0; $i < $length; $i++) {  // loop and create key
             $key = $key . substr($charBKT, rand() % strlen($charBKT), 1);
         }
         return $key;

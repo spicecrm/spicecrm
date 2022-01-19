@@ -18,13 +18,13 @@ declare var moment: any;
  */
 @Component({
     selector: 'spice-attachments-count',
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentscount.html',
+    templateUrl: '../templates/spiceattachmentscount.html',
     providers: [modelattachments],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceAttachmentsCount implements OnDestroy {
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * contructor sets the module and id for the laoder
@@ -33,7 +33,7 @@ export class SpiceAttachmentsCount implements OnDestroy {
      * @param language
      * @param model
      */
-    constructor(private metadata: metadata, private modelattachments: modelattachments, @Optional() @SkipSelf() private parentmodelattachments: modelattachments, private language: language, private model: model, private cdRef: ChangeDetectorRef) {
+    constructor(public metadata: metadata, public modelattachments: modelattachments, @Optional() @SkipSelf() public parentmodelattachments: modelattachments, public language: language, public model: model, public cdRef: ChangeDetectorRef) {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }
@@ -55,7 +55,7 @@ export class SpiceAttachmentsCount implements OnDestroy {
         }
     }
 
-    private modelHasAttachmentcount() {
+    public modelHasAttachmentcount() {
         let fields = this.metadata.getModuleFields(this.model.module);
         return !!fields.attachments_count;
     }

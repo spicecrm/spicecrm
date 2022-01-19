@@ -12,51 +12,51 @@ declare var moment: any;
  * renders a modal dialog to create a n initial set of revenue reoognition lines
  */
 @Component({
-    templateUrl: "./src/modules/opportunities/templates/opportunityrevenuelinescreator.html"
+    templateUrl: "../templates/opportunityrevenuelinescreator.html"
 })
 export class OpportunityRevenueLinesCreator {
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
     /**
      * holds the componentconfig
      */
-    private componentconfig: any;
+    public componentconfig: any;
 
     /**
      * an array with the revenue lines
      */
-    private revenueLines: any[] = [];
+    public revenueLines: any[] = [];
 
     /**
      * the type of the split displayed int eh dialog
      */
-    private splittype: 'split' | 'rampup' = 'split';
+    public splittype: 'split' | 'rampup' = 'split';
 
     /**
      * the number of revenue lines to be generated
      */
-    private nooflines: number = 1;
+    public nooflines: number = 1;
 
     /**
      * the difference in periods between the lines gerenaated
      */
-    private periodcount: number = 1;
+    public periodcount: number = 1;
 
     /**
      * the type of the period Month or year for the generator
      */
-    private periodtype: 'M' | 'y' = 'M';
+    public periodtype: 'M' | 'y' = 'M';
 
     /**
      * the event emitter for the reeults
      */
-    private generatorResult: EventEmitter<any> = new EventEmitter<any>();
+    public generatorResult: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(public language: language, public metadata: metadata, public model: model) {
         this.componentconfig = this.metadata.getComponentConfig('OpportunityRevenueLinesCreator', 'OpportunityRevenueLines');
 
         // generate a default set
@@ -70,14 +70,14 @@ export class OpportunityRevenueLinesCreator {
     /**
      * helper to close the dialog
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * generates the revenue lines based on the parameters
      */
-    private generate() {
+    public generate() {
         this.revenueLines = [];
         let closeDate = new moment(this.model.getFieldValue('date_closed'));
 
@@ -108,7 +108,7 @@ export class OpportunityRevenueLinesCreator {
      *
      * @param itemid the guid of the split line
      */
-    private deleteLine(lineId) {
+    public deleteLine(lineId) {
         let i = 0;
         this.revenueLines.some(line => {
             if (line.id == lineId) {
@@ -123,7 +123,7 @@ export class OpportunityRevenueLinesCreator {
     /**
      * save the generated lines emitting them to the parent
      */
-    private save() {
+    public save() {
         this.generatorResult.emit({opportunityrevenuesplit: this.splittype, revenueLines: this.revenueLines});
         this.close();
     }

@@ -7,12 +7,12 @@ import { modal } from '../../../services/modal.service';
 
 @Component({
     selector: "folder-view-tree-item",
-    templateUrl: "./src/modules/folders/templates/folderviewitems.html"
+    templateUrl: "../templates/folderviewitems.html"
 })
 
 export class FolderViewTreeItems {
 
-constructor( private language: language, private backend: backend, private toast: toast, private modal: modal ) { }
+constructor( public language: language, public backend: backend, public toast: toast, public modal: modal ) { }
 
     /*
     * @output onFolderAdd: object
@@ -76,7 +76,7 @@ constructor( private language: language, private backend: backend, private toast
         * edit name of folder with backend request
          */
 
-    private editFolderName(): void {
+    public editFolderName(): void {
         this.modal.prompt('input', null, 'Folder Name', null, this.item.name ).pipe(take(1)).subscribe(folderName => {
             folderName = folderName.trim();
             if ( folderName ) {

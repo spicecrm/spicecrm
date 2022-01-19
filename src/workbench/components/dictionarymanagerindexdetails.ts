@@ -18,7 +18,7 @@ import {DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.i
 
 @Component({
     selector: 'dictionary-manager-index-details',
-    templateUrl: './src/workbench/templates/dictionarymanagerindexdetails.html',
+    templateUrl: '../templates/dictionarymanagerindexdetails.html',
 })
 export class DictionaryManagerIndexDetails implements OnChanges {
 
@@ -27,30 +27,30 @@ export class DictionaryManagerIndexDetails implements OnChanges {
      *
      * @private
      */
-    @Input() private indexid: string;
+    @Input() public indexid: string;
 
     /**
      * the index data itself
      *
      * @private
      */
-    private index: DictionaryIndex;
+    public index: DictionaryIndex;
 
     /**
      * the list of available index fields
      *
      * @private
      */
-    private availableDictionaryItems: DictionaryItem[] = [];
+    public availableDictionaryItems: DictionaryItem[] = [];
 
     /**
      * the list of fields in teh index
      *
      * @private
      */
-    private indexDictionaryItems: DictionaryItem[] = [];
+    public indexDictionaryItems: DictionaryItem[] = [];
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -78,7 +78,7 @@ export class DictionaryManagerIndexDetails implements OnChanges {
      *
      * @param event
      */
-    private onFieldDrop(event) {
+    public onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
 

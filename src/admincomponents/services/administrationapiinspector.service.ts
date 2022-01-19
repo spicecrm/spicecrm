@@ -73,30 +73,30 @@ export class administrationapiinspectorService {
      *
      * @private
      */
-    private _apiSubMethods: boolean = true;
+    public _apiSubMethods: boolean = true;
 
     /**
      * a filter string to search by
      */
-    private _apiFilter: string;
+    public _apiFilter: string;
 
     /**
      * filter variable for all unauthorized routes
      */
 
-    private _apiFilterUnauthorized: boolean = false;
+    public _apiFilterUnauthorized: boolean = false;
 
     /**
      * filter variable for all admin only routes
      */
 
-    private _apiFilterAdminOnly: boolean = false;
+    public _apiFilterAdminOnly: boolean = false;
 
     /**
      * filter variable for all admin only routes
      */
 
-    private _apiFilterValidatedOnly: boolean = false;
+    public _apiFilterValidatedOnly: boolean = false;
 
     /**
      * the current selected API
@@ -109,7 +109,7 @@ export class administrationapiinspectorService {
         public backend: backend,
         public toast: toast,
         public injector: Injector,
-        private modelutilities: modelutilities
+        public modelutilities: modelutilities
     ) {
         this.loadEndpoints();
     }
@@ -229,7 +229,7 @@ export class administrationapiinspectorService {
      * builds the tree and applies a filter if required
      * @private
      */
-    private buildTree() {
+    public buildTree() {
         // reset the methods
         this.apiMethods = [];
         // reset the api tree
@@ -271,7 +271,7 @@ export class administrationapiinspectorService {
      * @param route
      * @private
      */
-    private addRouteToTree(route) {
+    public addRouteToTree(route) {
         let parentID = this.getPartentId(route);
         let itemId = this.getRouteId(route);
 
@@ -291,7 +291,7 @@ export class administrationapiinspectorService {
      * @param route
      * @private
      */
-    private getPartentId(route: string) {
+    public getPartentId(route: string) {
         // spöits the route in pieces
         let routeItems = route.substring(1).split('/');
 
@@ -319,7 +319,7 @@ export class administrationapiinspectorService {
      * @param route
      * @private
      */
-    private getRouteId(route) {
+    public getRouteId(route) {
         return this.apiTree.find(a => a.route == route) ? this.apiTree.find(a => a.route == route).id : this.modelutilities.generateGuid();
     }
 
@@ -357,7 +357,7 @@ export class administrationapiinspectorService {
      *
      * @private
      */
-    private filterMethods() {
+    public filterMethods() {
         this.apiMethods = this.apiEndpoints.filter(e => this._apiSubMethods ? e.route.indexOf(this.selectedAPI.route) == 0 : e.route == this.selectedAPI.route);
     }
 

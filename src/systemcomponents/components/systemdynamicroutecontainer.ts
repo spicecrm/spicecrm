@@ -9,7 +9,7 @@ import {session} from '../../services/session.service';
 
 @Component({
     selector: 'system-dynamicroute-container',
-    templateUrl: './src/systemcomponents/templates/systemdynamicroutecontainer.html'
+    templateUrl: '../templates/systemdynamicroutecontainer.html'
 })
 export class SystemDynamicRouteContainer implements AfterViewInit{
 
@@ -18,10 +18,10 @@ export class SystemDynamicRouteContainer implements AfterViewInit{
     public routercomponent: any = null;
 
     constructor(
-        private metadata: metadata,
-        private session: session,
-        private router: Router,
-        private route: ActivatedRoute,
+        public metadata: metadata,
+        public session: session,
+        public router: Router,
+        public route: ActivatedRoute,
     ) {
         // dynamic routes only are avalbe when logged in
         if (!this.session || !this.session.authData.sessionId) {

@@ -7,14 +7,14 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-record-checklist',
-    templateUrl: './src/objectcomponents/templates/objectrecordchecklist.html',
+    templateUrl: '../templates/objectrecordchecklist.html',
     providers: [view]
 })
 export class ObjectRecordChecklist {
 
     componentconfig: any = {};
 
-    constructor(private language: language) { }
+    constructor(public language: language) { }
 
     get checkitems() {
         return this.componentconfig.checkitems ? this.componentconfig.checkitems : [];

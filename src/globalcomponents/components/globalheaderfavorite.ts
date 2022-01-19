@@ -11,34 +11,34 @@ import {NavigationStart, Router} from '@angular/router';
 
 @Component({
     selector: 'global-header-favorite',
-    templateUrl: './src/globalcomponents/templates/globalheaderfavorite.html'
+    templateUrl: '../templates/globalheaderfavorite.html'
 })
 export class GlobalHeaderFavorite {
 
     /**
      * the reference to the fav button. This is used to blur the button after the fav has been set
      */
-    @ViewChild('favbutton', {read: ViewContainerRef, static: false}) private favbutton: ViewContainerRef;
+    @ViewChild('favbutton', {read: ViewContainerRef, static: false})public favbutton: ViewContainerRef;
 
     /**
      * the listener for the dropdown triger. Listens if any click is outside of the element
      */
-    private clickListener: any;
+   public clickListener: any;
 
     /**
      * a boolean value to be set if the menu with the favorites should be shown
      */
-    private showFavorites: boolean = false;
+   public showFavorites: boolean = false;
 
     constructor(
-        private metadata: metadata,
-        private favorite: favorite,
-        private navigation: navigation,
-        private router: Router,
-        private renderer: Renderer2,
-        private elementRef: ElementRef,
-        private language: language,
-        private modal: modal
+       public metadata: metadata,
+       public favorite: favorite,
+       public navigation: navigation,
+       public router: Router,
+       public renderer: Renderer2,
+       public elementRef: ElementRef,
+       public language: language,
+       public modal: modal
     ) {
         this.navigation.activeTab$.subscribe(activetab => this.handleNavigationChange());
     }
@@ -54,8 +54,11 @@ export class GlobalHeaderFavorite {
         return this.favorite.favorites.length == 0;
     }
 
-    private handleNavigationChange() {
+   public handleNavigationChange() {
         let activeTab = this.navigation.activeTabObject;
+        if (activeTab.id == 'main') {
+            return this.favorite.disable();
+        }
         let routeData = this.metadata.getRouteDetails(activeTab.path.replace('tab/:tabid/', ''));
         if (routeData.path == 'module/:module/:id') {
             this.favorite.enable(activeTab.params.module, activeTab.params.id);
@@ -67,7 +70,7 @@ export class GlobalHeaderFavorite {
     /**
      * toggles the favorite and removes the focus from the button
      */
-    private toggleFavorite() {
+   public toggleFavorite() {
         if (this.favorite.isFavorite) {
             this.favorite.deleteFavorite();
         } else {
@@ -81,11 +84,11 @@ export class GlobalHeaderFavorite {
     /**
      * closes the favorites dropdown .. fired when the seleciton changes
      */
-    private closeFavorites() {
+   public closeFavorites() {
         this.showFavorites = false;
     }
 
-    private toggleFavorites() {
+   public toggleFavorites() {
         this.showFavorites = !this.showFavorites;
 
         if (this.showFavorites) {
@@ -104,7 +107,7 @@ export class GlobalHeaderFavorite {
         }
     }
 
-    private openEditModal() {
+   public openEditModal() {
         this.modal.openModal('SpiceFavoritesEditModal');
     }
 }

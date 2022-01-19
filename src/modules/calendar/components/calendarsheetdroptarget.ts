@@ -14,7 +14,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-drop-target',
-    templateUrl: './src/modules/calendar/templates/calendarsheetdroptarget.html',
+    templateUrl: '../templates/calendarsheetdroptarget.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetDropTarget {
@@ -22,17 +22,17 @@ export class CalendarSheetDropTarget {
     /**
      * holds the moment day
      */
-    @Input() private day: any;
+    @Input() public day: any;
     /**
      * holds the hour
      */
-    @Input() private hour: number = 0;
+    @Input() public hour: number = 0;
     /**
      * holds the minutes
      */
-    private minutes: number = 0;
+    public minutes: number = 0;
 
-    constructor(private calendar: calendar, private cdr: ChangeDetectorRef, public elementRef: ElementRef) {
+    constructor(public calendar: calendar, public cdr: ChangeDetectorRef, public elementRef: ElementRef) {
     }
 
     /**
@@ -46,7 +46,7 @@ export class CalendarSheetDropTarget {
      * set the hour part from parent input
      */
     @Input()
-    private set hourPart(value: number) {
+    public set hourPart(value: number) {
         this.minutes = value ? 15 * value : 0;
     }
 
@@ -60,7 +60,7 @@ export class CalendarSheetDropTarget {
     /**
      * handle the mouse click and emit the date
      */
-    private addEvent() {
+    public addEvent() {
         const date = moment(this.date);
         date.hour(this.hour).minute(this.minutes).second(0);
         if (this.calendar.asPicker) {

@@ -8,16 +8,16 @@ import {language} from '../../services/language.service';
 import {administration} from "../services/administration.service";
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationhomescreen.html'
+    templateUrl: '../templates/administrationhomescreen.html'
 })
 
 export class AdministrationHomeScreen {
 
     constructor(
-        private router: Router,
-        private metadata: metadata,
-        private language: language,
-        private administration: administration
+        public router: Router,
+        public metadata: metadata,
+        public language: language,
+        public administration: administration
     ) {
     }
 
@@ -27,7 +27,7 @@ export class AdministrationHomeScreen {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 

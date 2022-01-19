@@ -20,7 +20,7 @@ export class AdministrationMenuRouteItem implements OnInit {
     public self: any = {};
 
     constructor(
-        private router: Router,
+        public router: Router,
     ) {
 
     }

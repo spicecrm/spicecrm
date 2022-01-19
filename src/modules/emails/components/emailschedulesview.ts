@@ -11,33 +11,33 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: "email-schedules-view",
-    templateUrl: "./src/modules/emails/templates/emailschedulesview.html",
+    templateUrl: "../templates/emailschedulesview.html",
     providers: [view],
 })
 
 export class EmailSchedulesView {
 
-    private emailschedules: any[] = [];
-    private locked: boolean = false;
-    private isLoading: boolean = false;
+    public emailschedules: any[] = [];
+    public locked: boolean = false;
+    public isLoading: boolean = false;
 
-    constructor(private language: language,
-                private model: model,
-                private view: view,
-                private metadata: metadata,
-                private backend: backend
+    constructor(public language: language,
+                public model: model,
+                public view: view,
+                public metadata: metadata,
+                public backend: backend
     ) {
         this.getData();
     }
 
-    private refresh() {
+    public refresh() {
         this.getData();
     }
 
     /**
      * get the data from the backend
      */
-    private getData() {
+    public getData() {
         this.isLoading = true;
         this.backend.getRequest(`module/EmailSchedules/myopen/${this.model.id}`).subscribe(result => {
             if (result.status) {

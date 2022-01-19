@@ -12,26 +12,26 @@ import {Observable, Subject} from "rxjs";
  */
 @Component({
     selector: 'lead-convert-modal',
-    templateUrl: './src/modules/leads/templates/leadconvertmodal.html'
+    templateUrl: '../templates/leadconvertmodal.html'
 })
 export class LeadConvertModal implements OnInit {
 
     /**
      * reference to the modal itsefl
      */
-    private self: any;
+    public self: any;
 
     /**
      * the actions to be performed
      */
-    @Input() private saveactions: any[] = [];
+    @Input() public saveactions: any[] = [];
 
     /**
      * an event emiter emitting when the conversion was completed
      */
-    @Output() private completed: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public completed: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private language: language) {
+    constructor(public language: language) {
 
     }
 
@@ -44,7 +44,7 @@ export class LeadConvertModal implements OnInit {
      *
      * @param status
      */
-    private getStatusIcon(status) {
+    public getStatusIcon(status) {
         switch (status) {
             case 'initial':
                 return 'clock';
@@ -56,7 +56,7 @@ export class LeadConvertModal implements OnInit {
     /**
      * processes the convert action recursively
      */
-    private processConvertActions() {
+    public processConvertActions() {
         let nextAction = '';
         this.saveactions.some(item => {
             if (item.status === 'initial') {
@@ -79,9 +79,9 @@ export class LeadConvertModal implements OnInit {
      *
      * @param item
      */
-    private processConvertAction(item) {
+    public processConvertAction(item) {
         item.model.save().subscribe(data => {
-            item.model.data = item.model.utils.backendModel2spice(item.model.module, data);
+            item.model.setData(data);
             this.completeConvertAction(item.action);
         });
     }
@@ -91,7 +91,7 @@ export class LeadConvertModal implements OnInit {
      *
      * @param action
      */
-    private completeConvertAction(action) {
+    public completeConvertAction(action) {
         this.saveactions.find(item => item.action === action).status = 'completed';
 
         // start the next step

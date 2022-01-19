@@ -6,36 +6,36 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
-    templateUrl: './src/modules/calendar/templates/calendaraddcalendar.html',
+    templateUrl: '../templates/calendaraddcalendar.html',
 })
 export class CalendarAddCalendar {
 
     public calendars: any[] = [];
-    private addCalendar: EventEmitter<any> = new EventEmitter<any>();
-    private self: any = {};
+    public addCalendar: EventEmitter<any> = new EventEmitter<any>();
+    public self: any = {};
 
-    constructor(private language: language, private backend: backend) {
+    constructor(public language: language, public backend: backend) {
     }
 
-    private getIcon(icon) {
+    public getIcon(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[1] : icon;
     }
 
-    private getSprite(icon) {
+    public getSprite(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[0] : 'standard';
     }
 
-    private close() {
+    public close() {
         this.addCalendar.emit(false);
         this.self.destroy();
     }
 
-    private save(calendar) {
+    public save(calendar) {
         this.addCalendar.emit(calendar);
         this.self.destroy();
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

@@ -12,15 +12,15 @@ declare var _: any;
 
 @Component({
     selector: 'object-recordview-detail-1',
-    templateUrl: './src/objectcomponents/templates/objectrecordviewdetail1.html'
+    templateUrl: '../templates/objectrecordviewdetail1.html'
 
 })
 export class ObjectRecordViewDetail1 implements OnInit {
-    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) private contentcontainer: ViewContainerRef;
-    private initialized: boolean = false;
-    private componentconfig: any = {};
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) public contentcontainer: ViewContainerRef;
+    public initialized: boolean = false;
+    public componentconfig: any = {};
 
-    constructor(private metadata: metadata, private model: model, private elementRef: ElementRef) {
+    constructor(public metadata: metadata, public model: model, public elementRef: ElementRef) {
 
     }
 
@@ -28,7 +28,7 @@ export class ObjectRecordViewDetail1 implements OnInit {
         this.getComponentconfig();
     }
 
-    private getComponentconfig() {
+    public getComponentconfig() {
         if (_.isEmpty(this.componentconfig)) {
             this.componentconfig = this.metadata.getComponentConfig('ObjectRecordViewDetail1', this.model.module);
         }

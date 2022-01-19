@@ -14,7 +14,7 @@ import {popup} from '../../services/popup.service';
 
 @Component({
     selector: 'object-select-button',
-    templateUrl: './src/objectcomponents/templates/objectselectbutton.html',
+    templateUrl: '../templates/objectselectbutton.html',
     providers: [model, popup]
 })
 export class ObjectSelectButton implements OnInit {
@@ -25,7 +25,7 @@ export class ObjectSelectButton implements OnInit {
     displayModal: boolean = false;
     popupSubscribe: any = undefined;
 
-    constructor(private metadata: metadata, private popup: popup, private model: model) {}
+    constructor(public metadata: metadata, public popup: popup, public model: model) {}
 
     ngOnInit() {
         this.model.module = this.module;

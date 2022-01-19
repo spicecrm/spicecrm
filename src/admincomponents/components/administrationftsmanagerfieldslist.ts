@@ -14,33 +14,33 @@ import {CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop"
 
 @Component({
     selector: 'administration-ftsmanager-fields-list',
-    templateUrl: './src/admincomponents/templates/administrationftsmanagerfieldslist.html'
+    templateUrl: '../templates/administrationftsmanagerfieldslist.html'
 })
 export class AdministrationFTSManagerFieldsList {
 
     public links: any[] = [];
     public self: any = {};
     public fields: any[] = [];
-    @Input() private dragList: CdkDropList;
-    @Input() private dragPlaceHolderNode: Node;
-    @Input() private nodePath: string = '';
-    @Input() private selectedField: string = '';
+    @Input() public dragList: CdkDropList;
+    @Input() public dragPlaceHolderNode: Node;
+    @Input() public nodePath: string = '';
+    @Input() public selectedField: string = '';
     @Output() public selectListField: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('dropList', {static: false}) private dropList;
+    @ViewChild('dropList', {static: false}) public dropList;
 
-    constructor(private metadata: metadata,
-                private language: language,
-                private ftsconfiguration: ftsconfiguration,
-                private backend: backend,
-                private modal: modal,
-                private modelutilities: modelutilities) {
+    constructor(public metadata: metadata,
+                public language: language,
+                public ftsconfiguration: ftsconfiguration,
+                public backend: backend,
+                public modal: modal,
+                public modelutilities: modelutilities) {
     }
 
     public ngAfterViewInit() {
         window.setTimeout(() => this.ftsconfiguration.fieldsDropList = this.dropList, 100);
     }
 
-    private rightDrop(dragEvent: CdkDragDrop<any>) {
+    public rightDrop(dragEvent: CdkDragDrop<any>) {
         this.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
         if (dragEvent.previousContainer === dragEvent.container) {
             moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
@@ -60,7 +60,7 @@ export class AdministrationFTSManagerFieldsList {
         }
     }
 
-    private removePlaceHolderElement(containerElement) {
+    public removePlaceHolderElement(containerElement) {
         if (this.dragPlaceHolderNode) {
             containerElement.removeChild(this.dragPlaceHolderNode);
             this.dragPlaceHolderNode = undefined;
@@ -73,7 +73,7 @@ export class AdministrationFTSManagerFieldsList {
      * @param i
      * @param item
      */
-    private trackByFn(i, item) {
+    public trackByFn(i, item) {
         return item.id;
     }
 
@@ -82,7 +82,7 @@ export class AdministrationFTSManagerFieldsList {
      *
      * @param index index of the row
      */
-    private deleteField(index) {
+    public deleteField(index) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 this.ftsconfiguration.moduleFtsFields.splice(index, 1);
@@ -90,11 +90,11 @@ export class AdministrationFTSManagerFieldsList {
         });
     }
 
-    private handleSelection(fieldId) {
+    public handleSelection(fieldId) {
         this.selectListField.emit(fieldId);
     }
 
-    private isSelected(fieldId) {
+    public isSelected(fieldId) {
         return this.selectedField == fieldId;
     }
 }

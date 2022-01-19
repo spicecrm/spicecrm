@@ -11,24 +11,24 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'system-currency',
-    templateUrl: './src/modules/currencies/templates/systemcurrency.html'
+    templateUrl: '../templates/systemcurrency.html'
 })
 
 export class SystemCurrency implements OnInit {
-    @Input() private currencies: any = [];
-    private loading: boolean = false;
-    private defaultCurrency: any = {};
-    private iso: string = '';
-    private name: string = '';
-    private symbol: string = '';
+    @Input() public currencies: any = [];
+    public loading: boolean = false;
+    public defaultCurrency: any = {};
+    public iso: string = '';
+    public name: string = '';
+    public symbol: string = '';
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private modal: modal,
-        private view: view,
-        private toast: toast,
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public modal: modal,
+        public view: view,
+        public toast: toast,
     ) {
 
     }
@@ -50,26 +50,26 @@ export class SystemCurrency implements OnInit {
     /**
      * get the edit mode
      */
-    private get editMode() {
+    public get editMode() {
         return this.view.isEditMode();
     }
 
     /**
      * set the edit mode
      */
-    private edit() {
+    public edit() {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    private cancel() {
+    public cancel() {
         this.view.setViewMode();
     }
 
     /**
      * save the selected currency as the default currency of the system in the config table
      */
-    private savePreference() {
+    public savePreference() {
 
         let body = [
             {name: 'default_currency_iso4217', value: this.iso},

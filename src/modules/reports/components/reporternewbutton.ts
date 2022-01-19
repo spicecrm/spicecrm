@@ -8,15 +8,15 @@ import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    templateUrl: './src/modules/reports/templates/reporternewbutton.html'
+    templateUrl: '../templates/reporternewbutton.html'
 })
 
 export class ReporterNewButton {
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model,
-                private router: Router) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model,
+                public router: Router) {
     }
     /*
     *navigate to designer

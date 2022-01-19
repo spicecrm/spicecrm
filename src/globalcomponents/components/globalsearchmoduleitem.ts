@@ -10,17 +10,17 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: '[global-search-module-item]',
-    templateUrl: './src/globalcomponents/templates/globalsearchmoduleitem.html',
+    templateUrl: '../templates/globalsearchmoduleitem.html',
     providers: [view, model]
 })
 export class GlobalSearchModuleItem implements OnInit {
-    @Input() private module: string = '';
-    @Input() private listfields: string = '';
-    @Input() private listitem: any = {};
+    @Input()public module: string = '';
+    @Input()public listfields: string = '';
+    @Input()public listitem: any = {};
 
-    private expanded: boolean = false;
+   public expanded: boolean = false;
 
-    constructor(private elementref: ElementRef, private router: Router, private view: view, private model: model, private language: language, private layout: layout) {
+    constructor(public elementref: ElementRef,public router: Router,public view: view,public model: model,public language: language,public layout: layout) {
         this.view.isEditable = false;
         this.view.displayLabels = false;
     }
@@ -30,25 +30,22 @@ export class GlobalSearchModuleItem implements OnInit {
         this.model.module = this.listitem._type == '_doc' ?  this.listitem._source._module : this.listitem._type;
 
         this.model.id = this.listitem._id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.listitem._source);
-        this.model.data.acl = this.listitem.acl;
-        this.model.data.acl_fieldcontrol = this.listitem.acl_fieldcontrol;
-
-        // add acl so the links work as well
-        this.model.data.acl = this.listitem.acl;
+        this.model.setData(this.listitem._source);
+        this.model.acl = this.listitem.acl;
+        this.model.acl_fieldcontrol = this.listitem.acl_fieldcontrol;
     }
 
-    private navigateDetail(event) {
+   public navigateDetail(event) {
         // stop the click here
         event.stopPropagation();
 
         // see if we can navigate
-        if (this.model.data.acl.detail) {
+        if (this.model.checkAccess('detail')) {
             this.model.goDetail();
         }
     }
 
-    private toggleexpanded() {
+   public toggleexpanded() {
         this.expanded = !this.expanded;
     }
 

@@ -27,7 +27,7 @@ export class MathExpressionCompilerService {
      * @param {string} input
      * @returns {any[]}
      */
-    private lex(input: string) {
+    public lex(input: string) {
         let isOperator = (c) => {
             return /[+\-*\/\^%=(),]/.test(c);
         };
@@ -94,7 +94,7 @@ export class MathExpressionCompilerService {
      * @param tokens
      * @returns {any[]}
      */
-    private parse(tokens) {
+    public parse(tokens) {
 
         let symbols = {};
         let symbol = (id, nud?, lbp?, led?) => {
@@ -233,7 +233,7 @@ export class MathExpressionCompilerService {
      * @param parseTree
      * @returns {string} the evaluated result
      */
-    private evaluate(parseTree) {
+    public evaluate(parseTree) {
         let operators = {
             "+": (a, b) => a + b,
             "-": (a, b) => a - b,

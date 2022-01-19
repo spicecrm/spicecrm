@@ -9,16 +9,16 @@ import {modal} from '../../../services/modal.service';
 
 @Component({
     selector: 'currency-list',
-    templateUrl: './src/modules/currencies/templates/currencylist.html'
+    templateUrl: '../templates/currencylist.html'
 })
 
 export class CurrencyList implements OnInit {
-    @Input() private currencies: any = [];
+    @Input() public currencies: any = [];
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private modal: modal
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public modal: modal
     ) {
 
     }

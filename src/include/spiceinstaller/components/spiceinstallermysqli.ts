@@ -8,19 +8,19 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-mysqli',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallermysqli.html'
+    templateUrl: '../templates/spiceinstallermysqli.html'
 })
 
 export class SpiceinstallerMySQLi {
     /**
      * inputs from the parent component
      */
-    @Input() private hostNameCondition: boolean;
-    @Input() private userNameCondition: boolean;
-    @Input() private dbNameCondition: boolean;
+    @Input() public hostNameCondition: boolean;
+    @Input() public userNameCondition: boolean;
+    @Input() public dbNameCondition: boolean;
 
     constructor(
-        private spiceinstaller: spiceinstaller
+        public spiceinstaller: spiceinstaller
     ) {
         if(!this.spiceinstaller.db_port) this.spiceinstaller.db_port = '3306';
         if(!this.spiceinstaller.collation) this.spiceinstaller.collation = 'utf8mb4_general_ci';

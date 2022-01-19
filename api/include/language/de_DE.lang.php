@@ -909,10 +909,10 @@ $app_list_strings = [
         'p' => 'Prozentsatz'
     ],
     'salesdoc_status_dom' => [
-        'vsnew' => 'new',
-        'vscreated' => 'created',
-        'vspaid' => 'paid',
-        'vscancelled' => 'cancelled'
+        'vsnew' => 'Neu',
+        'vscreated' => 'Erstellt',
+        'vspaid' => 'Bezahlt',
+        'vscancelled' => 'Storniert'
     ],
     'salesvoucher_status_dom' => [
         'created' => 'Erstellt',
@@ -1821,6 +1821,13 @@ $app_list_strings['relationship_type_dom'] = [
 $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
+];
+
+$app_list_strings['systemdeploymentsystems_type_dom'] = [
+    'test' => 'test',
+    'stage' => 'Stufe',
+    'development' => 'entwicklung',
+    'productivity' => 'produktivität'
 ];
 
 $app_list_strings['bonuscard_extension_status_enum'] = [

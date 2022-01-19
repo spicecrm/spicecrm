@@ -18,12 +18,12 @@ import {domainmanager} from '../services/domainmanager.service';
  */
 @Component({
     selector: 'domain-manager-fields',
-    templateUrl: './src/workbench/templates/domainmanagerfields.html',
+    templateUrl: '../templates/domainmanagerfields.html',
 })
 export class DomainManagerFields {
 
 
-    constructor(private domainmanager: domainmanager, private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast, private modal: modal, private injector: Injector) {
+    constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
 
@@ -42,7 +42,7 @@ export class DomainManagerFields {
      * handles the drop event and resets the sequence fiels
      * @param event
      */
-    private drop(event) {
+    public drop(event) {
         // get the values and reshuffle
         let values = this.domainfields;
         let previousItem = values.splice(event.previousIndex, 1);
@@ -60,7 +60,7 @@ export class DomainManagerFields {
     /**
      * react to the click to add a new domain field
      */
-    private addDomainField(event: MouseEvent) {
+    public addDomainField(event: MouseEvent) {
         event.stopPropagation();
         this.modal.openModal('DomainManagerAddFieldModal', true, this.injector);
     }
@@ -71,7 +71,7 @@ export class DomainManagerFields {
      * @param event
      * @param id
      */
-    private deleteDomainField(event: MouseEvent, id: string) {
+    public deleteDomainField(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
@@ -89,7 +89,7 @@ export class DomainManagerFields {
      * @param e
      * @param validationValue
      */
-    private customizeDomainField(e: MouseEvent, domainField) {
+    public customizeDomainField(e: MouseEvent, domainField) {
         e.stopPropagation();
         if (domainField.scope == 'g') {
             this.modal.prompt('confirm', 'Customize the Field?', 'Customize').subscribe(resp => {
@@ -109,7 +109,7 @@ export class DomainManagerFields {
      * @param e
      * @param validationValue
      */
-    private setStatus(e: MouseEvent, validationValue) {
+    public setStatus(e: MouseEvent, validationValue) {
         e.stopPropagation();
         if (validationValue.status == 'd') {
             validationValue.status = 'a';
@@ -120,7 +120,7 @@ export class DomainManagerFields {
         }
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 

@@ -102,16 +102,16 @@ export class dictionarymanager {
     /**
      * the JSON with the loaded definitons to determine the changes
      */
-    private loaded: string;
+    public loaded: string;
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
         this.loadDictionaryDefinitions();
     }
 
     /**
      * load the domains
      */
-    private loadDictionaryDefinitions() {
+    public loadDictionaryDefinitions() {
         this.backend.getRequest('dictionary/definitions').subscribe(res => {
 
             this.domaindefinitions = res.domaindefinitions;
@@ -229,7 +229,7 @@ export class dictionarymanager {
     /**
      * check which records are changed
      */
-    private determineChangedRecords() {
+    public determineChangedRecords() {
         let loaded = JSON.parse(this.loaded);
         let changed = {
             dictionarydefinitions: [],

@@ -13,14 +13,14 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-vat',
-    templateUrl: './src/objectfields/templates/fieldvat.html'
+    templateUrl: '../templates/fieldvat.html'
 })
 
 export class fieldVat extends fieldGeneric {
 
-    private isvalidating: boolean = false;
+    public isvalidating: boolean = false;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private toast: toast) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend, public toast: toast) {
         super(model, view, language, metadata, router);
     }
 
@@ -28,7 +28,7 @@ export class fieldVat extends fieldGeneric {
         return this.fieldconfig.vatdetails ? this.fieldconfig.vatdetails : 'vat_details';
     }
 
-    private validate() {
+    public validate() {
         this.isvalidating = true;
         this.backend.getRequest(`common/VIES/${this.value}`).subscribe(
             (response: any) => {
@@ -36,7 +36,7 @@ export class fieldVat extends fieldGeneric {
                     if (response.data.valid !== true) {
                         this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');
                     }
-                    this.model.data.vat_details = JSON.stringify(response.data);
+                    this.model.setField('vat_details', JSON.stringify(response.data));
                 } else {
                     this.toast.sendToast(this.language.getLabel('ERR_CHECK_VAT'), 'error');
                 }

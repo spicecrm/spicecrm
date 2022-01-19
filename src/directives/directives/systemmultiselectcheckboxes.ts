@@ -14,12 +14,12 @@ export class SystemMultiSelectCheckboxesDirective {
     /**
      * The last checked label element.
      */
-    private lastChecked: any;
+    public lastChecked: any;
 
-    constructor( private elementRef: ElementRef ) { }
+    constructor( public elementRef: ElementRef ) { }
 
     @HostListener('click', ['$event'])
-    private onClick( event ) {
+    public onClick( event ) {
 
         let labelElement = null;
         if ( event.target.parentElement.classList?.contains('slds-checkbox__label')) labelElement = event.target.parentElement;
@@ -70,7 +70,7 @@ export class SystemMultiSelectCheckboxesDirective {
     /**
      * The input HTML elements (type checkbox) are not visible. So we need the labels.
      */
-    private getAllLabels() {
+    public getAllLabels() {
         let allLabels = [];
         let labelElements = this.elementRef.nativeElement.getElementsByTagName( 'label' );
         for( let labelElement of labelElements ) {

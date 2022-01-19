@@ -2114,7 +2114,19 @@ $app_list_strings['relationship_type_dom'] = [
     'colleague' => 'colleague'
 ];
 
+$app_list_strings['systemdeploymentsystems_type_dom'] = [
+    'test' => 'test',
+    'stage' => 'stage',
+    'development' => 'development',
+    'productivity' => 'productivity'
+];
+
 $app_list_strings['bonuscard_extension_status_enum'] = [
     'initial' => 'initial',
+    'sent' => 'sent'
+];
+$app_list_strings['tracking_actions_dom'] = [
+    'clicked' => 'clicked',
+    'opened' => 'opened',
     'sent' => 'sent'
 ];

@@ -15,7 +15,7 @@ export class accountHierarchy {
     public members: Array<any> = [];
     public membersList: Array<any> = [];
 
-    constructor(private backend: backend) {
+    constructor(public backend: backend) {
     }
 
     public loadHierachy(parent_id = this.parentId, expand = false): Observable<boolean> {

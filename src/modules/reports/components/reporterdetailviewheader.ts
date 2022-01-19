@@ -10,14 +10,14 @@ import {ObjectPageHeader} from "../../../objectcomponents/components/objectpageh
 
 @Component({
     selector: 'reporter-detail-view-header',
-    templateUrl: './src/modules/reports/templates/reporterdetailviewheader.html'
+    templateUrl: '../templates/reporterdetailviewheader.html'
 })
 export class ReporterDetailViewHeader extends ObjectPageHeader {
 
-    @Input() private whereConditions: any = {};
-    @Input() private integrationParams: any = {};
+    @Input() public whereConditions: any = {};
+    @Input() public integrationParams: any = {};
 
-    @Output() private showFilters = new EventEmitter<boolean>();
+    @Output() public showFilters = new EventEmitter<boolean>();
 
     constructor(public language: language,
                 public metadata: metadata,
@@ -29,7 +29,7 @@ export class ReporterDetailViewHeader extends ObjectPageHeader {
     /*
      * emit boolean for the filter panel handling
      */
-    private toggleFilters(event: boolean) {
+    public toggleFilters(event: boolean) {
         this.showFilters.emit(event);
     }
 }

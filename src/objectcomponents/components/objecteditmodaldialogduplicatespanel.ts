@@ -16,7 +16,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'object-edit-modal-dialog-duplicates-panel',
-    templateUrl: './src/objectcomponents/templates/objecteditmodaldialogduplicatespanel.html',
+    templateUrl: '../templates/objecteditmodaldialogduplicatespanel.html',
     providers: [view]
 })
 export class ObjectEditModalDialogDuplicatesPanel implements OnInit {
@@ -24,14 +24,14 @@ export class ObjectEditModalDialogDuplicatesPanel implements OnInit {
     /**
      * an output when the panel emits that it shopudl be closed
      */
-    @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * holds the fieldset for the fields to be displayed in the item. This is determined when the component is initialized from the component configuration
      */
-    private fieldset: string = '';
+    public fieldset: string = '';
 
-    constructor(private model: model, private metadata: metadata, private language: language, private view: view) {
+    constructor(public model: model, public metadata: metadata, public language: language, public view: view) {
         this.view.isEditable = false;
     }
 
@@ -44,9 +44,9 @@ export class ObjectEditModalDialogDuplicatesPanel implements OnInit {
     }
 
     /**
-     * private handler for the close button that emits that the panel should close
+     * public handler for the close button that emits that the panel should close
      */
-    private hidePanel(){
+    public hidePanel(){
         this.close.emit(true);
     }
 }

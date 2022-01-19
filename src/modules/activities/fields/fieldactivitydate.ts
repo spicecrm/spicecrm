@@ -20,7 +20,7 @@ declare var moment;
  */
 @Component({
     selector: 'field-activity-date',
-    templateUrl: './src/modules/activities/templates/fieldactivitydate.html'
+    templateUrl: '../templates/fieldactivitydate.html'
 })
 export class fieldActivityDate extends fieldGeneric {
     /**
@@ -37,7 +37,7 @@ export class fieldActivityDate extends fieldGeneric {
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
                 public modal: modal,
-                private userpreferences: userpreferences) {
+                public userpreferences: userpreferences) {
 
         super(model, view, language, metadata, router);
         this.subscribeToDataChange();
@@ -55,7 +55,7 @@ export class fieldActivityDate extends fieldGeneric {
      * subscribe to data changes to reset the formatted value
      * @private
      */
-    private subscribeToDataChange() {
+    public subscribeToDataChange() {
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
                 if (!data[this.fieldname] || moment(this.cachedValue?.raw).isSame(data[this.fieldname])) return;
@@ -68,7 +68,7 @@ export class fieldActivityDate extends fieldGeneric {
      * set the local formatted value
      * @private
      */
-    private setFormattedValue() {
+    public setFormattedValue() {
 
         if (!this.value) return;
 

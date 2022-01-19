@@ -8,7 +8,7 @@ import {Component,} from "@angular/core";
  */
 @Component({
     selector: "system-preferences-panel-item-edit",
-    templateUrl: "./src/systemcomponents/templates/systempreferencespanelitemedit.html"
+    templateUrl: "../templates/systempreferencespanelitemedit.html"
 })
 export class SystemPreferencesPanelItemEdit {
 }

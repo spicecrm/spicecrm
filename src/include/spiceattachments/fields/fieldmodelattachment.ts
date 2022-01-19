@@ -21,7 +21,7 @@ import {Observable, Subject} from "rxjs";
  * renders a field to upload files in a model itself
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/fieldmodelattachment.html',
+    templateUrl: '../templates/fieldmodelattachment.html',
     providers: [modelattachments]
 })
 export class fieldModelAttachment extends fieldGeneric {
@@ -29,7 +29,7 @@ export class fieldModelAttachment extends fieldGeneric {
     /**
      * the fileupload elelent
      */
-    @ViewChild("fileupload", {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
+    @ViewChild("fileupload", {read: ViewContainerRef, static: false}) public fileupload: ViewContainerRef;
 
     constructor(
         public model: model,
@@ -37,11 +37,11 @@ export class fieldModelAttachment extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private injector: Injector,
-        private modelattachments: modelattachments,
-        private modal: modal,
-        private helper: helper,
-        private backend: backend
+        public injector: Injector,
+        public modelattachments: modelattachments,
+        public modal: modal,
+        public helper: helper,
+        public backend: backend
     ) {
         super(model, view, language, metadata, router);
     }
@@ -119,7 +119,7 @@ export class fieldModelAttachment extends fieldGeneric {
      * previews the file
      * @param e
      */
-    private previewFile(e) {
+    public previewFile(e) {
         // stop the event from bubbling
         e.preventDefault();
         e.stopPropagation();
@@ -190,7 +190,7 @@ export class fieldModelAttachment extends fieldGeneric {
      * unlinks the file from teh bean
      * @private
      */
-    private removeFile() {
+    public removeFile() {
         // unset the file link
         if (this.modelattachments.files.length > 0) this.modelattachments.files = [];
 
@@ -211,7 +211,7 @@ export class fieldModelAttachment extends fieldGeneric {
      * @param files
      * @private
      */
-    private onDrop(files) {
+    public onDrop(files) {
         if (files && files.length >= 1) {
             this.doupload(files);
         }
@@ -222,7 +222,7 @@ export class fieldModelAttachment extends fieldGeneric {
      *
      * @private
      */
-    private uploadFile() {
+    public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         this.doupload(files);
     }
@@ -232,7 +232,7 @@ export class fieldModelAttachment extends fieldGeneric {
      *
      * @private
      */
-    private downloadFile() {
+    public downloadFile() {
         this.modelattachments.downloadAttachmentForField(this.model.module, this.model.id, this.prefix, this.value);
     }
 
@@ -241,7 +241,7 @@ export class fieldModelAttachment extends fieldGeneric {
      *
      * @param files an array with files
      */
-    private doupload(files) {
+    public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files).subscribe(
             progressdata => {
                 let x = 1;

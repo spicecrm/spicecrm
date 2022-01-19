@@ -15,20 +15,20 @@ import {fieldGeneric} from './fieldgeneric';
 
 @Component({
     selector: 'field-icon-popover',
-    templateUrl: './src/objectfields/templates/fieldiconpopover.html',
+    templateUrl: '../templates/fieldiconpopover.html',
     providers: [popup],
     host: {
         // '(document:click)': 'this.onClick($event)'
     }
 })
 export class fieldIconPopover extends fieldGeneric implements OnInit {
-    private clickListener: any;
+    public clickListener: any;
 
-    private parentTypeSelectOpen: boolean = false;
-    private parentSearchOpen: boolean = false;
-    private parentSearchTerm: string = '';
+    public parentTypeSelectOpen: boolean = false;
+    public parentSearchOpen: boolean = false;
+    public parentSearchTerm: string = '';
 
-    private recentItems: Array<any> = [];
+    public recentItems: any[] = [];
 
     constructor(
         public model: model,
@@ -38,7 +38,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef
+        public elementRef: ElementRef
     ) {
         super(model, view, language, metadata, router);
 
@@ -62,7 +62,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         return this.model.getField('grp_member_count');
     }
 
-    get parentTypes(): Array<string>{
+    get parentTypes(): string[]{
         let parenttypes = ['Contacts', 'Accounts', 'Leads'];
 
         if(this.fieldconfig.parenttypes) {
@@ -72,7 +72,7 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         return parenttypes;
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         if (message.messagedata.reference) {
             switch (message.messagetype) {
                 case 'model.save':
@@ -81,8 +81,10 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
                         this.parentSearchTerm = '';
 
                         // set the model
-                        this.model.data[this.parentIdField] = message.messagedata.data.id;
-                        this.model.data[this.fieldname] = message.messagedata.data.summary_text;
+                        let modelfields: any = {};
+                        modelfields[this.parentIdField] = message.messagedata.data.id;
+                        modelfields[this.fieldname] = message.messagedata.data.summary_text;
+                        this.model.setFields(modelfields);
                     }
                     break;
             }
@@ -97,8 +99,8 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         }
     }
 
-    private closePopups() {
-        if (this.model.data[this.parentIdField]) {
+    public closePopups() {
+        if (this.model.getField(this.parentIdField)) {
             this.parentSearchTerm = '';
         }
 

@@ -18,7 +18,7 @@ export class spiceimportsservice {
     items: Array<any> = [];
     activeItemLogs: Array<any> = undefined;
 
-    constructor(private backend: backend ) {
+    constructor(public backend: backend ) {
     }
 
     get activeImportData() {

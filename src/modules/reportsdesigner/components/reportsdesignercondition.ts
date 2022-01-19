@@ -8,23 +8,23 @@ import {reporterconfig} from "../../../modules/reports/services/reporterconfig";
 
 @Component({
     selector: 'reports-designer-condition',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignercondition.html',
+    templateUrl: '../templates/reportsdesignercondition.html',
 })
 export class ReportsDesignerCondition {
 
     /**
     * @input whereCondition: object
      */
-    @Input() private whereCondition: any = {};
+    @Input() public whereCondition: any = {};
     /**
      * true if the operator contains oneof
      * @private
      */
-    private isMultiSelect: boolean = false;
+    public isMultiSelect: boolean = false;
 
-    constructor(private language: language,
-                private model: model,
-                private reporterConfig: reporterconfig) {
+    constructor(public language: language,
+                public model: model,
+                public reporterConfig: reporterconfig) {
 
     }
 
@@ -98,7 +98,7 @@ export class ReportsDesignerCondition {
     /**
     * @return operators: object[]
      */
-    private getOperators() {
+    public getOperators() {
         let retArray = [];
         const operatorType = this.reporterConfig.operatorAssignments[this.whereCondition.overrideType || this.whereCondition.type] || 'varchar';
         let operators = this.reporterConfig.operatorTypes[operatorType];
@@ -143,7 +143,7 @@ export class ReportsDesignerCondition {
     /**
     * @reset whereCondition
      */
-    private changeOperator() {
+    public changeOperator() {
         this.whereCondition.value = '';
         this.whereCondition.valuekey = '';
         this.whereCondition.valueto = '';
@@ -158,7 +158,7 @@ export class ReportsDesignerCondition {
     * @param item
     * @return index
     */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 }

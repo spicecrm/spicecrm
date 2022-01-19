@@ -16,7 +16,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'object-action-output-bean-modal',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodal.html',
+    templateUrl: '../templates/objectactionoutputbeanmodal.html',
     providers: [view, outputModalService],
     animations: [
         trigger('slideInOut', [
@@ -72,17 +72,17 @@ export class ObjectActionOutputBeanModal {
     /**
      * the selected template
      */
-    private _selected_template = null;
+    public _selected_template = null;
 
     /**
      * the selected output format
      */
-    private _selected_format: 'html' | 'pdf' = 'pdf';
+    public _selected_format: 'html' | 'pdf' = 'pdf';
 
     /**
      * the response of the compiler
      */
-    private compiled_selected_template: string = '';
+    public compiled_selected_template: string = '';
 
     /**
      * flag is the oputput is loading
@@ -108,7 +108,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * flag to show the email-content
      */
-    private showsendemail: boolean = false;
+    public showsendemail: boolean = false;
 
     /**
      * expanded email-content flag
@@ -161,7 +161,7 @@ export class ObjectActionOutputBeanModal {
      * If there is no button text given from outside, use the default text
      * Set the output format in case it is given from outside
      */
-    private setModalData() {
+    public setModalData() {
         if (!this.modalTitle) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
         if (!this.buttonText) this.buttonText = this.language.getLabel(this.noDownload ? 'LBL_OK' : 'LBL_DOWNLOAD');
         if (this.forcedFormat) this._selected_format = this.forcedFormat;
@@ -170,7 +170,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * see if we have a relate to an output template
      */
-    private setSelectedTemplate() {
+    public setSelectedTemplate() {
         let fields = this.metadata.getModuleFields(this.model.module);
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
@@ -210,7 +210,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * backend call to render the template and return the content
      */
-    private rendertemplate() {
+    public rendertemplate() {
         this.loading_output = true;
 
         this.blobUrl = null;
@@ -283,7 +283,7 @@ export class ObjectActionOutputBeanModal {
             a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
 
             // genereate a filename
-            a.download = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
+            a.download = this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format;
 
             // start download and then remove the element from the document again
             a.click();
@@ -308,7 +308,7 @@ export class ObjectActionOutputBeanModal {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -343,11 +343,11 @@ export class ObjectActionOutputBeanModal {
     /**
      * set the filelist for the email attachment panel and reset the email-content
      */
-    private setEmailAttachmentData() {
+    public setEmailAttachmentData() {
         if(this.emailInitialized) {
             this.filelist = [{
                 size: this.contentForHandBack.length,
-                name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+                name: this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format,
                 type: "application/" + this.selected_format,
                 filecontent: this.contentForHandBack
             }];

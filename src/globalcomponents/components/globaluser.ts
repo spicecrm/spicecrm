@@ -16,19 +16,19 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'global-user',
-    templateUrl: './src/globalcomponents/templates/globaluser.html',
+    templateUrl: '../templates/globaluser.html',
 })
 export class GlobalUser {
 
-    private clickListener: any;
-    private hideUserDetails: boolean = true;
+   public clickListener: any;
+   public hideUserDetails: boolean = true;
 
     // The user preferences service is not needed in this component, but it has to get started (if not already elsewhere done).
-    constructor(private loginService: loginService, private router: Router, private elementRef: ElementRef, private renderer: Renderer2, private session: session, private userpreferences: userpreferences) {
+    constructor(public loginService: loginService,public router: Router,public elementRef: ElementRef,public renderer: Renderer2,public session: session,public userpreferences: userpreferences) {
 
     }
 
-    private toggleUserDetails() {
+   public toggleUserDetails() {
         this.hideUserDetails = !this.hideUserDetails;
 
         if (!this.hideUserDetails) {
@@ -41,7 +41,7 @@ export class GlobalUser {
     /**
      * closes the popup
      */
-    private closepopup() {
+   public closepopup() {
         this.hideUserDetails = true;
     }
 

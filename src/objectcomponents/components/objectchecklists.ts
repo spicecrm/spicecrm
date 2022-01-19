@@ -15,7 +15,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
  */
 @Component({
     selector: 'object-checklists',
-    templateUrl: './src/objectcomponents/templates/objectchecklists.html',
+    templateUrl: '../templates/objectchecklists.html',
     animations: [
         trigger('tabAnimation', [
             state('true', style({height: '*', opacity: 1})),
@@ -58,12 +58,12 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * holds subscriptions for unsubscribe
      * @private
      */
-    private subscriptions = new Subscription();
+    public subscriptions = new Subscription();
     /**
      * holds the field name of checklists for saving/loading the checklist data from model service
      * @private
      */
-    private fieldName: string = 'checklists';
+    public fieldName: string = 'checklists';
 
     public panelExpanded: boolean = true;
 
@@ -307,7 +307,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * set the field name of checklists to load/save the data to/from model service
      * @private
      */
-    private setFieldName() {
+    public setFieldName() {
         let fieldName = this.metadata.getComponentConfig('ObjectChecklists', this.model.module)?.fieldName;
         if (!!fieldName) this.fieldName = fieldName;
     }
@@ -316,7 +316,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * set the local value from the model data
      * @private
      */
-    private loadData() {
+    public loadData() {
         this.model.backend.get(this.model.module, this.model.id).subscribe(data => {
             if (!Array.isArray(data?.[this.fieldName])) return;
             this.checklists = data[this.fieldName];
@@ -326,7 +326,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
     /**
      * handle drag and drop event
      */
-    private onDrop(event: CdkDragDrop<any>) {
+    public onDrop(event: CdkDragDrop<any>) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.container.data.indexOf(event.item.data), event.currentIndex);
         } else {

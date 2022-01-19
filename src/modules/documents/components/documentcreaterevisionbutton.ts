@@ -3,33 +3,42 @@
  */
 import {Component, EventEmitter, OnDestroy, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
-import {ObjectActionOutputBeanButton} from "../../../modules/outputtemplates/components/objectactionoutputbeanbutton";
 import {Subscription} from "rxjs";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'document-create-revision-button',
-    templateUrl: './src/modules/documents/templates/documentcreaterevisionbutton.html'
+    templateUrl: '../templates/documentcreaterevisionbutton.html'
 })
-export class DocumentCreateRevisionButton extends ObjectActionOutputBeanButton implements OnDestroy{
+export class DocumentCreateRevisionButton implements OnDestroy{
 
-    private subscriptions = new Subscription();
+    public templates: any[] = [];
+    public forcedFormat: 'html'|'pdf';
+    public modalTitle: string;
+    public noDownload: boolean;
+    public handBack: EventEmitter<string>;
+    public buttonText: string;
+    public subscriptions = new Subscription();
+
+    /**
+     * holds the action config
+     */
+    public actionconfig: {modal_actionset: string};
 
     constructor(
-        protected language: language,
-        protected model: model,
-        protected modal: modal,
-        protected backend: backend,
-        protected configuration: configurationService,
-        protected viewContainerRef: ViewContainerRef,
-        protected relatedmodels: relatedmodels
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public configuration: configurationService,
+        public viewContainerRef: ViewContainerRef,
+        public relatedmodels: relatedmodels
     ) {
-        super(language, model, modal, backend, configuration, viewContainerRef);
+
     }
 
     public openOutput() {
@@ -67,4 +76,37 @@ export class DocumentCreateRevisionButton extends ObjectActionOutputBeanButton i
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
+
+    public execute() {
+        let waitingModal: any;
+
+        let outPutTemplates = this.configuration.getData('OutputTemplates');
+        if (outPutTemplates && outPutTemplates[this.model.module]) {
+            this.templates = outPutTemplates[this.model.module];
+            this.openOutput();
+        } else {
+            outPutTemplates = {};
+            this.modal.openModal('SystemLoadingModal', false).subscribe(waitingModal => {
+                waitingModal.instance.messagelabel = 'Loading Templates';
+                this.backend.getRequest('module/OutputTemplates/formodule/'+this.model.module, {}).subscribe(
+                    (data: any) => {
+                        // kill the watign modal
+                        waitingModal.instance.self.destroy();
+                        // set the templates
+                        this.configuration.setData('OutputTemplates', data);
+
+                        // set the templates internally
+                        this.templates = data;
+
+                        // open the output
+                        this.openOutput();
+                    },
+                    (error: any) => {
+                        waitingModal.instance.self.destroy();
+                    }
+                );
+            });
+        }
+    }
+
 }

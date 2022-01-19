@@ -10,7 +10,7 @@ import {modelutilities} from "../../services/modelutilities.service";
  */
 @Component({
     selector: 'system-input-radio',
-    templateUrl: './src/systemcomponents/templates/systeminputradio.html',
+    templateUrl: '../templates/systeminputradio.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -24,42 +24,42 @@ export class SystemInputRadio implements ControlValueAccessor {
     /**
      * the name for the radio button
      */
-    @Input() private name: string;
+    @Input() public name: string;
 
     /**
      * the value to be set
      */
-    @Input() private value: any;
+    @Input() public value: any;
 
     /**
      * the value to be set
      */
-    @Input() private disabled: boolean = false;
+    @Input() public disabled: boolean = false;
 
     /**
      * for the control accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * internal variable if checked
      */
-    private checked: any;
+    public checked: any;
 
     /**
      * internal generated id to be used for the Radio Button in the Lightning Design
      */
-    private id: string;
+    public id: string;
 
-    constructor(private modelutilities: modelutilities) {
+    constructor(public modelutilities: modelutilities) {
         this.id = this.modelutilities.generateGuid();
     }
 
     /**
      * set the radio button toi checked
      */
-    private setChecked(event) {
+    public setChecked(event) {
         if (event.target.checked) {
             this.onChange(this.value);
         }
