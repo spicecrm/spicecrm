@@ -9,7 +9,7 @@ import {modellist} from "../../../services/modellist.service";
 
 @Component({
     selector: 'system-calendar-list',
-    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlist.html',
+    templateUrl: '../templates/systemcalendarlist.html',
     providers: [modellist, model]
 })
 export class SystemCalendarList implements OnInit {
@@ -24,11 +24,11 @@ export class SystemCalendarList implements OnInit {
      * the actionset
      * @private
      */
-    private actionset: string;
+    public actionset: string;
 
     constructor(
         private language: language,
-        private modellist: modellist,
+        public modellist: modellist,
         private model: model,
         private metadata: metadata,
     ) {
@@ -44,7 +44,7 @@ export class SystemCalendarList implements OnInit {
      * reloads the calendar list
      * @private
      */
-    private refresh() {
+    public refresh() {
         this.activeCalendar = undefined;
         this.modellist.reLoadList();
     }
@@ -68,7 +68,7 @@ export class SystemCalendarList implements OnInit {
      * adds a new calendar
      * @private
      */
-    private addCalendar() {
+    public addCalendar() {
         this.model.module = 'SystemHolidayCalendars';
         this.model.initialize();
         this.model.addModel();
@@ -78,7 +78,7 @@ export class SystemCalendarList implements OnInit {
      * adds a new calendar
      * @private
      */
-    private addDay() {
+    public addDay() {
         this.model.module = 'SystemHolidayCalendarDays';
         this.model.initialize();
         this.model.addModel(null, null, {systemholidaycalendar_id: this.activeCalendar});

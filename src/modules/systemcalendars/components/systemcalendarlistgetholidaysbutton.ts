@@ -13,7 +13,7 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'system-calendar-list-get-holidays-button',
-    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlistgetholidaysbutton.html',
+    templateUrl: '../templates/systemcalendarlistgetholidaysbutton.html',
 })
 export class SystemCalendarListGetHolidaysButton {
 

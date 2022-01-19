@@ -9,15 +9,15 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'system-calendar-list-days',
-    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlistdays.html',
+    templateUrl: '../templates/systemcalendarlistdays.html',
     providers: [relatedmodels, model]
 })
 export class SystemCalendarListDays implements OnChanges {
 
     @Input() private calendarid: string;
 
-    private componentconfig: any;
-    private listfields: any[];
+    public componentconfig: any;
+    public listfields: any[];
 
     constructor(
         private language: language,

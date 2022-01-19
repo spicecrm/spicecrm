@@ -25,6 +25,7 @@
     "@types/gapi.auth2": "0.0.52",
     "@types/underscore": "^1.10.1",
     "angular-http-server": "^1.8.1",
+    "bpmn-js": "^8.8.3",
     "core-js": "^3.19.2",
     "g": "^2.0.1",
     "google-auth-library": "^1.6.1",
