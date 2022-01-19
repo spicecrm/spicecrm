@@ -365,24 +365,22 @@ class EmailAddress extends SugarBean
         $transactionId = LoggerManager::getLogger()->getTransactionId();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        foreach ($dataAfter as $fieldName => $valueAfter) {
+        if ($dataBefore['opt_in_status'] == $dataAfter['opt_in_status']) return;
 
-            if ($fieldName == 'date_modified' || $fieldName != 'opt_in_status' && $dataBefore[$fieldName] == $valueAfter) continue;
+        $fieldType = $dictionary['email_addr_bean_rel']['fields']['opt_in_status']['type'];
+        $insertData = [
+            'id' => SpiceUtils::createGuid(),
+            'parent_id' => $dataAfter['id'],
+            'transaction_id' => $transactionId,
+            'date_created' => TimeDate::getInstance()->nowDb(),
+            'created_by' => $currentUser->id,
+            'field_name' => 'opt_in_status',
+            'data_type' => $fieldType,
+            'before_value' => $dataBefore['opt_in_status'],
+            'after_value' => $dataAfter['opt_in_status'],
+        ];
 
-            $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields'][$fieldName]['type'];
-            $insertData = [
-                'id' => SpiceUtils::createGuid(),
-                'parent_id' => $dataBefore['id'],
-                'transaction_id' => $transactionId,
-                'date_created' => TimeDate::getInstance()->nowDb(),
-                'created_by' => $currentUser->id,
-                'field_name' => $fieldName,
-                'data_type' => $fieldType,
-                'before_value' => $dataBefore[$fieldName],
-                'after_value' => $valueAfter,
-            ];
-            $db->insertQuery('email_addr_bean_rel_audit', $insertData);
-        }
+        $db->insertQuery('email_addr_bean_rel_audit', $insertData);
     }
 
     /**
