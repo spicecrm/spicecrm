@@ -223,7 +223,7 @@ export class fieldCategoriesTree {
     public choose(level, cat) {
         if(cat.selectable) {
             this.select(level, cat);
-            this.category.emit([...this.levels]);
+            this.category.emit({levels: [...this.levels], category: cat});
             this.levels = [undefined, undefined, undefined, undefined];
         }
     }
