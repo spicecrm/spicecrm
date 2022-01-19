@@ -13,7 +13,7 @@ import {toast} from "../../../services/toast.service";
  */
 @Component({
     selector: 'system-calendar-list-get-holidays-modal',
-    templateUrl: './src/modules/holidaycalendars/templates/systemcalendarlistgetholidaysmodal.html',
+    templateUrl: '../templates/systemcalendarlistgetholidaysmodal.html',
 })
 export class SystemCalendarListGetHolidaysModal {
 
@@ -28,14 +28,14 @@ export class SystemCalendarListGetHolidaysModal {
      *
      * @private
      */
-    private country: string;
+    public country: string;
 
     /**
      * the year to get the holidays for
      *
      * @private
      */
-    private year: string;
+    public year: string;
 
     constructor(
         private backend: backend,
@@ -44,11 +44,11 @@ export class SystemCalendarListGetHolidaysModal {
     ) {
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private load() {
+    public load() {
         this.backend.getRequest(`module/SystemHolidayCalendars/${this.model.id}/calendarific/${this.country}/${this.year}`).subscribe(
             res => {
                 this.close();
