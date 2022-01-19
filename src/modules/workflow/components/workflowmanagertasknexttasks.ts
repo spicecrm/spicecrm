@@ -8,7 +8,7 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'workflow-manager-task-next-tasks',
-    templateUrl: 'src/modules/workflow/templates/workflowmanagertasknexttasks.html'
+    templateUrl: '../templates/workflowmanagertasknexttasks.html'
 })
 
 export class WorkflowManagerTaskNextTasks implements OnInit {

@@ -14,7 +14,7 @@
         <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
     </div>
     <div class="slds-tabs_default__content slds-grow" [ngClass]="{'slds-show' : activeTab=='tasks', 'slds-hide': activeTab!='tasks'}" role="tabpanel" style="min-height: 0">
-        <workflow-manager-detail-tasks [tasks]="modelData.tasks" class="slds-height_full"></workflow-manager-detail-tasks>
+        <workflow-manager-detail-tasks [tasks]="modelData.tasks" class="slds-height_full slds-grid slds-grid--vertical"></workflow-manager-detail-tasks>
     </div>
     <div class="slds-tabs_default__content slds-grow" [ngClass]="{'slds-show' : activeTab=='conditions', 'slds-hide': activeTab!='conditions'}" role="tabpanel" style="min-height: 0">
         <workflow-manager-detail-conditions></workflow-manager-detail-conditions>

@@ -19,18 +19,18 @@ declare var _;
  */
 @Component({
     selector: 'workflow-manager-task-types-email',
-    templateUrl: 'src/modules/workflow/templates/workflowmanagertasktypesemail.html',
+    templateUrl: '../templates/workflowmanagertasktypesemail.html',
 })
 
 export class WorkflowManagerTaskTypesEmail implements OnInit {
     /**
      * holds a list of the available mailboxes
      */
-    public mailboxes: Array<{ value: string, display: string }> = [];
+    public mailboxes: { value: string, display: string }[] = [];
     /**
      * holds a list of the available email templates
      */
-    public emailTemplates: Array<{ id: string, name: string }> = [];
+    public emailTemplates: { id: string, name: string }[] = [];
     /**
      * holds the content option for the email body
      * @private

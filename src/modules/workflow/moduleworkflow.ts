@@ -50,6 +50,9 @@ import /*embed*/ {WorkflowPanelTaskStandard} from "./components/workflowpaneltas
 import /*embed*/ {WorkflowPanelTaskDecision} from "./components/workflowpaneltaskdecision";
 
 import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowcloseworkflowbutton";
+import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
+import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
+import {WorkflowManagerTaskEditModal} from "./components/workflowmanagertaskteditmodal";
 
 @NgModule({
     imports: [
@@ -62,6 +65,8 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         DragDropModule
     ],
     declarations: [
+        WorkflowManagerFieldsdropdown,
+        WorkflowManagerDetailConditionsLine,
         WorkflowManager,
         WorkflowManagerDetail,
         WorkflowManagerTaskTypesModal,
@@ -94,6 +99,7 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowManagerTaskNextTasks,
         WorkflowPanelTaskStandard,
         WorkflowPanelTaskDecision,
+        WorkflowManagerTaskEditModal,
     ]
 })
 export class ModuleWorkflow {

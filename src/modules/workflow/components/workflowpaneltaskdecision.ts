@@ -12,7 +12,7 @@ import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: 'workflow-panel-task-decision',
-    templateUrl: './src/modules/workflow/templates/workflowpaneltaskdecision.html'
+    templateUrl: '../templates/workflowpaneltaskdecision.html'
 
 })
 export class WorkflowPanelTaskDecision {

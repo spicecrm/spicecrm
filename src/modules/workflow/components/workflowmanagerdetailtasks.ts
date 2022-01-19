@@ -1,14 +1,15 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component, Injector, Input, OnChanges} from '@angular/core';
+import {Component, ElementRef, Injector, Input, OnInit, ViewChild} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-import {modal} from "../../../services/modal.service";
-import {WorkflowManagerService} from "../services/workflowmanager.service";
-import {WorkflowTaskType} from "../interfaces/workflow.interfaces";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
-import {PanelElementI} from "../../../include/spicepagebuilder/interfaces/spicepagebuilder.interfaces";
+import {modal} from '../../../services/modal.service';
+import {WorkflowManagerService} from '../services/workflowmanager.service';
+import {WorkflowTaskTypeI} from '../interfaces/workflow.interfaces';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {libloader} from '../../../services/libloader.service';
+import {WorkflowDiagramService} from "../services/workflowdiagram.service";
 
 /**
  * renders the task details view in the workflow manager
@@ -17,17 +18,27 @@ import {PanelElementI} from "../../../include/spicepagebuilder/interfaces/spicep
     selector: 'workflow-manager-detail-tasks',
     templateUrl: '../templates/workflowmanagerdetailtasks.html',
 })
-export class WorkflowManagerDetailTasks {
+export class WorkflowManagerDetailTasks implements OnInit {
 
     /**
      * holds the selected task
      */
     public selectedTask: any;
+    /**
+     * reference to the diagram container
+     */
+    @ViewChild('diagramContainer', {read: ElementRef}) diagramContainer: ElementRef;
+    /**
+     * if true display diagram
+     */
+    public displayDiagram: boolean = false;
 
     constructor(public modal: modal,
                 public model: model,
                 public view: view,
                 public injector: Injector,
+                public libLoader: libloader,
+                public workflowDiagramService: WorkflowDiagramService,
                 public workflowManagerService: WorkflowManagerService) {
     }
 
@@ -49,7 +60,37 @@ export class WorkflowManagerDetailTasks {
         this.model.data.tasks = data;
         this.workflowManagerService.tasks = data;
 
-        this.sortTasksBySequence();
+        this.workflowManagerService.sortTasksBySequence();
+    }
+
+    public ngOnInit() {
+        this.workflowDiagramService.loadDiagram();
+    }
+
+    /**
+     * adds a task
+     */
+    public addTask() {
+
+        this.workflowManagerService.promptTaskType().subscribe((type: WorkflowTaskTypeI) => {
+            if (!type) return;
+
+            const newTask = this.workflowManagerService.generateNewTask(type);
+            this.tasks = [...this.tasks, newTask];
+            this.selectedTask = newTask;
+            this.workflowDiagramService.createDiagramElementFromTask(newTask);
+        });
+    }
+
+    public toggleShowDiagram() {
+
+        this.displayDiagram = !this.displayDiagram;
+        if (this.displayDiagram) {
+
+            this.workflowDiagramService.attachDiagram(this.diagramContainer.nativeElement);
+        } else {
+            this.workflowDiagramService.detachDiagram();
+        }
     }
 
     /**
@@ -61,66 +102,14 @@ export class WorkflowManagerDetailTasks {
     }
 
     /**
-     * sorts the tasks by the sequence
-     */
-    public sortTasksBySequence() {
-        if (this.tasks) {
-            this.tasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-        }
-    }
-
-    /**
-     * adds a task
-     */
-    public addTask() {
-
-        this.modal.openModal('WorkflowManagerTaskTypesModal', true, this.injector).subscribe(modalRef => {
-            modalRef.instance.response.subscribe((type: WorkflowTaskType) => {
-
-                if (!type) return;
-
-                const newTask = {
-                    id: this.model.generateGuid(),
-                    workflowdefinition_id: this.model.id,
-                    deleted: 0,
-                    sequence: this.getNextSequence(),
-                    name: 'new Task',
-                    tasktype: type.id,
-                    decisions: [],
-                    systemactions: [],
-                    primarytask: this.tasks.length == 0
-                };
-                this.tasks = [...this.tasks, newTask];
-                this.selectedTask = newTask;
-            });
-
-        });
-    }
-
-    /**
-     * helper function that loops over the tasks and gets the next available sequence number in an incremtne of 10
-     */
-    public getNextSequence() {
-        let highestSequence = 0;
-
-        for (let task of this.tasks) {
-            if (task.deleted != 1 && parseInt(task.sequence, 10) > highestSequence) {
-                highestSequence = parseInt(task.sequence, 10);
-            }
-        }
-
-        return highestSequence + (10 - highestSequence % 10);
-    }
-
-    /**
      * rearrange the tasks by sequence
      * @param event
      */
     public onDrop(event: CdkDragDrop<any>) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         this.tasks = event.container.data.map((task, index) => {
-           task.sequence = (index + 1) * 10;
-           return task;
+            task.sequence = (index + 1) * 10;
+            return task;
         });
     }
 }

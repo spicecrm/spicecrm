@@ -9,7 +9,7 @@ import {footer} from "../../../services/footer.service";
 
 @Component({
     selector: 'workflow-manager-task-types-system',
-    templateUrl: 'src/modules/workflow/templates/workflowmanagertasktypessystem.html',
+    templateUrl: '../templates/workflowmanagertasktypessystem.html',
 })
 /**
  * handle managing the workflow task system type

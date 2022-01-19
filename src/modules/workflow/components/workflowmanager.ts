@@ -11,6 +11,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {configurationService} from "../../../services/configuration.service";
+import {WorkflowDiagramService} from "../services/workflowdiagram.service";
 
 /**
  * @ignore
@@ -21,8 +22,9 @@ declare var _;
  * manage workflow and tasks definitions
  */
 @Component({
+    selector: 'workflow-manager',
     templateUrl: '../templates/workflowmanager.html',
-    providers: [WorkflowManagerService, model]
+    providers: [WorkflowManagerService, model, WorkflowDiagramService]
 })
 export class WorkflowManager implements OnInit {
     /**
@@ -160,8 +162,7 @@ export class WorkflowManager implements OnInit {
                 this.currentWorkflow.data.isNew = false;
                 this.workflowManagerService.currentModule.workflowDefinitions = this.workflowManagerService.currentModule.workflowDefinitions.map(item => {
                     if (item.id != this.model.id) return item;
-                    item = this.model.data;
-                    return item;
+                    return this.model.data;
                 });
                 this.toast.sendToast('data saved', 'success');
             },
