@@ -1709,12 +1709,14 @@ class SpiceFTSHandler
 
                         if (count($bulkUpdates['deleted']) > 0)
                             $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
-
-                        $bulkUpdates = [
-                            'indexed' => [],
-                            'deleted' => []
-                        ];
                     }
+
+                    // reset the list
+                    $bulkUpdates = [
+                        'indexed' => [],
+                        'deleted' => []
+                    ];
+
                     $bulkItems = [];
                 }
             }
@@ -1728,11 +1730,14 @@ class SpiceFTSHandler
                     if (count($bulkUpdates['deleted']) > 0)
                         $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
-                    $bulkUpdates = [
-                        'indexed' => [],
-                        'deleted' => []
-                    ];
                 }
+
+                // reset the list
+                $bulkUpdates = [
+                    'indexed' => [],
+                    'deleted' => []
+                ];
+
                 $bulkItems = [];
             }
 
@@ -1754,11 +1759,13 @@ class SpiceFTSHandler
                 if (count($bulkUpdates['deleted']) > 0)
                     $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
-                $bulkUpdates = [
-                    'indexed' => [],
-                    'deleted' => []
-                ];
             }
+
+            // reset the list
+            $bulkUpdates = [
+                'indexed' => [],
+                'deleted' => []
+            ];
         }
         echo 'Indexing finished. All done.';
     }
