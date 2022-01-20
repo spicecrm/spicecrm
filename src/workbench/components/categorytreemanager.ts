@@ -176,10 +176,21 @@ export class CategoryTreeManager {
         );
     }
 
+    /**
+     * returns a color class for the node dpending on status and dates
+     *
+     * @param node
+     */
     public getNodeStyle(node){
+        // created to be displayed green
+        if(node.node_status == 'c'){
+            return 'slds-text-color_success';
+        }
+
+        // inactive or not in date range to be displayed red
         let now = new moment();
-        if(node.node_status == 'c' || node.node_status == 'i' || now.isBefore(node.valid_from) || now.isAfter(node.valid_to)){
-            return 'slds-text-color--error';
+        if(node.node_status == 'i' || now.isBefore(node.valid_from) || now.isAfter(node.valid_to)){
+            return 'slds-text-color_error';
         }
 
         return '';
