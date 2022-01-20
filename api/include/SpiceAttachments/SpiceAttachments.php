@@ -158,14 +158,31 @@ class SpiceAttachments
         $filesize = strlen($decodedFile);
         $filemd5 = md5($decodedFile);
 
-        $upload_file->final_move($filemd5);
+        if(!$upload_file->final_move($filemd5)){
+            throw new \SpiceCRM\includes\ErrorHandlers\Exception('Error moving file');
+        }
 
         if ($beanName && $beanId) {
             // if we have an image create a thumbnail
-            $thumbnail = self::createThumbnail($filemd5, $file_mime_type);
+            // $thumbnail = self::createThumbnail($filemd5, $file_mime_type);
 
             // add the attachment
-            $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
+            $db->insertQuery('spiceattachments', [
+                'id' => $guid,
+                'bean_type' => $beanName,
+                'bean_id' => $beanId,
+                'user_id' => $current_user->id,
+                'trdate' => TimeDate::getInstance()->nowDb(),
+                'filename' => $filename,
+                'filesize' => $filesize,
+                'filemd5' => $filemd5,
+                'text' => $file['text'],
+                'thumbnail' => self::createThumbnail($filemd5, $file_mime_type),
+                'deleted' => '0',
+                'file_mime_type' => $file_mime_type,
+                'category_ids' => $file['category_ids']
+            ]);
+            // $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
         }
 
         $attachments[] = [
