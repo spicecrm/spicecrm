@@ -29,7 +29,7 @@ export class ObjectActionModalSaveButton {
     constructor(public language: language, public metadata: metadata, public model: model, public modal: modal,  @Optional()public modalwindow: modalwindow) {}
 
     get displayLabel() {
-        // see if we have a abel configured
+        // see if we have a label configured
         if(this.actionconfig.label) return this.actionconfig.label;
 
         // else standard labels
