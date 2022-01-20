@@ -43,8 +43,9 @@ export class ObjectActionModalSaveButton {
                     modalRef.instance.messagelabel = 'LBL_CHECKING_DUPLICATES';
                     this.model.duplicateCheck(true).subscribe(dupdata => {
                         modalRef.instance.self.destroy();
-                        if (dupdata.length > 0) {
-                            this.model.duplicates = dupdata;
+                        if (dupdata.count > 0) {
+                            this.model.duplicates = dupdata.records;
+                            this.model.duplicatecount = dupdata.count;
                             // this.modalContent.element.nativeElement.scrollTop = 0;
                             // this.showDuplicatesTable = true;
                             this.modal.confirm(this.language.getLabel('MSG_DUPLICATES_FOUND', null,'long'), this.language.getLabel('MSG_DUPLICATES_FOUND')).subscribe(confirmed => {
