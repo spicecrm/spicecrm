@@ -164,7 +164,7 @@ class SpiceAttachments
 
         if ($beanName && $beanId) {
             // if we have an image create a thumbnail
-            // $thumbnail = self::createThumbnail($filemd5, $file_mime_type);
+            $thumbnail = self::createThumbnail($filemd5, $file_mime_type);
 
             // add the attachment
             $db->insertQuery('spiceattachments', [
@@ -177,7 +177,7 @@ class SpiceAttachments
                 'filesize' => $filesize,
                 'filemd5' => $filemd5,
                 'text' => $file['text'],
-                'thumbnail' => self::createThumbnail($filemd5, $file_mime_type),
+                'thumbnail' => $thumbnail,
                 'deleted' => '0',
                 'file_mime_type' => $file_mime_type,
                 'category_ids' => $file['category_ids']
