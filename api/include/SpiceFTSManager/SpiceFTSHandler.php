@@ -994,6 +994,7 @@ class SpiceFTSHandler
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
+        $indexSettings = SpiceFTSUtils::getBeanIndexSettings($bean->_module);
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($bean->_module);
         $searchParts = [];
         foreach ($indexProperties as $indexProperty) {
@@ -1076,6 +1077,34 @@ class SpiceFTSHandler
                 }
             }
         }
+
+
+        // check if we have a duplicate filters for the module defined
+        // if yes add this here to the add filters
+        if (!empty($indexSettings['duplicatefilter'])) {
+            $sysFilter = new SysModuleFilters();
+            $filterForId = $sysFilter->generareElasticFilterForFilterId($indexSettings['duplicatefilter']);
+            if (!empty($filterForId)) {
+                // $addFilters[] = $filterForId;
+                if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
+                        $queryParam['query']['bool']['filter']['bool']['must'][] = $filterForId;
+                } else {
+                    $queryParam['query']['bool']['filter']['bool']['must'] = [$filterForId];
+                }
+            }
+        }
+
+        // process additional filters
+        /*
+        if (is_array($addFilters) && count($addFilters) > 0) {
+            if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
+                foreach ($addFilters as $addFilter)
+                    $queryParam['query']['bool']['filter']['bool']['must'][] = $addFilter;
+            } else {
+                $queryParam['query']['bool']['filter']['bool']['must'] = $addFilters;
+            }
+        }
+        */
 
         // make the search
         LoggerManager::getLogger()->debug(json_encode($queryParam));
