@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {Component, AfterViewInit, ViewContainerRef, ViewChild} from '@angular/core';
+import {Component, AfterViewInit, ViewContainerRef, ViewChild, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {session} from '../../services/session.service';
 import {metadata} from '../../services/metadata.service';
@@ -16,7 +16,7 @@ import {broadcast} from '../../services/broadcast.service';
     selector: 'global-header-tools',
     templateUrl: '../templates/globalheadertools.html'
 })
-export class GlobalHeaderTools implements AfterViewInit {
+export class GlobalHeaderTools implements OnInit{
 
     /**
      * the componentset to be rendered
@@ -29,7 +29,7 @@ export class GlobalHeaderTools implements AfterViewInit {
         });
     }
 
-    public ngAfterViewInit() {
+    public ngOnInit() {
         this.buildTools();
     }
 
