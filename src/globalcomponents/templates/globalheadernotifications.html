@@ -6,7 +6,7 @@
         {{notificationService.unreadCount}}
     </div>
 </div>
-<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; right: 35px; max-height: calc(100vh - 55px);">
+<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; max-height: calc(100vh - 55px);" [ngStyle]="popoverStyle">
     <div class="slds-grid slds-border--bottom">
         <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
             <h2 class="slds-text-heading_small">
