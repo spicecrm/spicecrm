@@ -12,6 +12,7 @@ import {toast} from "./toast.service";
 import {session} from "./session.service";
 import {metadata} from "./metadata.service";
 import {Observable, Subject} from "rxjs";
+import {model} from "./model.service";
 
 /**
  * this service handles loading and managing the user subscriptions
@@ -47,16 +48,17 @@ export class subscription {
      * @param beanId
      * @param beanModule
      */
-    public subscribeBean(beanId: string, beanModule: string): Observable<boolean> {
+    public subscribeBean(model: model): Observable<boolean> {
         let retSubject = new Subject<boolean>();
 
-        this.backend.postRequest(`common/SpiceSubscriptions/${beanModule}/${beanId}`)
+        this.backend.postRequest(`common/SpiceSubscriptions/${model.module}/${model.id}`)
             .subscribe(
                 () => {
-                    this.subscriptions[beanId] = {
-                        bean_id: beanId,
-                        bean_module: beanModule,
-                        user_id: this.session.authData.userId
+                    this.subscriptions[model.id] = {
+                        bean_id: model.id,
+                        bean_module: model.module,
+                        user_id: this.session.authData.userId,
+                        data: model.backendData
                     };
                     retSubject.next(true);
                     retSubject.complete();
