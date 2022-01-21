@@ -210,7 +210,8 @@ import {GlobalHeaderReminders} from "./components/globalheaderreminders";
         GlobalHeaderNotificationsItemChange,
         GlobalHeaderNotificationsItemAssign,
         GlobalHeaderNotificationsItemDelete,
-        GlobalNotificationsListView
+        GlobalNotificationsListView,
+        GlobalCountdown
     ],
     entryComponents: [
         GlobalCopyright,
