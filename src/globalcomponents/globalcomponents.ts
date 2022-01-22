@@ -112,6 +112,8 @@ import /*embed*/ {GlobalHeaderNotificationsItemDelete} from './components/global
 import /*embed*/ {GlobalHeaderNotificationsItemReminder} from './components/globalheadernotificationsitemreminder';
 import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
 import /*embed*/ {GlobalNotificationsListView} from './components/globalnotificationslistview';
+import {GlobalCountdown} from "./components/globalcountdown";
+import {GlobalHeaderReminders} from "./components/globalheaderreminders";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -144,6 +146,7 @@ import /*embed*/ {GlobalNotificationsListView} from './components/globalnotifica
         GlobalHeaderLabelInlineEdit,
         GlobalHeaderWorkbench,
         GlobalHeaderReload,
+        GlobalHeaderReminders,
         GlobalFooter,
         GlobalNavigation,
         GlobalNavigationMenu,

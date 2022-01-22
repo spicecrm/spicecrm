@@ -1,0 +1,39 @@
+<div *ngIf="currentReminders.length > 0">
+    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small slds-p-right--x-small">
+        <div (click)="toggleOpenPopover();" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
+            <system-utility-icon icon="reminder" size="x-small"></system-utility-icon>
+        </div>
+        <div style="top:-5px; right:0px;" class="slds-notification-badge slds-incoming-notification slds-show-notification">
+            {{currentReminders.length}}
+        </div>
+    </div>
+    <section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; max-height: calc(100vh - 55px);" [ngStyle]="popoverStyle">
+        <div class="slds-grid slds-border--bottom">
+            <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
+                <h2 class="slds-text-heading_small">
+                    <system-label label="LBL_CURRENT_REMINDERS"></system-label>
+                </h2>
+            </header>
+            <button (click)="closePopover()" system-title="LBL_CLOSE" class="slds-button slds-button--icon slds-float_right slds-m-right--x-small">
+                <system-button-icon icon="close"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-popover__body slds-p-around_none slds-grow slds-grid slds-grid--vertical" style="min-height: 0">
+            <div *ngIf="currentReminders.length === 0" class="slds-p-around--small">
+                <system-label label="LBL_NO_ENTRIES"></system-label>
+            </div>
+            <ul class="slds-scrollable--y slds-grow" style="min-height: 0">
+                <li *ngFor="let reminder of currentReminders" class="slds-global-header__notification spice-hover-display-children slds-is-relative">
+                    <div class="slds-grid slds-p-around--xx-small slds-grid--vertical-align-center" [system-model-provider]="{module: reminder.module_name, id: reminder.item_id, data: reminder.data}">
+                        <system-icon [module]="reminder.module_name" size="xx-small"></system-icon>
+                        <div class="slds-grow slds-p-right--xx-small" system-model-popover (clicked)="closePopover()">{{reminder.data.summary_text}}</div>
+                        <system-display-datetime [date]="reminder.reminder_date" [displayTime]="false"></system-display-datetime>
+                        <button class="slds-m-left--x-small slds-button slds-button--icon" (click)="deleteReminder(reminder)">
+                            <system-button-icon icon="clear"></system-button-icon>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>
