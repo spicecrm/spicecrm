@@ -331,6 +331,13 @@ export class model implements OnDestroy {
     }
 
     /**
+     * helper to get the proper backend formatted model data
+     */
+    get backendData(){
+        return this.utils.spiceModel2backend(this.module, this.data);
+    }
+
+    /**
      * handle socket event
      * @param event
      * @private
