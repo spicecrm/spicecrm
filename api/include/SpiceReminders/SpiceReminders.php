@@ -33,6 +33,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\KREST\handlers\ModuleHandler;
 use SugarThemeRegistry;
 
 class SpiceReminders
@@ -89,6 +90,8 @@ class SpiceReminders
         $db = DBManagerFactory::getInstance();
         $favArray = [];
 
+        $moduleHandler = new ModuleHandler();
+
         if (!empty($lastN)) {
             $lastNObj = $db->limitQuery("SELECT * FROM spicereminders WHERE user_id='$current_user->id' ORDER BY reminder_date ASC", 0, $lastN);
         } else
@@ -99,57 +102,27 @@ class SpiceReminders
             if (DBManagerFactory::getInstance()->dbType == 'mssql')
                 $lastNRow['reminder_date'] = str_replace('.000', '', $lastNRow['reminder_date']);
 
+            // try to load the bean
             $thisBean = BeanFactory::getBean($lastNRow['bean'], $lastNRow['bean_id']);
+
+            // in case the bean cannot be loaded continue and also delete ther reminder
+            if(!$thisBean){
+                self::removeReminder($lastNRow['bean_id']);
+                continue;
+            }
+
             $summary = $thisBean ? $thisBean->get_summary_text() : '';
             $favArray[] = [
                 'item_id' => $lastNRow['bean_id'],
                 'module_name' => $lastNRow['bean'],
                 'item_summary' => $summary,
                 'item_summary_short' => substr($summary, 0, 15),
-                'reminder_date' => $lastNRow['reminder_date']
+                'reminder_date' => $lastNRow['reminder_date'],
+                'data' => $moduleHandler->mapBean($thisBean, false)
             ];
             $thisBean = null;
             unset($thisBean);
         }
         return $favArray;
-    }
-
-    public static function getReminders($lastN = 10)
-    {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
-        $favArray = [];
-        $lastNObj = $db->limitQuery("SELECT * FROM spicereminders WHERE user_id='$current_user->id' ORDER BY reminder_date ASC ", 0, $lastN);
-        while ($lastNRow = $db->fetchByAssoc($lastNObj)) {
-            if (DBManagerFactory::getInstance()->dbType == 'mssql')
-                $lastNRow['reminder_date'] = str_replace('.000', '', $lastNRow['reminder_date']);
-
-            $thisBean = BeanFactory::getBean($lastNRow['bean'], $lastNRow['bean_id']);
-            if ($thisBean) {
-                $summaryText = $thisBean ? $thisBean->get_summary_text() : '';
-                $favArray[] = [
-                    'bean_id' => $lastNRow['bean_id'],
-                    'bean' => $lastNRow['bean'],
-                    'summary' => (strlen($summaryText) > 15 ? substr($summaryText, 0, 13) . '...' : $summaryText),
-                    'reminder_date' => TimeDate::getInstance()->to_display_date($lastNRow['reminder_date'], false),
-                    'icon' => SugarThemeRegistry::current()->getImage($lastNRow['bean'])
-                ];
-            }
-            $thisBean = null;
-            unset($thisBean);
-        }
-        return $favArray;
-    }
-
-    public static function getReminderCount($lastN = 10)
-    {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
-        $count = 0;
-        $lastNObj = $db->limitQuery("SELECT * FROM spicereminders WHERE user_id='$current_user->id' ORDER BY reminder_date ASC ", 0, $lastN);
-        while ($lastNRow = $db->fetchByAssoc($lastNObj)) {
-            $count++;
-        }
-        return $count;
     }
 }
