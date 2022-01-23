@@ -31,7 +31,7 @@ export class GlobalHeaderNotifications {
     public clickListener: () => void;
 
     /**
-     * the distance fromt eh right frame for the popover
+     * the distance from the right frame for the popover
      */
     public right: number = 0;
 
