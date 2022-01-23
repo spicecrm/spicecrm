@@ -55,6 +55,10 @@ class SysCategoryTreesController
             $row['favorite'] = $row['favorite'] == 1 ? true : false;
             $row['selectable'] = $row['selectable'] == 1 ? true : false;
             $row['parent_id'] = $row['parent_id'] ?: '';
+
+            // decode the json and send as object
+            $row['add_params'] = json_decode(html_entity_decode($row['add_params'])) ?: null;
+
             $return[] = $row;
         }
         return $res->withJson($return);
