@@ -82,7 +82,7 @@ export class CategoryTreeManagerNode implements OnInit{
     }
 
     public ngOnInit() {
-        if(this.node.add_params) this.addParams = JSON.parse(this.node.add_params);
+        this.addParams = this.node.add_params ?? {};
 
         // initialize the data
         this.node.valid_from = moment(this.node.valid_from);
@@ -96,7 +96,7 @@ export class CategoryTreeManagerNode implements OnInit{
      * @private
      */
     public save(){
-        this.node.add_params = JSON.stringify(this.addParams);
+        this.node.add_params = this.addParams;
 
         // format the dates back
         this.node.valid_from = this.node.valid_from.format('YYYY-MM-DD HH:mm:ss');

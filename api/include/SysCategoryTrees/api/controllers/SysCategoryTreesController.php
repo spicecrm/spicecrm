@@ -78,6 +78,8 @@ class SysCategoryTreesController
             $node['valid_from'] = substr($node['valid_from'], 0, 10) . ' 00:00:00' ;
             $node['valid_to'] = substr($node['valid_to'], 0, 10) . ' 23:59:59' ;
 
+            $node['add_params'] = json_encode($node['add_params']);
+
             // run the query
             $db->upsertQuery('syscategorytreenodes', ['id' => $node['id']], $node, true);
         }
