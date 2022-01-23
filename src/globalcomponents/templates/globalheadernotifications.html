@@ -45,10 +45,19 @@
         <div *ngIf="notificationService.isLoading" class="slds-align--absolute-center slds-p-around--small">
             <system-spinner></system-spinner>
         </div>
-        <div class="slds-grid slds-grid--align-center slds-has-divider--top slds-p-around--xx-small">
-            <a (click)="showAllNotifications()" class="slds-text-link">
-                <system-label label="LBL_SHOW_ALL"></system-label>
-            </a>
+        <div class="slds-has-divider--top slds-p-around--x-small slds-size--1-of-1 slds-align--absolute-center">
+            <ul class="slds-list_horizontal slds-has-dividers_right slds-has-block-links">
+                <li class="slds-item">
+                    <a (click)="showAllNotifications()" class="slds-text-link">
+                        <system-label label="LBL_SHOW_ALL"></system-label>
+                    </a>
+                </li>
+                <li *ngIf="hasSubscriptions" class="slds-item">
+                    <a (click)="manageSubscriptions()" class="slds-text-link">
+                        <system-label label="LBL_MANAGE_SUBSCRIPTIONS"></system-label>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
     <ng-template #showSettingsContainer>
