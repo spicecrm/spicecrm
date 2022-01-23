@@ -4,6 +4,8 @@
 import {ChangeDetectorRef, Component, ElementRef, Renderer2} from '@angular/core';
 import {notification} from "../../services/notification.service";
 import {userpreferences} from "../../services/userpreferences.service";
+import {modal} from "../../services/modal.service";
+import {subscription} from "../../services/subscription.service";
 import {Router} from "@angular/router";
 
 /**
@@ -37,6 +39,8 @@ export class GlobalHeaderNotifications {
 
     constructor(public notificationService: notification,
                 public elementRef: ElementRef,
+                public modal: modal,
+                public subscription: subscription,
                 public userPreferences: userpreferences,
                 public cdRef: ChangeDetectorRef,
                 public router: Router,
@@ -155,5 +159,20 @@ export class GlobalHeaderNotifications {
     public showAllNotifications() {
         this.closePopover();
         this.router.navigate(['notifications']);
+    }
+
+    /**
+     * a getter to see if the user has subscriptions
+     */
+    get hasSubscriptions(){
+        return this.subscription.subscriptions.length > 0;
+    }
+
+    /**
+     * opens the modal for the users subscriptions
+     */
+    public manageSubscriptions(){
+        this.closePopover();
+        this.modal.openModal('GlobalSubscriptionsManager')
     }
 }
