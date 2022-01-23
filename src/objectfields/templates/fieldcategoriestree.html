@@ -3,32 +3,28 @@
         <div class="slds-col slds-size--1-of-3 slds-border--right">
             <div *ngFor="let cat of levelCategories(0); trackBy: trackByFn" [ngClass]="{'slds-theme--shade': isCategorySelected(0, cat)}">
                 <div class="slds-truncate slds-p-around--xx-small" [title]="cat.node_name" (mouseenter)="select(0, cat)" (click)="choose(0, cat)">
-                    <span *ngIf="!cat.selectable" style="cursor: default;"><system-label [label]="cat.node_name"></system-label></span>
-                    <span *ngIf="cat.selectable" style="cursor: pointer; text-decoration: underline;"><system-label [label]="cat.node_name"></system-label></span>
+                    <span [ngStyle]="nodeStyle(cat)"><system-label [label]="cat.node_name"></system-label></span>
                 </div>
             </div>
         </div>
         <div class="slds-col slds-size--1-of-3 slds-border--right">
             <div *ngFor="let cat of levelCategories(1); trackBy: trackByFn" [ngClass]="{'slds-theme--shade': isCategorySelected(1, cat)}">
                 <div class="slds-truncate slds-p-around--xx-small" [title]="cat.node_name" (mouseenter)="select(1, cat)" (click)="choose(1, cat)">
-                    <span *ngIf="!cat.selectable" style="cursor: default;"><system-label [label]="cat.node_name"></system-label></span>
-                    <span *ngIf="cat.selectable" style="cursor: pointer; text-decoration: underline;"><system-label [label]="cat.node_name"></system-label></span>
+                    <span [ngStyle]="nodeStyle(cat)"><system-label [label]="cat.node_name"></system-label></span>
                 </div>
             </div>
         </div>
         <div class="slds-col slds-size--1-of-3 slds-border--right">
             <div *ngFor="let cat of levelCategories(2); trackBy: trackByFn" [ngClass]="{'slds-theme--shade': isCategorySelected(2, cat)}">
                 <div class="slds-truncate slds-p-around--xx-small" [title]="cat.node_name" (mouseenter)="select(2, cat)" (click)="choose(2, cat)">
-                    <span *ngIf="!cat.selectable" style="cursor: default;"><system-label [label]="cat.node_name"></system-label></span>
-                    <span *ngIf="cat.selectable" style="cursor: pointer; text-decoration: underline;"><system-label [label]="cat.node_name"></system-label></span>
+                    <span [ngStyle]="nodeStyle(cat)"><system-label [label]="cat.node_name"></system-label></span>
                 </div>
             </div>
         </div>
         <div class="slds-col slds-size--1-of-3">
             <div *ngFor="let cat of levelCategories(3); trackBy: trackByFn" [ngClass]="{'slds-theme--shade': isCategorySelected(3, cat)}">
                 <div class="slds-truncate slds-p-around--xx-small" [title]="cat.node_name" (mouseenter)="select(3, cat)" (click)="choose(3, cat)">
-                    <span *ngIf="!cat.selectable" style="cursor: default;"><system-label [label]="cat.node_name"></system-label></span>
-                    <span *ngIf="cat.selectable" style="cursor: pointer; text-decoration: underline;"><system-label [label]="cat.node_name"></system-label></span>
+                    <span [ngStyle]="nodeStyle(cat)"><system-label [label]="cat.node_name"></system-label></span>
                 </div>
             </div>
         </div>
