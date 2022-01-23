@@ -22,7 +22,9 @@ export class subscription {
     /**
      * holds the notifications
      */
-    public subscriptions: {[key: string]: SubscriptionI} = {};
+    public _subscriptions: {[key: string]: SubscriptionI} = {};
+
+
     public auditedModules: {};
 
     constructor(public backend: backend,
@@ -36,11 +38,18 @@ export class subscription {
     }
 
     /**
+     * a getter to get the array of subscriptions
+     */
+    get subscriptions(){
+        return Object.keys(this._subscriptions).map(subid =>this._subscriptions[subid]);
+    }
+
+    /**
      * return true if the bean id found in subscriptions object
      * @param beanId
      */
     public hasSubscription(beanId: string) {
-        return this.subscriptions?.[beanId];
+        return this._subscriptions?.[beanId];
     }
 
     /**
@@ -54,7 +63,7 @@ export class subscription {
         this.backend.postRequest(`common/SpiceSubscriptions/${model.module}/${model.id}`)
             .subscribe(
                 () => {
-                    this.subscriptions[model.id] = {
+                    this._subscriptions[model.id] = {
                         bean_id: model.id,
                         bean_module: model.module,
                         user_id: this.session.authData.userId,
@@ -81,7 +90,7 @@ export class subscription {
 
         this.backend.deleteRequest(`common/SpiceSubscriptions/${beanModule}/${beanId}`).subscribe(
             () => {
-                delete this.subscriptions[beanId];
+                delete this._subscriptions[beanId];
                 retSubject.next(true);
                 retSubject.complete();
             },
@@ -98,10 +107,10 @@ export class subscription {
      * load the notifications from the configuration service
      */
     public loadSubscriptions() {
-        this.subscriptions = this.configuration.getData('spicesubscriptions');
+        this._subscriptions = this.configuration.getData('spicesubscriptions');
         this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype !== 'loader.completed' || msg.messagedata !== 'loadUserData') return;
-            this.subscriptions = this.configuration.getData('spicesubscriptions');
+            this._subscriptions = this.configuration.getData('spicesubscriptions');
         });
     }
 }
