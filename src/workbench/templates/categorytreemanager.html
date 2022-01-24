@@ -23,7 +23,7 @@
                     <div class="slds-truncate" [ngClass]="getNodeStyle(node)" >{{node.node_name}} ({{node.node_key}})</div>
                     <ng-container *ngIf="selectedTreeNode == node.id">
                         <button class="slds-col--bump-left slds-button slds-button--icon" (click)="editNode(node)"><system-button-icon icon="edit"></system-button-icon></button>
-                        <button class="slds-button slds-button--icon"><system-button-icon icon="delete"></system-button-icon></button>
+                        <button class="slds-button slds-button--icon" (click)="deleteNode(node)"><system-button-icon icon="delete"></system-button-icon></button>
                     </ng-container>
                     <button class="slds-col--bump-left slds-button slds-button--icon" (click)="node.favorite = !node.favorite"><system-button-icon [ngStyle]="{opacity: node.favorite ? 1 : 0.3}" icon="favorite"></system-button-icon></button>
                     <button class="slds-button slds-button--icon" (click)="node.selectable = !node.selectable"><system-button-icon [ngStyle]="{opacity: node.selectable ? 1 : 0.3}" [icon]="node.selectable ? 'linked' : 'unlinked'"></system-button-icon></button>
