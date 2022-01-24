@@ -2114,6 +2114,11 @@ $app_list_strings['relationship_type_dom'] = [
     'colleague' => 'colleague'
 ];
 
+$app_list_strings['questionnaire_languages_dom'] = [
+    'de_DE' => 'Deutsch',
+    'en_us' => 'Englisch (US)'
+];
+
 $app_list_strings['systemdeploymentsystems_type_dom'] = [
     'test' => 'test',
     'stage' => 'stage',
