@@ -48,7 +48,7 @@ class SysCategoryTreesController
         $where = "syscategorytree_id = '{$args['id']}'";
         if(!$params['all']){
             $dbNow = TimeDate::getInstance()->nowDb();
-            $where .= " AND node_status = 'a' AND valid_from <= '{$dbNow}' AND valid_to >= '{$dbNow}'";
+            $where .= " AND deleted = 0 AND node_status = 'a' AND valid_from <= '{$dbNow}' AND valid_to >= '{$dbNow}'";
         }
         $rows = $db->query("SELECT * FROM syscategorytreenodes WHERE $where");
         while ($row = $db->fetchByAssoc($rows)) {
