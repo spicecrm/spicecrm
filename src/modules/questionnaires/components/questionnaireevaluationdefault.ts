@@ -15,6 +15,7 @@ declare var Highcharts: any;
 export class QuestionnaireEvaluationDefault implements AfterViewInit, OnInit {
 
     @Input() public values: any[];
+    @Input() public langOfQuestionnaire;
     public valuesForChart: any[] = [];
     public readonly chartid: string = '';
     @Input() public evaluationType: string;
@@ -22,6 +23,16 @@ export class QuestionnaireEvaluationDefault implements AfterViewInit, OnInit {
     public _individualHeight: number;
     public defaultHeight = 50;
     public chart: any;
+
+    public langDef = {
+        'en_us': {
+            points: 'Points',
+        },
+        'de_DE': {
+            points: 'Punkte',
+        }
+    };
+    public usedLang: any = {};
 
     constructor( public language: language , public modelutilities: modelutilities, public metadata: metadata) {
         this.chartid = this.modelutilities.generateGuid();
@@ -46,6 +57,7 @@ export class QuestionnaireEvaluationDefault implements AfterViewInit, OnInit {
     }
 
     public ngOnInit(): void {
+        this.usedLang = this.langDef[this.langOfQuestionnaire] ? this.langDef[this.langOfQuestionnaire] : this.langDef.en_us;
         for ( let i=0; i < this.values.length; i++ ) this.valuesForChart[i] = [ this.values[i].name, this.values[i].points ];
     }
 
@@ -80,7 +92,7 @@ export class QuestionnaireEvaluationDefault implements AfterViewInit, OnInit {
                     yAxis: {
                         min: 0,
                         title: {
-                            text: this.language.getLabel('LBL_POINTS'),
+                            text: this.usedLang.points,
                             style: {
                                 fontSize: this.usagePrint ? '12px':'12px',
                                 fontFamily: '"Libre Franklin", sans-serif'
