@@ -1673,7 +1673,7 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL ))", 0, $packagesize);
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
             if ($toConsole) {
