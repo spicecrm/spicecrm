@@ -1010,12 +1010,11 @@ $app_list_strings = [
         'email' => 'Email',
         'system' => 'System',
     ],
-    'workflowdefinition_status' => [
-        'active' => 'active',
-        'active_once' => 'active (run once)',
-        'active_scheduled' => 'active scheduled',
-        'active_scheduled_once' => 'active scheduled (run once)',
-        'inactive' => 'inactive'
+    'workflowdefinition_frequency' => [
+        'always' => 'always',
+        'run_once' => 'run once',
+        'scheduled_always' => 'scheduled (run always)',
+        'scheduled_once' => 'scheduled (run once)'
     ],
     'workflowdefinition_precondition' => [
         'a' => 'always',
@@ -2127,5 +2126,16 @@ $app_list_strings['tracking_actions_dom'] = [
 $app_list_strings['workflowtasktypes_type_enum'] = [
     'regular' => 'Regular',
     'gateway_event_based' => 'Gateway Event Based',
-    'gateway_decision' => 'Gateway Decision'
+    'gateway_decision' => 'Gateway Decision',
+    'start' => 'Start Task',
+    'end' => 'End Task',
+];
+
+/**
+ * icons class to use checkout
+ * https://cdn.staticaly.com/gh/bpmn-io/bpmn-font/master/dist/demo.html
+ * prefix will be automatically added (bpmn-icon-)
+ */
+$app_list_strings['workflowtasktypes_icon_enum'] = [
+    'intermediate-event-none' => 'Standard',
 ];
