@@ -510,6 +510,42 @@ class SpiceAttachments
         return $analysis;
     }
 
+    public static function getMissingFiles(): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $missingAttachmentsFiles = [];
+        $missingNoteFiles = [];
+        $missingEmailFiles = [];
+
+        $attachmentsInDb = $db->query('SELECT id, filemd5, bean_type, bean_id, trdate, filename FROM spiceattachments WHERE deleted = 0');
+        while ( $attachment = $db->fetchByAssoc( $attachmentsInDb )) {
+            if ( !file_exists(self::UPLOAD_DESTINATION . ( isset( $attachment['filemd5'] ) ? $attachment['filemd5'] : $attachment['id'] ))) {
+                $missingAttachmentsFiles[] = $attachment;
+            }
+        }
+
+        $notesInDb = $db->query('SELECT id, file_md5, date_entered, file_name FROM notes WHERE file_name IS NOT NULL AND file_name <> "" AND deleted = 0');
+        while ( $note = $db->fetchByAssoc( $notesInDb )) {
+            if ( !file_exists('upload://' . ( isset( $note['file_md5'][0] ) ? $note['file_md5'] : $note['id'] ))) {
+                $missingNoteFiles[] = $note;
+            }
+        }
+
+        $emailsInDb = $db->query('SELECT id, file_md5, date_entered, file_name FROM emails WHERE file_name IS NOT NULL AND file_name <> "" AND deleted = 0');
+        while ( $email = $db->fetchByAssoc( $emailsInDb )) {
+            if ( !file_exists('upload://' . ( isset( $email['file_md5'][0] ) ? $email['file_md5'] : $email['id'] ))) {
+                $missingEmailFiles[] = $email;
+            }
+        }
+
+        return [
+            'attachments' => ['list' => $missingAttachmentsFiles, 'count' => count( $missingAttachmentsFiles )],
+            'notes' => ['list' => $missingNoteFiles, 'count' => count( $missingNoteFiles )],
+            'emails' => ['list' => $missingEmailFiles, 'count' => count( $missingEmailFiles )]
+        ];
+
+    }
+
     /**
      * cleans erroneous records
      *
