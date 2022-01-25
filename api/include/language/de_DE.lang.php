@@ -1818,6 +1818,11 @@ $app_list_strings['relationship_type_dom'] = [
     'colleague' => 'Arbeitskollege'
 ];
 
+$app_list_strings['questionnaire_languages_dom'] = [
+    'de_DE' => 'Deutsch',
+    'en_us' => 'Englisch (US)'
+];
+
 $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
