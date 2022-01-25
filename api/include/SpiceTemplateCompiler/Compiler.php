@@ -368,6 +368,11 @@ class Compiler
         //if(count($operators) != 1) return false;
 
         $conditionparts = explode(' ', $condition);
+
+        //parse pipe if passed in
+
+        $value = $this->handleSubstitution($conditionparts[0], $beans);
+
         switch ($conditionparts[1]) {
             case '>':
                 return $this->getValue($conditionparts[0], $beans, true) > trim($conditionparts[2], "'");
@@ -389,6 +394,9 @@ class Compiler
                 break;
             case '!=':
                 return $this->getValue($conditionparts[0], $beans, true) != trim($conditionparts[2], "'");
+                break;
+            case 'in':
+                return in_array( $value, explode( ",", trim($conditionparts[2], "'")));
                 break;
         }
         return false;
