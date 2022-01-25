@@ -1,7 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, ElementRef, Injector, OnInit, ViewChild} from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';
@@ -12,6 +12,7 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {configurationService} from "../../../services/configuration.service";
 import {WorkflowDiagramService} from "../services/workflowdiagram.service";
+import {view} from "../../../services/view.service";
 
 /**
  * @ignore
@@ -24,7 +25,7 @@ declare var _;
 @Component({
     selector: 'workflow-manager',
     templateUrl: '../templates/workflowmanager.html',
-    providers: [WorkflowManagerService, model, WorkflowDiagramService]
+    providers: [WorkflowManagerService, model, view, WorkflowDiagramService]
 })
 export class WorkflowManager implements OnInit {
     /**
@@ -39,6 +40,14 @@ export class WorkflowManager implements OnInit {
      * true while loading the workflow definitions
      */
     public isLoading: boolean = false;
+    /**
+     * reference to the diagram container
+     */
+    @ViewChild('diagramContainer', {read: ElementRef}) diagramContainer: ElementRef;
+    /**
+     * if true display diagram
+     */
+    public displayDiagram: boolean = false;
 
     constructor(public backend: backend,
                 public metadata: metadata,
@@ -47,8 +56,10 @@ export class WorkflowManager implements OnInit {
                 public modal: modal,
                 public toast: toast,
                 public configurationService: configurationService,
+                public workflowDiagramService: WorkflowDiagramService,
                 public model: model,
                 public injector: Injector,
+                public view: view,
                 public workflowManagerService: WorkflowManagerService) {
     }
 
@@ -108,9 +119,12 @@ export class WorkflowManager implements OnInit {
             if (this.model.isNew) this.removeCurrentWorkflowFromList();
 
         } else {
+
+            this.model.data = this.getCurrentWorkflowData(id);
+
             this.currentWorkflow = {
                 id,
-                data: this.getCurrentWorkflowData(id)
+                data: this.model.data
             };
         }
     }
@@ -123,15 +137,9 @@ export class WorkflowManager implements OnInit {
         this.loadTypes();
         this.modules = this.metadata.getModules().sort();
         this.model.module = 'WorkflowDefinitions';
-    }
-
-    /**
-     * reset selected data
-     */
-    public cancel() {
-        this.currentWorkflowId = undefined;
-        this.workflowManagerService.tasks = undefined;
-        this.model.cancelEdit();
+        this.view.isEditable = true;
+        this.view.setEditMode();
+        this.workflowDiagramService.loadDiagram();
     }
 
     /**
@@ -139,22 +147,32 @@ export class WorkflowManager implements OnInit {
      */
     public addWorkflow() {
 
-        const newId = this.utils.generateGuid();
+        const newWorkflow = {
+            id: this.utils.generateGuid(),
+            isNew: true,
+            workflowdefinition_module: this.currentModule,
+            is_active: 0,
+            frequency: 'always',
+            workflowdefinition_precond: 'a',
+            tasks: [],
+            conditions: []
+        };
 
-        this.workflowManagerService.currentModule.workflowDefinitions.push(
-            {
-                id: newId,
-                isNew: true,
-                workflowdefinition_module: this.currentModule,
-                is_active: 0,
-                frequency: 'always',
-                workflowdefinition_precond: 'a',
-                tasks: [],
-                conditions: []
-            }
-        );
+        this.modal.openModal('WorkflowManagerEditModal', true, this.injector).subscribe(modalRef => {
 
-        this.currentWorkflowId = newId;
+            modalRef.instance.workflowData = newWorkflow;
+
+            modalRef.instance.response.subscribe({
+                next: modalData => {
+                    if (!modalData) return;
+                    this.model.data = modalData;
+                    this.workflowManagerService.currentModule.workflowDefinitions.push(
+                        modalData
+                    );
+                    this.currentWorkflowId = newWorkflow.id;
+                }
+            });
+        });
     }
 
     /**
@@ -196,7 +214,8 @@ export class WorkflowManager implements OnInit {
                     if (res.success) {
                         this.toast.sendToast('Workflow deleted', 'success');
                         this.removeCurrentWorkflowFromList();
-                        this.cancel();
+                        this.currentWorkflowId = undefined;
+                        this.workflowManagerService.tasks = undefined;
                     } else {
                         this.toast.sendToast(res.message, 'error');
                     }
@@ -267,7 +286,37 @@ export class WorkflowManager implements OnInit {
         return this.utils.backendModel2spice('WorkflowDefinitions', {...data});
     }
 
+    /**
+     * open workflow definition edit modal
+     */
     public openEditModal() {
-        this.modal.openModal('WorkflowManagerEditModal', true, this.injector);
+
+        this.modal.openModal('WorkflowManagerEditModal', true, this.injector).subscribe(modalRef => {
+
+            modalRef.instance.workflowData = this.model.data;
+
+            modalRef.instance.response.subscribe({
+                next: modalData => {
+                    if (!modalData) return;
+                    this.model.data = modalData;
+                    this.workflowManagerService.currentModule.workflowDefinitions =
+                        [...this.workflowManagerService.currentModule.workflowDefinitions.filter(w => w.id != modalData.id), modalData];
+                }
+            });
+        });
+    }
+
+    /**
+     * toggle show diagram
+     * @param value
+     */
+    public toggleShowDiagram(value: boolean) {
+
+        if (value) {
+
+            this.workflowDiagramService.attachDiagram(this.diagramContainer.nativeElement);
+        } else {
+            this.workflowDiagramService.detachDiagram();
+        }
     }
 }

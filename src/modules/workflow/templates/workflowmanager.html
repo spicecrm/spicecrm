@@ -38,20 +38,27 @@
         </div>
     </div>
     <div *ngIf="currentModule" class="slds-form-element slds-col--bump-left">
-        <system-checkbox-toggle [(ngModel)]="model.data.is_active" label="LBL_ACTIVE"></system-checkbox-toggle>
+        <system-checkbox-toggle *ngIf="currentWorkflowId" [(ngModel)]="displayDiagram" (ngModelChange)="toggleShowDiagram($event)" label="LBL_DIAGRAM"></system-checkbox-toggle>
+        <system-checkbox-toggle *ngIf="currentWorkflowId" [(ngModel)]="model.data.is_active" label="LBL_ACTIVE"></system-checkbox-toggle>
         <div *ngIf="currentWorkflowId" class="slds-button-group" role="group">
-            <button (click)="openEditModal()" type="button" class="slds-button slds-button--neutral slds-button--icon">
+            <button (click)="openEditModal()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
                 <system-button-icon icon="edit"></system-button-icon>
             </button>
-            <button (click)="cancel()" type="button" class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"></system-label></button>
-            <button (click)="deleteWorkflow()" [disabled]="currentWorkflow.data.isNew" type="button" class="slds-button slds-button--neutral"><system-label label="LBL_DELETE"></system-label></button>
-            <button (click)="save()" type="button" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"></system-label></button>
+            <button (click)="deleteWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <system-button-icon icon="delete"></system-button-icon>
+            </button>
+            <button (click)="save()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <system-button-icon icon="check"></system-button-icon>
+            </button>
         </div>
         <div class="slds-button-group" role="group">
-            <button type="button" class="slds-button slds-button--neutral" (click)="addWorkflow()"><system-label label="LBL_NEW"></system-label></button>
+            <button (click)="addWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <system-button-icon icon="add"></system-button-icon>
+            </button>
         </div>
     </div>
 </div>
 <div *ngIf="currentWorkflowId" system-to-bottom>
-    <workflow-manager-detail [modelData]="currentWorkflow.data" class="slds-height_full spice-display-block"></workflow-manager-detail>
+    <workflow-manager-detail-tasks *ngIf="!displayDiagram" class="slds-height_full spice-display-block"></workflow-manager-detail-tasks>
+    <div #diagramContainer [class.slds-hide]="!displayDiagram" class="slds-grow" style="min-height: 0"></div>
 </div>

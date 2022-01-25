@@ -6,6 +6,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from "../../../services/view.service";
+import {Subject} from "rxjs";
 
 /**
  * modal to edit workflow data
@@ -13,10 +14,14 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'workflow-manager-edit-modal',
     templateUrl: '../templates/workflowmanagereditmodal.html',
-    providers: [view]
+    providers: [view, model]
 })
 
 export class WorkflowManagerEditModal implements OnInit {
+    /**
+     * response observable
+     */
+    public response: Subject<any> = new Subject<any>();
     /**
      * reference of this component
      */
@@ -25,6 +30,10 @@ export class WorkflowManagerEditModal implements OnInit {
      * holds the details fieldset id
      */
     public fieldset: string;
+    /**
+     * holds the details fieldset id
+     */
+    public workflowData: any;
 
     constructor(private workflowManagerService: WorkflowManagerService,
                 private metadata: metadata,
@@ -44,7 +53,7 @@ export class WorkflowManagerEditModal implements OnInit {
      */
     public cancel() {
         this.model.cancelEdit();
-        this.model.startEdit(true, true);
+        this.response.next(undefined);
         this.self.destroy();
     }
 
@@ -52,6 +61,8 @@ export class WorkflowManagerEditModal implements OnInit {
      * emit the selected item
      */
     public confirm() {
+        this.model.endEdit();
+        this.response.next(this.model.data);
         this.self.destroy();
     }
 
@@ -61,13 +72,12 @@ export class WorkflowManagerEditModal implements OnInit {
      */
     private initialize() {
 
-        if (this.model.isNew) {
-            this.model.initialize();
-        } else {
-            this.model.setFields(
-                this.model.utils.backendModel2spice('WorkflowDefinitions', this.model.data)
-            );
-        }
+        this.model.module = 'WorkflowDefinitions';
+        this.model.id = this.workflowData.id;
+        this.model.initialize();
+        this.model.setFields(
+            this.model.utils.backendModel2spice('WorkflowDefinitions', this.workflowData)
+        );
 
         this.model.startEdit();
         this.view.isEditable = true;

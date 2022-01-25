@@ -27,7 +27,6 @@ import /*embed*/ {WorkflowManagerTaskTypesDecision} from "./components/workflowm
 import /*embed*/ {WorkflowManagerTaskTypesSms} from "./components/workflowmanagertasktypessms";
 import /*embed*/ {WorkflowManagerTaskNextTasks} from "./components/workflowmanagertasknexttasks";
 import /*embed*/ {WorkflowManager} from "./components/workflowmanager";
-import /*embed*/ {WorkflowManagerDetail} from "./components/workflowmanagerdetail";
 import /*embed*/ {WorkflowManagerTaskTypesModal} from "./components/workflowmanagertasktypesmodal";
 import /*embed*/ {WorkflowManagerDetailTasks} from "./components/workflowmanagerdetailtasks";
 import /*embed*/ {WorkflowManagerDetailTasksLine} from "./components/workflowmanagerdetailtasksline";
@@ -54,6 +53,7 @@ import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmana
 import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
 import {WorkflowManagerTaskEditModal} from "./components/workflowmanagertaskteditmodal";
 import {WorkflowManagerEditModal} from "./components/workflowmanagereditmodal";
+import {WorkflowManagerTaskTypesStart} from "./components/workflowmanagertasktypesstart";
 
 @NgModule({
     imports: [
@@ -69,7 +69,6 @@ import {WorkflowManagerEditModal} from "./components/workflowmanagereditmodal";
         WorkflowManagerFieldsdropdown,
         WorkflowManagerDetailConditionsLine,
         WorkflowManager,
-        WorkflowManagerDetail,
         WorkflowManagerTaskTypesModal,
         WorkflowManagerDetailTasks,
         WorkflowManagerDetailTasksLine,
@@ -102,6 +101,7 @@ import {WorkflowManagerEditModal} from "./components/workflowmanagereditmodal";
         WorkflowPanelTaskDecision,
         WorkflowManagerTaskEditModal,
         WorkflowManagerEditModal,
+        WorkflowManagerTaskTypesStart
     ]
 })
 export class ModuleWorkflow {

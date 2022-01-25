@@ -1,7 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component, ElementRef, Injector, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Injector, Input} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
@@ -18,20 +18,12 @@ import {WorkflowDiagramService} from "../services/workflowdiagram.service";
     selector: 'workflow-manager-detail-tasks',
     templateUrl: '../templates/workflowmanagerdetailtasks.html',
 })
-export class WorkflowManagerDetailTasks implements OnInit {
+export class WorkflowManagerDetailTasks {
 
     /**
      * holds the selected task
      */
     public selectedTask: any;
-    /**
-     * reference to the diagram container
-     */
-    @ViewChild('diagramContainer', {read: ElementRef}) diagramContainer: ElementRef;
-    /**
-     * if true display diagram
-     */
-    public displayDiagram: boolean = false;
 
     constructor(public modal: modal,
                 public model: model,
@@ -63,10 +55,6 @@ export class WorkflowManagerDetailTasks implements OnInit {
         this.workflowManagerService.sortTasksBySequence();
     }
 
-    public ngOnInit() {
-        this.workflowDiagramService.loadDiagram();
-    }
-
     /**
      * adds a task
      */
@@ -79,17 +67,6 @@ export class WorkflowManagerDetailTasks implements OnInit {
             this.tasks = [...this.tasks, newTask];
             this.selectedTask = newTask;
         });
-    }
-
-    public toggleShowDiagram() {
-
-        this.displayDiagram = !this.displayDiagram;
-        if (this.displayDiagram) {
-
-            this.workflowDiagramService.attachDiagram(this.diagramContainer.nativeElement);
-        } else {
-            this.workflowDiagramService.detachDiagram();
-        }
     }
 
     /**
