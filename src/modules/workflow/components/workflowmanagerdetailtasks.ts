@@ -6,7 +6,7 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {WorkflowManagerService} from '../services/workflowmanager.service';
-import {WorkflowTaskTypeI} from '../interfaces/workflow.interfaces';
+import {WorkflowTaskDefinitionI, WorkflowTaskTypeI} from '../interfaces/workflow.interfaces';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {libloader} from '../../../services/libloader.service';
 import {WorkflowDiagramService} from "../services/workflowdiagram.service";
@@ -56,7 +56,7 @@ export class WorkflowManagerDetailTasks implements OnInit {
      * @param data
      */
     @Input()
-    set tasks(data) {
+    set tasks(data: WorkflowTaskDefinitionI[]) {
         this.model.data.tasks = data;
         this.workflowManagerService.tasks = data;
 
@@ -75,7 +75,7 @@ export class WorkflowManagerDetailTasks implements OnInit {
         this.workflowManagerService.promptTaskType().subscribe((type: WorkflowTaskTypeI) => {
             if (!type) return;
 
-            const newTask = this.workflowManagerService.generateNewTask(type);
+            const newTask = this.workflowManagerService.generateNewTask(type.id);
             this.tasks = [...this.tasks, newTask];
             this.selectedTask = newTask;
         });

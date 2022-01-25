@@ -5,6 +5,7 @@ import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {WorkflowTaskDefinitionI} from "../interfaces/workflow.interfaces";
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
@@ -16,7 +17,7 @@ export class WorkflowManagerDetailTaskTaskpanel {
 
     }
 
-    get tasks() {
+    get tasks(): WorkflowTaskDefinitionI[] {
         return this.workflowManagerService.tasks;
     }
 

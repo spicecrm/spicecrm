@@ -2,7 +2,7 @@
  * @module ModuleWorkflow
  */
 import {Injectable, Injector} from '@angular/core';
-import {WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
+import {WorkflowTaskDefinitionI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {Observable, Subject} from "rxjs";
@@ -15,7 +15,7 @@ export class WorkflowManagerService {
     /**
      * holds the workflow tasks
      */
-    public tasks: any[] = [];
+    public tasks: WorkflowTaskDefinitionI[] = [];
     /**
      * holds the workflow task types
      */
@@ -39,7 +39,7 @@ export class WorkflowManagerService {
     /**
      * @return any[] tasks in model data
      */
-    get modelTasks() {
+    get modelTasks(): WorkflowTaskDefinitionI[] {
         return this.model.getField('tasks');
     }
 
@@ -57,6 +57,8 @@ export class WorkflowManagerService {
                 modalRef.instance.filterTypes = filterTypes;
             }
 
+            modalRef.instance.selectedItem = (!filterTypes ? this.types : this.types.filter(t => filterTypes.indexOf(t.type) > -1))[0];
+
             modalRef.instance.response.subscribe((type: WorkflowTaskTypeI) => {
                 resSubject.next(type);
                 resSubject.complete();
@@ -69,9 +71,9 @@ export class WorkflowManagerService {
 
     /**
      * generate a new task
-     * @param type
+     * @param typeId
      */
-    public generateNewTask(type): any {
+    public generateNewTask(typeId: string): WorkflowTaskDefinitionI {
 
         return {
             id: this.model.generateGuid(),
@@ -79,8 +81,8 @@ export class WorkflowManagerService {
             deleted: 0,
             sequence: this.getNextSequence(),
             name: 'new Task ' + (this.modelTasks.length + 1),
-            tasktype: type.id,
-            decisions: [],
+            tasktype: typeId,
+            type_config: {},
             systemactions: [],
             closetask: false,
             primarytask: this.modelTasks.length == 0
@@ -92,10 +94,9 @@ export class WorkflowManagerService {
      */
     public getNextSequence(): number {
         let highestSequence = 0;
-
         for (let task of this.modelTasks) {
-            if (task.deleted != 1 && parseInt(task.sequence, 10) > highestSequence) {
-                highestSequence = parseInt(task.sequence, 10);
+            if (task.deleted != 1 && task.sequence > highestSequence) {
+                highestSequence = task.sequence;
             }
         }
 

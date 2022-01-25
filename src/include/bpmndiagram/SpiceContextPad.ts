@@ -1,6 +1,8 @@
 /**
  * BPMN custom context pad class to provide custom element actions
  */
+import {WorkflowTaskTypeI} from "../../modules/workflow/interfaces/workflow.interfaces";
+
 export class SpiceContextPad {
 
     $inject = [
@@ -13,6 +15,7 @@ export class SpiceContextPad {
         'eventBus'
     ];
     create; elementFactory; translate; autoPlace; eventBus;
+    static taskTypes: WorkflowTaskTypeI[];
 
     constructor(config, contextPad, create, elementFactory, injector, translate, eventBus) {
         this.create = create;
@@ -27,6 +30,7 @@ export class SpiceContextPad {
 
     getContextPadEntries(element) {
         const { autoPlace, create, elementFactory, translate, eventBus } = this;
+
         /**
          * 0: 'append.end-event'
          * 1: 'append.gateway'
@@ -39,26 +43,39 @@ export class SpiceContextPad {
          */
         return (entries) => {
 
-            if (!entries['append.intermediate-event']) {
-                return entries;
-            }
+            console.log(SpiceContextPad.taskTypes);
 
-            return {
-                'append.intermediate-event': entries['append.intermediate-event'],
-                'append.end-event': entries['append.end-event'],
-                'append.gateway': entries['append.gateway'],
+            // define default actions
+            const customEntries = {
                 'connect': entries.connect,
                 'delete': entries.delete,
-                'append.service-task': {
+                'edit.task': {
                     group: 'model',
                     className: 'bpmn-icon-screw-wrench',
-                    title: translate('Append ServiceTask'),
+                    title: 'edit',
                     action: {
                         click: (event, element) => eventBus.fire('edit.task', element)
                     }
                 }
             };
 
+            // define custom actions from task types
+            SpiceContextPad.taskTypes.forEach(t => {
+                customEntries[t.id] = {
+                    group: 'model',
+                    className: `bpmn-icon-${(t.icon ?? 'intermediate-event-none')}`,
+                    title: `add ${t.name}`,
+                    action: {
+                        click: (event, element) => eventBus.fire(t.id, element)
+                    }
+                };
+            });
+
+            if (!entries['append.intermediate-event']) {
+                return entries;
+            }
+
+            return customEntries;
         };
     }
 }

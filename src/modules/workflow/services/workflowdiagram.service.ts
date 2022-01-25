@@ -7,7 +7,12 @@ import {SpiceContextPad} from "../../../include/bpmndiagram/SpiceContextPad";
 import {libloader} from "../../../services/libloader.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
-import {WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
+import {
+    BpmnDiagramElementI,
+    BpmnDiagramEventI,
+    WorkflowTaskDefinitionI,
+    WorkflowTaskTypeI
+} from "../interfaces/workflow.interfaces";
 import {WorkflowManagerService} from "./workflowmanager.service";
 
 /**
@@ -25,13 +30,46 @@ export class WorkflowDiagramService implements OnDestroy {
      * holds the diagram
      * @private
      */
-    public bpmnJS: any;
+    public bpmnJS: {
+        get(service: string),
+        saveXML(),
+        importXML(xml: string),
+        destroy(),
+        createDiagram(),
+        attachTo(el: any),
+        detach()
+    };
+    /**
+     * holds the diagram listeners to remove them on destroy
+     * @private
+     */
     private diagramListeners: { event: string, listener: any }[] = [];
     /**
-     * help detect if the added diagram element was just a replace
+     * help detect if the added diagram element was just a replacement
      * @private
      */
     private replacingDiagramElement: boolean = false;
+    /**
+     * true while prompting to select the task type
+     * @private
+     */
+    private addingTask: boolean = false;
+    /**
+     * holds the id of the source task in connection add until the adding task process is done
+     * @private
+     */
+    private connectingSourceId: string;
+    /**
+     * holds the diagram element types
+     * @private
+     */
+    private readonly diagramElementTypes: string[] = [
+        'bpmn:IntermediateThrowEvent',
+        'bpmn:EndEvent',
+        'bpmn:StartEvent',
+        'bpmn:ExclusiveGateway',
+        'bpmn:EventBasedGateway'
+    ];
 
     constructor(private libLoader: libloader,
                 private model: model,
@@ -43,18 +81,18 @@ export class WorkflowDiagramService implements OnDestroy {
     /**
      * @return boolean if the diagram library was loaded
      */
-    get diagramLoaded() {
+    get diagramLoaded(): boolean {
         return !!this.bpmnJS;
     }
 
     /**
      * @return the workflow tasks from model data
      */
-    get tasks() {
+    get tasks(): WorkflowTaskDefinitionI[] {
         return this.model.data.tasks;
     }
 
-    set tasks(data) {
+    set tasks(data: WorkflowTaskDefinitionI[]) {
         this.model.data.tasks = data;
         this.workflowManagerService.tasks = data;
 
@@ -64,28 +102,46 @@ export class WorkflowDiagramService implements OnDestroy {
     /**
      * @return the workflow tasks which are not deleted from model data
      */
-    get filteredTasks() {
+    get filteredTasks(): WorkflowTaskDefinitionI[] {
         return this.model.data.tasks.filter(t => t.deleted != 1);
+    }
+
+    /**
+     * destroy the diagram
+     */
+    public ngOnDestroy() {
+        if (this.bpmnJS) {
+            this.bpmnJS.destroy();
+        }
     }
 
     /**
      * adds a task
      */
-    public addTask(diagramEvent, sourceTaskID: string) {
+    public addTask(diagramElement: BpmnDiagramElementI) {
 
-        const filterTypes = diagramEvent.element.type == 'bpmn:ExclusiveGateway' ? ['gateway_event_based', 'gateway_decision'] : ['regular'];
+        const newTask = this.workflowManagerService.generateNewTask(undefined);
+        this.addingTask = true;
+
+        const filterTypes = diagramElement.type == 'bpmn:ExclusiveGateway' ? ['gateway_event_based', 'gateway_decision'] : ['regular'];
         this.workflowManagerService.promptTaskType(filterTypes).subscribe((type: WorkflowTaskTypeI) => {
+
             if (!type) {
-                this.bpmnJS.get('modeling').removeElements([diagramEvent.element]);
+                this.bpmnJS.get('modeling').removeElements([diagramElement]);
                 return;
             }
 
-            const newTask = this.workflowManagerService.generateNewTask(type);
+            newTask.tasktype = type.id;
             this.tasks = [...this.tasks, newTask];
 
-            this.adjustDiagramElementAfterAdd(diagramEvent.element, newTask, type);
-            this.bpmnJS.get('modeling').updateProperties(diagramEvent.element, {taskId: newTask.id});
-            this.adjustTaskFromDiagram(newTask, diagramEvent, sourceTaskID);
+            this.connectTasks(this.connectingSourceId, newTask);
+            this.adjustDiagramElementAfterAdd(diagramElement, newTask, type);
+
+            this.setTaskStartEndFromDiagram(newTask, diagramElement);
+            this.bpmnJS.get('modeling').updateProperties(diagramElement, {taskId: newTask.id});
+
+            this.addingTask = false;
+            this.connectingSourceId = undefined;
         });
     }
 
@@ -146,6 +202,9 @@ export class WorkflowDiagramService implements OnDestroy {
 
             if (!res.loaded) return;
 
+            // todo register listeners
+            SpiceContextPad.taskTypes = this.workflowManagerService.types;
+
             this.bpmnJS = new BpmnJS({
                 moddleExtensions: {
                     spice: {
@@ -157,10 +216,9 @@ export class WorkflowDiagramService implements OnDestroy {
                     }
                 },
                 additionalModules: [{
-                    __init__: ['spicePalette', 'spiceContextPad'], // , 'eventBusLogger'],
+                    __init__: ['spicePalette', 'spiceContextPad'],
                     spicePalette: ['type', SpicePalette],
                     spiceContextPad: ['type', SpiceContextPad]
-                    // ,eventBusLogger: ['type', EventBusLogger]
                 }]
             });
 
@@ -218,18 +276,6 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
-     * set the task related to the diagram element to deleted
-     */
-    public handleDiagramElementDelete(event) {
-        this.tasks.some(task => {
-            if (this.getTaskIDFromEvent(event) == task.id) {
-                task.deleted = 1;
-                return true;
-            }
-        });
-    }
-
-    /**
      * attach the diagram to its container and listen to its events
      * @param diagramContainer
      */
@@ -248,12 +294,15 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
-     * destroy the diagram
+     * set the task related to the diagram element to deleted
      */
-    public ngOnDestroy() {
-        if (this.bpmnJS) {
-            this.bpmnJS.destroy();
-        }
+    public handleDiagramElementDelete(element: BpmnDiagramElementI) {
+        this.tasks.some(task => {
+            if (element.businessObject.$attrs.taskId == task.id) {
+                task.deleted = 1;
+                return true;
+            }
+        });
     }
 
     /**
@@ -262,42 +311,173 @@ export class WorkflowDiagramService implements OnDestroy {
      */
     private listenToShapeChange() {
 
-        let sourceTaskID;
+        this.listenToDiagramEvent('shape.added', (event: BpmnDiagramEventI) =>
+            this.handleDiagramElementAdd(event.element)
+        );
 
-        this.listenToDiagramEvent('shape.added', event => {
+        this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnDiagramEventI) =>
+            this.updateTaskNameFromDiagram(event)
+        );
 
-            if (event.element.type == 'label') return;
+        this.listenToDiagramEvent('shape.removed', (event: BpmnDiagramEventI) =>
+            this.handleDiagramElementDelete(event.element)
+        );
 
-            if (this.replacingDiagramElement) {
-                return this.replacingDiagramElement = false;
+        this.listenToDiagramEvent('connection.added', (event: BpmnDiagramEventI) =>
+            this.handleDiagramConnectionAdd(event.element)
+        );
+
+        this.listenToDiagramEvent('connection.removed', (event: BpmnDiagramEventI) =>
+            this.handleDiagramConnectionDelete(event.element)
+        );
+
+        // edit.task event is a custom event fired in SpiceContextPad class
+        this.listenToDiagramEvent('edit.task', (event: BpmnDiagramEventI, element) =>
+            this.openEditModal(element.businessObject.$attrs.taskId)
+        );
+
+        this.listenToDiagramEvent('drag.ended', () =>
+            this.saveDiagramData()
+        );
+    }
+
+    /**
+     * handle the diagram element add
+     * @private
+     */
+    private handleDiagramElementAdd(event: BpmnDiagramElementI) {
+        if (event.type == 'label') return;
+
+        if (this.replacingDiagramElement) {
+            return this.replacingDiagramElement = false;
+        }
+
+        this.addTask(event);
+
+        this.bpmnJS.get('canvas').zoom('fit-viewport');
+    }
+
+    /**
+     * update the task name from the diagram shape label
+     * @param event
+     * @private
+     */
+    private updateTaskNameFromDiagram(event: BpmnDiagramEventI) {
+        this.filteredTasks.some(task => {
+            if (event.context.element.businessObject.$attrs.taskId == task.id) {
+                task.name = event.context.newLabel;
+                return true;
+            }
+        });
+    }
+
+    /**
+     * set temporary the source task id and connect the tasks
+     * @param element
+     * @private
+     */
+    private handleDiagramConnectionAdd(element: BpmnDiagramElementI) {
+
+        this.connectingSourceId = element.source.businessObject.$attrs.taskId;
+
+        if (this.addingTask) return;
+
+        this.connectTasks(
+            element.source.businessObject.$attrs.taskId,
+            this.tasks.find(t => t.id == element.target.businessObject.$attrs.taskId)
+        );
+    }
+
+    /**
+     * remove the connection in tasks
+     * @param element
+     * @private
+     */
+    private handleDiagramConnectionDelete(element: BpmnDiagramElementI) {
+
+        this.tasks.some(task => {
+
+            if (task.id != element.businessObject.sourceRef.$attrs.taskId) return false;
+
+            const target = this.tasks.find(t => t.id == element.businessObject.targetRef.$attrs.taskId);
+            const sourceTask = this.tasks.find(t => this.getTaskNextTasks(t).some(id => id == task.id));
+
+            if (target) {
+                this.deleteTaskNextTask(task, target.id);
             }
 
-            this.addTask(event, sourceTaskID);
-            sourceTaskID = undefined;
-
-            this.bpmnJS.get('canvas').zoom('fit-viewport');
-
+            if (sourceTask) {
+                this.addTaskNextTask(sourceTask, target.id);
+                this.deleteTaskNextTask(sourceTask, task.id);
+            }
+            return true;
         });
+    }
 
-        this.listenToDiagramEvent('autoPlace.start', event => {
-            sourceTaskID = event.source.businessObject.$attrs.taskId;
+    /**
+     * open edit modal
+     * @param taskId
+     * @private
+     */
+    private openEditModal(taskId) {
+        this.modal.openModal('WorkflowManagerTaskEditModal', true, this.injector).subscribe(ref => {
+            ref.instance.task = this.filteredTasks.find(t => t.id == taskId);
+            ref.instance.response.subscribe(taskData => {
+                this.tasks = [...this.tasks.filter(t => t.id != taskData.id), taskData];
+            });
         });
+    }
 
-        this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', event => {
-            this.updateTaskNameFromDiagram(event);
-        });
+    /**
+     * get task next tasks
+     * @param task
+     * @private
+     */
+    private getTaskNextTasks(task): string[] | { id: string, name: string }[] {
 
-        this.listenToDiagramEvent('shape.removed', event => {
-            this.handleDiagramElementDelete(event);
-        });
+        if (!task.type_config) return [];
 
-        this.listenToDiagramEvent('drag.ended', () => {
-            this.saveDiagramData();
-        });
+        const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
+        return (isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [];
+    }
 
-        this.listenToDiagramEvent('edit.task', (event, element) => {
-            this.openEditModal(element.businessObject.$attrs.taskId);
-        });
+    /**
+     * delete a next task from a task
+     * @param task
+     * @param idToDelete
+     * @private
+     */
+    private deleteTaskNextTask(task: WorkflowTaskDefinitionI, idToDelete: string) {
+
+        if (!task.type_config) return;
+
+        const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
+
+        if (isDecision) {
+            task.type_config.decisions = task.type_config.decisions.filter(d => d.id != idToDelete);
+        } else {
+            task.type_config.next_tasks = task.type_config.next_tasks.filter(id => id != idToDelete);
+        }
+    }
+
+    /**
+     * add a next task to a task
+     * @param task
+     * @param toAdd
+     * @private
+     */
+    private addTaskNextTask(task, toAdd: any) {
+
+        if (!task.type_config) task.type_config = {};
+
+        const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
+
+        const data = {
+            configKey: isDecision ? 'decision' : 'next_tasks',
+            item: isDecision ? {id: toAdd.id, name: toAdd.name} : toAdd.id
+        };
+
+        task.type_config[data.configKey] = [...task.type_config[data.configKey], data.item];
     }
 
     /**
@@ -324,15 +504,6 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
-     *
-     * @param event
-     * @private
-     */
-    private getTaskIDFromEvent(event): string {
-        return event.element.businessObject.$attrs.taskId;
-    }
-
-    /**
      * update the diagram from tasks data
      * @private
      */
@@ -355,13 +526,18 @@ export class WorkflowDiagramService implements OnDestroy {
 
         this.getAllDiagramElements().forEach(element => {
             const task = this.filteredTasks.find(t => t.id == element.businessObject.$attrs.taskId);
-            let taskType = 'bpmn:IntermediateThrowEvent';
-            if (!!task.closetask) taskType = 'bpmn:EndEvent';
-            if (!!task.primarytask) taskType = 'bpmn:StartEvent';
+            const taskType = this.workflowManagerService.getType(task.tasktype).type;
+            let elementType = 'bpmn:IntermediateThrowEvent';
 
-            if (taskType == element.type) return;
+            if (!!task.closetask) elementType = 'bpmn:EndEvent';
+            if (!!task.primarytask) elementType = 'bpmn:StartEvent';
 
-            const newElement = replace.replaceElement(element, {type: taskType});
+            if (taskType == 'gateway_event_based') elementType = 'bpmn:EventBasedGateway';
+            if (taskType == 'gateway_decision') elementType = 'bpmn:ExclusiveGateway';
+
+            if (elementType == element.type) return;
+
+            const newElement = replace.replaceElement(element, {type: elementType});
             modeling.updateProperties(newElement, {taskId: task.id});
         });
     }
@@ -371,8 +547,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private getAllDiagramElements(): any[] {
-        return this.bpmnJS.get('elementRegistry')
-            .filter(e => ['bpmn:IntermediateThrowEvent', 'bpmn:EndEvent', 'bpmn:StartEvent', 'bpmn:ExclusiveGateway', 'bpmn:EventBasedGateway'].indexOf(e.type) > -1);
+        return this.bpmnJS.get('elementRegistry').filter(e => this.diagramElementTypes.indexOf(e.type) > -1);
     }
 
     /**
@@ -386,12 +561,13 @@ export class WorkflowDiagramService implements OnDestroy {
 
         this.filteredTasks.forEach(task => {
 
-            if (!Array.isArray(task.type_config.next_tasks)) return;
+            const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
+
+            if (!isDecision && !Array.isArray(task.type_config?.next_tasks) || (isDecision && !Array.isArray(task.type_config?.decisions))) return;
 
             let nextTaskElement;
 
-            if (this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision') {
-
+            if (isDecision) {
                 task.type_config.decisions.forEach(decision => {
                     nextTaskElement = elements.find(e => e.businessObject.$attrs.taskId == decision.id);
                 });
@@ -401,6 +577,9 @@ export class WorkflowDiagramService implements OnDestroy {
                 });
             }
 
+            if (!nextTaskElement || nextTaskElement.businessObject.incoming.some(sequenceFlow => sequenceFlow.sourceRef.$attrs.taskId == task.id)) {
+                return;
+            }
             const taskElement = elements.find(e => e.businessObject.$attrs.taskId == task.id);
             modeling.connect(taskElement, nextTaskElement);
         });
@@ -410,93 +589,47 @@ export class WorkflowDiagramService implements OnDestroy {
      * adjust task data from diagram element
      * @param newTask
      * @param diagramEvent
-     * @param sourceTaskID
      * @private
      */
-    private adjustTaskFromDiagram(newTask, diagramEvent, sourceTaskID: string) {
+    private setTaskStartEndFromDiagram(newTask: WorkflowTaskDefinitionI, diagramEvent: BpmnDiagramElementI) {
 
-        if (diagramEvent.element.type == 'bpmn:StartEvent') {
+        if (diagramEvent.type == 'bpmn:StartEvent') {
             newTask.primarytask = true;
         }
 
-        if (diagramEvent.element.type == 'bpmn:EndEvent') {
+        if (diagramEvent.type == 'bpmn:EndEvent') {
             newTask.closetask = true;
         }
-
-        if (this.filteredTasks.length <= 1) {
-            this.saveDiagramData();
-            return;
-        }
-
-        this.assignNextTaskFromDiagram(sourceTaskID, newTask);
 
         this.saveDiagramData();
     }
 
     /**
-     * update the task name from the diagram shape label
-     * @param event
+     * assign next task from diagram
      * @private
+     * @param sourceId
+     * @param targetTask
      */
-    private updateTaskNameFromDiagram(event) {
-        this.filteredTasks.some(task => {
-            if (event.context.element.businessObject.$attrs.taskId == task.id) {
-                task.name = event.context.newLabel;
-                return true;
-            }
-        });
-    }
-
-    /**
-     * assign next task
-     * @param sourceTaskID
-     * @param newTask
-     * @private
-     */
-    private assignNextTaskFromDiagram(sourceTaskID, newTask) {
-
-        if (!sourceTaskID) return;
+    private connectTasks(sourceId: string, targetTask: any) {
 
         this.filteredTasks.some(task => {
-            if (sourceTaskID == task.id) {
+            if (sourceId == task.id) {
 
                 if (!task.type_config) task.type_config = {};
 
                 if (this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision') {
 
-                    task.type_config.decisions = [...(task.type_config.decisions ?? []), {id: newTask.id, name: newTask.name}];
+                    task.type_config.decisions = [...(task.type_config.decisions ?? []), {
+                        id: targetTask.id,
+                        name: targetTask.name
+                    }];
 
                 } else {
-                    task.type_config.next_tasks = [...(task.type_config.next_tasks ?? []), newTask.id];
+                    task.type_config.next_tasks = [...(task.type_config.next_tasks ?? []), targetTask.id];
                 }
 
                 return true;
             }
         });
-    }
-
-    private openEditModal(taskId) {
-        this.modal.openModal('WorkflowManagerTaskEditModal', true, this.injector).subscribe(ref => {
-            ref.instance.task = this.filteredTasks.find(t => t.id == taskId);
-            ref.instance.response.subscribe(taskData => {
-                this.tasks = [...this.tasks.filter(t => t.id != taskData.id), taskData];
-            });
-        });
-    }
-}
-
-// tslint:disable-next-line:max-classes-per-file
-class EventBusLogger {
-    $inject = ['eventBus'];
-
-    constructor(eventBus) {
-        const fire = eventBus.fire.bind(eventBus);
-        let counter = 0;
-        eventBus.fire = (type, data) => {
-            fire(type, data);
-            if (['element.hover', 'element.mousemove', 'element.out', 'element.marker.update'].indexOf(type) > -1) {
-                console.log(type, data, counter++);
-            }
-        };
     }
 }

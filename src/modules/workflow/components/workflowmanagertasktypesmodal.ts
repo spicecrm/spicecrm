@@ -42,7 +42,6 @@ export class WorkflowManagerTaskTypesModal {
     constructor(private workflowManagerService: WorkflowManagerService) {
         this.responseSubject = new Subject<any>();
         this.response = this.responseSubject.asObservable();
-        this.selectedItem = this.workflowManagerService.types[0];
     }
 
     /**

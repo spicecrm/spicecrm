@@ -1,7 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, Injector, OnInit} from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';
@@ -35,6 +35,10 @@ export class WorkflowManager implements OnInit {
      * holds the current workflow definition
      */
     public currentWorkflow: { id: string, data: any };
+    /**
+     * true while loading the workflow definitions
+     */
+    public isLoading: boolean = false;
 
     constructor(public backend: backend,
                 public metadata: metadata,
@@ -44,6 +48,7 @@ export class WorkflowManager implements OnInit {
                 public toast: toast,
                 public configurationService: configurationService,
                 public model: model,
+                public injector: Injector,
                 public workflowManagerService: WorkflowManagerService) {
     }
 
@@ -66,7 +71,10 @@ export class WorkflowManager implements OnInit {
      * @param val
      */
     set currentModule(val: string) {
+
         this.currentWorkflow = undefined;
+
+        this.model.resetData();
 
         if (!val) {
             this.workflowManagerService.currentModule = undefined;
@@ -114,6 +122,7 @@ export class WorkflowManager implements OnInit {
     public ngOnInit() {
         this.loadTypes();
         this.modules = this.metadata.getModules().sort();
+        this.model.module = 'WorkflowDefinitions';
     }
 
     /**
@@ -137,7 +146,8 @@ export class WorkflowManager implements OnInit {
                 id: newId,
                 isNew: true,
                 workflowdefinition_module: this.currentModule,
-                workflowdefinition_status: 'active',
+                is_active: 0,
+                frequency: 'always',
                 workflowdefinition_precond: 'a',
                 tasks: [],
                 conditions: []
@@ -145,7 +155,6 @@ export class WorkflowManager implements OnInit {
         );
 
         this.currentWorkflowId = newId;
-
     }
 
     /**
@@ -199,7 +208,11 @@ export class WorkflowManager implements OnInit {
         });
     }
 
-    public getModuleFields(module: string): Array<{ name: string, label: string }> {
+    /**
+     * get module fields
+     * @param module
+     */
+    public getModuleFields(module: string): { name: string, label: string }[] {
 
         return _.toArray(this.metadata.getModuleFields(module))
             .map(f => ({
@@ -233,8 +246,14 @@ export class WorkflowManager implements OnInit {
      * @private
      */
     public getWorkflowDefinitions() {
+
+        this.isLoading = true;
+
         this.backend.getRequest('module/WorkflowDefinitions/' + this.currentModule).subscribe(wfd => {
+            this.isLoading = false;
             this.workflowManagerService.currentModule.workflowDefinitions = wfd;
+        }, () => {
+            this.isLoading = false;
         });
     }
 
@@ -246,5 +265,9 @@ export class WorkflowManager implements OnInit {
     public getCurrentWorkflowData(id: string): any {
         const data = this.workflowManagerService.currentModule.workflowDefinitions.find(data => data.id == id);
         return this.utils.backendModel2spice('WorkflowDefinitions', {...data});
+    }
+
+    public openEditModal() {
+        this.modal.openModal('WorkflowManagerEditModal', true, this.injector);
     }
 }

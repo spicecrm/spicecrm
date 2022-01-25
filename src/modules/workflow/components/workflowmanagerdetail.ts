@@ -22,7 +22,7 @@ export class WorkflowManagerDetail implements OnChanges {
     /**
      * holds the active tab
      */
-    public activeTab: 'tasks' | 'conditions' | 'details' = 'details';
+    public activeTab: 'tasks' | 'conditions' = 'tasks';
     /**
      * holds the fieldset id
      */
