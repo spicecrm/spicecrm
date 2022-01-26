@@ -3,6 +3,14 @@
  */
 import {WorkflowTaskTypeI} from "../../modules/workflow/interfaces/workflow.interfaces";
 
+export const diagramElementTypes: {taskType: string, bpmnType: string}[] = [
+    {taskType: 'regular' , bpmnType: 'bpmn:IntermediateThrowEvent'},
+    {taskType: 'end' , bpmnType: 'bpmn:EndEvent'},
+    {taskType: 'start' , bpmnType: 'bpmn:StartEvent'},
+    {taskType: 'gateway_decision' , bpmnType: 'bpmn:ExclusiveGateway'},
+    {taskType: 'gateway_event_based' , bpmnType: 'bpmn:EventBasedGateway'}
+];
+
 export class SpiceContextPad {
 
     $inject = [
@@ -43,8 +51,6 @@ export class SpiceContextPad {
          */
         return (entries) => {
 
-            console.log(SpiceContextPad.taskTypes);
-
             // define default actions
             const customEntries = {
                 'connect': entries.connect,
@@ -60,13 +66,33 @@ export class SpiceContextPad {
             };
 
             // define custom actions from task types
-            SpiceContextPad.taskTypes.forEach(t => {
-                customEntries[t.id] = {
+            SpiceContextPad.taskTypes.forEach(type => {
+
+                const createShape = () => elementFactory.createShape({ type: diagramElementTypes.find(e => e.taskType == type.type).bpmnType });
+
+                const createTaskType = event => {
+                    if (autoPlace) {
+                        autoPlace.append(element, createShape());
+                        eventBus.fire(type.id, element);
+                    } else {
+                        appendTaskTypeStart(event);
+                    }
+                };
+
+                const appendTaskTypeStart = event => {
+                    const shape = elementFactory.createShape({ type: diagramElementTypes.find(e => e.taskType == type.type).bpmnType });
+                    create.start(event, shape, {source: element});
+                    eventBus.fire(type.id, element);
+
+                };
+
+                customEntries[type.id] = {
                     group: 'model',
-                    className: `bpmn-icon-${(t.icon ?? 'intermediate-event-none')}`,
-                    title: `add ${t.name}`,
+                    className: `bpmn-icon-${(type.icon ?? 'intermediate-event-none')}`,
+                    title: `add ${type.name}`,
                     action: {
-                        click: (event, element) => eventBus.fire(t.id, element)
+                        click: createTaskType,
+                        dragstart: appendTaskTypeStart
                     }
                 };
             });

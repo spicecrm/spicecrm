@@ -20,8 +20,4 @@ export class WorkflowManagerDetailTaskTaskpanel {
     get tasks(): WorkflowTaskDefinitionI[] {
         return this.workflowManagerService.tasks;
     }
-
-    get previousTaskDisabled() {
-        return this.model.data && this.model.data.primarytask;
-    }
 }

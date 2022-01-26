@@ -1,18 +1,13 @@
 /**
  * @module ModuleWorkflow
  */
-import {Injectable, Injector, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {SpicePalette} from "../../../include/bpmndiagram/SpicePalette";
-import {SpiceContextPad} from "../../../include/bpmndiagram/SpiceContextPad";
+import {diagramElementTypes, SpiceContextPad} from "../../../include/bpmndiagram/SpiceContextPad";
 import {libloader} from "../../../services/libloader.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
-import {
-    BpmnDiagramElementI,
-    BpmnDiagramEventI,
-    WorkflowTaskDefinitionI,
-    WorkflowTaskTypeI
-} from "../interfaces/workflow.interfaces";
+import {BpmnDiagramElementI, BpmnDiagramEventI, WorkflowTaskDefinitionI} from "../interfaces/workflow.interfaces";
 import {WorkflowManagerService} from "./workflowmanager.service";
 
 /**
@@ -63,19 +58,13 @@ export class WorkflowDiagramService implements OnDestroy {
      * holds the diagram element types
      * @private
      */
-    private readonly diagramElementTypes: string[] = [
-        'bpmn:IntermediateThrowEvent',
-        'bpmn:EndEvent',
-        'bpmn:StartEvent',
-        'bpmn:ExclusiveGateway',
-        'bpmn:EventBasedGateway'
-    ];
+    private readonly diagramElementTypes: {taskType: string, bpmnType: string}[] = [];
 
     constructor(private libLoader: libloader,
                 private model: model,
                 private modal: modal,
-                private workflowManagerService: WorkflowManagerService,
-                private injector: Injector) {
+                private workflowManagerService: WorkflowManagerService) {
+        this.diagramElementTypes = diagramElementTypes;
     }
 
     /**
@@ -100,13 +89,6 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
-     * @return the workflow tasks which are not deleted from model data
-     */
-    get filteredTasks(): WorkflowTaskDefinitionI[] {
-        return this.model.data.tasks.filter(t => t.deleted != 1);
-    }
-
-    /**
      * destroy the diagram
      */
     public ngOnDestroy() {
@@ -116,51 +98,11 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
-     * adds a task
-     */
-    public addTask(diagramElement: BpmnDiagramElementI) {
-
-        const newTask = this.workflowManagerService.generateNewTask(undefined);
-        this.addingTask = true;
-
-        const filterTypes = diagramElement.type == 'bpmn:ExclusiveGateway' ? ['gateway_event_based', 'gateway_decision'] : ['regular'];
-        this.workflowManagerService.promptTaskType(filterTypes).subscribe((type: WorkflowTaskTypeI) => {
-
-            if (!type) {
-                this.bpmnJS.get('modeling').removeElements([diagramElement]);
-                return;
-            }
-
-            newTask.tasktype = type.id;
-            this.tasks = [...this.tasks, newTask];
-
-            this.connectTasks(this.connectingSourceId, newTask);
-            this.adjustDiagramElementAfterAdd(diagramElement, newTask, type);
-
-            this.setTaskStartEndFromDiagram(newTask, diagramElement);
-            this.bpmnJS.get('modeling').updateProperties(diagramElement, {taskId: newTask.id});
-
-            this.addingTask = false;
-            this.connectingSourceId = undefined;
-        });
-    }
-
-    /**
      * adjust the diagram element after adding the new task
      */
-    public adjustDiagramElementAfterAdd(element, task, type) {
+    public updateElementLabel(element: BpmnDiagramElementI, label: string) {
 
-        const modeling = this.bpmnJS.get('modeling');
-        if (type.type == 'gateway_event_based') {
-            const replace = this.bpmnJS.get('replace');
-            this.replacingDiagramElement = true;
-            const newElement = replace.replaceElement(element, {type: 'bpmn:EventBasedGateway'});
-            modeling.updateProperties(newElement, {taskId: task.id});
-            modeling.updateLabel(newElement, task.name);
-
-        } else {
-            modeling.updateLabel(element, task.name);
-        }
+        this.bpmnJS.get('modeling').updateLabel(element, label);
     }
 
     /**
@@ -170,24 +112,12 @@ export class WorkflowDiagramService implements OnDestroy {
 
         if (!this.bpmnJS) return;
 
-        const elementRegistry = this.bpmnJS.get('elementRegistry');
-        const modeling = this.bpmnJS.get('modeling');
-        const elementFactory = this.bpmnJS.get('elementFactory');
+
         const elements = this.getAllDiagramElements();
 
-        this.filteredTasks.filter(t => !elements.some(e => e.businessObject.$attrs.taskId == t.id))
+        this.workflowManagerService.filteredTasks.filter(t => !elements.some(e => e.businessObject.$attrs.taskId == t.id))
             .forEach(task => {
-                let type = 'bpmn:IntermediateThrowEvent';
-                if (!!task.closetask) type = 'bpmn:EndEvent';
-                if (!!task.primarytask) type = 'bpmn:StartEvent';
-
-                const newShape = elementFactory.createShape({type});
-                const process = elementRegistry.get('Process_1');
-                modeling.updateProperties(newShape, {taskId: task.id});
-
-                const tap = 100, x = (type == 'bpmn:StartEvent' ? tap : (tap * this.filteredTasks.length)) + tap,
-                    y = (tap * this.filteredTasks.length);
-                modeling.createElements(newShape, {x, y}, process);
+                this.createDiagramElement(task)
             });
 
         this.saveDiagramData();
@@ -202,7 +132,6 @@ export class WorkflowDiagramService implements OnDestroy {
 
             if (!res.loaded) return;
 
-            // todo register listeners
             SpiceContextPad.taskTypes = this.workflowManagerService.types;
 
             this.bpmnJS = new BpmnJS({
@@ -242,7 +171,7 @@ export class WorkflowDiagramService implements OnDestroy {
     public cleanupDiagramElements() {
 
         const deleteElements = this.getAllDiagramElements()
-            .filter(e => !this.filteredTasks.some(t => t.id == e.businessObject.$attrs.taskId) || this.tasks.some(t => t.deleted == 1 && t.id == e.businessObject.$attrs.taskId));
+            .filter(e => !this.workflowManagerService.filteredTasks.some(t => t.id == e.businessObject.$attrs.taskId) || this.tasks.some(t => t.deleted == 1 && t.id == e.businessObject.$attrs.taskId));
 
         if (deleteElements.length == 0) return;
 
@@ -258,7 +187,7 @@ export class WorkflowDiagramService implements OnDestroy {
 
         this.getAllDiagramElements().forEach(e => {
 
-            const task = this.filteredTasks.find(task => e.businessObject.$attrs.taskId == task.id);
+            const task = this.workflowManagerService.filteredTasks.find(task => e.businessObject.$attrs.taskId == task.id);
 
             if (!task) return;
 
@@ -305,14 +234,35 @@ export class WorkflowDiagramService implements OnDestroy {
         });
     }
 
+    private createDiagramElement(task: WorkflowTaskDefinitionI) {
+
+        // todo adjust
+        const elementRegistry = this.bpmnJS.get('elementRegistry');
+        const modeling = this.bpmnJS.get('modeling');
+        const elementFactory = this.bpmnJS.get('elementFactory');
+
+        const type = this.diagramElementTypes.find(t => this.workflowManagerService.getType(task.tasktype).type == t.taskType).bpmnType ?? 'bpmn:IntermediateThrowEvent';
+        const newShape = elementFactory.createShape({type});
+        const process = elementRegistry.get('Process_1');
+
+        modeling.updateProperties(newShape, {taskId: task.id});
+
+        const tap = 100,
+            x = (type == 'bpmn:StartEvent' ? tap : (tap * this.workflowManagerService.filteredTasks.length)) + tap,
+            y = (tap * this.workflowManagerService.filteredTasks.length);
+        modeling.createElements(newShape, {x, y}, process);
+    }
+
     /**
      * listen to shape change
      * @private
      */
     private listenToShapeChange() {
 
-        this.listenToDiagramEvent('shape.added', (event: BpmnDiagramEventI) =>
-            this.handleDiagramElementAdd(event.element)
+        this.workflowManagerService.types.forEach(type =>
+            this.listenToDiagramEvent(type.id, (event: BpmnDiagramEventI, element: BpmnDiagramElementI) =>
+                this.handleDiagramElementAdd(element, event.type)
+            )
         );
 
         this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnDiagramEventI) =>
@@ -333,7 +283,7 @@ export class WorkflowDiagramService implements OnDestroy {
 
         // edit.task event is a custom event fired in SpiceContextPad class
         this.listenToDiagramEvent('edit.task', (event: BpmnDiagramEventI, element) =>
-            this.openEditModal(element.businessObject.$attrs.taskId)
+            this.workflowManagerService.openEditModal(element.businessObject.$attrs.taskId)
         );
 
         this.listenToDiagramEvent('drag.ended', () =>
@@ -345,14 +295,30 @@ export class WorkflowDiagramService implements OnDestroy {
      * handle the diagram element add
      * @private
      */
-    private handleDiagramElementAdd(event: BpmnDiagramElementI) {
-        if (event.type == 'label') return;
+    private handleDiagramElementAdd(element: BpmnDiagramElementI, type: string) {
+
+        if (element.type == 'label') return;
 
         if (this.replacingDiagramElement) {
             return this.replacingDiagramElement = false;
         }
 
-        this.addTask(event);
+
+        const newTask = this.workflowManagerService.generateNewTask(type);
+        this.addingTask = true;
+
+        this.tasks = [...this.tasks, newTask];
+
+        this.bpmnJS.get('modeling').updateProperties(element, {taskId: newTask.id});
+        this.createDiagramElement(newTask);
+
+        this.connectTasks(this.connectingSourceId, newTask);
+        this.updateElementLabel(element, newTask.name);
+
+        this.bpmnJS.get('modeling').updateProperties(element, {taskId: newTask.id});
+
+        this.addingTask = false;
+        this.connectingSourceId = undefined;
 
         this.bpmnJS.get('canvas').zoom('fit-viewport');
     }
@@ -363,7 +329,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private updateTaskNameFromDiagram(event: BpmnDiagramEventI) {
-        this.filteredTasks.some(task => {
+        this.workflowManagerService.filteredTasks.some(task => {
             if (event.context.element.businessObject.$attrs.taskId == task.id) {
                 task.name = event.context.newLabel;
                 return true;
@@ -411,20 +377,6 @@ export class WorkflowDiagramService implements OnDestroy {
                 this.deleteTaskNextTask(sourceTask, task.id);
             }
             return true;
-        });
-    }
-
-    /**
-     * open edit modal
-     * @param taskId
-     * @private
-     */
-    private openEditModal(taskId) {
-        this.modal.openModal('WorkflowManagerTaskEditModal', true, this.injector).subscribe(ref => {
-            ref.instance.task = this.filteredTasks.find(t => t.id == taskId);
-            ref.instance.response.subscribe(taskData => {
-                this.tasks = [...this.tasks.filter(t => t.id != taskData.id), taskData];
-            });
         });
     }
 
@@ -510,36 +462,8 @@ export class WorkflowDiagramService implements OnDestroy {
     private updateDiagramFromTasks() {
         this.cleanupDiagramElements();
         this.createMissingDiagramElements();
-        this.updateDiagramElementsType();
         this.updateDiagramElementsConnection();
         this.updateDiagramElementsLabel();
-    }
-
-    /**
-     * update diagram elements type
-     * @private
-     */
-    private updateDiagramElementsType() {
-
-        const replace = this.bpmnJS.get('replace');
-        const modeling = this.bpmnJS.get('modeling');
-
-        this.getAllDiagramElements().forEach(element => {
-            const task = this.filteredTasks.find(t => t.id == element.businessObject.$attrs.taskId);
-            const taskType = this.workflowManagerService.getType(task.tasktype).type;
-            let elementType = 'bpmn:IntermediateThrowEvent';
-
-            if (!!task.closetask) elementType = 'bpmn:EndEvent';
-            if (!!task.primarytask) elementType = 'bpmn:StartEvent';
-
-            if (taskType == 'gateway_event_based') elementType = 'bpmn:EventBasedGateway';
-            if (taskType == 'gateway_decision') elementType = 'bpmn:ExclusiveGateway';
-
-            if (elementType == element.type) return;
-
-            const newElement = replace.replaceElement(element, {type: elementType});
-            modeling.updateProperties(newElement, {taskId: task.id});
-        });
     }
 
     /**
@@ -547,7 +471,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private getAllDiagramElements(): any[] {
-        return this.bpmnJS.get('elementRegistry').filter(e => this.diagramElementTypes.indexOf(e.type) > -1);
+        return this.bpmnJS.get('elementRegistry').filter(e => this.diagramElementTypes.some(t => t.bpmnType == e.type));
     }
 
     /**
@@ -559,7 +483,7 @@ export class WorkflowDiagramService implements OnDestroy {
         const modeling = this.bpmnJS.get('modeling');
         const elements = this.getAllDiagramElements();
 
-        this.filteredTasks.forEach(task => {
+        this.workflowManagerService.filteredTasks.forEach(task => {
 
             const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
 
@@ -586,25 +510,6 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
-     * adjust task data from diagram element
-     * @param newTask
-     * @param diagramEvent
-     * @private
-     */
-    private setTaskStartEndFromDiagram(newTask: WorkflowTaskDefinitionI, diagramEvent: BpmnDiagramElementI) {
-
-        if (diagramEvent.type == 'bpmn:StartEvent') {
-            newTask.primarytask = true;
-        }
-
-        if (diagramEvent.type == 'bpmn:EndEvent') {
-            newTask.closetask = true;
-        }
-
-        this.saveDiagramData();
-    }
-
-    /**
      * assign next task from diagram
      * @private
      * @param sourceId
@@ -612,7 +517,7 @@ export class WorkflowDiagramService implements OnDestroy {
      */
     private connectTasks(sourceId: string, targetTask: any) {
 
-        this.filteredTasks.some(task => {
+        this.workflowManagerService.filteredTasks.some(task => {
             if (sourceId == task.id) {
 
                 if (!task.type_config) task.type_config = {};

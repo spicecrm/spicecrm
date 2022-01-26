@@ -29,6 +29,22 @@ export class WorkflowManagerService {
     }
 
     /**
+     * @return WorkflowTaskDefinitionI[] the workflow tasks which are not deleted from model data
+     */
+    get filteredTasks(): WorkflowTaskDefinitionI[] {
+        return this.model.data.tasks.filter(t => t.deleted != 1);
+    }
+
+    /**
+     * get model tasks
+     * @return any[] tasks in model data
+     */
+    get modelTasks(): WorkflowTaskDefinitionI[] {
+        return this.model.getField('tasks');
+    }
+
+    /**
+     * get type data
      * @return WorkflowTaskTypeI
      * @param id
      */
@@ -37,10 +53,37 @@ export class WorkflowManagerService {
     }
 
     /**
-     * @return any[] tasks in model data
+     * get start type data
+     * @return WorkflowTaskTypeI
      */
-    get modelTasks(): WorkflowTaskDefinitionI[] {
-        return this.model.getField('tasks');
+    public getStartType(): WorkflowTaskTypeI {
+        return this.types.find(t => t.type == 'start');
+    }
+
+    /**
+     * true if each task is followed by an end task
+     * @return boolean
+     */
+    public hasAllEndTasks(): boolean {
+        return !this.tasks.some(t =>
+            (!Array.isArray(t.type_config.next_tasks) || t.type_config.next_tasks.length == 0) && this.getType(t.tasktype).type != 'end'
+        );
+    }
+
+    /**
+     * true if the workflow has a start task
+     * @return boolean
+     */
+    public hasStartTask(): boolean {
+        return !!this.tasks.find(t => !!t.tasktype && this.getStartType()?.id == t.tasktype);
+    }
+
+    /**
+     * get end type data
+     * @return WorkflowTaskTypeI
+     */
+    public getEndTask(): WorkflowTaskTypeI {
+        return this.types.find(t => t.type == 'end');
     }
 
     /**
@@ -82,10 +125,7 @@ export class WorkflowManagerService {
             sequence: this.getNextSequence(),
             name: 'new Task ' + (this.modelTasks.length + 1),
             tasktype: typeId,
-            type_config: {},
-            systemactions: [],
-            closetask: false,
-            primarytask: this.modelTasks.length == 0
+            type_config: {}
         };
     }
 
@@ -111,5 +151,18 @@ export class WorkflowManagerService {
             this.modelTasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
             this.tasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
         }
+    }
+
+    /**
+     * open edit modal
+     * @param taskId
+     */
+    public openEditModal(taskId) {
+        this.modal.openModal('WorkflowManagerTaskEditModal', true, this.injector).subscribe(ref => {
+            ref.instance.task = this.filteredTasks.find(t => t.id == taskId);
+            ref.instance.response.subscribe(taskData => {
+                this.tasks = [...this.tasks.filter(t => t.id != taskData.id), taskData];
+            });
+        });
     }
 }

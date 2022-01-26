@@ -28,13 +28,35 @@ export interface WorkflowTaskDefinitionI {
     tasktype: string;
     type_config: {
         decisions?: {id: string, name: string }[],
-        next_tasks?: string[]
+        next_tasks?: string[],
+        /**
+         * could be any generic configuration for the task type
+         */
+        [key: string]: any
     }
-    systemactions: [];
     sequence: number;
-    primarytask: boolean;
-    closetask: boolean;
+    ishidden?: boolean;
+    allowcomment?: boolean;
+    prevclosedreq?: boolean;
+    assigntouser?: string;
+    assignparent?: string;
+    assignclass?: string;
+    assignparams?: string;
+    timetostart?: string;
+    timetocomplete?: string;
+    timetoalert?: string;
+    timetoescalate?: string;
     deleted: boolean | 1 | 0;
+    /**
+     * check language dom workflowdefinition_assgintotypes
+     * '1' => 'User',
+     * '2' => 'Workgroup',
+     * '3' => 'User assigned to Parent Object',
+     * '4' => 'Manager of User assigned to Parent Object',
+     * '5' => 'system routine',
+     * '6' => 'Creator'
+     */
+    assigntype?:  '1' | '2' | '3' | '4' | '5' | '6';
 }
 
 /**
@@ -57,7 +79,8 @@ export interface BpmnDiagramElementI {
  * bpmn-js diagram event structure
  */
 export interface BpmnDiagramEventI {
-    element: BpmnDiagramElementI,
+    element?: BpmnDiagramElementI;
+    type: string;
     context: {
         element: BpmnDiagramElementI,
         newLabel: string

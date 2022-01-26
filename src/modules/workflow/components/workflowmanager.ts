@@ -116,11 +116,14 @@ export class WorkflowManager implements OnInit {
         if (!id) {
 
             this.currentWorkflow = undefined;
+            this.workflowManagerService.tasks = [];
             if (this.model.isNew) this.removeCurrentWorkflowFromList();
 
         } else {
 
+            this.model.id = id;
             this.model.data = this.getCurrentWorkflowData(id);
+            this.workflowManagerService.tasks = this.model.data.tasks;
 
             this.currentWorkflow = {
                 id,
@@ -166,6 +169,7 @@ export class WorkflowManager implements OnInit {
                 next: modalData => {
                     if (!modalData) return;
                     this.model.data = modalData;
+                    this.model.id = newWorkflow.id;
                     this.workflowManagerService.currentModule.workflowDefinitions.push(
                         modalData
                     );
@@ -215,7 +219,7 @@ export class WorkflowManager implements OnInit {
                         this.toast.sendToast('Workflow deleted', 'success');
                         this.removeCurrentWorkflowFromList();
                         this.currentWorkflowId = undefined;
-                        this.workflowManagerService.tasks = undefined;
+                        this.workflowManagerService.tasks = [];
                     } else {
                         this.toast.sendToast(res.message, 'error');
                     }
@@ -317,6 +321,20 @@ export class WorkflowManager implements OnInit {
             this.workflowDiagramService.attachDiagram(this.diagramContainer.nativeElement);
         } else {
             this.workflowDiagramService.detachDiagram();
+        }
+    }
+
+    /**
+     * toggle activating the workflow
+     * @param value
+     */
+    public toggleActive(value: boolean) {
+
+        this.model.data.is_active = value;
+
+        if (value && !this.workflowManagerService.hasAllEndTasks()) {
+            this.toast.sendToast(this.language.getLabel('MSG_MISSING_WORKFLOW_ENDING'), 'warning');
+            this.model.data.is_active = false;
         }
     }
 }

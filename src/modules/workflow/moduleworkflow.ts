@@ -54,6 +54,7 @@ import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workfl
 import {WorkflowManagerTaskEditModal} from "./components/workflowmanagertaskteditmodal";
 import {WorkflowManagerEditModal} from "./components/workflowmanagereditmodal";
 import {WorkflowManagerTaskTypesStart} from "./components/workflowmanagertasktypesstart";
+import {WorkflowManagerTaskTypesEnd} from "./components/workflowmanagertasktypesend";
 
 @NgModule({
     imports: [
@@ -101,7 +102,8 @@ import {WorkflowManagerTaskTypesStart} from "./components/workflowmanagertasktyp
         WorkflowPanelTaskDecision,
         WorkflowManagerTaskEditModal,
         WorkflowManagerEditModal,
-        WorkflowManagerTaskTypesStart
+        WorkflowManagerTaskTypesStart,
+        WorkflowManagerTaskTypesEnd
     ]
 })
 export class ModuleWorkflow {

@@ -1,7 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component, Injector, Input} from '@angular/core';
+import {Component, Injector, Input, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
@@ -18,7 +18,7 @@ import {WorkflowDiagramService} from "../services/workflowdiagram.service";
     selector: 'workflow-manager-detail-tasks',
     templateUrl: '../templates/workflowmanagerdetailtasks.html',
 })
-export class WorkflowManagerDetailTasks {
+export class WorkflowManagerDetailTasks implements OnInit {
 
     /**
      * holds the selected task
@@ -53,6 +53,21 @@ export class WorkflowManagerDetailTasks {
         this.workflowManagerService.tasks = data;
 
         this.workflowManagerService.sortTasksBySequence();
+    }
+
+    public ngOnInit() {
+        if (!this.workflowManagerService.hasStartTask()) {
+            this.generateStartTask();
+        }
+    }
+
+    private generateStartTask() {
+        const startTask = this.workflowManagerService.generateNewTask(
+            this.workflowManagerService.getStartType().id
+        );
+        this.workflowManagerService.tasks.push(startTask);
+        this.model.data.tasks.push(startTask);
+        this.workflowManagerService.openEditModal(startTask.id);
     }
 
     /**
