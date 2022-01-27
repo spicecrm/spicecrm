@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, forwardRef, Input, OnInit, Output
+    Component, ElementRef, EventEmitter, forwardRef, HostBinding, HostListener, Input, OnInit, Output
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
@@ -25,6 +25,8 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      */
     public onChange: (value: string) => void;
     public onTouched: () => void;
+
+    // @Output() public blur = new EventEmitter();
 
     /**
      * the internal value
@@ -64,7 +66,7 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      */
     public autocompletebreaker: string = '';
 
-    constructor(public modelutilities: modelutilities) {
+    constructor(public modelutilities: modelutilities,private elementRef: ElementRef) {
 
     }
 
@@ -115,6 +117,10 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      */
     public writeValue(value: any): void {
         this._value = value;
+    }
+
+    public emitBlur() {
+        this.elementRef.nativeElement.dispatchEvent(new Event('blur',{bubbles: true}));
     }
 
 }
