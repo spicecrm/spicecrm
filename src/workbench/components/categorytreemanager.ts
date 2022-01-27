@@ -272,6 +272,7 @@ export class CategoryTreeManager {
             modalref.instance.action.subscribe(add => {
                 if (add) {
                     node.node_name = upd.node_name;
+                    node.node_description = upd.node_description;
                     node.node_key = upd.node_key;
                     node.selectable = upd.selectable;
                     node.favorite = upd.favorite;
@@ -338,6 +339,7 @@ export class CategoryTreeManager {
         let node = {
             id: this.utils.generateGuid(),
             node_name: null,
+            node_description: null,
             node_key: this.getNextNumber(this.selectedTreeNodes[level - 1]),
             parent_id: level == 0 ? null : this.selectedTreeNodes[level - 1],
             syscategorytree_id: this.activeTree,
