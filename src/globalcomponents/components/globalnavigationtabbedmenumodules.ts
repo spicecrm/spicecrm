@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {
-    AfterViewInit, Component, QueryList, ViewChildren, ElementRef
+    AfterViewInit, Component, QueryList, ViewChildren, ElementRef, Renderer2, HostListener
 } from '@angular/core';
 import {Router} from "@angular/router";
 import {metadata} from '../../services/metadata.service';
@@ -27,6 +27,13 @@ import {navigation} from '../../services/navigation.service';
 })
 export class GlobalNavigationTabbedMenuModules {
 
+    /**
+     * add a control-space listener to open the quick launcher
+     * @param event
+     */
+    @HostListener('document:keydown.control.m')quickLaunch(event: KeyboardEvent) {
+        this.toggleMenu();
+    }
 
     /**
      * the menu items derived from the role
@@ -54,7 +61,24 @@ export class GlobalNavigationTabbedMenuModules {
      */
    public initialized: boolean = false;
 
-    constructor(public metadata: metadata,public broadcast: broadcast,public navigation: navigation,public router: Router,public language: language,public recent: recent,public favorite: favorite,public elementRef: ElementRef) {
+    /**
+     * reference to the keyboard listener
+     *
+     * @private
+     */
+   private keyboardListener: any;
+
+    constructor(
+        public metadata: metadata,
+        public broadcast: broadcast,
+        public navigation: navigation,
+        public router: Router,
+        public language: language,
+        public recent: recent,
+        public favorite: favorite,
+        public elementRef: ElementRef,
+        public renderer: Renderer2
+    ) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -115,6 +139,20 @@ export class GlobalNavigationTabbedMenuModules {
     }
 
     /**
+     * toggles the menu open and close
+     *
+     * @private
+     */
+    private toggleMenu(){
+       if(this.isopen){
+           this.closeMenu();
+       } else {
+           this.openMenu();
+           this.elementRef.nativeElement.focus();
+       }
+    }
+
+    /**
      * open the list when the mouse enters
      */
    public openMenu() {
@@ -127,6 +165,10 @@ export class GlobalNavigationTabbedMenuModules {
         }
 
         this.activeModule = this.navigation.activeModule;
+
+        if(!this.keyboardListener) {
+            this.keyboardListener = this.renderer.listen('document', 'keyup', (event) => this.handleKeyBoardEvent(event));
+        }
     }
 
    public setActiveModule(event: MouseEvent, module) {
@@ -139,10 +181,32 @@ export class GlobalNavigationTabbedMenuModules {
      */
    public closeMenu() {
         this.isopen = false;
+
+        // if the keyboard listener is there cancel the listener
+        if(this.keyboardListener) {
+            this.keyboardListener();
+            this.keyboardListener = null;
+        }
+    }
+
+    private handleKeyBoardEvent(e: KeyboardEvent){
+        let i = this.menuItems.indexOf(this.activeModule);
+        console.log(e);
+        switch(e.key){
+            case 'ArrowDown':
+                this.activeModule = this.menuItems[i + 1 >= this.menuItems.length ? 0 : i +1 ];
+                break;
+            case 'ArrowUp':
+                this.activeModule = this.menuItems[i - 1 < 0 ? this.menuItems.length - 1 : i -1];
+                break;
+            case 'Enter':
+                this.navigateTo(this.activeModule);
+                break;
+        }
     }
 
    public navigateTo(module) {
-        this.isopen = false;
+        this.closeMenu();
         this.router.navigate(['/module/' + module]);
     }
 }
