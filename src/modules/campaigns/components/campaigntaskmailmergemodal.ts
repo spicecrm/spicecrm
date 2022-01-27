@@ -44,6 +44,14 @@ export class CampaignTaskMailMergeModal {
      */
     public limit: number = 100;
 
+    /**
+     * the count of inactive items from the target group
+     *
+     * @public
+     *
+     */
+    public inactiveCount: number = 0;
+
     public loading: boolean = false;
 
     /**
@@ -99,9 +107,11 @@ export class CampaignTaskMailMergeModal {
             start: this.start - 1,
             limit: this.limit
         }).subscribe(
-            pdf => {
-                this.pdf = pdf.content;
-                let blob = this.datatoBlob(atob(pdf.content));
+            results => {
+                this.pdf = results.content;
+                // send the inactiveCount to be displayed in front-end
+                this.inactiveCount = results.inactiveCount;
+                let blob = this.datatoBlob(atob(results.content));
                 this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                 this.loading = false;
             },
@@ -141,7 +151,7 @@ export class CampaignTaskMailMergeModal {
     /**
      * download the pdf locally
      *
-     * @private
+     * @public
      */
     public download() {
         // generate a link element for the download

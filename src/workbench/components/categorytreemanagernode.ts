@@ -23,7 +23,7 @@ declare var moment: any;
     selector: 'categgory-tree-manager-node',
     templateUrl: '../templates/categorytreemanagernode.html',
 })
-export class CategoryTreeManagerNode implements OnInit{
+export class CategoryTreeManagerNode implements OnInit {
 
 
     /**
@@ -70,19 +70,22 @@ export class CategoryTreeManagerNode implements OnInit{
     /**
      * checks that we can save
      */
-    get canSave(){
-        return this.node.node_name && this.node.node_key && this.keyUnique;
+    get canSave() {
+        // regex for numeric check
+        let lkey = new RegExp(/([1-9][0-9]*)|0/);
+
+        return this.node.node_name && this.node.node_key && lkey.test(this.node.node_key) && this.keyUnique;
     }
 
     /**
      * checks that the key is unique
      */
-    get keyUnique(){
+    get keyUnique() {
         return this.node.node_key && this.nodes.filter(n => n.node_key == this.node.node_key && n.id != this.node.id).length == 0;
     }
 
     public ngOnInit() {
-        if(this.node.add_params) this.addParams = JSON.parse(this.node.add_params);
+        this.addParams = this.node.add_params ?? {};
 
         // initialize the data
         this.node.valid_from = moment(this.node.valid_from);
@@ -95,8 +98,8 @@ export class CategoryTreeManagerNode implements OnInit{
      *
      * @private
      */
-    public save(){
-        this.node.add_params = JSON.stringify(this.addParams);
+    public save() {
+        this.node.add_params = this.addParams;
 
         // format the dates back
         this.node.valid_from = this.node.valid_from.format('YYYY-MM-DD HH:mm:ss');
@@ -110,7 +113,7 @@ export class CategoryTreeManagerNode implements OnInit{
      *
      * @private
      */
-    public close(){
+    public close() {
         this.action.emit(false);
         this.self.destroy();
     }

@@ -53,6 +53,12 @@
                     </div>
                 </div>
             </div>
+            <div>
+                <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
+                <div class="slds-form-element__control">
+                    <textarea  class="slds-textarea" [(ngModel)]="node.node_description"></textarea>
+                </div>
+            </div>
         </div>
         <div *ngIf="addParamsComponent">
             <system-dynamic-component [component]="addParamsComponent" [componentattributes]="{addParams: addParams}"></system-dynamic-component>

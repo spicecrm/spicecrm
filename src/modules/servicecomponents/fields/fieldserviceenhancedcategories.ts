@@ -37,10 +37,9 @@ export class fieldServiceEnhancedCategories extends fieldCategories {
         super.chooseCategories(selected);
 
         // set the queue
-        let addParams = JSON.parse(selected.category.add_params);
-        if(addParams.servicequeue_id){
+        if(selected.category?.add_params?.servicequeue_id){
             this.queue.module = 'ServiceQueues';
-            this.queue.id = addParams.servicequeue_id;
+            this.queue.id = selected.category.add_params.servicequeue_id;
             this.queue.getData().subscribe(loaded => {
                 this.model.setFields({
                     servicequeue_id: this.queue.id,

@@ -1,0 +1,34 @@
+<system-modal size="small">
+    <system-modal-header (close)="cancel()">
+        <system-label *ngIf="addOrEdit === 'a'" label="LBL_ADD_LINK"></system-label>
+        <system-label *ngIf="addOrEdit === 'e'" label="LBL_EDIT_LINK"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-form-element__control" [ngClass]="{'slds-has-error':!!errorLabel}">
+            <label class="slds-form-element__label">
+                <abbr class="slds-required">*</abbr>
+                <system-label label="LBL_URL"></system-label></label>
+            <system-input-text [(ngModel)]="url" (ngModelChange)="checkUrl()"></system-input-text>
+            <div *ngIf="errorLabel" class="slds-form-element__help"><system-label [label]="errorLabel"></system-label></div>
+        </div>
+        <div class="slds-form-element__control slds-m-top--small">
+            <label class="slds-form-element__label"><system-label label="LBL_TEXT"></system-label> (<system-label label="LBL_OPTIONAL"></system-label>)</label>
+            <system-input-text [(ngModel)]="text" (blur)="changeTextIsUrl()"></system-input-text>
+        </div>
+        <div class="slds-m-top--medium slds-form-element__control">
+            <system-checkbox [(ngModel)]="toTrack">
+                <system-label label="LBL_CLICKS_TRACKABLE"></system-label>
+            </system-checkbox>
+        </div>
+        <!--div class="slds-m-top--medium slds-form-element__control">
+            <system-checkbox [(ngModel)]="generateShortUrl">
+                <system-label label="LBL_GENERATE_SHORTURL"></system-label>
+            </system-checkbox>
+        </div-->
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" (click)="submit()" [disabled]="!canSubmit">{{language.getLabel('LBL_OK')}}</button>
+    </system-modal-footer>
+</system-modal>
+
