@@ -251,4 +251,8 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
         this.eventListener.forEach( item => item() );
     }
 
+    public onModalEscX() {
+        this.close();
+    }
+
 }
