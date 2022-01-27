@@ -498,6 +498,7 @@ class AdminController
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $extension = "<?php \n //WARNING: The contents of this file are auto-generated\n";
             $extension.= "use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;\n";
+            $extension.= "use SpiceCRM\includes\SugarObjects\VardefManager;\n";
             $extpath = "modules/$module/$path";
             $module_install = 'custom/Extension/' . $extpath;
             $shouldSave = false;
@@ -513,7 +514,7 @@ class AdminController
                         } else {
                             $file = file_get_contents($module_install . '/' . $entry);
                             LoggerManager::getLogger()->debug(get_class($this) . "->merge_files(): found {$module_install}{$entry}");
-                            $extension .= "\n" . str_replace(['<?php', '?>', '<?PHP', '<?', 'use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;'], ['', '', '', '', ''], $file);
+                            $extension .= "\n" . str_replace(['<?php', '?>', '<?PHP', '<?', 'use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;', 'use SpiceCRM\includes\SugarObjects\VardefManager;'], ['', '', '', '', '', ''], $file);
                         }
                     }
                 }

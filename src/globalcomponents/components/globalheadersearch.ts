@@ -3,8 +3,8 @@
  */
 import {
     Component,
-    ElementRef,
-    Renderer2,
+    ElementRef, HostListener,
+    Renderer2, ViewChild, ViewContainerRef,
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
@@ -17,14 +17,24 @@ import {broadcast} from '../../services/broadcast.service';
     providers: [fts]
 })
 export class GlobalHeaderSearch {
-   public showRecent: boolean = false;
-   public searchTimeOut: any = undefined;
-   public searchTerm: string = '';
-   public searchTermUntrimmed: string = '';
-   public clickListener: any;
-    public _searchmodule: string = 'all';
-   public searchresults: any[] = [];
 
+    @ViewChild('searchfield', {read: ViewContainerRef, static: false}) public serachfield: ViewContainerRef;
+
+    public showRecent: boolean = false;
+    public searchTimeOut: any = undefined;
+    public searchTerm: string = '';
+    public searchTermUntrimmed: string = '';
+    public clickListener: any;
+    public _searchmodule: string = 'all';
+    public searchresults: any[] = [];
+
+    /**
+     * add a control-space listener to open the quick launcher
+     * @param event
+     */
+    @HostListener('document:keydown.control.s')quickLaunch(event: KeyboardEvent) {
+        this.serachfield.element.nativeElement.focus();
+    }
 
     get searchmodule() {
         return this._searchmodule;
@@ -51,19 +61,19 @@ export class GlobalHeaderSearch {
         return window.innerWidth >= 768;
     }
 
-   public onFocus() {
+    public onFocus() {
         this.showRecent = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-   public closePopup() {
+    public closePopup() {
         this.clickListener();
         this.showRecent = false;
         this.searchTerm = '';
         this.searchTermUntrimmed = '';
     }
 
-   public doSearch() {
+    public doSearch() {
         this.searchTerm = this.searchTermUntrimmed.trim();
         if (this.searchTerm.length && this.searchTerm !== this.fts.searchTerm) {
             // start the search
@@ -71,7 +81,7 @@ export class GlobalHeaderSearch {
         }
     }
 
-   public executeSearch() {
+    public executeSearch() {
         let searchmodules = [];
         if (this.showModuleSelector && this._searchmodule != 'all') searchmodules.push(this._searchmodule);
 
@@ -91,7 +101,7 @@ export class GlobalHeaderSearch {
         // this.broadcast.broadcastMessage('fts.search', this.searchTerm);
     }
 
-   public clearSearchTerm() {
+    public clearSearchTerm() {
         // cancel any ongoing search
         if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
@@ -101,7 +111,7 @@ export class GlobalHeaderSearch {
         this.fts.searchTerm = '';
     }
 
-   public search(_e) {
+    public search(_e) {
         // make sure the popup is open
         this.showRecent = true;
 
@@ -143,7 +153,7 @@ export class GlobalHeaderSearch {
      * @param searchTerm
      * @private
      */
-   public searchTermsValid(searchTerm) {
+    public searchTermsValid(searchTerm) {
         let config = this.configuration.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
         let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
@@ -158,7 +168,7 @@ export class GlobalHeaderSearch {
         }
     }
 
-   public selected(event) {
+    public selected(event) {
         this.showRecent = false;
         this.clearSearchTerm();
     }

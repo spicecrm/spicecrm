@@ -196,8 +196,9 @@ class CampaignTasksController
             throw new NotFoundException('CampaignTask not found');
         }
 
+        $mailMergeResult = $campaignTask->mailMerge($getParam['start'], $getParam['limit']);
         // generate the PDF
-        return $res->withJson(['content' => base64_encode($campaignTask->mailMerge($getParam['start'], $getParam['limit']))]);
+        return $res->withJson(['content' => base64_encode($mailMergeResult['pdfcontent']), 'inactiveCount' => $mailMergeResult['inactiveCount']]);
     }
 
     /**
