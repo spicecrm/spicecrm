@@ -11,18 +11,22 @@ export const diagramElementTypes: {taskType: string, bpmnType: string}[] = [
     {taskType: 'gateway_event_based' , bpmnType: 'bpmn:EventBasedGateway'}
 ];
 
+/**
+ * context pad provider class to customize the actions on shape popover
+ */
 export class SpiceContextPad {
 
-    $inject = [
-        'config',
-        'contextPad',
-        'create',
-        'elementFactory',
-        'injector',
-        'translate',
-        'eventBus'
-    ];
+    /**
+     * bpmn-js services to be injected by bpmn-js script
+     */
+    $inject = [ 'config', 'contextPad', 'create', 'elementFactory', 'injector', 'translate', 'eventBus' ];
+    /**
+     * bpmn-js services variables
+     */
     create; elementFactory; translate; autoPlace; eventBus;
+    /**
+     * static array of the task types filled from the workflow diagram service
+     */
     static taskTypes: WorkflowTaskTypeI[];
 
     constructor(config, contextPad, create, elementFactory, injector, translate, eventBus) {
@@ -36,10 +40,16 @@ export class SpiceContextPad {
         contextPad.registerProvider(this);
     }
 
-    getContextPadEntries(element) {
+    /**
+     * override default method to customize the actions
+     * @param element
+     */
+    public getContextPadEntries(element): (entries) => any {
+
         const { autoPlace, create, elementFactory, translate, eventBus } = this;
 
         /**
+         * the default entries
          * 0: 'append.end-event'
          * 1: 'append.gateway'
          * 2: 'append.append-task'
@@ -72,24 +82,25 @@ export class SpiceContextPad {
 
                 const createTaskType = event => {
                     if (autoPlace) {
-                        autoPlace.append(element, createShape());
-                        eventBus.fire(type.id, element);
+                        const newShape = createShape();
+                        eventBus.fire(type.id, newShape);
+                        autoPlace.append(element, newShape);
                     } else {
                         appendTaskTypeStart(event);
                     }
                 };
 
                 const appendTaskTypeStart = event => {
-                    const shape = elementFactory.createShape({ type: diagramElementTypes.find(e => e.taskType == type.type).bpmnType });
-                    create.start(event, shape, {source: element});
-                    eventBus.fire(type.id, element);
+                    const newShape = createShape();
+                    eventBus.fire(type.id, newShape);
+                    create.start(event, newShape, {source: element});
 
                 };
 
                 customEntries[type.id] = {
                     group: 'model',
                     className: `bpmn-icon-${(type.icon ?? 'intermediate-event-none')}`,
-                    title: `add ${type.name}`,
+                    title: `add ${type.name} task`,
                     action: {
                         click: createTaskType,
                         dragstart: appendTaskTypeStart

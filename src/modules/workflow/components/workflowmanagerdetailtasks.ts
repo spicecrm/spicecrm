@@ -38,7 +38,7 @@ export class WorkflowManagerDetailTasks implements OnInit {
      * @return the workflow tasks from model data
      */
     get tasks() {
-        return this.model.data.tasks;
+        return this.model.data.tasks ?? [];
     }
 
     /**
@@ -61,12 +61,15 @@ export class WorkflowManagerDetailTasks implements OnInit {
         }
     }
 
+    /**
+     * generate start task
+     * @private
+     */
     private generateStartTask() {
         const startTask = this.workflowManagerService.generateNewTask(
             this.workflowManagerService.getStartType().id
         );
         this.workflowManagerService.tasks.push(startTask);
-        this.model.data.tasks.push(startTask);
         this.workflowManagerService.openEditModal(startTask.id);
     }
 

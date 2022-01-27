@@ -1,7 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component, ElementRef, Injector, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Injector, OnInit, ViewChild} from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';
@@ -27,7 +27,7 @@ declare var _;
     templateUrl: '../templates/workflowmanager.html',
     providers: [WorkflowManagerService, model, view, WorkflowDiagramService]
 })
-export class WorkflowManager implements OnInit {
+export class WorkflowManager implements OnInit, AfterViewInit {
     /**
      * holds the system modules
      */
@@ -47,7 +47,7 @@ export class WorkflowManager implements OnInit {
     /**
      * if true display diagram
      */
-    public displayDiagram: boolean = false;
+    public displayDiagram: boolean = true;
 
     constructor(public backend: backend,
                 public metadata: metadata,
@@ -83,7 +83,7 @@ export class WorkflowManager implements OnInit {
      */
     set currentModule(val: string) {
 
-        this.currentWorkflow = undefined;
+        this.currentWorkflowId = undefined;
 
         this.model.resetData();
 
@@ -113,23 +113,27 @@ export class WorkflowManager implements OnInit {
      */
     set currentWorkflowId(id: string) {
 
+        this.model.id = id;
+
         if (!id) {
 
-            this.currentWorkflow = undefined;
+            this.model.data = {};
             this.workflowManagerService.tasks = [];
+            this.currentWorkflow = undefined;
             if (this.model.isNew) this.removeCurrentWorkflowFromList();
+
+            this.workflowDiagramService.clearDiagramData();
 
         } else {
 
-            this.model.id = id;
             this.model.data = this.getCurrentWorkflowData(id);
             this.workflowManagerService.tasks = this.model.data.tasks;
 
-            this.currentWorkflow = {
-                id,
-                data: this.model.data
-            };
+            this.currentWorkflow = { id, data: this.model.data };
+
+            this.workflowDiagramService.reloadDiagramData(this.displayDiagram);
         }
+
     }
 
     /**
@@ -142,7 +146,13 @@ export class WorkflowManager implements OnInit {
         this.model.module = 'WorkflowDefinitions';
         this.view.isEditable = true;
         this.view.setEditMode();
-        this.workflowDiagramService.loadDiagram();
+    }
+
+    /**
+     * load the diagram
+     */
+    public ngAfterViewInit() {
+        this.workflowDiagramService.loadDiagram(this.diagramContainer.nativeElement);
     }
 
     /**
@@ -314,13 +324,12 @@ export class WorkflowManager implements OnInit {
      * toggle show diagram
      * @param value
      */
-    public toggleShowDiagram(value: boolean) {
+    public toggleActivateDiagram(value: boolean) {
 
         if (value) {
-
-            this.workflowDiagramService.attachDiagram(this.diagramContainer.nativeElement);
+            this.workflowDiagramService.activate();
         } else {
-            this.workflowDiagramService.detachDiagram();
+            this.workflowDiagramService.deactivate();
         }
     }
 

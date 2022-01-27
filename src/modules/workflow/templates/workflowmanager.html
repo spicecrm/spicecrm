@@ -38,7 +38,7 @@
         </div>
     </div>
     <div *ngIf="currentModule" class="slds-form-element slds-col--bump-left">
-        <system-checkbox-toggle *ngIf="currentWorkflowId" [(ngModel)]="displayDiagram" (ngModelChange)="toggleShowDiagram($event)" label="LBL_DIAGRAM"></system-checkbox-toggle>
+        <system-checkbox-toggle *ngIf="currentWorkflowId" [(ngModel)]="displayDiagram" (ngModelChange)="toggleActivateDiagram($event)" label="LBL_DIAGRAM"></system-checkbox-toggle>
         <system-checkbox-toggle *ngIf="currentWorkflowId" [ngModel]="model.data.is_active" (ngModelChange)="toggleActive($event)" label="LBL_ACTIVE"></system-checkbox-toggle>
         <div *ngIf="currentWorkflowId" class="slds-button-group" role="group">
             <button (click)="openEditModal()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
@@ -58,7 +58,7 @@
         </div>
     </div>
 </div>
-<div *ngIf="currentWorkflowId" system-to-bottom>
+<div [class.slds-hide]="!currentWorkflowId" system-to-bottom>
     <workflow-manager-detail-tasks *ngIf="!displayDiagram" class="slds-height_full spice-display-block"></workflow-manager-detail-tasks>
     <div #diagramContainer [class.slds-hide]="!displayDiagram" class="slds-grow" style="min-height: 0"></div>
 </div>
