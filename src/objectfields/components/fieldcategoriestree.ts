@@ -91,6 +91,23 @@ export class fieldCategoriesTree {
     }
 
     /**
+     * get the node style
+     * @param n
+     */
+    public nodeStyle(n){
+        if(n.selectable){
+            return {
+                'cursor': 'pointer',
+                'text-decoration': 'underline'
+            }
+        }
+
+        return {
+            cursor: 'default'
+        }
+    }
+
+    /**
      * get the categories for the level
      *
      * @param level
