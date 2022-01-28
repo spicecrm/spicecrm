@@ -39,8 +39,8 @@ class SpiceAttachments
         $attachments = [];
         $categoryWhere = $categoryId ? " AND qn.category_ids LIKE '%$categoryId%'" : '';
 
-        $attachmentsRes = $db->limitQuery("SELECT qn.*,u.user_name FROM spiceattachments AS qn
-            LEFT JOIN users AS u ON u.id=qn.user_id WHERE qn.bean_id='{$beanId}' AND qn.bean_type='{$beanName}'
+        $attachmentsRes = $db->limitQuery("SELECT qn.*,u.user_name FROM spiceattachments qn
+            LEFT JOIN users u ON u.id=qn.user_id WHERE qn.bean_id='{$beanId}' AND qn.bean_type='{$beanName}'
             AND qn.deleted = 0 $categoryWhere ORDER BY qn.trdate DESC", 0, $lastN);
 
         while ($thisAttachment = $db->fetchByAssoc($attachmentsRes)) {
