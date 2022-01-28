@@ -4,10 +4,11 @@ namespace SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions;
 
 use Com\Tecnick\Barcode\Barcode;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use DateTime;
+use DateTime, DateTimeZone;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use IntlDateFormatter;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 # use SpiceCRM\includes\utils\SpiceUtils;
 
 class SystemTemplateFunctions {
@@ -138,6 +139,9 @@ class SystemTemplateFunctions {
             $format = $current_user->getUserDateTimePreferences()['date'];
         }
         $now = new DateTime();
+        if ( !empty( $tz = SpiceConfig::getInstance()->config['default_preferences']['timezone'] )) {
+            $now->setTimezone( new DateTimeZone( $tz ));
+        }
         return $now->format( $format );
     }
 
