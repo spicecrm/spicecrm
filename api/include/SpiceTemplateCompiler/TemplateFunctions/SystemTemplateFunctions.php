@@ -108,6 +108,9 @@ class SystemTemplateFunctions {
             $current_user = AuthenticationController::getInstance()->getCurrentUser();
             $format = $current_user->getUserDateTimePreferences()['date'];
         }
+
+        $timezone = SpiceConfig::getInstance()->config['default_preferences']['timezone'] ?: 'UTC';
+
         $now = new DateTime();
         return $now->format( $format );
     }
