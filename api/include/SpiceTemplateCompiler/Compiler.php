@@ -367,7 +367,7 @@ class Compiler
         // if we match none or more than one operator this cannot be true and return false
         //if(count($operators) != 1) return false;
 
-        $conditionparts = explode(' ', $condition);
+        $conditionparts = explode(' ', $condition, 3);
 
         //parse pipe if passed in
 

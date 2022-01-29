@@ -857,7 +857,8 @@ $app_list_strings = [
             'contact' => 'Erstellte Kontakte',
             'blocked' => 'Abgelehnt nach Adresse oder Domain',
             'error' => 'allgemeiner Fehler',
-            'noemail' => 'keine Email Adresse'
+            'noemail' => 'keine Email Adresse',
+            'inactive' => 'inaktiv'
         ],
 
     'campainglog_target_type_dom' =>
