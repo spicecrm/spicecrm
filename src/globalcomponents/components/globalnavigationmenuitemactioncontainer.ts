@@ -87,7 +87,7 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
      * getter for the hidden state of the embedded component
      */
     get hidden() {
-        if (this.stable && this.componentref) {
+        if (this.componentref) {
             return this.componentref.instance.hidden ? true : false;
         } else {
             return true;
