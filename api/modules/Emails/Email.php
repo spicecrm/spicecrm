@@ -638,8 +638,8 @@ class Email extends SugarBean
                         try {
                             $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
                             $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
-                        } catch(\Exception){
-
+                        } catch(Exception $e) {
+                            // do nothing
                         }
                     }
                 }
