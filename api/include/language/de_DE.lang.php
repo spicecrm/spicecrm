@@ -701,13 +701,13 @@ $app_list_strings = [
     ],
     'jobtask_status_dom' => [
         'active' => 'aktiv',
-        'running' => 'läfut',
-        'on_hold' => 'on hold'
+        'running' => 'läuft',
+        'on_hold' => 'angehalten'
     ],
     'job_status_dom' => [
         'Active' => 'Aktiv',
         'Inactive' => 'Inaktiv',
-        'OnHold' => 'On hold',
+        'OnHold' => 'Angehalten',
         'Running' => 'Läuft',
     ],
     'job_period_dom' => [
@@ -857,7 +857,8 @@ $app_list_strings = [
             'contact' => 'Erstellte Kontakte',
             'blocked' => 'Abgelehnt nach Adresse oder Domain',
             'error' => 'allgemeiner Fehler',
-            'noemail' => 'keine Email Adresse'
+            'noemail' => 'keine Email Adresse',
+            'inactive' => 'inaktiv'
         ],
 
     'campainglog_target_type_dom' =>
