@@ -142,6 +142,7 @@ class OCI8Manager extends DBManager
         'enum' => 'varchar2(255)',
         'relate' => 'varchar2',
         'text' => 'clob',
+        'json' => 'clob',
         'shorttext'=> 'varchar2(2000)',
         'longtext' => 'clob',
         'mediumtext' => 'clob',
@@ -918,7 +919,7 @@ class OCI8Manager extends DBManager
         // UTF8 uses multibyte for characters, which can lead to overflow issues therefore the size must be mapped to CHAR
         if (!empty($fieldDef['len'])) {
             if (in_array($colBaseType, ['nvarchar', 'nchar', 'varchar', 'varchar2', 'char',
-                'clob', 'blob', 'text'])) {
+                'clob', 'blob', 'json', 'text'])) {
                 $colType = "$colBaseType(${fieldDef['len']} CHAR)";
             } elseif (($colBaseType == 'decimal' || $colBaseType == 'float')) {
                 if (!empty($fieldDef['precision']) && is_numeric($fieldDef['precision']))
