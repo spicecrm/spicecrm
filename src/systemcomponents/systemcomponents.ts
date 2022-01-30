@@ -165,6 +165,7 @@ import /*embed*/ {SystemPreferencesPanel} from "./components/systempreferencespa
 import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferencespanelitem";
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
+import {SystemPDFContainer} from "./components/systempdfcontainer";
 
 @NgModule({
     imports: [
@@ -263,6 +264,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModuleGlobalPipe,
         SystemNumberSpinner,
         SystemObjectPreviewModal,
+        SystemPDFContainer,
         SystemInputModuleFilter,
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
@@ -447,7 +449,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
         SystemModalHeaderEmpty,
-        SystemWrappedText
+        SystemWrappedText,
+        SystemPDFContainer
     ]
 })
 export class SystemComponents {}
