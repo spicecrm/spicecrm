@@ -1365,14 +1365,14 @@ class OCI8Manager extends DBManager
                     continue;
                 }
 
-                if ($this->isTextType($def['type'])) {
+                if ($this->isTextType( $def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB;
-                } else if ($this->getColumnType($def['type']) == 'blob') {
+                } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
