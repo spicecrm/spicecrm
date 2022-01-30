@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
+import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 @Component({
@@ -21,9 +22,9 @@ export class GlobalNavigationMenuItemActionRoute {
     /**
      * if the item is disabled
      */
-    public disabled: boolean = false;
+    // public disabled: boolean = false;
 
-    constructor(public language: language,public model: model,public router: Router) {
+    constructor(public language: language, public model: model, public metadata: metadata, public router: Router) {
     }
 
     /**
@@ -31,6 +32,20 @@ export class GlobalNavigationMenuItemActionRoute {
      */
     get actionicon() {
         return this.actionconfig.icon ? this.actionconfig.icon : 'chevronright';
+    }
+
+    /**
+     * get the hidden atribute if the acl right is not granted
+     */
+    get disabled(){
+        return this.actionconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.actionconfig.acl);
+    }
+
+    /**
+     * get the hidden atribute if the acl right is not granted
+     */
+    get hidden(){
+        return this.actionconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.actionconfig.acl);
     }
 
     /**
@@ -49,6 +64,8 @@ export class GlobalNavigationMenuItemActionRoute {
      * the execute function to naviogate to the route defined in the action
      */
     public execute() {
-        this.router.navigate([this.actionconfig.route]);
+        if(!this.disabled) {
+            this.router.navigate([this.actionconfig.route]);
+        }
     }
 }
