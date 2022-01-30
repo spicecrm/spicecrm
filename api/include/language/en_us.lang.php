@@ -920,7 +920,8 @@ $app_list_strings = [
             'contact' => 'Contacts Created',
             'blocked' => 'Suppressed by address or domain',
             'error' => 'generic error',
-            'noemail' => 'no email address'
+            'noemail' => 'no email address',
+            'inactive' => 'inactive'
         ],
 
     'campainglog_target_type_dom' =>
