@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectorRef, Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -143,8 +143,7 @@ export class ObjectActionOutputBeanModal {
         public outputModalService: outputModalService,
         public sanitizer: DomSanitizer,
         public viewContainerRef: ViewContainerRef,
-        public modelutilities: modelutilities,
-        public cdRef: ChangeDetectorRef
+        public modelutilities: modelutilities
     ) {
         // get the fieldset of the email area
         let componentconfig = this.metadata.getComponentConfig('ObjectActionOutputBeanModal');
@@ -221,8 +220,6 @@ export class ObjectActionOutputBeanModal {
 
         this.blobUrl = null;
         this.compiled_selected_template = null;
-
-        // reload the module id
 
         switch (this.selected_format) {
             case 'pdf':
