@@ -21,10 +21,12 @@ class DashboardManagerController{
     public function getGlobalAndCustomDashlet(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $dashBoardDashlets = [];
-        $dashlets = "SELECT 'global' As `type`, dlts.* FROM sysuidashboarddashlets dlts UNION ";
-        $dashlets .= "SELECT 'custom' As `type`, cdlts.* FROM sysuicustomdashboarddashlets cdlts";
+        $dashlets = "SELECT 'global' dashlettype, dlts.* FROM sysuidashboarddashlets dlts UNION ";
+        $dashlets .= "SELECT 'custom' dashlettype, cdlts.* FROM sysuicustomdashboarddashlets cdlts";
         $dashlets = $db->query($dashlets);
         while ($dashBoardDashlet = $db->fetchByAssoc($dashlets)) {
+            $dashBoardDashlet['type'] = $dashBoardDashlet['dashlettype'];
+            unset($dashBoardDashlet['dashlettype']);
             $dashBoardDashlets[] = $dashBoardDashlet;
         }
 
