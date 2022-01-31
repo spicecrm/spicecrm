@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, ViewChild, ViewContainerRef} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -43,6 +43,11 @@ export class ObjectActionOutputBeanModal {
      */
         // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
     @ViewChild(ObjectActionOutputBeanModalEmailContent) public emailContent: ObjectActionOutputBeanModalEmailContent;
+
+    /**
+     * emit the action to the container
+     */
+    @Output() public actionemitter = new EventEmitter<{close: boolean, name: string}>();
 
     public modalTitle: string;
     public forcedFormat: 'html' | 'pdf';
@@ -138,7 +143,8 @@ export class ObjectActionOutputBeanModal {
         public outputModalService: outputModalService,
         public sanitizer: DomSanitizer,
         public viewContainerRef: ViewContainerRef,
-        public modelutilities: modelutilities
+        public modelutilities: modelutilities,
+        public cdRef: ChangeDetectorRef
     ) {
         // get the fieldset of the email area
         let componentconfig = this.metadata.getComponentConfig('ObjectActionOutputBeanModal');
@@ -215,6 +221,8 @@ export class ObjectActionOutputBeanModal {
 
         this.blobUrl = null;
         this.compiled_selected_template = null;
+
+        // reload the module id
 
         switch (this.selected_format) {
             case 'pdf':
@@ -365,6 +373,12 @@ export class ObjectActionOutputBeanModal {
      * call the child method that will send the mail
      */
     public sendEmail() {
+        // saving letter before sending email - solution for Letters module where the letter id is not set
+        if(this.model.module == 'Letters') {
+            this.backend.postRequest(`module/Letters/${this.model.id}/marksent/${this.selected_template.id}`, null, this.model.data).subscribe(res => {
+                this.actionemitter.emit({close: true, name: 'sent'})});
+        }
+
         this.emailContent.sendEmail();
     }
 
