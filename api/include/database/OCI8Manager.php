@@ -1417,14 +1417,14 @@ class OCI8Manager extends DBManager
                     continue;
                 }
                 //generate lob
-                if ($this->isTextType($def['type'])) {
+                if ($this->isTextType($def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB; // value is 112
-                } else if ($this->getColumnType($def['type']) == 'blob') {
+                } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
@@ -1499,7 +1499,7 @@ class OCI8Manager extends DBManager
                         $data[$field] = $this->getEmptyClob();
                         $lob_fields[$field] = ":" . $field;
                         $lob_dataType[$field] = OCI_B_CLOB;
-                    } elseif ($vardef['type'] == 'blob') {
+                    } elseif ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob') {
                         $data[$field] = $this->getEmptyBlob();
                         $lob_fields[$field] = ":" . $field;
                         $lob_dataType[$field] = OCI_B_CLOB;
@@ -1546,7 +1546,7 @@ class OCI8Manager extends DBManager
                         $sets[] = "$key = {$this->getEmptyClob()}";
                         $lob_fields[$key] = ":" . $key;
                         $lob_dataType[$key] = OCI_B_CLOB;
-                    } elseif (!empty($val) && $vardef['type'] == 'blob') {
+                    } elseif (!empty($val) && ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob')) {
                         $sets[] = "$key = {$this->getEmptyBlob()}";
                         $lob_fields[$key] = ":" . $key;
                         $lob_dataType[$key] = OCI_B_CLOB;
@@ -1604,7 +1604,7 @@ class OCI8Manager extends DBManager
     function isNullable($vardef)
     {
         // text is blank in oracle
-        if (!empty($vardef['type']) && $this->isTextType($vardef['type'])) {
+        if (!empty($vardef['type']) && $this->isTextType($vardef['dbtype'] ?: $vardef['type'])) {
             return false;
         }
         return parent::isNullable($vardef);
