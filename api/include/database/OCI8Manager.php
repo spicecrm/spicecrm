@@ -142,7 +142,6 @@ class OCI8Manager extends DBManager
         'enum' => 'varchar2(255)',
         'relate' => 'varchar2',
         'text' => 'clob',
-        'json' => 'clob',
         'shorttext'=> 'varchar2(2000)',
         'longtext' => 'clob',
         'mediumtext' => 'clob',
@@ -1495,7 +1494,7 @@ class OCI8Manager extends DBManager
         foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
-                    if ($this->type_map[$vardef['type']] == 'clob') {
+                    if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
                         $copy[$field] = from_html($data[$field]);
                         $data[$field] = $this->getEmptyClob();
                         $lob_fields[$field] = ":" . $field;
@@ -1542,7 +1541,7 @@ class OCI8Manager extends DBManager
                     $vardef = $dictionaryDefs['fields'][$key];
                     if(!$vardef) continue;
 
-                    if (!empty($val) && $this->type_map[$vardef['type']] == 'clob') {
+                    if (!empty($val) && $this->type_map[$vardef['dbtype'] ?: $vardef['type']] == 'clob') {
                         $copy[$key] = from_html($val);
                         $sets[] = "$key = {$this->getEmptyClob()}";
                         $lob_fields[$key] = ":" . $key;
