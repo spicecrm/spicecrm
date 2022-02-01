@@ -94,9 +94,9 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null )
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = ['appointment'=>'Dies ist ein Text'] )
     {
-        $this->additionalValues = $additionalValues;
+        $this->additionalValues = ['appointment'=>'Dies ist ein Text'];//$additionalValues;
         $this->lang = $lang;
         $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
@@ -492,6 +492,8 @@ class Compiler
                 $obj = new System();
                 break;
             case 'value':
+                #var_dump($this->additionalValues);
+                #exit;
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
@@ -510,7 +512,7 @@ class Compiler
         return $obj ?: false;
     }
 
-    public function compileblock($txt, $beans = [], $lang = 'de_DE', array $additionalValues = null)
+    public function compileblock($txt, $beans = [], $lang = 'de_DE')
     {
         $resultText = '';
         $remainingText = $txt;
