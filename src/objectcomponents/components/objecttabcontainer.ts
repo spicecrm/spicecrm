@@ -2,16 +2,13 @@
  * @module ObjectComponents
  */
 import {
-    AfterViewInit,
     Component,
-    Input,
-    ViewChild,
-    ViewContainerRef, OnDestroy, OnInit, EventEmitter, Output
+    OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
-import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
+import {session} from '../../services/session.service';
 
 /**
  * renders a tabcontainer with separate tabs
@@ -38,12 +35,10 @@ export class ObjectTabContainer implements OnInit {
 
     /**
      * the tabs to be rendered
-     *
-     * ToDo: remove from the legacy support that this can also be defined as JSON
      */
     public tabs: any[] = [];
 
-    constructor(public language: language, public metadata: metadata, public model: model) {
+    constructor(public language: language, public metadata: metadata, public model: model, protected session: session) {
 
     }
 
@@ -51,39 +46,40 @@ export class ObjectTabContainer implements OnInit {
      * loads the tabs
      */
     public ngOnInit() {
-        if (this.getTabs().length == 0) {
-            if (this.componentconfig && this.componentconfig.componentset) {
-                let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
-                this.tabs = [];
-                for (let item of items) {
-                    this.tabs.push(item.componentconfig);
-                }
-            } else {
-                let componentconfig = this.metadata.getComponentConfig('ObjectTabContainer', this.model.module);
-                let items = this.metadata.getComponentSetObjects(componentconfig.componentset);
-                this.tabs = [];
-                for (let item of items) {
-                    this.tabs.push(item.componentconfig);
-                }
+        if (this.componentconfig && this.componentconfig.componentset) {
+            let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
+            this.tabs = [];
+            for (let item of items) {
+                // check if the tab is admin access only
+                if (item.componentconfig.adminonly && !this.session.isAdmin) continue;
+
+                this.tabs.push(item.componentconfig);
             }
         } else {
-            this.tabs = this.getTabs();
+            let componentconfig = this.metadata.getComponentConfig('ObjectTabContainer', this.model.module);
+            let items = this.metadata.getComponentSetObjects(componentconfig.componentset);
+            this.tabs = [];
+            for (let item of items) {
+                // check if the tab is admin access only
+                if (item.componentconfig.adminonly && !this.session.isAdmin) continue;
+
+                this.tabs.push(item.componentconfig);
+            }
         }
     }
 
     /**
-     * @deprecated
-     *
-     * legacy support to get tabs from the config. Shoudl be removd already in most of the config and no longer really be used
-     *
-     * ToDo: remove
+     * returns if the item is hideden
+     * @param itemconfig
      */
-    public getTabs() {
-        try {
-            return this.componentconfig.tabs ? this.componentconfig.tabs : [];
-        } catch (e) {
-            return [];
-        }
+    public isHidden(itemconfig){
+        // check that we have acl access
+        if(itemconfig.acl && !this.model.checkAccess(itemconfig.acl)) return true;
+
+        // check that we have mode state access
+        if(itemconfig.requiredmodelstate && !this.model.checkModelState(itemconfig.requiredmodelstate)) return true;
+
+        return false;
     }
 
     /**
