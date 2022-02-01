@@ -46,6 +46,7 @@
     --sds-c-textarea-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-button-text-color-hover: #ffffff;
+    --sds-c-toast-text-color: #ffffff;
 }
 
 html {
