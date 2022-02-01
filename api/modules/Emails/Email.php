@@ -1058,7 +1058,7 @@ class Email extends SugarBean
     {
         $db = DBManagerFactory::getInstance();
 
-        $query = "SELECT * FROM mailbox_processors WHERE mailbox_id='" . $this->mailbox_id . "' ORDER BY priority";
+        $query = "SELECT * FROM mailbox_processors WHERE mailbox_id='" . $this->mailbox_id . "' AND deleted=0 ORDER BY priority";
         $q = $db->query($query);
 
         while ($processor = $db->fetchByAssoc($q)) {
