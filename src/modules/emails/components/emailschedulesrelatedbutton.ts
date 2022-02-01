@@ -62,7 +62,7 @@ export class EmailSchedulesRelatedButton {
         // search for fields of type link to get the related modules, proof that each of these is actually a module by looping through the fielddefs of metadata where all the object
         // properties are the names of the modules, if this is true then, push this property(key) to the arrayOfModules
         Object.keys(this.model.fields).forEach(item => {
-            if (this.model.fields[item].type == 'link' && this.model.fields[item].hasOwnProperty('vname') && !this.model.fields[item].hasOwnProperty('link_type')) {
+            if (this.model.fields[item].type == 'link') {
                 let module = this.model.fields[item].name;
                 for (let key in this.metadata.fieldDefs) {
                     if (key.toLowerCase() == module) {
@@ -79,7 +79,7 @@ export class EmailSchedulesRelatedButton {
             let module = arrayOfModules[pos];
             Object.keys(this.metadata.fieldDefs).forEach(item => {
                 if (this.metadata.fieldDefs[item] != null && item == module) {
-                    if (this.metadata.fieldDefs[item].hasOwnProperty('email') && this.metadata.fieldDefs[item].hasOwnProperty('email1')) {
+                    if (this.metadata.fieldDefs[item].hasOwnProperty('email') || this.metadata.fieldDefs[item].hasOwnProperty('email1')) {
                         filteredModules.push(module);
                     }
                 }
