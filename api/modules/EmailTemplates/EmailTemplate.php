@@ -95,7 +95,8 @@ class EmailTemplate extends SugarBean {
     {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
-        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language, $additionalValues );
+        $templateCompiler->additionalValues = $additionalValues;
+        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language );
         return $text;
     }
 

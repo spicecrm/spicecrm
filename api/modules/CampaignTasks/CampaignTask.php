@@ -332,7 +332,7 @@ class CampaignTask extends SugarBean
      * @param int $limit
      * @return array
      */
-    private function getProspectBeans($start = 0, $limit = 100){
+    public function getProspectBeans($start = 0, $limit = 100){
         $beans = [];
         $select_query = "SELECT plp.related_id id, max(plp.related_type) module ";
         $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
@@ -366,22 +366,31 @@ class CampaignTask extends SugarBean
     /**
      * produces a mailmerge PDF for the campaign
      *
-     * @return string
+     * @return array
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
     public function mailMerge($start = 0, $limit = 100){
 
         $html = '';
+        $inactiveCount = 0;
         foreach ($this->getProspectBeans($start, $limit) as $prospectBean){
-            /** @var OutputTemplate $outputTemplate */
-            $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
 
-            $style = $outputTemplate->getStyle();
-            $header = html_entity_decode( $outputTemplate->header);
-            $footer = html_entity_decode( $outputTemplate->footer);
+            // exclude inactive items from generated pdf
+            if($prospectBean->is_inactive == 1) {
+                $inactiveCount += 1;
+            }
+            // generate pdf only with active items
+            else {
+                /** @var OutputTemplate $outputTemplate */
+                $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
 
-            $html .= $outputTemplate->translateBody($prospectBean, true);
-            $html .= '<div style="page-break-after: always;"></div>';
+                $style = $outputTemplate->getStyle();
+                $header = html_entity_decode( $outputTemplate->header);
+                $footer = html_entity_decode( $outputTemplate->footer);
+
+                $html .= $outputTemplate->translateBody($prospectBean, true);
+                $html .= '<div style="page-break-after: always;"></div>';
+            }
         }
         $html = "<html><head><style>$style</style></head><body><header>$header</header><footer>$footer</footer><main>$html</main></body></html>";
 
@@ -390,8 +399,9 @@ class CampaignTask extends SugarBean
         $pdfHandler = new $class($outputTemplate);
 
         $pdfHandler->process($html);
-        return $pdfHandler->__toString();
+
+        // return the pdf and the inactiveCount
+        $res = ['pdfcontent' => $pdfHandler->__toString(), 'inactiveCount' => $inactiveCount];
+        return $res;
     }
-
-
 }

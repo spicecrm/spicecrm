@@ -31,6 +31,8 @@ export class QuestionnaireEvaluation implements OnInit {
     public noEvaluationTypeDefined = false;
     public noParticipationYet = false;
 
+    public langOfQuestionnaire;
+
     constructor( public language: language, public backend: backend, public metadata: metadata ) { }
 
     public ngOnInit(): void {
@@ -44,6 +46,7 @@ export class QuestionnaireEvaluation implements OnInit {
             }
 
             this.evaluationType = data.evaluationType;
+            this.langOfQuestionnaire = data.langOfQuestionnaire;
 
             switch (this.evaluationType) {
                 case 'none':
@@ -55,6 +58,7 @@ export class QuestionnaireEvaluation implements OnInit {
                         componentRef.instance.sequenceNr = this.sequenceNr;
                         componentRef.instance.noAnimation = this.noAnimation;
                         componentRef.instance.usagePrint = this.usagePrint;
+                        componentRef.instance.langOfQuestionnaire = this.langOfQuestionnaire;
                         this.component = componentRef;
                     });
                     break;
@@ -64,6 +68,7 @@ export class QuestionnaireEvaluation implements OnInit {
                         componentRef.instance.sequenceNr = this.sequenceNr;
                         componentRef.instance.noAnimation = this.noAnimation;
                         componentRef.instance.usagePrint = this.usagePrint;
+                        componentRef.instance.langOfQuestionnaire = this.langOfQuestionnaire;
                         this.component = componentRef;
                     });
                     break;
@@ -73,6 +78,7 @@ export class QuestionnaireEvaluation implements OnInit {
                         componentRef.instance.sequenceNr = this.sequenceNr;
                         componentRef.instance.noAnimation = this.noAnimation;
                         componentRef.instance.usagePrint = this.usagePrint;
+                        componentRef.instance.langOfQuestionnaire = this.langOfQuestionnaire;
                         this.component = componentRef;
                     });
                     break;
@@ -82,6 +88,7 @@ export class QuestionnaireEvaluation implements OnInit {
                         componentRef.instance.sequenceNr = this.sequenceNr;
                         componentRef.instance.noAnimation = this.noAnimation;
                         componentRef.instance.usagePrint = this.usagePrint;
+                        componentRef.instance.langOfQuestionnaire = this.langOfQuestionnaire;
                         this.component = componentRef;
                     });
                     break;
@@ -91,6 +98,7 @@ export class QuestionnaireEvaluation implements OnInit {
                         componentRef.instance.sequenceNr = this.sequenceNr;
                         componentRef.instance.noAnimation = this.noAnimation;
                         componentRef.instance.usagePrint = this.usagePrint;
+                        componentRef.instance.langOfQuestionnaire = this.langOfQuestionnaire;
                         this.component = componentRef;
                     });
                     break;
@@ -100,6 +108,7 @@ export class QuestionnaireEvaluation implements OnInit {
                         componentRef.instance.sequenceNr = this.sequenceNr;
                         componentRef.instance.noAnimation = this.noAnimation;
                         componentRef.instance.usagePrint = this.usagePrint;
+                        componentRef.instance.langOfQuestionnaire = this.langOfQuestionnaire;
                         this.component = componentRef;
                     });
                     break;
@@ -110,6 +119,7 @@ export class QuestionnaireEvaluation implements OnInit {
                         componentRef.instance.noAnimation = this.noAnimation;
                         componentRef.instance.evaluationType = this.evaluationType;
                         componentRef.instance.usagePrint = this.usagePrint;
+                        componentRef.instance.langOfQuestionnaire = this.langOfQuestionnaire;
                         this.component = componentRef;
                     });
                     break;

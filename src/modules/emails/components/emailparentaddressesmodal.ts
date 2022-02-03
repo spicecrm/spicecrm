@@ -56,7 +56,7 @@ export class EmailParentAddressesModal implements OnInit {
             addresses => {
                 this.addresses = addresses;
                 if (this.addresses.length == 0) {
-                    this.toast.sendToast('LBL_NO_EMAILADDRESSES_FOUND', 'info');
+                    this.toast.sendToast('LBL_NO_RELATED_EMAILADDRESSES_FOUND', 'info');
                     this.close();
                 }
                 loading.emit(true);

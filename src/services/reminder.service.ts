@@ -8,6 +8,8 @@ import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Observable, Subject} from 'rxjs';
+import {modelutilities} from "./modelutilities.service";
+import {model} from "./model.service";
 
 /**
  * @ignore
@@ -18,12 +20,29 @@ declare var moment: any;
 @Injectable()
 export class reminder {
 
+    /**
+     * an array with the dat on teh current reminders
+     */
     public reminders: any[] = [];
+
+    /**
+     * indicates that he model is laoded
+     */
     public loaded: boolean = false;
-    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * emit when the data is changed
+     */
+    public changed$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
-    constructor(public backend: backend, public broadcast: broadcast, public configuration: configurationService, public session: session) {
+    constructor(
+        public backend: backend,
+        public broadcast: broadcast,
+        public configuration: configurationService,
+        public session: session,
+        public modelutilities: modelutilities
+    ){
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
@@ -39,16 +58,18 @@ export class reminder {
                         this.reminders.push(reminder);
                     }
                     this.loaded = true;
-                    this.loaded$.emit(true);
+
+                    // emit that we have changes
+                    this.changed$.emit(true);
                 }
                 break;
             case 'model.save':
-                this.reminders.some((item, index) => {
-                    if (item.module_name === message.messagedata.module && item.item_id == message.messagedata.id) {
-                        this.reminders[index].item_summary = message.messagedata.data.summary_text;
+                    let reminderIndex = this.reminders.findIndex(r => r.module_name == message.messagedata.module && r.item_id == message.messagedata.id);
+                    if (reminderIndex >= 0) {
+                        this.reminders[reminderIndex].item_summary = message.messagedata.data.summary_text;
+                        this.reminders[reminderIndex].data = message.messagedata.data;
                         return true;
                     }
-                });
                 break;
         }
     }
@@ -78,17 +99,39 @@ export class reminder {
         return retArr;
     }
 
-    public setReminder(model, reminderDate) {
+    /**
+     * sets a reminder. If one is set updates it accordingly
+     *
+     * @param model
+     * @param reminderDate
+     */
+    public setReminder(model: model, reminderDate) {
         this.backend.postRequest('common/spicereminders/' + model.module + '/' + model.id + '/' + reminderDate.format('YYYY-MM-DD')).subscribe((fav: any) => {
-            this.reminders.splice(0, 0, {
-                item_id: model.id,
-                module_name: model.module,
-                item_summary: model.data.summary_text,
-                reminder_date: reminderDate
-            });
+            let i = this.reminders.findIndex(r => r.item_id == model.id && r.module_name == model.module);
+            if(i >= 0){
+                this.reminders[i].reminder_date = reminderDate;
+                this.reminders[i].data = model.backendData;
+            } else {
+                this.reminders.splice(0, 0, {
+                    item_id: model.id,
+                    module_name: model.module,
+                    item_summary: model.data.summary_text,
+                    reminder_date: reminderDate,
+                    data: model.backendData
+                });
+            }
+
+            // emit that we have changes
+            this.changed$.emit(true);
         });
     }
 
+    /**
+     * deletes a reminder
+     *
+     * @param module
+     * @param id
+     */
     public deleteReminder(module, id): Observable<any> {
         let retSubject = new Subject<any>();
         this.backend.deleteRequest('common/spicereminders/' + module + '/' + id).subscribe(fav => {
@@ -100,6 +143,9 @@ export class reminder {
             });
             retSubject.next(true);
             retSubject.complete();
+
+            // emit that we have changes
+            this.changed$.emit(true);
         });
         return retSubject.asObservable();
     }

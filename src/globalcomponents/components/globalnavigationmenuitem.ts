@@ -206,16 +206,10 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
      * @param actionid the action id
      */
    public isDisabled(actionid) {
-        let disabled = true;
         if (this.menuItemlist) {
-            this.menuItemlist.some((actionitem: any) => {
-                if (actionitem.id == actionid) {
-                    disabled = actionitem.disabled;
-                    return true;
-                }
-            });
+            return this.menuItemlist.find(a => a.id == actionid)?.disabled;
         }
-        return disabled;
+        return false;
     }
 
     /**
@@ -224,16 +218,10 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
      * @param actionid the action id
      */
    public isHidden(actionid) {
-        let hidden = false;
         if (this.menuItemlist) {
-            this.menuItemlist.some((actionitem: any) => {
-                if (actionitem.id == actionid) {
-                    hidden = actionitem.hidden;
-                    return true;
-                }
-            });
+            return this.menuItemlist.find(a => a.id == actionid)?.hidden;
         }
-        return hidden;
+        return false;
     }
 
     /**

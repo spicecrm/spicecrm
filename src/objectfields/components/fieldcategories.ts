@@ -161,9 +161,10 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      * it also looks for the last category with a corresponding queue to set this too
      * @param categories = array of category objects, all lvls from top to lowest
      */
-    public chooseCategories(categories) {
+    public chooseCategories(selected) {
         let fields: any = {};
         let i = 1
+        let categories = selected.levels
         while(i <= 4) {
             if(this.fieldconfig['category'+i] && categories[i-1]){
                 fields[this.fieldconfig['category'+i]] = this.categories.find(c => c.id == categories[i-1]).node_key;
@@ -172,6 +173,13 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             }
             i++;
         }
+
+        // set the adddata
+        if(this.fieldconfig.addparams && selected.category?.add_params){
+            fields[this.fieldconfig.addparams] = selected.category.add_params
+        }
+
+        // set the fields
         this.model.setFields(fields);
 
         // set the name field
@@ -185,6 +193,8 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         // reset serachterm and fav
         this.searchterm = undefined;
         this.searchfavorites = false;
+
+
 
         // kill the listener for the open dropdown
         if(this.clickListener) this.clickListener();
