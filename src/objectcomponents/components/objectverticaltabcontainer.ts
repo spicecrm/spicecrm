@@ -110,7 +110,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      * @param tabindex
      */
     public checkRenderTab(tabindex) {
-        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.componentconfig && this.componentconfig[tabindex].forcerender);
+        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.tabs && this.tabs[tabindex].forcerender);
     }
 
     /**
