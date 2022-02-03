@@ -67,8 +67,7 @@ export class GlobalLoginOAuth2 {
             ...config,
             showDebugInformation: true,
             oidc: false,
-            responseType: 'code',
-            redirectUri: window.location.origin + '/oauth2redirect.html',
+            responseType: 'code'
         });
 
         this.oauthService.dummyClientSecret = config.client_secret;
