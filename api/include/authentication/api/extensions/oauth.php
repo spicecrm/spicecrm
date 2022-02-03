@@ -9,7 +9,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  * get a Rest Manager Instance
  */
 $RESTManager = RESTManager::getInstance();
-$config      = SpiceConfig::getInstance();
+$config      = SpiceConfig::getInstance()->config;
 
 $routes = [
     [

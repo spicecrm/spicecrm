@@ -39,8 +39,8 @@ class SpiceAttachments
         $attachments = [];
         $categoryWhere = $categoryId ? " AND qn.category_ids LIKE '%$categoryId%'" : '';
 
-        $attachmentsRes = $db->limitQuery("SELECT qn.*,u.user_name FROM spiceattachments AS qn
-            LEFT JOIN users AS u ON u.id=qn.user_id WHERE qn.bean_id='{$beanId}' AND qn.bean_type='{$beanName}'
+        $attachmentsRes = $db->limitQuery("SELECT qn.*,u.user_name FROM spiceattachments qn
+            LEFT JOIN users u ON u.id=qn.user_id WHERE qn.bean_id='{$beanId}' AND qn.bean_type='{$beanName}'
             AND qn.deleted = 0 $categoryWhere ORDER BY qn.trdate DESC", 0, $lastN);
 
         while ($thisAttachment = $db->fetchByAssoc($attachmentsRes)) {
@@ -158,14 +158,31 @@ class SpiceAttachments
         $filesize = strlen($decodedFile);
         $filemd5 = md5($decodedFile);
 
-        $upload_file->final_move($filemd5);
+        if(!$upload_file->final_move($filemd5)){
+            throw new \SpiceCRM\includes\ErrorHandlers\Exception('Error moving file');
+        }
 
         if ($beanName && $beanId) {
             // if we have an image create a thumbnail
             $thumbnail = self::createThumbnail($filemd5, $file_mime_type);
 
             // add the attachment
-            $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
+            $db->insertQuery('spiceattachments', [
+                'id' => $guid,
+                'bean_type' => $beanName,
+                'bean_id' => $beanId,
+                'user_id' => $current_user->id,
+                'trdate' => TimeDate::getInstance()->nowDb(),
+                'filename' => $filename,
+                'filesize' => $filesize,
+                'filemd5' => $filemd5,
+                'text' => $file['text'],
+                'thumbnail' => $thumbnail,
+                'deleted' => '0',
+                'file_mime_type' => $file_mime_type,
+                'category_ids' => $file['category_ids']
+            ]);
+            // $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
         }
 
         $attachments[] = [
@@ -491,6 +508,42 @@ class SpiceAttachments
             }
         }
         return $analysis;
+    }
+
+    public static function getMissingFiles(): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $missingAttachmentsFiles = [];
+        $missingNoteFiles = [];
+        $missingEmailFiles = [];
+
+        $attachmentsInDb = $db->query('SELECT id, filemd5, bean_type, bean_id, trdate, filename FROM spiceattachments WHERE deleted = 0');
+        while ( $attachment = $db->fetchByAssoc( $attachmentsInDb )) {
+            if ( !file_exists(self::UPLOAD_DESTINATION . ( isset( $attachment['filemd5'] ) ? $attachment['filemd5'] : $attachment['id'] ))) {
+                $missingAttachmentsFiles[] = $attachment;
+            }
+        }
+
+        $notesInDb = $db->query('SELECT id, file_md5, date_entered, file_name FROM notes WHERE file_name IS NOT NULL AND file_name <> "" AND deleted = 0');
+        while ( $note = $db->fetchByAssoc( $notesInDb )) {
+            if ( !file_exists('upload://' . ( isset( $note['file_md5'][0] ) ? $note['file_md5'] : $note['id'] ))) {
+                $missingNoteFiles[] = $note;
+            }
+        }
+
+        $emailsInDb = $db->query('SELECT id, file_md5, date_entered, file_name FROM emails WHERE file_name IS NOT NULL AND file_name <> "" AND deleted = 0');
+        while ( $email = $db->fetchByAssoc( $emailsInDb )) {
+            if ( !file_exists('upload://' . ( isset( $email['file_md5'][0] ) ? $email['file_md5'] : $email['id'] ))) {
+                $missingEmailFiles[] = $email;
+            }
+        }
+
+        return [
+            'attachments' => ['list' => $missingAttachmentsFiles, 'count' => count( $missingAttachmentsFiles )],
+            'notes' => ['list' => $missingNoteFiles, 'count' => count( $missingNoteFiles )],
+            'emails' => ['list' => $missingEmailFiles, 'count' => count( $missingEmailFiles )]
+        ];
+
     }
 
     /**
