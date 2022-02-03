@@ -44,7 +44,6 @@ import /*embed*/ {ActivityTimelineDropZoneWrapper} from './components/activityti
 import /*embed*/ {ActivityTimelineFilter} from "./components/activitytimelinefilter";
 import /*embed*/ {ActivityTimelineContainer} from './components/activitytimelinecontainer';
 import /*embed*/ {ActivityTimelineItemContainer} from './components/activitytimelineitemcontainer';
-import /*embed*/ {ActivityTimelineAddTabContainer} from './components/activitytimelineaddtabcontainer';
 import /*embed*/ {ActivityTimelineItem} from './components/activitytimelineitem';
 import /*embed*/ {ActivityTimelineStencil} from './components/activitytimelinestencil';
 import /*embed*/ {ActivityTimelineAddContainer} from './components/activitytimelineaddcontainer';
@@ -98,7 +97,6 @@ import /*embed*/ {fieldActivityDate} from './fields/fieldactivitydate';
         ActivityTimelineFilter,
         ActivityTimelineContainer,
         ActivityTimelineItemContainer,
-        ActivityTimelineAddTabContainer,
         ActivityTimelineItem,
         ActivityTimelineStencil,
         ActivityTimelineAddContainer,

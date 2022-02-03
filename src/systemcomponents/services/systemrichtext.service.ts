@@ -39,11 +39,18 @@ export interface UploadResponse {
 
 @Injectable()
 export class systemrichtextservice {
-    public  savedSelection: Range | null;
+    public savedSelection: Range | null;
     public selectedText: string;
+    public selectedHtml: string;
     public uploadUrl: string;
 
+    /**
+     * to help encoding/decoding html
+     */
+    public dummyHtmlElement: HTMLElement;
+
     constructor(@Inject(DOCUMENT) public _document: Document) {
+        this.dummyHtmlElement = document.createElement('div');
     }
 
     /**
@@ -62,14 +69,19 @@ export class systemrichtextservice {
     /**
      * Create URL link
      * @param url string from UI prompt
+     * @param text string from UI prompt
+     * @param attributes object with html attributes
      */
-    public createLink(url: string) {
-        if (!url.includes("http")) {
-            this._document.execCommand('createlink', false, url);
-        } else {
-            const newUrl = '<a href="' + url + '" target="_blank">' + this.selectedText + '</a>';
-            this.insertHtml(newUrl);
+    public createLink( url: string, text: string, attributes: {} = {} )
+    {
+        if ( !text ) text = url;
+        let blankTarget = !url.includes('http');
+        let attributesString = '';
+        for( const prop in attributes ) {
+            attributesString += ( ' ' + prop + '="'+this.encodeHTMLEntities( attributes[prop] ) + '"' );
         }
+        const html = '<a href="' + url + '"' + ( blankTarget ? ' target="_blank"':'' ) + attributesString + '>' + text + '</a>';
+        this.insertHtml(html);
     }
 
     /**
@@ -131,6 +143,10 @@ export class systemrichtextservice {
             if (sel.getRangeAt && sel.rangeCount) {
                 this.savedSelection = sel.getRangeAt(0);
                 this.selectedText = sel.toString();
+                // Get HTML of saved selection:
+                let dummyDiv = document.createElement('div');
+                dummyDiv.appendChild( this.savedSelection.cloneContents() );
+                this.selectedHtml = dummyDiv.innerHTML;
             }
         } else if (this._document.getSelection && this._document.createRange) {
             this.savedSelection = document.createRange();
@@ -292,4 +308,15 @@ export class systemrichtextservice {
         const newTag = '<' + tagName + ' class="' + customClass.class + '">' + this.selectedText + '</' + tagName + '>';
         this.insertHtml(newTag);
     }
+
+    public decodeHTMLEntities(text) {
+        this.dummyHtmlElement.innerHTML = text;
+        return this.dummyHtmlElement.innerText;
+    }
+
+    public encodeHTMLEntities(text) {
+        this.dummyHtmlElement.innerText = text;
+        return this.dummyHtmlElement.innerHTML;
+    }
+
 }

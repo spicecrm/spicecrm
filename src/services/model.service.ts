@@ -331,6 +331,13 @@ export class model implements OnDestroy {
     }
 
     /**
+     * helper to get the proper backend formatted model data
+     */
+    get backendData(){
+        return this.utils.spiceModel2backend(this.module, this.data);
+    }
+
+    /**
      * handle socket event
      * @param event
      * @private
@@ -1549,7 +1556,7 @@ export class model implements OnDestroy {
      *  @param changedFields an array with fieldnames that has been changed in order to allow the method to determine the scope fo the change and if a duplicate check shoudl be performed
      */
     public duplicateCheckOnChange(changedFields: string[]): Observable<boolean> {
-        if (this.isNew && this.metadata.getModuleDuplicatecheck(this.module)) {
+        if (this.isNew && this.metadata.getModuleDuplicatecheckOnChange(this.module)) {
             let dupCheckFields = this.metadata.getModuleDuplicateCheckFields(this.module);
 
             // return if we do not have any fields to check for

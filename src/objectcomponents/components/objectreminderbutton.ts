@@ -1,12 +1,13 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, Renderer2, ElementRef} from '@angular/core';
+import {Component, Input, Renderer2, ElementRef, OnDestroy} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {reminder} from '../../services/reminder.service';
 import {language} from '../../services/language.service';
 import {userpreferences} from '../../services/userpreferences.service';
+import {Subscription} from "rxjs";
 
 /**
 * @ignore
@@ -17,24 +18,39 @@ declare var moment: any;
     selector: 'object-reminder-button',
     templateUrl: '../templates/objectreminderbutton.html'
 })
-export class ObjectReminderButton {
+export class ObjectReminderButton implements OnDestroy{
 
     public showDialog: boolean = false;
     public reminderDate: Date = new moment();
     public hasReminder: boolean = false;
+
+    /**
+     * a listner that subscribes to document clicks top close the popover
+     */
     public clickListener: any;
+
+    /**
+     * subscriptions for this component
+     * @private
+     */
+    private subscriptions: Subscription = new Subscription();
 
     constructor(public language: language, public metadata: metadata, public model: model, public renderer: Renderer2, public elementRef: ElementRef, public reminder: reminder, public userpreferences: userpreferences) {
 
-        if (!this.reminder.loaded) {
-            this.reminder.loaded$.subscribe(loaded => {
+        // subscribe to model changes
+        this.subscriptions.add(
+            this.reminder.changed$.subscribe(loaded => {
                 this.loadReminder();
-            });
-        }
+            })
+        );
 
         // oad in any case
         this.loadReminder();
 
+    }
+
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     public loadReminder() {
@@ -42,6 +58,8 @@ export class ObjectReminderButton {
         if (hasReminder !== false) {
             this.hasReminder = true;
             this.reminderDate = new moment(hasReminder);
+        } else {
+            this.hasReminder = false;
         }
     }
 

@@ -1,7 +1,6 @@
 <div class="slds-tabs--default">
     <ul class="slds-tabs--default__nav" role="tablist">
-        <li *ngFor="let tab of tabs; let tabindex = index"
-            class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': tabindex === activeTab}"
+        <li *ngFor="let tab of tabs; let tabindex = index" class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': tabindex === activeTab, 'slds-hide': isHidden(tab)}"
             role="presentation" (click)="setActiveTab(tabindex)">
             <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
                 <object-tab-container-item-header [tab]="tab"></object-tab-container-item-header>

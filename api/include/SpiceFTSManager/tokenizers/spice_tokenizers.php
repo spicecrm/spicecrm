@@ -53,7 +53,7 @@ $elasticTokenizers = [
             "symbol",
             "custom"
         ],
-        "custom_token_chars" => "+&"
+        "custom_token_chars" => "+&/"
     ],
     "spice_edgengram" => [
         "type" => "edge_ngram",
