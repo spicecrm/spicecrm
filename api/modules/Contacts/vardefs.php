@@ -700,6 +700,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'name' => 'idx_cont_assigned',
             'type' => 'index',
             'fields' => ['assigned_user_id']
+        ],
+        [
+            'name' => 'idx__cont__portal_user_id__del',
+            'type' => 'index',
+            'fields' => ['portal_user_id','deleted']
         ]
 //	array(
 //		'name' => 'idx_cont_email1',
