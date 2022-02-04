@@ -117,6 +117,7 @@ import {GlobalHeaderReminders} from "./components/globalheaderreminders";
 import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanager";
 import {GlobalLoginOAuth2} from "./components/globalloginoauth2";
 import {OAuthModule} from "angular-oauth2-oidc";
+import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -216,9 +217,9 @@ import {OAuthModule} from "angular-oauth2-oidc";
         GlobalHeaderNotificationsItemDelete,
         GlobalNotificationsListView,
         GlobalCountdown,
-        GlobalSubscriptionsManager
-        GlobalNotificationsListView,
-        GlobalLoginOAuth2
+        GlobalSubscriptionsManager,
+        GlobalLoginOAuth2,
+        GlobalLoginOAuth2Button
     ],
     entryComponents: [
         GlobalCopyright,

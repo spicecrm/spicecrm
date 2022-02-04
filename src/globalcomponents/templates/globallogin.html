@@ -45,8 +45,8 @@
                         </div>
                         <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                         <div class="slds-p-top--small">
-                            <global-login-google class="slds-size--1-of-1" (token)="login($event, 'Google')"></global-login-google>
-                            <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event, 'OAuth2')"></global-login-oauth2>
+                            <global-login-google class="slds-size--1-of-1" (token)="login($event)"></global-login-google>
+                            <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)"></global-login-oauth2>
                         </div>
                     </form>
                     <div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread slds-grid_vertical-align-center"
