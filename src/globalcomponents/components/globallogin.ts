@@ -144,7 +144,7 @@ export class GlobalLogin {
     /**
      * triggers the actual login itself
      */
-   public login(token?, issuer?) {
+   public login(token?: {issuer: string, accessToken: string}) {
 
         if (token || (this.username && this.password)) {
             // clear the current messageid if one is set
@@ -159,8 +159,8 @@ export class GlobalLogin {
             if(token) {
                 this.loginService.authData.userName = null;
                 this.loginService.authData.password = null;
-                this.loginService.oauthToken = token;
-                this.loginService.oauthIssuer = issuer;
+                this.loginService.oauthToken = token.accessToken;
+                this.loginService.oauthIssuer = token.issuer;
             } else {
                 this.loginService.authData.userName = this.username;
                 this.loginService.authData.password = this.password;

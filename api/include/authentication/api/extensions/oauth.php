@@ -1,5 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
+
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\authentication\api\controllers\OAuthController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -36,18 +38,18 @@ $routes = [
     ],
 ];
 
+try {
+    $services = AuthenticationController::loadServices();
+} catch (Exception $e) {
+    $services = [];
+}
+
 /**
  * register the Extension
  */
 $RESTManager->registerExtension(
-    'oauth',
+    'oauth2',
     '1.0',
-    [
-        'server_url'     => $config['oauth']['server_url'],
-        'authorize_path' => $config['oauth']['authorize_path'],
-        'token_path'     => $config['oauth']['token_path'],
-        'profile_path'   => $config['oauth']['profile_path'],
-        'client_id'      => $config['oauth']['client_id'],
-    ],
+    $services,
     $routes
 );
