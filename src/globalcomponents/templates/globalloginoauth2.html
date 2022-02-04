@@ -1,3 +1,1 @@
-<button (click)="signIn($event)" class="slds-button slds-button_neutral slds-size--1-of-1">
-    Doqist
-</button>
+<global-login-oauth2-button *ngFor="let service of services" [service]="service" [authenticatedUser]="authenticatedUser"></global-login-oauth2-button>

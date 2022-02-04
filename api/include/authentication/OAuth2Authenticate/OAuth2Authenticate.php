@@ -1,41 +1,61 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-namespace SpiceCRM\includes\authentication\OAuthAuthenticate;
 
+namespace SpiceCRM\includes\authentication\OAuth2Authenticate;
+
+use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Users\User;
 
-class OAuthAuthenticate
+class OAuth2Authenticate
 {
     private $ssl_verifyhost = false;
     private $ssl_verifypeer = false;
+    /**
+     * based on oauth2 pattern
+     * issuer
+     * client_id
+     * scope
+     * redirect_uri
+     * token_endpoint
+     * userinfo_endpoint
+     * login_url
+     * client_secret
+     * discovery_document_url
+     */
+    private $config;
+
+    public function __construct($config)
+    {
+        $this->config = json_decode($config);
+    }
 
     /**
      * Fetches the OAuth access token using the authorization code.
      *
      * @param string $authCode
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function fetchAccessToken(string $authCode): string {
-        $tokenUrl = SpiceConfig::getInstance()['oauth']['token_path'];
-        $payload  = [
+    public function fetchAccessToken(string $authCode): string
+    {
+        $payload = [
             'grant_type' => 'authorization_code',
         ];
 
         $curl = curl_init();
         $curlOptions = [// todo customize the params
-            CURLOPT_URL            => $tokenUrl,
-            CURLOPT_POST           => 1,
+            CURLOPT_URL => $this->config->token_endpoint,
+            CURLOPT_POST => 1,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER         => 1,
+            CURLOPT_HEADER => 1,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
-            CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_HTTPHEADER     => [
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => [
                 'Accept: application/json',
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $authCode,
@@ -58,21 +78,23 @@ class OAuthAuthenticate
      * Fetches the user profile from the OAuth server.
      *
      * @param string $accessToken
-     * @return array
-     * @throws \Exception
+     * @return array|null
+     * @throws Exception
      */
-    public function fetchUserProfile(string $accessToken): array {
-        $profileUrl = SpiceConfig::getInstance()['oauth']['profile_path'];
+    public function fetchUserProfile(string $accessToken): ?object
+    {
+        if (empty($this->config->userinfo_endpoint)) return null;
 
         $curl = curl_init();
-        $curlOptions = [// todo customize the params
-            CURLOPT_URL            => $profileUrl,
-            CURLOPT_CUSTOMREQUEST  => 'GET',
+
+        $curlOptions = [
+            CURLOPT_URL => $this->config->userinfo_endpoint,
+            CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER         => 1,
+            CURLOPT_HEADER => 1,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
-            CURLOPT_HTTPHEADER     => [
+            CURLOPT_HTTPHEADER => [
                 'Accept: application/json',
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $accessToken,
@@ -82,13 +104,19 @@ class OAuthAuthenticate
         curl_setopt_array($curl, $curlOptions);
         $logEntryHandler = new APILogEntryHandler();
         $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'oauth_fetch_profile');
+
         $result = curl_exec($curl);
+        $info = curl_getinfo($curl);
+
         $logEntryHandler->updateOutgoingLogEntry($curl, $result);
         $logEntryHandler->writeOutogingLogEntry();
 
-        // todo process the result
+        if ($info['http_code'] == 200) {
+            $body = substr($result, $info['header_size']);
+            return json_decode($body);
+        }
 
-        return [];
+        return null;
     }
 
     /**
@@ -96,17 +124,19 @@ class OAuthAuthenticate
      * The user name has to be equal to the email address used for the OAuth authentication.
      *
      * @param string $accessToken
-     * @param array $userProfile
      * @return User
+     * @throws NotFoundException
      * @throws UnauthorizedException
-     * @throws \SpiceCRM\includes\ErrorHandlers\NotFoundException
+     * @throws Exception
      */
-    public function authenticate(string $accessToken, array $userProfile): User {
+    public function authenticate(string $accessToken): User
+    {
         /**
          * @var $user User
          */
         $user = BeanFactory::getBean('Users');
-        $user->findByUserName($userProfile['email']);
+        $userProfile = $this->fetchUserProfile($accessToken);
+        $user->findByUserName($userProfile->email);
 
         if (!$user || !$user->id) {
             throw new UnauthorizedException('User not found');
