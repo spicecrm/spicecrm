@@ -42,8 +42,14 @@
         <activity-timeline-drop-zone-wrapper>
             <activitytimeline-container module="History" [displayaggregates]="false"></activitytimeline-container>
         </activity-timeline-drop-zone-wrapper>
+        <div class="slds-align--absolute-center">
+            <button *ngIf="activitiytimeline.canLoadMore('History')" class="slds-button slds-button--neutral" type="button" (click)="loadMore('History')"><span><system-label label="LBL_MORE"></system-label></span></button>
+        </div>
     </div>
     <div class="slds-tabs_default__content slds-p-top--xxx-small" [ngClass]="{'slds-hide': activetab != 'planned'}"  role="tabpanel">
         <activitytimeline-container module="Activities"></activitytimeline-container>
+        <div class="slds-align--absolute-center">
+            <button *ngIf="activitiytimeline.canLoadMore('Activities')" class="slds-button slds-button--neutral" type="button" (click)="loadMore('Activities')"><span><system-label label="LBL_MORE"></system-label></span></button>
+        </div>
     </div>
 </div>
