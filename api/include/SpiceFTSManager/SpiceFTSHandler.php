@@ -526,14 +526,31 @@ class SpiceFTSHandler
                     if ($indexSettings['waitfor']) $this->transactionSyncronous = true;
                 }
 
-                $this->transactionEntries['elastic'][] = json_encode([
+                // build the entry for the index bulk
+                $indexEntry = json_encode([
                     'index' => [
                         '_index' => $this->elasticHandler->indexPrefix . strtolower($beanModule),
                         '_id' => $bean->id
                     ]
                 ]);
+
+                // check for duplicate
+                // if the same entry exists we remove it from the array with the current values and upüdate with the new ones
+                // the same record only needs to be added once and not subsequently taking load form elastic
+                // in case we have none
+                $found = array_search($indexEntry, $this->transactionEntries['elastic']);
+                if($found !== false){
+                    // if we found one remove the netreis and add them to the end again with the new values
+                    array_splice($this->transactionEntries['elastic'], $found, 2);
+                } else {
+                    // if none is found add the db update entry
+                    $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
+                }
+
+                // add the index entries to the array
+                $this->transactionEntries['elastic'][] = $indexEntry;
                 $this->transactionEntries['elastic'][] = json_encode($indexArray);
-                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
+
             } else {
                 $indexResponse = $this->elasticHandler->document_index($beanModule, $indexArray);
 
