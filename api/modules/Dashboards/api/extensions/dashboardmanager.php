@@ -26,7 +26,7 @@ $routes = [
         'class'       => DashboardManagerController::class,
         'function'    => 'replaceDashlet',
         'description' => 'replaces into the database',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'dashletId' => [
                 'in'          => 'path',
@@ -148,7 +148,7 @@ $routes = [
         'class'       => DashboardManagerController::class,
         'function'    => 'deleteDashlet',
         'description' => 'deletes a dashlet depending on the id',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'dashletId' => [
                 'in'          => 'path',

@@ -166,6 +166,7 @@ export class OutputTemplatesPreview {
         this.cdRef.detectChanges();
 
         let postBody: any = {
+            language: this.model.getField('language'),
             parentype: this.module,
             parentid: this.selectedItem.id,
             body: this.model.getField('body'),

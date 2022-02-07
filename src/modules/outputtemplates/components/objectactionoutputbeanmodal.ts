@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -43,6 +43,11 @@ export class ObjectActionOutputBeanModal {
      */
         // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
     @ViewChild(ObjectActionOutputBeanModalEmailContent) public emailContent: ObjectActionOutputBeanModalEmailContent;
+
+    /**
+     * emit the action to the container
+     */
+    @Output() public actionemitter = new EventEmitter<{close: boolean, name: string}>();
 
     public modalTitle: string;
     public forcedFormat: 'html' | 'pdf';
@@ -365,6 +370,12 @@ export class ObjectActionOutputBeanModal {
      * call the child method that will send the mail
      */
     public sendEmail() {
+        // saving letter before sending email - solution for Letters module where the letter id is not set
+        if(this.model.module == 'Letters') {
+            this.backend.postRequest(`module/Letters/${this.model.id}/marksent/${this.selected_template.id}`, null, this.model.data).subscribe(res => {
+                this.actionemitter.emit({close: true, name: 'sent'})});
+        }
+
         this.emailContent.sendEmail();
     }
 

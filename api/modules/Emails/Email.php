@@ -634,8 +634,13 @@ class Email extends SugarBean
             foreach ($attachments as $attachment) {
                 foreach ($matches[1] as $match) {
                     if (strpos($match, $attachment['filename']) !== false) {
-                        $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
-                        $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
+                        // catch exception so that error on getting attchments would not break fts indexing of the record
+                        try {
+                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
+                            $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
+                        } catch(Exception $e) {
+                            // do nothing
+                        }
                     }
                 }
             }
@@ -1053,7 +1058,7 @@ class Email extends SugarBean
     {
         $db = DBManagerFactory::getInstance();
 
-        $query = "SELECT * FROM mailbox_processors WHERE mailbox_id='" . $this->mailbox_id . "' ORDER BY priority";
+        $query = "SELECT * FROM mailbox_processors WHERE mailbox_id='" . $this->mailbox_id . "' AND deleted=0 ORDER BY priority";
         $q = $db->query($query);
 
         while ($processor = $db->fetchByAssoc($q)) {

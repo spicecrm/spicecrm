@@ -32,6 +32,6 @@ export class SystemDropdownTriggerButtonDirective {
     @HostListener('click', ['$event'])
     public onClick(event) {
         if (!this.trigger) return;
-        this.trigger.openDropdown(event);
+        this.trigger.toggleDropdown(event);
     }
 }
