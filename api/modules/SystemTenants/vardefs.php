@@ -78,6 +78,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'source'       => 'non-db',
             'relationship' => 'tenants_deploymentpackages',
         ],
+        'companycode_id' => [
+            'name'  => 'companycode_id',
+            'vname' => 'LBL_COMPANYCODE_ID',
+            'type'  => 'id',
+        ],
+        'companycode' => [
+            'name'         => 'companycode',
+            'vname'        => 'LBL_COMPANYCODE',
+            'relationship' => 'tenant_companycode',
+            'type'         => 'link',
+            'source'       => 'non-db',
+        ],
     ],
     'indices' => [],
     'relationships' => [
@@ -89,7 +101,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'rhs_table' => 'users',
             'rhs_key' => 'systemtenant_id',
             'relationship_type' => 'one-to-many'
-        ]
+        ],
+        'tenant_companycode' => [
+            'lhs_module'        => 'SystemTenant',
+            'lhs_table'         => 'systemtenants',
+            'lhs_key'           => 'id',
+            'rhs_module'        => 'CompanyCode',
+            'rhs_table'         => 'companycodes',
+            'rhs_key'           => 'companycode_id',
+            'relationship_type' => 'one-to-many',
+        ],
     ]
 ];
 
