@@ -39,7 +39,7 @@ class OutputTemplatesController
         $bean->margin_bottom = $body['margin_bottom'];
         $bean->page_size = $body['page_size'];
         $bean->page_orientation = $body['page_orientation'];
-
+        $bean->language = $body['language'];
         $bean->module_name = $body['parentype'];
         $bean->bean_id = $body['parentid'];
         $file = $bean->getPdfContent();
