@@ -94,9 +94,9 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = ['appointment'=>'Dies ist ein Text'] )
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null )
     {
-        $this->additionalValues = ['appointment'=>'Dies ist ein Text'];//$additionalValues;
+        $this->additionalValues = $additionalValues;
         $this->lang = $lang;
         $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
