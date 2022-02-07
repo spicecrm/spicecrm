@@ -12,13 +12,44 @@ import {metadata} from "../../../services/metadata.service";
     providers: [model]
 })
 export class ServiceSelectQueueModal {
+    /**
+     * reference to the modal itself
+     */
     public self: any = {};
+
+    /**
+     * the parent queue id
+     */
     public parentqueue_id: string = '';
+
+    /**
+     * the list of available queues
+     */
     public queues: any[] = [];
+
+    /**
+     * indicates when we are laoding queues
+     */
     public loading: boolean = true;
+
+    /**
+     * an indicator if a note shoudl be displayed
+     */
     public displaynote: boolean = true;
+
+    /**
+     * the id of the selceted queue
+     */
     public selectedqueueid: string = '';
+
+    /**
+     * the string for the note
+     */
     public note: string = '';
+
+    /**
+     * an emitter for the selected queue if all was passed properly
+     */
     public selectedqueue: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
@@ -41,6 +72,9 @@ export class ServiceSelectQueueModal {
         });
     }
 
+    /**
+     * closes the modal and emits false
+     */
     public cancel() {
         this.selectedqueue.emit(false);
         this.self.destroy();
@@ -48,11 +82,15 @@ export class ServiceSelectQueueModal {
 
     public save() {
 
+        // set the model fields and save the model
         this.model.setField('servicequeue_id', this.selectedqueueid);
-        this.model.setField('servicequeue_name', this.getQueueName(this.selectedqueueid));
+        this.model.setField('servicequeue_name', this.queues.find(q => q.id == this.selectedqueueid).name);
         this.model.setField('serviceticket_status', 'In Process');
         this.model.save();
 
+        /**
+         * save the note
+         */
         if(this.note){
             this.serviceticketnote.module = 'ServiceTicketNotes';
             this.serviceticketnote.initialize(this.model);
@@ -60,16 +98,6 @@ export class ServiceSelectQueueModal {
             this.serviceticketnote.save();
         }
 
-
-
         this.self.destroy();
-    }
-
-    public getQueueName(id) {
-        for (let queue of this.queues) {
-            if (queue.id == this.selectedqueueid) {
-                return queue.name;
-            }
-        }
     }
 }

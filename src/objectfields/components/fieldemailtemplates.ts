@@ -116,7 +116,26 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                         // keep the html with the class "spicecrm_quote" and set the template
                         this.model.setField(this.bodyField, data.body_html + selectedEle[0].outerHTML);
                     } else {
-                        this.model.setField(this.bodyField, data.body_html);
+                        // create a new document to manage the current html string (body)
+                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
+                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
+                        // check if a div tag with signature is present in order to keep the signature when set
+                        // extract signatures, add again to the end of body_html
+                        let selectedEle = virtualDocument.querySelectorAll("div[data-signature]");
+                        virtualDocument.documentElement.innerHTML = data.body_html;
+                        let body = virtualDocument.querySelector('body');
+                        if(body) { // add as laast child within the body
+                            selectedEle.forEach(el => {
+                                body.appendChild(el);
+                            });
+                        } else { // add as laast child within the main tag
+                            selectedEle.forEach(el => {
+                                virtualDocument.documentElement.appendChild(el);
+                            });
+                        }
+
+                        // keep the html with the signature in the end and set the template
+                        this.model.setField(this.bodyField, virtualDocument.documentElement.outerHTML);
                     }
                     modalRef.instance.self.destroy();
                 });

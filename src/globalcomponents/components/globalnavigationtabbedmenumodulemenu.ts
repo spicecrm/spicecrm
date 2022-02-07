@@ -151,19 +151,24 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
      *
      * @param actionid the action id
      */
-   public isDisabled(actionid) {
-        let disabled = true;
+    public isDisabled(actionid) {
         if (this.menuItemlist) {
-            this.menuItemlist.some((actionitem: any) => {
-                if (actionitem.id == actionid) {
-                    disabled = actionitem.disabled;
-                    return true;
-                }
-            });
+            return this.menuItemlist.find(a => a.id == actionid)?.disabled;
         }
-        return disabled;
+        return false;
     }
 
+    /**
+     * determines based on the action ID if the component embedded in the container item is hidden
+     *
+     * @param actionid the action id
+     */
+    public isHidden(actionid) {
+        if (this.menuItemlist) {
+            return this.menuItemlist.find(a => a.id == actionid)?.hidden;
+        }
+        return false;
+    }
     /**
      * open a record with the given id from either tha favorites or the recent items
      *

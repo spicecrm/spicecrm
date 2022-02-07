@@ -68,7 +68,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     }
 
     public ngOnDestroy() {
-        this.removeDropdownFromFooter();
+        this.restoreDropdownFromFooter();
         if (this.clickListener) this.clickListener();
         if (this.triggerClickListener) this.triggerClickListener();
     }
@@ -82,26 +82,29 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
      * remove dropdown from footer if it is closed
      * remove global click listener
      */
-    public openDropdown(event) {
+    public toggleDropdown( event) {
 
-        this.setDropdownElement();
+        if ( event ) event.stopPropagation();
+        if (this.dropdowntriggerdisabled) return false;
 
-        if (this.dropdownElement) {
-            this.moveDropdownToFooter();
-            this.setDropdownElementPosition();
-        }
+        this.dropDownOpen = !this.dropDownOpen;
 
-        if (!this.dropdowntriggerdisabled) {
-            this.toggleOpenDropdown();
-
-            if (this.dropDownOpen) {
-                if (event) event.preventDefault();
-                this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
-            } else {
-                this.removeDropdownFromFooter();
-                this.clickListener();
+        if ( this.dropDownOpen ) {
+            this.setDropdownElement();
+            if( this.dropdownElement ) {
+                this.moveDropdownToFooter();
+                this.setDropdownElementPosition();
             }
         }
+
+        if (this.dropDownOpen) {
+            if (event) event.preventDefault();
+            this.clickListener = this.renderer.listen("document", "click", (event2) => this.onClick(event2));
+        } else {
+            this.restoreDropdownFromFooter();
+            this.clickListener();
+        }
+
     }
 
     /**
@@ -111,10 +114,8 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
      */
     @HostListener('click', ['$event'])
     public hostClick(event) {
-
         if (this.hasTriggerButton) return;
-
-        this.openDropdown(event);
+        this.toggleDropdown(event);
     }
 
     /*
@@ -130,9 +131,10 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @remove the dropdown element from origin
     * @append the dropdown element to the footer
     */
-    public removeDropdownFromFooter() {
+    public restoreDropdownFromFooter() {
         if (this.dropdownElement && this.footer.footercontainer.element.nativeElement.contains(this.dropdownElement)) {
             this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
+            this.renderer.appendChild(this.elementRef.nativeElement, this.dropdownElement);
         }
     }
 
@@ -148,13 +150,6 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
                 }
             }
         }
-    }
-
-    /*
-    * @set dropDownOpen
-    */
-    public toggleOpenDropdown() {
-        this.dropDownOpen = !this.dropDownOpen;
     }
 
     /*
@@ -221,14 +216,10 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @remove global click listener
     */
     public onClick(event): void {
-
-        if (!this.triggerElement.contains(event.target)) {
+        if (!this.elementRef.nativeElement.contains(event.target)) {
             this.dropDownOpen = false;
-            this.removeDropdownFromFooter();
-            // append dropdown element to it's origin
-            this.renderer.appendChild(this.triggerElement, this.dropdownElement);
+            this.restoreDropdownFromFooter();
             this.clickListener();
-
             // make sure we detect changes in case we are on a push strategy
             this.cdRef.markForCheck();
         }
