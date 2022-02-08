@@ -42,8 +42,9 @@ export class GlobalLoginOAuth2 {
         if (!Array.isArray(services)) return;
 
         this.services = services.map(service => {
-            service.config = JSON.parse(service.config);
-            return service;
+            const clone = {...service};
+            clone.config = JSON.parse(clone.config);
+            return clone;
         });
     }
 }
