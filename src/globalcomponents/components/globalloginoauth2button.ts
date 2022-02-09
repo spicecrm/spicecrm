@@ -4,9 +4,10 @@
 import {HttpClient} from "@angular/common/http";
 import {Component, Host, Input} from "@angular/core";
 import {toast} from "../../services/toast.service";
-import {OAuthService} from "angular-oauth2-oidc";
 import {Auth2ServiceConfigI, AuthServiceI} from "../interfaces/globalcomponents.interfaces";
 import {GlobalLoginOAuth2} from "./globalloginoauth2";
+import {configurationService} from "../../services/configuration.service";
+import {OAuth2Service} from "../../services/oauth2.service";
 
 /**
  * a login button that triggers the authentication via OAuth2 if that is enabled for the system
@@ -14,7 +15,7 @@ import {GlobalLoginOAuth2} from "./globalloginoauth2";
 @Component({
     selector: "global-login-oauth2-button",
     templateUrl: "../templates/globalloginoauth2button.html",
-    providers: [OAuthService]
+    providers: [OAuth2Service]
 })
 export class GlobalLoginOAuth2Button {
     /**
@@ -32,7 +33,8 @@ export class GlobalLoginOAuth2Button {
 
     constructor(
         public http: HttpClient,
-        public oauthService: OAuthService,
+        public oauth2Service: OAuth2Service,
+        public configurationService: configurationService,
         @Host() private parent: GlobalLoginOAuth2,
         public toast: toast
     ) {
@@ -63,34 +65,21 @@ export class GlobalLoginOAuth2Button {
     /**
      * initialize and load the oauth libraries
      */
-    public initialize(config: Auth2ServiceConfigI) {
+    public initialize(config: any) {
 
-        if (!config?.client_id) return this.disabled = true;
+        if (!config?.client_id || !config.login_url || !config.userinfo_endpoint || !config.token_endpoint) return this.disabled = true;
 
         this.visible = true;
 
-        this.oauthService.configure({
-            issuer: config.issuer,
-            clientId: config.client_id,
+        this.oauth2Service.config = {
+            client_id: config.client_id,
             scope: config.scope,
-            redirectUri: config.redirect_uri,
-            showDebugInformation: true,
-            oidc: false,
-            responseType: 'code'
-        });
-
-        this.oauthService.dummyClientSecret = config.client_secret;
-
-        this.oauthService.loadDiscoveryDocument(config.discovery_document_url).catch(() => {
-
-            if (!config.login_url || !config.userinfo_endpoint || !config.token_endpoint) {
-                return this.disabled = true;
-            }
-
-            this.oauthService.loginUrl = config.login_url;
-            this.oauthService.userinfoEndpoint = config.userinfo_endpoint;
-            this.oauthService.tokenEndpoint = config.token_endpoint;
-        });
+            token_endpoint: config.token_endpoint,
+            userinfo_endpoint: config.userinfo_endpoint,
+            login_url: config.login_url,
+            redirect_uri: config.redirect_uri,
+            client_secret: config.client_secret
+        };
 
         // set visible and enable the button
         this.disabled = false;
@@ -105,29 +94,29 @@ export class GlobalLoginOAuth2Button {
         event.preventDefault();
         event.stopPropagation();
 
-        this.oauthService.initLoginFlowInPopup().then(res => {
+        const url = this.configurationService.getBackendUrl() + '/authentication/oauth2/accessToken';
 
-            const accessToken = this.oauthService.getAccessToken();
+        this.oauth2Service.codeFlowLogin().subscribe(code => {
 
+            this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe((data: {accessToken, profile}) => {
 
-                this.oauthService.loadUserProfile().then((profile: any) => {
+                if (this.authenticatedUser) {
 
-                    if (this.authenticatedUser == profile.email) {
+                    if (this.authenticatedUser == data.profile.email) {
 
-                        this.parent.token.emit({issuer: this.service.issuer, accessToken});
+                        this.parent.token.emit({
+                            issuer: this.service.issuer, accessToken: data.accessToken
+                        });
 
-                    } else if (this.authenticatedUser != profile.email) {
+                    } else {
                         this.toast.sendToast('Wrong username', 'warning', 'usernames do not match, please relogin with the proper user');
                     }
-
+                } else {
                     this.parent.token.emit({
-                        accessToken: this.oauthService.getAccessToken(),
-                        issuer: this.service.issuer
+                        issuer: this.service.issuer, accessToken: data.accessToken
                     });
-                });
-
-        }).catch(res => {
-            console.log(res);
-        });
+                }
+            });
+        })
     }
 }
