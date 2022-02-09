@@ -65,7 +65,7 @@ export class GlobalLoginOAuth2Button {
     /**
      * initialize and load the oauth libraries
      */
-    public initialize(config: any) {
+    public initialize(config: Auth2ServiceConfigI) {
 
         if (!config?.client_id || !config.login_url || !config.userinfo_endpoint || !config.token_endpoint) return this.disabled = true;
 
