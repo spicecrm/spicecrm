@@ -5,7 +5,6 @@ import {CommonModule} from "@angular/common";
 import {FormsModule}   from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 import {NgModule} from "@angular/core";
-import {RouterModule,} from "@angular/router";
 
 import {ObjectFields}      from "../objectfields/objectfields";
 import {ObjectComponents}      from "../objectcomponents/objectcomponents";
@@ -15,10 +14,6 @@ import {SystemComponents}      from "../systemcomponents/systemcomponents";
  * @ignore
  */
 declare var _: any;
-/**
- * @ignore
- */
-declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
@@ -116,7 +111,6 @@ import {GlobalCountdown} from "./components/globalcountdown";
 import {GlobalHeaderReminders} from "./components/globalheaderreminders";
 import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanager";
 import {GlobalLoginOAuth2} from "./components/globalloginoauth2";
-import {OAuthModule} from "angular-oauth2-oidc";
 import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 
 /**
@@ -130,7 +124,6 @@ import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
         DirectivesModule,
         SystemComponents,
         ObjectComponents,
-        OAuthModule.forRoot()
     ],
     declarations: [
         GlobalCopyright,
