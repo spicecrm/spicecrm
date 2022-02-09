@@ -29,6 +29,7 @@
               "vendor/reflect-metadata/Reflect.js",
               "vendor/systemjs/system.js",
               "vendor/moment/moment.min.js",
+              "vendor/moment/locales.min.js",
               "vendor/moment/moment-timezone.min.js",
               "systemjs.config.js"
             ]
