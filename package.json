@@ -49,8 +49,7 @@
     "tslib": "^1.14.1",
     "typedoc": "^0.17.7",
     "typedoc-plugin-external-module-name": "~2.0.0",
-    "zone.js": "^0.11.4",
-    "angular-oauth2-oidc": "^13.0.1"
+    "zone.js": "^0.11.4"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^13.0.0",

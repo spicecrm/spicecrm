@@ -248,17 +248,17 @@ class AuthenticationController
      * get issuer class
      * @throws \Exception
      */
-    private function getIssuerObject($tokenIssuer)
+    public static function getIssuerObject($tokenIssuer)
     {
         $db = DBManagerFactory::getInstance();
-        $service = $db->fetchOne("SELECT class_name, c.config FROM authentication_services s INNER JOIN sysauthconfig c ON s.issuer = c.issuer  WHERE s.issuer = '$tokenIssuer'  ORDER BY s.sequence");
+        $service = $db->fetchOne("SELECT class_name FROM authentication_services WHERE issuer = '$tokenIssuer'");
 
         $authenticationClass = "SpiceCRM\includes\authentication\\{$tokenIssuer}Authenticate\\{$tokenIssuer}Authenticate";
 
         if (!empty($service)) $authenticationClass = $service['class_name'];
 
         if (class_exists($authenticationClass, true)) {
-            return new $authenticationClass($service['config']);
+            return new $authenticationClass($tokenIssuer);
         } else {
             throw new \Exception("AuthenticationClass {$authenticationClass} not found");
         }
