@@ -660,7 +660,7 @@ class Compiler
                     break;
                 case 'currency':
                     // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                    $value = currency_format_number($obj->{$part}, ['symbol_space' => true] );
+                    $value = $raw ? $obj->{$part} : currency_format_number($obj->{$part}, ['symbol_space' => true] );
                     break;
                 case 'html':
                     $value = html_entity_decode($obj->{$part});
@@ -672,7 +672,7 @@ class Compiler
                     break;
                 default:
                     // moved nl2br to only be added when non specific fields are parsed
-                    $value = nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                    $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
                     break;
                 }
             }
