@@ -5,7 +5,6 @@ import {CommonModule} from "@angular/common";
 import {FormsModule}   from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 import {NgModule} from "@angular/core";
-import {RouterModule,} from "@angular/router";
 
 import {ObjectFields}      from "../objectfields/objectfields";
 import {ObjectComponents}      from "../objectcomponents/objectcomponents";
@@ -15,10 +14,6 @@ import {SystemComponents}      from "../systemcomponents/systemcomponents";
  * @ignore
  */
 declare var _: any;
-/**
- * @ignore
- */
-declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
@@ -115,6 +110,8 @@ import /*embed*/ {GlobalNotificationsListView} from './components/globalnotifica
 import {GlobalCountdown} from "./components/globalcountdown";
 import {GlobalHeaderReminders} from "./components/globalheaderreminders";
 import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanager";
+import {GlobalLoginOAuth2} from "./components/globalloginoauth2";
+import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -126,7 +123,7 @@ import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanage
         ObjectFields,
         DirectivesModule,
         SystemComponents,
-        ObjectComponents
+        ObjectComponents,
     ],
     declarations: [
         GlobalCopyright,
@@ -213,7 +210,9 @@ import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanage
         GlobalHeaderNotificationsItemDelete,
         GlobalNotificationsListView,
         GlobalCountdown,
-        GlobalSubscriptionsManager
+        GlobalSubscriptionsManager,
+        GlobalLoginOAuth2,
+        GlobalLoginOAuth2Button
     ],
     entryComponents: [
         GlobalCopyright,
