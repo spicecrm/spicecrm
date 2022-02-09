@@ -46,7 +46,7 @@ export class GlobalLoginGoogle {
      *
      * @private
      */
-    @Output()public token: EventEmitter<string> = new EventEmitter<string>();
+    @Output()public token = new EventEmitter<{issuer: string, accessToken: string}>();
 
     constructor(
        public backend: backend,
