@@ -1842,7 +1842,7 @@ $app_list_strings['bonuscard_extension_status_enum'] = [
 
 $app_list_strings['workflowtasktypes_type_enum'] = [
     'regular' => 'Regular',
-    'gateway_event_based' => 'Gateway Event Based',
+    'gateway_email_event' => 'Gateway Event Based',
     'gateway_decision' => 'Gateway Decision',
     'start' => 'Start Task',
     'end' => 'End Task',

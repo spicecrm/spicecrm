@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="cancel()"><system-label label="LBL_TASK"></system-label></system-modal-header>
-    <system-modal-content>
+    <system-modal-content [grow]="true">
         <workflow-manager-detail-task [task]="task"></workflow-manager-detail-task>
     </system-modal-content>
     <system-modal-footer>

@@ -3,12 +3,15 @@
  */
 import {WorkflowTaskTypeI} from "../../modules/workflow/interfaces/workflow.interfaces";
 
-export const diagramElementTypes: {taskType: string, bpmnType: string}[] = [
+export const diagramElementTypes: {taskType: string, bpmnType: string, eventDefinitionType?: string}[] = [
     {taskType: 'regular' , bpmnType: 'bpmn:IntermediateThrowEvent'},
     {taskType: 'end' , bpmnType: 'bpmn:EndEvent'},
     {taskType: 'start' , bpmnType: 'bpmn:StartEvent'},
     {taskType: 'gateway_decision' , bpmnType: 'bpmn:ExclusiveGateway'},
-    {taskType: 'gateway_event_based' , bpmnType: 'bpmn:EventBasedGateway'}
+    {taskType: 'gateway_email_event' , bpmnType: 'bpmn:EventBasedGateway'},
+    {taskType: 'email_event_open' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:MessageEventDefinition'},
+    {taskType: 'email_event_bounce' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:SignalEventDefinition'},
+    {taskType: 'email_event_timer' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:TimerEventDefinition'},
 ];
 
 /**
@@ -75,10 +78,20 @@ export class SpiceContextPad {
                 }
             };
 
-            // define custom actions from task types
-            SpiceContextPad.taskTypes.forEach(type => {
+            let types = SpiceContextPad.taskTypes;
 
-                const createShape = () => elementFactory.createShape({ type: diagramElementTypes.find(e => e.taskType == type.type).bpmnType });
+            if (element.type == 'bpmn:EventBasedGateway') {
+                types = types.filter(t => t.type.startsWith('email_event'));
+            } else {
+                types = types.filter(t => !t.type.startsWith('email_event'));
+            }
+
+            // define custom actions from task types
+            types.forEach(type => {
+
+                if (type.type == 'start') return;
+                const bpmnTypeMap = diagramElementTypes.find(e => e.taskType == type.type);
+                const createShape = () => elementFactory.createShape({ type: bpmnTypeMap.bpmnType, eventDefinitionType: bpmnTypeMap.eventDefinitionType} );
 
                 const createTaskType = event => {
                     if (autoPlace) {
@@ -107,10 +120,6 @@ export class SpiceContextPad {
                     }
                 };
             });
-
-            if (!entries['append.intermediate-event']) {
-                return entries;
-            }
 
             return customEntries;
         };

@@ -29,6 +29,10 @@ declare var _;
 })
 export class WorkflowManager implements OnInit, AfterViewInit {
     /**
+     * if true stretch the container view
+     */
+    public stretch = false;
+    /**
      * holds the system modules
      */
     public modules = [];
@@ -126,10 +130,18 @@ export class WorkflowManager implements OnInit, AfterViewInit {
 
         } else {
 
-            this.model.data = this.getCurrentWorkflowData(id);
+            this.model.setData(
+                this.getCurrentWorkflowData(id)
+            );
+
             this.workflowManagerService.tasks = this.model.data.tasks;
 
             this.currentWorkflow = { id, data: this.model.data };
+
+
+            if (!this.workflowManagerService.hasStartTask()) {
+                this.generateStartTask();
+            }
 
             this.workflowDiagramService.reloadDiagramData(this.displayDiagram);
         }
@@ -178,7 +190,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             modalRef.instance.response.subscribe({
                 next: modalData => {
                     if (!modalData) return;
-                    this.model.data = modalData;
+                    this.model.setData(modalData);
                     this.model.id = newWorkflow.id;
                     this.workflowManagerService.currentModule.workflowDefinitions.push(
                         modalData
@@ -201,10 +213,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             () => {
                 this.model.data.isNew = false;
                 this.currentWorkflow.data.isNew = false;
-                this.workflowManagerService.currentModule.workflowDefinitions = this.workflowManagerService.currentModule.workflowDefinitions.map(item => {
-                    if (item.id != this.model.id) return item;
-                    return this.model.data;
-                });
+
                 this.toast.sendToast('data saved', 'success');
             },
             () => {
@@ -297,7 +306,8 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      */
     public getCurrentWorkflowData(id: string): any {
         const data = this.workflowManagerService.currentModule.workflowDefinitions.find(data => data.id == id);
-        return this.utils.backendModel2spice('WorkflowDefinitions', {...data});
+        data.tasks = data.tasks.map(task => this.utils.backendModel2spice('WorkflowTaskDefinitions', {...task}));
+        return {...data};
     }
 
     /**
@@ -312,12 +322,24 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             modalRef.instance.response.subscribe({
                 next: modalData => {
                     if (!modalData) return;
-                    this.model.data = modalData;
+                    this.model.setData(modalData);
                     this.workflowManagerService.currentModule.workflowDefinitions =
                         [...this.workflowManagerService.currentModule.workflowDefinitions.filter(w => w.id != modalData.id), modalData];
                 }
             });
         });
+    }
+
+    /**
+     * generate start task
+     * @private
+     */
+    private generateStartTask() {
+        const startTask = this.workflowManagerService.generateNewTask(
+            this.workflowManagerService.getStartType().id
+        );
+        this.workflowManagerService.tasks.push(startTask);
+        this.workflowManagerService.openEditModal(startTask.id);
     }
 
     /**
@@ -345,5 +367,12 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             this.toast.sendToast(this.language.getLabel('MSG_MISSING_WORKFLOW_ENDING'), 'warning');
             this.model.data.is_active = false;
         }
+    }
+
+    /**
+     * toggle stretch bool
+     */
+    public toggleStretch() {
+        this.stretch = !this.stretch;
     }
 }

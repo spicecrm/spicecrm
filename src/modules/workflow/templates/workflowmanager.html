@@ -1,64 +1,71 @@
-<div class="slds-p-around--medium slds-theme--shade">
-    <div class="slds-page-header__row">
-        <div class="slds-page-header__col-title">
-            <div class="slds-media">
-                <system-icon module="Workflows"></system-icon>
-                <div class="slds-media__body">
-                    <div class="slds-page-header__name">
-                        <div class="slds-page-header__name-title">
-                            <h1>
-                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_WORKFLOW_MANAGER"></system-label></span>
-                            </h1>
+<div class="slds-theme--default slds-size--1-of-1 slds-height_full" [style.position]="stretch ? 'fixed' : 'initial'" style="top: 0; left: 0; z-index: 999">
+    <div class="slds-p-around--medium slds-theme--shade">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <system-icon module="Workflows"></system-icon>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate"><system-label label="LBL_WORKFLOW_MANAGER"></system-label></span>
+                                </h1>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-    <div class="slds-form-element">
-        <div class="slds-form-element__control" style="min-width:250px;">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="currentModule">
-                    <option></option>
-                    <option *ngFor="let m of modules" [value]="m">{{m}}</option>
-                </select>
+    <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currentModule">
+                        <option></option>
+                        <option *ngFor="let m of modules" [value]="m">{{m}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="currentWorkflowDefinitions?.length > 0" class="slds-form-element">
+            <div class="slds-form-element__control" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currentWorkflowId" [disabled]="isLoading">
+                        <option></option>
+                        <option *ngFor="let wfd of currentWorkflowDefinitions" [value]="wfd.id">{{wfd.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="currentModule" class="slds-form-element slds-col--bump-left">
+            <system-checkbox-toggle *ngIf="currentWorkflowId" [(ngModel)]="displayDiagram" (ngModelChange)="toggleActivateDiagram($event)" label="LBL_DIAGRAM"></system-checkbox-toggle>
+            <system-checkbox-toggle *ngIf="currentWorkflowId" [ngModel]="model.data.is_active" (ngModelChange)="toggleActive($event)" label="LBL_ACTIVE"></system-checkbox-toggle>
+            <div class="slds-button-group" role="group">
+                <button (click)="toggleStretch()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                    <system-button-icon [icon]="!stretch ? 'expand' : 'contract'"></system-button-icon>
+                </button>
+            </div>
+            <div *ngIf="currentWorkflowId" class="slds-button-group" role="group">
+                <button (click)="openEditModal()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                    <system-button-icon icon="edit"></system-button-icon>
+                </button>
+                <button (click)="deleteWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                    <system-button-icon icon="delete"></system-button-icon>
+                </button>
+                <button (click)="save()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                    <system-button-icon icon="check"></system-button-icon>
+                </button>
+            </div>
+            <div class="slds-button-group" role="group">
+                <button (click)="addWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                    <system-button-icon icon="add"></system-button-icon>
+                </button>
             </div>
         </div>
     </div>
-    <div *ngIf="currentWorkflowDefinitions?.length > 0" class="slds-form-element">
-        <div class="slds-form-element__control" style="min-width:250px;">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="currentWorkflowId" [disabled]="isLoading">
-                    <option></option>
-                    <option *ngFor="let wfd of currentWorkflowDefinitions" [value]="wfd.id">{{wfd.name}}</option>
-                </select>
-            </div>
-        </div>
+    <div [class.slds-hide]="!currentWorkflowId" system-to-bottom>
+        <workflow-manager-detail-tasks *ngIf="!displayDiagram" class="slds-height_full spice-display-block"></workflow-manager-detail-tasks>
+        <div #diagramContainer [class.slds-hide]="!displayDiagram" class="slds-grow" style="min-height: 0"></div>
     </div>
-    <div *ngIf="currentModule" class="slds-form-element slds-col--bump-left">
-        <system-checkbox-toggle *ngIf="currentWorkflowId" [(ngModel)]="displayDiagram" (ngModelChange)="toggleActivateDiagram($event)" label="LBL_DIAGRAM"></system-checkbox-toggle>
-        <system-checkbox-toggle *ngIf="currentWorkflowId" [ngModel]="model.data.is_active" (ngModelChange)="toggleActive($event)" label="LBL_ACTIVE"></system-checkbox-toggle>
-        <div *ngIf="currentWorkflowId" class="slds-button-group" role="group">
-            <button (click)="openEditModal()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
-                <system-button-icon icon="edit"></system-button-icon>
-            </button>
-            <button (click)="deleteWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
-                <system-button-icon icon="delete"></system-button-icon>
-            </button>
-            <button (click)="save()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
-                <system-button-icon icon="check"></system-button-icon>
-            </button>
-        </div>
-        <div class="slds-button-group" role="group">
-            <button (click)="addWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
-                <system-button-icon icon="add"></system-button-icon>
-            </button>
-        </div>
-    </div>
-</div>
-<div [class.slds-hide]="!currentWorkflowId" system-to-bottom>
-    <workflow-manager-detail-tasks *ngIf="!displayDiagram" class="slds-height_full spice-display-block"></workflow-manager-detail-tasks>
-    <div #diagramContainer [class.slds-hide]="!displayDiagram" class="slds-grow" style="min-height: 0"></div>
 </div>

@@ -258,6 +258,14 @@ export class WorkflowDiagramService implements OnDestroy {
         autoPlace.append(process, newShape);
 
         modeling.updateProperties(newShape, {taskId: task.id});
+
+        // todo for start event
+        const tap = 100,
+            x = (type == 'bpmn:StartEvent' ? tap : (tap * this.workflowManagerService.filteredTasks.length)) + tap,
+            y = (tap * this.workflowManagerService.filteredTasks.length);
+        modeling.createElements(newShape, {x, y}, process);
+
+        modeling.updateProperties(newShape, {taskId: task.id});
     }
 
     /**

@@ -65,7 +65,7 @@ export class WorkflowManagerService {
      * @return boolean
      */
     public hasAllEndTasks(): boolean {
-        return !this.tasks.some(t =>
+        return !this.filteredTasks.some(t =>
             (!Array.isArray(t.type_config.next_tasks) || t.type_config.next_tasks.length == 0) && this.getType(t.tasktype).type != 'end'
         );
     }
@@ -75,7 +75,7 @@ export class WorkflowManagerService {
      * @return boolean
      */
     public hasStartTask(): boolean {
-        return !!this.tasks.find(t => !!t.tasktype && this.getStartType()?.id == t.tasktype);
+        return !!this.filteredTasks.find(t => !!t.tasktype && this.getStartType()?.id == t.tasktype);
     }
 
     /**
