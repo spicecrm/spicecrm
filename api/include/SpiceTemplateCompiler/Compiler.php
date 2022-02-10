@@ -367,28 +367,36 @@ class Compiler
         // if we match none or more than one operator this cannot be true and return false
         //if(count($operators) != 1) return false;
 
-        $conditionparts = explode(' ', $condition);
+        $conditionparts = explode(' ', $condition, 3);
+
+        //parse pipe if passed in
+
+        $value = $this->handleSubstitution($conditionparts[0], $beans, true);
+
         switch ($conditionparts[1]) {
             case '>':
-                return $this->getValue($conditionparts[0], $beans, true) > trim($conditionparts[2], "'");
+                return $value > trim($conditionparts[2], "'");
                 break;
             case '>=':
-                return $this->getValue($conditionparts[0], $beans, true) >= trim($conditionparts[2], "'");
+                return $value >= trim($conditionparts[2], "'");
                 break;
             case '<':
-                return $this->getValue($conditionparts[0], $beans, true) < trim($conditionparts[2], "'");
+                return$value < trim($conditionparts[2], "'");
                 break;
             case '<=':
-                return $this->getValue($conditionparts[0], $beans, true) <= trim($conditionparts[2], "'");
+                return $value <= trim($conditionparts[2], "'");
                 break;
             case '===':
-                return $this->getValue($conditionparts[0], $beans, true) === trim($conditionparts[2], "'");
+                return $value === trim($conditionparts[2], "'");
                 break;
             case '==':
-                return $this->getValue($conditionparts[0], $beans, true) == trim($conditionparts[2], "'");
+                return $value == trim($conditionparts[2], "'");
                 break;
             case '!=':
-                return $this->getValue($conditionparts[0], $beans, true) != trim($conditionparts[2], "'");
+                return $value != trim($conditionparts[2], "'");
+                break;
+            case 'in':
+                return in_array( $value, explode( ",", trim($conditionparts[2], "'")));
                 break;
         }
         return false;
@@ -484,6 +492,8 @@ class Compiler
                 $obj = new System();
                 break;
             case 'value':
+                #var_dump($this->additionalValues);
+                #exit;
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
@@ -502,7 +512,7 @@ class Compiler
         return $obj ?: false;
     }
 
-    public function compileblock($txt, $beans = [], $lang = 'de_DE', array $additionalValues = null)
+    public function compileblock($txt, $beans = [], $lang = 'de_DE')
     {
         $resultText = '';
         $remainingText = $txt;
@@ -542,9 +552,9 @@ class Compiler
 
     }
 
-    function handleSubstitution( $string, $beans ) {
+    function handleSubstitution( $string, $beans, $raw = false ) {
         $items = preg_split('#\|#', $string );
-        $currentValue = $this->getValueForCompileblock( $items[0], $beans );
+        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw );
         for ( $i = 1; $i < count( $items ); $i++ ) {
             if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans )) === false ) break;
             $currentValue = $temp;
@@ -552,7 +562,7 @@ class Compiler
         return $currentValue;
     }
 
-    function getValueForCompileblock($m, $beans ) {
+    function getValueForCompileblock($m, $beans, $raw = false ) {
 
         preg_match('#^([^:]+)(:(.*))?$#', $m, $matches );
 
@@ -575,7 +585,7 @@ class Compiler
          *          publisher = link -> load publisher ->
          *              name = attribute -> return value;
          */
-        $loopThroughParts = function ($obj, $level = 0) use (&$parts, &$loopThroughParts) {
+        $loopThroughParts = function ($obj, $level = 0, $raw = false) use (&$parts, &$loopThroughParts) {
 //            global $app_list_strings;
             $part = $parts[$level];
             if (is_callable([$obj, $part])) {
@@ -593,7 +603,7 @@ class Compiler
                     }
                     break;
                 case 'enum':
-                    $value = $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
+                    $value = $raw ? $obj->{$part} : $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
                     break;
                 case 'multienum':
                     $values = explode(',', $obj->{$part});
@@ -650,7 +660,7 @@ class Compiler
                     break;
                 case 'currency':
                     // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                    $value = currency_format_number($obj->{$part}, ['symbol_space' => true] );
+                    $value = $raw ? $obj->{$part} : currency_format_number($obj->{$part}, ['symbol_space' => true] );
                     break;
                 case 'html':
                     $value = html_entity_decode($obj->{$part});
@@ -662,14 +672,14 @@ class Compiler
                     break;
                 default:
                     // moved nl2br to only be added when non specific fields are parsed
-                    $value = nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                    $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
                     break;
                 }
             }
             return $value;
         };
 
-        $value = $loopThroughParts( $obj, 1);
+        $value = $loopThroughParts( $obj, 1, $raw);
 
         return $value;
     }

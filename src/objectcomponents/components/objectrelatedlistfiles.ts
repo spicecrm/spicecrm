@@ -66,7 +66,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * passed in component config
      */
-    public componentconfig: any = {};
+    @Input() public componentconfig: any = {};
     /**
      * @ignore
      *

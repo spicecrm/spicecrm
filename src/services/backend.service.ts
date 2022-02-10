@@ -720,8 +720,8 @@ export class backend {
     /*
      * Model functions
      */
-    public get(module: string, id: string, trackAction: string = ''): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
+    public get(module: string, id: string, trackAction: string = ''): Observable<any> {
+        let responseSubject = new Subject<any>();
 
         let params: any = {};
         if (trackAction) {

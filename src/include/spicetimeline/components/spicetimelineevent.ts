@@ -54,7 +54,7 @@ export class SpiceTimelineEvent implements OnChanges, OnInit {
     public setModelData() {
         this.model.id = this.event.id;
         this.model.module = this.event.module;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.event.data);
+        this.model.setData(this.event.data);
     }
 }
 

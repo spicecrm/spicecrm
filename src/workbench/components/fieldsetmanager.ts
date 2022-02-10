@@ -26,10 +26,15 @@ export class FieldsetManager {
     public allowBarButtons: boolean = true;
     public crNoneActive: boolean = false;
     public change_request_required: boolean = false;
-    public sysModules: Array<any> = [];
+
+    /**
+     * the list of modules
+     */
+    public modules: string[] = [];
+
     public currentModule: string = '*';
     public currentFieldSet: string = '';
-    public currentFieldSetItems: Array<any> = [];
+    public currentFieldSetItems: any[] = [];
     public selectedItem: any = {
         type: '',
         fieldset: '',
@@ -47,16 +52,12 @@ export class FieldsetManager {
                 public modalservice: modal,
                 public configurationService: configurationService,
                 public view: view,
-                public modal: modal) {
+                public modal: modal
+    ) {
 
-        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
-            this.sysModules = modules;
+        // get the modules fromt eh metadata service
+        this.modules = this.metadata.getModules().sort();
 
-            // iniutialize the metadata service
-            // this.metadata.loadFieldSets(new Subject<any>(), true);
-            // this.metadata.loadFieldDefs(new Subject<any>(), true);
-            // this.metadata.loadComponents(new Subject<any>(), true);
-        });
         this.checkMode();
     }
 
@@ -93,7 +94,7 @@ export class FieldsetManager {
         }
     }
 
-    public getFieldSets(type = undefined) {
+    public getFieldSets(type?) {
         if (!type) {
             return this.metadata.getFieldSets(this.currentModule);
         } else {
@@ -417,11 +418,16 @@ export class FieldsetManager {
     }
 
 
+    /**
+     * copies teh current fieldset
+     *
+     * @param currentFieldset
+     * @param customizeItem
+     */
     public copy(currentFieldset = this.currentFieldSet, customizeItem = null) {
         this.modalservice.openModal('FieldsetManagerCopyDialog').subscribe(modal => {
 
             modal.instance.fieldset = currentFieldset;
-            modal.instance.sysModules = this.sysModules;
             modal.instance.metaFieldSets = this.metadata.getAllFieldsets();
 
             modal.instance.edit_mode = this.edit_mode;
@@ -480,7 +486,7 @@ export class FieldsetManager {
                                 delete fieldset.fid;
 
 
-                                this.backend.postRequest('configuration/configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, { config: fieldset }).subscribe(
+                                this.backend.postRequest('configuration/configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, {config: fieldset}).subscribe(
                                     (success) => {
                                         let savecounter = 0;
 
@@ -488,7 +494,7 @@ export class FieldsetManager {
                                         fieldset.type = type;
 
                                         for (let save_item of save_items) {
-                                            this.backend.postRequest('configuration/configurator/' + tablescope.itemsTable + '/' + save_item.id, null, { config: save_item }).subscribe(
+                                            this.backend.postRequest('configuration/configurator/' + tablescope.itemsTable + '/' + save_item.id, null, {config: save_item}).subscribe(
                                                 (success) => {
                                                     savecounter++;
                                                     if (savecounter == save_items.length) {
@@ -496,7 +502,7 @@ export class FieldsetManager {
                                                             customizeItem.item.fieldset = fieldset.id;
                                                             let parenttablescope = this.findTable(customizeItem.parentScope);
 
-                                                            this.backend.postRequest('configuration/configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, { config: customizeItem.item }).subscribe(
+                                                            this.backend.postRequest('configuration/configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, {config: customizeItem.item}).subscribe(
                                                                 (success) => {
                                                                     loadingModalRef.instance.self.destroy();
                                                                     this.toast.sendToast('saved!');

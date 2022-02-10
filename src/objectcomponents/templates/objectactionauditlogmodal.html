@@ -23,14 +23,13 @@
                     <tr>
                         <td class="slds-theme--shade" colspan="3">
                             <div class="slds-text-heading--label">
-                                {{auditTransaction.user_name}} / {{auditTransaction.date_created}}
+                                {{auditTransaction.user_name}} / <system-display-datetime [date]="auditTransaction.date_created"></system-display-datetime>
                             </div>
                         </td>
                     </tr>
                     <tr *ngFor="let auditEntry of auditTransaction.audit_log">
                         <td scope="row">
-                            <div class="slds-truncate">{{language.getFieldDisplayName(model.module,
-                                auditEntry.field_name)}}
+                            <div class="slds-truncate">{{language.getFieldDisplayName(model.module, auditEntry.field_name)}}
                             </div>
                         </td>
                         <td scope="row">
@@ -48,7 +47,6 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand" (click)="hideAuditLog()"><system-label label="LBL_CLOSE"></system-label>
-        </button>
+        <button class="slds-button slds-button--brand" (click)="hideAuditLog()"><system-label label="LBL_CLOSE"></system-label></button>
     </system-modal-footer>
 </system-modal>

@@ -80,6 +80,19 @@ export class fieldCategoriesTree {
         return !!this.levels[2] && this.categories.filter(c => c.parent_id == this.levels[2]).length > 0;
     }
 
+    public nodeStyle(n){
+        if(n.selectable){
+            return {
+                'cursor': 'pointer',
+                'text-decoration': 'underline'
+            }
+        }
+
+        return {
+            cursor: 'default'
+        }
+    }
+
     /**
      * returns if the node has children
      *
@@ -99,10 +112,10 @@ export class fieldCategoriesTree {
     public levelCategories(level) {
         switch (level) {
             case 0:
-                return this.categories.filter(c => !c.parent_id || c.parent_id == '');
+                return this.categories.filter(c => !c.parent_id || c.parent_id == '').sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1);
                 break;
             default:
-                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]): [];
+                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]).sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1) : [];
                 break;
         }
     }
@@ -113,13 +126,26 @@ export class fieldCategoriesTree {
      * @private
      */
     public getMatchedNodes() {
-        let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
+        return this.buildSelectableCategories().filter(i => {
+            return this.matchTerms(i.levels.map(x => x.node_name).join(), this.searchTerm);
+        }).sort((a, b) => this.compareFullCategories(a.levels, b.levels));
+    }
 
-        let fullcategories = []
-        for (let cat of cats) {
-            fullcategories.push(this.buildFullCategories(cat));
+    /**
+     * matches to multiple terms
+     *
+     * @param haystack
+     * @param needle
+     * @private
+     */
+    private matchTerms(haystack, needle) {
+        let needles = needle.split(' ').map(x => x.trim());
+
+        for (let n of needles) {
+            if (haystack.toLowerCase().indexOf(n.toLowerCase()) < 0) return false;
         }
-        return fullcategories;
+
+        return true;
     }
 
     /**
@@ -128,31 +154,107 @@ export class fieldCategoriesTree {
      * @private
      */
     public getFavoriteNodes() {
-        // let cats = this.categories.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
-        let cats = this.categories.filter(c => c.favorite);
+        // buidl the full selectable categfories that have at least one favorite in there
+        let fullcategories = this.buildSelectableCategories(true);
 
-        // if we have a searchterm apply this as well
+        // if we have a searchterm filter by that
         if (this.searchTerm) {
-            cats = cats.filter(c => c.node_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0);
+            return fullcategories.filter(i => {
+                return this.matchTerms(i.levels.map(x => x.node_name).join(), this.searchTerm);
+            });
         }
 
-        let fullcategories = []
-        for (let cat of cats) {
-            fullcategories.push(this.buildFullCategories(cat));
-        }
-        return fullcategories;
+        return fullcategories.sort((a, b) => this.compareFullCategories(a.levels, b.levels));
     }
 
-    public buildFullCategories(category, subnodes: boolean = false) {
+    /**
+     * builds the full aray for all selectable categories
+     *
+     * @private
+     */
+    private buildSelectableCategories(favorites: boolean = false): any[] {
+        let sc = [];
+        for (let c of this.categories.filter(tc => tc.selectable)) {
+            let fc = this.buildFullCategories(c);
+            if (favorites !== true || fc.filter(x => x.favorite).length > 0) sc.push({levels: fc, cat: c});
+        }
+        return sc;
+    }
+
+    /**
+     * builds the full categories by filling the array up
+     *
+     * @param category
+     */
+    public buildFullCategories(category) {
         let thisCategory = category;
-        let item: any[] = [{id: thisCategory.id, node_name: thisCategory.node_name}];
+        let item: any[] = [{
+            id: thisCategory.id,
+            node_name: thisCategory.node_name,
+            favorite: thisCategory.favorite,
+            node_key: thisCategory.node_key
+        }];
 
         while (thisCategory.parent_id) {
-            thisCategory = this.categories.find(c => c.id == thisCategory.parent_id)
-            item.unshift({id: thisCategory.id, node_name: thisCategory.node_name})
+            thisCategory = this.categories.find(c => c.id == thisCategory.parent_id);
+            if (!thisCategory) break;
+            item.unshift({
+                id: thisCategory.id,
+                node_name: thisCategory.node_name,
+                favorite: thisCategory.favorite,
+                node_key: thisCategory.node_key
+            })
         }
 
         return item;
+    }
+
+    /**
+     * compares two categories base on key or name
+     * ToDo: implement this functionality that sorts based on different criteria also
+     *
+     * @param a
+     * @param b
+     * @private
+     */
+    private compareFullCategories(a, b, sortcriteria: 'node_name' | 'node_key' = 'node_name') {
+        return a.map(x => x.node_name).join().localeCompare(b.map(x => x.node_name).join());
+    }
+
+    /**
+     * function to compare two nodes on the level
+     * ToDo: Implement .. lower levels if equl shoudl come first .. depper ones later .. to build recursive function
+     *
+     * @param a
+     * @param b
+     * @param level
+     * @param sortcriteria
+     * @private
+     */
+    private compareFullCategorylevels(a, b, level: number, sortcriteria: 'node_name' | 'node_key' = 'node_key') {
+
+    }
+
+    /**
+     * compares two nodes
+     *
+     * @param a
+     * @param b
+     * @param sortcriteria
+     * @private
+     */
+    private compareNodes(a, b, sortcriteria: 'node_name' | 'node_key' = 'node_key') {
+        switch (sortcriteria) {
+            case 'node_name':
+                return a.node_name.localeCompare(b.node_name);
+                break;
+            case 'node_key':
+                // if the nodes match return 0
+                if (a.node_key == b.node_key) return 0;
+                // otherwise return the sort result
+                return parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1
+                break;
+        }
     }
 
     /**
@@ -185,9 +287,11 @@ export class fieldCategoriesTree {
      * @private
      */
     public choose(level, cat) {
-        this.select(level, cat);
-        this.category.emit([...this.levels]);
-        this.levels = [undefined, undefined, undefined, undefined];
+        if (cat.selectable) {
+            this.select(level, cat);
+            this.category.emit({levels: [...this.levels], category: cat});
+            this.levels = [undefined, undefined, undefined, undefined];
+        }
     }
 
     /**
@@ -198,10 +302,14 @@ export class fieldCategoriesTree {
      */
     public selectNode(node) {
         let levels = [];
-        for (let cat of node) {
+        for (let cat of node.levels) {
             levels.push(cat.id);
         }
-        this.category.emit(levels);
+        this.category.emit({levels: [...levels], category: node.cat});
+
+        // reset the term and the favs
+        this.searchTerm = '';
+        this.searchFavorites = false;
     }
 
     /**
@@ -212,5 +320,15 @@ export class fieldCategoriesTree {
      */
     public trackByFn(index, item): string | number {
         return item.id;
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     */
+    public trackByCatId(index, item): string | number {
+        return item.cat.id;
     }
 }

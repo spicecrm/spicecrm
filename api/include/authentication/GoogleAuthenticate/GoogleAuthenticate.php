@@ -127,7 +127,12 @@ class GoogleAuthenticate
     function getTokenByUserId($userid)
     {
         $userObj = BeanFactory::getBean('Users', $userid);
-        return $this->getTokenByUserName($userObj->user_name);
+
+        // subscription renewal is possible only for active users, check if user still active
+        if($userObj->status == "Active") {
+            return $this->getTokenByUserName($userObj->user_name);
+        }
+        LoggerManager::getLogger()->fatal("Trying to get token of an inactive user with user id: {$userid} and user_name: {$userObj->user_name}");
     }
 
     /**

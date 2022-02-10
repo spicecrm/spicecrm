@@ -2,150 +2,13 @@
  * @module ObjectComponents
  */
 import {
-    AfterViewInit,
     Component,
-    Input,
-    ViewChild,
-    ViewContainerRef, OnDestroy, OnInit, EventEmitter, Output
+    OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
-import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
-
-/**
- * renders the tab header. Depending on the configuration this is either a simple label or can be a component that is rendered.
- * The component can render information on the tab itself
- */
-@Component({
-    selector: 'object-tab-container-item-header',
-    templateUrl: '../templates/objecttabcontaineritemheader.html'
-})
-export class ObjectTabContainerItemHeader implements AfterViewInit {
-    /**
-     * the reference to the header where the compponent is placed in
-     */
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) public headercontainer: ViewContainerRef;
-
-    /**
-     * the inpout from teh tab embedding the header
-     */
-    @Input() public tab: any = [];
-
-    constructor(public metadata: metadata, public language: language) {
-
-    }
-
-    /**
-     * returns the name for the tab if no component is rendered
-     */
-    get displayName() {
-        return !this.tab.headercomponent && this.tab.name && this.tab.name != '';
-    }
-
-    /**
-     * after view init renders the component if one is set in teh componentconfig
-     */
-    public ngAfterViewInit() {
-        if (this.tab.headercomponent) {
-            this.metadata.addComponent(this.tab.headercomponent, this.headercontainer);
-        }
-    }
-
-
-    /**
-     * @deprecated
-     *
-     * ToDo remove
-     *
-     * @param label
-     */
-    public getTabLabel(label) {
-        if (label.indexOf(':') > 0) {
-            let arr = label.split(':');
-            return this.language.getLabel(arr[0], arr[1])
-        } else {
-            return this.language.getLabel(label);
-        }
-    }
-}
-
-
-/**
- * the item itself rendering the tab
- */
-@Component({
-    selector: 'object-tab-container-item',
-    templateUrl: '../templates/objecttabcontaineritem.html',
-    providers: [fielderrorgrouping]
-})
-export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
-    /**
-     * component reference to the container itself
-     */
-    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
-
-    /**
-     * an array with componentrefs to be used when the component is dexytoryed to also ensure all dynamic components are destroyed
-     */
-    public componentRefs: any = [];
-
-    /**
-     * internal variable to check if the component is initialized. Tabs are not initialized by default but only once the user selects a tab. This improves the load performance since related records e.g. are not yet loaded
-     */
-    public initialized: boolean = false;
-
-    /**
-     * the componetnset to be rendered
-     */
-    @Input() public componentset: any = [];
-
-    /**
-     * in case errors are renderd from a fieldgroup on the tab this is emitted on the tab level to guide the user in multi tabbed scenarios on the detail view
-     */
-    @Output() public taberrors = new EventEmitter();
-
-    constructor(public metadata: metadata, public fielderrorgroup: fielderrorgrouping, public model: model) {
-    }
-
-    /**
-     * link to the fieldgrou if there is one in the tab. If fields are int eh tabe they will link themselves to a fieldgroup
-     */
-    public ngOnInit() {
-        this.fielderrorgroup.change$.subscribe((nr) => {
-            this.taberrors.emit(nr);
-        });
-    }
-
-    /**
-     * initialize itself
-     */
-    public ngAfterViewInit() {
-        this.initialized = true;
-        this.buildContainer();
-    }
-
-    /**
-     * cleanup after destroy
-     */
-    public ngOnDestroy() {
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
-    }
-
-    /**
-     * renders the contaioner and the componentsets
-     */
-    public buildContainer() {
-        for (let component of this.metadata.getComponentSetObjects(this.componentset)) {
-            this.metadata.addComponent(component.component, this.container).subscribe(componentRef => {
-                this.componentRefs.push(componentRef);
-                componentRef.instance.componentconfig = component.componentconfig;
-            });
-        }
-    }
-}
+import {session} from '../../services/session.service';
 
 /**
  * renders a tabcontainer with separate tabs
@@ -172,12 +35,10 @@ export class ObjectTabContainer implements OnInit {
 
     /**
      * the tabs to be rendered
-     *
-     * ToDo: remove from the legacy support that this can also be defined as JSON
      */
     public tabs: any[] = [];
 
-    constructor(public language: language, public metadata: metadata, public model: model) {
+    constructor(public language: language, public metadata: metadata, public model: model, protected session: session) {
 
     }
 
@@ -185,39 +46,40 @@ export class ObjectTabContainer implements OnInit {
      * loads the tabs
      */
     public ngOnInit() {
-        if (this.getTabs().length == 0) {
-            if (this.componentconfig && this.componentconfig.componentset) {
-                let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
-                this.tabs = [];
-                for (let item of items) {
-                    this.tabs.push(item.componentconfig);
-                }
-            } else {
-                let componentconfig = this.metadata.getComponentConfig('ObjectTabContainer', this.model.module);
-                let items = this.metadata.getComponentSetObjects(componentconfig.componentset);
-                this.tabs = [];
-                for (let item of items) {
-                    this.tabs.push(item.componentconfig);
-                }
+        if (this.componentconfig && this.componentconfig.componentset) {
+            let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
+            this.tabs = [];
+            for (let item of items) {
+                // check if the tab is admin access only
+                if (item.componentconfig.adminonly && !this.session.isAdmin) continue;
+
+                this.tabs.push(item.componentconfig);
             }
         } else {
-            this.tabs = this.getTabs();
+            let componentconfig = this.metadata.getComponentConfig('ObjectTabContainer', this.model.module);
+            let items = this.metadata.getComponentSetObjects(componentconfig.componentset);
+            this.tabs = [];
+            for (let item of items) {
+                // check if the tab is admin access only
+                if (item.componentconfig.adminonly && !this.session.isAdmin) continue;
+
+                this.tabs.push(item.componentconfig);
+            }
         }
     }
 
     /**
-     * @deprecated
-     *
-     * legacy support to get tabs from the config. Shoudl be removd already in most of the config and no longer really be used
-     *
-     * ToDo: remove
+     * returns if the item is hideden
+     * @param itemconfig
      */
-    public getTabs() {
-        try {
-            return this.componentconfig.tabs ? this.componentconfig.tabs : [];
-        } catch (e) {
-            return [];
-        }
+    public isHidden(itemconfig){
+        // check that we have acl access
+        if(itemconfig.acl && !this.model.checkAccess(itemconfig.acl)) return true;
+
+        // check that we have mode state access
+        if(itemconfig.requiredmodelstate && !this.model.checkModelState(itemconfig.requiredmodelstate)) return true;
+
+        return false;
     }
 
     /**

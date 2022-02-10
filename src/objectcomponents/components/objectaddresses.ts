@@ -17,8 +17,9 @@ export class ObjectAddressesPipe {
     transform(addresses) {
         let retValues = [];
 
-        for (let addressid in addresses)
+        for (let addressid in addresses) {
             retValues.push(addresses[addressid]);
+        }
 
         return retValues;
     }

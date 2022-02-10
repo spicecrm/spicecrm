@@ -19,7 +19,7 @@
         </li>
     </ul>
     <div *ngFor="let tab of tabs" class="slds-tabs--scoped__content slds-p-around--none" [ngClass]="tabClass(tab)" role="tabpanel" [hidden]="!checkTab(tab.module)">
-       <activitytimeline-add-tabcontainer [tabcomponent]="tab.component" [componentconfig]="tab.componentconfig"></activitytimeline-add-tabcontainer>
+       <system-dynamic-component [component]="tab.component" [componentconfig]="tab.componentconfig"></system-dynamic-component>
     </div>
 </div>
 <ng-template *ngIf="tabs.length == 0" >

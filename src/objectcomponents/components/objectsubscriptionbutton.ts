@@ -40,7 +40,7 @@ export class ObjectSubscriptionButton {
                 err => this.inProcess = false
             );
         } else {
-            this.subscriptionService.subscribeBean(this.model.id, this.model.module).subscribe(
+            this.subscriptionService.subscribeBean(this.model).subscribe(
                 res => this.inProcess = false,
                 err => this.inProcess = false
             );

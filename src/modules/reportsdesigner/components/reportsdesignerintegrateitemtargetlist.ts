@@ -42,7 +42,7 @@ export class ReportsDesignerIntegrateItemTargetList {
      * @return targetList: string
      */
     get targetList() {
-        return !!this.prospectListModel.data.name ? `${this.prospectListModel.id}::${this.prospectListModel.data.name}` : '';
+        return !!this.prospectListModel.getField('name') ? `${this.prospectListModel.id}::${this.prospectListModel.getField('name')}` : '';
     }
 
     /**

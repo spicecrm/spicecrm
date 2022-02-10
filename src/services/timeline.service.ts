@@ -338,7 +338,7 @@ export class timeline {
     public addRecords(records: moduleRecord[] | auditRecord[], silent = false) {
         if (this.totalAuditRecords === this.loadedAuditRecords && this.totalModuleRecords === this.loadedModuleRecords && this.searchTerm === '' && this.filters.own === '' && this.filters.objectfilters.indexOf('Modules') >= 0) {
 
-            if (this.timeRangeStart.isAfter(this.parent.data.date_entered)) {
+            if (this.timeRangeStart.isAfter(this.parent.getField('date_entered'))) {
 
                 let origin = this.parent.data;
 
