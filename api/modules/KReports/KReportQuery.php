@@ -642,21 +642,21 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 if (isset($this->joinSegments[$pathName]) && ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'currency' || (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype']) && $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] == 'currency')) || $this->rootfieldNameMap[$thisListEntry['fieldid']]['type'] == 'currency' || $atLeast1CurrencyInSelect) {
                     // if we have a currency id and no SQL function select the currency .. if we have an SQL fnction select -99 for the system currency
                     if (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id']) && ($thisListEntry['sqlfunction'] == '-' || strtoupper($thisListEntry['sqlfunction']) == 'SUM')){
-                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . "." . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id'] . " as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . "." . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id'] . " as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     // BEGIN currency id value for kreporter field: field contains a currency conversion.
                     // Currency symbol will not be from record but from conversion
                     // Use new property kreportcurrency_id and enter currency id in kreporter field vardefs
                     elseif ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'])) {
-                        $this->selectString .= ", '" . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'] . "' as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", '" . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'] . "' as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     // END
                     // BEGIN CR1000035 currency field might not be linked to amount field.
                     elseif (isset($this->joinSegments[$pathName]['object']->field_name_map['currency_id']) ) {
-                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . ".currency_id as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . ".currency_id as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }// END
                     else {
-                        $this->selectString .= ", '-99' as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", '-99' as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     $this->unionSelectString .= ', ' . $thisListEntry['fieldid'] . "_curid";
 
