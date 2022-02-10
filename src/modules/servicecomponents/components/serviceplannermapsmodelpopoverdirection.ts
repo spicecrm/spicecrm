@@ -121,8 +121,8 @@ export class ServicePlannerMapsModelPopoverDirection {
             lng: this.servicePlannerService.timelineSelectedItem.event.data.address_longitude
         };
         const destination: ServicePlannerRoutePointI = {
-            lat: this.model.data.address_latitude,
-            lng: this.model.data.address_longitude
+            lat: this.model.getField('address_latitude'),
+            lng: this.model.getField('address_longitude')
         };
 
         directionsService.route(

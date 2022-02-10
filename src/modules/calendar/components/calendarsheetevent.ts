@@ -102,7 +102,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
      * @return startHour: string | undefined
      */
     get startHour(): string {
-        return this.model.data.date_start ? moment(this.model.data.date_start)
+        return this.model.getField('date_start') ? moment(this.model.getField('date_start'))
             .tz(this.calendar.timeZone)
             .format(this.userpreferences.getTimeFormat()) : undefined;
     }
@@ -195,7 +195,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.event.data[dateEndName] = moment(this.event.end.format());
 
         this.model.startEdit(true, true);
-        this.model.data = {...this.event.data};
+        this.model.setData({...this.event.data}, false);
 
         this.model.save(false);
 
@@ -277,7 +277,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 switch (message.messagetype) {
                     case "model.save":
                         if (id == this.model.id) {
-                            this.model.data = this.model.utils.backendModel2spice(this.model.module, data);
+                            this.model.setData(data);
                             this.setEventColor();
                             this.eventChange.emit();
                         }
@@ -293,7 +293,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     public setModelDataFromEvent() {
         this.model.module = this.event.module;
         this.model.id = this.event.data.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.event.data);
+        this.model.setData(this.event.data);
     }
 
     /**
@@ -354,11 +354,16 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
             this.event.data.duration_minutes = durationMinutes - (this.event.data.duration_hours * 60);
 
             this.model.startEdit(true, true);
-            this.model.data.duration_minutes = this.event.data.duration_minutes;
-            this.model.data.duration_hours = this.event.data.duration_hours;
+
+            let modeldata: any = {
+                duration_minutes: this.event.data.duration_minutes,
+                duration_hours: this.event.data.duration_hours
+            }
+
             const module = this.calendar.modules.find(module => module.name == this.event.module) || {};
             const dateEndName = module.dateEndFieldName || 'date_end';
-            this.model.data[dateEndName] = moment(this.event.end.format());
+            modeldata[dateEndName] = moment(this.event.end.format());
+            this.model.setFields(modeldata);
 
             // save the event
             this.event.saving = true;

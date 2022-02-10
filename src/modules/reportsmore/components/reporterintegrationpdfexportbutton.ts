@@ -47,7 +47,7 @@ export class ReporterIntegrationPDFexportButton {
             });
         }
 
-        this.fileName = this.model.data.name.replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.pdf';
+        this.fileName = this.model.getField('name').replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.pdf';
 
         this.metadata.addComponent('ReporterIntegrationExportMask', this.footer.footercontainer).subscribe(loadMask => {
             this.backend.getDownloadPostRequestFile('module/KReports/plugins/action/kpdfexport/export', {

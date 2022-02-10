@@ -39,7 +39,7 @@ export class SalesDocsConvertModalItem implements OnInit {
     public ngOnInit() {
         this.model.module = 'SalesDocItems';
         this.model.id = this.data.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.data);
+        this.model.setData(this.data);
 
         // select by default
         this.data._selected = true;

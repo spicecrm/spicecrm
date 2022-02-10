@@ -57,7 +57,7 @@ export class QuestionsetTypeParametersNPS implements OnInit {
      * This method should be called after any change of any setting. It generates the json string and writes it to the model.
      */
     public writeSettings(): void {
-        let config =  ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ? JSON.parse( this.model.data.questiontypeparameter ):{});
+        let config =  ( this.model.getField('questiontypeparameter') && this.model.getField('questiontypeparameter') !== '' ? JSON.parse( this.model.getField('questiontypeparameter') ):{});
         config.nps = {
             textForScore0: this.textForScore0,
             textForScore10: this.textForScore10

@@ -90,8 +90,8 @@ export class ProductVariantsAttributes implements OnDestroy {
      * load the attribute values
      */
     public loadAttributeValues() {
-        if (!this.model.data.productattributevalues) {
-            this.model.data.productattributevalues = {beans: {}};
+        if (!this.model.getField('productattributevalues')) {
+            this.model.setField('productattributevalues', {beans: {}});
         }
     }
 }

@@ -41,7 +41,7 @@ export class WorkflowManagerDetailConditionsLine {
 
     ngOnChanges() {
         this.model.id = this.condition.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.condition);
+        this.model.setData(this.condition);
     }
 
     /**

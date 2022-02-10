@@ -67,19 +67,21 @@ export class KnowledgeBookSelector {
         };
     }
 
-    public editBook(bookId) {
-        this.model.id = bookId;
+    public editBook(bookToEdit) {
+        this.model.id = bookToEdit.id;
+        this.model.acl = bookToEdit.acl;
         this.model.edit(true);
         this.searchOpen = false;
     }
 
-    public deleteBook(bookId) {
-        this.model.id = bookId;
+    public deleteBook(bookToDelete) {
+        this.model.id = bookToDelete.id;
+        this.model.acl = bookToDelete.acl;
         this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('LBL_DELETE')).subscribe(answer => {
             if (answer) {
                 this.model.delete().subscribe(res => {
                     this.deselectBook();
-                    this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookId);
+                    this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookToDelete.id);
                 });
             }
         });

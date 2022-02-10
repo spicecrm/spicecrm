@@ -34,13 +34,20 @@ class SpiceACLProfilesRESTHandler
 
         $retArray = [];
 
+        // holds the added ids to avopid duplicates
+        $objectIds = [];
+
         $records = $db->query("SELECT spiceaclobjects.id, spiceaclobjects.name, spiceaclobjects.status, sysmodules.module  FROM spiceaclobjects, spiceaclprofiles_spiceaclobjects, sysmodules WHERE spiceaclobjects.id = spiceaclprofiles_spiceaclobjects.spiceaclobject_id AND sysmodules.id = spiceaclobjects.sysmodule_id AND spiceaclprofiles_spiceaclobjects.spiceaclprofile_id = '$id' AND spiceaclprofiles_spiceaclobjects.deleted = 0 ORDER BY sysmodules.module, spiceaclobjects.name");
-        while ($record = $db->fetchByAssoc($records))
+        while ($record = $db->fetchByAssoc($records)) {
             $retArray[] = $record;
+            $objectIds[] = $record['id'];
+        }
 
         $records = $db->query("SELECT spiceaclobjects.id, spiceaclobjects.name, spiceaclobjects.status, syscustommodules.module  FROM spiceaclobjects, spiceaclprofiles_spiceaclobjects, syscustommodules WHERE spiceaclobjects.id = spiceaclprofiles_spiceaclobjects.spiceaclobject_id AND syscustommodules.id = spiceaclobjects.sysmodule_id AND spiceaclprofiles_spiceaclobjects.spiceaclprofile_id = '$id' AND spiceaclprofiles_spiceaclobjects.deleted = 0 ORDER BY syscustommodules.module, spiceaclobjects.name");
-        while ($record = $db->fetchByAssoc($records))
+        while ($record = $db->fetchByAssoc($records)) {
+            if(array_search($record['id'], $objectIds) !== false) continue;
             $retArray[] = $record;
+        }
 
         return $retArray;
     }

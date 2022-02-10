@@ -23,6 +23,7 @@ import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionou
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
 import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
 import /*embed*/ {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentbeanbutton";
+import {PdfViewerModule} from "ng2-pdf-viewer";
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import /*embed*/ {ObjectActionMarkSentBeanButton} from "./components/objectactio
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
+        PdfViewerModule
     ],
     declarations: [
         OutputTemplatesEditor,

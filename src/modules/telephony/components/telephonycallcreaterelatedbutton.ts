@@ -5,6 +5,7 @@ import {Component, EventEmitter, Input, Output, SkipSelf} from '@angular/core';
 
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
+import {metadata} from "../../../services/metadata.service";
 
 /**
  * renders a button in the the call panel to search for a new contact
@@ -28,7 +29,14 @@ export class TelephonyCallCreateRelatedButton {
      */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public model: model, public modal: modal) {
+    /**
+     * an array with the fields for the phone
+     *
+     * @private
+     */
+    public phoneFields: any[] = [];
+
+    constructor(public model: model, public modal: modal, public metadata: metadata) {
 
     }
 
@@ -36,21 +44,57 @@ export class TelephonyCallCreateRelatedButton {
      * prompt the user to select a module and if yes create the record
      */
     public execute() {
-        this.modal.openModal('TelephonyCallCreateRelatedModal').subscribe(modalRef => {
-            modalRef.instance.moduleselected.subscribe(
-                module => {
-                    this.model.module = module;
-                    this.model.initialize();
-                    this.model.addModel(null, null, {phone_mobile: this.calldata.msisdn}).subscribe(
-                        modelData => {
-                            this.setRelated(module, modelData);
-                        }
-                    );
-                }
-            )
-        })
+        let modules = this.metadata.getPhoneSearchModules();
+        if(modules.length == 1){
+            this.processCreate(modules[0]);
+        } else {
+            this.modal.openModal('TelephonyCallCreateRelatedModal').subscribe(modalRef => {
+                modalRef.instance.moduleselected.subscribe(
+                    module => {
+                        this.processCreate(module);
+                    }
+                )
+            })
+        }
     }
 
+    /**
+     * process the create modal
+     *
+     * @param module
+     * @private
+     */
+    private processCreate(module){
+        this.model.module = module;
+        this.model.initialize();
+
+        let presets: any = {};
+        this.getPhoneFields();
+        for(let pf of this.phoneFields){
+            presets[pf.name] = this.calldata.msisdn;
+        }
+
+        this.model.addModel(null, null, presets).subscribe(
+            modelData => {
+                this.setRelated(module, modelData);
+            }
+        );
+    }
+
+    /**
+     * gets all fields from the module and filters out the phone fields as we can edit those
+     *
+     * @private
+     */
+    public getPhoneFields() {
+        this.phoneFields = [];
+        let fields = this.metadata.getModuleFields(this.model.module);
+        for (let field in fields) {
+            if (fields[field].phonesearch) {
+                this.phoneFields.push(fields[field]);
+            }
+        }
+    }
 
     /**
      * set the related data

@@ -28,7 +28,7 @@ export class MailboxesEWSSelectFoldersModal {
 
     get mailbox() {
         try {
-            return this.model.data.settings.ews_folder.id;
+            return this.model.getField('settings').ews_folder.id;
         } catch (e) {
             return '';
         }

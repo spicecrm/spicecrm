@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var async_1=require("../scheduler/async"),audit_1=require("./audit"),timer_1=require("../observable/timer");function auditTime(e,i){return void 0===i&&(i=async_1.async),audit_1.audit(function(){return timer_1.timer(e,i)})}exports.auditTime=auditTime;

@@ -20,6 +20,7 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 import {libloader} from "../../../services/libloader.service";
 import {session} from "../../../services/session.service";
 
+
 declare var moment: any;
 declare var libphonenumber: any;
 declare var _: any;
@@ -71,6 +72,8 @@ export class TelephonyDockedCall {
      * @private
      */
     public componentconfig: any = {};
+
+    public footerHidden: boolean = false;
 
     constructor(public backend: backend,
                 public session: session,
@@ -129,6 +132,11 @@ export class TelephonyDockedCall {
 
         if (this.componentconfig.searchendpoint) {
             endpoint = this.componentconfig.searchendpoint;
+        }
+
+        // determine if we have a footer
+        if(this.componentconfig.actionset && this.metadata.getActionSetItems(this.componentconfig.actionset).length == 0){
+            this.footerHidden = true;
         }
 
         if (this.calldata.relatedid) {

@@ -27,13 +27,14 @@ export class ObjectAddress implements OnInit{
 
     ngOnInit(){
         this.model.id = this.address.id;
-        this.model.data = this.modelutilities.backendModel2spice('Addresses', this.address);
+        this.model.setData(this.address);
 
         // see if we have a fieldset
         if(this.fieldset == undefined || this.fieldset == ''){
             let config = this.metadata.getComponentConfig('ObjectAddress', this.parent.module);
-            if(config.fieldset != undefined || config.fieldset != '')
+            if(config.fieldset != undefined || config.fieldset != '') {
                 this.fieldset = config.fieldset;
+            }
         }
 
     }
@@ -44,7 +45,7 @@ export class ObjectAddress implements OnInit{
             componenRef.instance.message = this.language.getLabel('LBL_DELETE_ADDRESS_TEXT', 'Addresses');
             componenRef.instance.answer.subscribe(decision => {
                 if (decision) {
-                    this.model.data.deleted = true;
+                    this.model.setField('deleted', true);
                 }
             });
         });

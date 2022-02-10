@@ -20,7 +20,7 @@ export class fieldUrl extends fieldGeneric {
     }
 
     get url() {
-        return this.model.data[this.fieldname] ? this.model.data[this.fieldname].replace( /https?\:\/\//, '') : '';
+        return this.model.getField(this.fieldname) ? this.model.getField(this.fieldname).replace( /https?\:\/\//, '') : '';
     }
 
     public navigateTo() {

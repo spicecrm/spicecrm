@@ -57,7 +57,7 @@ export class ProjectSettlementLine implements OnInit, OnDestroy {
         // initialize the tab
         this.model.module = 'ProjectActivities';
         this.model.id = this.projectactivitiy.id;
-        this.model.data = this.model.utils.backendModel2spice('ProjectActivities', this.projectactivitiy);
+        this.model.setData(this.projectactivitiy);
 
         this.subscriptions.add(
             this.model.mode$.subscribe(

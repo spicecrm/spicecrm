@@ -29,7 +29,7 @@ export class fieldActivitiesTaskWithCloseCheckbox extends fieldGeneric {
      * getter if the task can be set complete by the user
      */
     get canComplete() {
-        if ((this.model.data.status === 'Completed' || this.model.data.status === 'Deferred') && this.model.checkAccess('edit')) {
+        if ((this.model.getField('status') === 'Completed' || this.model.getField('status') === 'Deferred') && this.model.checkAccess('edit')) {
             return false;
         } else {
             return true;

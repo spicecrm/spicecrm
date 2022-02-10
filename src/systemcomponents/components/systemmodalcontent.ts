@@ -22,6 +22,10 @@ export class SystemModalContent {
      * if set to true the modal will consume as muchheight as possible
      */
     @Input() public grow: boolean = false;
+    /**
+     * if set to true the the modal is scrollable
+     */
+    @Input() public scrollable: boolean = true;
 
     /**
      * if set to true the modal will consume as muchheight as possible
@@ -63,6 +67,6 @@ export class SystemModalContent {
      * returs the margin class and the groth for the modal
      */
     get contentclass() {
-        return 'slds-modal__content' + ( this.grow ? ' slds-grow':'' );
+        return 'slds-modal__content' + ( this.grow ? ' slds-grow':'' ) + (!this.scrollable ? ' slds-scrollable--none' : '');
     }
 }

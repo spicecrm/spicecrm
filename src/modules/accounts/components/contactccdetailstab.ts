@@ -67,17 +67,17 @@ export class ContactCCDetailsTab implements OnChanges, OnInit, AfterViewInit {
     public setModelData() {
         if (this.data) {
             this.model.id = this.data.id;
-            this.model.data = this.data;
+            this.model.setData(this.data);
         } else {
             this.model.id = this.model.generateGuid();
-            this.model.data = {
+            this.model.setData({
                 id: this.model.id,
                 name: this.ccName,
                 contact_id: this.contactId,
                 companycode_id: this.ccId,
                 date_entered: new moment(),
                 date_modified: new moment(),
-            };
+            }, false);
         }
     }
 }

@@ -84,13 +84,14 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     public ngOnInit() {
         // initialize the model
         this.model.module = this.module;
+        this.model.initializeModel();
 
         // subscribe to the parent models data Observable
         // name is not necessarily loaded
         this.parentSubscription = this.activitiytimeline.parent.data$.subscribe(data => {
             // if we still have the same model .. update
-            if (data.id == this.model.data.parent_id) {
-                this.model.data.parent_name = data.summary_text;
+            if (data.id == this.model.getField('parent_id')) {
+                this.model.setField('parent_name', data.summary_text);
             }
         });
 

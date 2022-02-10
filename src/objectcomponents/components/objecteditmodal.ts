@@ -49,12 +49,6 @@ export class ObjectEditModal implements OnInit {
     public action$: Observable<any> = new Observable<any>();
 
     /**
-     * set to true (default) to have the modal check for duplicates
-     * ToDo: implement this as config paramater
-     */
-    public doDuplicateCheck: boolean = true;
-
-    /**
      * local copy of the dfuplicates from the model
      */
     public duplicates: any[] = [];
@@ -169,7 +163,7 @@ export class ObjectEditModal implements OnInit {
      * returns if the duplicate check iss enabled for the module. Used for the visiblity of he duplicates button in the view
      */
     get duplicateCheckEnabled() {
-        return this.metadata.getModuleDuplicatecheck(this.model.module);
+        return this.model.isNew && this.metadata.getModuleDuplicatecheck(this.model.module);
     }
 
 }

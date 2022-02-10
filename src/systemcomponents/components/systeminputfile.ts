@@ -61,6 +61,11 @@ export class SystemInputFile implements ControlValueAccessor {
      */
     @Input() public disabled: boolean = false;
     /**
+     * holds the error status from parent
+     * @private
+     */
+    @Input() public hasError = false;
+    /**
      * holds the disabled boolean from parent
      * @private
      */
