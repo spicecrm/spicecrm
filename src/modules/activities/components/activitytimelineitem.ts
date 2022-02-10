@@ -103,7 +103,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      */
     public ngOnInit() {
         this.model.id = this.activity.id;
-        this.model.data = this.activity.data;
+        this.model.setData(this.activity.data);
         this.model.module = this.activity.module;
 
         // initiate the model attachment

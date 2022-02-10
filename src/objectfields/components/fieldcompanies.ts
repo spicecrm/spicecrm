@@ -35,7 +35,7 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
      * sets the first one by default if no value is set in edit mode
      */
     public setDefault() {
-        if (this.view.isEditMode() && !this.model.data[this.fieldname]) {
+        if (this.view.isEditMode() && !this.model.getField(this.fieldname)) {
             if (this.userpreferences.companyCodeId) {
                 this.value = this.userpreferences.companyCodeId;
             } else {
@@ -55,7 +55,7 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
     get companyName() {
         let companyName = '';
         this.configuration.getData('companycodes').some(company => {
-            if (company.id == this.model.data[this.fieldname]) {
+            if (company.id == this.model.getField(this.fieldname)) {
                 companyName = company.name;
                 return true;
             }

@@ -114,7 +114,7 @@ class SpiceSwaggerPath
      * todo add schemas for the responses later on
      */
     private function getRouteRequestBody(): void {
-        if ($this->route['method'] == 'get') {
+        if ($this->route['method'] == 'get' || $this->route['method'] == 'delete') {
             return;
         }
 

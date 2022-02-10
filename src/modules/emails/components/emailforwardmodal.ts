@@ -53,11 +53,10 @@ export class EmailForwardModal extends EmailReplyModal {
         this.model.initializeModel(this.parent);
         this.model.startEdit(false);
         // set the from-addresses to to-addresses and vice versa
-        this.model.data.recipient_addresses = [];
-        this.model.data.reference_id = this.parent.id;
-
         // set the email-history into the body
         this.model.setFields({
+            recipient_addresses: [],
+            reference_id: this.parent.id,
             name: this.language.getLabel('LBL_FW') + this.parent.getField('name'),
             body: '<br><br><br>' + this.buildHistoryText()
         });

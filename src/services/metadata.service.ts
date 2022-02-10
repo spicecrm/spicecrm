@@ -677,6 +677,19 @@ export class metadata {
      */
     public getModuleDuplicatecheck(module) {
         try {
+            return this.moduleDefs[module].duplicatecheck === "1" || this.moduleDefs[module].duplicatecheck === "2";
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
+     * returns for a given modulename if the duplicate check is active for the module
+     *
+     * @param module the name of the module
+     */
+    public getModuleDuplicatecheckOnChange(module) {
+        try {
             return this.moduleDefs[module].duplicatecheck === "1";
         } catch (e) {
             return false;

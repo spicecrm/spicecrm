@@ -38,11 +38,11 @@ export class fieldFullName extends fieldGeneric {
     }
 
     get salutationdisplay() {
-        return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, this.model.data[this.fieldsalutation]);
+        return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, this.model.getField(this.fieldsalutation));
     }
 
     get value() {
-        return this.filterUndefined(this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, this.model.data[this.fieldsalutation])) + ' ' + this.filterUndefined(this.model.data[this.fielddegree]) + ' ' + this.filterUndefined(this.model.data[this.fieldfirstname]) + ' ' + this.filterUndefined(this.model.data[this.fieldlastname]) + ' ' + this.filterUndefined(this.model.data[this.fieldlasttitle]);
+        return this.filterUndefined(this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, this.model.getField(this.fieldsalutation))) + ' ' + this.filterUndefined(this.model.getField(this.fielddegree)) + ' ' + this.filterUndefined(this.model.getField(this.fieldfirstname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlastname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlasttitle));
     }
 
 

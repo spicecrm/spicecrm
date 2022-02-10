@@ -7,7 +7,7 @@
         <div class="slds-col slds-form-element__control slds-size--1-of-2" [ngClass]="getFieldClass()">
             <div class="slds-select_container">
                 <select class="slds-select " [(ngModel)]="model.data[fielddd]">
-                    <option *ngFor="let o of getTitles()" [value]="o.value">{{o.display}}</option>
+                    <option *ngFor="let o of getTitles()" [ngValue]="o.value">{{o.display}}</option>
                 </select>
             </div>
         </div>

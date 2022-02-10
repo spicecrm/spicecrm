@@ -64,7 +64,7 @@ export class GlobalDockedComposer implements OnInit {
         this.model.id = this.composerdata.id;
 
         if (this.composerdata.model.data) {
-            this.model.data = this.composerdata.model.data;
+            this.model.setData(this.composerdata.model.data, false);
         } else {
             this.model.initializeModel();
         }
@@ -102,7 +102,7 @@ export class GlobalDockedComposer implements OnInit {
      * Eiter displays the modal name if set or the module name
      */
     get displayLabel() {
-        return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
+        return this.model.getField('name') ? this.model.getField('name') : this.language.getModuleName(this.model.module, true);
     }
 
     /**

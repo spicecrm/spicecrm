@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -43,6 +43,11 @@ export class ObjectActionOutputBeanModal {
      */
         // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
     @ViewChild(ObjectActionOutputBeanModalEmailContent) public emailContent: ObjectActionOutputBeanModalEmailContent;
+
+    /**
+     * emit the action to the container
+     */
+    @Output() public actionemitter = new EventEmitter<{close: boolean, name: string}>();
 
     public modalTitle: string;
     public forcedFormat: 'html' | 'pdf';
@@ -127,6 +132,10 @@ export class ObjectActionOutputBeanModal {
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
     public blobUrl: any;
+    /**
+     * holds the zoom number of pdf viewer
+     */
+    public zoom: number = 1;
 
     constructor(
         public language: language,
@@ -224,8 +233,7 @@ export class ObjectActionOutputBeanModal {
 
                 this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
-                        let blob = this.datatoBlob(atob(pdf.content));
-                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+                        this.blobUrl = 'data:application/pdf;base64,' + pdf.content;
                         this.contentForHandBack = pdf.content;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
@@ -283,7 +291,7 @@ export class ObjectActionOutputBeanModal {
             a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
 
             // genereate a filename
-            a.download = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
+            a.download = this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format;
 
             // start download and then remove the element from the document again
             a.click();
@@ -297,8 +305,7 @@ export class ObjectActionOutputBeanModal {
      * @param data the raw data of the object being passed in. When the data is pased in the bloburl is created
      */
     set data(data) {
-        let blob = this.datatoBlob(data);
-        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+        this.blobUrl = 'data:application/pdf;base64,' + data;
     }
 
     /**
@@ -347,7 +354,7 @@ export class ObjectActionOutputBeanModal {
         if(this.emailInitialized) {
             this.filelist = [{
                 size: this.contentForHandBack.length,
-                name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+                name: this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format,
                 type: "application/" + this.selected_format,
                 filecontent: this.contentForHandBack
             }];
@@ -365,6 +372,12 @@ export class ObjectActionOutputBeanModal {
      * call the child method that will send the mail
      */
     public sendEmail() {
+        // saving letter before sending email - solution for Letters module where the letter id is not set
+        if(this.model.module == 'Letters') {
+            this.backend.postRequest(`module/Letters/${this.model.id}/marksent/${this.selected_template.id}`, null, this.model.data).subscribe(res => {
+                this.actionemitter.emit({close: true, name: 'sent'})});
+        }
+
         this.emailContent.sendEmail();
     }
 
@@ -376,5 +389,14 @@ export class ObjectActionOutputBeanModal {
             this.model.cancelEdit();
             this.close();
         }
+    }
+
+    public zoomIn() {
+        this.zoom += 0.2;
+    }
+
+    public zoomOut() {
+        if (this.zoom <= 0.5) return;
+        this.zoom -= 0.2;
     }
 }

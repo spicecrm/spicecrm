@@ -56,4 +56,21 @@ export class SpiceAttachmentsList {
         setTimeout(() => this.loadFiles(), 10);
     }
 
+    /**
+     * Component style according to the component config property "horizontal".
+     */
+    public getCompStyle() {
+        return {
+            marginRight: this.componentconfig.horizontal ? '-16px' : undefined,
+            marginBottom: this.componentconfig.horizontal ? '-8px' : undefined,
+        }
+    }
+
+    /**
+     * Item classes according to the component config property "horizontal".
+     */
+    public getItemClass() {
+        return this.componentconfig.horizontal ? 'slds-m-right_medium slds-m-bottom_x-small':'slds-size--1-of-1';
+    }
+
 }

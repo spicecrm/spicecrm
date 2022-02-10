@@ -101,8 +101,11 @@ export class SpiceTextsAddModal implements OnInit {
 
     public initializeModel() {
         this.model.initialize();
-        this.model.data.parent_id = this.parent.id;
-        this.model.data.parent_type = this.parent.module;
+        this.model.setFields({
+            parent_id : this.parent.id,
+            parent_type: this.parent.module
+        })
+
     }
 
     public trackByFn(index, item) {

@@ -59,10 +59,11 @@ export class fieldServiceCategories extends fieldGeneric
         let txt = '';
         for(let field_name of this.fields)
         {
-            if( this.model.data[field_name] && this.categories[this.model.data[field_name]] )
-                txt += this.language.getLabel(this.categories[this.model.data[field_name]].name)+'\\';
-            else
+            if( this.model.getField(field_name) && this.categories[this.model.getField(field_name)] ) {
+                txt += this.language.getLabel(this.categories[this.model.getField(field_name)].name) + '\\';
+            } else {
                 break;
+            }
         }
         // remove the last slash...
         txt = txt.substring(0,txt.length -1);
@@ -98,10 +99,11 @@ export class fieldServiceCategories extends fieldGeneric
         // setting model.data values
         for(let i = 0; i < this.fields.length; i++)
         {
-            if( categories[i] )
+            if( categories[i] ) {
                 this.model.setField(this.fields[i], categories[i].id);
-            else
+            } else {
                 this.model.setField(this.fields[i], '');
+            }
         }
         this.search = null;
 
@@ -116,14 +118,14 @@ export class fieldServiceCategories extends fieldGeneric
                 break;
             }
         }
-        //console.log(this.model.data);
     }
 
     unchooseCategories()
     {
-        for(let i = 0; i < this.fields.length; i++)
-        {
-            this.model.data[this.fields[i]] = '';
+        let modelFields: any = {};
+        for(let field of this.fields){
+            modelFields[field] = '';
         }
+        this.model.setFields(modelFields);
     }
 }

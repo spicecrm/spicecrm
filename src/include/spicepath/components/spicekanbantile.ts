@@ -73,7 +73,7 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
         // initialize the model
         this.model.module = this.modellist.module;
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.modellist.module, _.clone(this.item));
+        this.model.setData(_.clone(this.item));
 
         // initialize the field statis
         this.model.initializeFieldsStati();

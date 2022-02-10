@@ -69,7 +69,7 @@ export class ScrumTreeTheme implements OnDestroy {
         this.model.module = 'ScrumThemes';
         this.model.initialize();
         this.model.id = this.theme.id;
-        this.model.data = this.theme;
+        this.model.setData(this.theme);
 
         this.epics.module = this.model.module;
         this.epics.id = this.model.id;

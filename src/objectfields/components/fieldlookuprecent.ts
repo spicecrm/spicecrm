@@ -3,8 +3,9 @@
  */
 import {Component, Input, Output, OnInit, EventEmitter, OnChanges} from '@angular/core';
 import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
 import {recent} from '../../services/recent.service';
+import {language} from '../../services/language.service';
+import {session} from '../../services/session.service';
 
 /**
  * renders the recent items container in module lookup fields like parent, lookup and others
@@ -26,7 +27,7 @@ export class fieldLookupRecent implements OnChanges {
     @Output() public selectedObject: EventEmitter<any> = new EventEmitter<any>();
     public recentItems: any[] = [];
 
-    constructor(public model: model, public recent: recent, public language: language) {
+    constructor(public model: model, public recent: recent, public language: language, public session: session, ) {
 
     }
 
@@ -35,6 +36,16 @@ export class fieldLookupRecent implements OnChanges {
      */
     public ngOnChanges() {
         this.getRecent();
+    }
+
+    /**
+     * special handling on the users field to have a shortcut to the current user
+     * @param e
+     */
+    public setCurrentUser(e: MouseEvent){
+        // stop the event
+        e.preventDefault();
+        this.selectedObject.emit({id: this.session.authData.userId, text: this.session.authData.display_name});
     }
 
     /**

@@ -63,7 +63,7 @@ export class GlobalDockedComposerModal implements OnInit {
      * returns the display label
      */
     get displayLabel() {
-        return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
+        return this.model.getField('name') ? this.model.getField('name') : this.language.getModuleName(this.model.module, true);
     }
 
     /**

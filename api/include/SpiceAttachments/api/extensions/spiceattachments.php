@@ -357,6 +357,14 @@ $routes = [
         'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true]
     ],
     [
+        'method'      => 'get',
+        'route'       => '/common/spiceattachments/admin/missingfiles',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'getMissingFiles',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true]
+    ],
+    [
         'method'      => 'post',
         'route'       => '/common/spiceattachments/admin/cleanup',
         'oldroute'    => '/spiceAttachments/admin/cleanup',

@@ -109,6 +109,7 @@ import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
+import /*embed*/ {SystemRichTextLink} from "./components/systemrichtextlink";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 import /*embed*/ {SystemRoleSelector} from "./components/systemroleselector";
 import /*embed*/ {SystemSection} from "./components/systemsection";
@@ -164,6 +165,7 @@ import /*embed*/ {SystemPreferencesPanel} from "./components/systempreferencespa
 import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferencespanelitem";
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
+import {SystemPDFContainer} from "./components/systempdfcontainer";
 
 @NgModule({
     imports: [
@@ -262,6 +264,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModuleGlobalPipe,
         SystemNumberSpinner,
         SystemObjectPreviewModal,
+        SystemPDFContainer,
         SystemInputModuleFilter,
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
@@ -276,6 +279,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPrompt,
         SystemRichTextEditor,
         SystemRichTextSourceModal,
+        SystemRichTextLink,
         SystemRoleSelector,
         SystemSection,
         SystemSelect,
@@ -445,7 +449,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
         SystemModalHeaderEmpty,
-        SystemWrappedText
+        SystemWrappedText,
+        SystemPDFContainer
     ]
 })
 export class SystemComponents {}
