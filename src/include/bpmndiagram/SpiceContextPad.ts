@@ -80,6 +80,10 @@ export class SpiceContextPad {
 
             let types = SpiceContextPad.taskTypes;
 
+            if (element.type == 'bpmn:EndEvent') {
+                return {'edit.task': customEntries['edit.task'], 'delete': customEntries.delete};
+            }
+
             if (element.type == 'bpmn:EventBasedGateway') {
                 types = types.filter(t => t.type.startsWith('email_event'));
             } else {

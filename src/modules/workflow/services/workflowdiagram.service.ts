@@ -198,6 +198,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * attach the diagram to its container and listen to its events
      */
     public activate() {
+        this.updateDiagramFromTasks();
         this.listenToShapeChange();
     }
 
@@ -255,14 +256,11 @@ export class WorkflowDiagramService implements OnDestroy {
         const newShape = elementFactory.createShape({type});
         const process = elementRegistry.get('Process_1');
 
-        autoPlace.append(process, newShape);
+        // autoPlace.append(process, newShape);
 
-        modeling.updateProperties(newShape, {taskId: task.id});
+        const tap = 150, count = this.workflowManagerService.filteredTasks.length || 1,
+            x = tap * count, y = tap * count;
 
-        // todo for start event
-        const tap = 100,
-            x = (type == 'bpmn:StartEvent' ? tap : (tap * this.workflowManagerService.filteredTasks.length)) + tap,
-            y = (tap * this.workflowManagerService.filteredTasks.length);
         modeling.createElements(newShape, {x, y}, process);
 
         modeling.updateProperties(newShape, {taskId: task.id});
@@ -381,50 +379,18 @@ export class WorkflowDiagramService implements OnDestroy {
             if (task.id != element.businessObject.sourceRef.$attrs.taskId) return false;
 
             const target = this.tasks.find(t => t.id == element.businessObject.targetRef.$attrs.taskId);
-            const sourceTask = this.tasks.find(t => this.getTaskNextTasks(t).some(id => id == task.id));
+            const sourceTask = this.tasks.find(t => this.workflowManagerService.getTaskNextTasks(t).some(id => id == task.id));
 
             if (target) {
-                this.deleteTaskNextTask(task, target.id);
+                this.workflowManagerService.deleteTaskNextTask(task, target.id);
             }
 
             if (sourceTask) {
                 this.addTaskNextTask(sourceTask, target.id);
-                this.deleteTaskNextTask(sourceTask, task.id);
+                this.workflowManagerService.deleteTaskNextTask(sourceTask, task.id);
             }
             return true;
         });
-    }
-
-    /**
-     * get task next tasks
-     * @param task
-     * @private
-     */
-    private getTaskNextTasks(task): string[] | { id: string, name: string }[] {
-
-        if (!task.type_config) return [];
-
-        const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
-        return (isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [];
-    }
-
-    /**
-     * delete a next task from a task
-     * @param task
-     * @param idToDelete
-     * @private
-     */
-    private deleteTaskNextTask(task: WorkflowTaskDefinitionI, idToDelete: string) {
-
-        if (!task.type_config) return;
-
-        const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
-
-        if (isDecision) {
-            task.type_config.decisions = task.type_config.decisions.filter(d => d.id != idToDelete);
-        } else {
-            task.type_config.next_tasks = task.type_config.next_tasks.filter(id => id != idToDelete);
-        }
     }
 
     /**
@@ -485,7 +451,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @return any[] all diagram elements
      * @private
      */
-    private getAllDiagramElements(): any[] {
+    private getAllDiagramElements(): BpmnDiagramElementI[] {
         return this.bpmnJS.get('elementRegistry').filter(e => this.diagramElementTypes.some(t => t.bpmnType == e.type));
     }
 

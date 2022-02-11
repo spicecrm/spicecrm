@@ -93,6 +93,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
-    "build": "ng build --configuration production"
+    "build": "ng build --configuration production",
+    "start-heap": "node --max_old_space_size=8000 ./node_modules/@angular/cli/bin/ng serve"
   }
 }

@@ -60,7 +60,9 @@ export class WorkflowManagerDetailTasks {
      */
     public addTask() {
 
-        this.workflowManagerService.promptTaskType().subscribe((type: WorkflowTaskTypeI) => {
+        const filterTypes = ['regular', 'gateway_email_event', 'gateway_decision', 'end', 'email_event_open', 'email_event_bounce', 'email_event_timer'];
+
+        this.workflowManagerService.promptTaskType(filterTypes).subscribe((type: WorkflowTaskTypeI) => {
             if (!type) return;
 
             const newTask = this.workflowManagerService.generateNewTask(type.id);

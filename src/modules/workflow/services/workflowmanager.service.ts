@@ -165,4 +165,34 @@ export class WorkflowManagerService {
             });
         });
     }
+
+    /**
+     * get task next tasks
+     * @param task
+     */
+    public getTaskNextTasks(task): string[] | { id: string, name: string }[] {
+
+        if (!task.type_config) return [];
+
+        const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
+        return (isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [];
+    }
+
+    /**
+     * delete a next task from a task
+     * @param task
+     * @param idToDelete
+     */
+    public deleteTaskNextTask(task: WorkflowTaskDefinitionI, idToDelete: string) {
+
+        if (!task.type_config) return;
+
+        const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
+
+        if (isDecision) {
+            task.type_config.decisions = task.type_config.decisions.filter(d => d.id != idToDelete);
+        } else {
+            task.type_config.next_tasks = task.type_config.next_tasks.filter(id => id != idToDelete);
+        }
+    }
 }
