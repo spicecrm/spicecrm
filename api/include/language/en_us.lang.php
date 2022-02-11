@@ -2142,6 +2142,9 @@ $app_list_strings['workflowtasktypes_type_enum'] = [
     'gateway_decision' => 'Gateway Decision',
     'start' => 'Start Task',
     'end' => 'End Task',
+    'email_event_open' => 'Email Event Open',
+    'email_event_bounce' => 'Email Event Bounce',
+    'email_event_timer' => 'Email Event Timer',
 ];
 
 /**
