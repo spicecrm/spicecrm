@@ -23,10 +23,12 @@ export class ReporterFilterButton implements OnChanges, OnDestroy{
     }
 
     ngOnChanges(){
-        for (let whereCondition of this.whereConditions) {
-            if (whereCondition.usereditable == 'yes') {
-                this.reporterconfig.addUserFilter(whereCondition);
-                this.hasUserFilters = true;
+        if(this.whereConditions !== null && this.whereConditions !== undefined){
+            for (let whereCondition of this.whereConditions) {
+                if (whereCondition.usereditable == 'yes') {
+                    this.reporterconfig.addUserFilter(whereCondition);
+                    this.hasUserFilters = true;
+                }
             }
         }
     }
