@@ -372,8 +372,8 @@ $app_list_strings = [
         'nps' => 'NPS (Net Promoter Score)'
     ],
     'questionsettypes_dom' => [
-        'various' => 'verschiedene (default)',
-        'ratinggroup' => 'Bewertung',
+        'various' => 'various (default)',
+        'ratinggroup' => 'valuation',
     ],
     'evaluationtypes_dom' => [
         'default' => 'Standard',
