@@ -44,7 +44,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * holds the diagram element types
      * @private
      */
-    private readonly diagramElementTypes: { taskType: string, bpmnType: string }[] = [];
+    private readonly diagramElementTypes: { taskType: string, bpmnType: string, eventDefinitionType?: string }[] = [];
 
     constructor(private libLoader: libloader,
                 private model: model,
@@ -197,7 +197,6 @@ export class WorkflowDiagramService implements OnDestroy {
     private updateDiagramFromTasks() {
         this.cleanupDiagramElements();
         this.createMissingDiagramElements();
-        this.updateDiagramElementsConnection();
         this.updateDiagramElementsLabel();
     }
 
@@ -277,6 +276,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private createProcessElements(task: WorkflowTaskDefinitionI) {
+
         const allElements = this.getAllDiagramElements();
         const sourceElement = allElements.find(e => e.businessObject.$attrs.taskId == task.id);
 
@@ -300,48 +300,13 @@ export class WorkflowDiagramService implements OnDestroy {
         const elementFactory = this.bpmnJS.get('elementFactory');
         const modeling = this.bpmnJS.get('modeling');
 
-        const type = this.diagramElementTypes.find(t => this.workflowManagerService.getType(task.tasktype).type == t.taskType).bpmnType ?? 'bpmn:IntermediateThrowEvent';
+        const type = this.diagramElementTypes.find(t => this.workflowManagerService.getType(task.tasktype).type == t.taskType) ?? {bpmnType: 'bpmn:IntermediateThrowEvent', eventDefinitionType: undefined};
 
-        const newElement = elementFactory.createShape({type});
+        const newElement = elementFactory.createShape({type: type.bpmnType, eventDefinitionType: type.eventDefinitionType});
 
         modeling.updateProperties(newElement, {taskId: task.id});
 
         return newElement;
-    }
-
-    /**
-     * update the diagram elements connection
-     * @private
-     */
-    private updateDiagramElementsConnection() {
-
-        const modeling = this.bpmnJS.get('modeling');
-        const elements = this.getAllDiagramElements();
-
-        this.workflowManagerService.filteredTasks.forEach(task => {
-
-            const isDecision = this.workflowManagerService.getType(task.tasktype).type == 'gateway_decision';
-
-            if (!isDecision && !Array.isArray(task.type_config?.next_tasks) || (isDecision && !Array.isArray(task.type_config?.decisions))) return;
-
-            let nextTaskElement;
-
-            if (isDecision) {
-                task.type_config.decisions.forEach(decision => {
-                    nextTaskElement = elements.find(e => e.businessObject.$attrs.taskId == decision.id);
-                });
-            } else {
-                task.type_config.next_tasks.forEach(nextTaskId => {
-                    nextTaskElement = elements.find(e => e.businessObject.$attrs.taskId == nextTaskId);
-                });
-            }
-
-            if (!nextTaskElement || nextTaskElement.businessObject.incoming.some(sequenceFlow => sequenceFlow.sourceRef.$attrs.taskId == task.id)) {
-                return;
-            }
-            const taskElement = elements.find(e => e.businessObject.$attrs.taskId == task.id);
-            modeling.connect(taskElement, nextTaskElement);
-        });
     }
 
     /**

@@ -67,6 +67,7 @@ export interface BpmnDiagramElementI {
     source: BpmnDiagramElementI,
     target: BpmnDiagramElementI,
     businessObject: {
+        incoming?: any[];
         $attrs: {
             taskId: string
         }

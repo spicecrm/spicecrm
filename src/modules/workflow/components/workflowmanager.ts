@@ -305,7 +305,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      * @private
      */
     public getCurrentWorkflowData(id: string): any {
-        const data = this.workflowManagerService.currentModule.workflowDefinitions.find(data => data.id == id);
+        const data = JSON.parse(JSON.stringify(this.workflowManagerService.currentModule.workflowDefinitions.find(data => data.id == id)));
         data.tasks = data.tasks.map(task => this.utils.backendModel2spice('WorkflowTaskDefinitions', {...task}));
         return {...data};
     }
