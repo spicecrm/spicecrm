@@ -27,7 +27,10 @@ import {BehaviorSubject} from "rxjs";
 declare var _;
 
 /**
- * render a html input file and handle a model file data binding
+ * render a html input file and allows the user to drop content. the content is passed to the frontend to take the proper action.
+ * the change can be persistet - otherwiese after the upload the file is resert and a new file can be uploaded
+ * also the format that the content shoudl be reutrned can be defined as either text or base64 encoded
+ *
  */
 @Component({
     selector: 'system-input-file-content',
