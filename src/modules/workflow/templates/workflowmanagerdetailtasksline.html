@@ -18,7 +18,10 @@
     <field-container [fieldname]="'closetask'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
 </td>
 <td role="gridcell" class="slds-cell-shrink">
+    <button class="slds-button slds-button_icon slds-m-right--x-small" (click)="addTask()">
+        <system-button-icon icon="add"></system-button-icon>
+    </button>
     <button class="slds-button slds-button_icon" (click)="removeTask()">
-        <system-button-icon [icon]="'delete'"></system-button-icon>
+        <system-button-icon icon="delete"></system-button-icon>
     </button>
 </td>

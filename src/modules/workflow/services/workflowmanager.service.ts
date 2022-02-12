@@ -44,6 +44,15 @@ export class WorkflowManagerService {
     }
 
     /**
+     * get task data
+     * @return WorkflowTaskDefinitionI
+     * @param id
+     */
+    public getTaskObject(id): WorkflowTaskDefinitionI {
+        return this.tasks.find(t => t.id == id);
+    }
+
+    /**
      * get type data
      * @return WorkflowTaskTypeI
      * @param id
@@ -170,12 +179,42 @@ export class WorkflowManagerService {
      * get task next tasks
      * @param task
      */
-    public getTaskNextTasks(task): string[] | { id: string, name: string }[] {
+    public getTaskNextTasks(task): { id: string, name: string }[] {
 
         if (!task.type_config) return [];
 
         const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
-        return (isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [];
+        return (isDecision ? task.type_config.decisions :
+            task.type_config.next_tasks.map(e => ({id: e, name: this.tasks.find(t => t.id == e).name}))) ?? [];
+    }
+
+    /**
+     * get task next tasks
+     * @param task
+     * @param nextTask
+     */
+    public appendTaskNextTask(task: WorkflowTaskDefinitionI, nextTask: WorkflowTaskDefinitionI) {
+
+        if (!task.type_config) return [];
+
+        const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
+        const key = isDecision ? 'decisions' : 'next_tasks';
+
+        if (!Array.isArray(task.type_config[key])) {
+            task.type_config[key] = [];
+        }
+
+        if (isDecision) {
+            task.type_config.decisions = [
+                ...(task.type_config.decisions ?? []),
+                {id: nextTask.id, name: nextTask.name}
+            ];
+        } else {
+            task.type_config.next_tasks = [
+                ...(task.type_config.next_tasks ?? []),
+                nextTask.id
+            ];
+        }
     }
 
     /**

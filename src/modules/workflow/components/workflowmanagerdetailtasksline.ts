@@ -21,6 +21,7 @@ export class WorkflowManagerDetailTasksLine {
     @Input() public task: any = {};
     @Input() public fields: any[] = [];
     @Output() public deleted$ = new EventEmitter<void>();
+    @Output() public addNextTask$ = new EventEmitter<void>();
 
     constructor(public workflowManagerService: WorkflowManagerService, public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'WorkflowTaskDefinitions';
@@ -67,5 +68,9 @@ export class WorkflowManagerDetailTasksLine {
                 }
             });
         });
+    }
+
+    public addTask() {
+        this.addNextTask$.next();
     }
 }

@@ -57,8 +57,9 @@ export class WorkflowManagerDetailTasks {
 
     /**
      * adds a task
+     * @param sourceTask
      */
-    public addTask() {
+    public addTask(sourceTask: WorkflowTaskDefinitionI) {
 
         const filterTypes = ['regular', 'gateway_email_event', 'gateway_decision', 'end', 'email_event_open', 'email_event_bounce', 'email_event_timer'];
 
@@ -67,6 +68,7 @@ export class WorkflowManagerDetailTasks {
 
             const newTask = this.workflowManagerService.generateNewTask(type.id);
             this.tasks = [...this.tasks, newTask];
+            this.workflowManagerService.appendTaskNextTask(sourceTask, newTask);
             this.selectedTask = newTask;
         });
     }
