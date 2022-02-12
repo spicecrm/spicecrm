@@ -61,7 +61,7 @@ export class WorkflowManagerDetailTasks {
      */
     public addTask(sourceTask: WorkflowTaskDefinitionI) {
 
-        const filterTypes = ['regular', 'gateway_email_event', 'gateway_decision', 'end', 'email_event_open', 'email_event_bounce', 'email_event_timer'];
+        const filterTypes = this.workflowManagerService.getTaskAvailableTypes(sourceTask);
 
         this.workflowManagerService.promptTaskType(filterTypes).subscribe((type: WorkflowTaskTypeI) => {
             if (!type) return;

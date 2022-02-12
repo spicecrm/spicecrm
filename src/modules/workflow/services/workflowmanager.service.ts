@@ -184,8 +184,8 @@ export class WorkflowManagerService {
         if (!task.type_config) return [];
 
         const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
-        return (isDecision ? task.type_config.decisions :
-            task.type_config.next_tasks.map(e => ({id: e, name: this.tasks.find(t => t.id == e).name}))) ?? [];
+        return ((isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [])
+            .map(e => ({id: e, name: this.tasks.find(t => t.id == e).name}));
     }
 
     /**
@@ -232,6 +232,22 @@ export class WorkflowManagerService {
             task.type_config.decisions = task.type_config.decisions.filter(d => d.id != idToDelete);
         } else {
             task.type_config.next_tasks = task.type_config.next_tasks.filter(id => id != idToDelete);
+        }
+    }
+
+    /**
+     * get task available next task types
+     * @param task
+     */
+    public getTaskAvailableTypes(task: WorkflowTaskDefinitionI): string[] {
+
+        switch (this.getType(task.tasktype).type) {
+            case 'end':
+                return [];
+            case 'gateway_email_event':
+                return ['email_event_open', 'email_event_bounce', 'email_event_timer'];
+            default:
+                return ['regular', 'gateway_email_event', 'gateway_decision', 'end'];
         }
     }
 }

@@ -1,41 +1,38 @@
-<div class="slds-m-bottom--xx-small slds-p-horizontal--x-small">
-    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
-        <thead>
-        <tr class="slds-text-title_caps">
-            <th class="slds-cell-shrink" scope="col"></th>
-            <th scope="col">
-                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate"><system-label label="LBL_PRIMARY"></system-label></div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate"><system-label label="LBL_CLOSE_W_WORKFLOW"></system-label></div>
-            </th>
-            <th class="slds-cell-shrink"></th>
-        </tr>
-        </thead>
-        <tbody cdkDropList [cdkDropListData]="tasks|workflowmanagernotdeletedpipe" (cdkDropListDropped)="onDrop($event)">
-        <tr >
-            <td *ngIf="tasks.length == 0" colspan="9">
-                <div class="slds-align--absolute-center slds-p-around--small">
-                    <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
-                </div>
-            </td>
-        </tr>
-        <tr *ngFor="let task of tasks|workflowmanagernotdeletedpipe" workflow-manager-detail-tasks-line [task]="task" (addNextTask$)="addTask(task)" (deleted$)="setSelectedTask(undefined)" (click)="setSelectedTask(task)" cdkDrag [cdkDragData]="task" cdkDragLockAxis="y" cdkDragBoundary=".slds-table" [ngClass]="{'slds-is-selected': task.id == selectedTask?.id}" class="slds-drag--preview" style="cursor: initial">
-        </tr>
-        </tbody>
-    </table>
-</div>
-<div class="slds-m-top--xx-small slds-p-around--x-small slds-p-top--none">
-    <workflow-manager-detail-task *ngIf="selectedTask; else notaskselected" [task]="selectedTask"></workflow-manager-detail-task>
-    <ng-template #notaskselected>
-        <div class="slds-p-around--medium slds-align--absolute-center">
-            <system-label label="MSG_NO_RECORDS_SELECTED"></system-label>
-        </div>
-    </ng-template>
+<div class="slds-grid slds-height_full">
+    <div class="slds-size--1-of-4 slds-height_full slds-scrollable--y slds-border--right">
+        <table class="slds-table slds-table_bordered slds-table--header-fixed slds-table_cell-buffer">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th class="slds-cell-shrink" scope="col"></th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-vertical--x-small"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-vertical--x-small"><system-label label="LBL_TYPE"></system-label></div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody cdkDropList [cdkDropListData]="tasks|workflowmanagernotdeletedpipe" (cdkDropListDropped)="onDrop($event)">
+            <tr >
+                <td *ngIf="tasks.length == 0" colspan="9">
+                    <div class="slds-align--absolute-center slds-p-around--small">
+                        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+                    </div>
+                </td>
+            </tr>
+            <tr *ngFor="let task of tasks|workflowmanagernotdeletedpipe" workflow-manager-detail-tasks-line [task]="task" (addNextTask$)="addTask(task)" (deleted$)="setSelectedTask(undefined)" (click)="setSelectedTask(task)" cdkDrag [cdkDragData]="task" cdkDragLockAxis="y" cdkDragBoundary=".slds-table" [ngClass]="{'slds-is-selected': task.id == selectedTask?.id}" class="slds-drag--preview" style="cursor: initial">
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="slds-size--3-of-4 slds-height_full slds-scrollable--y">
+        <workflow-manager-detail-task *ngIf="selectedTask; else notaskselected" [task]="selectedTask"></workflow-manager-detail-task>
+        <ng-template #notaskselected>
+            <div class="slds-p-around--medium slds-align--absolute-center">
+                <system-label label="MSG_NO_RECORDS_SELECTED"></system-label>
+            </div>
+        </ng-template>
+    </div>
+
 </div>

@@ -1,14 +1,15 @@
 /**
  * @module ModuleWorkflow
  */
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {footer} from "../../../services/footer.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {WorkflowTaskDefinitionI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
+import {modal} from "../../../services/modal.service";
 
 
 @Component({
@@ -17,59 +18,49 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
     providers: [model, view]
 })
 export class WorkflowManagerDetailTasksLine {
-
-    @Input() public task: any = {};
-    @Input() public fields: any[] = [];
+    /**
+     * holds the task data
+     */
+    @Input() public task: WorkflowTaskDefinitionI;
+    /**
+     * holds the task type data
+     */
+    public type: WorkflowTaskTypeI;
+    /**
+     * emit delete action
+     */
     @Output() public deleted$ = new EventEmitter<void>();
+    /**
+     * emit add next task action
+     */
     @Output() public addNextTask$ = new EventEmitter<void>();
 
-    constructor(public workflowManagerService: WorkflowManagerService, public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
-        this.model.module = 'WorkflowTaskDefinitions';
-
-        this.view.displayLabels = false;
-
+    constructor(public workflowManagerService: WorkflowManagerService, public modal: modal, public language: language) {
     }
 
     public ngOnChanges() {
-        this.model.id = this.task.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.task);
-    }
-
-    /**
-     * assign a name to every task
-     * @param taskID
-     */
-    public getTaskName(taskID) {
-        let taskname = taskID;
-
-        if (taskID) {
-            this.workflowManagerService.tasks.some(task => {
-                if (task.id == taskID) {
-                    taskname = task.name;
-                    return true;
-                }
-            });
-        }
-
-        return taskname;
+        if (!this.task) return;
+        this.type = this.workflowManagerService.getType(this.task.tasktype);
     }
 
     /**
      * Deletes the task
      */
     public removeTask() {
-        this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
-            componenRef.instance.title = 'Delete Task';
-            componenRef.instance.message = 'are you sure you want to delete the task?';
-            componenRef.instance.answer.subscribe(decision => {
-                if (decision) {
+        this.modal.confirm(
+            this.language.getLabel('MSG_DELETE_RECORD', '', 'long'),
+            this.language.getLabel('MSG_DELETE_RECORD'))
+            .subscribe((answer) => {
+                if (answer) {
                     this.task.deleted = 1;
                     this.deleted$.next();
                 }
             });
-        });
     }
 
+    /**
+     * emit add task
+     */
     public addTask() {
         this.addNextTask$.next();
     }

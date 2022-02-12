@@ -64,7 +64,7 @@
             </div>
         </div>
     </div>
-    <div [class.slds-hide]="!currentWorkflowId" system-to-bottom>
+    <div [class.slds-hide]="!currentWorkflowId" system-to-bottom-noscroll>
         <workflow-manager-detail-tasks *ngIf="!displayDiagram" class="slds-height_full spice-display-block"></workflow-manager-detail-tasks>
         <div #diagramContainer [class.slds-hide]="!displayDiagram" class="slds-grow" style="min-height: 0"></div>
     </div>
