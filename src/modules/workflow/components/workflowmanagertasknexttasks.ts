@@ -34,7 +34,7 @@ export class WorkflowManagerTaskNextTasks implements OnInit {
      * @param id
      */
     public removeTask(id: string) {
-        this.model.data.type_config.next_tasks = this.model.data.type_config.next_tasks.filter(task => task != id);
+        this.model.data.type_config.next_tasks = this.model.data.type_config.next_tasks.filter(entry => entry.id != id);
     }
 
     /**
@@ -43,13 +43,13 @@ export class WorkflowManagerTaskNextTasks implements OnInit {
     public addTask() {
 
         const options = this.workflowManagerService.tasks
-            .filter(e => e.deleted != 1 && e.id != this.model.id && !this.model.data.type_config.next_tasks.some(nextTask => nextTask == e.id))
+            .filter(e => e.id != this.model.id && !this.model.data.type_config.next_tasks.some(entry => entry.id == e.id))
             .map(e => ({value: e.id, display: e.name}));
 
         this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_ADD', 'shade', null, options, true)
             .subscribe(id => {
                 if (!id) return;
-                this.model.data.type_config.next_tasks.push(id);
+                this.model.data.type_config.next_tasks.push({id, name: this.workflowManagerService.tasks.find(t => t.id == id).name});
                 this.cdRef.detectChanges();
             });
     }

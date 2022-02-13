@@ -13,7 +13,7 @@
                 <th class="slds-cell-shrink"></th>
             </tr>
             </thead>
-            <tbody cdkDropList [cdkDropListData]="tasks|workflowmanagernotdeletedpipe" (cdkDropListDropped)="onDrop($event)">
+            <tbody cdkDropList [cdkDropListData]="tasks" (cdkDropListDropped)="onDrop($event)">
             <tr >
                 <td *ngIf="tasks.length == 0" colspan="9">
                     <div class="slds-align--absolute-center slds-p-around--small">
@@ -21,7 +21,7 @@
                     </div>
                 </td>
             </tr>
-            <tr *ngFor="let task of tasks|workflowmanagernotdeletedpipe" workflow-manager-detail-tasks-line [task]="task" (addNextTask$)="addTask(task)" (deleted$)="setSelectedTask(undefined)" (click)="setSelectedTask(task)" cdkDrag [cdkDragData]="task" cdkDragLockAxis="y" cdkDragBoundary=".slds-table" [ngClass]="{'slds-is-selected': task.id == selectedTask?.id}" class="slds-drag--preview" style="cursor: initial">
+            <tr *ngFor="let task of tasks" workflow-manager-detail-tasks-line [task]="task" (addNextTask$)="addTask(task)" (deleted$)="setSelectedTask(undefined)" (click)="setSelectedTask(task)" cdkDrag [cdkDragData]="task" cdkDragLockAxis="y" cdkDragBoundary=".slds-table" [ngClass]="{'slds-is-selected': task.id == selectedTask?.id}" class="slds-drag--preview" style="cursor: initial">
             </tr>
             </tbody>
         </table>

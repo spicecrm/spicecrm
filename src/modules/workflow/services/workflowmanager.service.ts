@@ -13,9 +13,9 @@ import {Observable, Subject} from "rxjs";
 @Injectable()
 export class WorkflowManagerService {
     /**
-     * holds the workflow tasks
+     * holds the deleted workflow task types
      */
-    public tasks: WorkflowTaskDefinitionI[] = [];
+    public deletedTasks: WorkflowTaskTypeI[] = [];
     /**
      * holds the workflow task types
      */
@@ -29,18 +29,30 @@ export class WorkflowManagerService {
     }
 
     /**
-     * @return WorkflowTaskDefinitionI[] the workflow tasks which are not deleted from model data
+     * set model tasks
+     * @param tasks
      */
-    get filteredTasks(): WorkflowTaskDefinitionI[] {
-        return this.model.data.tasks.filter(t => t.deleted != 1);
+    set tasks(tasks: WorkflowTaskDefinitionI[]) {
+        this.model.setField('tasks', tasks);
     }
 
     /**
      * get model tasks
      * @return any[] tasks in model data
      */
-    get modelTasks(): WorkflowTaskDefinitionI[] {
+    get tasks(): WorkflowTaskDefinitionI[] {
         return this.model.getField('tasks');
+    }
+
+    /**
+     * delete task
+     * @param id
+     */
+    public deleteTask(id: string) {
+        this.deletedTasks.push(
+            this.model.data.tasks.find(t => t.id == id)
+        );
+        this.model.data.tasks = this.model.data.tasks.filter(t => t.id != id);
     }
 
     /**
@@ -74,7 +86,7 @@ export class WorkflowManagerService {
      * @return boolean
      */
     public hasAllEndTasks(): boolean {
-        return !this.filteredTasks.some(t =>
+        return !this.tasks.some(t =>
             (!Array.isArray(t.type_config.next_tasks) || t.type_config.next_tasks.length == 0) && this.getType(t.tasktype).type != 'end'
         );
     }
@@ -84,7 +96,7 @@ export class WorkflowManagerService {
      * @return boolean
      */
     public hasStartTask(): boolean {
-        return !!this.filteredTasks.find(t => !!t.tasktype && this.getStartType()?.id == t.tasktype);
+        return !!this.tasks.find(t => !!t.tasktype && this.getStartType()?.id == t.tasktype);
     }
 
     /**
@@ -132,7 +144,7 @@ export class WorkflowManagerService {
             workflowdefinition_id: this.model.id,
             deleted: 0,
             sequence: this.getNextSequence(),
-            name: 'new Task ' + (this.modelTasks.length + 1),
+            name: 'new Task ' + (this.tasks.length + 1),
             tasktype: typeId,
             type_config: {}
         };
@@ -143,8 +155,8 @@ export class WorkflowManagerService {
      */
     public getNextSequence(): number {
         let highestSequence = 0;
-        for (let task of this.modelTasks) {
-            if (task.deleted != 1 && task.sequence > highestSequence) {
+        for (let task of this.tasks) {
+            if (task.sequence > highestSequence) {
                 highestSequence = task.sequence;
             }
         }
@@ -155,11 +167,8 @@ export class WorkflowManagerService {
     /**
      * sorts the tasks by the sequence
      */
-    public sortTasksBySequence() {
-        if (this.modelTasks) {
-            this.modelTasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-            this.tasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-        }
+    public sortTasksBySequence(tasks) {
+        tasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
     /**
@@ -168,7 +177,7 @@ export class WorkflowManagerService {
      */
     public openEditModal(taskId) {
         this.modal.openModal('WorkflowManagerTaskEditModal', true, this.injector).subscribe(ref => {
-            ref.instance.task = this.filteredTasks.find(t => t.id == taskId);
+            ref.instance.task = this.tasks.find(t => t.id == taskId);
             ref.instance.response.subscribe(taskData => {
                 this.tasks = [...this.tasks.filter(t => t.id != taskData.id), taskData];
             });
@@ -184,8 +193,7 @@ export class WorkflowManagerService {
         if (!task.type_config) return [];
 
         const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
-        return ((isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [])
-            .map(e => ({id: e, name: this.tasks.find(t => t.id == e).name}));
+        return (isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [];
     }
 
     /**
@@ -204,17 +212,10 @@ export class WorkflowManagerService {
             task.type_config[key] = [];
         }
 
-        if (isDecision) {
-            task.type_config.decisions = [
-                ...(task.type_config.decisions ?? []),
-                {id: nextTask.id, name: nextTask.name}
-            ];
-        } else {
-            task.type_config.next_tasks = [
-                ...(task.type_config.next_tasks ?? []),
-                nextTask.id
-            ];
-        }
+        task.type_config[key] = [
+            ...(task.type_config[key] ?? []),
+            {id: nextTask.id, name: nextTask.name, type: task.tasktype}
+        ];
     }
 
     /**
@@ -231,7 +232,7 @@ export class WorkflowManagerService {
         if (isDecision) {
             task.type_config.decisions = task.type_config.decisions.filter(d => d.id != idToDelete);
         } else {
-            task.type_config.next_tasks = task.type_config.next_tasks.filter(id => id != idToDelete);
+            task.type_config.next_tasks = task.type_config.next_tasks.filter(entry => entry.id != idToDelete);
         }
     }
 

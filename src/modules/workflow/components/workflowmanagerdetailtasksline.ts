@@ -2,11 +2,9 @@
  * @module ModuleWorkflow
  */
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {modelutilities} from '../../../services/modelutilities.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
-import {footer} from "../../../services/footer.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {WorkflowTaskDefinitionI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
 import {modal} from "../../../services/modal.service";
@@ -52,7 +50,7 @@ export class WorkflowManagerDetailTasksLine {
             this.language.getLabel('MSG_DELETE_RECORD'))
             .subscribe((answer) => {
                 if (answer) {
-                    this.task.deleted = 1;
+                    this.workflowManagerService.deleteTask(this.task.id);
                     this.deleted$.next();
                 }
             });

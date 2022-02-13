@@ -27,22 +27,18 @@
             </td>
         </tr>
         <tr *ngFor="let nextTask of model.data.type_config.next_tasks; trackBy: trackByFn; let index = index">
-            <ng-container *ngFor="let task of workflowManagerService.tasks; trackBy: trackByFn">
-                <ng-container *ngIf="nextTask == task.id">
-                    <td>
-                        <div class="slds-truncate">
-                            {{task.name}}
-                        </div>
-                    </td>
-                    <td>
-                        <ng-container *ngFor="let type of workflowManagerService.types">
-                            <div *ngIf="type.id == task.tasktype" class="slds-truncate">
-                                {{type.name}}
-                            </div>
-                        </ng-container>
-                    </td>
+            <td>
+                <div class="slds-truncate">
+                    {{nextTask.name}}
+                </div>
+            </td>
+            <td>
+                <ng-container *ngFor="let type of workflowManagerService.types">
+                    <div *ngIf="type.id == nextTask.type" class="slds-truncate">
+                        {{type.name}}
+                    </div>
                 </ng-container>
-            </ng-container>
+            </td>
             <td role="gridcell" class="slds-cell-shrink">
                 <button class="slds-button slds-button_icon" (click)="removeTask(nextTask)">
                     <system-button-icon [icon]="'delete'"></system-button-icon>

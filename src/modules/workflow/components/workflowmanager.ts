@@ -122,7 +122,6 @@ export class WorkflowManager implements OnInit, AfterViewInit {
         if (!id) {
 
             this.model.data = {};
-            this.workflowManagerService.tasks = [];
             this.currentWorkflow = undefined;
             if (this.model.isNew) this.removeCurrentWorkflowFromList();
 
@@ -133,8 +132,6 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             this.model.setData(
                 this.getCurrentWorkflowData(id)
             );
-
-            this.workflowManagerService.tasks = this.model.data.tasks;
 
             this.currentWorkflow = { id, data: this.model.data };
 
@@ -207,7 +204,10 @@ export class WorkflowManager implements OnInit, AfterViewInit {
     public save() {
 
         const data = this.utils.spiceModel2backend('WorkflowDefinitions', this.model.data);
-        data.tasks = data.tasks.map(task => this.utils.spiceModel2backend('WorkflowTaskDefinitions', task));
+        data.tasks = [
+            ...data.tasks.map(task => this.utils.spiceModel2backend('WorkflowTaskDefinitions', task)),
+            ...this.workflowManagerService.deletedTasks.map(task => this.utils.spiceModel2backend('WorkflowTaskDefinitions', {...task, deleted: 1}))
+        ];
 
         this.backend.postRequest(`module/WorkflowDefinitions/${this.currentModule}/${this.currentWorkflowId}`, {}, data).subscribe(
             () => {
@@ -238,7 +238,6 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                         this.toast.sendToast('Workflow deleted', 'success');
                         this.removeCurrentWorkflowFromList();
                         this.currentWorkflowId = undefined;
-                        this.workflowManagerService.tasks = [];
                     } else {
                         this.toast.sendToast(res.message, 'error');
                     }
@@ -338,7 +337,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
         const startTask = this.workflowManagerService.generateNewTask(
             this.workflowManagerService.getStartType().id
         );
-        this.workflowManagerService.tasks.push(startTask);
+        this.model.data.tasks.push(startTask);
         this.workflowManagerService.openEditModal(startTask.id);
     }
 

@@ -18,7 +18,6 @@ import /*embed*/ {WorkflowManagerService} from "./services/workflowmanager.servi
 import /*embed*/ {WorkflowMyOpenTasksPipe} from "./pipes/workflowmyopentaskspipe";
 import /*embed*/ {WorkflowOpenWorkflowsPipe} from "./pipes/workflowopenworkflowspipe";
 import /*embed*/ {WorkflowCompletedWorkflowsPipe} from "./pipes/workflowcompletedworkflowspipe";
-import /*embed*/ {WorkflowManagerNotDeletedPipe} from "./pipes/workflowmanagernotdeletedpipe";
 
 import /*embed*/ {WorkflowManagerTaskTypesStandard} from "./components/workflowmanagertasktypesstandard";
 import /*embed*/ {WorkflowManagerTaskTypesEmail} from "./components/workflowmanagertasktypesemail";
@@ -81,7 +80,6 @@ import {WorkflowManagerTaskTypesEnd} from "./components/workflowmanagertasktypes
         WorkflowPanel,
         WorkflowOpenWorkflowsPipe,
         WorkflowCompletedWorkflowsPipe,
-        WorkflowManagerNotDeletedPipe,
         WorkflowMyOpenTasksPipe,
         WorkflowPanelHeader,
         WorkflowPanelItem,

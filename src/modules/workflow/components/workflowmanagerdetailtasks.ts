@@ -50,9 +50,7 @@ export class WorkflowManagerDetailTasks {
     @Input()
     set tasks(data: WorkflowTaskDefinitionI[]) {
         this.model.data.tasks = data;
-        this.workflowManagerService.tasks = data;
-
-        this.workflowManagerService.sortTasksBySequence();
+        this.workflowManagerService.sortTasksBySequence(data);
     }
 
     /**

@@ -36,7 +36,7 @@ export class WorkflowManagerTaskTypesDecision implements OnInit {
     public addDecision() {
 
         const options = this.workflowManagerService.tasks
-            .filter(e => e.deleted != 1 && e.id != this.model.id && !this.model.data.type_config.decisions.some(decision => decision == e.id))
+            .filter(e => e.id != this.model.id && !this.model.data.type_config.decisions.some(decision => decision == e.id))
             .map(e => ({value: e.id, display: e.name}));
 
         this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_ADD', 'shade', null, options, true)
