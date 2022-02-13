@@ -73,6 +73,13 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
+     * @return [] the workflow tasks with deleted
+     */
+    get allTasks(): WorkflowTaskDefinitionI[] {
+        return this.model.data.tasks.concat(this.workflowManagerService.deletedTasks);
+    }
+
+    /**
      * destroy the diagram
      */
     public ngOnDestroy() {
@@ -354,6 +361,10 @@ export class WorkflowDiagramService implements OnDestroy {
             this.handleDiagramConnectionAdd(event.element)
         );
 
+        this.listenToDiagramEvent('connection.changed', (event: BpmnDiagramEventI) =>
+            this.handleDiagramConnectionChange(event.element)
+        );
+
         this.listenToDiagramEvent('connection.removed', (event: BpmnDiagramEventI) =>
             this.handleDiagramConnectionDelete(event.element)
         );
@@ -428,14 +439,29 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
+     * set temporary the source task id and connect the tasks
+     * @param element
+     * @private
+     */
+    private handleDiagramConnectionChange(element: BpmnDiagramElementI) {
+
+        this.connectTasks(
+            element.source.businessObject.$attrs.taskId,
+            this.tasks.find(t => t.id == element.target.businessObject.$attrs.taskId)
+        );
+    }
+
+    /**
      * remove the connection in tasks
      * @param element
      * @private
      */
     private handleDiagramConnectionDelete(element: BpmnDiagramElementI) {
 
-        const sourceTask = this.tasks.find(t => t.id == element.businessObject.sourceRef.$attrs.taskId);
-        const targetTask = this.tasks.find(t => t.id == element.businessObject.targetRef.$attrs.taskId);
+        const sourceTask = this.allTasks.find(t => t.id == element.businessObject.sourceRef.$attrs.taskId);
+        const targetTask = this.allTasks.find(t => t.id == element.businessObject.targetRef.$attrs.taskId);
+
+        if (!sourceTask || !targetTask) return;
 
         this.workflowManagerService.deleteTaskNextTask(sourceTask, targetTask.id);
     }
@@ -484,6 +510,9 @@ export class WorkflowDiagramService implements OnDestroy {
 
                 if (!task.type_config) task.type_config = {};
 
+                if (this.workflowManagerService.getTaskNextTasks(task).some(t => t.id == targetTask.id)) {
+                    return;
+                }
                 this.workflowManagerService.appendTaskNextTask(task, targetTask);
 
                 return true;
