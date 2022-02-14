@@ -173,11 +173,13 @@ class ServiceTicket extends SugarBean
         // determine the notification status
         $this->has_notification = $this->determineNotificationStatus();
 
+        $dummy = parent::save($check_notify);
+
         if (!empty(json_decode($this->questionnaire_answers, true))) {
             QuestionAnsweringHandler::saveAnswers_byParent(json_decode($this->questionnaire_answers, true)['answers'], 'ServiceTickets', $this->id, true);
         }
 
-        return parent::save($check_notify);
+        return $dummy;
 
     }
 
