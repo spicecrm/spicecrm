@@ -1,0 +1,4 @@
+<button (click)="signIn($event)" class="slds-button slds-button_neutral slds-size--1-of-1 slds-m-bottom--xx-small">
+    <img *ngIf="!!service.icon" [src]="service.icon" [alt]="service.name" class="slds-m-right--x-small" style="height: 16px; width: 16px">
+    {{service.name}}
+</button>

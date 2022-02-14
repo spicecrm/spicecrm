@@ -12,6 +12,11 @@
                     <div *ngIf="!options" class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                         <ng-container [ngSwitch]="type">
                             <system-input-date *ngSwitchCase="'input_date'" [(ngModel)]="value"></system-input-date>
+                            <div *ngSwitchCase="'input_text'" class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <textarea class="slds-textarea" style="height: 200px" [(ngModel)]="value"></textarea>
+                                </div>
+                            </div>
                             <ng-container *ngSwitchDefault>
                                 <input #inputField class="slds-input" type="text" [(ngModel)]="value" tabindex="1"/>
                                 <button class="slds-input__icon slds-input__icon_right slds-button slds-button--icon" [disabled]="!value" (click)="value=''">
