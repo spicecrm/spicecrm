@@ -94,9 +94,9 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = ['appointment'=>'Dies ist ein Text'] )
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null )
     {
-        $this->additionalValues = ['appointment'=>'Dies ist ein Text'];//$additionalValues;
+        $this->additionalValues = $additionalValues;
         $this->lang = $lang;
         $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
@@ -371,7 +371,7 @@ class Compiler
 
         //parse pipe if passed in
 
-        $value = $this->handleSubstitution($conditionparts[0], $beans);
+        $value = $this->handleSubstitution($conditionparts[0], $beans, true);
 
         switch ($conditionparts[1]) {
             case '>':
@@ -552,9 +552,9 @@ class Compiler
 
     }
 
-    function handleSubstitution( $string, $beans ) {
+    function handleSubstitution( $string, $beans, $raw = false ) {
         $items = preg_split('#\|#', $string );
-        $currentValue = $this->getValueForCompileblock( $items[0], $beans );
+        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw );
         for ( $i = 1; $i < count( $items ); $i++ ) {
             if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans )) === false ) break;
             $currentValue = $temp;
@@ -562,7 +562,7 @@ class Compiler
         return $currentValue;
     }
 
-    function getValueForCompileblock($m, $beans ) {
+    function getValueForCompileblock($m, $beans, $raw = false ) {
 
         preg_match('#^([^:]+)(:(.*))?$#', $m, $matches );
 
@@ -585,7 +585,7 @@ class Compiler
          *          publisher = link -> load publisher ->
          *              name = attribute -> return value;
          */
-        $loopThroughParts = function ($obj, $level = 0) use (&$parts, &$loopThroughParts) {
+        $loopThroughParts = function ($obj, $level = 0, $raw = false) use (&$parts, &$loopThroughParts) {
 //            global $app_list_strings;
             $part = $parts[$level];
             if (is_callable([$obj, $part])) {
@@ -603,7 +603,7 @@ class Compiler
                     }
                     break;
                 case 'enum':
-                    $value = $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
+                    $value = $raw ? $obj->{$part} : $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
                     break;
                 case 'multienum':
                     $values = explode(',', $obj->{$part});
@@ -660,7 +660,7 @@ class Compiler
                     break;
                 case 'currency':
                     // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                    $value = currency_format_number($obj->{$part}, ['symbol_space' => true] );
+                    $value = $raw ? $obj->{$part} : currency_format_number($obj->{$part}, ['symbol_space' => true] );
                     break;
                 case 'html':
                     $value = html_entity_decode($obj->{$part});
@@ -672,14 +672,14 @@ class Compiler
                     break;
                 default:
                     // moved nl2br to only be added when non specific fields are parsed
-                    $value = nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                    $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
                     break;
                 }
             }
             return $value;
         };
 
-        $value = $loopThroughParts( $obj, 1);
+        $value = $loopThroughParts( $obj, 1, $raw);
 
         return $value;
     }

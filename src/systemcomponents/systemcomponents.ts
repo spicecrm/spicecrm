@@ -150,6 +150,7 @@ import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 import /*embed*/ {SystemInputFile} from './components/systeminputfile';
+import /*embed*/ {SystemInputFileContent} from './components/systeminputfilecontent';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -318,6 +319,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemWrappedText
     ],
     entryComponents: [
@@ -448,6 +450,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemModalHeaderEmpty,
         SystemWrappedText,
         SystemPDFContainer

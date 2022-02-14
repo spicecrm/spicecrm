@@ -21,7 +21,7 @@ export class ObjectGDPRModal implements OnInit {
     /**
      * holds the componentconfig to be reetireved on ngInit
      */
-    public componentconfig: any = {}
+    public componentconfig: any = {};
 
     /**
      * @ignore
@@ -63,22 +63,7 @@ export class ObjectGDPRModal implements OnInit {
     /**
      * hides the modal
      */
-    public hideGDPRLog() {
+    public closeModal() {
         this.self.destroy();
-    }
-
-    /**
-     * consturcts a data object fromt he audit record so the field can be rendered properly
-     *
-     * @param data the audit data record
-     */
-    public getModelData(data) {
-        let dataObject = {
-            module: this.model.module,
-            id: this.model.id
-        };
-        dataObject[data.field_name] = this.model.utils.backend2spice(this.model.module, data.field_name, data.value);
-
-        return dataObject;
     }
 }
