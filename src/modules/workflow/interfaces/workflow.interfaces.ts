@@ -17,6 +17,15 @@ export interface WorkflowTaskTypeI {
     deleted: boolean;
 }
 
+/**
+ * next task array item
+ */
+export interface NextTaskI {
+    id: string;
+    name: string;
+    type: string;
+
+}
 
 /**
  * object of WorkflowTaskDefinition vardefs
@@ -27,8 +36,8 @@ export interface WorkflowTaskDefinitionI {
     workflowdefinition_id: string;
     tasktype: string;
     type_config: {
-        decisions?: {id: string, name: string, type: string }[],
-        next_tasks?: {id: string, name: string, type: string }[],
+        decisions?: NextTaskI[],
+        next_tasks?: NextTaskI[],
         /**
          * could be any generic configuration for the task type
          */

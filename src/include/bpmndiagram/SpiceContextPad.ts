@@ -3,7 +3,7 @@
  */
 import {WorkflowTaskTypeI} from "../../modules/workflow/interfaces/workflow.interfaces";
 
-export const diagramElementTypes: {taskType: string, bpmnType: string, eventDefinitionType?: string}[] = [
+export const elementTypes: {taskType: string, bpmnType: string, eventDefinitionType?: string}[] = [
     {taskType: 'regular' , bpmnType: 'bpmn:IntermediateThrowEvent'},
     {taskType: 'end' , bpmnType: 'bpmn:EndEvent'},
     {taskType: 'start' , bpmnType: 'bpmn:StartEvent'},
@@ -94,7 +94,7 @@ export class SpiceContextPad {
             types.forEach(type => {
 
                 if (type.type == 'start') return;
-                const bpmnTypeMap = diagramElementTypes.find(e => e.taskType == type.type);
+                const bpmnTypeMap = elementTypes.find(e => e.taskType == type.type);
                 const createShape = () => elementFactory.createShape({ type: bpmnTypeMap.bpmnType, eventDefinitionType: bpmnTypeMap.eventDefinitionType} );
 
                 const createTaskType = event => {

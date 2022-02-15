@@ -3,7 +3,7 @@
  */
 import {Injectable, OnDestroy} from '@angular/core';
 import {SpicePalette} from "../../../include/bpmndiagram/SpicePalette";
-import {diagramElementTypes, SpiceContextPad} from "../../../include/bpmndiagram/SpiceContextPad";
+import {elementTypes, SpiceContextPad} from "../../../include/bpmndiagram/SpiceContextPad";
 import {libloader} from "../../../services/libloader.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
@@ -44,25 +44,20 @@ export class WorkflowDiagramService implements OnDestroy {
      * holds the diagram element types
      * @private
      */
-    private readonly diagramElementTypes: { taskType: string, bpmnType: string, eventDefinitionType?: string }[] = [];
+    private readonly elementTypes: { taskType: string, bpmnType: string, eventDefinitionType?: string }[] = [];
 
     constructor(private libLoader: libloader,
                 private model: model,
                 private modal: modal,
                 private workflowManagerService: WorkflowManagerService) {
-        this.diagramElementTypes = diagramElementTypes;
+        this.elementTypes = elementTypes;
     }
 
     /**
      * @return boolean if the diagram library was loaded
      */
-    get diagramLoaded(): boolean {
+    get isLoaded(): boolean {
         return !!this.bpmnJS;
-    }
-
-    set tasks(data: WorkflowTaskDefinitionI[]) {
-        this.model.data.tasks = data;
-        this.workflowManagerService.sortTasksBySequence(data);
     }
 
     /**
@@ -70,6 +65,11 @@ export class WorkflowDiagramService implements OnDestroy {
      */
     get tasks(): WorkflowTaskDefinitionI[] {
         return this.model.data.tasks;
+    }
+
+    set tasks(data: WorkflowTaskDefinitionI[]) {
+        this.model.data.tasks = data;
+        this.workflowManagerService.sortTasksBySequence(data);
     }
 
     /**
@@ -91,9 +91,9 @@ export class WorkflowDiagramService implements OnDestroy {
     /**
      * load the diagram data from the workflow tasks
      */
-    public reloadDiagramData(activate?: boolean) {
+    public reloadDiagram(activate?: boolean) {
 
-        this.clearDiagramData();
+        this.clearDiagram();
 
         this.initializeDiagram().then(() => {
             this.updateDiagramFromTasks();
@@ -104,7 +104,7 @@ export class WorkflowDiagramService implements OnDestroy {
     /**
      * deactivate the listeners and clear the diagram
      */
-    public clearDiagramData() {
+    public clearDiagram() {
         this.deactivate();
         this.bpmnJS.clear();
     }
@@ -112,11 +112,11 @@ export class WorkflowDiagramService implements OnDestroy {
     /**
      * update diagram elements label
      */
-    public updateDiagramElementsLabel() {
+    public updateElementsLabel() {
 
         const modeling = this.bpmnJS.get('modeling');
 
-        this.getAllDiagramElements().forEach(e => {
+        this.getAllElements().forEach(e => {
 
             const task = this.tasks.find(task => e.businessObject.$attrs.taskId == task.id);
 
@@ -180,7 +180,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * detach the diagram from the dom and remove all listeners
      */
     public deactivate() {
-        this.removeAllDiagramListeners();
+        this.removeAllListeners();
     }
 
     /**
@@ -200,17 +200,20 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private updateDiagramFromTasks() {
-        this.cleanupDiagramElements();
-        this.createMissingDiagramElements();
-        this.updateDiagramElementsLabel();
+
+        if (!this.bpmnJS) return;
+
+        this.updateElements();
+        this.updateConnections();
+        this.updateElementsLabel();
     }
 
     /**
      * cleanup diagram elements
      */
-    private cleanupDiagramElements() {
+    private cleanupElements() {
 
-        const deleteElements = this.getAllDiagramElements()
+        const deleteElements = this.getAllElements()
             .filter(e => !this.tasks.some(t => t.id == e.businessObject.$attrs.taskId) || this.workflowManagerService.deletedTasks.some(t => t.id == e.businessObject.$attrs.taskId));
 
         if (deleteElements.length == 0) return;
@@ -219,14 +222,13 @@ export class WorkflowDiagramService implements OnDestroy {
     }
 
     /**
-     * create the missing diagram elements from tasks
+     * cleanup diagram elements and create the missing once
      */
-    private createMissingDiagramElements() {
+    private updateElements() {
 
-        if (!this.bpmnJS) return;
+        this.cleanupElements();
 
-
-        const elements = this.getAllDiagramElements();
+        const elements = this.getAllElements();
 
         if (elements.length == this.tasks.length) {
             return;
@@ -247,6 +249,57 @@ export class WorkflowDiagramService implements OnDestroy {
 
         this.saveDiagramData();
     }
+
+    /**
+     * update the diagram elements connections
+     * @private
+     */
+    private updateConnections() {
+
+        this.cleanupConnections();
+
+        const modeling = this.bpmnJS.get('modeling');
+        const elements = this.getAllElements();
+
+        this.workflowManagerService.tasks.forEach(task => {
+
+            const element = elements.find(e => e.businessObject.$attrs.taskId == task.id);
+            const nextTasks = this.workflowManagerService.getTaskNextTasks(task);
+
+            nextTasks.forEach(nextTask => {
+
+                const nextElement = elements.find(e => e.businessObject.$attrs.taskId == nextTask.id);
+
+                if (nextElement.businessObject.incoming.some(sequenceFlow => sequenceFlow.sourceRef.$attrs.taskId == task.id)) {
+                    return;
+                }
+
+                modeling.connect(element, nextElement);
+            });
+
+
+        });
+    }
+
+    /**
+     * cleanup element connections
+     * @private
+     */
+    private cleanupConnections() {
+
+        const connections = this.bpmnJS.get('elementRegistry').filter(e => this.elementTypes.some(t => 'bpmn:SequenceFlow' == e.type));
+
+        connections.forEach(sequenceFlow => {
+
+            const previousTask = this.tasks.find(t => sequenceFlow.source.businessObject.$attrs.taskId == t.id);
+            const nextTasks = this.workflowManagerService.getTaskNextTasks(previousTask);
+
+            if (!nextTasks.some(e => e.id == sequenceFlow.target.businessObject.$attrs.taskId)) {
+                this.bpmnJS.get('modeling').removeConnection(sequenceFlow);
+            }
+        });
+    }
+
 
     /**
      * create the start diagram element
@@ -282,7 +335,7 @@ export class WorkflowDiagramService implements OnDestroy {
      */
     private createProcessElements(task: WorkflowTaskDefinitionI) {
 
-        const allElements = this.getAllDiagramElements();
+        const allElements = this.getAllElements();
         const sourceElement = allElements.find(e => e.businessObject.$attrs.taskId == task.id);
 
         this.workflowManagerService.getTaskNextTasks(task).forEach(entry => {
@@ -305,9 +358,15 @@ export class WorkflowDiagramService implements OnDestroy {
         const elementFactory = this.bpmnJS.get('elementFactory');
         const modeling = this.bpmnJS.get('modeling');
 
-        const type = this.diagramElementTypes.find(t => this.workflowManagerService.getType(task.tasktype).type == t.taskType) ?? {bpmnType: 'bpmn:IntermediateThrowEvent', eventDefinitionType: undefined};
+        const type = this.elementTypes.find(t => this.workflowManagerService.getType(task.tasktype).type == t.taskType) ?? {
+            bpmnType: 'bpmn:IntermediateThrowEvent',
+            eventDefinitionType: undefined
+        };
 
-        const newElement = elementFactory.createShape({type: type.bpmnType, eventDefinitionType: type.eventDefinitionType});
+        const newElement = elementFactory.createShape({
+            type: type.bpmnType,
+            eventDefinitionType: type.eventDefinitionType
+        });
 
         modeling.updateProperties(newElement, {taskId: task.id});
 
@@ -482,7 +541,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * remove all diagram listeners
      * @private
      */
-    private removeAllDiagramListeners() {
+    private removeAllListeners() {
         const eventBus = this.bpmnJS.get('eventBus');
 
         this.diagramListeners.forEach(e => eventBus.off(e.event, e.listener));
@@ -493,8 +552,8 @@ export class WorkflowDiagramService implements OnDestroy {
      * @return any[] all diagram elements
      * @private
      */
-    private getAllDiagramElements(): BpmnDiagramElementI[] {
-        return this.bpmnJS.get('elementRegistry').filter(e => this.diagramElementTypes.some(t => t.bpmnType == e.type));
+    private getAllElements(): BpmnDiagramElementI[] {
+        return this.bpmnJS.get('elementRegistry').filter(e => this.elementTypes.some(t => t.bpmnType == e.type));
     }
 
     /**

@@ -125,7 +125,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             this.currentWorkflow = undefined;
             if (this.model.isNew) this.removeCurrentWorkflowFromList();
 
-            this.workflowDiagramService.clearDiagramData();
+            this.workflowDiagramService.clearDiagram();
 
         } else {
 
@@ -140,7 +140,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                 this.generateStartTask();
             }
 
-            this.workflowDiagramService.reloadDiagramData(this.displayDiagram);
+            this.workflowDiagramService.reloadDiagram(this.displayDiagram);
         }
 
     }

@@ -5,6 +5,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {modal} from "../../../services/modal.service";
+import {NextTaskI} from "../interfaces/workflow.interfaces";
 
 @Component({
     selector: 'workflow-manager-task-next-tasks',
@@ -21,11 +22,26 @@ export class WorkflowManagerTaskNextTasks implements OnInit {
     }
 
     /**
+     * set next tasks
+     */
+    set nextTasks(value: NextTaskI[])  {
+        this.model.data.type_config.next_tasks = value;
+    }
+
+    /**
+     * next tasks
+     * @return {id: string, name: string}[]
+     */
+    get nextTasks(): NextTaskI[]  {
+        return this.model.data.type_config.next_tasks;
+    }
+
+    /**
      * initialize the next tasks array
      */
     public ngOnInit() {
-        if (!Array.isArray(this.model.data.type_config.next_tasks)) {
-            this.model.data.type_config.next_tasks = [];
+        if (!Array.isArray(this.nextTasks)) {
+            this.nextTasks = [];
         }
     }
 
@@ -34,7 +50,7 @@ export class WorkflowManagerTaskNextTasks implements OnInit {
      * @param id
      */
     public removeTask(id: string) {
-        this.model.data.type_config.next_tasks = this.model.data.type_config.next_tasks.filter(entry => entry.id != id);
+        this.nextTasks = this.nextTasks.filter((entry: NextTaskI) => entry.id != id);
     }
 
     /**
@@ -43,13 +59,14 @@ export class WorkflowManagerTaskNextTasks implements OnInit {
     public addTask() {
 
         const options = this.workflowManagerService.tasks
-            .filter(e => e.id != this.model.id && !this.model.data.type_config.next_tasks.some(entry => entry.id == e.id))
+            .filter(e => e.id != this.model.id && !this.nextTasks.some((entry: NextTaskI) => entry.id == e.id))
             .map(e => ({value: e.id, display: e.name}));
 
         this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_ADD', 'shade', null, options, true)
             .subscribe(id => {
                 if (!id) return;
-                this.model.data.type_config.next_tasks.push({id, name: this.workflowManagerService.tasks.find(t => t.id == id).name});
+                const task = this.workflowManagerService.tasks.find(t => t.id == id);
+                this.nextTasks.push({id, name: task.name, type: task.tasktype});
                 this.cdRef.detectChanges();
             });
     }
