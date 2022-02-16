@@ -2136,3 +2136,25 @@ $app_list_strings['tracking_actions_dom'] = [
     'opened' => 'opened',
     'sent' => 'sent'
 ];
+
+// CR1000710
+$app_list_strings['lmstrainings_status_dom'] = [
+    'draft' => 'draft',
+    'published' => 'published',
+    'retired' => 'retired',
+];
+$app_list_strings['lmstrainingunits_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
+$app_list_strings['lmstrainingunitcontents_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
+$app_list_strings['lmslevel_dom'] = [
+    1 =>  'Level 1',
+    2 =>  'Level 2',
+    3 =>  'Level 3',
+];
+$app_list_strings['lmslevel_language_dom'] = [
+    'A1' =>  'A1',
+    'A2' =>  'A2',
+    'B1' =>  'B1',
+    'B2' =>  'B2',
+    'C1' =>  'C1',
+    'C2' =>  'C2',
+];
