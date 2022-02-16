@@ -2,19 +2,23 @@
  * BPMN custom palette class to provide custom element actions
  */
 export class SpicePalette {
-    $inject = [ 'create', 'elementFactory', 'palette', 'translate', 'eventBus' ];
-    create; translate; elementFactory; eventBus;
+    $inject = [ 'create', 'elementFactory', 'palette', 'translate', 'eventBus', 'zoomScroll' ];
+    create; translate; elementFactory; eventBus; zoomScroll;
 
-    constructor(create, elementFactory, palette, translate, eventBus) {
+    constructor(create, elementFactory, palette, translate, eventBus, zoomScroll) {
         this.create = create;
         this.elementFactory = elementFactory;
         this.translate = translate;
         this.eventBus = eventBus;
+        this.zoomScroll = zoomScroll;
 
         palette.registerProvider(this);
     }
 
     getPaletteEntries(element) {
+
+        const {zoomScroll, eventBus} = this;
+
         /*
       0: 'hand-tool'
       1: 'lasso-tool'
@@ -35,7 +39,31 @@ export class SpicePalette {
 
         return entries => {
             return {
-                'hand-tool': entries['hand-tool']
+                'hand-tool': entries['hand-tool'],
+                'zoom-reset': {
+                    group: 'zoom',
+                    className: 'bpmn-icon-target',
+                    title: 'reset zoom',
+                    action: {
+                        click: () => zoomScroll.reset()
+                    }
+                },
+                'zoom-in': {
+                    group: 'zoom',
+                    className: 'bpmn-icon-plus',
+                    title: 'zoom in',
+                    action: {
+                        click: () => zoomScroll.stepZoom(1)
+                    }
+                },
+                'zoom-out': {
+                    group: 'zoom',
+                    className: 'bpmn-icon-minus',
+                    title: 'zoom out',
+                    action: {
+                        click: () => zoomScroll.stepZoom(-1)
+                    }
+                }
             }
         }
     }

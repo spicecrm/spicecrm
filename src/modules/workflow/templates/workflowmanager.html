@@ -41,24 +41,29 @@
         <div *ngIf="currentModule" class="slds-form-element slds-col--bump-left">
             <system-checkbox-toggle *ngIf="currentWorkflowId" [(ngModel)]="displayDiagram" (ngModelChange)="toggleActivateDiagram($event)" label="LBL_DIAGRAM"></system-checkbox-toggle>
             <system-checkbox-toggle *ngIf="currentWorkflowId" [ngModel]="model.data.is_active" (ngModelChange)="toggleActive($event)" label="LBL_ACTIVE"></system-checkbox-toggle>
+            <div *ngIf="!!currentWorkflowId" class="slds-button-group" role="group">
+                <button (click)="saveDiagramAsSVG()" [disabled]="!displayDiagram" system-title="LBL_SAVE_AS_SVG" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                    <system-button-icon icon="image"></system-button-icon>
+                </button>
+            </div>
             <div class="slds-button-group" role="group">
-                <button (click)="toggleStretch()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <button (click)="toggleStretch()" [system-title]="!stretch ? 'LBL_EXPAND' : 'LBL_CONTRACT'" class="slds-button slds-button--icon-border-filled slds-button--icon">
                     <system-button-icon [icon]="!stretch ? 'expand' : 'contract'"></system-button-icon>
                 </button>
             </div>
-            <div *ngIf="currentWorkflowId" class="slds-button-group" role="group">
-                <button (click)="openEditModal()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+            <div *ngIf="!!currentWorkflowId" class="slds-button-group" role="group">
+                <button (click)="openEditModal()" system-title="LBL_EDIT" class="slds-button slds-button--icon-border-filled slds-button--icon">
                     <system-button-icon icon="edit"></system-button-icon>
                 </button>
-                <button (click)="deleteWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <button (click)="deleteWorkflow()" system-title="LBL_DELETE" class="slds-button slds-button--icon-border-filled slds-button--icon">
                     <system-button-icon icon="delete"></system-button-icon>
                 </button>
-                <button (click)="save()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <button (click)="save()" system-title="LBL_SAVE" class="slds-button slds-button--icon-border-filled slds-button--icon">
                     <system-button-icon icon="check"></system-button-icon>
                 </button>
             </div>
             <div class="slds-button-group" role="group">
-                <button (click)="addWorkflow()" type="button" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <button (click)="addWorkflow()" system-title="LBL_ADD" class="slds-button slds-button--icon-border-filled slds-button--icon">
                     <system-button-icon icon="add"></system-button-icon>
                 </button>
             </div>

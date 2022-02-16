@@ -33,7 +33,8 @@ export class WorkflowDiagramService implements OnDestroy {
         createDiagram(),
         attachTo(el: any),
         detach(),
-        clear()
+        clear(),
+        saveSVG(obj: any, fn: (error, svg) => void),
     };
     /**
      * holds the diagram listeners to remove them on destroy
@@ -431,6 +432,34 @@ export class WorkflowDiagramService implements OnDestroy {
         this.listenToDiagramEvent('drag.ended', () =>
             this.saveDiagramData()
         );
+    }
+
+    /**
+     * save the diagram as svg
+     */
+    public saveAsSVG() {
+
+        this.bpmnJS.saveSVG({ format: true }, (error, svg) => {
+            if (error) {
+                return;
+            }
+
+            const svgBlob = new Blob([svg], {
+                type: 'image/svg+xml'
+            });
+
+            const fileName = this.model.data.name + '.svg';
+
+            const downloadLink = document.createElement('a');
+            downloadLink.download = fileName;
+            downloadLink.href = window.URL.createObjectURL(svgBlob);
+            downloadLink.onclick = (event: MouseEvent) => {
+                document.body.removeChild(event.target as Node);
+            };
+            downloadLink.style.visibility = 'hidden';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        });
     }
 
     /**

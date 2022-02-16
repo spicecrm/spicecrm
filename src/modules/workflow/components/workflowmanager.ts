@@ -380,4 +380,11 @@ export class WorkflowManager implements OnInit, AfterViewInit {
     public toggleStretch() {
         this.stretch = !this.stretch;
     }
+
+    /**
+     * save the diagram as svg
+     */
+    public saveDiagramAsSVG() {
+        this.workflowDiagramService.saveAsSVG();
+    }
 }
