@@ -7,7 +7,7 @@ import {elementTypes, SpiceContextPad} from "../../../include/bpmndiagram/SpiceC
 import {libloader} from "../../../services/libloader.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
-import {BpmnDiagramElementI, BpmnDiagramEventI, WorkflowTaskDefinitionI} from "../interfaces/workflow.interfaces";
+import {BpmnElementI, BpmnEventI, WorkflowTaskDefI} from "../interfaces/workflow.interfaces";
 import {WorkflowManagerService} from "./workflowmanager.service";
 
 /**
@@ -49,7 +49,7 @@ export class WorkflowDiagramService implements OnDestroy {
     constructor(private libLoader: libloader,
                 private model: model,
                 private modal: modal,
-                private workflowManagerService: WorkflowManagerService) {
+                private wfm: WorkflowManagerService) {
         this.elementTypes = elementTypes;
     }
 
@@ -63,20 +63,20 @@ export class WorkflowDiagramService implements OnDestroy {
     /**
      * @return [] the workflow tasks without deleted
      */
-    get tasks(): WorkflowTaskDefinitionI[] {
+    get tasks(): WorkflowTaskDefI[] {
         return this.model.data.tasks;
     }
 
-    set tasks(data: WorkflowTaskDefinitionI[]) {
+    set tasks(data: WorkflowTaskDefI[]) {
         this.model.data.tasks = data;
-        this.workflowManagerService.sortTasksBySequence(data);
+        this.wfm.sortTasksBySequence(data);
     }
 
     /**
      * @return [] the workflow tasks with deleted
      */
-    get allTasks(): WorkflowTaskDefinitionI[] {
-        return this.model.data.tasks.concat(this.workflowManagerService.deletedTasks);
+    get allTasks(): WorkflowTaskDefI[] {
+        return this.model.data.tasks.concat(this.wfm.deletedTasks);
     }
 
     /**
@@ -136,7 +136,7 @@ export class WorkflowDiagramService implements OnDestroy {
 
             if (!res.loaded) return;
 
-            SpiceContextPad.taskTypes = this.workflowManagerService.types;
+            SpiceContextPad.taskTypes = this.wfm.types;
 
             this.bpmnJS = new BpmnJS({
                 moddleExtensions: {
@@ -186,10 +186,10 @@ export class WorkflowDiagramService implements OnDestroy {
     /**
      * set the task related to the diagram element to deleted
      */
-    public handleDiagramElementDelete(element: BpmnDiagramElementI) {
+    public handleDiagramElementDelete(element: BpmnElementI) {
         this.tasks.some(task => {
             if (element.businessObject.$attrs.taskId == task.id) {
-                this.workflowManagerService.deleteTask(task.id);
+                this.wfm.deleteTask(task.id);
                 return true;
             }
         });
@@ -214,7 +214,7 @@ export class WorkflowDiagramService implements OnDestroy {
     private cleanupElements() {
 
         const deleteElements = this.getAllElements()
-            .filter(e => !this.tasks.some(t => t.id == e.businessObject.$attrs.taskId) || this.workflowManagerService.deletedTasks.some(t => t.id == e.businessObject.$attrs.taskId));
+            .filter(e => !this.tasks.some(t => t.id == e.businessObject.$attrs.taskId) || this.wfm.deletedTasks.some(t => t.id == e.businessObject.$attrs.taskId));
 
         if (deleteElements.length == 0) return;
 
@@ -234,7 +234,7 @@ export class WorkflowDiagramService implements OnDestroy {
             return;
         }
 
-        const startTask = this.tasks.find(t => this.workflowManagerService.getType(t.tasktype).type == 'start');
+        const startTask = this.tasks.find(t => this.wfm.getType(t.tasktype).type == 'start');
 
         if (!startTask) return;
 
@@ -261,10 +261,10 @@ export class WorkflowDiagramService implements OnDestroy {
         const modeling = this.bpmnJS.get('modeling');
         const elements = this.getAllElements();
 
-        this.workflowManagerService.tasks.forEach(task => {
+        this.wfm.tasks.forEach(task => {
 
             const element = elements.find(e => e.businessObject.$attrs.taskId == task.id);
-            const nextTasks = this.workflowManagerService.getTaskNextTasks(task);
+            const nextTasks = this.wfm.getTaskNextTasks(task);
 
             nextTasks.forEach(nextTask => {
 
@@ -292,7 +292,7 @@ export class WorkflowDiagramService implements OnDestroy {
         connections.forEach(sequenceFlow => {
 
             const previousTask = this.tasks.find(t => sequenceFlow.source.businessObject.$attrs.taskId == t.id);
-            const nextTasks = this.workflowManagerService.getTaskNextTasks(previousTask);
+            const nextTasks = this.wfm.getTaskNextTasks(previousTask);
 
             if (!nextTasks.some(e => e.id == sequenceFlow.target.businessObject.$attrs.taskId)) {
                 this.bpmnJS.get('modeling').removeConnection(sequenceFlow);
@@ -300,13 +300,12 @@ export class WorkflowDiagramService implements OnDestroy {
         });
     }
 
-
     /**
      * create the start diagram element
      * @param element
      * @private
      */
-    private appendStartElement(element: BpmnDiagramElementI) {
+    private appendStartElement(element: BpmnElementI) {
         const elementRegistry = this.bpmnJS.get('elementRegistry');
         const modeling = this.bpmnJS.get('modeling');
 
@@ -323,7 +322,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @param source
      * @param element
      */
-    private appendElement(source: BpmnDiagramElementI, element: BpmnDiagramElementI) {
+    private appendElement(source: BpmnElementI, element: BpmnElementI) {
         const autoPlace = this.bpmnJS.get('autoPlace');
         autoPlace.append(source, element);
     }
@@ -333,13 +332,13 @@ export class WorkflowDiagramService implements OnDestroy {
      * @param task
      * @private
      */
-    private createProcessElements(task: WorkflowTaskDefinitionI) {
+    private createProcessElements(task: WorkflowTaskDefI) {
 
         const allElements = this.getAllElements();
         const sourceElement = allElements.find(e => e.businessObject.$attrs.taskId == task.id);
 
-        this.workflowManagerService.getTaskNextTasks(task).forEach(entry => {
-            const nextTask = this.workflowManagerService.getTaskObject(entry.id);
+        this.wfm.getTaskNextTasks(task).forEach(entry => {
+            const nextTask = this.wfm.getTaskObject(entry.id);
             if (!allElements.some(e => e.businessObject.$attrs.taskId == nextTask.id)) {
                 const newElement = this.createDiagramElement(nextTask);
                 this.appendElement(sourceElement, newElement);
@@ -353,12 +352,12 @@ export class WorkflowDiagramService implements OnDestroy {
      * @param task
      * @private
      */
-    private createDiagramElement(task: WorkflowTaskDefinitionI): BpmnDiagramElementI {
+    private createDiagramElement(task: WorkflowTaskDefI): BpmnElementI {
 
         const elementFactory = this.bpmnJS.get('elementFactory');
         const modeling = this.bpmnJS.get('modeling');
 
-        const type = this.elementTypes.find(t => this.workflowManagerService.getType(task.tasktype).type == t.taskType) ?? {
+        const type = this.elementTypes.find(t => this.wfm.getType(task.tasktype).type == t.taskType) ?? {
             bpmnType: 'bpmn:IntermediateThrowEvent',
             eventDefinitionType: undefined
         };
@@ -397,40 +396,36 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private listenToShapeChange() {
-
-        this.workflowManagerService.types.forEach(type =>
-            this.listenToDiagramEvent(type.id, (event: BpmnDiagramEventI, element: BpmnDiagramElementI) =>
+return;
+        this.wfm.types.forEach(type =>
+            this.listenToDiagramEvent(type.id, (event: BpmnEventI, element: BpmnElementI) =>
                 this.handleDiagramElementAdd(element, event.type)
             )
         );
 
-        this.listenToDiagramEvent('shape.added', (event: BpmnDiagramEventI) =>
+        this.listenToDiagramEvent('shape.added', (event: BpmnEventI) =>
             this.updateDiagramElementLabel(event.element)
         );
 
-        this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnDiagramEventI) =>
+        this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnEventI) =>
             this.updateTaskNameFromDiagram(event)
         );
 
-        this.listenToDiagramEvent('shape.removed', (event: BpmnDiagramEventI) =>
+        this.listenToDiagramEvent('shape.removed', (event: BpmnEventI) =>
             this.handleDiagramElementDelete(event.element)
         );
 
-        this.listenToDiagramEvent('connection.added', (event: BpmnDiagramEventI) =>
-            this.handleDiagramConnectionAdd(event.element)
-        );
-
-        this.listenToDiagramEvent('connection.changed', (event: BpmnDiagramEventI) =>
+        this.listenToDiagramEvent('connection.changed', (event: BpmnEventI) =>
             this.handleDiagramConnectionChange(event.element)
         );
 
-        this.listenToDiagramEvent('connection.removed', (event: BpmnDiagramEventI) =>
+        this.listenToDiagramEvent('connection.removed', (event: BpmnEventI) =>
             this.handleDiagramConnectionDelete(event.element)
         );
 
         // edit.task event is a custom event fired in SpiceContextPad class
-        this.listenToDiagramEvent('edit.task', (event: BpmnDiagramEventI, element) =>
-            this.workflowManagerService.openEditModal(element.businessObject.$attrs.taskId)
+        this.listenToDiagramEvent('edit.task', (event: BpmnEventI, element) =>
+            this.wfm.openEditModal(element.businessObject.$attrs.taskId)
         );
 
         this.listenToDiagramEvent('drag.ended', () =>
@@ -442,11 +437,11 @@ export class WorkflowDiagramService implements OnDestroy {
      * handle the diagram element add
      * @private
      */
-    private handleDiagramElementAdd(element: BpmnDiagramElementI, type: string) {
+    private handleDiagramElementAdd(element: BpmnElementI, type: string) {
 
         if (element.type == 'label') return;
 
-        const newTask = this.workflowManagerService.generateNewTask(type);
+        const newTask = this.wfm.generateNewTask(type);
         const modeling = this.bpmnJS.get('modeling');
 
         this.tasks = [...this.tasks, newTask];
@@ -459,7 +454,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * update diagram element label
      * @private
      */
-    private updateDiagramElementLabel(element: BpmnDiagramElementI) {
+    private updateDiagramElementLabel(element: BpmnElementI) {
 
         const modeling = this.bpmnJS.get('modeling');
 
@@ -475,7 +470,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @param event
      * @private
      */
-    private updateTaskNameFromDiagram(event: BpmnDiagramEventI) {
+    private updateTaskNameFromDiagram(event: BpmnEventI) {
         this.tasks.some(task => {
             if (event.context.element.businessObject.$attrs.taskId == task.id) {
                 task.name = event.context.newLabel;
@@ -486,43 +481,52 @@ export class WorkflowDiagramService implements OnDestroy {
 
     /**
      * set temporary the source task id and connect the tasks
-     * @param element
+     * @param sequenceFlow
      * @private
      */
-    private handleDiagramConnectionAdd(element: BpmnDiagramElementI) {
+    private handleDiagramConnectionChange(sequenceFlow: BpmnElementI) {
+
+        this.cleanupNextTasks();
 
         this.connectTasks(
-            element.source.businessObject.$attrs.taskId,
-            this.tasks.find(t => t.id == element.target.businessObject.$attrs.taskId)
+            sequenceFlow.source.businessObject.$attrs.taskId,
+            this.tasks.find(t => t.id == sequenceFlow.target.businessObject.$attrs.taskId)
         );
     }
 
     /**
-     * set temporary the source task id and connect the tasks
-     * @param element
+     * cleanup tasks next tasks
      * @private
      */
-    private handleDiagramConnectionChange(element: BpmnDiagramElementI) {
+    private cleanupNextTasks() {
 
-        this.connectTasks(
-            element.source.businessObject.$attrs.taskId,
-            this.tasks.find(t => t.id == element.target.businessObject.$attrs.taskId)
-        );
+        const connections = this.bpmnJS.get('elementRegistry').filter(e => this.elementTypes.some(t => 'bpmn:SequenceFlow' == e.type));
+
+        this.tasks.forEach(task => {
+
+            this.wfm.getTaskNextTasks(task).forEach(entry => {
+
+                if (connections.some(c => c.source.businessObject.$attrs.taskId == task.id && c.target.businessObject.$attrs.taskId == entry.id)) {
+                    return;
+                }
+                this.wfm.deleteTaskNextTask(task, entry.id);
+            });
+        })
     }
 
     /**
      * remove the connection in tasks
-     * @param element
+     * @param sequenceFlow
      * @private
      */
-    private handleDiagramConnectionDelete(element: BpmnDiagramElementI) {
+    private handleDiagramConnectionDelete(sequenceFlow: BpmnElementI) {
 
-        const sourceTask = this.allTasks.find(t => t.id == element.businessObject.sourceRef.$attrs.taskId);
-        const targetTask = this.allTasks.find(t => t.id == element.businessObject.targetRef.$attrs.taskId);
+        const sourceTask = this.allTasks.find(t => t.id == sequenceFlow.businessObject.sourceRef.$attrs.taskId);
+        const targetTask = this.allTasks.find(t => t.id == sequenceFlow.businessObject.targetRef.$attrs.taskId);
 
         if (!sourceTask || !targetTask) return;
 
-        this.workflowManagerService.deleteTaskNextTask(sourceTask, targetTask.id);
+        this.wfm.deleteTaskNextTask(sourceTask, targetTask.id);
     }
 
     /**
@@ -552,7 +556,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @return any[] all diagram elements
      * @private
      */
-    private getAllElements(): BpmnDiagramElementI[] {
+    private getAllElements(): BpmnElementI[] {
         return this.bpmnJS.get('elementRegistry').filter(e => this.elementTypes.some(t => t.bpmnType == e.type));
     }
 
@@ -569,10 +573,10 @@ export class WorkflowDiagramService implements OnDestroy {
 
                 if (!task.type_config) task.type_config = {};
 
-                if (this.workflowManagerService.getTaskNextTasks(task).some(t => t.id == targetTask.id)) {
+                if (this.wfm.getTaskNextTasks(task).some(t => t.id == targetTask.id)) {
                     return;
                 }
-                this.workflowManagerService.appendTaskNextTask(task, targetTask);
+                this.wfm.appendTaskNextTask(task, targetTask);
 
                 return true;
             }

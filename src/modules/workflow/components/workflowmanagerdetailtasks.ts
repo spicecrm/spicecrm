@@ -6,7 +6,7 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {WorkflowManagerService} from '../services/workflowmanager.service';
-import {WorkflowTaskDefinitionI, WorkflowTaskTypeI} from '../interfaces/workflow.interfaces';
+import {WorkflowTaskDefI, WorkflowTaskTypeI} from '../interfaces/workflow.interfaces';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {libloader} from '../../../services/libloader.service';
 import {WorkflowDiagramService} from "../services/workflowdiagram.service";
@@ -48,7 +48,7 @@ export class WorkflowManagerDetailTasks {
      * @param data
      */
     @Input()
-    set tasks(data: WorkflowTaskDefinitionI[]) {
+    set tasks(data: WorkflowTaskDefI[]) {
         this.model.data.tasks = data;
         this.workflowManagerService.sortTasksBySequence(data);
     }
@@ -57,7 +57,7 @@ export class WorkflowManagerDetailTasks {
      * adds a task
      * @param sourceTask
      */
-    public addTask(sourceTask: WorkflowTaskDefinitionI) {
+    public addTask(sourceTask: WorkflowTaskDefI) {
 
         const filterTypes = this.workflowManagerService.getTaskAvailableTypes(sourceTask);
 

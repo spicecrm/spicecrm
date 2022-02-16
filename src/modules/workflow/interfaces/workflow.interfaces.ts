@@ -30,7 +30,7 @@ export interface NextTaskI {
 /**
  * object of WorkflowTaskDefinition vardefs
  */
-export interface WorkflowTaskDefinitionI {
+export interface WorkflowTaskDefI {
     id: string;
     name: string;
     workflowdefinition_id: string;
@@ -71,10 +71,10 @@ export interface WorkflowTaskDefinitionI {
 /**
  * bpmn-js diagram element structure
  */
-export interface BpmnDiagramElementI {
+export interface BpmnElementI {
     type: 'bpmn:IntermediateThrowEvent' | 'bpmn:EndEvent' | 'bpmn:StartEvent' | 'bpmn:ExclusiveGateway' | 'bpmn:EventBasedGateway' | 'label';
-    source: BpmnDiagramElementI,
-    target: BpmnDiagramElementI,
+    source: BpmnElementI,
+    target: BpmnElementI,
     businessObject: {
         incoming?: any[];
         $attrs: {
@@ -88,11 +88,11 @@ export interface BpmnDiagramElementI {
 /**
  * bpmn-js diagram event structure
  */
-export interface BpmnDiagramEventI {
-    element?: BpmnDiagramElementI;
+export interface BpmnEventI {
+    element?: BpmnElementI;
     type: string;
     context: {
-        element: BpmnDiagramElementI,
+        element: BpmnElementI,
         newLabel: string
     }
 

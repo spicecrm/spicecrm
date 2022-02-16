@@ -1,7 +1,7 @@
 /**
  * BPMN custom context pad class to provide custom element actions
  */
-import {WorkflowTaskTypeI} from "../../modules/workflow/interfaces/workflow.interfaces";
+import {BpmnElementI, WorkflowTaskTypeI} from "../../modules/workflow/interfaces/workflow.interfaces";
 
 export const elementTypes: {taskType: string, bpmnType: string, eventDefinitionType?: string}[] = [
     {taskType: 'regular' , bpmnType: 'bpmn:IntermediateThrowEvent'},
@@ -47,7 +47,7 @@ export class SpiceContextPad {
      * override default method to customize the actions
      * @param element
      */
-    public getContextPadEntries(element): (entries) => any {
+    public getContextPadEntries(element: BpmnElementI): (entries) => any {
 
         const { autoPlace, create, elementFactory, translate, eventBus } = this;
 
@@ -64,10 +64,10 @@ export class SpiceContextPad {
          */
         return (entries) => {
 
+            if (!elementTypes.some(t => t.bpmnType == element.type)) return entries;
+
             // define default actions
-            const customEntries = {
-                'connect': entries.connect,
-                'delete': entries.delete,
+            const customEntries: any = {
                 'edit.task': {
                     group: 'model',
                     className: 'bpmn-icon-screw-wrench',
@@ -79,6 +79,10 @@ export class SpiceContextPad {
             };
 
             let types = SpiceContextPad.taskTypes;
+
+            if (element.type != 'bpmn:StartEvent') {
+                customEntries.delete = entries.delete;
+            }
 
             if (element.type == 'bpmn:EndEvent') {
                 return {'edit.task': customEntries['edit.task'], 'delete': customEntries.delete};
@@ -94,6 +98,7 @@ export class SpiceContextPad {
             types.forEach(type => {
 
                 if (type.type == 'start') return;
+
                 const bpmnTypeMap = elementTypes.find(e => e.taskType == type.type);
                 const createShape = () => elementFactory.createShape({ type: bpmnTypeMap.bpmnType, eventDefinitionType: bpmnTypeMap.eventDefinitionType} );
 

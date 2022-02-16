@@ -2,7 +2,7 @@
  * @module ModuleWorkflow
  */
 import {Injectable, Injector} from '@angular/core';
-import {WorkflowTaskDefinitionI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
+import {WorkflowTaskDefI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {Observable, Subject} from "rxjs";
@@ -32,7 +32,7 @@ export class WorkflowManagerService {
      * set model tasks
      * @param tasks
      */
-    set tasks(tasks: WorkflowTaskDefinitionI[]) {
+    set tasks(tasks: WorkflowTaskDefI[]) {
         this.model.setField('tasks', tasks);
     }
 
@@ -40,7 +40,7 @@ export class WorkflowManagerService {
      * get model tasks
      * @return any[] tasks in model data
      */
-    get tasks(): WorkflowTaskDefinitionI[] {
+    get tasks(): WorkflowTaskDefI[] {
         return this.model.getField('tasks');
     }
 
@@ -57,10 +57,10 @@ export class WorkflowManagerService {
 
     /**
      * get task data
-     * @return WorkflowTaskDefinitionI
+     * @return WorkflowTaskDefI
      * @param id
      */
-    public getTaskObject(id): WorkflowTaskDefinitionI {
+    public getTaskObject(id): WorkflowTaskDefI {
         return this.tasks.find(t => t.id == id);
     }
 
@@ -137,7 +137,7 @@ export class WorkflowManagerService {
      * generate a new task
      * @param typeId
      */
-    public generateNewTask(typeId: string): WorkflowTaskDefinitionI {
+    public generateNewTask(typeId: string): WorkflowTaskDefI {
 
         return {
             id: this.model.generateGuid(),
@@ -201,7 +201,7 @@ export class WorkflowManagerService {
      * @param task
      * @param nextTask
      */
-    public appendTaskNextTask(task: WorkflowTaskDefinitionI, nextTask: WorkflowTaskDefinitionI) {
+    public appendTaskNextTask(task: WorkflowTaskDefI, nextTask: WorkflowTaskDefI) {
 
         if (!task.type_config) return [];
 
@@ -214,7 +214,7 @@ export class WorkflowManagerService {
 
         task.type_config[key] = [
             ...(task.type_config[key] ?? []),
-            {id: nextTask.id, name: nextTask.name, type: task.tasktype}
+            {id: nextTask.id, name: nextTask.name, type: nextTask.tasktype}
         ];
     }
 
@@ -223,7 +223,7 @@ export class WorkflowManagerService {
      * @param task
      * @param idToDelete
      */
-    public deleteTaskNextTask(task: WorkflowTaskDefinitionI, idToDelete: string) {
+    public deleteTaskNextTask(task: WorkflowTaskDefI, idToDelete: string) {
 
         if (!task.type_config) return;
 
@@ -240,7 +240,7 @@ export class WorkflowManagerService {
      * get task available next task types
      * @param task
      */
-    public getTaskAvailableTypes(task: WorkflowTaskDefinitionI): string[] {
+    public getTaskAvailableTypes(task: WorkflowTaskDefI): string[] {
 
         switch (this.getType(task.tasktype).type) {
             case 'end':

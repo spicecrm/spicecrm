@@ -6,7 +6,7 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {WorkflowManagerService} from "../services/workflowmanager.service";
-import {WorkflowTaskDefinitionI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
+import {WorkflowTaskDefI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
 import {modal} from "../../../services/modal.service";
 
 
@@ -19,7 +19,7 @@ export class WorkflowManagerDetailTasksLine {
     /**
      * holds the task data
      */
-    @Input() public task: WorkflowTaskDefinitionI;
+    @Input() public task: WorkflowTaskDefI;
     /**
      * holds the task type data
      */

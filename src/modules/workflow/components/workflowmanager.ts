@@ -135,7 +135,6 @@ export class WorkflowManager implements OnInit, AfterViewInit {
 
             this.currentWorkflow = { id, data: this.model.data };
 
-
             if (!this.workflowManagerService.hasStartTask()) {
                 this.generateStartTask();
             }
@@ -230,6 +229,13 @@ export class WorkflowManager implements OnInit, AfterViewInit {
         this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('LBL_DELETE')).subscribe(answer => {
 
             if (!answer) return;
+
+            if (this.model.data.isNew) {
+                this.removeCurrentWorkflowFromList();
+                this.currentWorkflowId = undefined;
+                this.toast.sendToast('Workflow deleted', 'success');
+                return;
+            }
 
             this.backend.deleteRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}`).subscribe(
                 (res: { success: boolean, message: string }) => {

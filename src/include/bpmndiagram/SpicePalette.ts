@@ -35,8 +35,7 @@ export class SpicePalette {
 
         return entries => {
             return {
-                'hand-tool': entries['hand-tool'],
-                'create.start-event': entries['create.start-event']
+                'hand-tool': entries['hand-tool']
             }
         }
     }
