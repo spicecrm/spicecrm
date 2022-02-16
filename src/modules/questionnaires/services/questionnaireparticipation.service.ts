@@ -126,8 +126,9 @@ export class questionnaireParticipationService {
 
     constructor( public backend: backend, public toast: toast, public language: language, public helper: helper, public broadcast: broadcast ) { }
 
-    public init_byParent( parentId: string, parentType: string ): Observable<any> {
+    public init_byParent( parentId: string, parentType: string, questionnaireId: string = null ): Observable<any> {
         this.initByParent = true;
+        if ( questionnaireId ) this.questionnaireId = questionnaireId;
         this.parentId = parentId;
         this.parentType = parentType;
         this.routeForSave = 'module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId;
@@ -482,7 +483,7 @@ export class questionnaireParticipationService {
     public loadParticipation_byParent(): Observable<any> {
         let responseSubject = new Subject<any>();
         this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
-            this.questionnaireId = response.questionnaireId;
+            if ( response.questionnaireId ) this.questionnaireId = response.questionnaireId;
             // In case the edit mode is "off" or "preview" there are no answer values to load:
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
             this.loadQuestionnaire().subscribe( () => {

@@ -28,7 +28,7 @@ export class WorkflowPanelTasksItem implements OnInit{
     }
 
     public toggleComments(){
-        this.model.setField('_displayComments', this.model.getField('_displayComments'), true);
+        this.model.setField('_displayComments', !this.model.getField('_displayComments'), true);
     }
 
     /**
