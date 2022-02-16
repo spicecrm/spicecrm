@@ -1,8 +1,9 @@
 <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
-    <h2 class="slds-text-heading_medium">
+    <h2 class="slds-text-heading_medium slds-col--bump-right">
         <system-label label="LBL_FTS_STATUS"></system-label>
     </h2>
-    <button class="slds-button slds-col--bump-left slds-button_icon slds-button_icon-border-filled" [disabled]="loading || ! hasLocks" (click)="unlock()">
+    <button type="button" class="slds-button slds-button--neutral" (click)="initialize()"><system-label label="LBL_INITIALIZE"></system-label></button>
+    <button class="slds-button  slds-button_icon slds-button_icon-border-filled" [disabled]="loading || ! hasLocks" (click)="unlock()">
         <system-button-icon icon="unlock"></system-button-icon>
     </button>
     <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="loading"
