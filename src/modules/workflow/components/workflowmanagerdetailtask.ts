@@ -42,6 +42,7 @@ export class WorkflowManagerDetailTask implements OnChanges {
                     create: true,
                     edit: true
                 };
+                this.model.initializeFieldsStati();
             }
         });
 

@@ -150,6 +150,7 @@ import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 import /*embed*/ {SystemInputFile} from './components/systeminputfile';
+import /*embed*/ {SystemInputFileContent} from './components/systeminputfilecontent';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -320,6 +321,7 @@ import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemWrappedText
     ],
     entryComponents: [
@@ -450,6 +452,7 @@ import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemModalHeaderEmpty,
         SystemWrappedText,
         SystemPDFContainer

@@ -56,7 +56,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
         this.qp.editMode = this.editMode;
         this.qp.inModal = this.inModal;
         if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
-        else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType );
+        else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType, this.questionnaireId );
         else if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );
         this.questionnaireParticipation$.next( this.qp );
         this.subscriptions.add(

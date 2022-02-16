@@ -28,7 +28,7 @@
     <div>
         <system-dynamic-component [component]="panelcomponent" [componentattributes]="{calldata: calldata, matchedbeans: matchedbeans}"></system-dynamic-component>
     </div>
-    <footer class="slds-docked-composer__footer slds-shrink-none slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+    <footer *ngIf="!footerHidden" class="slds-docked-composer__footer slds-shrink-none slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
         <div class="slds-col_bump-left" *ngIf="componentconfig.actionset; else defaultactions" >
             <object-action-container [disabled]="actionsDisabled" [actionset]="componentconfig.actionset" (actionemitter)="handleaction($event)" ></object-action-container>
         </div>
