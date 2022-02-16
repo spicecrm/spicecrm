@@ -1690,6 +1690,16 @@ class SpiceFTSHandler
                 continue;
             }
 
+            // if we have an index method run it
+            if(method_exists($seed, 'indexBulk')){
+                while($beanCounter < $packagesize) {
+                    $indexedRecords = $seed->indexBulk($packagesize);
+                    $beanCounter += $indexedRecords;
+                    if($indexedRecords == 0) break;
+                }
+                continue;
+            }
+
             $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;

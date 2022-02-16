@@ -8,12 +8,13 @@ import {backend} from '../../services/backend.service';
 import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
 import {helper} from "../../services/helper.service";
-import set = Reflect.set;
+import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 
 @Component({
     selector: '[administration-ftsstatus]',
-    templateUrl: '../templates/administrationftsstatus.html'
+    templateUrl: '../templates/administrationftsstatus.html',
+    providers: [ftsconfiguration]
 })
 export class AdministrationFTSStatus {
 
@@ -47,6 +48,7 @@ export class AdministrationFTSStatus {
         public backend: backend,
         public helper: helper,
         public toast: toast,
+        public ftsconfiguration: ftsconfiguration,
         public injector: Injector
     ) {
         this.loadstatus();
@@ -110,7 +112,6 @@ export class AdministrationFTSStatus {
      */
     public unlock() {
         this.backend.putRequest('admin/elastic/unblock').subscribe(resp => {
-            console.log(resp);
             this.loadstatus();
         });
     }
@@ -123,6 +124,20 @@ export class AdministrationFTSStatus {
         return this.indices.find(i => i.blocked) ? true : false;
     }
 
+
+
+    /**
+     * initialize the full index
+     */
+    public initialize() {
+        this.modal.confirm('Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!', 'Initialize')
+            .subscribe(res => {
+                    if (res) {
+                        this.ftsconfiguration.executeAction('init');
+                    }
+                }
+            );
+    }
 
 }
 
