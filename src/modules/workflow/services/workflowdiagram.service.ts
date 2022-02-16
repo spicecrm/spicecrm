@@ -396,7 +396,7 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private listenToShapeChange() {
-return;
+
         this.wfm.types.forEach(type =>
             this.listenToDiagramEvent(type.id, (event: BpmnEventI, element: BpmnElementI) =>
                 this.handleDiagramElementAdd(element, event.type)
