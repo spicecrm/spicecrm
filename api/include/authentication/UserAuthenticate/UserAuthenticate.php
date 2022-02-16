@@ -67,6 +67,11 @@ class UserAuthenticate
             /** @var User $userObj */
             $userObj = BeanFactory::getBean("Users", $row['id']);
             if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
+
+            if ($userObj) {
+                $userObj->call_custom_logic('after_login');
+            }
+
             return $userObj;
         } else {
             throw new UnauthorizedException("Invalid Username/Password combination", 1);
