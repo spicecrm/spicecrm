@@ -89,15 +89,5 @@ export class AdministrationFTSManager {
         this.ftsconfiguration.executeAction('reset');
     }
 
-    public initialize() {
-        this.modal
-            .confirm('Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!', 'Initialize')
-            .subscribe(res => {
-                if (res) {
-                    this.ftsconfiguration.executeAction('init');
-                }
-            });
-    }
-
 }
 

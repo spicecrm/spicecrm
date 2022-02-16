@@ -94,6 +94,7 @@ class MysqliManager extends DBManager
         'short'    => 'smallint',
         'varchar'  => 'varchar',
         'text'     => 'text',
+        'json'     => 'longtext',
         'shorttext'=> 'text',
         'longtext' => 'longtext',
         'date'     => 'date',
