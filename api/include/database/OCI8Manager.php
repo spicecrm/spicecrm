@@ -149,6 +149,7 @@ class OCI8Manager extends DBManager
         'html' => 'clob',
         'longhtml' => 'clob',
         'date' => 'date',
+        'json'     => 'clob',
         'datetime' => 'date',
         'datetimecombo' => 'date',
         'time' => 'date',
