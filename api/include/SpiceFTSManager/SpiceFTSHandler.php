@@ -1669,7 +1669,7 @@ class SpiceFTSHandler
             $where = " WHERE module='" . $module . "'";
         }
         // END
-        $order = empty($module) ? ' ORDER BY module ' : '';
+        $order = empty($module) ? ' ORDER BY index_priority ' : '';
         $beans = $db->query("SELECT * FROM sysfts" . $where . $order);
         echo "Starting indexing (maximal $packagesize records).\n";
 
