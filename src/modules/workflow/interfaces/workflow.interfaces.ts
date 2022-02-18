@@ -36,7 +36,6 @@ export interface WorkflowTaskDefI {
     workflowdefinition_id: string;
     tasktype: string;
     type_config: {
-        decisions?: NextTaskI[],
         next_tasks?: NextTaskI[],
         /**
          * could be any generic configuration for the task type

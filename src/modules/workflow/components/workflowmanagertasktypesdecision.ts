@@ -25,8 +25,8 @@ export class WorkflowManagerTaskTypesDecision implements OnInit {
      * initialize the decision array
      */
     public ngOnInit() {
-        if (!Array.isArray(this.model.data.type_config.decisions)) {
-            this.model.data.type_config.decisions = [];
+        if (!Array.isArray(this.model.data.type_config.next_tasks)) {
+            this.model.data.type_config.next_tasks = [];
         }
     }
 
@@ -36,13 +36,13 @@ export class WorkflowManagerTaskTypesDecision implements OnInit {
     public addDecision() {
 
         const options = this.workflowManagerService.tasks
-            .filter(e => e.id != this.model.id && !this.model.data.type_config.decisions.some(decision => decision == e.id))
+            .filter(e => e.id != this.model.id && !this.model.data.type_config.next_tasks.some(decision => decision == e.id))
             .map(e => ({value: e.id, display: e.name}));
 
         this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_ADD', 'shade', null, options, true)
             .subscribe(id => {
                 if (!id) return;
-                this.model.data.type_config.decisions.push({
+                this.model.data.type_config.next_tasks.push({
                     id: id,
                     name: 'new Decision'
                 });
@@ -56,7 +56,7 @@ export class WorkflowManagerTaskTypesDecision implements OnInit {
     public deleteDecision(id) {
         this.modal.confirm('MSG_DELETE_RECORD', 'LBL_DELETE').subscribe(answer => {
             if (!answer) return;
-            this.model.data.type_config.decisions = this.model.data.type_config.decisions.filter(d => id != d.id);
+            this.model.data.type_config.next_tasks = this.model.data.type_config.next_tasks.filter(d => id != d.id);
         });
     }
 

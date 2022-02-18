@@ -18,11 +18,11 @@
             </thead>
             <tbody>
             <tr>
-                <td *ngIf="model.data.type_config.decisions.length == 0" colspan="3">
+                <td *ngIf="model.data.type_config.next_tasks.length == 0" colspan="3">
                     <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
                 </td>
             </tr>
-            <tr *ngFor="let decision of model.data.type_config.decisions; trackBy: trackByFn">
+            <tr *ngFor="let decision of model.data.type_config.next_tasks; trackBy: trackByFn">
                 <td>
                     <input type="text" [(ngModel)]="decision.name" class="slds-input">
                 </td>

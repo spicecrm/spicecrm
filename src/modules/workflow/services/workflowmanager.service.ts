@@ -192,8 +192,7 @@ export class WorkflowManagerService {
 
         if (!task.type_config) return [];
 
-        const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
-        return (isDecision ? task.type_config.decisions : task.type_config.next_tasks) ?? [];
+        return task.type_config.next_tasks ?? [];
     }
 
     /**
@@ -205,15 +204,12 @@ export class WorkflowManagerService {
 
         if (!task.type_config) return [];
 
-        const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
-        const key = isDecision ? 'decisions' : 'next_tasks';
-
-        if (!Array.isArray(task.type_config[key])) {
-            task.type_config[key] = [];
+        if (!Array.isArray(task.type_config.next_tasks)) {
+            task.type_config.next_tasks = [];
         }
 
-        task.type_config[key] = [
-            ...(task.type_config[key] ?? []),
+        task.type_config.next_tasks = [
+            ...task.type_config.next_tasks,
             {id: nextTask.id, name: nextTask.name, type: nextTask.tasktype}
         ];
     }
@@ -227,13 +223,7 @@ export class WorkflowManagerService {
 
         if (!task.type_config) return;
 
-        const isDecision = this.getType(task.tasktype).type == 'gateway_decision';
-
-        if (isDecision) {
-            task.type_config.decisions = task.type_config.decisions.filter(d => d.id != idToDelete);
-        } else {
-            task.type_config.next_tasks = task.type_config.next_tasks.filter(entry => entry.id != idToDelete);
-        }
+        task.type_config.next_tasks = task.type_config.next_tasks.filter(entry => entry.id != idToDelete);
     }
 
     /**
