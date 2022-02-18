@@ -155,7 +155,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     public setActiveEditor(body: string, bodySPB: string) {
         this.activeEditor = !body ? undefined : (!bodySPB || _.isEmpty(bodySPB)) ? 'richText' : 'pageBuilder';
-        this.model.setField('via_spb', this.activeEditor == 'pageBuilder');
+        this.model.data.via_spb =  this.activeEditor == 'pageBuilder';
         this.cdRef.detectChanges();
     }
 
