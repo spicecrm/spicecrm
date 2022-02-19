@@ -54,20 +54,31 @@ export class QuestionsManagerEditMulti extends QuestionsManagerEditBasicWithOpti
         for ( let i in keys ) this.options[i] = this.model.data.questionoptions.beans[keys[i]];
     }
 
-    /**
-     * Handler if the the min. and max. number of answers got changed.
-     * @param event Event
-     */
-    public onChange_numAnswers(): void {
+
+    get minAnswers(){
+        return this.questionparameters.minAnswers;
+    }
+
+    set minAnswers(value){
+        this.questionparameters.minAnswers = value;
         this.writeQuestionparametersToModel();
     }
 
-    /**
-     * Handler if the flag "onChange_hasInfosCorrectness" got changed.
-     * @param event Event
-     */
-    public onChange_hasInfosCorrectness( event ): void {
-        this.questionparameters.hasInfosCorrectness = event.target.checked;
+    get maxAnswers(){
+        return this.questionparameters.maxAnswers;
+    }
+
+    set maxAnswers(value){
+        this.questionparameters.maxAnswers = value;
+        this.writeQuestionparametersToModel();
+    }
+
+    get hasInfosCorrectness(){
+        return this.questionparameters.hasInfosCorrectness;
+    }
+
+    set hasInfosCorrectness(value){
+        this.questionparameters.hasInfosCorrectness = value;
         this.writeQuestionparametersToModel();
     }
 

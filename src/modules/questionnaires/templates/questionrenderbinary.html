@@ -1,0 +1,50 @@
+<ng-container *ngIf="qp.isLoaded && (!hideFinishedQuestions || !questionMeta.finished)">
+        <table class="slds-table question-render-question slds-table_bordered slds-table_col-bordered slds-border_left slds-border_right slds-no-row-hover" [ngStyle]="styleQuestionMerging()">
+            <tbody>
+                <tr *ngIf="hasTitleTextOrImage">
+                    <td class="slds-p-bottom_medium" colspan="2" style="padding:0.75rem">
+                        <h3 *ngIf="question.questiontext && ( !question.image_id || questionset.showonlyimages !== '1' )">{{question.questiontext}}</h3>
+                        <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion" [classOuter]="'slds-m-vertical_small'"></media-file-image>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="50%" class="slds-text-align_right question-hover" style="padding: 0.75rem 0.75rem 0.75rem 0.25rem" (click)="qp.clickAnswerOption(qp.questionoptionsArray[question.id][0].id,$event)">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-end">
+                            <div style="cursor:default">
+                                <ng-container *ngIf="qp.questionoptionsArray[question.id][0].image_id">
+                                    <media-file-image [media_id]="qp.questionoptionsArray[question.id][0].image_id" [variant]="'mw'"
+                                                      [frameWidth]="imageWidthOption" [classOuter]="'slds-m-horizontal_x-small slds-m-vertical_small'"></media-file-image>
+                                </ng-container>
+                                <ng-container *ngIf="!( qp.questionoptionsArray[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                                    <span *ngIf="qp.questionoptionsArray[question.id][0].text; else name0" style="white-space:pre-line">{{qp.questionoptionsArray[question.id][0].text}}</span>
+                                    <ng-template #name0>{{qp.questionoptionsArray[question.id][0].name}}</ng-template>
+                                </ng-container>
+                            </div>
+                            <div class="slds-p-left_small">
+                                <input type="radio" [checked]="isChecked(qp.questionoptionsArray[question.id][0].id)" name="question-{{question.id}}"
+                                       (click)="qp.clickAnswerOption(qp.questionoptionsArray[question.id][0].id,$event)" [disabled]="isDisabled()">
+                            </div>
+                        </div>
+                    </td>
+                    <td width="50%" class="question-hover" style="padding: 0.75rem 0.25rem 0.75rem 0.75rem" (click)="qp.clickAnswerOption(qp.questionoptionsArray[question.id][1].id,$event)">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <div class="slds-p-right_small">
+                                <input type="radio" [checked]="isChecked(qp.questionoptionsArray[question.id][1].id)"
+                                       (click)="qp.clickAnswerOption(qp.questionoptionsArray[question.id][1].id,$event)" [disabled]="isDisabled()">
+                            </div>
+                            <div style="cursor:default">
+                                <ng-container *ngIf="qp.questionoptionsArray[question.id][1].image_id">
+                                    <media-file-image [media_id]="qp.questionoptionsArray[question.id][1].image_id" [variant]="'mw'"
+                                                      [frameWidth]="imageWidthOption" [classOuter]="'slds-m-horizontal_x-small slds-m-vertical_small'"></media-file-image>
+                                </ng-container>
+                                <ng-container *ngIf="!( qp.questionoptionsArray[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                                    <span *ngIf="qp.questionoptionsArray[question.id][1].text; else name1" style="white-space:pre-line">{{qp.questionoptionsArray[question.id][1].text}}</span>
+                                    <ng-template #name1>{{qp.questionoptionsArray[question.id][1].name}}</ng-template>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</ng-container>

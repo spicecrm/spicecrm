@@ -50,12 +50,12 @@ export class QuestionsManagerEditSingle extends QuestionsManagerEditBasicWithOpt
         for ( let i in keys ) this.options[i] = this.model.data.questionoptions.beans[keys[i]];
     }
 
-    /**
-     * Handler if the flag "formatOptionsHorizontal" got changed.
-     * @param event Event
-     */
-    public onChange_formatOptionsHorizontal( event ): void {
-        this.questionparameters.formatOptionsHorizontal = event.target.checked;
+    get formatOptionsHorizontal(){
+        return this.questionparameters.formatOptionsHorizontal;
+    }
+
+    set formatOptionsHorizontal(value){
+        this.questionparameters.formatOptionsHorizontal = value;
         this.writeQuestionparametersToModel();
     }
 

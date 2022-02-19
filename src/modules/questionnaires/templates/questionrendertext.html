@@ -1,10 +1,8 @@
 <ng-container *ngIf="qp.isLoaded">
-
     <ng-container *ngIf="!hideFinishedQuestions || !questionMeta.finished">
-
-        <div *ngIf="questionMeta.parameter && !questionMeta.parameter.sequenced" class="slds-box question-render-question">
+        <div *ngIf="questionMeta.parameter && !questionMeta.parameter.sequenced && !questionMeta.parameter.isinput" class="slds-box question-render-question">
             <div *ngIf="question.questiontext || question.image_id" class="slds-m-bottom_x-small">
-                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="x-slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.questiontext}}</h3>
+                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" [class.slds-m-bottom_xx-small]="question.image_id">{{question.questiontext}}</h3>
                 <div class="slds-m-bottom_small"><media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image></div>
             </div>
             <div>
@@ -15,9 +13,8 @@
                 <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
             </div>
         </div>
-
-        <div *ngIf="questionMeta && questionMeta.parameter && questionMeta.parameter.sequenced" class="sequenced slds-box question-render-question slds-text-align_right slds-grid slds-grid_vertical-align-center" style="padding:0.5rem 0.5rem 0.5rem 1rem" [ngStyle]="binaryTableStyle()">
-            <div *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large x-lds-p-vertical_small slds-text-heading_small">
+        <div *ngIf="questionMeta && questionMeta.parameter && questionMeta.parameter.sequenced && !questionMeta.parameter.isinput" class="sequenced slds-box question-render-question slds-text-align_right slds-grid slds-grid_vertical-align-center" [ngStyle]="binaryTableStyle()">
+            <div *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large x-lds-p-vertical_small">
                 {{questionNameSplitted[j]}}
             </div>
             <div class="slds-text-align_right slds-col--bump-left">
@@ -27,24 +24,13 @@
                 <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
             </div>
         </div>
-
-        <!--table *ngIf="questionMeta.parameter.sequenced" class="sequenced slds-text-align_right slds-table_bordered" style="border-top:none">
-            <tr>
-                <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large slds-p-vertical_small slds-text-align_right slds-text-heading_small">
-                    {{questionNameSplitted[j]}}
-                </td>
-                <td class="slds-text-align_right slds-p-vertical_small" width="100%">
-                    <input [system-trim-input] type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
-                    <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
-                           [ngModel]="qp.answers[question.id].answer_value"
-                           (change)="onTextChange()"
-                           [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
-                           size="5" style="width:auto"
-                           class="slds-input">
-                </td>
-            </tr>
-        </table-->
-
+        <div *ngIf="questionMeta && questionMeta.parameter && !questionMeta.parameter.sequenced && questionMeta.parameter.isinput" class="slds-box slds-text-align_right slds-grid slds-grid_vertical-align-center">
+            <div class="slds-p-right_large x-lds-p-vertical_small">{{question.questiontext}}</div>
+            <div class="slds-text-align_right slds-grow">
+                <input type="text" *ngIf="qp.editMode === 'preview'"  class="slds-size--1-of-1 slds-input">
+                <input *ngIf="qp.editMode !== 'preview'" type="text" [(ngModel)]="value" [ngModelOptions]="{updateOn:'blur'}" class="slds-size--1-of-1 slds-input" [ngClass]="{'slds-has-error':isInputInvalid}" [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview' ? '':null">
+                <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
+            </div>
+        </div>
     </ng-container>
-
 </ng-container>
