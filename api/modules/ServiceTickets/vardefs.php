@@ -1,13 +1,14 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
     'table' => 'servicetickets',
     'comment' => 'ServiceTickets Module',
-    'audited' =>  true,
-	'fields' => [
+    'audited' => true,
+    'fields' => [
         'name' => [
             'name' => 'name',
             'vname' => 'LBL_TOPIC',
@@ -37,8 +38,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'default' => 'B',
             'required' => true
         ],
-	    //account
-	    'account_id' => [
+        //account
+        'account_id' => [
             'name' => 'account_id',
             'vname' => 'LBL_ACCOUNT_ID',
             'type' => 'id',
@@ -66,27 +67,27 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
         ],
         //parent
         'parent_id' => [
-            'name'       => 'parent_id',
-            'vname'      => 'LBL_LIST_RELATED_TO_ID',
-            'type'       => 'id',
-            'comment'    => 'The ID of the parent Sugar object identified by parent_type'
+            'name' => 'parent_id',
+            'vname' => 'LBL_LIST_RELATED_TO_ID',
+            'type' => 'id',
+            'comment' => 'The ID of the parent Sugar object identified by parent_type'
         ],
         'parent_type' => [
-            'name'     => 'parent_type',
-            'vname'    => 'LBL_PARENT_TYPE',
-            'type'     => 'parent_type',
-            'dbType'   => 'varchar',
+            'name' => 'parent_type',
+            'vname' => 'LBL_PARENT_TYPE',
+            'type' => 'parent_type',
+            'dbType' => 'varchar',
             'required' => false,
-            'len'      => 255,
-            'comment'  => 'The Sugar object to which the call is related',
+            'len' => 255,
+            'comment' => 'The Sugar object to which the call is related',
         ],
         'parent_name' => [
-            'name'        => 'parent_name',
-            'type_name'   => 'parent_type',
-            'id_name'     => 'parent_id',
-            'vname'       => 'LBL_RELATED_TO',
-            'type'        => 'parent',
-            'source'      => 'non-db',
+            'name' => 'parent_name',
+            'type_name' => 'parent_type',
+            'id_name' => 'parent_id',
+            'vname' => 'LBL_RELATED_TO',
+            'type' => 'parent',
+            'source' => 'non-db',
         ],
         'contacts' => [
             'vname' => 'LBL_CONTACTS',
@@ -227,68 +228,69 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'type' => 'text',
         ],
         'costcenter_id' => [
-            'name'     => 'costcenter_id',
-            'vname'    => 'LBL_COSTCENTER_ID',
-            'type'     => 'id',
+            'name' => 'costcenter_id',
+            'vname' => 'LBL_COSTCENTER_ID',
+            'type' => 'id',
             'required' => false,
         ],
         'costcenter_name' => [
-            'name'      => 'costcenter_name',
-            'vname'     => 'LBL_COSTCENTER',
-            'type'      => 'relate',
-            'source'    => 'non-db',
-            'len'       => '255',
-            'id_name'   => 'costcenter_id',
-            'rname'     => 'name',
-            'module'    => 'CostCenters',
-            'link'      => 'costcenters',
+            'name' => 'costcenter_name',
+            'vname' => 'LBL_COSTCENTER',
+            'type' => 'relate',
+            'source' => 'non-db',
+            'len' => '255',
+            'id_name' => 'costcenter_id',
+            'rname' => 'name',
+            'module' => 'CostCenters',
+            'link' => 'costcenters',
             'join_name' => 'costcenters',
         ],
         'costcenters' => [
-            'vname'        => 'LBL_COSTCENTER',
-            'name'         => 'costcenters',
-            'type'         => 'link',
-            'module'       => 'CostCenters',
+            'vname' => 'LBL_COSTCENTER',
+            'name' => 'costcenters',
+            'type' => 'link',
+            'module' => 'CostCenters',
             'relationship' => 'servicetickets_costcenters',
-            'source'       => 'non-db',
+            'source' => 'non-db',
         ],
         'questionnaire_answers' => [
             'name' => 'questionnaire_answers',
+            'vname' => 'LBL_QUESTIONAIRE',
             'type' => 'json',
             'source' => 'non-db',
         ],
         //questionnaire
         'questionnaire_id' => [
-            'name'       => 'questionnaire_id',
-            'vname'      => 'LBL_QUESTIONNAIRE_ID',
-            'type'       => 'id',
-            'comment'    => 'The ID of the questionnaire',
-            'required'   => false,
+            'name' => 'questionnaire_id',
+            'vname' => 'LBL_QUESTIONNAIRE_ID',
+            'type' => 'id',
+            'comment' => 'The ID of the questionnaire',
+            'required' => false,
         ],
         'questionnaire_name' => [
-            'name'             => 'questionnaire_name',
-            'vname'            => 'LBL_QUESTIONNAIRE',
-            'type'             => 'relate',
-            'source'           => 'non-db',
-            'len'              => '255',
-            'id_name'          => 'questionnaire_id',
-            'rname'            => 'name',
-            'module'           => 'Questionnaires',
-            'link'             => 'questionnaires',
-            'join_name'        => 'questionnaires',
+            'name' => 'questionnaire_name',
+            'vname' => 'LBL_QUESTIONNAIRE',
+            'type' => 'relate',
+            'source' => 'non-db',
+            'len' => '255',
+            'id_name' => 'questionnaire_id',
+            'rname' => 'name',
+            'module' => 'Questionnaires',
+            'link' => 'questionnaires',
+            'join_name' => 'questionnaires',
         ],
         'questionnaires' => [
-            'vname'        => 'LBL_QUESTIONNAIRES',
-            'name'         => 'questionnaires',
-            'type'         => 'link',
-            'module'       => 'Questionnaires',
+            'vname' => 'LBL_QUESTIONNAIRES',
+            'name' => 'questionnaires',
+            'type' => 'link',
+            'module' => 'Questionnaires',
             'relationship' => 'servicetickets_questionnaires',
-            'link_type'    => 'one',
-            'side'         => 'right',
-            'source'       => 'non-db',
+            'link_type' => 'one',
+            'side' => 'right',
+            'source' => 'non-db',
         ],
     ],
-	'relationships' => [
+    'relationships' => [
         'servicetickets_accounts' => [
             'lhs_module' => 'Accounts',
             'lhs_table' => 'accounts',
@@ -332,34 +334,34 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'relationship_role_column_value' => 'Users',
         ],
         'servicetickets_costcenters' => [
-            'lhs_module'        => 'CostCenters',
-            'lhs_table'         => 'costcenters',
-            'lhs_key'           => 'id',
-            'rhs_module'        => 'ServiceTickets',
-            'rhs_table'         => 'servicetickets',
-            'rhs_key'           => 'costcenter_id',
+            'lhs_module' => 'CostCenters',
+            'lhs_table' => 'costcenters',
+            'lhs_key' => 'id',
+            'rhs_module' => 'ServiceTickets',
+            'rhs_table' => 'servicetickets',
+            'rhs_key' => 'costcenter_id',
             'relationship_type' => 'one-to-many',
         ],
         'servicetickets_questionnaires' => [
-            'lhs_module'        => 'Questionnaires',
-            'lhs_table'         => 'questionnaires',
-            'lhs_key'           => 'id',
-            'rhs_module'        => 'ServiceTickets',
-            'rhs_table'         => 'servicetickets',
-            'rhs_key'           => 'questionnaire_id',
+            'lhs_module' => 'Questionnaires',
+            'lhs_table' => 'questionnaires',
+            'lhs_key' => 'id',
+            'rhs_module' => 'ServiceTickets',
+            'rhs_table' => 'servicetickets',
+            'rhs_key' => 'questionnaire_id',
             'relationship_type' => 'one-to-many',
         ],
-	],
+    ],
     'indices' => [
         ['name' => 'idx_serviceticket_accid', 'type' => 'index', 'fields' => ['account_id']],
-        ['name' => 'idx_serviceticket_parentdel', 'type' => 'index', 'fields' => ['parent_id', 'parent_type','deleted']],
+        ['name' => 'idx_serviceticket_parentdel', 'type' => 'index', 'fields' => ['parent_id', 'parent_type', 'deleted']],
         ['name' => 'idx_serviceticket_accparentiddel', 'type' => 'index', 'fields' => ['account_id', 'parent_id', 'deleted']]
     ]
 ];
 
 VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assignable', 'activities']);
 
-if(file_exists('extensions/modules/ServiceOrders')) {
+if (file_exists('extensions/modules/ServiceOrders')) {
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceorders'] = [
         'vname' => 'LBL_SERVICEORDERS',
         'name' => 'serviceorders',
@@ -370,7 +372,7 @@ if(file_exists('extensions/modules/ServiceOrders')) {
         'source' => 'non-db'
     ];
 }
-if(file_exists('extensions/modules/ServiceQueues')) {
+if (file_exists('extensions/modules/ServiceQueues')) {
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicequeue_id'] = [
         'name' => 'servicequeue_id',
         'vname' => 'LBL_SERVICEQUEUE_ID',
@@ -387,7 +389,7 @@ if(file_exists('extensions/modules/ServiceQueues')) {
         'module' => 'ServiceQueues',
         'link' => 'servicequeues',
         'join_name' => 'servicequeues',
-        'required'=> false,
+        'required' => false,
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicequeues'] = [
         'vname' => 'LBL_SERVICEQUEUES',
@@ -409,7 +411,7 @@ if(file_exists('extensions/modules/ServiceQueues')) {
 
 }
 
-if(file_exists('extensions/modules/ServiceCalls')) {
+if (file_exists('extensions/modules/ServiceCalls')) {
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicecall_id'] = [
         'name' => 'servicecall_id',
         'vname' => 'LBL_SERVICECALL_ID',
@@ -427,7 +429,7 @@ if(file_exists('extensions/modules/ServiceCalls')) {
         'module' => 'ServiceCalls',
         'link' => 'servicecalls',
         'join_name' => 'servicecalls',
-        'required'=> false,
+        'required' => false,
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicecalls'] = [
         'vname' => 'LBL_SERVICECALLS',
@@ -448,7 +450,7 @@ if(file_exists('extensions/modules/ServiceCalls')) {
     ];
 }
 
-if(file_exists('extensions/modules/ServiceFeedbacks')) {
+if (file_exists('extensions/modules/ServiceFeedbacks')) {
     //servicefeedbacks
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicefeedbacks'] = [
         'vname' => 'LBL_SERVICEFEEDBACKS',
@@ -461,7 +463,7 @@ if(file_exists('extensions/modules/ServiceFeedbacks')) {
     ];
 }
 
-if(file_exists('extensions/modules/ServiceEquipments')) {
+if (file_exists('extensions/modules/ServiceEquipments')) {
     //serviceequipment
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceequipment_id'] = [
         'name' => 'serviceequipment_id',
@@ -500,7 +502,7 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
     ];
 }
 
-if(file_exists('extensions/modules/ServiceEquipments')) {
+if (file_exists('extensions/modules/ServiceEquipments')) {
 //servicelocation
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicelocation_id'] = [
         'name' => 'servicelocation_id',
@@ -540,7 +542,7 @@ if(file_exists('extensions/modules/ServiceEquipments')) {
 
 }
 
-if(file_exists('extensions/modules/ServiceTicketSLAs')) {
+if (file_exists('extensions/modules/ServiceTicketSLAs')) {
     //serviceslas
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketsla_id'] = [
         'name' => 'serviceticketsla_id',
@@ -572,7 +574,7 @@ if(file_exists('extensions/modules/ServiceTicketSLAs')) {
     ];
 }
 
-if(file_exists('extensions/modules/ServiceTicketNotes')) {
+if (file_exists('extensions/modules/ServiceTicketNotes')) {
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketnotes'] = [
         'vname' => 'LBL_SERVICETICKETNOTES',
         'name' => 'serviceticketnotes',
@@ -583,7 +585,7 @@ if(file_exists('extensions/modules/ServiceTicketNotes')) {
         'source' => 'non-db'
     ];
 }
-if(file_exists('extensions/modules/ServiceTicketStages')) {
+if (file_exists('extensions/modules/ServiceTicketStages')) {
 
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketstages'] = [
         'name' => 'serviceticketstages',
