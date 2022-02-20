@@ -38,7 +38,7 @@
                         <system-label label="LBL_DOCS"></system-label>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{stats.docs}}</div>
+                        <div class="slds-truncate">{{stats.pdocs}}/{{stats.tdocs}}</div>
                     </td>
                 </tr>
                 <tr>
@@ -46,7 +46,7 @@
                         <system-label label="LBL_SIZE"></system-label>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{stats.size}}</div>
+                        <div class="slds-truncate">{{stats.psize}}/{{stats.tsize}}</div>
                     </td>
                 </tr>
             </tbody>
@@ -94,7 +94,7 @@
                         <div class="slds-truncate">{{index.name}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{index.docs}}</div>
+                        <div class="slds-truncate">{{index.pdocs}}/{{index.tdocs}}</div>
                     </td>
                     <td>
                         <div class="slds-truncate">{{index.stored}}</div>
@@ -103,7 +103,7 @@
                         <div class="slds-truncate">{{index.unindexed}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{index.size}}</div>
+                        <div class="slds-truncate">{{index.psize}}/{{index.tsize}}</div>
                     </td>
                     <td>
                         <system-utility-icon *ngIf="index.blocked" icon="lock" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
