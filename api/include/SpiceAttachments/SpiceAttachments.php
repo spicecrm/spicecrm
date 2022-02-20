@@ -148,7 +148,7 @@ class SpiceAttachments
 
         $ext_pos = strrpos($upload_file->stored_file_name, ".");
         $upload_file->file_ext = substr($upload_file->stored_file_name, $ext_pos + 1);
-        if (in_array($upload_file->file_ext, isset(SpiceConfig::getInstance()->config['upload_badext']) ?: [])) {
+        if (in_array($upload_file->file_ext, isset(SpiceConfig::getInstance()->config['upload_badext']) ? SpiceConfig::getInstance()->config['upload_badext'] : [])) {
             $upload_file->stored_file_name .= ".txt";
             $upload_file->file_ext = "txt";
         }
