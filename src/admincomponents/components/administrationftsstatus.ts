@@ -79,7 +79,7 @@ export class AdministrationFTSStatus {
                     // catch when no fts index is set yet
                     if( response.stats._all.total.docs && response.stats._all.total.docs.count ) {
                         this.stats.tdocs = response.stats._all.total.docs.count;
-                        this.stats.pdocs = response.stats._all.primaries.pdocs.count;
+                        this.stats.pdocs = response.stats._all.primaries.docs.count;
                     }
                     // catch when no fts index is set yet
                     if ( response.stats._all.total?.store && response.stats._all.total.store.size_in_bytes ) {
