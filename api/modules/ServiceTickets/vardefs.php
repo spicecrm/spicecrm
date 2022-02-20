@@ -255,7 +255,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
         ],
         'questionnaire_answers' => [
             'name' => 'questionnaire_answers',
-            'vname' => 'LBL_QUESTIONAIRE',
+            'vname' => 'LBL_QUESTIONNAIRE',
             'type' => 'json',
             'source' => 'non-db',
         ],
