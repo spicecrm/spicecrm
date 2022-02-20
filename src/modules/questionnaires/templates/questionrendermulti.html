@@ -6,19 +6,22 @@
         </div>
         <!-- Options vertical -->
         <ng-container *ngIf="!questionMeta.parameter.formatOptionsHorizontal">
-            <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-grid slds-p-left_x-small slds-p-right_small question-hover" [ngClass]="{'slds-border_bottom':!isLast}" style="overflow:hidden" (click)="qp.clickAnswerOption(option.id,$event)">
-                <div class="slds-p-left_xx-small slds-p-right_small slds-p-vertical_small">
-                    <input type="checkbox" [checked]="isChecked(option.id)" (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()">
-                </div>
-                <div class="slds-p-vertical_small">
-                    <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom_small'"></media-file-image>
-                    <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
+            <div class="slds-p-around--small">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-scrollable--none slds-grid slds-grid--vertical-align-centerd slds-gutters_direct-small slds-p-vertical--x-small question-hover">
+                    <div class="slds-col slds-grow-none">
+                        <system-checkbox [value]="option.id" [(ngModel)]="value" [disabled]="isDisabled()"></system-checkbox>
+                        <!--input type="checkbox" [checked]="isChecked(option.id)" (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()"-->
+                    </div>
+                    <div class="slds-col">
+                        <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom_small'"></media-file-image>
+                        <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
+                    </div>
                 </div>
             </div>
         </ng-container>
         <!-- Options horizontal -->
         <ng-container *ngIf="questionMeta.parameter.formatOptionsHorizontal">
-            <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-grid slds-grid_pull-padded-x-small" class="slds-size_1-of-1 slds-text-align_center slds-p-horizontal_small" [ngClass]="{'slds-border_left':j>0}" [ngStyle]="{'width':100/qp.questionoptionsArray[question.id].length+'%'}" style="overflow:hidden" (click)="qp.clickAnswerOption(option.id,$event)">
+            <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-grid slds-grid_pull-padded-x-small slds-scrollable--none slds-size_1-of-1 slds-text-align_center slds-p-horizontal_small" [ngClass]="{'slds-border_left':j>0}" [ngStyle]="{'width':100/qp.questionoptionsArray[question.id].length+'%'}" (click)="qp.clickAnswerOption(option.id,$event)">
                 <div class="slds-m-bottom_xxx-small">
                     <input type="checkbox" [checked]="isChecked(option.id)" (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()">
                     <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical_small'" [align]="'center'"></media-file-image>

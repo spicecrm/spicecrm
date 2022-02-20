@@ -19,6 +19,12 @@
             <system-checkbox [(ngModel)]="formatOptionsHorizontal"></system-checkbox>
         </div>
     </div>
+    <div>
+        <label class="slds-form-element__label"><system-label label="LBL_AS_DROPDOWN"></system-label></label>
+        <div class="slds-p-vertical--xx-small">
+            <system-checkbox [(ngModel)]="asDropDown"></system-checkbox>
+        </div>
+    </div>
 </div>
 <system-spinner *ngIf="model.isLoading"></system-spinner>
 <table *ngIf="options.length" class="slds-table slds-table_bordered slds-m-vertical--medium">

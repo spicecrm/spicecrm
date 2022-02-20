@@ -35,4 +35,19 @@ export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit 
         return this.qp.answers && this.qp.answers[this.questionId] && this.qp.answers[this.questionId].options && this.qp.answers[this.questionId].options[optionId];
     }
 
+    get value(){
+        try{
+            for(let id in this.qp.answers[this.questionId].options){
+                if(this.qp.answers[this.questionId].options[id]) return id;
+            }
+            return '';
+        } catch(e){
+            return '';
+        }
+    }
+
+    set value(value){
+        this.qp.clickAnswerOption(value);
+    }
+
 }

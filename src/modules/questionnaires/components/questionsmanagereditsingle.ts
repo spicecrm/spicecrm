@@ -56,6 +56,19 @@ export class QuestionsManagerEditSingle extends QuestionsManagerEditBasicWithOpt
 
     set formatOptionsHorizontal(value){
         this.questionparameters.formatOptionsHorizontal = value;
+        // only one of the options can be selected
+        if(value){this.questionparameters.asDropDown = false;}
+        this.writeQuestionparametersToModel();
+    }
+
+    get asDropDown(){
+        return this.questionparameters.asDropDown;
+    }
+
+    set asDropDown(value){
+        this.questionparameters.asDropDown = value;
+        // only one of the options can be selected
+        if(value){this.questionparameters.formatOptionsHorizontal = false;}
         this.writeQuestionparametersToModel();
     }
 

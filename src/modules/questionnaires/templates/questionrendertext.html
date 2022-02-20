@@ -24,12 +24,14 @@
                 <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
             </div>
         </div>
-        <div *ngIf="questionMeta && questionMeta.parameter && !questionMeta.parameter.sequenced && questionMeta.parameter.isinput" class="slds-box slds-text-align_right slds-grid slds-grid_vertical-align-center">
-            <div class="slds-p-right_large x-lds-p-vertical_small">{{question.questiontext}}</div>
-            <div class="slds-text-align_right slds-grow">
-                <input type="text" *ngIf="qp.editMode === 'preview'"  class="slds-size--1-of-1 slds-input">
-                <input *ngIf="qp.editMode !== 'preview'" type="text" [(ngModel)]="value" [ngModelOptions]="{updateOn:'blur'}" class="slds-size--1-of-1 slds-input" [ngClass]="{'slds-has-error':isInputInvalid}" [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview' ? '':null">
-                <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
+        <div *ngIf="questionMeta && questionMeta.parameter && !questionMeta.parameter.sequenced && questionMeta.parameter.isinput" class="slds-box--border slds-text-align_right">
+            <div class="slds-grid slds-grid_vertical-align-center slds-p-around--x-small">
+                <div class="slds-p-right_large x-lds-p-vertical_small">{{question.questiontext}}</div>
+                <div class="slds-text-align_right slds-grow">
+                    <input type="text" *ngIf="qp.editMode === 'preview'"  class="slds-size--1-of-1 slds-input">
+                    <input *ngIf="qp.editMode !== 'preview'" type="text" [(ngModel)]="value" [ngModelOptions]="{updateOn:'blur'}" class="slds-size--1-of-1 slds-input" [ngClass]="{'slds-has-error':isInputInvalid}" [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview' ? '':null">
+                    <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
+                </div>
             </div>
         </div>
     </ng-container>
