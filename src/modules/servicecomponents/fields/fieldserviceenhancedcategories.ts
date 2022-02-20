@@ -47,5 +47,12 @@ export class fieldServiceEnhancedCategories extends fieldCategories {
                 })
             })
         }
+
+        // set the questionnaire
+        if(selected.category?.add_params?.questionnaire_id){
+            this.model.setField('questionnaire_id', selected.category?.add_params?.questionnaire_id);
+        } else {
+            this.model.setField('questionnaire_id', null);
+        }
     }
 }
