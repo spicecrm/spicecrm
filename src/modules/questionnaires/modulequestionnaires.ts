@@ -62,10 +62,12 @@ import /*embed*/ {QuestionRenderIST, QuestionTypeISTTextPipe, QuestionTypeISTOpt
 import /*embed*/ {QuestionRenderRating} from './components/questionrenderrating';
 import /*embed*/ {QuestionRenderText} from './components/questionrendertext';
 import /*embed*/ {QuestionRenderNPS} from './components/questionrendernps';
-import /*embed*/ {QuestionRenderBinarySingleMulti} from './components/questionrenderbinarysinglemulti';
 import /*embed*/ {QuestionsManagerEditRatingGroup} from './components/questionsmanagereditratinggroup';
 import /*embed*/ {fieldQuestionnaire} from './fields/fieldquestionnaire';
 import /*embed*/ {QuestionnaireFillOutActionItem} from './components/QuestionnaireFillOutActionItem';
+import {QuestionRenderSingle} from "./components/questionrendersingle";
+import {QuestionRenderBinary} from "./components/questionrenderbinary";
+import {QuestionRenderMulti} from "./components/questionrendermulti";
 
 @NgModule( {
     imports: [
@@ -124,11 +126,13 @@ import /*embed*/ {QuestionnaireFillOutActionItem} from './components/Questionnai
         QuestionnaireFillOutButton,
         QuestionnaireFillOutModal,
         QuestionRenderBasic,
+        QuestionRenderSingle,
+        QuestionRenderBinary,
+        QuestionRenderMulti,
         QuestionRenderText,
         QuestionRenderRating,
         QuestionRenderNPS,
         QuestionRenderIST,
-        QuestionRenderBinarySingleMulti,
         QuestionsManagerEditRatingGroup,
         fieldQuestionnaire,
         QuestionnaireFillOutActionItem

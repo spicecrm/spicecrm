@@ -1,14 +1,24 @@
-<system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
-<ng-template #displaycontent>
-    <questionnaire-render *ngIf="showQuestionnaire()"
-                          [questionnaireId]="questionnaireId"
-                          [editMode]="view.getMode() === 'edit' ? 'questionnaire':'off'"
-                          [showQuestionnaireTitle]="false"
-                          [inModal]="false"
-                          [parentType]="model.module"
-                          [parentId]="model.id"
-                          (answersChanged$)="answersChanged()"
-                          (questionnaireParticipation$)="questionnaireParticipation=$event"
-    ></questionnaire-render>
-    <div *ngIf="!questionnaireId">No questionnaire selected yet.</div>
-</ng-template>
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<div class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
+    <ng-template #displaycontent>
+        <questionnaire-render *ngIf="showQuestionnaire()"
+                              [questionnaireId]="questionnaireId"
+                              [editMode]="view.getMode() === 'edit' ? 'questionnaire':'off'"
+                              [showQuestionnaireTitle]="false"
+                              [inModal]="false"
+                              [parentType]="model.module"
+                              [parentId]="model.id"
+                              (answersChanged$)="answersChanged()"
+                              (questionnaireParticipation$)="questionnaireParticipation=$event"
+        ></questionnaire-render>
+        <div *ngIf="!questionnaireId" class="slds-box slds-align--absolute-center">
+            <div class="slds-grid slds-grid--vertical">
+                <system-illustration-no-records></system-illustration-no-records>
+                <div class="slds-text-align--center">
+                    <system-label label="MSG_NO_QUESTIONNAIRE"></system-label>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>

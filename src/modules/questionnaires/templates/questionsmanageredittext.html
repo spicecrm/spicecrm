@@ -8,21 +8,20 @@
         <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>
     </div>
 </div>
-
 <div class="slds-p-top_xx-small">
     <div [ngClass]="{'slds-has-error':nameMissing}">
         <label class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
         <input type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
     </div>
 </div>
-
 <div class="slds-p-top_xx-small slds-grid slds-grid_align-spread slds-grid_vertical-align-end">
-    <div class="slds-size_1-of-4 slds-p-right_medium">
+    <div class="slds-size_1-of-1 slds-p-right_medium">
         <label class="slds-form-element__label" ><system-label label="LBL_CORRECT_ANSWER"></system-label></label>
         <input [system-trim-input] type="text" class="slds-input" [(ngModel)]="answer.name">
     </div>
-    <div>
-        <div><system-checkbox [(ngModel)]="sequenced"><system-label label="LBL_DISPLAY_AS_SEQUENCE"></system-label></system-checkbox></div>
-        <div><system-checkbox [(ngModel)]="numeric"><system-label label="LBL_IS_NUMERIC"></system-label></system-checkbox></div>
-    </div>
+</div>
+<div class="slds-p-top_x-small slds-grid slds-grid_align-spread slds-grid_vertical-align-end">
+    <div><system-checkbox [(ngModel)]="isinput"><system-label label="LBL_DISPLAY_AS_INPUT"></system-label></system-checkbox></div>
+    <div><system-checkbox [(ngModel)]="sequenced"><system-label label="LBL_DISPLAY_AS_SEQUENCE"></system-label></system-checkbox></div>
+    <div><system-checkbox [(ngModel)]="numeric"><system-label label="LBL_IS_NUMERIC"></system-label></system-checkbox></div>
 </div>

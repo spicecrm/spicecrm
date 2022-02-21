@@ -1135,7 +1135,7 @@ class SpiceUtils
      * @param string $language specific language to load
      * @return array lang strings
      */
-    public static function returnAppListStringsLanguage($language, $scope = 'all'): ?array {
+    public static function returnAppListStringsLanguage($language = 'en_us', $scope = 'all'): ?array {
         global $app_list_strings;
 
         $cache_key = 'app_list_strings.' . $language;
