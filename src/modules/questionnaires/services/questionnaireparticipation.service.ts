@@ -170,6 +170,8 @@ export class questionnaireParticipationService {
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( questionId, backupForNetworkError );
         else this.isDirty = true;
 
+        this.answersChanged$.emit();
+
     }
 
     /**
