@@ -117,7 +117,7 @@ class RepairAndClear
 
 		$db = DBManagerFactory::getInstance();
 
-		if (is_admin($current_user) || is_admin_for_any_module($current_user))
+		if (SpiceUtils::isAdmin($current_user) || SpiceUtils::isAdminForAnyModule($current_user))
 		{
 			$export = false;
     		if($this->show_output) echo getClassicModuleTitle($mod_strings['LBL_REPAIR_DATABASE'], [$mod_strings['LBL_REPAIR_DATABASE']], false);
@@ -130,7 +130,7 @@ class RepairAndClear
 			{
 				$repair_related_modules = array_keys(SpiceDictionaryHandler::getInstance()->dictionary);
 				//repair DB
-				$dm = inDeveloperMode();
+				$dm = SpiceUtils::inDeveloperMode();
 				SpiceConfig::getInstance()->config['developerMode'] = true;
 				foreach($this->module_list as $bean_name)
 				{
@@ -203,7 +203,7 @@ class RepairAndClear
 //        \SpiceCRM\includes\database\DBManagerFactory::getInstance()->query($query);
 //
 //        // insert a new database row to show the rebuild extensions is done
-//        $id = create_guid();
+//        $id = SpiceUtils::createGuid();
 //        $gmdate = gmdate('Y-m-d H:i:s');
 //        $date_entered = db_convert("'$gmdate'", 'datetime');
 //        $query = 'INSERT INTO versions (id, deleted, date_entered, date_modified, modified_user_id, created_by, name, file_version, db_version) '
@@ -279,8 +279,7 @@ class RepairAndClear
 	{
 		global $mod_strings;
 		if($this->show_output) echo "<h3>{$mod_strings['LBL_QR_CLEARTEMPLATE']}</h3>";
-		if(!in_array( translate('LBL_ALL_MODULES'),$this->module_list) && !empty($this->module_list))
-		{
+		if (!in_array(SpiceUtils::translate('LBL_ALL_MODULES'),$this->module_list) && !empty($this->module_list)) {
 			foreach($this->module_list as $module_name_singular )
 				$this->_clearCache(sugar_cached('modules/').$this->_getModuleNamePlural($module_name_singular), '.tpl');
 		}
@@ -291,8 +290,7 @@ class RepairAndClear
 	{
 		global $mod_strings;
 		if($this->show_output) echo "<h3>{$mod_strings['LBL_QR_CLEARVADEFS']}</h3>";
-		if(!empty($this->module_list) && is_array($this->module_list) && !in_array( translate('LBL_ALL_MODULES'),$this->module_list))
-		{
+		if (!empty($this->module_list) && is_array($this->module_list) && !in_array(SpiceUtils::translate('LBL_ALL_MODULES'), $this->module_list)) {
 			foreach($this->module_list as $module_name_singular )
 				$this->_clearCache(sugar_cached('modules/').$this->_getModuleNamePlural($module_name_singular), 'vardefs.php');
 		}
@@ -308,8 +306,7 @@ class RepairAndClear
 		global $mod_strings;
 		if($this->show_output) echo "<h3>{$mod_strings['LBL_QR_CLEARJS']}</h3>";
 
-		if(!in_array( translate('LBL_ALL_MODULES'),$this->module_list) && !empty($this->module_list))
-		{
+		if (!in_array(SpiceUtils::translate('LBL_ALL_MODULES'),$this->module_list) && !empty($this->module_list)) {
 			foreach($this->module_list as $module_name_singular )
 				$this->_clearCache(sugar_cached('modules/').$this->_getModuleNamePlural($module_name_singular), '.js');
 		}
@@ -326,8 +323,7 @@ class RepairAndClear
 	{
 		global $mod_strings;
 		if($this->show_output) echo "<h3>{$mod_strings['LBL_QR_CLEARJSLANG']}</h3>";
-		if(!in_array(translate('LBL_ALL_MODULES'),$this->module_list ) && !empty($this->module_list))
-		{
+		if (!in_array(SpiceUtils::translate('LBL_ALL_MODULES'),$this->module_list ) && !empty($this->module_list)) {
 			foreach($this->module_list as $module_name_singular )
 				$this->_clearCache(sugar_cached('jsLanguage/').$this->_getModuleNamePlural($module_name_singular), '.js');
 		}
@@ -344,8 +340,7 @@ class RepairAndClear
 		if($this->show_output) echo "<h3>{$mod_strings['LBL_QR_CLEARLANG']}</h3>";
 		//clear cache using the list $module_list_from_cache
 		if ( !empty($this->module_list) && is_array($this->module_list) ) {
-            if( in_array(translate('LBL_ALL_MODULES'), $this->module_list))
-            {
+            if (in_array(SpiceUtils::translate('LBL_ALL_MODULES'), $this->module_list)) {
                 LanguageManager::clearLanguageCache();
             }
             else { //use the modules selected thrut the select list.

@@ -118,7 +118,7 @@ class UserAuthenticate
     public static function getPwdGuideline($lang)
     {
         global $app_strings;
-        $app_strings = return_application_language($lang);
+        $app_strings = SpiceUtils::returnApplicationLanguage($lang);
 
         $guideline = '';
 

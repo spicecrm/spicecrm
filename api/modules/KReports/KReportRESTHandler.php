@@ -7,6 +7,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\KReports\KReport;
@@ -314,7 +315,7 @@ class KReporterRESTHandler
     {
         global $app_list_strings, $current_language;
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
@@ -330,7 +331,7 @@ class KReporterRESTHandler
         global $app_list_strings,  $current_language;
 $db = DBManagerFactory::getInstance();
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
@@ -465,7 +466,7 @@ $db = DBManagerFactory::getInstance();
 
         $returnArray = [];
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         // explode the path
         $pathArray = explode('::', $path);
@@ -768,7 +769,7 @@ $db = DBManagerFactory::getInstance();
                     $returnArray[] = [
                         'path' => /* ($requester != '' ? $requester. '#': '') . */
                             'link:' . $module . ':' . $field_name,
-                        'module' => ((translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (translate($field_defs
+                        'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                         ['vname'], $module))),
                         'bean' => $nodeModule->$field_name->focus->object_name,
                         'leaf' => false
@@ -777,7 +778,7 @@ $db = DBManagerFactory::getInstance();
                     $returnArray[] = [
                         'path' => /*  ($requester != '' ? $requester. '#': '') . */
                             'link:' . $module . ':' . $field_name,
-                        'module' => translate($field_defs['module'], $module),
+                        'module' => SpiceUtils::translate($field_defs['module'], $module),
                         'bean' => $nodeModule->$field_name->focus->object_name,
                         'leaf' => false
                     ];
@@ -801,7 +802,7 @@ $db = DBManagerFactory::getInstance();
                 if (isset($field_defs['vname']))
                     $returnArray [] = [
                         'path' => 'relate:' . $module . ':' . $field_name,
-                        'module' => ((translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (translate($field_defs
+                        'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                         ['vname'], $module))),
                         'bean' => $field_defs['module'],
                         'leaf' => false
@@ -809,7 +810,7 @@ $db = DBManagerFactory::getInstance();
                 elseif (isset($field_defs['module']))
                     $returnArray[] = [
                         'path' => 'relate:' . $module . ':' . $field_name,
-                        'module' => translate($field_defs['module'], $module),
+                        'module' => SpiceUtils::translate($field_defs['module'], $module),
                         'bean' => $field_defs['module'],
                         'leaf' => false
                     ];
@@ -861,7 +862,7 @@ $db = DBManagerFactory::getInstance();
                         // 2011-10-15 if the kreporttype is set return it
                         //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
                         'type' => (isset($field_defs['kreporttype'])) ? $field_defs['kreporttype'] : $field_defs['type'],
-                        'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
+                        'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                         'leaf' => true,
                         'options' => $field_defs['options']
                     ];
@@ -967,7 +968,7 @@ $db = DBManagerFactory::getInstance();
 
         global $current_language, $app_list_strings;
         $db = DBManagerFactory::getInstance();
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         // initialize Return Array
         $retData = [];
@@ -1477,8 +1478,8 @@ $db = DBManagerFactory::getInstance();
 
         switch ($getValuesFrom) {
             case 'dom':
-                $app_list_strings = return_app_list_strings_language($current_language);
-                $app_strings = return_application_language($current_language);
+                $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+                $app_strings = SpiceUtils::returnApplicationLanguage($current_language);
 
                 if (isset($app_list_strings[$dom])) {
                     $useArray = $app_list_strings[$dom];

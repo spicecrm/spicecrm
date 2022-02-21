@@ -2,6 +2,8 @@
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\includes\resource\Observers;
 
+use SpiceCRM\includes\utils\SpiceUtils;
+
 class SoapResourceObserver extends ResourceObserver
 {
     private $soapServer;
@@ -38,7 +40,7 @@ class SoapResourceObserver extends ResourceObserver
         $this->soapServer->methodreturn = ['result'=>$msg, 'error'=>$error->get_soap_array()];
         $this->soapServer->serialize_return();
         $this->soapServer->send_response();
-        sugar_cleanup(true);
+        SpiceUtils::spiceCleanup(true);
 
     }
 	

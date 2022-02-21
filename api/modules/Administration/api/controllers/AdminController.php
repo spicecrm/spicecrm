@@ -447,7 +447,7 @@ class AdminController
             if($lang['system_language']){
                 $language = $lang['language_code'];
                 $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-                $appListStrings[$language][] = return_app_list_strings_language($language);
+                $appListStrings[$language][] = SpiceUtils::returnAppListStringsLanguage($language);
                 $appLang[$language][] = $this->loadLanguage($language);
             }
         }

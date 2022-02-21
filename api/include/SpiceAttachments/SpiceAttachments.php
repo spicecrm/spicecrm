@@ -236,7 +236,7 @@ class SpiceAttachments
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $guid = create_guid();
+        $guid = SpiceUtils::createGuid();
 
         // if we have an image create a thumbnail
         $thumbnail = self::createThumbnail($payload->filemd5, $payload->mime_type);

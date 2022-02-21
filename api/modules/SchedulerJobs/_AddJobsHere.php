@@ -55,7 +55,7 @@ use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTaskScheduler;
  * Your function should not be passed any parameters
  * Always  return a Boolean. If it does not the Job will not terminate itself
  * after completion, and the webserver will be forced to time-out that Job instance.
- * DO NOT USE sugar_cleanup(); in your function flow or includes.  this will
+ * DO NOT USE SpiceUtils::spiceCleanup(); in your function flow or includes.  this will
  * break Jobs.  That function is called at the foot of cron.php
  */
 

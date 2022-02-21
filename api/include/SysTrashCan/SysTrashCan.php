@@ -34,6 +34,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SysTrashCan
 {
@@ -55,7 +56,7 @@ class SysTrashCan
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
         $now = $timedate->nowDb();
-        $db->query("INSERT INTO systrashcan (id, transactionid, date_deleted, user_deleted, recordtype, recordmodule, recordid, recordname, linkname, linkmodule, linkid, recorddata) VALUES('" . create_guid() . "', '" . LoggerManager::getLogger()->getTransactionId() . "', '$now', '$current_user->id','$recordtype', '$recordmodule', '$recordid', '$recordname', '$linkname', '$linkmodule', '$linkid', '" . base64_encode($recorddata) . "' )");
+        $db->query("INSERT INTO systrashcan (id, transactionid, date_deleted, user_deleted, recordtype, recordmodule, recordid, recordname, linkname, linkmodule, linkid, recorddata) VALUES('" . SpiceUtils::createGuid() . "', '" . LoggerManager::getLogger()->getTransactionId() . "', '$now', '$current_user->id','$recordtype', '$recordmodule', '$recordid', '$recordname', '$linkname', '$linkmodule', '$linkid', '" . base64_encode($recorddata) . "' )");
     }
 
     /**
