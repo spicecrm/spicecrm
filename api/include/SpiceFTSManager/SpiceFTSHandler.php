@@ -1262,6 +1262,10 @@ class SpiceFTSHandler
                     $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
                         $seed = BeanFactory::getBean($module, $hit['_id']);
+
+                        // if we do not find the record .. do not return it
+                        if (!$seed) continue;
+
                         foreach ($seed->field_name_map as $field => $fieldData) {
                             //if (!isset($hit['_source']{$field}))
                             if (is_string($seed->$field)) {
