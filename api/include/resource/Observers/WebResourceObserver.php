@@ -2,6 +2,8 @@
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\includes\resource\Observers;
 
+use SpiceCRM\includes\utils\SpiceUtils;
+
 /**
  * WebResourceObserver.php
  * This is a subclass of ResourceObserver to provide notification handling
@@ -21,7 +23,7 @@ class WebResourceObserver extends ResourceObserver {
      */
     public function notify($msg = '') {
        echo $msg;
-       sugar_cleanup(true);
+       SpiceUtils::spiceCleanup(true);
     }
 	
 }

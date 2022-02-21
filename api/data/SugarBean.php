@@ -767,21 +767,21 @@ class SugarBean
 
             //add custom/modules/[]modulename]/vardefs.php capability
             //ORIGINAL: if (file_exists($filename)) {
-            if (file_exists(($iscustom ? $filename : get_custom_file_if_exists($filename)))) {
+            if (file_exists(($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)))) {
                 include($filename);
                 // cn: bug 7679 - dictionary entries defined as $GLOBALS['name'] not found
                 if (empty($dictionary) || !empty(SpiceDictionaryHandler::getInstance()->dictionary[$key])) {
                     $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
                 }
             } else {
-                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : get_custom_file_if_exists($filename)));
+                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)));
                 return;
             }
         }
 
         if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
             LoggerManager::getLogger()->fatal("createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
-            display_notice("meta data absent for table " . $tablename . " keyed to $key ");
+            SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
         } else {
             if (isset($dictionary[$key]['relationships'])) {
 
@@ -1119,7 +1119,7 @@ class SugarBean
         $key = $this->getObjectName();
         if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal("create_tables: Metadata for table " . $this->table_name . " does not exist");
-            display_notice("meta data absent for table " . $this->table_name . " keyed to $key ");
+            SpiceUtils::displayNotice("meta data absent for table " . $this->table_name . " keyed to $key ");
         } else {
             if (!$this->db->tableExists($this->table_name)) {
                 $this->db->createTable($this);
@@ -2894,7 +2894,7 @@ class SugarBean
             if (isset($data_values)) {
                 $relate_values = array_merge($relate_values, $data_values);
             }
-            $query = "INSERT INTO $table (id, " . implode(',', array_keys($relate_values)) . ", date_modified) VALUES ('" . create_guid() . "', " . "'" . implode("', '", $relate_values) . "', " . $date_modified . ")";
+            $query = "INSERT INTO $table (id, " . implode(',', array_keys($relate_values)) . ", date_modified) VALUES ('" . SpiceUtils::createGuid() . "', " . "'" . implode("', '", $relate_values) . "', " . $date_modified . ")";
 
             $this->db->query($query, false, "Creating Relationship:" . $query);
         } else if ($do_update) {
@@ -3145,7 +3145,7 @@ class SugarBean
     public function cloneLinkedBean($linkName, &$oppositeBean)
     {
         $clone = clone $this;
-        $clone->id = create_guid();
+        $clone->id = SpiceUtils::createGuid();
         $GLOBALS['cloningData']['cloned'][] = ['module' => $clone->module_name, 'id' => $this->id, 'cloneId' => $clone->id, 'clone' => $clone];
         $clone->cloningData['count']++;
         $clone->new_with_id = true;

@@ -6,6 +6,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class EmailTemplatesController{
 
@@ -41,7 +42,7 @@ class EmailTemplatesController{
         global $app_list_strings, $current_language;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         $return = [
             'name' => '',

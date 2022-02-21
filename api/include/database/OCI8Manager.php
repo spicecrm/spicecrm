@@ -35,6 +35,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * OCI8 driver
@@ -1234,7 +1235,7 @@ class OCI8Manager extends DBManager
 
     public function getGuidSQL()
     {
-        return "'" . create_guid_section(3) . "-' || sys_guid()";
+        return "'" . SpiceUtils::createGuidSection(3) . "-' || sys_guid()";
     }
 
     /**

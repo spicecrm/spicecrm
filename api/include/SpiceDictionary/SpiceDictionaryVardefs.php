@@ -957,7 +957,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     public static function createSysDomainForValidation($field, $sysdomainfieldvalidation_id){
         $db = DBManagerFactory::getInstance();
         $qi = [];
-        $sysdomaindefinition_id = create_guid();
+        $sysdomaindefinition_id = SpiceUtils::createGuid();
         $qi[] = "INSERT INTO sysdomaindefinitions (id, name, fieldtype, fieldlen) VALUES('{$sysdomaindefinition_id}', '{$field['options']}', '{$field['type']}', '{$field['len']}');";
         $qi[] = "INSERT INTO sysdomainfields (id, name, dbtype, fieldlen, sysdomaindefinition_id, sysdomainfieldvalidation_id, fieldtype, fieldcomment) VALUES(uuid(), '{sysdictionaryitems.name}', '".($field['dbType'] ? $field['dbType'] : 'varchar')."', '{$field['len']}', '{$sysdomaindefinition_id}', '{$sysdomainfieldvalidation_id}', '{$field['type']}', '".$db->quote($field['description'])."');";
         foreach($qi as $q){

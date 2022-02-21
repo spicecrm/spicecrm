@@ -35,6 +35,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * handles the dictioonary elements
@@ -198,8 +199,8 @@ class SpiceDictionaryController
 
         $languages = $db->query("SELECT language_code FROM syslangs WHERE system_language = '1'");
         while($language = $db->fetchByAssoc($languages)){
-            $retArray[$language['language_code']]['global'] = return_app_list_strings_language('en_us', 'global');
-            $retArray[$language['language_code']]['custom'] = return_app_list_strings_language('en_us', 'custom');
+            $retArray[$language['language_code']]['global'] = SpiceUtils::returnAppListStringsLanguage('en_us', 'global');
+            $retArray[$language['language_code']]['custom'] = SpiceUtils::returnAppListStringsLanguage('en_us', 'custom');
 
 
             foreach($retArray[$language['language_code']]['custom'] as $dom => $values){
