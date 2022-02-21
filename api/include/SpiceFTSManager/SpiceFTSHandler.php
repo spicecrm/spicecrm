@@ -1311,11 +1311,14 @@ class SpiceFTSHandler
                     //throw new Exception(json_encode($searchresultsraw['error']['root_cause']));
                 }
 
-                foreach ($searchresults[$module]['hits'] as &$hit) {
+                foreach ($searchresults[$module]['hits'] as $index => &$hit) {
                     $seed = BeanFactory::getBean($module, $hit['_id']);
 
                     // if we do not find the record .. do not return it
-                    if (!$seed) continue;
+                    if (!$seed) {
+                        unset($searchresults[$module]['hits'][$index]);
+                        continue;
+                    }
 
                     foreach ($seed->field_name_map as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
