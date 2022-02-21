@@ -1315,10 +1315,7 @@ class SpiceFTSHandler
                     $seed = BeanFactory::getBean($module, $hit['_id']);
 
                     // if we do not find the record .. do not return it
-                    if (!$seed) {
-                        unset($searchresults[$module]['hits'][$index]);
-                        continue;
-                    }
+                    if (!$seed) continue;
 
                     foreach ($seed->field_name_map as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
