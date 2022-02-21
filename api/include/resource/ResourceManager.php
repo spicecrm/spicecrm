@@ -40,6 +40,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\resource\Observers\SoapResourceObserver;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * ResourceManager.php
@@ -133,7 +134,7 @@ class ResourceManager
 
         //Notify observers limit has been reached
         if(empty($GLOBALS['app_strings'])) {
-           $GLOBALS['app_strings'] = return_application_language($GLOBALS['current_language']);
+           $GLOBALS['app_strings'] = SpiceUtils::returnApplicationLanguage($GLOBALS['current_language']);
         }
         $limitMsg = $GLOBALS['app_strings'][$msg];
         foreach( $this->_observers as $observer) {

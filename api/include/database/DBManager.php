@@ -43,6 +43,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 
@@ -1683,7 +1684,7 @@ protected function checkQuery($sql, $object_name = false)
 	public function countQuery()
 	{
 		if (self::$queryLimit != 0 && ++self::$queryCount > self::$queryLimit
-			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !is_admin(AuthenticationController::getInstance()->getCurrentUser()))) {
+			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !SpiceUtils::isAdmin(AuthenticationController::getInstance()->getCurrentUser()))) {
             $resourceManager = ResourceManager::getInstance();
             $resourceManager->notifyObservers('ERR_QUERY_LIMIT');
 		}
@@ -2988,7 +2989,7 @@ protected function checkQuery($sql, $object_name = false)
         $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
 
         $values = [];
-        $values['id'] = $this->massageValue(create_guid(), $fieldDefs['id']);
+        $values['id'] = $this->massageValue(SpiceUtils::createGuid(), $fieldDefs['id']);
         // $values['transactionid']= LoggerManager::getLogger()->getTransactionId();
         $values['parent_id'] = $this->massageValue($bean->id, $fieldDefs['parent_id']);
         $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);

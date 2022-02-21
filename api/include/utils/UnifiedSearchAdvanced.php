@@ -40,6 +40,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 /*********************************************************************************
@@ -97,7 +98,7 @@ class UnifiedSearchAdvanced {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$home_mod_strings = return_module_language($current_language, 'Home');
 
-		$this->query_string = DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($this->query_string, 'UNIFIED_SEARCH'))));
+		$this->query_string = DBManagerFactory::getInstance()->quote(SpiceUtils::securexss(from_html(SpiceUtils::cleanString($this->query_string, 'UNIFIED_SEARCH'))));
 
 		if(!empty($_REQUEST['advanced']) && $_REQUEST['advanced'] != 'false') {
 			$modules_to_search = [];
@@ -570,7 +571,7 @@ class UnifiedSearchAdvanced {
 	    {
 	    	//Log error message and throw Exception
 	    	global $app_strings;
-	    	$msg = string_format($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
+	    	$msg = SpiceUtils::stringFormat($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
 	    	LoggerManager::getLogger()->error($msg);
 	    	throw new Exception($msg);
 	    }

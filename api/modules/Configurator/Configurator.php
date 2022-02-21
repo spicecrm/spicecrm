@@ -41,6 +41,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class Configurator {
 	var $config = '';
@@ -68,7 +69,7 @@ class Configurator {
 		$overrideArray = $this->readOverride();
 		$this->previous_sugar_override_config_array = $overrideArray;
 		$diffArray = deepArrayDiff($this->config, SpiceConfig::getInstance()->config);
-		$overrideArray = sugarArrayMergeRecursive($overrideArray, $diffArray);
+		$overrideArray = SpiceUtils::spiceArrayMergeRecursive($overrideArray, $diffArray);
 
 		// To remember checkbox state
           if (!$this->useAuthenticationClass && !$fromParseLoggerSettings) {
@@ -106,7 +107,7 @@ class Configurator {
 		global  $sugar_version;
 		$overrideArray = $this->readOverride();
 		$this->previous_sugar_override_config_array = $overrideArray;
-		$overrideArray = sugarArrayMergeRecursive($overrideArray, $diffArray);
+		$overrideArray = SpiceUtils::spiceArrayMergeRecursive($overrideArray, $diffArray);
 
 		$overideString = "<?php\n/***CONFIGURATOR***/\n";
 

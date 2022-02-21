@@ -45,6 +45,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\UserPreferences\UserPreference;
@@ -324,7 +325,7 @@ class User extends Person
         // set some default preferences when creating a new user
         if ($setNewUserPreferences) {
             if (!$this->getPreference('calendar_publish_key')) {
-                $this->setPreference('calendar_publish_key', create_guid());
+                $this->setPreference('calendar_publish_key', SpiceUtils::createGuid());
             }
         }
 

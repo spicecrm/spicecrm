@@ -36,7 +36,7 @@
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * @deprecated moved to SpiceFileUtils
@@ -100,7 +100,7 @@ function clean_path( $path )
 {
     // clean directory/file path with a functional equivalent
     $appendpath = '';
-    if ( is_windows() && strlen($path) >= 2 && $path[0].$path[1] == "\\\\" ) {
+    if (SpiceUtils::isWindows() && strlen($path) >= 2 && $path[0].$path[1] == "\\\\") {
         $path = substr($path,2);
         $appendpath = "\\\\";
     }
@@ -309,7 +309,7 @@ function sugar_touch($filename, $time=null, $atime=null) {
 function sugar_chmod($filename, $mode=null) {
     if ( !is_int($mode) )
         $mode = (int) $mode;
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		if(!isset($mode)){
 			$mode = get_mode('file_mode', $mode);
 		}
@@ -333,7 +333,7 @@ function sugar_chmod($filename, $mode=null) {
  * @return boolean - Returns TRUE on success or FALSE on failure.
  */
 function sugar_chown($filename, $user='') {
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		if(strlen($user)){
 			return chown($filename, $user);
 		}else{
@@ -359,7 +359,7 @@ function sugar_chown($filename, $user='') {
  * @return boolean - Returns TRUE on success or FALSE on failure.
  */
 function sugar_chgrp($filename, $group='') {
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		if(!empty($group)){
 			return chgrp($filename, $group);
 		}else{
@@ -389,7 +389,7 @@ function get_mode($key = 'dir_mode', $mode=null) {
 	if ( !is_int($mode) )
         $mode = (int) $mode;
 
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		$conf_inst= SpiceConfig::getInstance();
 		$mode = $conf_inst->get('default_permissions.'.$key, $mode);
 	}
