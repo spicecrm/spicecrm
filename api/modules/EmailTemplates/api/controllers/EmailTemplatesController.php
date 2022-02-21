@@ -6,6 +6,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class EmailTemplatesController{
@@ -54,7 +55,7 @@ class EmailTemplatesController{
 
         return $res->withJson([
             'subject' => $parsedTpl['subject'],
-            'body_html' => from_html(wordwrap($parsedTpl['body_html'], true)),
+            'body_html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true)),
             'body' => $parsedTpl['body'],
         ]);
     }
@@ -74,7 +75,7 @@ class EmailTemplatesController{
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
         $parsedTpl = $emailTemplate->parse($bean);
 
-        return $res->withJson(['html' => from_html(wordwrap($parsedTpl['body_html'], true))]);
+        return $res->withJson(['html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true))]);
     }
 
 }
