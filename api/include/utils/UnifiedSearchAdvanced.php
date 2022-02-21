@@ -40,6 +40,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -98,7 +99,7 @@ class UnifiedSearchAdvanced {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$home_mod_strings = return_module_language($current_language, 'Home');
 
-		$this->query_string = DBManagerFactory::getInstance()->quote(SpiceUtils::securexss(from_html(SpiceUtils::cleanString($this->query_string, 'UNIFIED_SEARCH'))));
+		$this->query_string = DBManagerFactory::getInstance()->quote(SpiceUtils::securexss(DBUtils::fromHtml(SpiceUtils::cleanString($this->query_string, 'UNIFIED_SEARCH'))));
 
 		if(!empty($_REQUEST['advanced']) && $_REQUEST['advanced'] != 'false') {
 			$modules_to_search = [];

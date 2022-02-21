@@ -13,6 +13,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -2191,7 +2192,7 @@ class SugarBean
             case 'json':
                 break;
             default:
-                if ($encode) $fieldvalue = to_html($fieldvalue);
+                if ($encode) $fieldvalue = DBUtils::toHtml($fieldvalue);
                 if (!(isset($fieldDef['source']) && !in_array($fieldDef['source'], ['db', 'relate']) && !isset($fieldDef['dbType']))) {
                     $fieldvalue = $this->db->fromConvert($fieldvalue, $this->db->getFieldType($fieldDef));
                 }

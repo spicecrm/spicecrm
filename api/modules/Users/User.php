@@ -45,6 +45,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
@@ -732,8 +733,8 @@ class User extends Person
         $itemail = $this->email1;
 
         $emailObj = BeanFactory::getBean('Emails');
-        $emailObj->name = from_html($emailTempl->subject);
-        $emailObj->body = from_html($emailTempl->body_html);
+        $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
+        $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
         $emailObj->addEmailAddress('to', $itemail);
         $emailObj->to_be_sent = true;
 
@@ -812,7 +813,7 @@ class User extends Person
         $emailTemp->body_html = $htmlBody;
         $emailTemp->body = $body;
 
-        if (from_html($emailTemp->body_html) == '' && $current_user->is_admin) {
+        if (DBUtils::fromHtml($emailTemp->body_html) == '' && $current_user->is_admin) {
             global $app_strings;
             throw new Exception($result['message'] = $app_strings['LBL_EMAIL_TEMPLATE_EDIT_PLAIN_TEXT']);
         }
