@@ -10,7 +10,7 @@ import {
     OnChanges,
     Optional,
     Injector,
-    SkipSelf
+    SkipSelf, Output, EventEmitter
 } from '@angular/core';
 import {Router} from '@angular/router';
 
@@ -52,6 +52,12 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
      * this allows to add the directive but disable it by a parameter on the component if e.g. the popover shoudl be displayed conditional
      */
     @Input('system-model-popover') public modelPopOver: boolean = true;
+
+    /**
+     * an emitter when the link is clicked
+     * nice to handle if you have links imn popoers and they shoudl close
+     */
+    @Output() public clicked: EventEmitter<boolean> = new EventEmitter<boolean>()
 
     /**
      * the popover that is rendered
@@ -127,6 +133,9 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
                 this.popovermodel.goDetail(this.navigationtab?.tabid);
             });
         }
+
+        // emit that we clicked
+        this.clicked.emit(true);
     }
 
     /**
@@ -148,7 +157,7 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
                     this.popovermodel.module = this.model.module;
                     this.popovermodel.id = this.model.id;
                     this.popovermodel.initialize();
-                    this.popovermodel.data = this.model.data;
+                    this.popovermodel.setData(this.model.data, false);
                     this.popoverModelInitialized = true;
                 } else {
                     this.popovermodel.getData().subscribe(() => {

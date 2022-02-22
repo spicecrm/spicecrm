@@ -27,7 +27,7 @@ export class ObjectRecordChecklistItem {
 
     get checked() {
         try {
-            let values = JSON.parse(this.model.data[this.checkfield]);
+            let values = JSON.parse(this.model.getField(this.checkfield));
             return values[this.checkitem.item];
         } catch (e) {
             return false;
@@ -37,18 +37,20 @@ export class ObjectRecordChecklistItem {
     checkItem(event) {
         let values = {};
         try {
-            values = JSON.parse(this.model.data[this.checkfield]);
+            values = JSON.parse(this.model.getField(this.checkfield));
         } catch (e) {
+            values = {};
         }
 
         values[this.checkitem.item] = event.target.checked;
-        this.model.data[this.checkfield] = JSON.stringify(values);
+        this.model.setField(this.checkfield, JSON.stringify(values));
 
         // update the backend
-        if (event.target.checked)
+        if (event.target.checked) {
             this.backend.postRequest('module/' + this.model.module + '/' + this.model.id + '/checklist/' + this.checkfield + '/' + this.checkitem.item);
-        else
+        }else {
             this.backend.deleteRequest('module/' + this.model.module + '/' + this.model.id + '/checklist/' + this.checkfield + '/' + this.checkitem.item);
+        }
     }
 
     get disabled(){

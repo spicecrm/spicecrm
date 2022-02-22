@@ -43,8 +43,8 @@ export class QuestionsManagerEditBasic implements OnInit {
     }
 
     public ngOnInit(): void {
-        if ( !this.model.data.questionparameter || this.model.data.questionparameter.length === 0 ) {
-            this.model.data.questionparameter = '{}';
+        if ( !this.model.getField('questionparameter') || this.model.getField('questionparameter').length === 0 ) {
+            this.model.setField('questionparameter', '{}');
         }
         this.getQuestionparametersFromModel();
     }

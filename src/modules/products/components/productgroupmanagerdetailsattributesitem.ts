@@ -44,7 +44,7 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
     public ngOnInit() {
         this.model.module = 'ProductAttributes';
         this.model.id = this.attribute.id;
-        this.model.data = this.attribute;
+        this.model.setData(this.attribute);
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
         this.relatedmodels.loaditems = -1;

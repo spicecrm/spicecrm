@@ -6,9 +6,9 @@
                 <system-label class="slds-p-horizontal--x-small" label="LBL_START"></system-label>
                 <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="start"></system-input-number>
                 <system-label class="slds-p-horizontal--x-small" label="LBL_COUNT"></system-label>
-                <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="limit"></system-input-number>
+                <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="limit - inactiveCount"></system-input-number>
                 <system-label class="slds-p-horizontal--x-small" label="LBL_TOTAL"></system-label>
-                <system-input-number class="slds-p-horizontal--x-small" [disabled]="true" [precision]="0" [(ngModel)]="totalCount"></system-input-number>
+                <system-input-number class="slds-p-horizontal--x-small" [disabled]="true" [precision]="0" [(ngModel)]="totalCount - inactiveCount"></system-input-number>
                 <button [disabled]="!canGenerate" class="slds-col--bump-left slds-button slds-button_neutral" (click)="rendertemplate()" system-title="LBL_MAILMERGE"><system-button-icon addclasses="slds-button__icon slds-button__icon_left" icon="print"></system-button-icon><system-label label="LBL_GENERATE"></system-label></button>
             </div>
         </div>
@@ -28,7 +28,13 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button [disabled]="!pdf || loading" class="slds-button slds-button--neutral" (click)="download()"><system-label label="LBL_DOWNLOAD"></system-label></button>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <div class="slds-grid slds-grid_vertical-align-center">
+            <system-label class="slds-p-horizontal--x-small" label="LBL_EXCLUDED_INACTIVE"></system-label>
+            <p class="slds-text-body--regular slds-truncate slds-p-horizontal--x-small" >{{this.inactiveCount}}</p>
+            <div class="slds-col slds-col_bump-right">
+                <button [disabled]="!pdf || loading" class="slds-button slds-button--neutral" (click)="download()"><system-label label="LBL_DOWNLOAD"></system-label></button>
+                <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+            </div>
+        </div>
     </system-modal-footer>
 </system-modal>

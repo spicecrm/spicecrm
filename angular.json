@@ -29,8 +29,12 @@
               "vendor/underscorejs/underscore-min.js",
               "vendor/reflect-metadata/Reflect.js",
               "vendor/moment/moment.min.js",
+              "vendor/moment/locales.min.js",
               "vendor/moment/moment-timezone.min.js",
               "vendor/socket.io-client/socket.io.js"
+            ],
+            "assets": [
+              { "glob": "**/*", "input": "node_modules/ng2-pdfjs-viewer/pdfjs", "output": "/vendor/pdfjs" }
             ]
           },
           "configurations": {

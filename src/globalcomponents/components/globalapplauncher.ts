@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {
-    Component
+    Component, HostListener
 } from '@angular/core';
 import {Router} from "@angular/router";
 import {metadata} from '../../services/metadata.service';
@@ -20,6 +20,14 @@ import {modal} from '../../services/modal.service';
     }
 })
 export class GlobalAppLauncher {
+
+    /**
+     * add a control-space listener to open the quick launcher
+     * @param event
+     */
+    @HostListener('document:keydown.control.space')quickLaunch(event: KeyboardEvent) {
+        this.showAppLauncher();
+    }
 
     constructor(public metadata: metadata,public modal: modal,public language: language,public router: Router) {
 

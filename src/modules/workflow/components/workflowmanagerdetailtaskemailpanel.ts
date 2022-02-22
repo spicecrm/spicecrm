@@ -18,6 +18,6 @@ export class WorkflowManagerDetailTaskEmailpanel {
 
     public contentOption: string = 'email_template';
     constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
-        this.contentOption = this.model.data.emailcontclass && this.model.data.emailcontclass.length > 0 ? 'method' : 'email_template';
+        this.contentOption = this.model.getField('emailcontclass') && this.model.getField('emailcontclass').length > 0 ? 'method' : 'email_template';
     }
 }

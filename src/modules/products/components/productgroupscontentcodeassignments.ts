@@ -52,7 +52,7 @@ export class ProductGroupsContentCodeAssignments {
     }
 
     public getDisplay() {
-        if (this.model.data.acl && !this.model.data.acl.edit) {
+        if (!this.model.checkAccess('edit')) {
             return 'none';
         }
 

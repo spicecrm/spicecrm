@@ -52,12 +52,12 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     public initializeModel() {
         this.model.module = 'CampaignLog';
         this.model.id = this.selectedListItem.id;
-        this.model.data = {
+        this.model.setData({
             hits: this.selectedListItem.hits,
             planned_activity_date: new moment().add(1, 'days'),
             activity_type: this.selectedListItem.activity_type,
             activity_date: new moment(),
-        };
+        }, false);
     }
 
     public loadFieldset() {
@@ -77,7 +77,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     }
 
     public save() {
-        let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.data.planned_activity_date);
+        let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.getField('planned_activity_date'));
         let params = {planned_activity_date: planned_activity_date};
 
         this.backend.postRequest(`module/CampaignLog/${this.model.id}/attempted`, params)

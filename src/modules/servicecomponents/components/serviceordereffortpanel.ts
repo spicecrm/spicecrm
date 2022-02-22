@@ -142,8 +142,8 @@ export class ServiceOrderEffortPanel implements OnInit {
 
     public addItem() {
         this.view.setEditMode();
-        if(this.metadata.getModuleDefs("Products").acl.list && this.metadata.getModuleDefs("Products").visible) {
-            if(this.metadata.getModuleDefs("ProductVariants").acl.list && this.metadata.getModuleDefs("ProductVariants").visible) {
+        if(this.metadata.checkModuleAcl('Products', 'list') && this.metadata.getModuleDefs("Products").visible) {
+            if(this.metadata.checkModuleAcl('ProductVariantss', 'list') && this.metadata.getModuleDefs("ProductVariants").visible) {
 
                 this.modal.openModal('ServiceOrderAddTypeSelector', true, this.injector).subscribe(addItemModal => {
                     addItemModal.instance.itemTypeSelected.subscribe(itemType => {

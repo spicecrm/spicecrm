@@ -83,7 +83,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set active editor and subscribe to model data changes
      */
     public ngAfterViewInit() {
-        this.setActiveEditor(this.model.data[this.fieldsNames.bodyHtmlField], this.model.data[this.fieldsNames.bodySPBField]);
+        this.setActiveEditor(this.model.getField(this.fieldsNames.bodyHtmlField), this.model.getField(this.fieldsNames.bodySPBField));
         this.subscribeToModelChanges();
     }
 
@@ -155,7 +155,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     public setActiveEditor(body: string, bodySPB: string) {
         this.activeEditor = !body ? undefined : (!bodySPB || _.isEmpty(bodySPB)) ? 'richText' : 'pageBuilder';
-        this.model.data.via_spb = this.activeEditor == 'pageBuilder';
+        this.model.data.via_spb =  this.activeEditor == 'pageBuilder';
         this.cdRef.detectChanges();
     }
 
@@ -165,7 +165,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * @private
      */
     public setSelectedTab(value: 'editor' | 'preview') {
-        if (value == 'preview' && !this.model.data[this.fieldsNames.bodyHtmlField]) return;
+        if (value == 'preview' && !this.model.getField(this.fieldsNames.bodyHtmlField)) return;
         this.selectedTab = value;
     }
 

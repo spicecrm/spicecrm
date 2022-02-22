@@ -114,8 +114,8 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         let currencySymbol: string;
         let currencyid = -99;
         if (this.currencyidfield) {
-            if (!this.model.data[this.currencyidfield]) return '';
-            else currencyid = this.model.data[this.currencyidfield];
+            if (!this.model.getField(this.currencyidfield)) return '';
+            else currencyid = this.model.getField(this.currencyidfield);
         }
         this.currencies.some(currency => {
             if (currency.id == currencyid) {
@@ -176,8 +176,8 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      * @private
      */
     public setCurrencyFromPreferences() {
-        if (!!this.currencyidfield && !this.model.data[this.currencyidfield]) {
-            this.model.data[this.currencyidfield] = this.userpreferences.toUse.currency;
+        if (!!this.currencyidfield && !this.model.getField(this.currencyidfield)) {
+            this.model.setField(this.currencyidfield, this.userpreferences.toUse.currency);
         }
     }
 }

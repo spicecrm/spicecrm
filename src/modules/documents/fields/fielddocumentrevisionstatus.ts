@@ -30,7 +30,7 @@ export class fieldDocumentRevisionStatus extends fieldGeneric {
     }
     public ngOnInit() {
         super.ngOnInit();
-        this.parent = this.navigation.getRegisteredModel(this.model.data.document_id, 'Documents');
+        this.parent = this.navigation.getRegisteredModel(this.model.getField('document_id'), 'Documents');
         this.subscriptions.add(
             this.parent.observeFieldChanges('status_id').subscribe(value => {
                 if(value == 'Expired') {
@@ -68,7 +68,7 @@ export class fieldDocumentRevisionStatus extends fieldGeneric {
                         if(!this.parent) {
                             return;
                         }
-                        this.parent.setField('revision', this.model.data.revision);
+                        this.parent.setField('revision', this.model.getField('revision'));
                     });
                 }
             }

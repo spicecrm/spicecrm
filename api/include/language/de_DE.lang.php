@@ -701,13 +701,13 @@ $app_list_strings = [
     ],
     'jobtask_status_dom' => [
         'active' => 'aktiv',
-        'running' => 'läfut',
-        'on_hold' => 'on hold'
+        'running' => 'läuft',
+        'on_hold' => 'angehalten'
     ],
     'job_status_dom' => [
         'Active' => 'Aktiv',
         'Inactive' => 'Inaktiv',
-        'OnHold' => 'On hold',
+        'OnHold' => 'Angehalten',
         'Running' => 'Läuft',
     ],
     'job_period_dom' => [
@@ -857,7 +857,8 @@ $app_list_strings = [
             'contact' => 'Erstellte Kontakte',
             'blocked' => 'Abgelehnt nach Adresse oder Domain',
             'error' => 'allgemeiner Fehler',
-            'noemail' => 'keine Email Adresse'
+            'noemail' => 'keine Email Adresse',
+            'inactive' => 'inaktiv'
         ],
 
     'campainglog_target_type_dom' =>
@@ -1818,12 +1819,46 @@ $app_list_strings['relationship_type_dom'] = [
     'colleague' => 'Arbeitskollege'
 ];
 
+$app_list_strings['questionnaire_languages_dom'] = [
+    'de_DE' => 'Deutsch',
+    'en_us' => 'Englisch (US)'
+];
+
 $app_list_strings['job_callback_on_dom'] = [
     'success' => 'Erfolg',
     'failure' => 'Fehlschlag',
 ];
 
+$app_list_strings['systemdeploymentsystems_type_dom'] = [
+    'test' => 'test',
+    'stage' => 'Stufe',
+    'development' => 'entwicklung',
+    'productivity' => 'produktivität'
+];
+
 $app_list_strings['bonuscard_extension_status_enum'] = [
     'initial' => 'initial',
     'sent' => 'gesendet'
+];
+
+// CR1000710
+$app_list_strings['lmstrainings_status_dom'] = [
+    'draft' => 'Entwurf',
+    'published' => 'veröffentlicht',
+    'retired' => 'aussortiert',
+];
+$app_list_strings['lmstrainingunits_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
+$app_list_strings['lmstrainingunitcontents_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
+$app_list_strings['lmslevel_dom'] = [
+    1 =>  'Level 1',
+    2 =>  'Level 2',
+    3 =>  'Level 3',
+];
+$app_list_strings['lmslevel_language_dom'] = [
+    'A1' =>  'A1',
+    'A2' =>  'A2',
+    'B1' =>  'B1',
+    'B2' =>  'B2',
+    'C1' =>  'C1',
+    'C2' =>  'C2',
 ];

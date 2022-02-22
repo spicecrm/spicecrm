@@ -154,7 +154,7 @@ export class ProductUOMConversions implements OnInit {
      */
     public cloneParentConversions() {
         if (this.model.isNew && this.uomConversions.length > 0) {
-            let originalConversions = this.model.data.uomconversions.beans;
+            let originalConversions = this.model.getField('uomconversions').beans;
             let clonedConversions = {};
             _.each(originalConversions, conversion => {
                 conversion.id = this.model.generateGuid();

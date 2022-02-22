@@ -40,8 +40,8 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
         // name is not necessarily loaded
         this.activitiytimeline.parent.data$.subscribe(data => {
             // if we still have the same model .. update
-            if (data.id == this.model.data.parent_id) {
-                this.model.data.parent_name = data.summary_text;
+            if (data.id == this.model.getField('parent_id')) {
+                this.model.setField('parent_name', data.summary_text);
             }
         });
 

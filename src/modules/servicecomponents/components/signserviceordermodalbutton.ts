@@ -36,7 +36,7 @@ export class SignServiceOrderModalButtonComponent {
     }
 
     get display() {
-        if (this.model.data.acl && !this.model.data.acl.edit) {
+        if (!this.model.checkAccess('edit')) {
             return false;
         }
 

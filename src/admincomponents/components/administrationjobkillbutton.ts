@@ -26,7 +26,7 @@ export class AdministrationJobKillButton {
      * @return bool disabled if the job is not running (has no process id)
      */
     get disabled(): boolean {
-        return !this.model.data.process_id;
+        return !this.model.getField('process_id');
     }
 
     /**

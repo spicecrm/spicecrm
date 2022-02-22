@@ -526,14 +526,31 @@ class SpiceFTSHandler
                     if ($indexSettings['waitfor']) $this->transactionSyncronous = true;
                 }
 
-                $this->transactionEntries['elastic'][] = json_encode([
+                // build the entry for the index bulk
+                $indexEntry = json_encode([
                     'index' => [
                         '_index' => $this->elasticHandler->indexPrefix . strtolower($beanModule),
                         '_id' => $bean->id
                     ]
                 ]);
+
+                // check for duplicate
+                // if the same entry exists we remove it from the array with the current values and upüdate with the new ones
+                // the same record only needs to be added once and not subsequently taking load form elastic
+                // in case we have none
+                $found = array_search($indexEntry, $this->transactionEntries['elastic']);
+                if($found !== false){
+                    // if we found one remove the netreis and add them to the end again with the new values
+                    array_splice($this->transactionEntries['elastic'], $found, 2);
+                } else {
+                    // if none is found add the db update entry
+                    $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
+                }
+
+                // add the index entries to the array
+                $this->transactionEntries['elastic'][] = $indexEntry;
                 $this->transactionEntries['elastic'][] = json_encode($indexArray);
-                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
+
             } else {
                 $indexResponse = $this->elasticHandler->document_index($beanModule, $indexArray);
 
@@ -994,6 +1011,7 @@ class SpiceFTSHandler
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
+        $indexSettings = SpiceFTSUtils::getBeanIndexSettings($bean->_module);
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($bean->_module);
         $searchParts = [];
         foreach ($indexProperties as $indexProperty) {
@@ -1076,6 +1094,34 @@ class SpiceFTSHandler
                 }
             }
         }
+
+
+        // check if we have a duplicate filters for the module defined
+        // if yes add this here to the add filters
+        if (!empty($indexSettings['duplicatefilter'])) {
+            $sysFilter = new SysModuleFilters();
+            $filterForId = $sysFilter->generareElasticFilterForFilterId($indexSettings['duplicatefilter']);
+            if (!empty($filterForId)) {
+                // $addFilters[] = $filterForId;
+                if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
+                        $queryParam['query']['bool']['filter']['bool']['must'][] = $filterForId;
+                } else {
+                    $queryParam['query']['bool']['filter']['bool']['must'] = [$filterForId];
+                }
+            }
+        }
+
+        // process additional filters
+        /*
+        if (is_array($addFilters) && count($addFilters) > 0) {
+            if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
+                foreach ($addFilters as $addFilter)
+                    $queryParam['query']['bool']['filter']['bool']['must'][] = $addFilter;
+            } else {
+                $queryParam['query']['bool']['filter']['bool']['must'] = $addFilters;
+            }
+        }
+        */
 
         // make the search
         LoggerManager::getLogger()->debug(json_encode($queryParam));
@@ -1623,7 +1669,7 @@ class SpiceFTSHandler
             $where = " WHERE module='" . $module . "'";
         }
         // END
-        $order = empty($module) ? ' ORDER BY module ' : '';
+        $order = empty($module) ? ' ORDER BY index_priority ' : '';
         $beans = $db->query("SELECT * FROM sysfts" . $where . $order);
         echo "Starting indexing (maximal $packagesize records).\n";
 
@@ -1644,7 +1690,17 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL ))", 0, $packagesize);
+            // if we have an index method run it
+            if(method_exists($seed, 'indexBulk')){
+                while($beanCounter < $packagesize) {
+                    $indexedRecords = $seed->indexBulk($packagesize);
+                    $beanCounter += $indexedRecords;
+                    if($indexedRecords == 0) break;
+                }
+                continue;
+            }
+
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
             if ($toConsole) {
@@ -1709,12 +1765,14 @@ class SpiceFTSHandler
 
                         if (count($bulkUpdates['deleted']) > 0)
                             $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
-
-                        $bulkUpdates = [
-                            'indexed' => [],
-                            'deleted' => []
-                        ];
                     }
+
+                    // reset the list
+                    $bulkUpdates = [
+                        'indexed' => [],
+                        'deleted' => []
+                    ];
+
                     $bulkItems = [];
                 }
             }
@@ -1728,11 +1786,14 @@ class SpiceFTSHandler
                     if (count($bulkUpdates['deleted']) > 0)
                         $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
-                    $bulkUpdates = [
-                        'indexed' => [],
-                        'deleted' => []
-                    ];
                 }
+
+                // reset the list
+                $bulkUpdates = [
+                    'indexed' => [],
+                    'deleted' => []
+                ];
+
                 $bulkItems = [];
             }
 
@@ -1754,11 +1815,13 @@ class SpiceFTSHandler
                 if (count($bulkUpdates['deleted']) > 0)
                     $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
-                $bulkUpdates = [
-                    'indexed' => [],
-                    'deleted' => []
-                ];
             }
+
+            // reset the list
+            $bulkUpdates = [
+                'indexed' => [],
+                'deleted' => []
+            ];
         }
         echo 'Indexing finished. All done.';
     }

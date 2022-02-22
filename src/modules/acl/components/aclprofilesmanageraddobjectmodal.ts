@@ -96,7 +96,7 @@ export class ACLProfilesManagerAddObjectModal {
 
     public selectObject(aclobject) {
 
-        aclobject.spiceacltype_module = this.currentModule;
+        aclobject.module = this.currentModule;
         this.aclobject.emit(aclobject);
         this.close();
     }

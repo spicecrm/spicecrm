@@ -33,6 +33,15 @@ export class DeploymentCRDBEntries implements OnInit {
      * initialize the panel
      */
     public ngOnInit() {
+        this.reload();
+    }
+
+    /**
+     * loads/reloads the records
+     */
+    public reload(){
+        this.dbEntries = [];
+        this.loading = true;
         this.backend.getRequest('module/SystemDeploymentCRs/' + this.model.id + '/detaildbentries').subscribe(entries => {
             this.dbEntries = entries;
             this.loading = false;

@@ -11,9 +11,7 @@ import { userpreferences} from '../../../services/userpreferences.service';
     templateUrl: '../templates/questionrendertext.html',
     styles: [
         '.questionset-render .sequenced { font-family: monospace; }',
-        '.questionset-render table.sequenced { margin: 0 0 0 auto; }',
-        // 'div.question-render-question:last-child { margin-bottom: 0 !important; }',
-        'div.question-render-question { border-radius:0; }'
+        '.questionset-render table.sequenced { margin: 0 0 0 auto; }'
     ]
 } )
 export class QuestionRenderText extends QuestionRenderBasic implements OnInit {

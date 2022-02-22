@@ -735,6 +735,7 @@ class SpiceACLObject extends SugarBean
                     };
                     break;
                 case 'ig':
+                case 'ignore': //BWC
                 case '':
                     $authObjectAccess = true;
                     break;

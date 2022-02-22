@@ -41,7 +41,7 @@ export class WorkflowPanelTask {
         this.posting = true;
         this.workflowservice.doTaskAction(this.workflowtask.id, action, this.comment).subscribe(parent => {
 
-            this.model.data = this.modelutilities.backendModel2spice(this.model.module, parent);
+            this.model.setData(parent);
 
             /**
              * broadcast that we saved the model

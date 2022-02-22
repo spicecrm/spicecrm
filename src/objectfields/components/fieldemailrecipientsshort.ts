@@ -20,7 +20,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
     addAddress: string = '';
     searchTimeOut: any = undefined;
     showSearchResults: boolean = false;
-    searchResults: Array<any> = [];
+    searchResults: any[] = [];
     searchResultsLoading: boolean = false;
     clickListener: any;
 
@@ -40,8 +40,8 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
 
     get addrArray() {
         let addressArray = [];
-        if (this.model.data.recipient_addresses) {
-            for (let recipient_addresse of this.model.data.recipient_addresses) {
+        if (this.model.getField('recipient_addresses')) {
+            for (let recipient_addresse of this.model.getField('recipient_addresses')) {
                 if (recipient_addresse.address_type == this.addresstype && recipient_addresse.deleted != '1') {
                     addressArray.push(recipient_addresse);
                 }
@@ -55,8 +55,9 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
     }
 
     public onBlur() {
-        if (this.addAddress == '')
+        if (this.addAddress == '') {
             this.isAdding = false;
+        }
     }
 
     public removeAddress(e, removeid) {
@@ -65,7 +66,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
         e.stopPropagation();
 
         // handle the deletion
-        for (let address of this.model.data.recipient_addresses) {
+        for (let address of this.model.getField('recipient_addresses')) {
             if (address.id == removeid) {
                 address.deleted = '1';
                 return;
@@ -85,11 +86,11 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
 
                 // if the atring is an email address add it .. else do search
                 if (this.validateEmail(this.addAddress)) {
-                    if (!this.model.data.recipient_addresses) {
-                        this.model.data.recipient_addresses = [];
+                    if (!this.model.getField('recipient_addresses')) {
+                        this.model.setField('recipient_addresses', []);
                     }
 
-                    this.model.data.recipient_addresses.push({
+                    this.model.getField('recipient_addresses').push({
                         id: this.model.generateGuid(),
                         address_type: this.addresstype,
                         email_address: this.addAddress
@@ -149,11 +150,11 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
 
     public selectAddress(address) {
 
-        if (!this.model.data.recipient_addresses) {
-            this.model.data.recipient_addresses = [];
+        if (!this.model.getField('recipient_addresses')) {
+            this.model.setField('recipient_addresses', []);
         }
 
-        this.model.data.recipient_addresses.push({
+        this.model.getField('recipient_addresses').push({
             id: this.model.generateGuid(),
             address_type: this.addresstype,
             email_address: address.email_address,

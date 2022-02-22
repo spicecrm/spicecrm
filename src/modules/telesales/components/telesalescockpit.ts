@@ -52,6 +52,6 @@ export class TeleSalesCockpit implements OnDestroy {
         }
         this.model.module = selectedListItem.target_type;
         this.model.id = selectedListItem.data.id;
-        this.model.data = selectedListItem.data;
+        this.model.setData(selectedListItem.data);
     }
 }
