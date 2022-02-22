@@ -41,6 +41,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -394,7 +395,7 @@ class UnifiedSearchAdvanced {
 		}
 
 		ksort($supported_modules);
-		write_array_to_file('unified_search_modules', $supported_modules, $this->cache_search);
+		FileUtils::writeArrayToFile('unified_search_modules', $supported_modules, $this->cache_search);
 	}
 
     /**
@@ -507,7 +508,7 @@ class UnifiedSearchAdvanced {
         $cachedir = sugar_cached('modules');
 		if(!file_exists($cachedir))
 		{
-		   mkdir_recursive($cachedir);
+		   FileUtils::mkdirRecursive($cachedir);
 		}
 
 		//Load unified_search_modules.php file
@@ -568,8 +569,7 @@ class UnifiedSearchAdvanced {
 		   return false;
 		}
 
-	    if(!write_array_to_file("unified_search_modules_display", $unified_search_modules_display, 'custom/modules/unified_search_modules_display.php'))
-	    {
+	    if (!FileUtils::writeArrayToFile("unified_search_modules_display", $unified_search_modules_display, 'custom/modules/unified_search_modules_display.php')) {
 	    	//Log error message and throw Exception
 	    	global $app_strings;
 	    	$msg = SpiceUtils::stringFormat($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
