@@ -70,9 +70,9 @@ export class AdministrationSystemStats {
     /**
      * a getter for the full number of records on elastic
      */
-    get totalelasticrecords() {
+    public totalelasticrecords(type: 'total'|'primaries') {
         try {
-            return this.stats.elastic._all.total.docs.count;
+            return this.stats.elastic._all[type].docs.count;
         } catch (e) {
             return 0;
         }
@@ -81,9 +81,9 @@ export class AdministrationSystemStats {
     /**
      * a getter for the total size fo the elastic index
      */
-    get totalelasticsize() {
+    public totalelasticsize(type: 'total'|'primaries') {
         try {
-            return this.stats.elastic._all.total.store.size_in_bytes;
+            return this.stats.elastic._all[type].store.size_in_bytes;
         } catch (e) {
             return 0;
         }
@@ -115,7 +115,7 @@ export class AdministrationSystemStats {
      * a getter to compute the full size of the system consumed
      */
     get totalsize() {
-        return this.totaldbsize + this.totalelasticsize + this.uploadsize;
+        return this.totaldbsize + this.totalelasticsize('total') + this.uploadsize;
     }
 
     /**
@@ -154,9 +154,9 @@ export class AdministrationSystemStats {
      *
      * @param tablename
      */
-    public ftsDocumentCount(tablename) {
+    public ftsDocumentCount(tablename, type: 'total'|'primaries') {
         try {
-            return this.stats.elastic.indices[this.stats.elastic._prefix + tablename].total.docs.count;
+            return this.stats.elastic.indices[this.stats.elastic._prefix + tablename][type].docs.count;
         } catch (e) {
             return '';
         }
@@ -167,9 +167,9 @@ export class AdministrationSystemStats {
      *
      * @param tablename
      */
-    public ftsIndexSize(tablename) {
+    public ftsIndexSize(tablename, type: 'total'|'primaries') {
         try {
-            return this.humanReadableSize(this.stats.elastic.indices[this.stats.elastic._prefix + tablename].total.store.size_in_bytes);
+            return this.humanReadableSize(this.stats.elastic.indices[this.stats.elastic._prefix + tablename][type].store.size_in_bytes);
         } catch (e) {
             return '';
         }
