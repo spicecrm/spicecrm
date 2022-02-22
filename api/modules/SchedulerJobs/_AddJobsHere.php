@@ -40,6 +40,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\extensions\modules\QuestionnaireEvaluations\QuestionnaireEvaluation;
 use SpiceCRM\extensions\modules\Workflows\WorkflowScheduler;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTaskScheduler;
@@ -179,11 +180,11 @@ function pruneDatabase() {
 
 		if(!file_exists($backupDir) || !file_exists($backupDir.'/'.$backupFile)) {
 			// create directory if not existent
-			mkdir_recursive($backupDir, false);
+			FileUtils::mkdirRecursive($backupDir, false);
 		}
 		// write cache file
 
-		write_array_to_file('pruneDatabase', $queryString, $backupDir.'/'.$backupFile);
+		FileUtils::writeArrayToFile('pruneDatabase', $queryString, $backupDir.'/'.$backupFile);
 		return true;
 	}
 	return false;

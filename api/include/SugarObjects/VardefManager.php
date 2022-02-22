@@ -42,6 +42,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
@@ -175,7 +176,7 @@ class VardefManager{
 
         if (empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]))
             $object = BeanFactory::getObjectName($module);
-        $file = create_cache_directory('modules/' . $module . '/' . $object . 'vardefs.php');
+        $file = FileUtils::createCacheDirectory('modules/' . $module . '/' . $object . 'vardefs.php');
 
 //        $out="<?php \n \$GLOBALS[\"dictionary\"][\"". $object . "\"]=" . var_export(SpiceDictionaryHandler::getInstance()->dictionary[$object], true) .";";
         $out = "<?php \n";
