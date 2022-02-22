@@ -13,6 +13,7 @@ use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\UploadStream;
@@ -527,7 +528,7 @@ class AdminController
 
             if ($shouldSave) {
                 if (!file_exists("custom/$extpath")) {
-                    mkdir_recursive("custom/$extpath", true);
+                    FileUtils::mkdirRecursive("custom/$extpath", true);
                 }
                 $out = sugar_fopen("custom/$extpath/$name", 'w');
                 fwrite($out, $extension);
@@ -560,7 +561,7 @@ class AdminController
         $extension .= "\n?>";
         if ($shouldSave) {
             if (!file_exists("custom/$extpath")) {
-                mkdir_recursive("custom/$extpath", true);
+                FileUtils::mkdirRecursive("custom/$extpath", true);
             }
             $out = sugar_fopen("custom/$extpath/$name", 'w');
             fwrite($out, $extension);
