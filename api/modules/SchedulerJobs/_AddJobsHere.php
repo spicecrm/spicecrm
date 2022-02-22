@@ -41,6 +41,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\extensions\modules\QuestionnaireEvaluations\QuestionnaireEvaluation;
 use SpiceCRM\extensions\modules\Workflows\WorkflowScheduler;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTaskScheduler;
@@ -129,7 +130,7 @@ function runMassEmailCampaign() {
  */
 function pruneDatabase() {
 	LoggerManager::getLogger()->info('----->Scheduler fired job of type pruneDatabase()');
-	$backupDir	= sugar_cached('backups');
+	$backupDir	= SpiceFileUtils::spiceCached('backups');
 	$backupFile	= 'backup-pruneDatabase-GMT0_'.gmdate('Y_m_d-H_i_s', strtotime('now')).'.php';
 
 	$db = DBManagerFactory::getInstance();
