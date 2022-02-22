@@ -197,7 +197,7 @@ class Configurator {
 
 				// add user writable permission
 				$new_fileperms = $original_fileperms | 0x0080;
-				@sugar_chmod($file, $new_fileperms);
+				@SpiceFileUtils::spiceChmod($file, $new_fileperms);
 				clearstatcache();
 				if(is_writable($file))
 				{
