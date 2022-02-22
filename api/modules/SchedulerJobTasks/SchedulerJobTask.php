@@ -189,13 +189,13 @@ class SchedulerJobTask extends Basic
 
         if ($success) {
 
-            $message = $return['message'] ?? 'was successfully executed';
+            $message = $executed['message'] ?? 'was successfully executed';
 
             $this->resolve(self::JOB_TASK_RESOLUTION_DONE, $message);
 
         } else {
 
-            $message = $return['message'] ?? 'execution failed';
+            $message = $executed['message'] ?? 'execution failed';
 
             $this->resolve(self::JOB_TASK_RESOLUTION_FAILURE, $message);
         }
