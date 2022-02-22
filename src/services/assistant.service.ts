@@ -165,7 +165,7 @@ export class assistant {
             this.assitantItems = newItems;
 
             // set the modules
-            this.assistantModules = retData.modules;
+            this.assistantModules = retData.modules ? retData.modules : [];
 
             retSubject.next(this.assitantItems);
             retSubject.complete();

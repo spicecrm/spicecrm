@@ -64,7 +64,7 @@ export class ReporterIntegrationCSVexportButton {
         }
 
         // generate a filename
-        this.fileName = this.model.data.name.replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.csv';
+        this.fileName = this.model.getField('name').replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.csv';
 
         // render the loading modal and trigger the download
         let awaitpromise = this.modal.await(this.language.getLabel('LBL_LOADING'));

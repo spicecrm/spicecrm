@@ -74,7 +74,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
 
     public getValueArray(): any[] {
         try {
-            return this.model.data[this.fieldname].substring(1, this.model.data[this.fieldname].length - 1).split('^,^');
+            return this.model.getField(this.fieldname).substring(1, this.model.getField(this.fieldname).length - 1).split('^,^');
         } catch (e) {
             return [];
         }

@@ -1773,7 +1773,7 @@ class SugarBean
      *
      * Internal function, do not override.
      */
-    private function process_order_by($order_by, $submodule = null, $suppress_table_name = false)
+    public function process_order_by($order_by, $submodule = null, $suppress_table_name = false)
     {
         if (empty($order_by))
             return $order_by;

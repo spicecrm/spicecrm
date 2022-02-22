@@ -157,7 +157,7 @@ class Mailbox extends SugarBean {
 
         $q = "SELECT *
 				FROM mailbox_processors
-				WHERE mailbox_id = '{$this->id}'";
+				WHERE mailbox_id = '{$this->id}' AND deleted=0";
         $r = $this->db->query($q);
 
         while ($a = $this->db->fetchByAssoc($r)) {

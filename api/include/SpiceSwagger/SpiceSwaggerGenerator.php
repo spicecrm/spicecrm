@@ -84,7 +84,7 @@ class SpiceSwaggerGenerator
     private function generateInfo():void {
         $infoArray = [];
         $infoArray['description']    = 'Lorem ipsum dolor sit amet';
-        //$infoArray['version']        = SpiceConfig::getInstance()->get('sugar_version');
+        $infoArray['version']        = '2021.03.001';
         $infoArray['title']          = 'SpiceCRM';
         $infoArray['termsOfService'] = '';
         $infoArray['contact']        = [
@@ -291,7 +291,7 @@ class SpiceSwaggerGenerator
 
                     $routeCopy = $route;
                     $routeCopy['route'] = str_replace('{beanName}', $moduleName, $route['route']);
-
+                    unset($routeCopy['parameters']['beanName']);
                     $this->allRoutes[$routeCopy['method'].':'.$routeCopy['route']] = $routeCopy;
                     $this->routes[$routeCopy['method'].':'.$routeCopy['route']] = $routeCopy;
                 }

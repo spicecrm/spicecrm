@@ -149,6 +149,7 @@ class OCI8Manager extends DBManager
         'html' => 'clob',
         'longhtml' => 'clob',
         'date' => 'date',
+        'json'     => 'clob',
         'datetime' => 'date',
         'datetimecombo' => 'date',
         'time' => 'date',
@@ -918,7 +919,7 @@ class OCI8Manager extends DBManager
         // UTF8 uses multibyte for characters, which can lead to overflow issues therefore the size must be mapped to CHAR
         if (!empty($fieldDef['len'])) {
             if (in_array($colBaseType, ['nvarchar', 'nchar', 'varchar', 'varchar2', 'char',
-                'clob', 'blob', 'text'])) {
+                'clob', 'blob', 'json', 'text'])) {
                 $colType = "$colBaseType(${fieldDef['len']} CHAR)";
             } elseif (($colBaseType == 'decimal' || $colBaseType == 'float')) {
                 if (!empty($fieldDef['precision']) && is_numeric($fieldDef['precision']))
@@ -1365,14 +1366,14 @@ class OCI8Manager extends DBManager
                     continue;
                 }
 
-                if ($this->isTextType($def['type'])) {
+                if ($this->isTextType( $def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB;
-                } else if ($this->getColumnType($def['type']) == 'blob') {
+                } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
@@ -1417,14 +1418,14 @@ class OCI8Manager extends DBManager
                     continue;
                 }
                 //generate lob
-                if ($this->isTextType($def['type'])) {
+                if ($this->isTextType($def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB; // value is 112
-                } else if ($this->getColumnType($def['type']) == 'blob') {
+                } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
                     $tmp2->{$field} = from_html($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
@@ -1494,12 +1495,12 @@ class OCI8Manager extends DBManager
         foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
-                    if ($this->type_map[$vardef['type']] == 'clob') {
+                    if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
                         $copy[$field] = from_html($data[$field]);
                         $data[$field] = $this->getEmptyClob();
                         $lob_fields[$field] = ":" . $field;
                         $lob_dataType[$field] = OCI_B_CLOB;
-                    } elseif ($vardef['type'] == 'blob') {
+                    } elseif ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob') {
                         $data[$field] = $this->getEmptyBlob();
                         $lob_fields[$field] = ":" . $field;
                         $lob_dataType[$field] = OCI_B_CLOB;
@@ -1541,12 +1542,12 @@ class OCI8Manager extends DBManager
                     $vardef = $dictionaryDefs['fields'][$key];
                     if(!$vardef) continue;
 
-                    if (!empty($val) && $this->type_map[$vardef['type']] == 'clob') {
+                    if (!empty($val) && $this->type_map[$vardef['dbtype'] ?: $vardef['type']] == 'clob') {
                         $copy[$key] = from_html($val);
                         $sets[] = "$key = {$this->getEmptyClob()}";
                         $lob_fields[$key] = ":" . $key;
                         $lob_dataType[$key] = OCI_B_CLOB;
-                    } elseif (!empty($val) && $vardef['type'] == 'blob') {
+                    } elseif (!empty($val) && ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob')) {
                         $sets[] = "$key = {$this->getEmptyBlob()}";
                         $lob_fields[$key] = ":" . $key;
                         $lob_dataType[$key] = OCI_B_CLOB;
@@ -1604,7 +1605,7 @@ class OCI8Manager extends DBManager
     function isNullable($vardef)
     {
         // text is blank in oracle
-        if (!empty($vardef['type']) && $this->isTextType($vardef['type'])) {
+        if (!empty($vardef['type']) && $this->isTextType($vardef['dbtype'] ?: $vardef['type'])) {
             return false;
         }
         return parent::isNullable($vardef);

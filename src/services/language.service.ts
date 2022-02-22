@@ -92,7 +92,7 @@ export class language {
     /**
      * loads the language as set in the current language
      */
-    public loadLanguage(): Observable<any> {
+    public loadLanguage( setOnBackend = true ): Observable<any> {
         let retSubject = new Subject();
 
         if (this.currentlanguage == '') {
@@ -108,7 +108,7 @@ export class language {
         // get the language
         this.http.get(
             url,
-            {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: '1'}}
+            {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: setOnBackend ? 1:0 }}
         ).subscribe(
             (res: any) => {
                 let response = res.body;

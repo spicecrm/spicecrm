@@ -24,6 +24,7 @@ import {language} from "../../services/language.service";
 import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
 import { model } from '../../services/model.service';
+import { helper } from '../../services/helper.service';
 
 @Component({
     selector: "system-richtext-editor",
@@ -95,7 +96,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 public elementRef: ElementRef,
                 public language: language,
                 public viewContainerRef: ViewContainerRef,
-                @Optional() public model: model ) {
+                @Optional() public model: model,
+                public helper: helper ) {
     }
 
     get expandIcon() {
@@ -251,6 +253,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     public insertImage() {
         this.editorService.saveSelection();
         this.modal.input(this.language.getLabel('LBL_IMAGE_LINK',this.language.getLabel('LBL_IMAGE')))
+            .pipe(take(1))
             .subscribe(url => {
                 if (!url) return;
                 this.focusEditor();
@@ -264,50 +267,54 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
         this.editorService.saveSelection();
         this.modalOpen = true;
-        this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
-            componentRef.instance.answer.subscribe(image => {
-                if (!image) {return;}
-                if (image.upload) {
-                    this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
-                        uploadComponentRef.instance.answer.subscribe(uploadimage => {
-                            if (uploadimage) {
-                                this.focusEditor();
-                                this.editorService.restoreSelection();
-                                this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage, this.htmlEditor.element.nativeElement);
-                                this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
-                            }
-                            this.modalOpen = false;
+        this.modal.openModal('MediaFilePicker')
+            .pipe(take(1))
+            .subscribe(componentRef => {
+                componentRef.instance.answer.subscribe(image => {
+                    if (!image) {return;}
+                    if (image.upload) {
+                        this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
+                            uploadComponentRef.instance.answer.subscribe(uploadimage => {
+                                if (uploadimage) {
+                                    this.focusEditor();
+                                    this.editorService.restoreSelection();
+                                    this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage, this.htmlEditor.element.nativeElement);
+                                    this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
+                                }
+                                this.modalOpen = false;
+                            });
                         });
-                    });
-                } else {
-                    if (image.id) {
-                        this.focusEditor();
-                        this.editorService.restoreSelection();
-                        this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id, this.htmlEditor.element.nativeElement);
-                        this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
+                    } else {
+                        if (image.id) {
+                            this.focusEditor();
+                            this.editorService.restoreSelection();
+                            this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id, this.htmlEditor.element.nativeElement);
+                            this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
+                        }
+                        this.modalOpen = false;
                     }
-                    this.modalOpen = false;
-                }
+                });
             });
-        });
     }
 
     public openSourceEditor() {
-        this.modal.openModal('SystemRichTextSourceModal', null, this.viewContainerRef.injector ).subscribe(componentRef => {
-            componentRef.instance._html = this._html;
-            componentRef.instance.html.subscribe(newHtml => {
-                // update our internal value
-                this._html = newHtml;
+        this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector )
+            .pipe(take(1))
+            .subscribe(componentRef => {
+                componentRef.instance._html = this._html;
+                componentRef.instance.html.subscribe(newHtml => {
+                    // update our internal value
+                    this._html = newHtml;
 
-                // set the model value
-                if (typeof this.onChange === 'function') {
-                    this.onChange(newHtml);
-                }
+                    // set the model value
+                    if (typeof this.onChange === 'function') {
+                        this.onChange(newHtml);
+                    }
 
-                // set the value to the editor
-                this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
+                    // set the value to the editor
+                    this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
+                });
             });
-        });
     }
 
     /*
@@ -343,34 +350,52 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     /**
-     * insert URL link
+     * Insert Link
      */
-    public insertUrl() {
-        const url = prompt("Insert URL link", 'http:\/\/');
-        if (url && url !== '' && url !== 'http://') {
-            this.editorService.selectedText = this.getSelectedText();
-            this.editorService.createLink(url);
-        }
+    public insertLink()
+    {
+        this.editorService.selectedText = this.getSelectedText();
+        // this.focusEditor();
+        this.editorService.saveSelection();
+        this.modal.openModal('SystemRichTextLink', true )
+            .pipe(take(1))
+            .subscribe(modalRef => {
+                modalRef.instance.text = this.editorService.selectedText;
+                modalRef.instance.response
+                    .pipe(take(1))
+                    .subscribe( linkData => {
+                        if ( linkData ) {
+                            if ( !linkData.text ) linkData.text = linkData.url;
+                            // this.focusEditor();
+                            this.editorService.restoreSelection();
+                            let linkContent = linkData.text;
+                            if ( this.editorService.selectedText === linkData.text ) linkContent = this.editorService.selectedHtml;
+                            this.editorService.createLink( linkData.url, linkContent, linkData.toTrack ? {'data-trackingid':this.helper.generateGuid()}:null );
+                        }
+                    });
+            });
     }
 
     public addVideo() {
         if (!this.isActive) {return;}
         this.editorService.saveSelection();
-        this.modal.input('Add Video','Inser Video URL').subscribe((url: string) => {
-            if (!url || url.length == 0) return;
-            this.focusEditor();
-            this.editorService.restoreSelection();
-            let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
-            let youtubeReg = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-            if (url.match(vimeoReg)) {
-                url = 'https://player.vimeo.com/video/' + url.match(vimeoReg)[3];
-            }
-            if (url.match(youtubeReg)) {
-                url = 'https://www.youtube.com/embed/' + url.match(youtubeReg)[7];
-            }
-            let html = `<iframe src="${url}" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>`;
-            this._document.execCommand('insertHTML', false, html);
-        });
+        this.modal.input('Add Video','Insert Video URL')
+            .pipe(take(1))
+            .subscribe((url: string) => {
+                if (!url || url.length == 0) return;
+                this.focusEditor();
+                this.editorService.restoreSelection();
+                let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
+                let youtubeReg = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+                if (url.match(vimeoReg)) {
+                    url = 'https://player.vimeo.com/video/' + url.match(vimeoReg)[3];
+                }
+                if (url.match(youtubeReg)) {
+                    url = 'https://www.youtube.com/embed/' + url.match(youtubeReg)[7];
+                }
+                let html = `<iframe src="${url}" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>`;
+                this._document.execCommand('insertHTML', false, html);
+            });
     }
 
     public getSelectedText(): string {
@@ -471,6 +496,23 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         this.modalOpen = false;
                     });
             });
+    }
+
+    public getHtmlFromSelection() {
+        let range;
+        let userSelection = window.getSelection();
+        // Get the range:
+        if (userSelection.getRangeAt) range = userSelection.getRangeAt (0);
+        else {
+            range = document.createRange();
+            range.setStart( userSelection.anchorNode, userSelection.anchorOffset );
+            range.setEnd( userSelection.focusNode, userSelection.focusOffset );
+        }
+        // And the HTML:
+        let clonedSelection = range.cloneContents();
+        let div = document.createElement( 'div' );
+        div.appendChild( clonedSelection );
+        return div.innerHTML;
     }
 
 }

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var WebSocketSubject_1=require("./WebSocketSubject");function webSocket(e){return new WebSocketSubject_1.WebSocketSubject(e)}exports.webSocket=webSocket;

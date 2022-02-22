@@ -1,0 +1,13 @@
+<system-modal size="small" >
+    <system-modal-header (close)="close()"><system-label label="LBL_MANAGE_MODEL_SUBSCRIPTIONS"></system-label></system-modal-header>
+    <system-modal-content system-modal-content-grow margin="none" [system-overlay-loading-spinner]="loading">
+        <div *ngFor="let subscription of subscriptions.subscriptions" class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-border--bottom" [system-model-provider]="{module: subscription.bean_module, id: subscription.bean_id, data: subscription.data}">
+            <system-icon [module]="subscription.bean_module" size="xx-small"></system-icon>
+            <div class="slds-grow" system-model-popover (clicked)="close()">{{subscription.data.summary_text}}</div>
+            <button class="slds-button slds-button--icon" (click)="deleteSubscription(subscription)"><system-button-icon icon="clear"></system-button-icon></button>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--brand"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

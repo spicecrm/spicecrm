@@ -46,7 +46,7 @@ export class ObjectMergeModalData {
      * @private
      */
     public isCurrentModel(id) {
-        return this.model.id && (this.model.id == id || this.model.data.id == id);
+        return this.model.id && (this.model.id == id);
     }
 
     /**

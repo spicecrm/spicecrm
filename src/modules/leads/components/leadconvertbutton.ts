@@ -27,7 +27,7 @@ export class LeadConvertButton {
      * triggers the excecution
      */
     public execute() {
-        if (this.model.data.status === 'Converted') {
+        if (this.model.getField('status') === 'Converted') {
             this.toast.sendToast('Lead already Converted', 'warning');
         } else if (this.model.getFieldValue('account_id')) {
             this.modal.openModal('LeadConvertOpportunityModal', true, this.injector);

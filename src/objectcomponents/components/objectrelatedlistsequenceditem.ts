@@ -39,7 +39,7 @@ export class ObjectRelatedListSequencedItem implements OnInit {
         this.view.displayLabels = false;
         this.model.module = this.module;
         this.model.id = this.listitem.id;
-        this.model.data = this.listitem;
+        this.model.setData(this.listitem);
     }
 
     public navigateDetail() {

@@ -95,7 +95,7 @@ export class ContactPortalDetails implements OnInit {
                 this.user.name = userdata.user.username;
                 this.loaded = true;
             } else {
-                this.user.name = this.model.data.email1 ? this.model.data.email1 : this.model.data.email_address_private;
+                this.user.name = this.model.getField('email1') ? this.model.getField('email1') : this.model.getField('email_address_private');
                 this.testUsername();
                 if ( this.aclProfiles.length === 1 ) this.user.aclProfile = this.aclProfiles[0].id;
                 else if ( this.defaultPortalUserProfile ) this.user.aclProfile = this.defaultPortalUserProfile;

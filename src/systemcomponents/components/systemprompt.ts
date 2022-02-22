@@ -20,7 +20,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * the type of prompt
      */
-    @Input() public type: 'info'|'input'|'input_date'|'confirm';
+    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm';
 
     /**
      * the text that is rendered in the popup
@@ -48,7 +48,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * an array of options .. if sent rather than an input in the type input a select option is rendered
      */
-    @Input() public options: Array<{value: string, display: string}>;
+    @Input() public options: {value: string, display: string}[];
 
     /**
      * if true display the input options as radio group
@@ -64,6 +64,11 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      * the subject for the answer
      */
     public answerSubject: Subject<any> = null;
+
+    /**
+     * an optional regex to match the input against
+     */
+    public regex: string;
 
     /**
      * reference to self
@@ -110,6 +115,24 @@ export class SystemPrompt implements OnInit, AfterViewInit {
             if ( this.inputField ) this.inputField.nativeElement.focus();
             else if ( this.selectField ) this.selectField.nativeElement.focus();
         }
+    }
+
+    /**
+     * checks that ok is enabled
+     */
+    get canSubmit(){
+        // only check for input and input data
+        if(!this.type.startsWith('input')) return true;
+
+        // value needs to be set
+        if (!this.value ) return false;
+
+        if(this.regex){
+            let reg = new RegExp(this.regex);
+            return reg.test(String(this.value));
+        }
+
+        return true;
     }
 
     /**

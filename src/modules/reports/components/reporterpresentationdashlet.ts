@@ -107,7 +107,7 @@ export class ReporterPresentationDashlet implements AfterViewInit {
             this.presComponent = undefined;
         }
 
-        let presentationParams = this.model.data.presentation_params;
+        let presentationParams = this.model.getField('presentation_params');
 
         let presentationComponent = '';
         switch (presentationParams.plugin) {
