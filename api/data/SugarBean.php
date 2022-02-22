@@ -14,6 +14,7 @@ use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\EncryptionUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -1497,13 +1498,13 @@ class SugarBean
     function encrpyt_before_save($value)
     {
         require_once("include/utils/encryption_utils.php");
-        return blowfishEncode($this->getEncryptKey(), $value);
+        return EncryptionUtils::blowfishEncode($this->getEncryptKey(), $value);
     }
 
     protected function getEncryptKey()
     {
         if (empty(self::$field_key)) {
-            self::$field_key = blowfishGetKey('encrypt_field');
+            self::$field_key = EncryptionUtils::blowfishGetKey('encrypt_field');
         }
         return self::$field_key;
     }
@@ -2238,7 +2239,7 @@ class SugarBean
         if (empty($value))
             return $value; // no need to decrypt empty
         require_once("include/utils/encryption_utils.php");
-        return blowfishDecode($this->getEncryptKey(), $value);
+        return EncryptionUtils::blowfishDecode($this->getEncryptKey(), $value);
     }
 
     /**
