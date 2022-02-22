@@ -225,8 +225,21 @@ class ElasticHandler
      */
     function getStats()
     {
+        $db = DBManagerFactory::getInstance();
         $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
         $response['_prefix'] = $this->indexPrefix;
+
+        // get the indexing stats
+        foreach($response['indices'] as $index => $data){
+            $table = str_replace($response['_prefix'], '', $index);
+            $count = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE deleted = 0");
+            $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE ((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1)");
+            $response['indexed'][$index] = [
+                'count' => $count['totalcount'],
+                'unindexed' => $unindexed['totalcount'],
+            ];
+        }
+
         return $response;
     }
 

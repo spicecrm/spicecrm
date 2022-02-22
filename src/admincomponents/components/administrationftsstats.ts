@@ -27,7 +27,9 @@ export class AdministrationFTSStats {
                 this.indices.push({
                     name: index,
                     size: stats.indices[index].total.store.size_in_bytes,
-                    documents: stats.indices[index].total.docs.count
+                    documents: stats.indices[index].total.docs.count,
+                    stored: stats.indexed[index].count,
+                    unindexed: stats.indexed[index].unindexed,
                 });
             }
 
