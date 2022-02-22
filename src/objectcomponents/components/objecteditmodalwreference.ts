@@ -19,14 +19,14 @@ import {metadata} from '../../services/metadata.service';
 })
 export class ObjectEditModalWReference {
     @ViewChild('modalContent', {read: ViewContainerRef, static: true}) modalContent: ViewContainerRef;
-    componentRefs: Array<any> = [];
-    componentSet: String = '';
-    module: String = '';
+    componentRefs: any[] = [];
+    componentSet: string = '';
+    module: string = '';
     reference: string = '';
     showDuplicates: boolean = false;
 
     doDuplicateCheck: boolean = true;
-    duplicates: Array<any> = [];
+    duplicates: any[] = [];
 
     modalAction$: EventEmitter<any> = new EventEmitter<any>();
 
@@ -48,10 +48,7 @@ export class ObjectEditModalWReference {
 
     save(goDetail: boolean = false) {
         if (this.model.validate()) {
-                this.modalAction$.emit(this.model.data);
-        }
-        else {
-            console.log(this.model.messages);
+            this.modalAction$.emit(this.model.data);
         }
     }
 

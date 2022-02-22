@@ -40,6 +40,6 @@ export class SpiceTimestreamLabel implements OnInit {
     public ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.module, this.item);
+        this.model.setData(this.item);
     }
 }

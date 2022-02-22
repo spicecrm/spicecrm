@@ -10,6 +10,7 @@ import {
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {session} from '../../services/session.service';
+import {model} from '../../services/model.service';
 
 /**
  * renders a vertical tab container
@@ -50,11 +51,16 @@ export class ObjectVerticalTabContainer implements OnInit {
     public activatedTabs: number[] = [0];
 
     /**
-     * the component config
+     * the componentconfig
      */
-    public componentconfig: any = [];
+    public componentconfig: any;
 
-    constructor(public language: language, public metadata: metadata, public session: session) {
+    /**
+     * the tabs to be rendered
+     */
+    public tabs: any[] = [];
+
+    constructor(public language: language, public metadata: metadata, public session: session, private model: model) {
     }
 
     /**
@@ -69,20 +75,23 @@ export class ObjectVerticalTabContainer implements OnInit {
                 if (item.componentconfig.adminonly && !this.session.isAdmin) continue;
 
                 // else add the tab
-                this.componentconfig.push(item.componentconfig);
+                this.tabs.push(item.componentconfig);
             }
         }
     }
 
     /**
-     * a simple getter to see if the tabs are defined
+     * returns if the item is hideden
+     * @param itemconfig
      */
-    public getTabs() {
-        try {
-            return this.componentconfig ? this.componentconfig : [];
-        } catch (e) {
-            return [];
-        }
+    public isHidden(itemconfig){
+        // check that we have acl access
+        if(itemconfig.acl && !this.model.checkAccess(itemconfig.acl)) return true;
+
+        // check that we have mode state access
+        if(itemconfig.requiredmodelstate && !this.model.checkModelState(itemconfig.requiredmodelstate)) return true;
+
+        return false;
     }
 
     /**
@@ -101,7 +110,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      * @param tabindex
      */
     public checkRenderTab(tabindex) {
-        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.componentconfig && this.componentconfig[tabindex].forcerender);
+        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.tabs && this.tabs[tabindex].forcerender);
     }
 
     /**

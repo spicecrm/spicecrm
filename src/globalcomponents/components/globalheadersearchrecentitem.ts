@@ -42,7 +42,7 @@ export class GlobalHeaderSearchRecentItem implements OnInit {
     public ngOnInit() {
         this.model.module = this.item.module_name;
         this.model.id = this.item.item_id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item.data);
+        this.model.setData(this.item.data);
         // this.model.data.summary_text = this.item.item_summary;
 
         // get the fieldconfig

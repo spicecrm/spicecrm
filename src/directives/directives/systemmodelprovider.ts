@@ -35,10 +35,6 @@ export class SystemModelProviderDirective implements OnDestroy {
     ) {
         // in case the host component is listening to the loading status and waits for it!
         this.model.isLoading = true;
-
-        this.subscription.add(
-            this.model.data$.subscribe(data => this.data$.next(data))
-        );
     }
 
     /**
@@ -53,7 +49,7 @@ export class SystemModelProviderDirective implements OnDestroy {
      * @param provided_model
      */
     @Input('system-model-provider')
-    set provided_model(provided_model: { module: string, id?: string, data: any }) {
+    set provided_model(provided_model: { module: string, id?: string, data: any, clone?: boolean }) {
 
         this.model.module = provided_model.module;
         if (provided_model.id) {
@@ -64,28 +60,26 @@ export class SystemModelProviderDirective implements OnDestroy {
 
         if (provided_model.data) {
 
-            if (provided_model.data.isNew) {
+            // if (provided_model.data.isNew) {
                 this.model.initialize();
-            }
+            // }
 
+            // set the data
+            this.model.setData(provided_model.clone === true ?  {...provided_model.data} : provided_model.data);
 
-            this.model.setFields(
-                this.model.utils.backendModel2spice(provided_model.module, provided_model.data)
-            );
-
+            // set to loading done
             this.model.isLoading = false;
-            this.model.data$.next(this.model.data);
 
-            if (provided_model.data.acl) {
-                // has to be called again after the data is set because of the missing acl before...
-                this.model.initializeFieldsStati();
-            }
         } else if (this.model.id) {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
             this.model.getData();
         } else {
             this.model.initialize();
         }
+
+        this.subscription.add(
+            this.model.data$.subscribe(data => this.data$.next(data))
+        );
     }
 
     /**

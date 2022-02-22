@@ -127,8 +127,10 @@ export class fieldEmailRecipientsInput {
         this.modal.openModal('EmailParentAddressesModal', true, this.injector).subscribe(
             modalRef => {
 
-                this.parent.clickListener();
-                this.parent.clickListener = undefined;
+                if (this.parent.clickListener) {
+                    this.parent.clickListener();
+                    this.parent.clickListener = undefined;
+                }
 
                 modalRef.instance.addAddresses.subscribe(
                     addresses => {
@@ -142,8 +144,9 @@ export class fieldEmailRecipientsInput {
                                 parent_id: address.id
                             };
 
-                            this.value = [...this.model.data.recipient_addresses, newEmailAddress];
+                            this.value = [...this.model.getField('recipient_addresses'), newEmailAddress];
                             this.isInputTextVisible = true;
+                            this.parent.focused = true;
                         }
                     }
                 );
@@ -182,9 +185,9 @@ export class fieldEmailRecipientsInput {
      */
     public removeEmailAddress(e: MouseEvent, removeId) {
 
-        if (!this.model.data.recipient_addresses || this.model.data.recipient_addresses.length == 0) return;
+        if (!this.model.getField('recipient_addresses') || this.model.getField('recipient_addresses').length == 0) return;
 
-        this.value = this.model.data.recipient_addresses.filter(addr => addr.id != removeId);
+        this.value = this.model.getField('recipient_addresses').filter(addr => addr.id != removeId);
 
         e.preventDefault();
         e.stopPropagation();
@@ -229,7 +232,7 @@ export class fieldEmailRecipientsInput {
      */
     public removeLastEmailAddress() {
         if (!this.value || this.value.length == 0) return;
-        this.value = this.model.data.recipient_addresses.slice(0, this.model.data.recipient_addresses.length - 1);
+        this.value = this.model.getField('recipient_addresses').slice(0, this.model.getField('recipient_addresses').length - 1);
     }
 
     /**
@@ -247,7 +250,7 @@ export class fieldEmailRecipientsInput {
             email_address: this.inputTextValue
         };
 
-        this.value = [...this.model.data.recipient_addresses, newEmailAddress];
+        this.value = [...this.model.getField('recipient_addresses'), newEmailAddress];
 
         this.hideDropdown();
         this.resetInputTextValue();
@@ -305,7 +308,7 @@ export class fieldEmailRecipientsInput {
             parent_id: emailAddress.id
         };
 
-        this.value = [...this.model.data.recipient_addresses, newEmailAddress];
+        this.value = [...this.model.getField('recipient_addresses'), newEmailAddress];
 
         this.resetInputTextValue();
         this.hideDropdown();

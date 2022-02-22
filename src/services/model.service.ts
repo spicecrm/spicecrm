@@ -69,15 +69,16 @@ export class model implements OnDestroy {
     public acl: any = {};
 
     /**
+     * an object holding the acl field control data
+     */
+    public acl_fieldcontrol: any = {};
+
+    /**
      * the data object.
      *
      * ToDo: make a public property
      */
-    public data: any = {
-        acl: {
-            edit: true
-        }
-    };
+    public data: any = {};
 
     /**
      * a public element that holds a copy of the data and is created when the model is set to editmode. This is internal only and used for the assessment of dirty fields
@@ -330,6 +331,13 @@ export class model implements OnDestroy {
     }
 
     /**
+     * helper to get the proper backend formatted model data
+     */
+    get backendData(){
+        return this.utils.spiceModel2backend(this.module, this.data);
+    }
+
+    /**
      * handle socket event
      * @param event
      * @private
@@ -424,17 +432,11 @@ export class model implements OnDestroy {
      * @param access a strting with the access to be checked. Can be literally any acl string. standard are edit, display, list .. they are deifned in the backend
      */
     public checkAccess(access): boolean {
-        if (this.data && this.data.acl) {
-            // legacy handling for view & detail
-            // ToDo: clean this up and make view or detail in general
-            if (access == 'detail' || access == 'view') {
-                return this.data.acl.detail || this.data.acl.view;
-            } else {
-                return this.data.acl[access];
-            }
-
+        // ToDo: clean this up and make view or detail in general
+        if (access == 'detail' || access == 'view') {
+            return this.acl.detail || this.acl.view;
         } else {
-            return false;
+            return this.acl[access];
         }
     }
 
@@ -490,7 +492,12 @@ export class model implements OnDestroy {
 
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
+
+                // set data and acl
                 this.data = res;
+                this.acl = res.acl;
+                this.acl_fieldcontrol = res.acl_fieldcontrol;
+
                 this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
@@ -925,13 +932,16 @@ export class model implements OnDestroy {
      * @param field
      * @param value
      */
-    public setField(field, value) {
+    public setField(field, value, silent: boolean = false) {
         if (!field) return false;
         if(this.data[field] !== value) {
             this.field$.next({field, value});
         }
         this.data[field] = value;
-        this.data$.next(this.data);
+
+        if(silent !== true) {
+            this.data$.next(this.data);
+        }
 
         this.evaluateValidationRules(field, "change");
 
@@ -952,7 +962,7 @@ export class model implements OnDestroy {
      *
      * @param fieldData a simple object with the fieldname and the value to be set
      */
-    public setFields(fieldData) {
+    public setFields(fieldData, silent: boolean = false) {
         let changedFields = [];
         for (let fieldName in fieldData) {
             if (!fieldData.hasOwnProperty(fieldName)) continue;
@@ -964,7 +974,10 @@ export class model implements OnDestroy {
             this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
-        this.data$.next(this.data);
+
+        if(silent !== true) {
+            this.data$.next(this.data);
+        }
         this.evaluateValidationRules(null, "change");
 
         // run the duplicate check
@@ -1047,13 +1060,10 @@ export class model implements OnDestroy {
 
         // determine changed fields
         let changedData: any;
-        if (this.isEditing && !this.isNew) {
+        if ((this.isEditing || !_.isEmpty(this.backupData)) && !this.isNew) {
             changedData = this.getDirtyFields();
             // in any case send back date_modified
             changedData.date_modified = this.data.date_modified;
-
-            // hack to provoke the changes for Testing
-            // changedData.date_modified.subtract( 1, 'days');
         } else {
             changedData = this.data;
         }
@@ -1124,7 +1134,8 @@ export class model implements OnDestroy {
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(() => {
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(
+            () => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
                     module: this.module,
@@ -1132,6 +1143,9 @@ export class model implements OnDestroy {
                 });
                 responseSubject.next(true);
                 responseSubject.complete();
+            },
+            e => {
+                responseSubject.error('unable to delete record');
             }
         );
         return responseSubject.asObservable();
@@ -1235,14 +1249,14 @@ export class model implements OnDestroy {
         this.evaluateValidationRules();
 
         // set default acl to allow editing
-        this.data.acl = {
+        this.acl = {
             create: true,
             edit: true,
             detail: true
         };
 
         // get the field control
-        this.data.acl_fieldcontrol = this.metadata.moduleDefs[this.module]?.acl_fieldcontrol ?? [];
+        this.acl_fieldcontrol = this.metadata.moduleDefs[this.module]?.acl_fieldcontrol ?? [];
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
@@ -1252,6 +1266,27 @@ export class model implements OnDestroy {
         this.parentmodel = parent;
     }
 
+    /**
+     * sets the model data from teh backend
+     * also extracts the acl data from teh backend response
+     *
+     * @param data
+     * @param transform .. set to false to not transform the data
+     * @param silent .. st to true to not emit data after setting the data on teh model
+     */
+    public setData(data: any, transform = true, silent?: boolean){
+        if(data.acl) this.acl = data.acl;
+        if(data.acl_fieldcontrol) this.acl_fieldcontrol = data.acl_fieldcontrol;
+        this.data = transform ?  this.utils.backendModel2spice(this.module, data) : data;
+
+        // emit the data changes
+        if(silent !== true){
+            this.data$.next(this.data);
+        }
+
+        // initialize the field stati
+        this.initializeFieldsStati();
+    }
 
     /**
      * adds a model
@@ -1445,7 +1480,7 @@ export class model implements OnDestroy {
      */
     public getCalculatedValue(copyRule: {fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any}, fromField?: string) {
 
-        let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+        let timeZone = this.session.getSessionData('timezone', false) || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
             case "now":
                 return new moment.utc().tz(timeZone);
@@ -1518,7 +1553,7 @@ export class model implements OnDestroy {
      *  @param changedFields an array with fieldnames that has been changed in order to allow the method to determine the scope fo the change and if a duplicate check shoudl be performed
      */
     public duplicateCheckOnChange(changedFields: string[]): Observable<boolean> {
-        if (this.isNew && this.metadata.getModuleDuplicatecheck(this.module)) {
+        if (this.isNew && this.metadata.getModuleDuplicatecheckOnChange(this.module)) {
             let dupCheckFields = this.metadata.getModuleDuplicateCheckFields(this.module);
 
             // return if we do not have any fields to check for

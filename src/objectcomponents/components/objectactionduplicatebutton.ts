@@ -21,7 +21,7 @@ export class ObjectActionDuplicateButton {
      * hide the button while the model is editing
      */
     get hidden() {
-        return this.model.isEditing;
+        return this.parent.isEditing;
     }
 
     /**
@@ -37,16 +37,19 @@ export class ObjectActionDuplicateButton {
     public execute() {
         let newId = this.model.utils.generateGuid();
         this.model.module = this.parent.module;
-        this.model.id = newId;
-        this.model.isNew = true;
-        this.model.data = JSON.parse(JSON.stringify(this.parent.data));
-        this.model.data.id = newId;
-        this.model.data.assigned_user_id = this.session.authData.userId;
-        this.model.data.assigned_user_name = this.session.authData.userName;
-        this.model.data.modified_by_id = this.session.authData.userId;
-        this.model.data.modified_by_name = this.session.authData.userName;
-        this.model.data.date_entered = new Date();
-        this.model.data.date_modified = new Date();
+        this.model.initializeModel();
+
+        // generate the new model data from the model to be cloned
+        let modelData = JSON.parse(JSON.stringify(this.parent.data));
+        modelData.id = this.model.id;
+        modelData.assigned_user_id = this.session.authData.userId;
+        modelData.assigned_user_name = this.session.authData.userName;
+        modelData.modified_by_id = this.session.authData.userId;
+        modelData.modified_by_name = this.session.authData.userName;
+        modelData.date_entered = new Date();
+        modelData.date_modified = new Date();
+
+        this.model.setData(modelData, false);
 
         for (let field in this.parent.fields) {
             if (this.parent.fields[field].type == 'link' && this.model.data[field] && this.model.data[field].beans) {

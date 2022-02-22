@@ -53,7 +53,7 @@ class UserAccessLog extends SugarBean
             $loginName = $currentUser->name;
         }
         $this->ipaddress = SpiceUtils::getClientIP();
-        $this->assigned_user_id = $currentUser ? $currentUser->id : null;
+//        $this->assigned_user_id = $currentUser ? $currentUser->id : null;
         $this->action = $action;
         $this->login_name = $loginName;
         $this->impersonating_user_id = isset( $currentUser->impersonating_user_id[0] ) ? $currentUser->impersonating_user_id : null;

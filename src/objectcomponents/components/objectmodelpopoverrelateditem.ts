@@ -30,7 +30,7 @@ export class ObjectModelPopoverRelatedItem {
     public ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.item.id;
-        this.model.data = this.item;
+        this.model.setData(this.item);
     }
 
     public goDetail() {

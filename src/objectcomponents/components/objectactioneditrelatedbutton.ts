@@ -79,7 +79,7 @@ export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
     * @set disabled
     */
     public handleDisabled(mode) {
-        if (this.parent.data.acl && !this.parent.checkAccess('edit')) {
+        if (!this.parent.checkAccess('edit')) {
             this.disabled = true;
             return;
         }

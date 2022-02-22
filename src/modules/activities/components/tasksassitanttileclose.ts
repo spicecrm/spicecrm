@@ -20,7 +20,7 @@ export class TasksAssitantTileClose {
         // this.showDialog = true;
         this.helper.confirm(this.language.getLabel('LBL_COMPLETE_TASK'), this.language.getLabel('MSG_COMPLETE_TASK')).subscribe(answer =>{
             if(answer){
-                this.model.data.status = 'Completed';
+                this.model.setField('status', 'Completed');
                 this.model.save();
 
                 // broadcast so the assitant removes it

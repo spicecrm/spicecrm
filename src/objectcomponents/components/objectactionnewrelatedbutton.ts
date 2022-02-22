@@ -34,8 +34,8 @@ export class ObjectActionNewrelatedButton implements OnInit {
 
     public execute() {
 
-        if (!this.parent.data.id) {
-            this.parent.data.id = this.parent.id;
+        if (!this.parent.getField('id')) {
+            this.parent.setField('id', this.parent.id);
         }
 
         // make sure we have no id so a new on gets issues

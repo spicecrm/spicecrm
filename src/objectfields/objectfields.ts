@@ -33,7 +33,6 @@ import {fieldLanguage} from './components/fieldlanguage';
 import {fieldEmailTo} from './components/fieldemailto';
 import {fieldEmailTemplates} from './components/fieldemailtemplates';
 import {fieldTextMessageTemplates} from './components/fieldtextmessagetemplates';
-import {fieldMailRelais} from './components/fieldmailrelais';
 import {fieldMultienum} from './components/fieldmultienum';
 import {fieldGroupedEnum} from './components/fieldgroupedenum';
 import {fieldMultienumCheckBox} from './components/fieldmultienumcheckbox';
@@ -99,7 +98,6 @@ import {fieldNotAuthorized} from "./components/fieldnotauthorized";
 import {fieldModuleIcon} from "./components/fieldmoduleicon";
 import {fieldRichText} from "./components/fieldrichtext";
 import {fieldEnumMulti} from "./components/fieldenummulti";
-import {fieldPhoneAsterisk} from "./components/fieldphoneasterisk";
 import {fieldCronInterval} from "./components/fieldcroninterval";
 import {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 import {fieldTextID} from "./components/fieldtextid";
@@ -123,6 +121,7 @@ import {fieldCompound} from './components/fieldcompound';
 import {fieldIconCondition} from './components/fieldiconcondition';
 import {fieldIndicator} from './components/fieldindicator';
 import {fieldEmailRecipientsInput} from './components/fieldemailrecipientsinput';
+import {fieldJson} from "./components/fieldjson";
 
 /**
  * @ignore
@@ -166,7 +165,6 @@ declare var _: any;
         fieldEmailTo,
         fieldEmailTemplates,
         fieldTextMessageTemplates,
-        fieldMailRelais,
         fieldMultienum,
         fieldGroupedEnum,
         fieldMultienumCheckBox,
@@ -230,7 +228,6 @@ declare var _: any;
         fieldModuleIcon,
         fieldRichText,
         fieldEnumMulti,
-        fieldPhoneAsterisk,
         fieldCronInterval,
         fieldGooglePlacesSearch,
         fieldTextID,
@@ -254,7 +251,8 @@ declare var _: any;
         fieldCompound,
         fieldIconCondition,
         fieldIndicator,
-        fieldEmailRecipientsInput
+        fieldEmailRecipientsInput,
+        fieldJson
     ],
     exports: [
         fieldSet,

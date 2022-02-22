@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component, Injector, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {view} from '../../services/view.service';
@@ -24,54 +24,56 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
      * the gdpr data as retrieved from the backend for the record
      */
     public gdprData: any = {};
-
     /**
-     * an indicator if the laoding is completed for the field or the data is still loading
+     * an indicator if the loading is completed for the field or the data is still loading
      */
-    public loaded = false;
+    private loaded = false;
+    /**
+     * holds the marketing style
+     */
+    public marketingStyle: {'background-color', 'color', 'cursor'};
+    /**
+     * holds the data style
+     */
+    public dataStyle: {'background-color', 'color', 'cursor'};
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend, public modal: modal, public injector: Injector) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private modal: modal, private injector: Injector) {
         super(model, view, language, metadata, router);
     }
 
     /**
-     * load the data on intialization
+     * load the data on initialization
      */
     public ngOnInit() {
-        this.backend.getRequest('common/gdpr/' + this.model.module + '/' + this.model.id ).subscribe(gdprData => {
+        this.backend.getRequest('common/gdpr/' + this.model.module + '/' + this.model.id).subscribe(gdprData => {
             this.gdprData = gdprData;
             this.loaded = true;
+            this.setMarketingStyle();
+            this.setDataStyle();
         });
+
+        this.subscriptions.add(
+            this.model.data$.subscribe(() => {
+                this.setMarketingStyle();
+                this.setDataStyle();
+            })
+        );
     }
 
     /**
-     * returns the style for the DATA pill
+     * set the style for the data pill
      */
-    public getDataStyle() {
+    private setDataStyle() {
+
         if (!this.loaded) return {};
+        let color = '#cc0000';
 
-        if (this.model.data.gdpr_data_agreement == '1') {
-            return {
-                'background-color': '#009900',
-                'color': 'white',
-                'cursor': 'pointer'
-            };
+        if (this.model.data.gdpr_data_agreement == '1' || this.gdprData?.related?.some(r => r.gdpr_data_agreement == '1')) {
+            color = '#009900';
         }
 
-        if (this.gdprData && this.gdprData.related) {
-            for (let item of this.gdprData.related) {
-                if (item.gdpr_data_agreement == '1') {
-                    return {
-                        'background-color': '#009900',
-                        'color': 'white',
-                        'cursor': 'pointer'
-                    };
-                }
-            }
-        }
-
-        return {
-            'background-color': '#cc0000',
+        this.dataStyle = {
+            'background-color': color,
             'color': 'white',
             'cursor': 'pointer'
         };
@@ -79,43 +81,26 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
     }
 
     /**
-     * return the stle for the MARKETING pill
+     * set the style for the marketing pill
      */
-    public getMarketingStyle() {
+    private setMarketingStyle() {
+
         if (!this.loaded) return {};
 
-        // if agreement was granted
-        if (this.model.data.gdpr_marketing_agreement == 'g') {
-            return {
-                'background-color': '#009900',
-                'color': 'white',
-                'cursor': 'pointer'
-            };
-        }
+        const fieldDef = this.metadata.getModuleFields(this.model.module)?.gdpr_marketing_agreement;
+        let color = '#cc0000';
 
         // if agreement was granted
-        if (this.model.data.gdpr_marketing_agreement == 'r') {
-            return {
-                'background-color': '#cc0000',
-                'color': 'white',
-                'cursor': 'pointer'
-            };
+        if (
+            (fieldDef?.type == 'enum' && this.model.data.gdpr_marketing_agreement == 'g') ||
+            (fieldDef?.type?.startsWith('bool') && this.model.data.gdpr_marketing_agreement == 1) ||
+            this.gdprData?.related?.some(r => r.gdpr_marketing_agreement == '1')
+        ) {
+            color = '#009900';
         }
 
-        if (this.gdprData.related) {
-            for (let item of this.gdprData.related) {
-                if (item.gdpr_marketing_agreement == '1') {
-                    return {
-                        'background-color': '#009900',
-                        'color': 'white',
-                        'cursor': 'pointer'
-                    }
-                }
-            }
-        }
-
-        return {
-            'background-color': '#cc0000',
+        this.marketingStyle = {
+            'background-color': color,
             'color': 'white',
             'cursor': 'pointer'
         };
@@ -127,7 +112,14 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
     public showDetails() {
         this.modal.openModal('ObjectGDPRModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.gdprRelatedLog = this.gdprData.related;
-            modalRef.instance.gdprAuditLog = this.gdprData.audit;
+            modalRef.instance.gdprAuditLog = this.gdprData.audit.map(log => ({
+                ...log,
+                model: {
+                    module: this.model.module,
+                    id: this.model.id,
+                    [log.field_name]: this.model.utils.backend2spice(this.model.module, log.field_name, log.value)
+                }
+            }));
         });
     }
 }

@@ -42,15 +42,7 @@ export class AccountHierarchyNode implements OnInit {
     public ngOnInit() {
         this.model.module = "Accounts";
         this.model.id = this.nodedata.id;
-        this.model.data.summary_text = this.nodedata.summary_text;
-
-        // copy fields
-        for (let field of this.fields) {
-            this.model.data[field.field] = this.nodedata.data[field.field];
-        }
-
-        // copy acl
-        this.model.data.acl = this.nodedata.data.acl;
+        this.model.setData(this.nodedata.data);
     }
 
     /**

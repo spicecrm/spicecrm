@@ -24,13 +24,17 @@ import {configurationService} from '../../services/configuration.service';
 })
 export class ComponentsetManager {
 
-    public edit_mode: string = "custom";
+    /**
+     * the edit mode
+     */
+    public edit_mode: 'none'|'custom'|'all' = "custom";
+
     public allowBarButtons: boolean = true;
     // crNoneActive: boolean = false;
 
     public change_request_required: boolean = false;
 
-    public sysModules: any[] = [];
+    public modules: any[] = [];
     public currentModule: string = '*';
     public currentComponentSet: string = '';
     public currentComponentSetItems: any[] = [];
@@ -48,15 +52,13 @@ export class ComponentsetManager {
                 public toast: toast,
                 public modalservice: modal,
                 public view: view,
-                public configurationService: configurationService) {
+                public configurationService: configurationService
+    ) {
 
-        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
-            this.sysModules = modules;
+        // get teh modules from teh metadata service
+        this.modules = this.metadata.getModules();
+        this.modules.sort();
 
-            // iniutialize the metadata service
-            // this.metadata.loadFieldSets(new Subject<any>());
-            // this.metadata.loadComponents(new Subject<any>());
-        });
         this.checkMode();
     }
 

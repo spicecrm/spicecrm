@@ -30,7 +30,7 @@ export class fieldModifiedBy extends fieldRelate {
 
     get displayDate() {
         try {
-            if (this.model.data[this.fieldname]) {
+            if (this.model.getField(this.fieldname)) {
                 let date = this.model.getFieldValue(this.datefield);
                 if (date.isValid()) {
                     return date.format(this.userpreferences.getDateFormat());
@@ -47,7 +47,7 @@ export class fieldModifiedBy extends fieldRelate {
 
     get displayTime() {
         try {
-            if (this.model.data[this.fieldname]) {
+            if (this.model.getField(this.fieldname)) {
                 let date = this.model.getFieldValue(this.datefield);
                 if (date.isValid()) {
                     return date.format(this.userpreferences.getTimeFormat());

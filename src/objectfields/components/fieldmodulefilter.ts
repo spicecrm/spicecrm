@@ -46,7 +46,7 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
 
     get moduleFilterName(){
         let moduleFilter = this.metadata.getModuleFilter(this.moduleFilter);
-        return moduleFilter ? moduleFilter['name'] : '';
+        return moduleFilter ? moduleFilter.name : '';
     }
 
     get module(){
@@ -88,8 +88,11 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
                 case 'model.save':
                     if (this.fieldid === message.messagedata.reference) {
                         // set the model
-                        this.model.data.module_filter = message.messagedata.data.id;
-                        this.model.data[this.fieldname] = message.messagedata.data.summary_text;
+                        let modelFields: any = {
+                            module_filter: message.messagedata.data.id
+                        }
+                        modelFields[this.fieldname] = message.messagedata.data.summary_text;
+                        this.model.setFields(modelFields);
                     }
                     break;
             }
@@ -109,8 +112,6 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
     }
 
     public closePopups() {
-        if (this.model.data.module_filter) {
-        }
         this.moduleSelectOpen = false;
         this.clickListener();
     }
