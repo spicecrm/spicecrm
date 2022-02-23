@@ -40,6 +40,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -48,7 +49,7 @@ set_time_limit(3600);
 
 $db = DBManagerFactory::getInstance();
 
-if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_module($current_user)) {
+if (SpiceUtils::isAdmin($current_user) || isset ($from_sync_client) || SpiceUtils::isAdminForAnyModule($current_user)) {
 	isset($_REQUEST['execute'])? $execute=$_REQUEST['execute'] : $execute= false;
 	$export = false;
 

@@ -3,6 +3,7 @@ namespace SpiceCRM\modules\Administration\api;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\FileUtils;
 
 class CleanUpHandler
 {
@@ -300,6 +301,6 @@ class CleanUpHandler
     {
         $rootDir = realpath(__DIR__ . "/../../../");
         $fontDir = isset(SpiceConfig::getInstance()->config['dompdf']['fontDir']) ? SpiceConfig::getInstance()->config['dompdf']['fontDir'] : 'dompdf/fonts/';
-        return unlink($rootDir.'/'.create_cache_directory($fontDir).'dompdf_font_family_cache.php');
+        return unlink($rootDir.'/'.FileUtils::createCacheDirectory($fontDir).'dompdf_font_family_cache.php');
     }
 }

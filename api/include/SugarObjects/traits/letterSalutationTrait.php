@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SugarObjects\traits;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * a simple trait that adds some letter salutation functions
@@ -13,7 +14,7 @@ trait letterSalutationTrait{
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $currentLanguage = $currentUser->getPreference('language');
         $language = $this->communication_language ?: $currentLanguage ?: 'en_us';
-        $app_list_strings = return_app_list_strings_language($language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($language);
         return $app_list_strings['salutation_letter_dom'][$this->salutation];
     }
 

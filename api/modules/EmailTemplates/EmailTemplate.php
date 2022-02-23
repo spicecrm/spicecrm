@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\EmailTemplates;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
@@ -70,7 +71,7 @@ class EmailTemplate extends SugarBean {
     function parse( $bean, $additionalValues = null ){
         global $app_list_strings, $current_language;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $app_list_strings = return_app_list_strings_language($this->language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
         $retArray = [
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),

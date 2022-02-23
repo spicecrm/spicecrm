@@ -16,6 +16,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -67,6 +68,11 @@ class UserAuthenticate
             /** @var User $userObj */
             $userObj = BeanFactory::getBean("Users", $row['id']);
             if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
+
+            if ($userObj) {
+                $userObj->call_custom_logic('after_login');
+            }
+
             return $userObj;
         } else {
             throw new UnauthorizedException("Invalid Username/Password combination", 1);
@@ -113,7 +119,7 @@ class UserAuthenticate
     public static function getPwdGuideline($lang)
     {
         global $app_strings;
-        $app_strings = return_application_language($lang);
+        $app_strings = SpiceUtils::returnApplicationLanguage($lang);
 
         $guideline = '';
 
@@ -336,8 +342,8 @@ class UserAuthenticate
         /** @var Email $emailObj */
         $emailObj = BeanFactory::getBean('Emails');
 
-        $emailObj->name = from_html($emailTempl->subject);
-        $emailObj->body = from_html($emailTempl->body_html);
+        $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
+        $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
         $emailObj->addEmailAddress('to', $email);
         $emailObj->to_be_sent = true;
         $result = $emailObj->save();
