@@ -40,6 +40,8 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\extensions\modules\QuestionnaireEvaluations\QuestionnaireEvaluation;
 use SpiceCRM\extensions\modules\Workflows\WorkflowScheduler;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTaskScheduler;
@@ -55,7 +57,7 @@ use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTaskScheduler;
  * Your function should not be passed any parameters
  * Always  return a Boolean. If it does not the Job will not terminate itself
  * after completion, and the webserver will be forced to time-out that Job instance.
- * DO NOT USE sugar_cleanup(); in your function flow or includes.  this will
+ * DO NOT USE SpiceUtils::spiceCleanup(); in your function flow or includes.  this will
  * break Jobs.  That function is called at the foot of cron.php
  */
 
@@ -128,7 +130,7 @@ function runMassEmailCampaign() {
  */
 function pruneDatabase() {
 	LoggerManager::getLogger()->info('----->Scheduler fired job of type pruneDatabase()');
-	$backupDir	= sugar_cached('backups');
+	$backupDir	= SpiceFileUtils::spiceCached('backups');
 	$backupFile	= 'backup-pruneDatabase-GMT0_'.gmdate('Y_m_d-H_i_s', strtotime('now')).'.php';
 
 	$db = DBManagerFactory::getInstance();
@@ -179,11 +181,11 @@ function pruneDatabase() {
 
 		if(!file_exists($backupDir) || !file_exists($backupDir.'/'.$backupFile)) {
 			// create directory if not existent
-			mkdir_recursive($backupDir, false);
+			FileUtils::mkdirRecursive($backupDir, false);
 		}
 		// write cache file
 
-		write_array_to_file('pruneDatabase', $queryString, $backupDir.'/'.$backupFile);
+		FileUtils::writeArrayToFile('pruneDatabase', $queryString, $backupDir.'/'.$backupFile);
 		return true;
 	}
 	return false;

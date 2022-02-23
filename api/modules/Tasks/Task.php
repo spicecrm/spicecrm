@@ -9,6 +9,7 @@ use DateTime;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class Task extends SugarBean
 {
@@ -64,7 +65,7 @@ class Task extends SugarBean
         if (isset($def['default'])) {
             return $def['default'];
         } else {
-            $app = return_app_list_strings_language($GLOBALS['current_language']);
+            $app = SpiceUtils::returnAppListStringsLanguage($GLOBALS['current_language']);
             if (isset($def['options']) && isset($app[$def['options']])) {
                 $keys = array_keys($app[$def['options']]);
                 return $keys[0];

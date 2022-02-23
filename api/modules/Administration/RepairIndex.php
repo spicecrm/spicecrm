@@ -38,6 +38,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -102,7 +103,7 @@ function compare($table_name, $db_indexes, $var_indexes) {
 
 ///////////////////////////////////////////////////////////////////////////////
 ////	PROCESS
-if(!is_admin($current_user)) sugar_die("Unauthorized access to administration.");
+if(!SpiceUtils::isAdmin($current_user)) sugar_die("Unauthorized access to administration.");
 set_time_limit(3600);
 /**
  * Note: $_REQUEST['silent'] is set from ModuleInstaller::repair_indices();

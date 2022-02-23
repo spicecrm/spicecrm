@@ -42,6 +42,9 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Vardefs management
@@ -120,12 +123,12 @@ class VardefManager{
         }
 
         if(empty($templates[$template])){
-            $path = get_custom_file_if_exists('include/SugarObjects/templates/' . $template . '/vardefs.php');
+            $path = SpiceUtils::getCustomFileIfExists('include/SugarObjects/templates/' . $template . '/vardefs.php');
             if(file_exists($path)){
                 require($path);
                 $templates[$template] = $vardefs;
             }else{
-                $path = get_custom_file_if_exists('include/SugarObjects/implements/' . $template . '/vardefs.php');
+                $path = SpiceUtils::getCustomFileIfExists('include/SugarObjects/implements/' . $template . '/vardefs.php');
                 if(file_exists($path)){
                     require($path);
                     $templates[$template] = $vardefs;
@@ -174,14 +177,14 @@ class VardefManager{
 
         if (empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]))
             $object = BeanFactory::getObjectName($module);
-        $file = create_cache_directory('modules/' . $module . '/' . $object . 'vardefs.php');
+        $file = FileUtils::createCacheDirectory('modules/' . $module . '/' . $object . 'vardefs.php');
 
 //        $out="<?php \n \$GLOBALS[\"dictionary\"][\"". $object . "\"]=" . var_export(SpiceDictionaryHandler::getInstance()->dictionary[$object], true) .";";
         $out = "<?php \n";
         $out .= "use " . SpiceDictionaryHandler::class . ";\n";
         $out .= "SpiceDictionaryHandler::getInstance()->dictionary[\"". $object . "\"]=" . var_export(SpiceDictionaryHandler::getInstance()->dictionary[$object], true) .";";
-        sugar_file_put_contents_atomic($file, $out);
-        if ( sugar_is_file($file) && is_readable($file)) {
+        SpiceFileUtils::spiceFilePutContentsAtomic($file, $out);
+        if (SpiceFileUtils::spiceIsFile($file) && is_readable($file)) {
             include($file);
         }
 
@@ -225,7 +228,7 @@ class VardefManager{
                 $object_name = $newName != false ? $newName : $object_name;
             }
 
-            $file = sugar_cached('modules/').$module_dir.'/' . $object_name . 'vardefs.php';
+            $file = SpiceFileUtils::spiceCached('modules/').$module_dir.'/' . $object_name . 'vardefs.php';
 
             if(file_exists($file)){
                 unlink($file);
@@ -452,7 +455,7 @@ class VardefManager{
         //here check if the cache file exists, if it does then load it, if it doesn't
         //then call refreshVardef
         //if either our session or the system is set to developerMode then refresh is set to true
-        if(inDeveloperMode() || !empty($_SESSION['developerMode'])){
+        if (SpiceUtils::inDeveloperMode() || !empty($_SESSION['developerMode'])) {
             $refresh = true;
         }
 
@@ -475,7 +478,7 @@ class VardefManager{
             //if the consumer has demanded a refresh or the cache/modules... file
             //does not exist, then we should do out and try to reload things
 
-            $cachedfile = sugar_cached('modules/'). $module . '/' . $object . 'vardefs.php';
+            $cachedfile = SpiceFileUtils::spiceCached('modules/'). $module . '/' . $object . 'vardefs.php';
             if($refresh || !file_exists($cachedfile)){
                 self::refreshVardefs($module, $object, null, false, $params);
             }
