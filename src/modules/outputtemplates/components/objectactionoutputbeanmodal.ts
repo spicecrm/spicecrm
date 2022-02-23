@@ -132,10 +132,6 @@ export class ObjectActionOutputBeanModal {
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
     public blobUrl: any;
-    /**
-     * holds the zoom number of pdf viewer
-     */
-    public zoom: number = 1;
 
     constructor(
         public language: language,
@@ -233,7 +229,8 @@ export class ObjectActionOutputBeanModal {
 
                 this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
-                        this.blobUrl = 'data:application/pdf;base64,' + pdf.content;
+                        let blob = this.datatoBlob(atob(pdf.content));
+                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                         this.contentForHandBack = pdf.content;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
@@ -305,7 +302,8 @@ export class ObjectActionOutputBeanModal {
      * @param data the raw data of the object being passed in. When the data is pased in the bloburl is created
      */
     set data(data) {
-        this.blobUrl = 'data:application/pdf;base64,' + data;
+        let blob = this.datatoBlob(data);
+        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
     }
 
     /**
@@ -389,14 +387,5 @@ export class ObjectActionOutputBeanModal {
             this.model.cancelEdit();
             this.close();
         }
-    }
-
-    public zoomIn() {
-        this.zoom += 0.2;
-    }
-
-    public zoomOut() {
-        if (this.zoom <= 0.5) return;
-        this.zoom -= 0.2;
     }
 }

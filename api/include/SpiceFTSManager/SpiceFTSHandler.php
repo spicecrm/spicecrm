@@ -9,6 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -370,7 +371,7 @@ class SpiceFTSHandler
         $listViewDefs = [];
 
         // load the app language
-        $appLang = return_application_language($current_language);
+        $appLang = SpiceUtils::returnApplicationLanguage($current_language);
 
         $modArray = [];
         $modLangArray = [];
@@ -1669,7 +1670,7 @@ class SpiceFTSHandler
             $where = " WHERE module='" . $module . "'";
         }
         // END
-        $order = empty($module) ? ' ORDER BY module ' : '';
+        $order = empty($module) ? ' ORDER BY index_priority ' : '';
         $beans = $db->query("SELECT * FROM sysfts" . $where . $order);
         echo "Starting indexing (maximal $packagesize records).\n";
 
@@ -1687,6 +1688,16 @@ class SpiceFTSHandler
             //in case of module mispelling, no bean will be found. Catch here
             if (!$seed) {
                 echo "Module not found.\n";
+                continue;
+            }
+
+            // if we have an index method run it
+            if(method_exists($seed, 'indexBulk')){
+                while($beanCounter < $packagesize) {
+                    $indexedRecords = $seed->indexBulk($packagesize);
+                    $beanCounter += $indexedRecords;
+                    if($indexedRecords == 0) break;
+                }
                 continue;
             }
 
@@ -1971,7 +1982,7 @@ class SpiceFTSHandler
                         // 2011-10-15 if the kreporttype is set return it
                         //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
                         'type' => $field_defs['type'],
-                        'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
+                        'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                         'leaf' => true,
                         'options' => $field_defs['options'],
                         'label' => $field_defs['vname']

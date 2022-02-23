@@ -10,6 +10,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 
@@ -115,7 +116,7 @@ class SchedulerJob extends SugarBean
     {
         if (empty($this->process_id)) return false;
 
-        if (is_windows()) {
+        if (SpiceUtils::isWindows()) {
             return exec("taskkill /F /PID {$this->process_id}");
         } else {
             return exec("kill -9 {$this->process_id}");

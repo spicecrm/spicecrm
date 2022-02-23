@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\SpiceACLObjects;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\SpiceACLObjects\SpiceACLObject;
 use stdClass;
@@ -58,7 +59,7 @@ class SpiceACLObjectsRESTHandler
     public function addACLModuleField($typeId, $field)
     {
         $db = DBManagerFactory::getInstance();
-        $newId = create_guid();
+        $newId = SpiceUtils::createGuid();
         $db->query("INSERT INTO spiceaclmodulefields (id, sysmodule_id, name) VALUES('$newId','$typeId','$field')");
 
         return [
@@ -111,7 +112,7 @@ class SpiceACLObjectsRESTHandler
     public function addACLModuleAction($sysmoduleid, $action, $description = null)
     {
         $db = DBManagerFactory::getInstance();
-        $actionId = create_guid();
+        $actionId = SpiceUtils::createGuid();
         $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action, description) VALUES('$actionId', '$sysmoduleid', '$action', '$description')");
         return [
             'id' => $actionId,
@@ -298,7 +299,7 @@ class SpiceACLObjectsRESTHandler
         // go through the objects and set the data, which are equal to all objects && save the objects
         foreach ($allObjects as $object) {
 
-            $object->id = create_guid();
+            $object->id = SpiceUtils::createGuid();
             $object->status = "d";
             $object->spiceaclobjecttype = "0";
             $object->sysmodule_id = $module;

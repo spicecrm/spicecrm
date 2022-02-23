@@ -36,7 +36,6 @@
 
 namespace SpiceCRM\modules\Emails;
 
-
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
@@ -557,7 +556,7 @@ class Email extends SugarBean
                 }
             }
         } else {
-            $emails = str_replace([",", ";"], "::", from_html($emails));
+            $emails = str_replace([",", ";"], "::", DBUtils::fromHtml($emails));
             $addrs = explode("::", $emails);
 
             foreach ($addrs as $addr) {
@@ -587,7 +586,7 @@ class Email extends SugarBean
         if(!$ret) return false;
 
         //$ret->raw_source = SugarCleaner::cleanHtml($ret->raw_source);
-        $ret->description = to_html($ret->description);
+        $ret->description = DBUtils::toHtml($ret->description);
         //$ret->description_html = SugarCleaner::cleanHtml($ret->description_html);
 
         // BEGIN CR1000307

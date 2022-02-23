@@ -33,6 +33,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
+use SpiceCRM\includes\utils\ArrayUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -122,7 +123,7 @@ class SpiceFTSActivityHandler
             $queryModules[] = SpiceFTSUtils::getIndexNameForModule($module);
 
             // see if we shpould filter by the module int he post filters
-            if ($objects && count($objects) > 0 && array_search_insensitive($module, $objects) === false) {
+            if ($objects && count($objects) > 0 && ArrayUtils::arraySearchInsensitive($module, $objects) === false) {
                 $postFilters[] = [
                     'term' => ['_index' => SpiceFTSUtils::getIndexNameForModule($module)]
                 ];
@@ -319,7 +320,7 @@ class SpiceFTSActivityHandler
             $queryModules[] = SpiceFTSUtils::getIndexNameForModule($module);
 
             // see if we shpould filter by the module int he post filters
-            if ($objects && count($objects) > 0 && array_search_insensitive($module, $objects) === false) {
+            if ($objects && count($objects) > 0 && ArrayUtils::arraySearchInsensitive($module, $objects) === false) {
                 $postFilters[] = [
                     'term' => ['_index' => SpiceFTSUtils::getIndexNameForModule($module)]
                 ];

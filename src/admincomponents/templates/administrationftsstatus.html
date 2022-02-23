@@ -1,8 +1,9 @@
 <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
-    <h2 class="slds-text-heading_medium">
+    <h2 class="slds-text-heading_medium slds-col--bump-right">
         <system-label label="LBL_FTS_STATUS"></system-label>
     </h2>
-    <button class="slds-button slds-col--bump-left slds-button_icon slds-button_icon-border-filled" [disabled]="loading || ! hasLocks" (click)="unlock()">
+    <button type="button" class="slds-button slds-button--neutral" (click)="initialize()"><system-label label="LBL_INITIALIZE"></system-label></button>
+    <button class="slds-button  slds-button_icon slds-button_icon-border-filled" [disabled]="loading || ! hasLocks" (click)="unlock()">
         <system-button-icon icon="unlock"></system-button-icon>
     </button>
     <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="loading"
@@ -37,7 +38,7 @@
                         <system-label label="LBL_DOCS"></system-label>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{stats.docs}}</div>
+                        <div class="slds-truncate">{{stats.pdocs}}/{{stats.tdocs}}</div>
                     </td>
                 </tr>
                 <tr>
@@ -45,7 +46,7 @@
                         <system-label label="LBL_SIZE"></system-label>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{stats.size}}</div>
+                        <div class="slds-truncate">{{stats.psize}}/{{stats.tsize}}</div>
                     </td>
                 </tr>
             </tbody>
@@ -67,6 +68,16 @@
                     </th>
                     <th scope="col">
                         <div class="slds-truncate">
+                            <system-label label="LBL_STORED"></system-label>
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">
+                            <system-label label="LBL_UNINDEXED"></system-label>
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">
                             <system-label label="LBL_SIZE"></system-label>
                         </div>
                     </th>
@@ -83,10 +94,16 @@
                         <div class="slds-truncate">{{index.name}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{index.docs}}</div>
+                        <div class="slds-truncate">{{index.pdocs}}/{{index.tdocs}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{index.size}}</div>
+                        <div class="slds-truncate">{{index.stored}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{index.unindexed}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{index.psize}}/{{index.tsize}}</div>
                     </td>
                     <td>
                         <system-utility-icon *ngIf="index.blocked" icon="lock" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>

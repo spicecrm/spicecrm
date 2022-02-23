@@ -28,13 +28,14 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\database;
 
-
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * OCI8 driver
@@ -149,6 +150,7 @@ class OCI8Manager extends DBManager
         'html' => 'clob',
         'longhtml' => 'clob',
         'date' => 'date',
+        'json'     => 'clob',
         'datetime' => 'date',
         'datetimecombo' => 'date',
         'time' => 'date',
@@ -1233,7 +1235,7 @@ class OCI8Manager extends DBManager
 
     public function getGuidSQL()
     {
-        return "'" . create_guid_section(3) . "-' || sys_guid()";
+        return "'" . SpiceUtils::createGuidSection(3) . "-' || sys_guid()";
     }
 
     /**
@@ -1368,12 +1370,12 @@ class OCI8Manager extends DBManager
                 if ($this->isTextType( $def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
-                    $tmp2->{$field} = from_html($bean->{$field});
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB;
                 } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
-                    $tmp2->{$field} = from_html($bean->{$field});
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_BLOB;
@@ -1420,12 +1422,12 @@ class OCI8Manager extends DBManager
                 if ($this->isTextType($def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
-                    $tmp2->{$field} = from_html($bean->{$field});
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB; // value is 112
                 } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
-                    $tmp2->{$field} = from_html($bean->{$field});
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_BLOB; // value is 113
@@ -1495,7 +1497,7 @@ class OCI8Manager extends DBManager
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
                     if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
-                        $copy[$field] = from_html($data[$field]);
+                        $copy[$field] = DBUtils::fromHtml($data[$field]);
                         $data[$field] = $this->getEmptyClob();
                         $lob_fields[$field] = ":" . $field;
                         $lob_dataType[$field] = OCI_B_CLOB;
@@ -1542,7 +1544,7 @@ class OCI8Manager extends DBManager
                     if(!$vardef) continue;
 
                     if (!empty($val) && $this->type_map[$vardef['dbtype'] ?: $vardef['type']] == 'clob') {
-                        $copy[$key] = from_html($val);
+                        $copy[$key] = DBUtils::fromHtml($val);
                         $sets[] = "$key = {$this->getEmptyClob()}";
                         $lob_fields[$key] = ":" . $key;
                         $lob_dataType[$key] = OCI_B_CLOB;

@@ -31,6 +31,7 @@ namespace SpiceCRM\includes\SpiceDemoData;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Class SpiceDemoDataGenerator
@@ -189,7 +190,7 @@ class SpiceDemoDataGenerator
      */
     private function makeOpportunities(){
         $opportunities = [];
-        $appListStrings = return_app_list_strings_language('en_us');
+        $appListStrings = SpiceUtils::returnAppListStringsLanguage('en_us');
         for($i=0; $i < 50; $i++){
             $opportunity = [
                 'amount' => round(mt_rand(25000, 150000), -3),
