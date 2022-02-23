@@ -167,15 +167,13 @@ import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferenc
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
 import {SystemPDFContainer} from "./components/systempdfcontainer";
-import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
 
 @NgModule({
     imports: [
         DirectivesModule,
         CommonModule,
         FormsModule,
-        DragDropModule,
-        PdfJsViewerModule
+        DragDropModule
     ],
     declarations: [
         PackageLoader,
