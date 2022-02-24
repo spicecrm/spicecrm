@@ -38,7 +38,7 @@
                         <system-label label="LBL_DOCS"></system-label>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{stats.pdocs}}/{{stats.tdocs}}</div>
+                        <div class="slds-truncate"><system-display-number [number]="stats.pdocs" system-display-number-nodigits></system-display-number>/<system-display-number [number]="stats.tdocs" system-display-number-nodigits></system-display-number></div>
                     </td>
                 </tr>
                 <tr>
@@ -94,7 +94,7 @@
                         <div class="slds-truncate">{{index.name}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{index.pdocs}}/{{index.tdocs}}</div>
+                        <div class="slds-truncate"><system-display-number [number]="index.pdocs" system-display-number-nodigits></system-display-number>/<system-display-number [number]="index.tdocs" system-display-number-nodigits></system-display-number></div>
                     </td>
                     <td>
                         <div class="slds-truncate">{{index.stored}}</div>
