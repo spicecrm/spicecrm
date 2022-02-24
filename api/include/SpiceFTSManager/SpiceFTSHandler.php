@@ -1700,6 +1700,10 @@ class SpiceFTSHandler
                     $beanCounter += $indexedRecords;
                     if($indexedRecords == 0) break;
                 }
+                if ($beanCounter >= $packagesize) {
+                    echo "Indexing incomplete closed, because scheduler package size ($packagesize) exceeded. Will continue next time.\n";
+                    return true;
+                }
                 continue;
             }
 
