@@ -1673,8 +1673,7 @@ class SpiceFTSHandler
             $where = " WHERE module='" . $module . "'";
         }
         // END
-        $order = empty($module) ? ' ORDER BY index_priority ' : '';
-        $beans = $db->query("SELECT * FROM sysfts" . $where . $order);
+        $beans = $db->query("SELECT * FROM sysfts $where ORDER BY index_priority");
         echo "Starting indexing (maximal $packagesize records).\n";
 
         $bulkCommitSize = (SpiceConfig::getInstance()->config['fts']['bulkcommitsize'] ?: 1000);
