@@ -125,6 +125,16 @@ export class WorkflowDiagramService implements OnDestroy {
 
             modeling.updateLabel(e, task.name);
         });
+
+        const connections = this.getAllConnections();
+
+        this.tasks.filter(t => this.wfm.getType(t.tasktype).type == 'gateway_decision').forEach(t => {
+            this.wfm.getTaskNextTasks(t).forEach(entry => {
+                const connection = connections.find(c => c.source.businessObject.$attrs.taskId == t.id && c.target.businessObject.$attrs.taskId == entry.id);
+                if (!connection) return;
+                modeling.updateLabel(connection, entry.name);
+            });
+        });
     }
 
     /**
@@ -288,9 +298,7 @@ export class WorkflowDiagramService implements OnDestroy {
      */
     private cleanupConnections() {
 
-        const connections = this.bpmnJS.get('elementRegistry').filter(e => this.elementTypes.some(t => 'bpmn:SequenceFlow' == e.type));
-
-        connections.forEach(sequenceFlow => {
+        this.getAllConnections().forEach(sequenceFlow => {
 
             const previousTask = this.tasks.find(t => sequenceFlow.source.businessObject.$attrs.taskId == t.id);
             const nextTasks = this.wfm.getTaskNextTasks(previousTask);
@@ -409,7 +417,7 @@ export class WorkflowDiagramService implements OnDestroy {
         );
 
         this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnEventI) =>
-            this.updateTaskNameFromDiagram(event)
+            this.updateTaskLabels(event)
         );
 
         this.listenToDiagramEvent('shape.removed', (event: BpmnEventI) =>
@@ -499,12 +507,24 @@ export class WorkflowDiagramService implements OnDestroy {
      * @param event
      * @private
      */
-    private updateTaskNameFromDiagram(event: BpmnEventI) {
+    private updateTaskLabels(event: BpmnEventI) {
         this.tasks.some(task => {
-            if (event.context.element.businessObject.$attrs.taskId == task.id) {
+
+            const isConnection = event.context.element.businessObject.$type == 'bpmn:SequenceFlow';
+            const id = isConnection ? event.context.element.businessObject.sourceRef.$attrs.taskId : event.context.element.businessObject.$attrs.taskId;
+
+            if (id != task.id) return false;
+
+            if (!isConnection) {
                 task.name = event.context.newLabel;
-                return true;
+            } else {
+                this.wfm.getTaskNextTasks(task).some(entry => {
+                    if (entry.id != event.context.element.businessObject.targetRef.$attrs.taskId) return false;
+                    entry.name = event.context.newLabel;
+                })
             }
+
+            return true;
         });
     }
 
@@ -529,7 +549,7 @@ export class WorkflowDiagramService implements OnDestroy {
      */
     private cleanupNextTasks() {
 
-        const connections = this.bpmnJS.get('elementRegistry').filter(e => this.elementTypes.some(t => 'bpmn:SequenceFlow' == e.type));
+        const connections = this.getAllConnections();
 
         this.tasks.forEach(task => {
 
@@ -579,6 +599,14 @@ export class WorkflowDiagramService implements OnDestroy {
 
         this.diagramListeners.forEach(e => eventBus.off(e.event, e.listener));
         this.diagramListeners = [];
+    }
+
+    /**
+     * @return any[] all diagram connections
+     * @private
+     */
+    private getAllConnections(): BpmnElementI[] {
+        return this.bpmnJS.get('elementRegistry').filter(e => this.elementTypes.some(t => 'bpmn:SequenceFlow' == e.type));
     }
 
     /**

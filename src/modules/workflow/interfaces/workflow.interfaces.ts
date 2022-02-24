@@ -75,6 +75,7 @@ export interface BpmnElementI {
     source: BpmnElementI,
     target: BpmnElementI,
     businessObject: {
+        $type?: string;
         incoming?: any[];
         $attrs: {
             taskId: string

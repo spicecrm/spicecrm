@@ -55,7 +55,7 @@
                 <button (click)="openEditModal()" system-title="LBL_EDIT" class="slds-button slds-button--icon-border-filled slds-button--icon">
                     <system-button-icon icon="edit"></system-button-icon>
                 </button>
-                <button (click)="deleteWorkflow()" system-title="LBL_DELETE" class="slds-button slds-button--icon-border-filled slds-button--icon">
+                <button (click)="deleteWorkflow()" [disabled]="model.data.is_active" system-title="LBL_DELETE" class="slds-button slds-button--icon-border-filled slds-button--icon">
                     <system-button-icon icon="delete"></system-button-icon>
                 </button>
                 <button (click)="save()" system-title="LBL_SAVE" class="slds-button slds-button--icon-border-filled slds-button--icon">

@@ -33,7 +33,6 @@ import /*embed*/ {WorkflowManagerDetailTask} from "./components/workflowmanagerd
 import /*embed*/ {WorkflowManagerDetailTaskTaskpanel} from "./components/workflowmanagerdetailtasktaskpanel";
 import /*embed*/ {WorkflowManagerDetailTaskAssignmentpanel} from "./components/workflowmanagerdetailtaskassignmentpanel";
 import /*embed*/ {WorkflowManagerDetailTaskSystemactionsLine} from "./components/workflowmanagerdetailtasksystemactionsline";
-import /*embed*/ {WorkflowManagerDetailConditions} from "./components/workflowmanagerdetailconditions";
 import /*embed*/ {WorkflowPanel} from "./components/workflowpanel";
 
 import /*embed*/ {WorkflowPanelHeader} from "./components/workflowpanelheader";
@@ -49,7 +48,6 @@ import /*embed*/ {WorkflowPanelTaskDecision} from "./components/workflowpaneltas
 
 import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowcloseworkflowbutton";
 import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
-import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
 import {WorkflowManagerTaskEditModal} from "./components/workflowmanagertaskteditmodal";
 import {WorkflowManagerEditModal} from "./components/workflowmanagereditmodal";
 import {WorkflowManagerTaskTypesStart} from "./components/workflowmanagertasktypesstart";
@@ -67,7 +65,6 @@ import {WorkflowManagerTaskTypesEnd} from "./components/workflowmanagertasktypes
     ],
     declarations: [
         WorkflowManagerFieldsdropdown,
-        WorkflowManagerDetailConditionsLine,
         WorkflowManager,
         WorkflowManagerTaskTypesModal,
         WorkflowManagerDetailTasks,
@@ -76,7 +73,6 @@ import {WorkflowManagerTaskTypesEnd} from "./components/workflowmanagertasktypes
         WorkflowManagerDetailTaskTaskpanel,
         WorkflowManagerDetailTaskAssignmentpanel,
         WorkflowManagerDetailTaskSystemactionsLine,
-        WorkflowManagerDetailConditions,
         WorkflowPanel,
         WorkflowOpenWorkflowsPipe,
         WorkflowCompletedWorkflowsPipe,

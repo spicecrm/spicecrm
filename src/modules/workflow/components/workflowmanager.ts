@@ -213,10 +213,10 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                 this.model.data.isNew = false;
                 this.currentWorkflow.data.isNew = false;
 
-                this.toast.sendToast('data saved', 'success');
+                this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             },
             () => {
-                this.toast.sendAlert('saving changes failed!', 'error');
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
             }
         );
     }
@@ -226,6 +226,10 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      */
     public deleteWorkflow() {
 
+        if (this.model.data.is_active) {
+            return;
+        }
+
         this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('LBL_DELETE')).subscribe(answer => {
 
             if (!answer) return;
@@ -233,7 +237,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             if (this.model.data.isNew) {
                 this.removeCurrentWorkflowFromList();
                 this.currentWorkflowId = undefined;
-                this.toast.sendToast('Workflow deleted', 'success');
+                this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_DELETED'), 'success');
                 return;
             }
 
@@ -241,7 +245,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                 (res: { success: boolean, message: string }) => {
 
                     if (res.success) {
-                        this.toast.sendToast('Workflow deleted', 'success');
+                        this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_DELETED'), 'success');
                         this.removeCurrentWorkflowFromList();
                         this.currentWorkflowId = undefined;
                     } else {
@@ -249,7 +253,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                     }
                 },
                 () => {
-                    this.toast.sendToast('deleting Workflow failed!', 'error');
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                 }
             );
         });
@@ -371,7 +375,18 @@ export class WorkflowManager implements OnInit, AfterViewInit {
         if (value && !this.workflowManagerService.hasAllEndTasks()) {
             this.toast.sendToast(this.language.getLabel('MSG_MISSING_WORKFLOW_ENDING'), 'warning');
             this.model.data.is_active = false;
+            return;
         }
+
+        this.backend.postRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}/setIsActive/${this.model.data.is_active ? 1 : 0}`).subscribe(
+            () => {
+                this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+            },
+            () => {
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+            }
+        );
+
     }
 
     /**
