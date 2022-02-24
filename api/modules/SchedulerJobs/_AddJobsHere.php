@@ -42,7 +42,6 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\extensions\modules\QuestionnaireEvaluations\QuestionnaireEvaluation;
 use SpiceCRM\extensions\modules\Workflows\WorkflowScheduler;
-use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTaskScheduler;
 
 /**
  * Set up an array of Jobs with the appropriate metadata
@@ -88,11 +87,10 @@ $job_strings = [
 ];
 
 function workflowHandler(){
-    $schedulerHandler = new WorkflowTaskScheduler();
-    $schedulerHandler->runScheduledTasks();
 
     $workflowHandler = new WorkflowScheduler();
     $workflowHandler->runScheduledWorkflows();
+    $workflowHandler->runScheduledTasks();
     return true;
 }
 
