@@ -59,14 +59,14 @@ class SpiceACLObject extends SugarBean
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
-        if (is_admin($current_user)) {
+        if (SpiceUtils::isAdmin($current_user)) {
             foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
                 $seed = BeanFactory::getBean($module);
                 if ($seed && method_exists($seed, 'bean_implements') && $seed->bean_implements('ACL')) {
                     $typeRecord = $this->db->fetchByAssoc($this->db->query("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE module = '$module' AND acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE module = '$module' AND acl = 1"));
                     if (!$typeRecord) {
                         /*
-                        $newId = create_guid();
+                        $newId = SpiceUtils::createGuid();
                         $this->db->query("INSERT INTO spiceacltypes (id, module, status) VALUES('$newId', '$module', 'd')");
                         $typeRecords[] = [
                             'id' => $newId,

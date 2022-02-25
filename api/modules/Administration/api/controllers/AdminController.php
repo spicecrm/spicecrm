@@ -13,6 +13,8 @@ use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\UploadStream;
@@ -447,7 +449,7 @@ class AdminController
             if($lang['system_language']){
                 $language = $lang['language_code'];
                 $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-                $appListStrings[$language][] = return_app_list_strings_language($language);
+                $appListStrings[$language][] = SpiceUtils::returnAppListStringsLanguage($language);
                 $appLang[$language][] = $this->loadLanguage($language);
             }
         }
@@ -527,9 +529,9 @@ class AdminController
 
             if ($shouldSave) {
                 if (!file_exists("custom/$extpath")) {
-                    mkdir_recursive("custom/$extpath", true);
+                    FileUtils::mkdirRecursive("custom/$extpath", true);
                 }
-                $out = sugar_fopen("custom/$extpath/$name", 'w');
+                $out = SpiceFileUtils::spiceFopen("custom/$extpath/$name", 'w');
                 fwrite($out, $extension);
                 fclose($out);
             } else {
@@ -560,9 +562,9 @@ class AdminController
         $extension .= "\n?>";
         if ($shouldSave) {
             if (!file_exists("custom/$extpath")) {
-                mkdir_recursive("custom/$extpath", true);
+                FileUtils::mkdirRecursive("custom/$extpath", true);
             }
-            $out = sugar_fopen("custom/$extpath/$name", 'w');
+            $out = SpiceFileUtils::spiceFopen("custom/$extpath/$name", 'w');
             fwrite($out, $extension);
             fclose($out);
         } else {

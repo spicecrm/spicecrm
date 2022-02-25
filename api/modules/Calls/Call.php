@@ -10,6 +10,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\Leads\Lead;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -141,7 +142,7 @@ class Call extends SugarBean
         if (isset($def['default'])) {
             return $def['default'];
         } else {
-            $app = return_app_list_strings_language($GLOBALS['current_language']);
+            $app = SpiceUtils::returnAppListStringsLanguage($GLOBALS['current_language']);
             if (isset($def['options']) && isset($app[$def['options']])) {
                 $keys = array_keys($app[$def['options']]);
                 return $keys[0];

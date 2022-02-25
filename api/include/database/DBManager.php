@@ -43,6 +43,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 
@@ -632,7 +634,7 @@ protected function checkQuery($sql, $object_name = false)
 
 			if(isset($data[$field])) {
 				// clean the incoming value..
-				$val = from_html($data[$field]);
+				$val = DBUtils::fromHtml($data[$field]);
 			} else {
 				if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
 					$val = $fieldDef['default'];
@@ -1568,15 +1570,15 @@ protected function checkQuery($sql, $object_name = false)
 							if(isset($type) && $type=='int') {
 // CR1000452
 //								if(!empty($custom_fields[$fieldDef['name']]))
-//									$cstm_values[$fieldDef['name']] = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(from_html($val));
+//									$cstm_values[$fieldDef['name']] = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val));
 //								else
-									$values[$fieldDef['name']] = DBManagerFactory::getInstance()->quote(from_html($val));
+									$values[$fieldDef['name']] = DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val));
 							} else {
 // CR1000452
 //								if(!empty($custom_fields[$fieldDef['name']]))
-//									$cstm_values[$fieldDef['name']] = "'".\SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(from_html($val))."'";
+//									$cstm_values[$fieldDef['name']] = "'".\SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val))."'";
 //								else
-									$values[$fieldDef['name']] = "'". DBManagerFactory::getInstance()->quote(from_html($val))."'";
+									$values[$fieldDef['name']] = "'". DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val))."'";
 							}
 						}
 						if(!$built_columns){
@@ -1683,7 +1685,7 @@ protected function checkQuery($sql, $object_name = false)
 	public function countQuery()
 	{
 		if (self::$queryLimit != 0 && ++self::$queryCount > self::$queryLimit
-			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !is_admin(AuthenticationController::getInstance()->getCurrentUser()))) {
+			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !SpiceUtils::isAdmin(AuthenticationController::getInstance()->getCurrentUser()))) {
             $resourceManager = ResourceManager::getInstance();
             $resourceManager->notifyObservers('ERR_QUERY_LIMIT');
 		}
@@ -1697,7 +1699,7 @@ protected function checkQuery($sql, $object_name = false)
      */
 	protected function quoteInternal($string)
 	{
-		return from_html($string);
+		return DBUtils::fromHtml($string);
 	}
 
 	/**
@@ -2118,7 +2120,7 @@ protected function checkQuery($sql, $object_name = false)
     		if($fieldDef['name'] == 'deleted' && empty($bean->deleted)) continue;
 
     		if(isset($bean->$field)) {
-    			$val = from_html($bean->$field);
+    			$val = DBUtils::fromHtml($bean->$field);
     		} else {
     			continue;
     		}
@@ -2988,7 +2990,7 @@ protected function checkQuery($sql, $object_name = false)
         $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
 
         $values = [];
-        $values['id'] = $this->massageValue(create_guid(), $fieldDefs['id']);
+        $values['id'] = $this->massageValue(SpiceUtils::createGuid(), $fieldDefs['id']);
         // $values['transactionid']= LoggerManager::getLogger()->getTransactionId();
         $values['parent_id'] = $this->massageValue($bean->id, $fieldDefs['parent_id']);
         $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);

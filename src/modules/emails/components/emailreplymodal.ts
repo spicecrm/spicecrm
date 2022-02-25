@@ -119,6 +119,7 @@ export class EmailReplyModal implements OnInit {
         let htime = datetime ? datetime.format(this.userpreferences.getTimeFormat()) : "";
 
         let historytext = "";
+        historytext += "<br><br>";
         historytext += "<div class='spicecrm_quote'>";
         historytext += "<div dir='ltr' class='crm_attr'>";
         historytext += "<b>" + this.language.getLabel('LBL_FROM') + ":</b> <a href='mailto:" + this.parent.getField('from_addr') + "'>" + this.parent.getField('from_addr') + "</a>";

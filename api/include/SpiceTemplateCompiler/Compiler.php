@@ -468,7 +468,7 @@ class Compiler
                             }
                             $value = implode(', ', $values);
                             // unencodeMultienum can't be used because of a different language...
-                            //$value = implode(', ', unencodeMultienum($obj->{$parts[$level]}));
+                            //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                         }
                         break;
                     default:
@@ -613,7 +613,7 @@ class Compiler
                     }
                     $value = implode(', ', $values);
                     // unencodeMultienum can't be used because of a different language...
-                    //$value = implode(', ', unencodeMultienum($obj->{$parts[$level]}));
+                    //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                     break;
                 case 'date':
                     if(!empty($obj->{$part})){
@@ -660,7 +660,7 @@ class Compiler
                     break;
                 case 'currency':
                     // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                    $value = $raw ? $obj->{$part} : currency_format_number($obj->{$part}, ['symbol_space' => true] );
+                    $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
                     break;
                 case 'html':
                     $value = html_entity_decode($obj->{$part});
