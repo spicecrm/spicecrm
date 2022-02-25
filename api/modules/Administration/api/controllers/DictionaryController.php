@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class DictionaryController
 {
@@ -57,7 +58,7 @@ class DictionaryController
                 if (isset($field_defs['module']))
                     $returnArray[] = [
                         'path' => 'relate:' . $module . ':' . $field_name,
-                        'module' => translate($field_defs['module'], $module),
+                        'module' => SpiceUtils::translate($field_defs['module'], $module),
                         'bean' => $field_defs['module'],
                         'leaf' => false,
                         'label' => $field_defs['vname']
@@ -116,7 +117,7 @@ class DictionaryController
                     // 2011-10-15 if the kreporttype is set return it
                     //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
                     'type' => (isset($field_defs['kreporttype'])) ? $field_defs['kreporttype'] : $field_defs['type'],
-                    'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
+                    'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                     'leaf' => true,
                     'options' => $field_defs['options'],
                     'label' => $field_defs['vname']

@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\utils\SpiceUtils;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -698,7 +699,7 @@ class ImapHandler extends TransportHandler
     public function saveRelation($beanId, $module) {
         $query = "INSERT INTO `email_addr_bean_rel`
                 (`id`, `email_address_id`, `bean_id`, `bean_module`)
-                VALUES ('" . create_guid() . "', '" . $this->id . "', '" . $beanId . "', '" . $module . "')";
+                VALUES ('" . SpiceUtils::createGuid() . "', '" . $this->id . "', '" . $beanId . "', '" . $module . "')";
         $this->db->query($query);
     }
 }

@@ -6,6 +6,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
@@ -120,7 +121,7 @@ if(!isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) || 
     $db->query($query);
 
 // insert a new database row to show the rebuild relationships is done
-    $id = create_guid();
+    $id = SpiceUtils::createGuid();
     $gmdate = gmdate('Y-m-d H:i:s');
     $date_entered = DBManagerFactory::getInstance()->convert("'$gmdate'", 'datetime');
     $query = 'INSERT INTO versions (id, deleted, date_entered, date_modified, modified_user_id, created_by, name, file_version, db_version) ' . "VALUES ('$id', '0', $date_entered, $date_entered, '1', '1', 'Rebuild Relationships', '4.0.0', '4.0.0')";

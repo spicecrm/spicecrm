@@ -33,6 +33,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceFTSUtils
 {
@@ -138,7 +139,7 @@ class SpiceFTSUtils
                     $addFields = $seed->add_fts_metadata();
                     foreach ($addFields as $addFieldName => $addField) {
                         $modulePropertiesarray[] = [
-                            'fieldid' => create_guid(),
+                            'fieldid' => SpiceUtils::createGuid(),
                             'fieldname' => $addFieldName,
                             'indexfieldname' => $addFieldName,
                             'search' => $addField['search'],

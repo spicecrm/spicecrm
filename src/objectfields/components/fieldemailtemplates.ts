@@ -114,7 +114,8 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                         let selectedEle = virtualDocument.querySelectorAll(".spicecrm_quote");
 
                         // keep the html with the class "spicecrm_quote" and set the template
-                        this.model.setField(this.bodyField, data.body_html + selectedEle[0].outerHTML);
+                        let output = [data.body_html.slice(0, data.body_html.indexOf("</div></body></html>")),"<br><br>", selectedEle[0].outerHTML, data.body_html.slice(data.body_html.indexOf("</div></body></html>"))].join('');
+                        this.model.setField(this.bodyField, output);
                     } else {
                         // create a new document to manage the current html string (body)
                         let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");

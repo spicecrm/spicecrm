@@ -8,6 +8,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceACLProfilesRESTHandler
 {
@@ -65,7 +66,7 @@ class SpiceACLProfilesRESTHandler
         $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
 
-        $db->query("INSERT INTO spiceaclprofiles_spiceaclobjects (id, spiceaclprofile_id, spiceaclobject_id, date_modified, deleted) VALUES('".create_guid()."', '$id', '$objectid', '".$timedate->nowDb()."', '0')");
+        $db->query("INSERT INTO spiceaclprofiles_spiceaclobjects (id, spiceaclprofile_id, spiceaclobject_id, date_modified, deleted) VALUES('".SpiceUtils::createGuid()."', '$id', '$objectid', '".$timedate->nowDb()."', '0')");
         return true;
     }
 

@@ -28,6 +28,7 @@ class Mailbox extends SugarBean {
     const TRANSPORT_MAILGUN        = 'mailgun';
     const TRANSPORT_SENDGRID       = 'sendgrid';
     const TRANSPORT_PERSONAL_EWS   = 'personalEws';
+    const TRANSPORT_IMPERSONATED_EWS = 'impersonatedEws';
     const TRANSPORT_GMAIL          = 'gmail';
     const TRANSPORT_PERSONAL_GMAIL = 'personalGmail';
 

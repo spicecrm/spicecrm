@@ -34,12 +34,12 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-
+use SpiceCRM\includes\utils\SpiceFileUtils;
 
 
 global  $mod_strings;
 
-$search_dir=sugar_cached('');
+$search_dir = SpiceFileUtils::spiceCached('');
 
 $src_file = $search_dir . 'modules/unified_search_modules.php';
 if(file_exists($src_file)) {

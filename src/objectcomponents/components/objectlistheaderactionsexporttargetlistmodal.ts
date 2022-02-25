@@ -37,7 +37,8 @@ export class ObjectListHeaderActionsExportTargetlistModal {
     }
 
     get itemcount() {
-        return this.modellist.listData.totalcount;
+        let selectedCount = this.modellist.getSelectedCount();
+        return selectedCount ? selectedCount : this.modellist.listData.totalcount;
     }
 
     public export() {
