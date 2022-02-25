@@ -32,7 +32,7 @@ import /*embed*/ {ObjectActionMarkSentBeanButton} from "./components/objectactio
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule,
+        DirectivesModule
     ],
     declarations: [
         OutputTemplatesEditor,

@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
@@ -100,7 +101,7 @@ class SpiceFTSBeanHandler
         foreach ($this->indexProperties as $indexProperty) {
             $indexValue = $this->getFieldValue($indexProperty);
             if ($indexValue['fieldvalue'] == '0' || !empty($indexValue['fieldvalue'])) {
-                $indexArray[$indexValue['fieldname']] = from_html($indexValue['fieldvalue']); //use from_html to avoid things like ' being translated to &#039 on bean::save()
+                $indexArray[$indexValue['fieldname']] = DBUtils::fromHtml($indexValue['fieldvalue']); //use from_html to avoid things like ' being translated to &#039 on bean::save()
 
                 // handling for the activities
                 if (!empty($indexProperty['activitytype'])) {
@@ -131,7 +132,7 @@ class SpiceFTSBeanHandler
                             }
                             break;
                         default:
-                            $indexArray['_' . $indexProperty['activitytype']] = from_html($indexValue['fieldvalue']);
+                            $indexArray['_' . $indexProperty['activitytype']] = DBUtils::fromHtml($indexValue['fieldvalue']);
                             break;
                     }
                 }
@@ -167,7 +168,7 @@ class SpiceFTSBeanHandler
         }
 
         // add the summary text
-        $indexArray['summary_text'] = from_html($this->seed->get_summary_text()); //use from_html to avoid things like ' being translated to &#039 on bean::save()
+        $indexArray['summary_text'] = DBUtils::fromHtml($this->seed->get_summary_text()); //use from_html to avoid things like ' being translated to &#039 on bean::save()
 
         // call module funtion
         if (method_exists($this->seed, 'add_fts_fields')) {
