@@ -1354,10 +1354,12 @@ class Email extends SugarBean
     function findInlineImages(): DOMNodeList
     {
         $doc = new DOMDocument();
-        $doc->loadHTML($this->body);
+        // load html and use utf-8 encoding
+        $doc->loadHTML('<?xml encoding="utf-8"?>' . $this->body);
         $selector = new DOMXPath($doc);
 
-        return $selector->query("//img[contains(@src, 'data:image/png;base64,')]");
+        // query all inline images. some images include charset utf-8 in the src
+        return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
     }
 
     public function addDocumentAttachment(DocumentRevision $doc): void {
