@@ -934,7 +934,7 @@ class User extends Person
         $dtObj->setTimestamp(time());
         $now = Timedate::getInstance()->asDb($dtObj);
 
-        $row = $db->fetchOne( sprintf('SELECT login_blocked, TIMESTAMPDIFF( SECOND, "'.$now.'", login_blocked_until ) as blocked_seconds FROM users WHERE user_name = "%s"', $db->quote( $username )));
+        $row = $db->fetchOne( sprintf("SELECT login_blocked, TIMESTAMPDIFF( SECOND, '%s', login_blocked_until ) as blocked_seconds FROM users WHERE user_name = '%s'", $now, $db->quote( $username )));
         if ( $row['login_blocked'] ) return true;
         if ( $row['blocked_seconds'] > 0 ) return ceil( $row['blocked_seconds']/60 );
         return false;
