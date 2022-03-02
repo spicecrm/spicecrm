@@ -1184,7 +1184,7 @@ class SugarBean
         $records = [];
 
         // CR1000308
-        if (!$this->db->tableExists($this->get_audit_table_name())) {
+        if(!$this->is_AuditEnabled()){
             return $records;
         }
 
