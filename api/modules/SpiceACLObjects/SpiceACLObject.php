@@ -231,6 +231,7 @@ class SpiceACLObject extends SugarBean
 
                 // get the actions
                 $objectActions = $db->query("SELECT spiceaclaction_id FROM spiceaclobjectactions WHERE spiceaclobject_id='{$aclobject['id']}'");
+                $this->authObjects[$aclobject['id']]['objectactions'] = [];
                 while ($objectAction = $db->fetchByAssoc($objectActions))
                     $this->authObjects[$aclobject['id']]['objectactions'][] = $objectAction['spiceaclaction_id'];
 
@@ -268,14 +269,14 @@ class SpiceACLObject extends SugarBean
     /*
      * function t check if an object matches a bean
      */
-    public function matchBean2Object($bean, $activity = '', $objectData)
+    public function matchBean2Object($bean, $activity = '', $objectData = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $territory = BeanFactory::getBean('SpiceACLTerritories');
 
         // check the activity .. if it is noit found .. cointinue
-        if ($activity != '' && $this->matchObject2Activity($activity, $objectData) === false)
+        if (!empty($activity) && $this->matchObject2Activity($activity, $objectData) === false)
             return false;
 
         // check the obejctfield values if this profile qualifies

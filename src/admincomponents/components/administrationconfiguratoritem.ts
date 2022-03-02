@@ -11,7 +11,7 @@ import {administrationconfigurator} from '../services/administrationconfigurator
 
 @Component({
     selector: '[administration-configurator-item]',
-    templateUrl: './src/admincomponents/templates/administrationconfiguratoritem.html'
+    templateUrl: '../../admincomponents/templates/administrationconfiguratoritem.html'
 })
 export class AdministrationConfiguratorItem {
 
