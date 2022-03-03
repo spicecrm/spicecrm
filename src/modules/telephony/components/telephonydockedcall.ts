@@ -43,13 +43,6 @@ export class TelephonyDockedCall {
      */
     @Input() public calldata: telephonyCallI;
 
-    /**
-     * indicates that we have loaded the phone lib
-     *
-     * @private
-     */
-    public phonelibloaded: boolean = false;
-
     public isClosed: boolean = false;
 
     /**
@@ -87,7 +80,6 @@ export class TelephonyDockedCall {
                 public cdref: ChangeDetectorRef,
                 public ViewContainerRef: ViewContainerRef,
                 public metadata: metadata) {
-        this.loadPhoneLib();
 
         // initialize the view and set it into edit mode
         // this is required for the extended modal that is using the same injector
@@ -95,14 +87,6 @@ export class TelephonyDockedCall {
         this.view.setEditMode();
     }
 
-    /**
-     * loads the phone lib
-     */
-    public loadPhoneLib() {
-        this.libloader.loadLib('libphonenumber').subscribe(loaded => {
-            this.phonelibloaded = true;
-        });
-    }
 
     /**
      * getter for the call icon dependent on the status of the call
