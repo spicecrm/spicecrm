@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\KReports\KReport;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
@@ -98,7 +99,8 @@ class KReportsController
     public function getReportCategories() {
         $db = DBManagerFactory::getInstance();
         $list = [];
-        if($db->tableExists('kreportcategories')) {
+        $spice_config = SpiceConfig::getInstance()->config;
+        if($spice_config['system']['no_table_exists_check'] === true || $db->tableExists('kreportcategories')) {
             $query = $db->query("SELECT * FROM kreportcategories WHERE deleted <> 1");
             while ($row = $db->fetchByAssoc($query)) $list[] = $row;
         }
