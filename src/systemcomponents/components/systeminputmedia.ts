@@ -423,18 +423,14 @@ export class SystemInputMedia implements OnDestroy {
 
         let image = this.imageElement.nativeElement;
 
-        this.libloader.loadLib('cropper').subscribe(
-            (next) => {
-                if (this.cropper) this.cropper.destroy();
-                this.cropper = new Cropper(image, {
-                    autoCrop: false,
-                    viewMode: 1,
-                    toggleDragModeOnDblclick: this.allowCropping,
-                    dragMode: this.allowCropping ? 'crop' : 'move'
-                });
-                this.cropper.crop();
-            }
-        );
+        if (this.cropper) this.cropper.destroy();
+        this.cropper = new Cropper(image, {
+            autoCrop: false,
+            viewMode: 1,
+            toggleDragModeOnDblclick: this.allowCropping,
+            dragMode: this.allowCropping ? 'crop' : 'move'
+        });
+        this.cropper.crop();
 
         image.addEventListener('ready', () => {
             if (this.cropper) {
