@@ -927,17 +927,22 @@ class User extends Person
      * @param $username The name of the user.
      * @return True if permanent or the amount of minutes in case the blocking is for a specific time.
      */
-    public static function isBlocked( $username ) {
+    public static function isBlocked( $username )
+    {
         $db = DBManagerFactory::getInstance();
 
-        $dtObj=new \DateTime();
-        $dtObj->setTimestamp(time());
-        $now = Timedate::getInstance()->asDb($dtObj);
+        $row = $db->fetchOne( sprintf("SELECT login_blocked, login_blocked_until FROM users WHERE user_name = '%s'", $db->quote( $username )));
 
-        $row = $db->fetchOne( sprintf('SELECT login_blocked, TIMESTAMPDIFF( SECOND, "'.$now.'", login_blocked_until ) as blocked_seconds FROM users WHERE user_name = "%s"', $db->quote( $username )));
-        if ( $row['login_blocked'] ) return true;
-        if ( $row['blocked_seconds'] > 0 ) return ceil( $row['blocked_seconds']/60 );
-        return false;
+        if ( $row['login_blocked'] ) return true; # The user is blocked permanently.
+        if ( $row['login_blocked_until'] === null ) return false; # The user (is not blocked permanently and) is not blocked temporarily.
+
+        # The user is blocked temporarily, so calculate the remaining blocking time:
+        $remainingBlockingSeconds =
+            ( new \DateTime( $row['login_blocked_until'], new \DateTimeZone('UTC')))->getTimestamp()
+            - ( new \DateTime( 'NOW', new \DateTimeZone('UTC')))->getTimestamp();
+        if ( $remainingBlockingSeconds > 0 ) return ceil( $remainingBlockingSeconds/60 ); # return the remaining blocking time (in minutes)
+
+        return false; # The user is not blocked any more (login_blocked_until is in the past).
     }
 
     /**
