@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\Logger;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use Swift_Message;
@@ -114,7 +115,8 @@ class APILogEntryHandler
     public function writeOutogingLogEntry(bool $force = false): void {
         $this->logging = false;
         $logEntry = false;
-        if (!$force && DBManagerFactory::getInstance()->tableExists('sysapilogconfig')) {
+        $spice_config = SpiceConfig::getInstance()->config;
+        if (!$force && ($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance()->tableExists('sysapilogconfig'))) {
             // check if this request has to be logged by some rules...
             $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE
               (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND
