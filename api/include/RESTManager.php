@@ -130,7 +130,13 @@ class RESTManager
         $this->app->options('/{routes:.+}', function ($request, $response, $args) {
             return $response;
         });
-        $this->app->add(TransactionMiddleware::class);
+
+        if(class_exists('\SpiceCRM\custom\includes\Middleware\TransactionMiddleware')){
+            $this->app->add(\SpiceCRM\custom\includes\Middleware\TransactionMiddleware::class);
+        } else {
+            $this->app->add(TransactionMiddleware::class);
+        }
+
 
         $this->app->add(function ($req, $next) {
             return $next->handle($req)
