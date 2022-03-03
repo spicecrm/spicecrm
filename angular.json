@@ -22,7 +22,9 @@
             "optimization": false,
             "styles": [
               "vendor/sldassets/styles/salesforce-lightning-design-system.min.css",
-              "assets/css/spicecrm.css"
+              "assets/css/spicecrm.css",
+              "node_modules/cropperjs/dist/cropper.min.css",
+              "node_modules/croppie/croppie.css"
             ],
             "scripts": [
               "node_modules/zone.js/dist/zone.min.js",
@@ -30,7 +32,10 @@
               "node_modules/moment/min/moment.min.js",
               "node_modules/moment/min/locales.min.js",
               "node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
-              "node_modules/socket.io-client/dist/socket.io.min.js"
+              "node_modules/socket.io-client/dist/socket.io.min.js",
+              "node_modules/libphonenumber-js/bundle/libphonenumber-js.min.js",
+              "node_modules/cropperjs/dist/cropper.min.js",
+              "node_modules/croppie/croppie.min.js"
             ]
           },
           "configurations": {
