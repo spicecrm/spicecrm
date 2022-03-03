@@ -25,13 +25,12 @@
               "assets/css/spicecrm.css"
             ],
             "scripts": [
-              "vendor/zone.js/zone.umd.min.js",
-              "vendor/underscorejs/underscore-min.js",
-              "vendor/reflect-metadata/Reflect.js",
-              "vendor/moment/moment.min.js",
-              "vendor/moment/locales.min.js",
-              "vendor/moment/moment-timezone.min.js",
-              "vendor/socket.io-client/socket.io.js"
+              "node_modules/zone.js/dist/zone.min.js",
+              "node_modules/underscore/underscore-min.js",
+              "node_modules/moment/min/moment.min.js",
+              "node_modules/moment/min/locales.min.js",
+              "node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
+              "node_modules/socket.io-client/dist/socket.io.min.js"
             ]
           },
           "configurations": {
