@@ -221,9 +221,7 @@ abstract class SugarRelationship
         //Unset the ID since we are using it to update the row
         if (isset($values['id'])) unset($values['id']);
         foreach ($values as $field => $val) {
-            if(is_null($val)) {
-                $newVals[] = "$field=null";
-            } else {
+            if(!is_null($val)) {
                 $newVals[] = "$field='$val'";
             }
 
