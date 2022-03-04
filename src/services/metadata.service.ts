@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Observable, of, Subject, throwError} from "rxjs";
+import {from, Observable, of, Subject, throwError} from "rxjs";
 import {
     Compiler,
     ComponentFactory,
@@ -19,7 +19,6 @@ import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {SystemComponentContainer} from "../systemcomponents/components/systemcomponentcontainer";
-import {fromPromise} from "rxjs/internal-compatibility";
 import {map} from "rxjs/operators";
 import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
 import {SystemComponentMissing} from "../systemcomponents/components/systemcomponentmissing";
@@ -250,12 +249,12 @@ export class metadata {
     public loadComponentFactory(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentFactory<any>> {
 
         if (this.componentFactories[moduleMetadata.name]) {
-            return fromPromise(
+            return from(
                 Promise.resolve(this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName))
             );
         }
 
-        return fromPromise(
+        return from(
             this.importModule(moduleMetadata))
             .pipe(
                 map(moduleFactory => {
@@ -349,7 +348,7 @@ export class metadata {
 
         const componentContainer = this.loadComponentContainer(component, vcr, injector);
 
-        componentContainer.instance.containerRef.toPromise().then(vcr => {
+        componentContainer.instance.containerRef.subscribe(vcr => {
             componentContainer.changeDetectorRef.detectChanges();
             this.addComponentDirect(component, vcr).subscribe(componentRef => {
                 resSubject.next(componentRef);
@@ -1452,7 +1451,7 @@ export class metadata {
             observables.push(this.loadLib(script));
         });
 
-        let sub = new Subject();
+        let sub = new Subject<void>();
         let cnt = 0;
         for (let o of observables) {
             o.subscribe(

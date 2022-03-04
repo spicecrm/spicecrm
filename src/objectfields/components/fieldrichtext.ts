@@ -14,6 +14,7 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
+import {lastValueFrom} from "rxjs";
 
 declare var _;
 
@@ -204,8 +205,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
 
         const signatureContent: string = this.configurationService.getData('mailbox_signature_' + mailboxId);
         if (!signatureContent) {
-            return this.backend.get('Mailboxes', mailboxId)
-                .toPromise()
+            return lastValueFrom(this.backend.get('Mailboxes', mailboxId))
                 .then((data: any) => {
                     if (!data.email_signature) return;
                     this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
