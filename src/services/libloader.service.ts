@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from "@angular/core";
-import {Subject, Observable, of} from "rxjs";
+import {Subject, Observable, of, lastValueFrom} from "rxjs";
 import {configurationService} from "./configuration.service";
 
 /**
@@ -67,7 +67,7 @@ export class libloader {
                     cnt++;
                     // console.log("completed...", cnt == observables.length);
                     if (cnt == observables.length) {
-                        sub.next();
+                        sub.next(true);
                         sub.complete();
                     }
                 },
@@ -148,7 +148,7 @@ export class libloader {
                 }
             );
         }
-        return sub.toPromise();
+        return lastValueFrom(sub.asObservable());
     }
 
     /**
@@ -184,7 +184,7 @@ export class libloader {
      */
     public async loadScriptDirect(src: string): Promise<boolean> {
         if (this.loadedDirect.indexOf(src) != -1) {
-            return of(true).toPromise();
+            return Promise.resolve(true);
         } else {
             let sub = new Subject<boolean>();
             // create the elemnt as script or stylesheet
@@ -218,7 +218,7 @@ export class libloader {
                 sub.complete();
             };
             document.getElementsByTagName("head")[0].appendChild(element);
-            return sub.toPromise();
+            return lastValueFrom(sub.asObservable());
         }
     }
 
