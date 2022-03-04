@@ -49,7 +49,6 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @output datePicked: moment
     */
     @Output() public datePicked: EventEmitter<any> = new EventEmitter<any>();
-
     public curDate: any = new moment();
     public secondDate: any = new moment();
 
@@ -58,15 +57,22 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
     }
 
-    get currentYear(): any {
-        return {
-            id: this.curDate.year(),
-            name: this.curDate.year()
-        };
+    public _currentYear: { id: string, name: string, group?: string };
+
+    /**
+     * return the current year
+     */
+    get currentYear(): { id: string, name: string } {
+        return this._currentYear;
     }
 
-    set currentYear(value) {
-        this.curDate.year(value.length ? value : value.name);
+    /**
+     * set the current year and rebuild the grid
+     * @param value
+     */
+    set currentYear(value: { id: string, name: string }) {
+        this._currentYear = value;
+        this.curDate.year(value.name);
         this.buildGrids();
     }
 

@@ -458,8 +458,8 @@ export class backend {
         request_params: backendRequestParams,
         file_name: string = null,
         file_type: string = null
-    ): Observable<any> {
-        let sub = new Subject<any>();
+    ): Observable<void> {
+        let sub = new Subject<void>();
 
         this.getLinkToDownload(
             request_params.route,
