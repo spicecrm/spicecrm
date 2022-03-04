@@ -7,6 +7,9 @@ import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {configurationService} from "../../../services/configuration.service";
+import {backend} from "../../../services/backend.service";
+import {lastValueFrom} from "rxjs";
 
 @Component({
     selector: "knowledge-browser-details-container-left",
@@ -18,11 +21,14 @@ export class KnowledgeBrowserDetailsContainerLeft {
     @Input("breadcrumbs") public breadcrumbs: any[] = [];
     @Input("html") public html: any = '';
     @HostBinding('style') public height: string = '100%';
+    private templates: any[] = [];
 
     constructor(public language: language,
                 public model: model,
                 public modal: modal,
                 public sanitizer: DomSanitizer,
+                public configuration: configurationService,
+                public backend: backend,
                 public viewContainerRef: ViewContainerRef,
                 public knowledgeService: KnowledgeService) {
     }
@@ -74,7 +80,39 @@ export class KnowledgeBrowserDetailsContainerLeft {
         return item.id;
     }
 
-    public print() {
-        this.modal.openModal('ObjectActionOutputBeanModal', true, this.viewContainerRef.injector);
+    /**
+     * open pdf output modal with the document templates
+     */
+    public async print() {
+
+        let outputTemplates = this.templates.length > 0 ? this.templates : this.configuration.getData('OutputTemplates');
+
+        if (!outputTemplates || !outputTemplates[this.model.module]) {
+
+            const loadingModal = this.modal.await('LBL_LOADING');
+
+            outputTemplates = await lastValueFrom(this.backend.getRequest('module/OutputTemplates/formodule/' + this.model.module, {})).catch(() => {
+                loadingModal.next(false);
+                loadingModal.complete();
+            });
+
+            this.templates = outputTemplates;
+
+            this.configuration.setData('OutputTemplates', outputTemplates);
+            loadingModal.next(true);
+            loadingModal.complete();
+        }
+
+        if (this.templates.length > 0) {
+            // sort the templates
+            this.templates.sort((a, b) => a.name > b.name ? 1 : -1);
+
+            // open the modal
+            this.modal.openModal('ObjectActionOutputBeanModal', true, this.viewContainerRef.injector).subscribe(outputModal => {
+                outputModal.instance.templates = this.templates;
+            });
+        } else {
+            this.modal.info('No Templates Found', 'there are no Output templates defined for the Module');
+        }
     }
 }
