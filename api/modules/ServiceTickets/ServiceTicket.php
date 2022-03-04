@@ -188,6 +188,7 @@ class ServiceTicket extends SugarBean
      */
     public function determineNotificationStatus()
     {
+        return 0;
         $unreadEmailCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM emails WHERE parent_id = '{$this->id}' and status = 'unread' AND deleted = 0"));
         $unreadNoteCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM servicetickets WHERE serviceticket_id = '{$this->id}' and servicenote_status = 'unread' AND deleted = 0"));
         return $unreadEmailCount['total'] > 0 || $unreadNoteCount['total'] > 0 ? 1 : 0;
