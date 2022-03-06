@@ -697,8 +697,8 @@ class ImapHandler extends TransportHandler
      * @param $module
      */
     public function saveRelation($beanId, $module) {
-        $query = "INSERT INTO `email_addr_bean_rel`
-                (`id`, `email_address_id`, `bean_id`, `bean_module`)
+        $query = "INSERT INTO email_addr_bean_rel
+                (id, email_address_id, bean_id, bean_module)
                 VALUES ('" . SpiceUtils::createGuid() . "', '" . $this->id . "', '" . $beanId . "', '" . $module . "')";
         $this->db->query($query);
     }
