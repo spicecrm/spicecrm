@@ -30,6 +30,7 @@
     "croppie": "^2.6.5"
   },
   "devDependencies": {
+    "@angular-devkit/core": "^13.2.4",
     "@angular-builders/custom-webpack": "^13.0.0",
     "@angular/cli": "^13.2.5",
     "@angular/compiler-cli": "^13.2.4",
