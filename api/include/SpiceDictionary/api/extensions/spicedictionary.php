@@ -179,7 +179,23 @@ $routes = [
                 'example' => '',
                 'required' => false
             ]
-        ]
+        ],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/dictionary/spicewords',
+        'class'       => SpiceDictionaryController::class,
+        'function'    => 'getSpiceWords',
+        'description' => 'will get the list of database related keywords and reserved words',
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/dictionary/spicewords/reservedwords',
+        'class'       => SpiceDictionaryController::class,
+        'function'    => 'checkSpiceWordsInVardefs',
+        'description' => 'will check on current column names that are reserved word. USed only in MySQL. ONly for dev purpose. Will be removed.',
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
     ],
 
 ];
