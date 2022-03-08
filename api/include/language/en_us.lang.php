@@ -2145,6 +2145,12 @@ $app_list_strings['lmstrainings_status_dom'] = [
 ];
 $app_list_strings['lmstrainingunits_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
 $app_list_strings['lmstrainingunitcontents_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
+$app_list_strings['lmstrainingunitcontents_type_dom'] = [
+    'text' => 'Text',
+    'video' => 'Video',
+    'audio' => 'Audio',
+    'image' => 'Image'
+];
 $app_list_strings['lmslevel_dom'] = [
     1 =>  'Level 1',
     2 =>  'Level 2',
