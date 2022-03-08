@@ -35,6 +35,8 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
@@ -211,6 +213,46 @@ class SpiceDictionaryController
 
         }
 
+        return $res->withJson($retArray);
+    }
+
+
+    /**
+     * list all vardefs named after a reserved word
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getSpiceWords(Request $req, Response $res, array $args): Response{
+        $wording = new SpiceUIWordsLoader();
+        return $res->withJson($wording->getWords());
+    }
+    /**
+     * list all vardefs named after a reserved word
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function checkSpiceWordsInVardefs(Request $req, Response $res, array $args): Response{
+        $retArray = [];
+        $reservedWords = SpiceUIWordsLoader::getWords('db', null);
+        $qTables = "SHOW TABLES FROM ".SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $db = DBManagerFactory::getInstance();
+        $resTables = $db->query($qTables);
+        while($table = $db->fetchRow($resTables)){
+            $tableName = $table['Tables_in_'.SpiceConfig::getInstance()->config['dbconfig']['db_name']];
+            $qCol = "SHOW COLUMNS FROM ".$tableName;
+            $resCols = $db->query($qCol);
+            while($col = $db->fetchByAssoc($resCols)){
+                if(in_array(strtoupper($col['Field']), $reservedWords['reservedwords'])){
+                    $retArray[$tableName][] = $col['Field'];
+                }
+            }
+        }
         return $res->withJson($retArray);
     }
 
