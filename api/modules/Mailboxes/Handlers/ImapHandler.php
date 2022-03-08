@@ -456,6 +456,7 @@ class ImapHandler extends TransportHandler
      */
     private function testSmtpConnection($testEmail)
     {
+        $response = [];
         $smtp_status = $this->checkConfiguration($this->outgoing_settings);
         if (!$smtp_status['result']) {
             $response = [
@@ -469,7 +470,7 @@ class ImapHandler extends TransportHandler
         try {
             $this->transport_handler->getTransport()->start();
 
-            $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail));
+            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail));
             $response['result'] = true;
         } catch (Swift_TransportException $e) {
             $response['errors'] = $e->getMessage();
