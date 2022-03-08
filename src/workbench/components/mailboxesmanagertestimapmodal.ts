@@ -17,7 +17,7 @@ import {view} from "../../services/view.service";
 export class MailboxesmanagerTestIMAPModal {
 
     public self: any = {};
-    public validConnection: boolean = false;
+    public validConnection: boolean|null = null;
     public isvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
     public testemailaddress: string = "";
     public imapStatus: boolean = false;
@@ -83,12 +83,8 @@ export class MailboxesmanagerTestIMAPModal {
             });
     }
 
-    public cancel() {
-        this.self.destroy();
-    }
-
     public close() {
-        this.isvalid.emit(this.validConnection);
+        if ( this.validConnection !== null ) this.isvalid.emit(this.validConnection);
         this.self.destroy();
     }
 
@@ -99,4 +95,12 @@ export class MailboxesmanagerTestIMAPModal {
     get smtpIcon() {
         return this.smtpStatus ? "check" : "close";
     }
+
+    /**
+     * handles when esc is pressed on the modal
+     */
+    public onModalEscX() {
+        this.close();
+    }
+
 }
