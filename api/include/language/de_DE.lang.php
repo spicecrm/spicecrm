@@ -1854,6 +1854,14 @@ $app_list_strings['lmslevel_dom'] = [
     2 =>  'Level 2',
     3 =>  'Level 3',
 ];
+$app_list_strings['lmstrainingunitcontents_type_dom'] = [
+    'text' => 'Text',
+    'video' => 'Video',
+    'audio' => 'Audio',
+    'image' => 'Bild'
+];
+
+
 $app_list_strings['lmslevel_language_dom'] = [
     'A1' =>  'A1',
     'A2' =>  'A2',
