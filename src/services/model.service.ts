@@ -1314,6 +1314,9 @@ export class model implements OnDestroy {
                 this.data[fieldname] = presets[fieldname];
             }
 
+            // run the evaluation rules
+            this.evaluateValidationRules();
+
             this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
                 if (editModalRef) {
                     editModalRef.instance.model.isNew = true;
