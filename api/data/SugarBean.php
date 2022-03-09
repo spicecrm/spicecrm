@@ -413,6 +413,7 @@ class SugarBean
         // only if the current user is an admin
         if (!$current_user->isAdmin()) return [];
 
+        $ret = [];
         $fields = $this->getFieldDefinitions();
         foreach ($fields as $field => $data) {
             $ret[$field] = $this->{$field};
