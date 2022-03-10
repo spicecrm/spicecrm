@@ -1912,7 +1912,7 @@ class SpiceBean
      */
     function process_list_query($query, $row_offset, $limit = -1, $max_per_page = -1)
     {
-        $db = DBManagerFactory::getInstance('listviews');
+        $db = DBManagerFactory::getInstance();
         /**
          * if the row_offset is set to 'end' go to the end of the list
          */
@@ -2765,7 +2765,7 @@ class SpiceBean
     function build_related_list($query, &$template, $row_offset = 0, $limit = -1)
     {
         LoggerManager::getLogger()->debug("Finding linked records $this->_objectname: " . $query);
-        $db = DBManagerFactory::getInstance('listviews');
+        $db = DBManagerFactory::getInstance();
 
         if (!empty($row_offset) && $row_offset != 0 && !empty($limit) && $limit != -1) {
             $result = $db->limitQuery($query, $row_offset, $limit, true, "Error retrieving $template->_objectname list: ");
