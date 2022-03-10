@@ -35,7 +35,7 @@ class ConfigTransferController
 
     static private $allTablenamesOfDB = null;
     static private $blacklistedTables = [];
-    static private $selectableTables = [];
+    static public $selectableTables = [];
 
     static private $backupFolder = 'backups/configtransfer/';
     static private $backupPrefix = 'configtransfer-backup-';
