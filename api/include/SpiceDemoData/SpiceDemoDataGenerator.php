@@ -94,7 +94,7 @@ class SpiceDemoDataGenerator
             $seed->save();
 
             $seed->load_relationship('accounts');
-            $account = $db->fetchByAssoc($db->query("SELECT id FROM accounts WHERE billing_address_country = '$seed->primary_address_country' ORDER BY RAND() LIMIT 1"));
+            $account = $db->fetchByAssoc($db->limitQuery("SELECT id FROM accounts WHERE billing_address_country = '$seed->primary_address_country' ORDER BY RAND()", 0, 1));
             $seed->accounts->add($account['id']);
         }
     }
@@ -174,7 +174,7 @@ class SpiceDemoDataGenerator
 
             // relate to random account
             $seed->load_relationship('accounts');
-            $account = $db->fetchByAssoc($db->query("SELECT id, name FROM accounts WHERE deleted=0 ORDER BY RAND() LIMIT 1"));
+            $account = $db->fetchByAssoc($db->limitQuery("SELECT id, name FROM accounts WHERE deleted=0 ORDER BY RAND()", 0, 1));
 
             // save the bean
             $seed->name = $account['name'];
