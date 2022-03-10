@@ -356,7 +356,7 @@ class SpiceDictionaryVardefs  {
 
     /**
      * create full indices for a dictionary
-     *
+     * we can't group_concat on sysdi.name since group_concat() is not cross compatible
      * @param string $dictionaryId
      * @param string $tablename
      * @return array
@@ -364,21 +364,27 @@ class SpiceDictionaryVardefs  {
     public static function loadDictionaryIndices($dictionaryId, $tablename){
         $db = DBManagerFactory::getInstance();
         $indices = [];
-        $q = "SELECT sysdx.name, sysdx.indextype, GROUP_CONCAT(sysdi.name) indexfields
+        $q = "SELECT sysdx.name, sysdx.indextype, sysdi.name indexfield
         FROM sysdictionaryindexes sysdx
         LEFT JOIN sysdictionaryindexitems sysdxi ON sysdxi.sysdictionaryindex_id = sysdx.id
         LEFT JOIN sysdictionarydefinitions sysd ON sysd.id = sysdx.sysdictionarydefinition_id      
         LEFT JOIN sysdictionaryitems sysdi on sysdi.id = sysdxi.sysdictionaryitem_id 
         LEFT JOIN sysdictionaryitems sysdiref on sysdiref.sysdictionarydefinition_id = sysdi.sysdictionary_ref_id
         WHERE sysdx.sysdictionarydefinition_id = '{$dictionaryId}'
-        GROUP BY sysdx.id
-        ORDER BY sysdx.name ASC
+        ORDER BY sysdx.name ASC, sysdx.indextype ASC
 ";
 
         if($res = $db->query($q)){
+            // loop a first time to reorganize data
             while($row = $db->fetchByAssoc($res)){
+                $defRows[$row['name']][$row['indextype']]['indexfields'][] = $row['indexfield'];
+            }
+
+            // loop data to write indices
+            foreach($defRows as $indexName => $def){
                 $indices[] = SpiceDictionaryVardefsParser::parseIndexDefinition($row, $tablename);
             }
+
         }
         return $indices;
     }
