@@ -91,7 +91,6 @@ class EmailSchedule extends SugarBean
 
     /**
      * retrieve, then send queued emails, log them as sent
-     * called from _AddJobsHere.php
      * @return bool
      */
     public function sendQueuedEmails()
