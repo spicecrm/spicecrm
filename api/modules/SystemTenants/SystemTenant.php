@@ -4,13 +4,14 @@
 namespace SpiceCRM\modules\SystemTenants;
 
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 class SystemTenant extends SpiceBean
 {
@@ -35,12 +36,16 @@ class SystemTenant extends SpiceBean
 
         // unset the fts settings
         unset($_SESSION['SpiceFTS']);
+
+        AuthenticationController::getInstance()->getCurrentUser()->reloadPreferences();
     }
 
     /**
      * initializes a new tenant, sets up the database and builds all required tables
+     * @throws Exception
      */
-    public function initializeTenant(){
+    public function initializeTenant(): bool
+    {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $config = SpiceConfig::getInstance()->config;
         if(!$current_user->is_admin) return false;
@@ -55,14 +60,16 @@ class SystemTenant extends SpiceBean
         $db = DBManagerFactory::switchInstance($this->id, $config);
 
         // run installer on new database
-        $installer = new  SpiceInstaller($db);
+        $installer = new  SpiceInstaller();
         $installer->createTables($db);
         $installer->insertDefaults($db);
         // create local and in tenant
 
-        // $installer->createCurrentUser($db, );
+        $this->copyDataFromSource($config, $preserved_db_name);
 
-        $installer->retrieveCoreandLanguages($db, ['language' => ['language_code' => 'en_us']]);
+        if (!$config['tenant']['disable_copy_config']) {
+            $installer->retrieveCoreandLanguages($db, ['language' => ['language_code' => 'en_us']]);
+        }
 
         $admin = new AdminController();
         $admin->repairAndRebuildforInstaller();
@@ -75,6 +82,7 @@ class SystemTenant extends SpiceBean
         $this->copyConfig($db, $config, 'system');
         $this->copyConfig($db, $config, 'core');
 
+        $db->transactionCommit();
         // switch back to current dabatase
         DBManagerFactory::switchInstance($preserved_db_name, $config);
 
@@ -82,6 +90,46 @@ class SystemTenant extends SpiceBean
         $this->save();
 
         return true;
+    }
+
+    /**
+     * copy data from the source to the tenant db
+     * @param array $config
+     * @param string $sourceDBName
+     * @return void
+     * @throws Exception
+     */
+    public function copyDataFromSource(array $config, string $sourceDBName)
+    {
+        $sourceDB = DBManagerFactory::switchInstance($sourceDBName, $config);
+
+        $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getCopyTables());
+
+        if (count($tables) == 0) return;
+
+        foreach ($tables as $table) {
+            $insertData = $sourceDB->query("SELECT * FROM {$table->name}");
+            while ($row = $sourceDB->fetchByAssoc($insertData)) {
+                $table->data[] = $row;
+            }
+        }
+
+        $tenantDB = DBManagerFactory::switchInstance($this->id, $config);
+
+        foreach ($tables as $table) {
+            foreach ($table->data as $row) $tenantDB->insertQuery($table->name, $row);
+        }
+
+        unset($tables);
+    }
+
+    /**
+     * get a list of tables to be copied from the source to the tenant db
+     * @return string[]
+     */
+    public function getCopyTables(): array
+    {
+        return [];
     }
 
     /**
@@ -106,6 +154,7 @@ class SystemTenant extends SpiceBean
      */
     public function handleUserAfterSaveHook(&$bean, $event, $arguments)
     {
+        return; // todo remove
         // if we have a user ina tenant and are not in the tenant
         // central user maintenance int eh master
         if(!empty($bean->systemtenant_id) && empty(AuthenticationController::getInstance()->systemtenantid)){
