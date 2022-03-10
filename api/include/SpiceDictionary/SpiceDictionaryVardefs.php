@@ -132,8 +132,8 @@ class SpiceDictionaryVardefs  {
     public static function getModuleByDictionaryName($dictionaryName){
         $db = DBManagerFactory::getInstance();
         $module = null;
-        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.singular ='{$dictionaryName}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.singular ='{$dictionaryName}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 $module = $row['module'];
             }
@@ -150,8 +150,8 @@ class SpiceDictionaryVardefs  {
     public static function getModuleByDictionaryId($dictionaryId){
         $db = DBManagerFactory::getInstance();
         $module = null;
-        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.sysdictionarydefinition_id ='{$dictionaryId}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.sysdictionarydefinition_id ='{$dictionaryId}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 $module = $row['module'];
             }
@@ -167,14 +167,14 @@ class SpiceDictionaryVardefs  {
      */
     public static function getDictionaryIdByModule($module){
         $db = DBManagerFactory::getInstance();
-        $q = "SELECT sysdictionarydefinition_id FROM syscustommodules sysmod WHERE sysmod.module ='{$module}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT sysdictionarydefinition_id FROM syscustommodules sysmod WHERE sysmod.module ='{$module}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 return $row['sysdictionarydefinition_id'];
             }
         }
-        $q = "SELECT sysdictionarydefinition_id FROM sysmodules sysmod WHERE sysmod.module ='{$module}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT sysdictionarydefinition_id FROM sysmodules sysmod WHERE sysmod.module ='{$module}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 return $row['sysdictionarydefinition_id'];
             }

@@ -724,9 +724,9 @@ class SpiceUtils
             $attemptCounter++;
             $key = self::generateShortUrlKey(6);
             $guid = SpiceUtils::createGuid();
-            $result = $db->query(sprintf(
-                'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" ) LIMIT 1',
-                $guid, $key, $route, $active, $key));
+            $result = $db->limitQuery(sprintf(
+                'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" )',
+                $guid, $key, $route, $active, $key), 0, 1);
         } while ($db->getAffectedRowCount($result) === 0 and $attemptCounter < $maxAttempts);
 
         if ($attemptCounter === $maxAttempts) {
