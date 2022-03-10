@@ -394,8 +394,13 @@ function processSpiceImports(){
  */
 
 function cleanSysLogs(){
-    $defaultInterval = "7 DAY";
-    $q = "DELETE FROM syslogs WHERE date_entered < DATE_SUB(now(), INTERVAL ".(isset(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) ? SpiceConfig::getInstance()->config['logger']['db']['clean_interval'] : $defaultInterval).")";
+    // calculate date time in php to have a cross database conform SQL quer
+    $defaultInterval = "P7D"; // 7 days
+    $timeDate = TimeDate::getInstance()->getNow();
+    $timeDate->sub(new DateInterval((isset(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) ? SpiceConfig::getInstance()->config['logger']['db']['clean_interval'] : $defaultInterval)));
+    $calculatedDate = TimeDate::getInstance()->asDb($timeDate);
+
+    $q = "DELETE FROM syslogs WHERE date_entered < '{$calculatedDate}'";
     DBManagerFactory::getInstance()->query($q);
     return true;
 }
@@ -406,8 +411,13 @@ function cleanSysLogs(){
  */
 
 function cleanSysFTSLogs(){
-    $defaultInterval = "14 DAY";
-    $q = "DELETE FROM sysftslog WHERE date_created < DATE_SUB(now(), INTERVAL ".(isset(SpiceConfig::getInstance()->config['fts']['log_clean_interval']) && !empty(SpiceConfig::getInstance()->config['fts']['clean_interval']) ? SpiceConfig::getInstance()->config['fts']['log_clean_interval'] : $defaultInterval).")";
+    // calculate date time in php to have a cross database conform SQL quer
+    $defaultInterval = "P14D"; // 7 days
+    $timeDate = TimeDate::getInstance()->getNow();
+    $timeDate->sub(new DateInterval((isset(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) ? SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval'] : $defaultInterval)));
+    $calculatedDate = TimeDate::getInstance()->asDb($timeDate);
+
+    $q = "DELETE FROM sysftslog WHERE date_created < '{$calculatedDate}'";
     DBManagerFactory::getInstance()->query($q);
     return true;
 }

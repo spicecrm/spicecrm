@@ -68,10 +68,16 @@ class UserAccessLog extends SugarBean
         $db = DBManagerFactory::getInstance();
         $interval = SpiceConfig::getInstance()->config['login_attempt_restriction']['ip_monitored_period']*1;
         if ( $interval ) {
-            $dtObj = new \DateTime();
-            $dtObj->setTimestamp(time());
-            $now = Timedate::getInstance()->asDb($dtObj);
-            return (int)$db->getOne('SELECT COUNT(0) FROM useraccesslogs WHERE date_entered > DATE_SUB( "'.$now.'", INTERVAL '.$interval.' MINUTE ) AND action="loginfail" AND ipaddress = "'.$db->quote($ipAddress).'"');
+//            $dtObj = new \DateTime();
+//            $dtObj->setTimestamp(time());
+//            $now = Timedate::getInstance()->asDb($dtObj);
+
+            $dtObj = TimeDate::getInstance()->getNow();
+            $dtObj->sub(new DateInterval('PT'.$interval.'M'));
+            $calculatedDate = TimeDate::getInstance()->asDb($dtObj);
+
+//            return (int)$db->getOne('SELECT COUNT(0) FROM useraccesslogs WHERE date_entered > DATE_SUB( "'.$now.'", INTERVAL '.$interval.' MINUTE ) AND action="loginfail" AND ipaddress = "'.$db->quote($ipAddress).'"');
+            return (int)$db->getOne('SELECT COUNT(0) FROM useraccesslogs WHERE date_entered > "'.$calculatedDate.'" AND action="loginfail" AND ipaddress = "'.$db->quote($ipAddress).'"');
         } else return 0;
     }
 

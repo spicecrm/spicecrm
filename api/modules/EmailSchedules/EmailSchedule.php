@@ -112,7 +112,7 @@ class EmailSchedule extends SugarBean
      */
     private function sendEmailScheduleEmails($emailScheduleId)
     {
-        $queuedEmails = $this->db->query("SELECT bean_module, bean_id, id from emailschedules_beans WHERE emailschedule_status = 'queued' AND emailschedule_id = '$emailScheduleId' AND deleted = 0 ORDER by date_modified DESC limit 250");
+        $queuedEmails = $this->db->limitQuery("SELECT bean_module, bean_id, id from emailschedules_beans WHERE emailschedule_status = 'queued' AND emailschedule_id = '$emailScheduleId' AND deleted = 0 ORDER by date_modified DESC", 0, 250);
         $status = 'done';
 
         while ($queuedEmail = $this->db->fetchByAssoc($queuedEmails)) {
