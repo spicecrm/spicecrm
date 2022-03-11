@@ -473,12 +473,15 @@ class RESTManager
      * Initializes the routes, by iterating over the $routes array and registering them with the slim app.
      */
     public function initRoutes(): void {
+
+        $authController = AuthenticationController::getInstance();
+
         foreach ($this->routes as $route) {
             if (isset($route['method']) && isset($route['route']) && isset($route['class'])
                 && isset($route['function'])) {
 
                 if (isset($route['options']['noAuth']) && $route['options']['noAuth'] == false
-                    && AuthenticationController::getInstance()->isAuthenticated()===false) {
+                    && $authController->isAuthenticated()===false) {
                     continue;
                 }
 
@@ -496,7 +499,7 @@ class RESTManager
                     $routeObject->add(ValidationMiddleware::class);
                 }
 
-                if (in_array($route['method'], ['put', 'post', 'delete']) && $route['function'] !== 'acceptLegalNotice') {
+                if (!empty($authController->systemtenantid) && in_array($route['method'], ['put', 'post', 'delete']) && $route['function'] !== 'acceptLegalNotice') {
                     $routeObject->add(TenantMiddleware::class);
                 }
 
