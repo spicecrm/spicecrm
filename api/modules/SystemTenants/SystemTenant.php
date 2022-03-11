@@ -154,7 +154,6 @@ class SystemTenant extends SpiceBean
      */
     public function handleUserAfterSaveHook(&$bean, $event, $arguments)
     {
-        return; // todo remove
         // if we have a user ina tenant and are not in the tenant
         // central user maintenance int eh master
         if(!empty($bean->systemtenant_id) && empty(AuthenticationController::getInstance()->systemtenantid)){
