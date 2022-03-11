@@ -59,6 +59,13 @@ class AuthenticationController
      * @var null
      */
     public $systemtenantname = null;
+    /**
+     * holds a boolean of the legal notice acceptance
+     *
+     * @var bool
+     */
+    public $systemTenantLegalNoticeAccepted = false;
+
     public $errorReason;
     public $errorCode;
 
@@ -363,6 +370,7 @@ class AuthenticationController
             $tenant->switchToTenant();
             $this->systemtenantid = $tenant->id;
             $this->systemtenantname = $tenant->name;
+            $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
         }
     }
 
@@ -397,6 +405,7 @@ class AuthenticationController
             'orgunit_id' => $currentUser->orgunit_id,
             'orgunit_name' => $currentUser->orgunit_name,
             'tenant_name' => $this->systemtenantname,
+            'tenant_accepted_legal_notice' => $this->systemTenantLegalNoticeAccepted,
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
             'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays

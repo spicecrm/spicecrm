@@ -52,6 +52,16 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method' => 'post',
+        'route' => '/module/SystemTenants/acceptlegalnotice',
+        'oldroute' => '',
+        'class' => SystemTenantsController::class,
+        'function' => 'acceptLegalNotice',
+        'description' => 'loads demo data for a tenant',
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => []
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);
