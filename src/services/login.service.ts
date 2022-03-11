@@ -123,6 +123,7 @@ export class loginService {
                     this.session.authData.companycode_id = response.companycode_id;
                     this.session.authData.tenant_id = response.tenant_id;
                     this.session.authData.tenant_name = response.tenant_name;
+                    this.session.authData.tenant_accepted_legal_notice = response.tenant_accepted_legal_notice;
                     this.session.authData.userName = response.user_name;
                     this.session.authData.userimage = response.user_image;
                     this.session.authData.first_name = response.first_name;
