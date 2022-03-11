@@ -62,6 +62,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'type' => 'int',
             'comment' => 'the maximum elastic indices size limit in MB',
         ],
+        'accept_data' => [
+            'name' => 'accept_data',
+            'type' => 'json',
+            'vname' => 'LBL_ACCEPT_DATA'
+        ],
         'users' => [
             'name' => 'users',
             'type' => 'link',
