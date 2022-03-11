@@ -1546,9 +1546,9 @@ $db = DBManagerFactory::getInstance();
                 //Get table_name from $module
                 $q = "SELECT DISTINCT(" . $fieldname . ") colvalue "
                     . " FROM " . $bean->table_name . " "
-                    . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 "
-                    . " LIMIT " . $start . ", " . $limit . ";";
-                if (!$res = DBManagerFactory::getInstance()->query($q))
+                    . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 ";
+//                    . " LIMIT " . $start . ", " . $limit . ";";
+                if (!$res = DBManagerFactory::getInstance()->limitQuery($q, $start, $limit))
                     LoggerManager::getLogger()->fatal("DB query error " . DBManagerFactory::getInstance()->last_error);
                 while ($row = DBManagerFactory::getInstance()->fetchByAssoc($res)) {
                     $useArray[$row['colvalue']] = $row['colvalue'];

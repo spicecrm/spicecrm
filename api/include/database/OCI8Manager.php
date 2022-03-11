@@ -1239,6 +1239,7 @@ class OCI8Manager extends DBManager
     }
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string
