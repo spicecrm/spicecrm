@@ -1193,6 +1193,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @deprecated
      * Runs a query and returns a single row
      *
      * @param  string   $sql        SQL Statement to execute
@@ -1201,14 +1202,14 @@ class MysqliManager extends DBManager
      * @param  bool     $suppress   Message to log if error occurs
      * @return array    single row from the query
      */
-    public function fetchOne($sql, $dieOnError = false, $msg = '', $suppress = false)
-    {
-        if(stripos($sql, ' LIMIT ') === false) {
-            // little optimization to just fetch one row
-            $sql .= " LIMIT 0,1";
-        }
-        return parent::fetchOne($sql, $dieOnError, $msg, $suppress);
-    }
+//    public function fetchOne($sql, $dieOnError = false, $msg = '', $suppress = false)
+//    {
+//        if(stripos($sql, ' LIMIT ') === false) {
+//            // little optimization to just fetch one row
+//            $sql .= " LIMIT 0,1";
+//        }
+//        return parent::fetchOne($sql, $dieOnError, $msg, $suppress);
+//    }
 
     /**
      * @see DBManager::full_text_indexing_installed()
@@ -1438,6 +1439,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string

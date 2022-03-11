@@ -75,8 +75,8 @@ class KReportsController
         if ($searchKey != '') {
             $where .= " AND name LIKE '%$searchKey%'";
         }
-        $query = "SELECT id, name, description, report_module, integration_params FROM kreports WHERE $where LIMIT $limit OFFSET $offset";
-        $query = $db->query($query);
+        $query = "SELECT id, name, description, report_module, integration_params FROM kreports WHERE $where";
+        $query = $db->limitQuery($query, $offset, $limit);
         while ($row = $db->fetchByAssoc($query)) $list[] = $row;
         return $res->withJson($list);
     }

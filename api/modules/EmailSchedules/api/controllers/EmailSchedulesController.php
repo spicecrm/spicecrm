@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -73,7 +74,7 @@ class EmailSchedulesController
             $query = "INSERT INTO emailschedules_beans (id, emailschedule_status, emailschedule_id, bean_module, bean_id, date_modified, deleted) VALUES ";
             foreach ($postBody['ids'] as $beanid) {
                 $guid = SpiceUtils::createGuid();
-                $query .= "('$guid', 'queued', '$emailscheduleId', '{$postBody['module']}', '$beanid', now(), 0),";
+                $query .= "('$guid', 'queued', '$emailscheduleId', '{$postBody['module']}', '$beanid', '".TimeDate::getInstance()->nowDb()."', 0),";
             }
             if (!empty($query)) {
                 $query = substr_replace($query, ";", -1);
@@ -242,7 +243,7 @@ class EmailSchedulesController
                 foreach ($relatedbeans as $relatedbean) {
                     foreach ($relatedbean as $relatedbeanentry) {
                         $guid = SpiceUtils::createGuid();
-                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->module_dir', '$relatedbeanentry->id', now(), 0),";
+                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->module_dir', '$relatedbeanentry->id', '".TimeDate::getInstance()->nowDb()."', 0),";
                     }
                 }
                 if (!empty($query)) {
@@ -258,7 +259,7 @@ class EmailSchedulesController
                 foreach ($postBody['linkedbeans'] as $module => $ids) {
                     foreach ($ids as $id) {
                         $guid = SpiceUtils::createGuid();
-                        $query .= "('$guid', 'queued', '$emailscheduleId', '{$module}', '{$id}', now(), 0),";
+                        $query .= "('$guid', 'queued', '$emailscheduleId', '{$module}', '{$id}', '".TimeDate::getInstance()->nowDb()."', 0),";
                     }
                 }
                 if (!empty($query)) {

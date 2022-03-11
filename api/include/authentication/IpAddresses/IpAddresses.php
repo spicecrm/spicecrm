@@ -76,7 +76,7 @@ class IpAddresses
             throw ( new NotFoundException('IP Address not found.'))->setLookedFor( $ipAddress );
         }
 
-        $result = $db->query( sprintf("UPDATE ipaddresses SET description = '%s' WHERE address = '%s' AND date_deleted IS NULL LIMIT 1", $db->quote( $description ), $db->quote( $ipAddress )));
+        $result = $db->limitQuery( sprintf("UPDATE ipaddresses SET description = '%s' WHERE address = '%s' AND date_deleted IS NULL", $db->quote( $description ), $db->quote( $ipAddress )), 0, 1);
         if ( $db->getAffectedRowCount( $result ) === 0 and $db->lastDbError() !== false ) throw new Exception('Database error.');
 
         $result = $db->fetchOne("SELECT i.address, i.date_entered, u.user_name as created_by_name, i.created_by, i.description FROM ipaddresses i LEFT JOIN users u ON i.created_by = u.id WHERE date_deleted IS NULL AND address = '".$db->quote( $ipAddress )."'");

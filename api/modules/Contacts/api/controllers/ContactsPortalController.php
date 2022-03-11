@@ -177,7 +177,7 @@ class ContactsPortalController {
                 throw ( new BadRequestException('Contact already has portal user data. Creation of another portal user is not possible.'))->setErrorCode('contactAlreadyHasPortalUser');
         }
 
-        if ( $db->fetchOne( sprintf('SELECT id FROM users WHERE user_name = "%s" AND id <> "%s" AND deleted = 0 LIMIT 1', $db->quote( $this->bodyParams['username']), $this->contact->portal_user_id )))
+        if ( $db->fetchOne( sprintf('SELECT id FROM users WHERE user_name = "%s" AND id <> "%s" AND deleted = 0', $db->quote( $this->bodyParams['username']), $this->contact->portal_user_id )))
             throw ( new BadRequestException('User name already taken.'))->setErrorCode('usernameAlreadyTaken');
         if ( empty( $this->bodyParams['username'] ))
             throw ( new BadRequestException('Missing user name.'))->setErrorCode('missingUserName');
@@ -291,7 +291,7 @@ class ContactsPortalController {
         $contact = $db->fetchOne( sprintf('SELECT portal_user_id FROM contacts WHERE id = "%s" AND deleted = 0', $db->quote( $args['id'] )));
         if ( !$contact ) throw ( new NotFoundException( 'Contact Not Found' ))->setLookedFor(['id'=>$this->contact->id,'module'=>'Contacts']);
 
-        $user = $db->fetchOne( sprintf('SELECT id FROM users WHERE user_name = "%s" AND id <> "%s" AND deleted = 0 LIMIT 1', $db->quote( $queryParams['username']), $contact['portal_user_id'] ));
+        $user = $db->fetchOne( sprintf('SELECT id FROM users WHERE user_name = "%s" AND id <> "%s" AND deleted = 0', $db->quote( $queryParams['username']), $contact['portal_user_id'] ));
 
         return $res->withJson([ 'exists' => ( $user !== false ) ]);
     }
