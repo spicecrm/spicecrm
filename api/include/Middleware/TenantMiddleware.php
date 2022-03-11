@@ -18,7 +18,7 @@ class TenantMiddleware
     {
         $authController = AuthenticationController::getInstance();
 
-        if (!empty($authController->systemtenantid) && !$authController->systemTenantLegalNoticeAccepted) {
+        if (!$authController->systemTenantLegalNoticeAccepted) {
             throw new ForbiddenException('Tenant user did not accept the legal notice.', 'noLegalNoticeAccepted');
         }
         return $handler->handle($request);
