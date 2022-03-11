@@ -31,6 +31,7 @@ interface authDataIf {
     tenant_name: string;
     orgunit_id: string;
     orgunit_name: string;
+    tenant_accepted_legal_notice: boolean;
     obtainGDPRconsent: boolean;
     canchangepassword: boolean;
     address_country?: string;
@@ -45,6 +46,7 @@ interface authDataIf {
 export class session {
 
     public authData: authDataIf = {
+        tenant_accepted_legal_notice: false,
         sessionId: null,
         loaded: false,
         userId: null,
@@ -179,6 +181,9 @@ export class session {
      * closes the session and removes all sessiondata
      */
     public endSession() {
+        this.authData.tenant_id = '';
+        this.authData.tenant_name = '';
+        this.authData.tenant_accepted_legal_notice = false;
         this.authData.sessionId = null;
         this.authData.userId = null;
         this.authData.loaded = false;
