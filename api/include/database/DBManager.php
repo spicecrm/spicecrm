@@ -1823,7 +1823,7 @@ protected function checkQuery($sql, $object_name = false)
 	{
 		LoggerManager::getLogger()->info("Fetch One: |$sql|");
 		$this->checkConnection();
-		$queryresult = $this->query($sql, $dieOnError, $msg);
+		$queryresult = $this->limitQuery($sql, 0, 1, $dieOnError, $msg);
 		$this->checkError($msg.' Fetch One Failed:' . $sql, $dieOnError);
 
 		if (!$queryresult) return false;
@@ -4157,6 +4157,7 @@ protected function checkQuery($sql, $object_name = false)
 	abstract public function getGuidSQL();
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string

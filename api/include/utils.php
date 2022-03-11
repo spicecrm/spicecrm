@@ -1105,29 +1105,31 @@ function create_date($year=null,$mnth=null,$day=null)
  */
 function createShorturl( $route, $active = 1 )
 {
-    $db = DBManagerFactory::getInstance();
-    $maxAttempts = 100000;
-    $route = $db->quote( $route ); // prevent sql injection
-    $active *= 1; // prevent sql injection
+    return SpiceUtils::createShortUrl($route, $active = 1 );
 
-    # Generate a random key for the short url and (in the hope of uniqueness) try to save it to the DB.
-    # Do a specific number of attempts to get a unused key.
-    # Concerning the complicated sql, see: https://stackoverflow.com/questions/3164505/mysql-insert-record-if-not-exists-in-table ("Insert record if not exists in table")
-    $attemptCounter = 0;
-    do {
-        $attemptCounter++;
-        $key = generateShorturlKey( 6 );
-        $guid = SpiceUtils::createGuid();
-        $result = $db->query( sprintf(
-            'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" ) LIMIT 1',
-            $guid, $key, $route, $active, $key ));
-    } while( $db->getAffectedRowCount( $result ) === 0 and $attemptCounter < $maxAttempts );
-
-    if ( $attemptCounter === $maxAttempts ) {
-        LoggerManager::getLogger()->fatal('Could not create short url, could not get any free key. Did '.$maxAttempts.' attempts. Last unsuccessful attempt with key "'.$key.'" (and GUID "'.$guid.'").');
-        return false;
-    }
-    else return $key;
+//    $db = DBManagerFactory::getInstance();
+//    $maxAttempts = 100000;
+//    $route = $db->quote( $route ); // prevent sql injection
+//    $active *= 1; // prevent sql injection
+//
+//    # Generate a random key for the short url and (in the hope of uniqueness) try to save it to the DB.
+//    # Do a specific number of attempts to get a unused key.
+//    # Concerning the complicated sql, see: https://stackoverflow.com/questions/3164505/mysql-insert-record-if-not-exists-in-table ("Insert record if not exists in table")
+//    $attemptCounter = 0;
+//    do {
+//        $attemptCounter++;
+//        $key = generateShorturlKey( 6 );
+//        $guid = SpiceUtils::createGuid();
+//        $result = $db->query( sprintf(
+//            'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" ) LIMIT 1',
+//            $guid, $key, $route, $active, $key ));
+//    } while( $db->getAffectedRowCount( $result ) === 0 and $attemptCounter < $maxAttempts );
+//
+//    if ( $attemptCounter === $maxAttempts ) {
+//        LoggerManager::getLogger()->fatal('Could not create short url, could not get any free key. Did '.$maxAttempts.' attempts. Last unsuccessful attempt with key "'.$key.'" (and GUID "'.$guid.'").');
+//        return false;
+//    }
+//    else return $key;
 }
 
 /**
