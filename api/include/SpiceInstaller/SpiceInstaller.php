@@ -442,8 +442,9 @@ class SpiceInstaller
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
-        $vardef = new VardefManager();
-        $vardef->clearVardef();
+// will break installation under php8.1 and is unnecessary
+//        $vardef = new VardefManager();
+//        $vardef->clearVardef();
 
         // workaround create table from metadata definitions now
         foreach ($rel_dictionary as $rel_name => $rel_data) {
@@ -673,11 +674,14 @@ class SpiceInstaller
 
 
         $db = $this->createDatabase($postData);
+        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
 
         $repair = new AdminController();
 
         if (!empty($db)) {
+            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->createTables($db);
+            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->insertDefaults($db);
             $this->createCurrentUser($db, $postData);
             $this->retrieveCoreandLanguages($db, $postData);
