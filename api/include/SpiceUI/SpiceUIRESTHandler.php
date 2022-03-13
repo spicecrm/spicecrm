@@ -848,7 +848,7 @@ $db = DBManagerFactory::getInstance();
     public function getLibraries()
     {
         $return = [];
-        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.rank ASC";
+        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.sequence ASC";
         $res = $this->db->query($sql);
         while ($row = $this->db->fetchByAssoc($res)) {
             $return[$row['name']][] = ['loaded' => false, 'src' => $row['src']];
