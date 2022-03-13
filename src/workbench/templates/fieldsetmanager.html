@@ -86,7 +86,7 @@
                                 <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field'" class="slds-button slds-button--icon" title="customize" (click)="copy(currentFieldSetItem.item.fieldset, currentFieldSetItem)">
                                     <system-button-icon [icon]="'copy'"></system-button-icon>
                                 </button>
-                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon || customModeGlobalField" title="unlink item" (click)="unlinkItem(currentFieldSetItem)">
+                                <button [disabled]="!view.isEditMode() || (currentFieldSetItem.parentScope=='global' && currentFieldSetItem.type=='field')" class="slds-button slds-button--icon || customModeGlobalField" title="unlink item" (click)="unlinkItem(currentFieldSetItem)">
                                     <system-button-icon [icon]="'remove_link'"></system-button-icon>
                                 </button>
 
