@@ -9,6 +9,7 @@ import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modelutilities} from "../../../services/modelutilities.service";
+import {lastValueFrom} from "rxjs";
 
 /** @ignore */
 declare var moment;
@@ -53,8 +54,7 @@ export class BonusCardNewButton implements OnInit {
             program = await this.promptProgramSelection();
         }
 
-        let dates: { date_start: string, date_end: string } = await this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`)
-            .toPromise()
+        let dates: { date_start: string, date_end: string } = await lastValueFrom(this.backend.getRequest(`module/BonusCards/program/${program.id}/validitydates`))
             .catch(() =>
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
             );
@@ -110,7 +110,7 @@ export class BonusCardNewButton implements OnInit {
             sortdirection: 'DESC'
         }];
 
-        const programs: { list, object } = await this.backend.getList('BonusPrograms', sortArray, params).toPromise().catch(() =>
+        const programs: { list, object } = await lastValueFrom(this.backend.getList('BonusPrograms', sortArray, params)).catch(() =>
             this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'))
         ) as any;
 
@@ -121,7 +121,7 @@ export class BonusCardNewButton implements OnInit {
 
         const options = programs.list.map(item => ({value: item.id, display: item.summary_text, validity_date_editable: item.validity_date_editable}));
 
-        const programId: string | false = await this.modal.prompt('input', 'MSG_SELECT_PROGRAM', 'LBL_BONUSCARD', 'shade', null, options, true).toPromise();
+        const programId: string | false = await lastValueFrom(this.modal.prompt('input', 'MSG_SELECT_PROGRAM', 'LBL_BONUSCARD', 'shade', null, options, true));
 
         if (!programId) return undefined;
         const program = options.find(o => o.value == programId);

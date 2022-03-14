@@ -53,7 +53,7 @@ export class calendar implements OnDestroy {
     /**
      * emit when the layout change e.g. zoom in/out
      */
-    public layoutChange$ = new EventEmitter<any>();
+    public layoutChange$ = new EventEmitter<void>();
     /**
      * holds a list of fts calendar enabled modules
      */

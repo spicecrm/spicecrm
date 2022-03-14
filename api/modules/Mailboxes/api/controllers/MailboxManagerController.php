@@ -145,13 +145,17 @@ class MailboxManagerController
                 $type = self::TYPE_SMS;
             }
 
-            if ($mailbox->isConnected()) {
-                array_push($result, [
-                    'value'     => $mailbox->id,
-                    'display'   => $mailbox->name,
-                    'actionset' => $mailbox->actionset,
-                    'type'      => $type,
-                ]);
+            try {
+                if ($mailbox->isConnected()) {
+                    $result[] = [
+                        'value' => $mailbox->id,
+                        'display' => $mailbox->name,
+                        'actionset' => $mailbox->actionset,
+                        'type' => $type,
+                    ];
+                }
+            } catch (\Exception $exception) {
+                continue;
             }
         }
 

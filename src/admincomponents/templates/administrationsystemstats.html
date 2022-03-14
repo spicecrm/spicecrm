@@ -36,10 +36,10 @@
                     <div class="slds-truncate" >Elasticsearch</div>
                 </td>
                 <td>
-                    <div class="slds-truncate slds-text-align--right" ><system-display-number system-display-number-nodigits [number]="totalelasticrecords" ></system-display-number></div>
+                    <div class="slds-truncate slds-text-align--right" ><system-display-number system-display-number-nodigits [number]="totalelasticrecords('primaries')" ></system-display-number> / <system-display-number system-display-number-nodigits [number]="totalelasticrecords('total')" ></system-display-number></div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{humanReadableSize(totalelasticsize)}}</div>
+                    <div class="slds-truncate" >{{humanReadableSize(totalelasticsize('primaries'))}} / {{humanReadableSize(totalelasticsize('total'))}}</div>
                 </td>
             </tr>
             <tr>
@@ -102,10 +102,10 @@
                         <div class="slds-truncate" >{{humanReadableSize(table.size)}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate slds-text-align--right"><system-display-number [number]="ftsDocumentCount(table.name)" system-display-number-nodigits></system-display-number></div>
+                        <div class="slds-truncate slds-text-align--right"><ng-container *ngIf="ftsDocumentCount(table.name, 'primaries')"><system-display-number [number]="ftsDocumentCount(table.name, 'primaries')" system-display-number-nodigits></system-display-number> / <system-display-number [number]="ftsDocumentCount(table.name, 'total')" system-display-number-nodigits></system-display-number></ng-container></div>
                     </td>
                     <td>
-                        <div class="slds-truncate" >{{ftsIndexSize(table.name)}}</div>
+                        <div class="slds-truncate" ><ng-container *ngIf="ftsIndexSize(table.name, 'primaries')">{{ftsIndexSize(table.name, 'primaries')}} / {{ftsIndexSize(table.name, 'total')}}</ng-container></div>
                     </td>
                 </tr>
             </tbody>

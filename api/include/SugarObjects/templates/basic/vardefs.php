@@ -218,6 +218,7 @@ $vardefs = [
     ],
     'indices' => [
         'id' => ['name' => (isset($table_name) ? $table_name : strtolower($module)). 'pk', 'type' => 'primary', 'fields' => ['id']],
+        'fts_idx' => ['name' => 'idx_'.(isset($table_name) ? $table_name : strtolower($module)). '_fts', 'type' => 'index', 'fields' => ['date_modified', 'date_indexed']]
     ],
     'relationships' => [
         (isset($table_name) ? $table_name : strtolower($module)). '_modified_user' =>

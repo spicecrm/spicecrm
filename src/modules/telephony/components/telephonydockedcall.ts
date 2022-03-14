@@ -20,6 +20,7 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 import {libloader} from "../../../services/libloader.service";
 import {session} from "../../../services/session.service";
 
+
 declare var moment: any;
 declare var libphonenumber: any;
 declare var _: any;
@@ -41,13 +42,6 @@ export class TelephonyDockedCall {
      * the data from teh call
      */
     @Input() public calldata: telephonyCallI;
-
-    /**
-     * indicates that we have loaded the phone lib
-     *
-     * @private
-     */
-    public phonelibloaded: boolean = false;
 
     public isClosed: boolean = false;
 
@@ -72,6 +66,8 @@ export class TelephonyDockedCall {
      */
     public componentconfig: any = {};
 
+    public footerHidden: boolean = false;
+
     constructor(public backend: backend,
                 public session: session,
                 public view: view,
@@ -84,7 +80,6 @@ export class TelephonyDockedCall {
                 public cdref: ChangeDetectorRef,
                 public ViewContainerRef: ViewContainerRef,
                 public metadata: metadata) {
-        this.loadPhoneLib();
 
         // initialize the view and set it into edit mode
         // this is required for the extended modal that is using the same injector
@@ -92,14 +87,6 @@ export class TelephonyDockedCall {
         this.view.setEditMode();
     }
 
-    /**
-     * loads the phone lib
-     */
-    public loadPhoneLib() {
-        this.libloader.loadLib('libphonenumber').subscribe(loaded => {
-            this.phonelibloaded = true;
-        });
-    }
 
     /**
      * getter for the call icon dependent on the status of the call
@@ -129,6 +116,11 @@ export class TelephonyDockedCall {
 
         if (this.componentconfig.searchendpoint) {
             endpoint = this.componentconfig.searchendpoint;
+        }
+
+        // determine if we have a footer
+        if(this.componentconfig.actionset && this.metadata.getActionSetItems(this.componentconfig.actionset).length == 0){
+            this.footerHidden = true;
         }
 
         if (this.calldata.relatedid) {

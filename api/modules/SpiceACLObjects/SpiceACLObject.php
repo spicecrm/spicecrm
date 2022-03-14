@@ -59,14 +59,14 @@ class SpiceACLObject extends SugarBean
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
-        if (is_admin($current_user)) {
+        if (SpiceUtils::isAdmin($current_user)) {
             foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
                 $seed = BeanFactory::getBean($module);
                 if ($seed && method_exists($seed, 'bean_implements') && $seed->bean_implements('ACL')) {
                     $typeRecord = $this->db->fetchByAssoc($this->db->query("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE module = '$module' AND acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE module = '$module' AND acl = 1"));
                     if (!$typeRecord) {
                         /*
-                        $newId = create_guid();
+                        $newId = SpiceUtils::createGuid();
                         $this->db->query("INSERT INTO spiceacltypes (id, module, status) VALUES('$newId', '$module', 'd')");
                         $typeRecords[] = [
                             'id' => $newId,
@@ -231,6 +231,7 @@ class SpiceACLObject extends SugarBean
 
                 // get the actions
                 $objectActions = $db->query("SELECT spiceaclaction_id FROM spiceaclobjectactions WHERE spiceaclobject_id='{$aclobject['id']}'");
+                $this->authObjects[$aclobject['id']]['objectactions'] = [];
                 while ($objectAction = $db->fetchByAssoc($objectActions))
                     $this->authObjects[$aclobject['id']]['objectactions'][] = $objectAction['spiceaclaction_id'];
 
@@ -268,14 +269,14 @@ class SpiceACLObject extends SugarBean
     /*
      * function t check if an object matches a bean
      */
-    public function matchBean2Object($bean, $activity = '', $objectData)
+    public function matchBean2Object($bean, $activity = '', $objectData = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $territory = BeanFactory::getBean('SpiceACLTerritories');
 
         // check the activity .. if it is noit found .. cointinue
-        if ($activity != '' && $this->matchObject2Activity($activity, $objectData) === false)
+        if (!empty($activity) && $this->matchObject2Activity($activity, $objectData) === false)
             return false;
 
         // check the obejctfield values if this profile qualifies
@@ -735,6 +736,7 @@ class SpiceACLObject extends SugarBean
                     };
                     break;
                 case 'ig':
+                case 'ignore': //BWC
                 case '':
                     $authObjectAccess = true;
                     break;

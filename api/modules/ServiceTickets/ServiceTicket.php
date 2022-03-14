@@ -173,11 +173,13 @@ class ServiceTicket extends SugarBean
         // determine the notification status
         $this->has_notification = $this->determineNotificationStatus();
 
+        $dummy = parent::save($check_notify);
+
         if (!empty(json_decode($this->questionnaire_answers, true))) {
             QuestionAnsweringHandler::saveAnswers_byParent(json_decode($this->questionnaire_answers, true)['answers'], 'ServiceTickets', $this->id, true);
         }
 
-        return parent::save($check_notify);
+        return $dummy;
 
     }
 
@@ -186,6 +188,7 @@ class ServiceTicket extends SugarBean
      */
     public function determineNotificationStatus()
     {
+        return 0;
         $unreadEmailCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM emails WHERE parent_id = '{$this->id}' and status = 'unread' AND deleted = 0"));
         $unreadNoteCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM servicetickets WHERE serviceticket_id = '{$this->id}' and servicenote_status = 'unread' AND deleted = 0"));
         return $unreadEmailCount['total'] > 0 || $unreadNoteCount['total'] > 0 ? 1 : 0;

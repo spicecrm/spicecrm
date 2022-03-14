@@ -39,6 +39,7 @@ namespace SpiceCRM\includes\authentication\SAMLAuthenticate;
 
 
 use SpiceCRM\includes\SugarAuthenticate\SugarAuthenticate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * This file is used to control the authentication process. 
@@ -86,7 +87,7 @@ class SAMLAuthenticate extends SugarAuthenticate {
         session_destroy();
         ob_clean();
         header('Location: index.php?module=Users&action=LoggedOut');
-        sugar_cleanup(true);
+        SpiceUtils::spiceCleanup(true);
     }
 
     /**
@@ -96,7 +97,7 @@ class SAMLAuthenticate extends SugarAuthenticate {
      */
     public function redirectToLogin(SugarApplication $app)
     {
-        require(get_custom_file_if_exists('modules/Users/authentication/SAMLAuthenticate/settings.php'));
+        require(SpiceUtils::getCustomFileIfExists('modules/Users/authentication/SAMLAuthenticate/settings.php'));
 
         $loginVars = $app->createLoginVars();
 

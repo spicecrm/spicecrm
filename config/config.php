@@ -306,6 +306,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // delete the zip file
                 unlink($zipFileDir);
                 break;
+            case 'oauth2redirect':
+            case 'oauth2redirect.html':
+                echo "<html><body><script>var checks = [/[\?|&|#]code=/, /[\?|&|#]error=/];function isResponse(str) {if (!str) return false;for (var i = 0; i < checks.length; i++) {if (str.match(checks[i])) return true;}return false;}var message = isResponse(location.hash)? location.hash: location.search;if (window.parent && window.parent !== window) {window.parent.postMessage(message, location.origin);} else if (window.opener && window.opener !== window) {window.opener.postMessage(message, location.origin);}</script></body></html>";
+                break;
         }
         break;
     case 'POST':

@@ -48,6 +48,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarAuthenticate\SugarAuthenticateUser;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 
 class SAMLAuthenticateUser extends UserAuthenticate {
@@ -74,7 +75,7 @@ class SAMLAuthenticateUser extends UserAuthenticate {
 		// Look for custom versions of settings.php if it exists
 
 		require_once('modules/Users/authentication/SAMLAuthenticate/lib/onelogin/saml.php');
-        require(get_custom_file_if_exists('modules/Users/authentication/SAMLAuthenticate/settings.php'));
+        require(SpiceUtils::getCustomFileIfExists('modules/Users/authentication/SAMLAuthenticate/settings.php'));
 
         try {
             $samlresponse = new SamlResponse($settings, $_POST['SAMLResponse']);

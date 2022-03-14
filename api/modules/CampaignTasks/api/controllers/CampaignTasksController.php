@@ -6,6 +6,7 @@ namespace SpiceCRM\modules\CampaignTasks\api\controllers;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\KREST\handlers\ModuleHandler;
@@ -15,7 +16,6 @@ use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\TimeDate;
-
 
 class CampaignTasksController
 {
@@ -147,7 +147,7 @@ class CampaignTasksController
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
         $parsedTpl = $emailTemplate->parse($bean);
 
-        return $res->withJson(['html' => from_html(wordwrap($parsedTpl['body_html'], true))]);
+        return $res->withJson(['html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true))]);
     }
 
     /**

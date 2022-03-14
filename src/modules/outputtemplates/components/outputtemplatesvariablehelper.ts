@@ -234,7 +234,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Narrow down the fields according the filter value.
      */
-    public getFilteredFields( fields ): [] {
+    public getFilteredFields( fields ): any[] {
         return !this.fieldFilter ? fields : fields
             .filter(nodeFiled => {
                 return nodeFiled.name.toLowerCase().includes(this.fieldFilter.toLowerCase()) ||

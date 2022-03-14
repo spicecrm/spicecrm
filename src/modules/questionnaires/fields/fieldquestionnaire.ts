@@ -81,7 +81,7 @@ export class fieldQuestionnaire extends fieldGeneric implements OnInit, OnDestro
     }
 
     public showQuestionnaire(): boolean {
-        return !this.model.isNew && !!this.questionnaireId;
+        return !!this.questionnaireId;
     }
 
 }

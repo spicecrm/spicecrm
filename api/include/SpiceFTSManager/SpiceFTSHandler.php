@@ -9,6 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -370,7 +371,7 @@ class SpiceFTSHandler
         $listViewDefs = [];
 
         // load the app language
-        $appLang = return_application_language($current_language);
+        $appLang = SpiceUtils::returnApplicationLanguage($current_language);
 
         $modArray = [];
         $modLangArray = [];
@@ -1262,6 +1263,10 @@ class SpiceFTSHandler
                     $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
                         $seed = BeanFactory::getBean($module, $hit['_id']);
+
+                        // if we do not find the record .. do not return it
+                        if (!$seed) continue;
+
                         foreach ($seed->field_name_map as $field => $fieldData) {
                             //if (!isset($hit['_source']{$field}))
                             if (is_string($seed->$field)) {
@@ -1307,7 +1312,7 @@ class SpiceFTSHandler
                     //throw new Exception(json_encode($searchresultsraw['error']['root_cause']));
                 }
 
-                foreach ($searchresults[$module]['hits'] as &$hit) {
+                foreach ($searchresults[$module]['hits'] as $index => &$hit) {
                     $seed = BeanFactory::getBean($module, $hit['_id']);
 
                     // if we do not find the record .. do not return it
@@ -1669,8 +1674,7 @@ class SpiceFTSHandler
             $where = " WHERE module='" . $module . "'";
         }
         // END
-        $order = empty($module) ? ' ORDER BY module ' : '';
-        $beans = $db->query("SELECT * FROM sysfts" . $where . $order);
+        $beans = $db->query("SELECT * FROM sysfts $where ORDER BY index_priority");
         echo "Starting indexing (maximal $packagesize records).\n";
 
         $bulkCommitSize = (SpiceConfig::getInstance()->config['fts']['bulkcommitsize'] ?: 1000);
@@ -1687,6 +1691,20 @@ class SpiceFTSHandler
             //in case of module mispelling, no bean will be found. Catch here
             if (!$seed) {
                 echo "Module not found.\n";
+                continue;
+            }
+
+            // if we have an index method run it
+            if(method_exists($seed, 'indexBulk')){
+                while($beanCounter < $packagesize) {
+                    $indexedRecords = $seed->indexBulk($packagesize);
+                    $beanCounter += $indexedRecords;
+                    if($indexedRecords == 0) break;
+                }
+                if ($beanCounter >= $packagesize) {
+                    echo "Indexing incomplete closed, because scheduler package size ($packagesize) exceeded. Will continue next time.\n";
+                    return true;
+                }
                 continue;
             }
 
@@ -1971,7 +1989,7 @@ class SpiceFTSHandler
                         // 2011-10-15 if the kreporttype is set return it
                         //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
                         'type' => $field_defs['type'],
-                        'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
+                        'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                         'leaf' => true,
                         'options' => $field_defs['options'],
                         'label' => $field_defs['vname']

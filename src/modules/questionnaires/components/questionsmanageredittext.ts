@@ -31,6 +31,21 @@ export class QuestionsManagerEditText extends QuestionsManagerEditBasic implemen
     }
 
     /**
+     * Getter for the sequenced flag, stored in the question parameters.
+     */
+    public get isinput(): boolean {
+        return !!this.questionparameters.isinput;
+    }
+
+    /**
+     * Setter for the sequenced flag, stored in the question parameters.
+     */
+    public set isinput( value: boolean ) {
+        this.questionparameters.isinput = value;
+        this.writeQuestionparametersToModel();
+    }
+
+    /**
      * Getter for the numeric flag (answer has to be numeric), stored in the question parameters.
      */
     public get numeric(): boolean {

@@ -40,7 +40,9 @@ namespace SpiceCRM\modules\Configurator;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\ArrayUtils;
 use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class Configurator {
 	var $config = '';
@@ -67,8 +69,8 @@ class Configurator {
 		$sc = SpiceConfig::getInstance();
 		$overrideArray = $this->readOverride();
 		$this->previous_sugar_override_config_array = $overrideArray;
-		$diffArray = deepArrayDiff($this->config, SpiceConfig::getInstance()->config);
-		$overrideArray = sugarArrayMergeRecursive($overrideArray, $diffArray);
+		$diffArray = ArrayUtils::deepArrayDiff($this->config, SpiceConfig::getInstance()->config);
+		$overrideArray = SpiceUtils::spiceArrayMergeRecursive($overrideArray, $diffArray);
 
 		// To remember checkbox state
           if (!$this->useAuthenticationClass && !$fromParseLoggerSettings) {
@@ -94,7 +96,7 @@ class Configurator {
 					$this->config[$key] = false;
 				}
 			}
-			$overideString .= override_value_to_string_recursive2('sugar_config', $key, $val);
+			$overideString .= ArrayUtils::overrideValueToStringRecursive2('sugar_config', $key, $val);
 		}
 		$overideString .= '/***CONFIGURATOR***/';
 
@@ -106,7 +108,7 @@ class Configurator {
 		global  $sugar_version;
 		$overrideArray = $this->readOverride();
 		$this->previous_sugar_override_config_array = $overrideArray;
-		$overrideArray = sugarArrayMergeRecursive($overrideArray, $diffArray);
+		$overrideArray = SpiceUtils::spiceArrayMergeRecursive($overrideArray, $diffArray);
 
 		$overideString = "<?php\n/***CONFIGURATOR***/\n";
 
@@ -124,7 +126,7 @@ class Configurator {
 					$this->config[$key] = false;
 				}
 			}
-			$overideString .= override_value_to_string_recursive2('sugar_config', $key, $val);
+			$overideString .= ArrayUtils::overrideValueToStringRecursive2('sugar_config', $key, $val);
 		}
 		$overideString .= '/***CONFIGURATOR***/';
 
@@ -195,7 +197,7 @@ class Configurator {
 
 				// add user writable permission
 				$new_fileperms = $original_fileperms | 0x0080;
-				@sugar_chmod($file, $new_fileperms);
+				@SpiceFileUtils::spiceChmod($file, $new_fileperms);
 				clearstatcache();
 				if(is_writable($file))
 				{
