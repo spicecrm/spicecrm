@@ -255,8 +255,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'name' => 'outputtemplate',
             'type' => 'link',
             'relationship' => 'outputtemplates_products',
-            'link_type' => 'one',
-            'side' => 'left',
             'source' => 'non-db',
             'vname' => 'LBL_OUTPUTTEMPLATES',
         ]
