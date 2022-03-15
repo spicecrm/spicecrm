@@ -8,7 +8,7 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: '[salesdocs-convert-modal-item]',
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsconvertmodalitem.html",
+    templateUrl: "../templates/salesdocsconvertmodalitem.html",
     providers: [model, view]
 })
 export class SalesDocsConvertModalItem implements OnInit {
@@ -17,14 +17,14 @@ export class SalesDocsConvertModalItem implements OnInit {
      * referenec to self added from teh modal service
      * @private
      */
-    @Input() private data: any;
+    @Input() public data: any;
 
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
-    constructor(public model: model, private view: view, @SkipSelf() private parent: model, private metadata: metadata) {
+    constructor(public model: model, public view: view, @SkipSelf() public parent: model, public metadata: metadata) {
         let componentconfig = this.metadata.getComponentConfig('SalesDocsConvertModalItem', 'SalesDocItems');
         this.fieldsetItems = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
@@ -39,7 +39,7 @@ export class SalesDocsConvertModalItem implements OnInit {
     public ngOnInit() {
         this.model.module = 'SalesDocItems';
         this.model.id = this.data.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.data);
+        this.model.setData(this.data);
 
         // select by default
         this.data._selected = true;

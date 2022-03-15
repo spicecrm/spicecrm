@@ -14,14 +14,14 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser-attribute-n-search',
-    templateUrl: './src/modules/products/templates/productbrowserattributensearch.html'
+    templateUrl: '../templates/productbrowserattributensearch.html'
 })
 export class ProductBrowserAttributeNSearch {
 
-    @Input() private attribute: any = {};
-    private timeout: any;
+    @Input() public attribute: any = {};
+    public timeout: any;
 
-    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
+    constructor(public language: language, public backend: backend, public elementRef: ElementRef, public productfinder: productfinder) {
 
     }
 

@@ -15,19 +15,19 @@ import {toast} from "../../../services/toast.service";
  */
 @Component({
     selector: 'get-stats-button',
-    templateUrl: './src/include/cleverreach/templates/getstatsbutton.html',
+    templateUrl: '../templates/getstatsbutton.html',
 })
 export class GetStatsButton {
 
     public report: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private backend: backend,
-        private toast: toast
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public toast: toast
     ) {
     }
     /**

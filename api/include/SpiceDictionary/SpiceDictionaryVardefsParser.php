@@ -167,7 +167,7 @@ class SpiceDictionaryVardefsParser
         $indexName = str_replace("{tablename}", $tablename, $row['name']);
         $index['name'] = $indexName;
         $index['type'] = $row['indextype'];
-        $index['fields'] = explode(",", $row['indexfields']);
+        $index['fields'] = $row['indexfields'];
         return $index;
     }
 

@@ -19,7 +19,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'global-navigation-tabbed-subtabs',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedsubtabs.html',
+    templateUrl: '../templates/globalnavigationtabbedsubtabs.html',
     host: {
         '(window:resize)': 'handleResize()'
     }
@@ -29,26 +29,26 @@ export class GlobalNavigationTabbedSubtabs implements OnDestroy {
     /**
      * the parent tab object
      */
-    @Input() private parenttab: objectTab;
+    @Input()public parenttab: objectTab;
 
     /**
      * reference to the navigation tabs
      */
-    @ViewChildren(GlobalNavigationTabbedSubtabItem) private subMenuTabs: QueryList<GlobalNavigationTabbedSubtabItem>;
+    @ViewChildren(GlobalNavigationTabbedSubtabItem)public subMenuTabs: QueryList<GlobalNavigationTabbedSubtabItem>;
 
     /**
      * reference to the more item
      */
-    @ViewChild(GlobalNavigationTabbedSubTabMoreTab) private subMenuMore: GlobalNavigationTabbedSubTabMoreTab;
+    @ViewChild(GlobalNavigationTabbedSubTabMoreTab)public subMenuMore: GlobalNavigationTabbedSubTabMoreTab;
 
     /**
      * the component subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+   public subscriptions: Subscription = new Subscription();
 
-    private stable: boolean = true;
+   public stable: boolean = true;
 
-    constructor(private metadata: metadata, private language: language, private navigation: navigation, private elementRef: ElementRef, private ngZone: NgZone) {
+    constructor(public metadata: metadata,public language: language,public navigation: navigation,public elementRef: ElementRef,public ngZone: NgZone) {
 
         this.subscriptions.add(
             this.navigation.objectTabsChange$.subscribe(changed => {
@@ -107,14 +107,14 @@ export class GlobalNavigationTabbedSubtabs implements OnDestroy {
      * @param index
      * @param item
      */
-    private trackByFn(index, item) {
+   public trackByFn(index, item) {
         return item.id;
     }
 
     /**
      * handle the resize and calculöate the total width as well as overflow
      */
-    private handleResize() {
+   public handleResize() {
 
         // caluclate the width of the various items
         let left = this.elementRef.nativeElement.getBoundingClientRect().left;

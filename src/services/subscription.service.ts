@@ -12,6 +12,7 @@ import {toast} from "./toast.service";
 import {session} from "./session.service";
 import {metadata} from "./metadata.service";
 import {Observable, Subject} from "rxjs";
+import {model} from "./model.service";
 
 /**
  * this service handles loading and managing the user subscriptions
@@ -21,17 +22,26 @@ export class subscription {
     /**
      * holds the notifications
      */
-    public subscriptions: {[key: string]: SubscriptionI} = {};
+    public _subscriptions: {[key: string]: SubscriptionI} = {};
+
+
     public auditedModules: {};
 
-    constructor(private backend: backend,
-                private broadcast: broadcast,
-                private configuration: configurationService,
-                private toast: toast,
-                private session: session,
-                private metadata: metadata,
-                private language: language) {
+    constructor(public backend: backend,
+                public broadcast: broadcast,
+                public configuration: configurationService,
+                public toast: toast,
+                public session: session,
+                public metadata: metadata,
+                public language: language) {
         this.loadSubscriptions();
+    }
+
+    /**
+     * a getter to get the array of subscriptions
+     */
+    get subscriptions(){
+        return Object.keys(this._subscriptions).map(subid =>this._subscriptions[subid]);
     }
 
     /**
@@ -39,7 +49,7 @@ export class subscription {
      * @param beanId
      */
     public hasSubscription(beanId: string) {
-        return this.subscriptions?.[beanId];
+        return this._subscriptions?.[beanId];
     }
 
     /**
@@ -47,16 +57,17 @@ export class subscription {
      * @param beanId
      * @param beanModule
      */
-    public subscribeBean(beanId: string, beanModule: string): Observable<boolean> {
+    public subscribeBean(model: model): Observable<boolean> {
         let retSubject = new Subject<boolean>();
 
-        this.backend.postRequest(`common/SpiceSubscriptions/${beanModule}/${beanId}`)
+        this.backend.postRequest(`common/SpiceSubscriptions/${model.module}/${model.id}`)
             .subscribe(
                 () => {
-                    this.subscriptions[beanId] = {
-                        bean_id: beanId,
-                        bean_module: beanModule,
-                        user_id: this.session.authData.userId
+                    this._subscriptions[model.id] = {
+                        bean_id: model.id,
+                        bean_module: model.module,
+                        user_id: this.session.authData.userId,
+                        data: model.backendData
                     };
                     retSubject.next(true);
                     retSubject.complete();
@@ -79,7 +90,7 @@ export class subscription {
 
         this.backend.deleteRequest(`common/SpiceSubscriptions/${beanModule}/${beanId}`).subscribe(
             () => {
-                delete this.subscriptions[beanId];
+                delete this._subscriptions[beanId];
                 retSubject.next(true);
                 retSubject.complete();
             },
@@ -96,10 +107,10 @@ export class subscription {
      * load the notifications from the configuration service
      */
     public loadSubscriptions() {
-        this.subscriptions = this.configuration.getData('spicesubscriptions');
+        this._subscriptions = this.configuration.getData('spicesubscriptions');
         this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype !== 'loader.completed' || msg.messagedata !== 'loadUserData') return;
-            this.subscriptions = this.configuration.getData('spicesubscriptions');
+            this._subscriptions = this.configuration.getData('spicesubscriptions');
         });
     }
 }

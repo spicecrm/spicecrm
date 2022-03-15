@@ -13,24 +13,24 @@ import {configurationService} from "../../../services/configuration.service";
 
 
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/servicecategorymanager.html',
+    templateUrl: '../templates/servicecategorymanager.html',
 })
 export class ServiceCategoryManagerComponent {
-    private category_tree = [];
-    private levels = [];
-    private max_levels = 4;
-    private loading = true;
-    private selected_categorys = [];
-    private edit_category: object = null;
-    private service_queues = [];
+    public category_tree = [];
+    public levels = [];
+    public max_levels = 4;
+    public loading = true;
+    public selected_categorys = [];
+    public edit_category: any = null;
+    public service_queues = [];
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private config: configurationService,
-        private utils: modelutilities,
-        private toast: toast,
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public config: configurationService,
+        public utils: modelutilities,
+        public toast: toast,
     ) {
         // getting the category tree...
         if (!this.config.getData('service_category_tree')) {
@@ -54,7 +54,7 @@ export class ServiceCategoryManagerComponent {
         );
     }
 
-    private initializeTree(tree) {
+    public initializeTree(tree) {
         this.category_tree = tree;
         // getting max levels...
 
@@ -66,7 +66,7 @@ export class ServiceCategoryManagerComponent {
     }
 
 
-    private resetLevels(start_lvl = 0) {
+    public resetLevels(start_lvl = 0) {
         for (let lvl = start_lvl; lvl < this.max_levels; lvl++) {
             this.levels[lvl] = [];
         }
@@ -76,7 +76,7 @@ export class ServiceCategoryManagerComponent {
     /**
      * triggered on mouseenter, selects a category to go deeper
      */
-    private select(cat) {
+    public select(cat) {
         this.selected_categorys[cat.level] = cat;
         if (cat.categories) {
             this.levels[cat.level + 1] = cat.categories;
@@ -86,7 +86,7 @@ export class ServiceCategoryManagerComponent {
         }
     }
 
-    private addCategory(parent = null) {
+    public addCategory(parent = null) {
         let cat = {
             id: this.utils.generateGuid(),
             name: 'new Category...',
@@ -117,7 +117,7 @@ export class ServiceCategoryManagerComponent {
         this.edit(cat);
     }
 
-    private removeCategory(cat) {
+    public removeCategory(cat) {
         if (cat.categories) {
             let r = confirm('Are you sure you want to delete this Category? There are ' + cat.categories.length + ' Subcategories which will be get deleted too!');
             if (!r) return false;
@@ -154,12 +154,12 @@ export class ServiceCategoryManagerComponent {
         }
     }
 
-    private edit(cat) {
+    public edit(cat) {
         this.selected_categorys[cat.level] = cat;
         this.edit_category = cat;
     }
 
-    private save() {
+    public save() {
         this.backend.postRequest('configuration/spiceui/core/servicecategories/tree', null, this.category_tree).subscribe(
             (success) => {
                 this.toast.sendToast('changes saved');
@@ -171,7 +171,7 @@ export class ServiceCategoryManagerComponent {
         );
     }
 
-    private isCategorySelected(cat): boolean {
+    public isCategorySelected(cat): boolean {
         for (let c of this.selected_categorys) {
             if (c.id == cat.id) return true;
         }

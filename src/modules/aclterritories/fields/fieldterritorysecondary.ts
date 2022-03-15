@@ -15,7 +15,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a field to add secondary territories
  */
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/fieldterritorysecondary.html',
+    templateUrl: '../templates/fieldterritorysecondary.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
 export class fieldTerritorySecondary extends fieldGeneric {
@@ -23,19 +23,19 @@ export class fieldTerritorySecondary extends fieldGeneric {
     /**
      * indicates if the search is open
      */
-    private territorySearchOpen: boolean = false;
+    public territorySearchOpen: boolean = false;
 
     /**
      * the term we are searching for
      */
-    private territorySearchTerm: string = '';
+    public territorySearchTerm: string = '';
 
     /**
      * for the handling of the dropdown
      */
-    private clickListener: any;
+    public clickListener: any;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private renderer: Renderer2, private elementRef: ElementRef, private territoriesService: territories) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend, public renderer: Renderer2, public elementRef: ElementRef, public territoriesService: territories) {
         super(model, view, language, metadata, router);
 
     }
@@ -52,7 +52,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
      */
     get territories() {
         try {
-            return JSON.parse(this.model.data.spiceacl_secondary_territories)
+            return JSON.parse(this.model.getField('spiceacl_secondary_territories'))
         } catch (e) {
             return [];
         }
@@ -64,20 +64,20 @@ export class fieldTerritorySecondary extends fieldGeneric {
      * @param value an array of territory ids
      */
     set territories(value) {
-        this.model.data.spiceacl_secondary_territories = JSON.stringify(value ? value : []);
+        this.model.setField('spiceacl_secondary_territories',JSON.stringify(value ? value : []));
     }
 
     /**
      * triggered when the click in the field
      */
-    private onClick() {
+    public onClick() {
         this.territorySearchOpen = true;
     }
 
     /**
      * ensure the search is closed when the field fires a blur event
      */
-    private onBlur() {
+    public onBlur() {
         if (this.territorySearchTerm == '') {
             this.territorySearchOpen = false;
         }
@@ -89,7 +89,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
      * @param e the event passed  in with $event
      * @param territoryid the id of the territory
      */
-    private removeTerritory(e, territoryid) {
+    public removeTerritory(e, territoryid) {
         // stop the event here
         e.preventDefault();
         e.stopPropagation();
@@ -112,7 +112,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
      *
      * @param event the event
      */
-    private handleClick(event: MouseEvent): void {
+    public handleClick(event: MouseEvent): void {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             if (this.clickListener) this.clickListener();
@@ -126,7 +126,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
      *
      * @param territory the territory id
      */
-    private addTerritory(territory) {
+    public addTerritory(territory) {
         let territories = this.territories;
         if (territories == '') territories = [];
         territories.push(territory);

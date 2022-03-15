@@ -8,7 +8,7 @@ import { toast } from '../../services/toast.service';
 
 @Component({
     selector: 'object-page-header-tag-picker',
-    templateUrl: './src/objectcomponents/templates/objectpageheadertagpicker.html',
+    templateUrl: '../templates/objectpageheadertagpicker.html',
     styles: [
         '.offeredTags span { cursor: pointer; }',
         '.selectedTags li { margin-bottom: 0.125rem; }',
@@ -32,7 +32,7 @@ export class ObjectPageHeaderTagPicker implements OnInit {
     tagsAreParsed: boolean = false;
     allTagsAreLoaded: boolean = false;
 
-    constructor( private language: language, private backend: backend, private toast: toast ) { }
+    constructor( public language: language, public backend: backend, public toast: toast ) { }
 
     ngOnInit() {
         this.backend.getRequest('systags').subscribe(( response: any ) => {

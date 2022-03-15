@@ -7,14 +7,14 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'field-related-details-container',
-    templateUrl: './src/objectfields/templates/fieldrelateddetailscontainer.html',
+    templateUrl: '../templates/fieldrelateddetailscontainer.html',
     providers: [model, view]
 })
 export class fieldRelatedDetailsContainer implements OnChanges {
 
-    @Input() private module: string;
-    @Input() private id: string;
-    @Input() private componentset: string;
+    @Input() public module: string;
+    @Input() public id: string;
+    @Input() public componentset: string;
 
     constructor(public model: model, public view: view) {
 

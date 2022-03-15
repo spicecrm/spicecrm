@@ -1,8 +1,11 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\utils\SpiceUtils;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -453,6 +456,7 @@ class ImapHandler extends TransportHandler
      */
     private function testSmtpConnection($testEmail)
     {
+        $response = [];
         $smtp_status = $this->checkConfiguration($this->outgoing_settings);
         if (!$smtp_status['result']) {
             $response = [
@@ -466,7 +470,7 @@ class ImapHandler extends TransportHandler
         try {
             $this->transport_handler->getTransport()->start();
 
-            $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail));
+            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail));
             $response['result'] = true;
         } catch (Swift_TransportException $e) {
             $response['errors'] = $e->getMessage();
@@ -694,9 +698,9 @@ class ImapHandler extends TransportHandler
      * @param $module
      */
     public function saveRelation($beanId, $module) {
-        $query = "INSERT INTO `email_addr_bean_rel`
-                (`id`, `email_address_id`, `bean_id`, `bean_module`)
-                VALUES ('" . create_guid() . "', '" . $this->id . "', '" . $beanId . "', '" . $module . "')";
+        $query = "INSERT INTO email_addr_bean_rel
+                (id, email_address_id, bean_id, bean_module)
+                VALUES ('" . SpiceUtils::createGuid() . "', '" . $this->id . "', '" . $beanId . "', '" . $module . "')";
         $this->db->query($query);
     }
 }

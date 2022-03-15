@@ -5,15 +5,15 @@ import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
     selector: 'reporter-filter-item-user',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemuser.html'
+    templateUrl: '../templates/reporterfilteritemuser.html'
 })
 export class ReporterFilterItemUser implements OnInit {
     /**
      * whereCondition: object
      */
-    @Input() private whereCondition: any = {};
+    @Input() public whereCondition: any = {};
 
-    private fieldName: string;
+    public fieldName: string;
 
     /**
      * @return isMultiSelect: boolean

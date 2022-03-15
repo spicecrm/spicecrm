@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'reporter-cockpit-tile',
-    templateUrl: './src/modules/reports/templates/reportercockpittile.html',
+    templateUrl: '../templates/reportercockpittile.html',
     host: {
         class: 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-3 slds-hint-parent'
     }
@@ -20,16 +20,16 @@ export class ReporterCockpitTile {
     /**
      * an Input parameter set that holds the report object
      */
-    @Input() private report: any = {};
+    @Input() public report: any = {};
 
-    constructor(private backend: backend, private router: Router) {
+    constructor(public backend: backend, public router: Router) {
 
     }
 
     /**
      * changes the route and displays the report
      */
-    private navigateDetail() {
+    public navigateDetail() {
         this.router.navigate(['/module/KReports/' + this.report.id]);
     }
 }

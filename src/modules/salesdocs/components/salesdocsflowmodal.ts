@@ -11,7 +11,7 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'salesdocs-flow-modal',
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsflowmodal.html",
+    templateUrl: "../templates/salesdocsflowmodal.html",
 })
 export class SalesDocsFlowModal implements OnInit {
 
@@ -19,36 +19,36 @@ export class SalesDocsFlowModal implements OnInit {
      * referenec to self added from teh modal service
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * an object with the successors per documentid
      *
      * @private
      */
-    private successors: any = {};
+    public successors: any = {};
 
     /**
      * the salesdocs that are in the flow mapped
      *
      * @private
      */
-    private salesdocs: any = {};
+    public salesdocs: any = {};
 
     /**
      * the structure transpiled to an array with rows to be displayed in the table
      *
      * @private
      */
-    private rows: any[] = [];
+    public rows: any[] = [];
 
     /**
      * the fields to be displayed per the fieldset
      * @private
      */
-    private fields: any[];
+    public fields: any[];
 
-    constructor(public metadata: metadata, public model: model, private backend: backend) {
+    constructor(public metadata: metadata, public model: model, public backend: backend) {
         let componentConfig = this.metadata.getComponentConfig('SalesDocsFlowModal', 'SalesDocs');
         this.fields = this.metadata.getFieldSetFields(componentConfig.fieldset);
     }
@@ -65,7 +65,7 @@ export class SalesDocsFlowModal implements OnInit {
      *
      * @private
      */
-    private loadDocumentFlow() {
+    public loadDocumentFlow() {
         this.backend.getRequest(`module/SalesDocs/${this.model.id}/flow`).subscribe(res => {
             console.log(res);
             this.successors = res.successors;
@@ -79,7 +79,7 @@ export class SalesDocsFlowModal implements OnInit {
      *
      * @private
      */
-    private determineTopDoc() {
+    public determineTopDoc() {
         for (let doc in this.salesdocs) {
             let docFound = false;
             for (let s in this.successors) {
@@ -99,7 +99,7 @@ export class SalesDocsFlowModal implements OnInit {
      *
      * @private
      */
-    private buildTable() {
+    public buildTable() {
 
         this.rows = [];
         let topDoc = this.determineTopDoc();
@@ -117,7 +117,7 @@ export class SalesDocsFlowModal implements OnInit {
      * @param level
      * @private
      */
-    private addSuccessors(id, level) {
+    public addSuccessors(id, level) {
         for (let doc of this.getSalesDocSuccessors(id)) {
             this.rows.push({
                 level: level,
@@ -133,7 +133,7 @@ export class SalesDocsFlowModal implements OnInit {
      * @param id
      * @private
      */
-    private getSalesDocSuccessors(id?: string) {
+    public getSalesDocSuccessors(id?: string) {
         if (!id) id = this.model.id;
 
         return this.successors[id] ? this.successors[id] : [];
@@ -143,7 +143,7 @@ export class SalesDocsFlowModal implements OnInit {
      * close the modal
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

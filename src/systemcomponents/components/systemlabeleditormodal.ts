@@ -12,7 +12,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: "system-label-editor-modal",
-    templateUrl: "./src/systemcomponents/templates/systemlabeleditormodal.html",
+    templateUrl: "../templates/systemlabeleditormodal.html",
 })
 export class SystemLabelEditorModal implements OnInit {
     /**
@@ -31,34 +31,34 @@ export class SystemLabelEditorModal implements OnInit {
      * holds the languages names
      * @private
      */
-    private languagesNames = {};
+    public languagesNames = {};
     /**
      * holds the untranslated languages
      * @private
      */
-    private untranslatedLanguages = [];
+    public untranslatedLanguages = [];
     /**
      * true while retrieving the label data
      * @private
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
     /**
      * reference for this component to enable destroy
      * @private
      */
-    private self;
+    public self;
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
-        private toast: toast,
-        private modal: modal
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
+        public toast: toast,
+        public modal: modal
     ) {
     }
 
-    private _labelData = null;
+    public _labelData = null;
     /**
      * @return label data
      */
@@ -134,7 +134,7 @@ export class SystemLabelEditorModal implements OnInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
@@ -142,7 +142,7 @@ export class SystemLabelEditorModal implements OnInit {
      * retrieve label data
      * @private
      */
-    private retrieveLabelData() {
+    public retrieveLabelData() {
 
         this.isLoading = true;
 
@@ -177,7 +177,7 @@ export class SystemLabelEditorModal implements OnInit {
     /**
      * save label changes to database
      */
-    private save() {
+    public save() {
         this.close();
         this.backend.postRequest('configuration/syslanguages/labels', null, [this.labelData]).subscribe(
             () => {
@@ -193,7 +193,7 @@ export class SystemLabelEditorModal implements OnInit {
      * set missing languages
      * @private
      */
-    private setUntranslatedLanguages() {
+    public setUntranslatedLanguages() {
         this.untranslatedLanguages = !this.translations ? this.availableLanguages : this.availableLanguages
             .filter(lang => !this.translations.some(t => t.syslanguage == lang.language));
     }
@@ -202,7 +202,7 @@ export class SystemLabelEditorModal implements OnInit {
      * load the available languages
      * @private
      */
-    private loadAvailableLanguages() {
+    public loadAvailableLanguages() {
         this.availableLanguages = this.language.getAvialableLanguages();
         this.availableLanguages.forEach(lang => this.languagesNames[lang.language] = lang.text);
     }
@@ -211,7 +211,7 @@ export class SystemLabelEditorModal implements OnInit {
      * destroy the modal
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 }

@@ -9,7 +9,6 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import {AddComponentsModule} from "../../addcomponents/addcomponents.module";
 
 import /*embed*/ {KnowledgeService} from "./services/knowledge.service";
 
@@ -34,8 +33,7 @@ import /*embed*/ {KnowledgeReleaseAllButton} from "./components/knowledgerelease
         ObjectFields,
         GlobalComponents,
         ObjectComponents,
-        SystemComponents,
-        AddComponentsModule
+        SystemComponents
     ],
     declarations: [
         KnowledgeContainer,

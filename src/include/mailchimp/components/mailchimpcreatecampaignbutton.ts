@@ -11,19 +11,19 @@ import {modal} from '../../../services/modal.service';
 /* creates campaign on mailchimp */
 @Component({
     selector: 'mailchimp-create-campaign-button',
-    templateUrl: './src/include/mailchimp/templates/mailchimpcreatecampaignbutton.html',
+    templateUrl: '../templates/mailchimpcreatecampaignbutton.html',
 })
 
 export class MailChimpCreateCampaignButton {
 
-    private disabled: boolean = false;
+    public disabled: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector
     ) {
         this.model.data$.subscribe(data => {
             this.disableButton();
@@ -31,7 +31,7 @@ export class MailChimpCreateCampaignButton {
     }
 
     public disableButton() {
-        if (this.model.data.ext_id) {
+        if (this.model.getField('ext_id')) {
             this.disabled = true;
             return;
         }

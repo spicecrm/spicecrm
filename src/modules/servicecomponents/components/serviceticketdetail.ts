@@ -14,7 +14,7 @@ declare var _: any;
  * renders a summary panel on the service ticket
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketdetail.html'
+    templateUrl: '../templates/serviceticketdetail.html'
 
 })
 export class ServiceTicketDetail implements OnInit{
@@ -27,14 +27,14 @@ export class ServiceTicketDetail implements OnInit{
     /**
      * the fieldset rendered in the header
      */
-    private headerfieldset: string;
+    public headerfieldset: string;
 
     /**
      * the componentset to be used
      */
-    private componentset: string;
+    public componentset: string;
 
-    constructor(private model: model, private metadata: metadata, private language: language) {
+    constructor(public model: model, public metadata: metadata, public language: language) {
 
     }
 

@@ -8,18 +8,18 @@ import {questionnaireParticipationService} from '../services/questionnairepartic
 
 @Component({
     selector: 'questionnaire-preview',
-    templateUrl: './src/modules/questionnaires/templates/questionnairepreview.html',
+    templateUrl: '../templates/questionnairepreview.html',
 })
 export class QuestionnairePreview {
 
     @Input() public questionnaireId: string;
-    private isLoaded = false;
-    private self: any = null;
-    private questionnaireParticipation: questionnaireParticipationService;
+    public isLoaded = false;
+    public self: any = null;
+    public questionnaireParticipation: questionnaireParticipationService;
 
-    constructor( private language: language, private backend: backend ) { }
+    constructor( public language: language, public backend: backend ) { }
 
-    private closePopup(): void {
+    public closePopup(): void {
         this.self.destroy();
     }
 

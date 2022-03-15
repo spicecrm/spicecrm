@@ -8,38 +8,38 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'sign-serviceorder-modal',
-    templateUrl: './src/modules/servicecomponents/templates/signserviceordermodal.html',
+    templateUrl: '../templates/signserviceordermodal.html',
     providers: [model, view],
 })
 export class SignServiceOrderModalComponent {
     // needed for selfdestruction... will be set on creation...
-    private self: any;
+    public self: any;
 
     constructor(
-        private model: model,
-        private view: view,
-        private language: language,
+        public model: model,
+        public view: view,
+        public language: language,
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    private setModel(model: model) {
+    public setModel(model: model) {
         this.model.id = model.id;
         this.model.module = model.module;
-        this.model.data = model.data;
+        this.model.setData(model.data, false);
     }
 
-    private cancel() {
+    public cancel() {
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.cancel();
     }
 
-    private accept() {
-        this.model.data.serviceorder_status = 'signed';
+    public accept() {
+        this.model.setField('serviceorder_status', 'signed');
         this.model.save();
 
         this.self.destroy();

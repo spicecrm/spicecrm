@@ -18,17 +18,17 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
     selector: 'dictionary-manager-items',
-    templateUrl: './src/workbench/templates/dictionarymanageritems.html',
+    templateUrl: '../templates/dictionarymanageritems.html',
 })
 export class DictionaryManagerItems {
 
     /**
      * the curretn dictionaryitem
      */
-    private dictionaryitem: DictionaryItem;
+    public dictionaryitem: DictionaryItem;
 
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -50,7 +50,7 @@ export class DictionaryManagerItems {
     /**
      * react to the click to add a new dictionary definition
      */
-    private addDictionaryItem(event: MouseEvent) {
+    public addDictionaryItem(event: MouseEvent) {
         event.stopPropagation();
         this.modal.openModal('DictionaryManagerAddItemModal', true, this.injector);
     }
@@ -61,7 +61,7 @@ export class DictionaryManagerItems {
      * @param event
      * @param id
      */
-    private deleteDictionaryItem(event: MouseEvent, id: string) {
+    public deleteDictionaryItem(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
@@ -78,7 +78,7 @@ export class DictionaryManagerItems {
      * handles the drop event and resets the sequence fiels
      * @param event
      */
-    private drop(event) {
+    public drop(event) {
         // get the values and reshuffle
         let values = this.dictionaryitems;
         let previousItem = values.splice(event.previousIndex, 1);
@@ -97,7 +97,7 @@ export class DictionaryManagerItems {
      *
      * @param id
      */
-    private setActiveId(id) {
+    public setActiveId(id) {
         this.dictionarymanager.currentDictionaryItem = id;
         this.dictionaryitem = this.dictionarymanager.dictionaryitems.find(i => i.id == id);
     }

@@ -15,7 +15,7 @@ import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
  */
 @Component({
     selector: 'reporter-integration-queryanalyzer-modal',
-    templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzermodal.html',
+    templateUrl: '../templates/reporterintegrationqueryanalyzermodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterIntegrationQueryanalyzerModal implements OnInit {
@@ -23,36 +23,36 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
     /**
      * reference to the modal self
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the main query
      */
-    private mainquery: string = '';
+    public mainquery: string = '';
 
     /**
      * the formatte query
      */
-    private formattedquery: string = '';
+    public formattedquery: string = '';
 
     /**
      * the formatte query
      */
-    private highlightedquery: string = '';
+    public highlightedquery: string = '';
 
     /**
      * indicates that the data is not yet loaded
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     /**
      * matching the retunrs tbales from the quirked query to real names
      */
-    private tabledictionary: any = {};
+    public tabledictionary: any = {};
 
-    private _translateTableNames: boolean = false;
+    public _translateTableNames: boolean = false;
 
-    constructor(private language: language, private backend: backend, private sanitizer: DomSanitizer, private reporterconfig: reporterconfig, private model: model, private toast: toast, private cdRef: ChangeDetectorRef) {
+    constructor(public language: language, public backend: backend, public sanitizer: DomSanitizer, public reporterconfig: reporterconfig, public model: model, public toast: toast, public cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -123,14 +123,14 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
     /**
      * close the modal
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
     /**
      * copy the SQL to clipboard
      */
-    private copy2clipboard() {
+    public copy2clipboard() {
         let query = this.formattedquery;
 
         if (this.translateTableNames) {
@@ -149,7 +149,7 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
     /**
      * builds the table dictionary
      */
-    private extractTableNames() {
+    public extractTableNames() {
         // kes a counter for the tables to have the tables numbered if the occur multiple times
         let tablecounter = {};
 

@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, HostBinding} from '@angular/core';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -11,17 +11,32 @@ import { DomSanitizer } from '@angular/platform-browser';
  */
 @Component({
     selector: 'system-modal-header-empty',
-    templateUrl: './src/systemcomponents/templates/systemmodalheaderempty.html'
+    templateUrl: '../templates/systemmodalheaderempty.html'
 })
 export class SystemModalHeaderEmpty {
 
+    @HostBinding('class.slds-modal__header_empty') emptyheader: boolean = true;
 
     /**
      * an event emitter that indicates that the modal shoudl close. Subscribe to this in your implementation of a modal handling the close event
      */
-    @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private language: language, private layout: layout) {
+    /**
+     * if set to true no close icon will be rendered in the upper right corner
+     */
+    @Input() public hiddenCloseButton = false;
+
+    /**
+     * an attribute that can be set to hide the close button
+     *
+     * @param value
+     */
+    @Input('system-modal-header-noclose') set hideClose(value) {
+        this.hiddenCloseButton = value !== false;
+    }
+
+    constructor(public language: language, public layout: layout) {
 
     }
 

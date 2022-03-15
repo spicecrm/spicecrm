@@ -12,14 +12,14 @@ declare var _: any;
 
 @Component({
     selector: 'object-recordview-detail-split',
-    templateUrl: './src/objectcomponents/templates/objectrecordviewdetailsplit.html'
+    templateUrl: '../templates/objectrecordviewdetailsplit.html'
 
 })
 export class ObjectRecordViewDetailsplit implements OnInit {
 
     public componentconfig: any = {};
 
-    public constructor(private metadata: metadata, private model: model) {
+    public constructor(public metadata: metadata, public model: model) {
 
     }
 
@@ -28,7 +28,7 @@ export class ObjectRecordViewDetailsplit implements OnInit {
         this.getComponentconfig();
     }
 
-    private getComponentconfig() {
+    public getComponentconfig() {
         if(_.isEmpty(this.componentconfig) || (!this.componentconfig.left && !this.componentconfig.right)) {
             this.componentconfig = this.metadata.getComponentConfig('ObjectRecordViewDetailsplit', this.model.module);
         }

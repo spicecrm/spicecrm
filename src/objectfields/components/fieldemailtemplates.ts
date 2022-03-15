@@ -15,12 +15,12 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'field-email-templates',
-    templateUrl: './src/objectfields/templates/fieldemailtemplates.html'
+    templateUrl: '../templates/fieldemailtemplates.html'
 })
 export class fieldEmailTemplates extends fieldGeneric implements OnInit {
 
-    private isLoaded: boolean = false;
-    private availableTemplates: any[] = [];
+    public isLoaded: boolean = false;
+    public availableTemplates: any[] = [];
 
     constructor(
         public model: model,
@@ -28,9 +28,9 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private modal: modal,
-        private configuration: configurationService
+        public backend: backend,
+        public modal: modal,
+        public configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
@@ -52,7 +52,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
     }
 
-    private getValue() {
+    public getValue() {
         for (let template of this.availableTemplates) {
             if (template.id == this.value) {
                 return template.name;
@@ -97,12 +97,12 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
      *
      * @param event
      */
-    private chooseTemplate(event) {
+    public chooseTemplate(event) {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
                 this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
                     // nur überschreiben wenn nicht bereits ein subject angegeben wurde.
-                    if (!this.model.data[this.subjectField]) {
+                    if (!this.model.getField(this.subjectField)) {
                         this.model.setField(this.subjectField, data.subject);
                     }
                     // Check if element with class "spicecrm_quote" should kept on the bottom (it is for the email-reply)
@@ -114,9 +114,29 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                         let selectedEle = virtualDocument.querySelectorAll(".spicecrm_quote");
 
                         // keep the html with the class "spicecrm_quote" and set the template
-                        this.model.setField(this.bodyField, data.body_html + selectedEle[0].outerHTML);
+                        let output = [data.body_html.slice(0, data.body_html.indexOf("</div></body></html>")),"<br><br>", selectedEle[0].outerHTML, data.body_html.slice(data.body_html.indexOf("</div></body></html>"))].join('');
+                        this.model.setField(this.bodyField, output);
                     } else {
-                        this.model.setField(this.bodyField, data.body_html);
+                        // create a new document to manage the current html string (body)
+                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
+                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
+                        // check if a div tag with signature is present in order to keep the signature when set
+                        // extract signatures, add again to the end of body_html
+                        let selectedEle = virtualDocument.querySelectorAll("div[data-signature]");
+                        virtualDocument.documentElement.innerHTML = data.body_html;
+                        let body = virtualDocument.querySelector('body');
+                        if(body) { // add as laast child within the body
+                            selectedEle.forEach(el => {
+                                body.appendChild(el);
+                            });
+                        } else { // add as laast child within the main tag
+                            selectedEle.forEach(el => {
+                                virtualDocument.documentElement.appendChild(el);
+                            });
+                        }
+
+                        // keep the html with the signature in the end and set the template
+                        this.model.setField(this.bodyField, virtualDocument.documentElement.outerHTML);
                     }
                     modalRef.instance.self.destroy();
                 });

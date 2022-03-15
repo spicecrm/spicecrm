@@ -11,10 +11,10 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-title',
-    templateUrl: './src/objectfields/templates/fieldtitle.html'
+    templateUrl: '../templates/fieldtitle.html'
 })
 export class fieldTitle extends fieldGeneric {
-    private isValid: boolean = true;
+    public isValid: boolean = true;
     errorMessage: String = '';
 
     get fielddd() {
@@ -26,16 +26,16 @@ export class fieldTitle extends fieldGeneric {
     }
 
     get titledddisplay() {
-        return this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.data[this.fielddd]);
+        return this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.getField(this.fielddd));
     }
 
     get value(){
-        return (this.model.data[this.fielddd] ? this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.data[this.fielddd]) : '') +
-            (this.model.data[this.fieldtxt] ? ' ' + this.model.data[this.fieldtxt] : '');
+        return (this.model.getField(this.fielddd) ? this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.getField(this.fielddd)) : '') +
+            (this.model.getField(this.fieldtxt) ? ' ' + this.model.getField(this.fieldtxt) : '');
     }
 
     /*
-     constructor(private el: ElementRef, private model: model, private view: view, private language: language, private metadata: metadata) {
+     constructor(public el: ElementRef, public model: model, public view: view, public language: language, public metadata: metadata) {
      }
      */
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
@@ -45,14 +45,14 @@ export class fieldTitle extends fieldGeneric {
 
     // overwrite get Field Class
     getFieldClass() {
-        let classes: Array<string> = [];
+        let classes: string[] = [];
         if (!this.isValid) classes.push('slds-has-error');
         return classes;
     }
 
-    getTitles(): Array<any>{
+    getTitles(): any[]{
         let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldconfig['field_dd'] ? this.fieldconfig['field_dd'] : 'title_dd');
+        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldconfig.field_dd ? this.fieldconfig.field_dd : 'title_dd');
         for(let optionVal in options){
             retArray.push({
                 value: optionVal,

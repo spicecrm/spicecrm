@@ -6,27 +6,27 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-icon-help-text",
-    templateUrl: "./src/systemcomponents/templates/systemiconhelptext.html"
+    templateUrl: "../templates/systemiconhelptext.html"
 })
 export class SystemIconHelpText {
-    @Input() private icon: string = 'info';
-    @Input() private file: string = './assets/icons/spicecrm.svg';
-    @Input() private size: string = 'xx-small'; // possible: xx-small, x-small, small, large
-    @Input() private popoverMaxWidth: string = '300px';
-    @Input() private color: string = '#bbb';
-    @Input() private hovercolor: string = '#5B5B5B';
-    @Input() private desaturate: boolean = false;
-    @Input() private addclasses: string = '';
-    @Input() private divClass = 'slds-media__figure';
+    @Input() public icon: string = 'info';
+    @Input() public file: string = './assets/icons/spicecrm.svg';
+    @Input() public size: string = 'xx-small'; // possible: xx-small, x-small, small, large
+    @Input() public popoverMaxWidth: string = '300px';
+    @Input() public color: string = '#bbb';
+    @Input() public hovercolor: string = '#5B5B5B';
+    @Input() public desaturate: boolean = false;
+    @Input() public addclasses: string = '';
+    @Input() public divClass = 'slds-media__figure';
 
     /**
      * helpText string
      */
-    @Input() private helpText: string = "";
+    @Input() public helpText: string = "";
 
-    private showHelp: boolean = false;
+    public showHelp: boolean = false;
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
 
     }
 

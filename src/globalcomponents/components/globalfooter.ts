@@ -10,15 +10,15 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'global-footer',
-    templateUrl: './src/globalcomponents/templates/globalfooter.html'
+    templateUrl: '../templates/globalfooter.html'
 })
 export class GlobalFooter implements AfterViewInit {
 
-    @ViewChild('footercontainer', {read: ViewContainerRef, static: true}) private footercontainer: ViewContainerRef;
-    @ViewChild('modalcontainer', {read: ViewContainerRef, static: true}) private modalcontainer: ViewContainerRef;
-    @ViewChild('modalbackdrop', {read: ViewContainerRef, static: true}) private modalbackdrop: ViewContainerRef;
+    @ViewChild('footercontainer', {read: ViewContainerRef, static: true})public footercontainer: ViewContainerRef;
+    @ViewChild('modalcontainer', {read: ViewContainerRef, static: true})public modalcontainer: ViewContainerRef;
+    @ViewChild('modalbackdrop', {read: ViewContainerRef, static: true})public modalbackdrop: ViewContainerRef;
 
-    constructor(private session: session, private footer: footer, private modalservice: modal) {
+    constructor(public session: session,public footer: footer,public modalservice: modal) {
     }
 
     public ngAfterViewInit() {

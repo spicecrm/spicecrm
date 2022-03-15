@@ -13,29 +13,32 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasktaskpanel.html'
+    templateUrl: '../templates/workflowmanagerdetailtasktaskpanel.html'
 })
 export class WorkflowManagerDetailTaskTaskpanel {
 
     @Input() tasks : any = {};
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
 
     }
 
     get nextTaskDisabled(){
-        if(this.model.data && this.model.data.tasktype == 'decision')
+        if(this.model.getField('tasktype') == 'decision') {
             return true;
+        }
 
-        if(this.model.data && this.model.data.closetask)
+        if(this.model.getField('closetask')) {
             return true;
+        }
 
         return false;
     }
 
     get previousTaskDisabled(){
-        if(this.model.data && this.model.data.primarytask)
+        if(this.model.getField('primarytask')) {
             return true;
+        }
 
         return false;
     }

@@ -16,7 +16,7 @@ import {toast} from "../../../services/toast.service";
  */
 @Component({
     selector: 'email-templates-preview',
-    templateUrl: "./src/modules/emails/templates/emailtemplatespreview.html",
+    templateUrl: "../templates/emailtemplatespreview.html",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailTemplatesPreview implements AfterViewInit {
@@ -46,7 +46,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
     /**
      * holds the view type
      */
-    private viewType: { title: string, icon: string, value: string, width: number } = {
+    public viewType: { title: string, icon: string, value: string, width: number } = {
         title: 'LBL_DESKTOP',
         icon: 'desktop',
         value: 'desktop',
@@ -56,44 +56,44 @@ export class EmailTemplatesPreview implements AfterViewInit {
     /**
      * save the component subscriptions
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
     /**
      * the selected item
      */
-    private selectedItem: { id: string, module: string, text: string };
+    public selectedItem: { id: string, module: string, text: string };
     /**
      * holds the search field placeholder
      */
-    private placeholder: string;
+    public placeholder: string;
     /**
      * holds the parsed html value
      * @private
      */
-    private parsedHtml: SafeResourceUrl;
+    public parsedHtml: SafeResourceUrl;
     /**
      * holds the body html field name from the parent
      * @private
      */
-    @Input() private bodyHtmlField: string = 'body_html';
+    @Input() public bodyHtmlField: string = 'body_html';
     /**
      * holds the preview for bean module name from parent
      * @private
      */
-    @Input() private previewForBean: string;
+    @Input() public previewForBean: string;
     /**
      * holds the iframe height from parent
      * @private
      */
-    @Input() private iframeHeight: number = 250;
+    @Input() public iframeHeight: number = 250;
 
-    constructor(private language: language,
-                private backend: backend,
-                private metadata: metadata,
-                private model: model,
-                private modal: modal,
-                private toast: toast,
-                private sanitizer: DomSanitizer,
-                private cdRef: ChangeDetectorRef) {
+    constructor(public language: language,
+                public backend: backend,
+                public metadata: metadata,
+                public model: model,
+                public modal: modal,
+                public toast: toast,
+                public sanitizer: DomSanitizer,
+                public cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -114,7 +114,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * subscribe to model data changes to reset the selected item when the model is changed and to recompile if the html value changed
      * @private
      */
-    private subscribeToModelChanges() {
+    public subscribeToModelChanges() {
         this.subscription.add(
             this.model.data$.subscribe(() => {
                 this.setPlaceholder();
@@ -129,7 +129,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
     /**
      * set the search placeholder
      */
-    private setPlaceholder() {
+    public setPlaceholder() {
         this.placeholder = !!this.previewForBean ? this.language.getModuleCombinedLabel('LBL_SEARCH', this.previewForBean) : this.language.getLabel('LBL_SEARCH');
         this.cdRef.detectChanges();
     }
@@ -137,7 +137,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
     /**
      * opens a model search modal
      */
-    private searchWithModal() {
+    public searchWithModal() {
         if (!this.previewForBean) return;
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.previewForBean;
@@ -160,7 +160,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * unselect the selected item if the model has changed
      * @private
      */
-    private clearSelectedItem() {
+    public clearSelectedItem() {
         this.selectedItem = undefined;
         this.parsedHtml = undefined;
         this.cdRef.detectChanges();
@@ -170,10 +170,10 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * parse the body by the spice template compiler
      * @private
      */
-    private compileBody() {
+    public compileBody() {
         if (!this.model.id) return;
         const loadingModal = this.modal.await('LBL_PARSING_HTML');
-        const body = {html: this.model.data[this.bodyHtmlField]};
+        const body = {html: this.model.getField(this.bodyHtmlField)};
         this.backend.postRequest(`module/${this.model.module}/${this.model.id}/livecompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
             .subscribe((data: any) => {
                 if (!data || !data.html) {
@@ -197,7 +197,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * @param value
      * @private
      */
-    private setViewType(value: string) {
+    public setViewType(value: string) {
         this.viewType = this.viewTypeOptions.find(type => type.value == value);
     }
 }

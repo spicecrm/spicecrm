@@ -3,11 +3,11 @@
 </td>
 <td>
     <ng-container *ngIf="textIsMultiline; else notMultiline">
-        <textarea class="slds-textarea" [(ngModel)]="option.text" (change)="change()" rows="5" style="display:block"></textarea>
+        <textarea class="slds-textarea" [(ngModel)]="option.text" (change)="change()" rows="5" style="display:block" [disabled]="!canEditOption"></textarea>
     </ng-container>
     <ng-template #notMultiline>
         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-            <input type="text" class="slds-input" [(ngModel)]="option.text" (change)="change()">
+            <input type="text" class="slds-input" [(ngModel)]="option.text" (change)="change()" [disabled]="!canEditOption">
             <div class="slds-input__icon-group slds-input__icon-group_right">
                 <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position:relative" (click)="textIsMultiline=true">
                     <system-button-icon icon="textarea"></system-button-icon>
@@ -20,8 +20,8 @@
     <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''" (change)="change()"></field-container>
 </td>
 <td style="vertical-align:top">
-    <questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories>
+    <questions-manager-edit-categories [option]="option" [categorypool]="categorypool" [disabled]="!canEditOption"></questions-manager-edit-categories>
 </td>
 <td style="vertical-align:top">
-    <input type="text" class="slds-input slds-text-align_right" style="width:unset" size="4" [(ngModel)]="option.points" (change)="change()">
+    <input type="text" class="slds-input slds-text-align_right" style="width:unset" size="4" [(ngModel)]="option.points" (change)="change()" [disabled]="!canEditOption">
 </td>

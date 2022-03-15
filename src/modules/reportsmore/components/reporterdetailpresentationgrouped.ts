@@ -15,7 +15,7 @@ import {ReporterDetailPresentationStandard} from "../../../modules/reports/compo
  */
 @Component({
     selector: 'reporter-detail-presentation-grouped',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationgrouped.html',
+    templateUrl: '../templates/reporterdetailpresentationgrouped.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationGrouped extends ReporterDetailPresentationStandard {
@@ -24,15 +24,15 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
     /**
      * the values for the group by cal use
      */
-    protected groupByValues: any[] = [];
+    public groupByValues: any[] = [];
     /**
      * the reporter fields for the select for the group ba clause
      */
-    protected reportFields: any[] = [];
+    public reportFields: any[] = [];
     /**
      * indicates if the report has a summary
      */
-    private hasSummary: boolean = false;
+    public hasSummary: boolean = false;
 
     constructor(public language: language,
                 public model: model,
@@ -48,7 +48,7 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
     /**
      * the id of the field the reports i grouped by
      */
-    private _groupById: string = '';
+    public _groupById: string = '';
 
     /**
      * simple getter for the group by id
@@ -118,7 +118,7 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
     /**
      * rebuilds the groups
      */
-    private rebuildGroups() {
+    public rebuildGroups() {
         // determine values
         this.groupByValues = [];
         let groupByValues = {};
@@ -140,7 +140,7 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
         }
     }
 
-    private buildSummary(records) {
+    public buildSummary(records) {
         let fields = this.presData.metaData.gridColumns.filter(column => column.summaryType);
         if (fields.length < 1) return {};
 

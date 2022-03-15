@@ -19,17 +19,17 @@ import {DomainField} from "../interfaces/domainmanager.interfaces";
 
 @Component({
     selector: 'dictionary-manager-fields',
-    templateUrl: './src/workbench/templates/dictionarymanagerfields.html',
+    templateUrl: '../templates/dictionarymanagerfields.html',
 })
 export class DictionaryManagerFields {
 
     /**
      * the curretn dictionaryitem
      */
-    private dictionaryitem: DictionaryItem;
+    public dictionaryitem: DictionaryItem;
 
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -51,7 +51,7 @@ export class DictionaryManagerFields {
      * @param domaindefinitionid
      * @private
      */
-    private getDomainFields(domaindefinitionid: string, first: boolean = true): DomainField[] {
+    public getDomainFields(domaindefinitionid: string, first: boolean = true): DomainField[] {
         let fields = this.dictionarymanager.domainfields.filter(df => df.sysdomaindefinition_id == domaindefinitionid && df.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
         if (fields) {
             return first ? fields.slice(0, 1) : fields.slice(1);
@@ -66,7 +66,7 @@ export class DictionaryManagerFields {
      * @param dictionarydefinitionid
      * @private
      */
-    private getRefDefinitionName(dictionarydefinitionid: string) {
+    public getRefDefinitionName(dictionarydefinitionid: string) {
         return dictionarydefinitionid != this.dictionarymanager.currentDictionaryDefinition ? this.dictionarymanager.dictionarydefinitions.find(d => d.id == dictionarydefinitionid)?.name : '';
     }
 

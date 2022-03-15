@@ -1,12 +1,12 @@
 <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small" [ngClass]="{'slds-p-right--x-small': notificationService.unreadCount > 0}">
-    <div (click)="toggleOpenPopover(); $event.stopPropagation()" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
+    <div (click)="toggleOpenPopover();" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
         <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
     </div>
     <div *ngIf="notificationService.unreadCount > 0" style="top:-5px; right:0px;" class="slds-notification-badge slds-incoming-notification slds-show-notification">
         {{notificationService.unreadCount}}
     </div>
 </div>
-<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; right: 35px; max-height: calc(100vh - 55px);">
+<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; max-height: calc(100vh - 55px);" [ngStyle]="popoverStyle">
     <div class="slds-grid slds-border--bottom">
         <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
             <h2 class="slds-text-heading_small">
@@ -45,10 +45,19 @@
         <div *ngIf="notificationService.isLoading" class="slds-align--absolute-center slds-p-around--small">
             <system-spinner></system-spinner>
         </div>
-        <div class="slds-grid slds-grid--align-center slds-has-divider--top slds-p-around--xx-small">
-            <a (click)="showAllNotifications()" class="slds-text-link">
-                <system-label label="LBL_SHOW_ALL"></system-label>
-            </a>
+        <div class="slds-has-divider--top slds-p-around--x-small slds-size--1-of-1 slds-align--absolute-center">
+            <ul class="slds-list_horizontal slds-has-dividers_right slds-has-block-links">
+                <li class="slds-item">
+                    <a (click)="showAllNotifications()" class="slds-text-link">
+                        <system-label label="LBL_SHOW_ALL"></system-label>
+                    </a>
+                </li>
+                <li *ngIf="hasSubscriptions" class="slds-item">
+                    <a (click)="manageSubscriptions()" class="slds-text-link">
+                        <system-label label="LBL_MANAGE_MODEL_SUBSCRIPTIONS"></system-label>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
     <ng-template #showSettingsContainer>
@@ -65,7 +74,6 @@
                     </span>
                 </div>
             </ng-template>
-
         </div>
     </ng-template>
 </section>

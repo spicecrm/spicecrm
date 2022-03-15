@@ -7,7 +7,7 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: '[salesdocs-convert-modal-item-header]',
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsconvertmodalitemheader.html"
+    templateUrl: "../templates/salesdocsconvertmodalitemheader.html"
 })
 export class SalesDocsConvertModalItemHeader {
 
@@ -15,14 +15,14 @@ export class SalesDocsConvertModalItemHeader {
      * referenec to self added from teh modal service
      * @private
      */
-    @Input() private data: any;
+    @Input() public data: any;
 
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
-    constructor(public model: model, @SkipSelf() private parent: model, private metadata: metadata) {
+    constructor(public model: model, @SkipSelf() public parent: model, public metadata: metadata) {
         let componentconfig = this.metadata.getComponentConfig('SalesDocsConvertModalItem', 'SalesDocItems');
         this.fieldsetItems = this.metadata.getFieldSetFields(componentconfig.fieldset);
     }

@@ -10,11 +10,11 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'service-docs-signature-button',
-    templateUrl: './src/modules/servicecomponents/templates/servicedocsignaturebutton.html'
+    templateUrl: '../templates/servicedocsignaturebutton.html'
 })
 export class ServiceDocSignatureButton {
 
-    private templates: any[] = [];
+    public templates: any[] = [];
     public forcedFormat: 'html'|'pdf';
     public modalTitle: string;
     public noDownload: boolean;
@@ -22,12 +22,12 @@ export class ServiceDocSignatureButton {
     public buttonText: string;
 
     constructor(
-        protected language: language,
-        protected model: model,
-        protected modal: modal,
-        protected backend: backend,
-        protected configuration: configurationService,
-        protected viewContainerRef: ViewContainerRef
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public configuration: configurationService,
+        public viewContainerRef: ViewContainerRef
     ) {
 
     }
@@ -64,7 +64,7 @@ export class ServiceDocSignatureButton {
         }
     }
 
-    private openOutput() {
+    public openOutput() {
         if (this.templates.length > 0) {
             // sort the templates
             this.templates.sort((a, b) => a.name > b.name ? 1 : -1);

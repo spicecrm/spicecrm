@@ -20,6 +20,7 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 import {libloader} from "../../../services/libloader.service";
 import {session} from "../../../services/session.service";
 
+
 declare var moment: any;
 declare var libphonenumber: any;
 declare var _: any;
@@ -30,61 +31,55 @@ declare var _: any;
  * loaded from the componentconfig this can e.g. be a call or a service call or whatever that can be configured role based
  */
 @Component({
-    templateUrl: './src/modules/telephony/templates/telephonydockedcall.html',
+    templateUrl: '../templates/telephonydockedcall.html',
     providers: [model, view]
 })
 export class TelephonyDockedCall {
 
-    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) public containercontent: ViewContainerRef;
 
     /**
      * the data from teh call
      */
     @Input() public calldata: telephonyCallI;
 
-    /**
-     * indicates that we have loaded the phone lib
-     *
-     * @private
-     */
-    private phonelibloaded: boolean = false;
-
-    private isClosed: boolean = false;
+    public isClosed: boolean = false;
 
     /**
      * the active component that is rendered in the composer
      *
      * @private
      */
-    private panelcomponent: string = 'TelephonyCallSearching';
+    public panelcomponent: string = 'TelephonyCallSearching';
 
     /**
      * a list of matched beans returned from the search service
      *
      * @private
      */
-    private matchedbeans: any[] = [];
+    public matchedbeans: any[] = [];
 
     /**
      * the component config
      *
      * @private
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private backend: backend,
-                private session: session,
-                private view: view,
-                private model: model,
-                private modal: modal,
-                private toast: toast,
-                private libloader: libloader,
-                private telephony: telephony,
-                private language: language,
-                private cdref: ChangeDetectorRef,
-                private ViewContainerRef: ViewContainerRef,
-                private metadata: metadata) {
-        this.loadPhoneLib();
+    public footerHidden: boolean = false;
+
+    constructor(public backend: backend,
+                public session: session,
+                public view: view,
+                public model: model,
+                public modal: modal,
+                public toast: toast,
+                public libloader: libloader,
+                public telephony: telephony,
+                public language: language,
+                public cdref: ChangeDetectorRef,
+                public ViewContainerRef: ViewContainerRef,
+                public metadata: metadata) {
 
         // initialize the view and set it into edit mode
         // this is required for the extended modal that is using the same injector
@@ -92,14 +87,6 @@ export class TelephonyDockedCall {
         this.view.setEditMode();
     }
 
-    /**
-     * loads the phone lib
-     */
-    private loadPhoneLib() {
-        this.libloader.loadLib('libphonenumber').subscribe(loaded => {
-            this.phonelibloaded = true;
-        });
-    }
 
     /**
      * getter for the call icon dependent on the status of the call
@@ -131,6 +118,11 @@ export class TelephonyDockedCall {
             endpoint = this.componentconfig.searchendpoint;
         }
 
+        // determine if we have a footer
+        if(this.componentconfig.actionset && this.metadata.getActionSetItems(this.componentconfig.actionset).length == 0){
+            this.footerHidden = true;
+        }
+
         if (this.calldata.relatedid) {
             this.panelcomponent = 'TelephonyCallPanel';
         } else {
@@ -149,6 +141,14 @@ export class TelephonyDockedCall {
     }
 
     /**
+     * get if the actionset in total should be disabled
+     * only can be used when the relatedid is set and when the status is connected or disconnected
+     */
+    get actionsDisabled(){
+        return !this.calldata.relatedid || (this.calldata.status != 'connected' && this.calldata.status != 'disconnected');
+    }
+
+    /**
      * listen to the handler if an attempt has been saved
      * if yes close the composer otherwise send a toast to the user
      * ToDo: Error handling?
@@ -156,7 +156,7 @@ export class TelephonyDockedCall {
      * @param saved
      * @private
      */
-    private attemptSaved(saved) {
+    public attemptSaved(saved) {
         if (saved) {
             this.closeComposer();
         } else {
@@ -167,7 +167,7 @@ export class TelephonyDockedCall {
     /**
      * close the composer and remove the call
      */
-    private closeComposer() {
+    public closeComposer() {
         if ((this.model.module && this.model.isDirty()) || (!this.model.module && this.calldata.note && !this.calldata.call)) {
             this.modal.prompt('confirm', this.language.getLabel('MSG_CLOSE_CALL_COMPOSER', '', 'long'), this.language.getLabel('MSG_CLOSE_CALL_COMPOSER')).subscribe(resp => {
                 if (resp) {
@@ -185,7 +185,7 @@ export class TelephonyDockedCall {
      * @param action
      * @private
      */
-    private handleaction(action) {
+    public handleaction(action) {
         switch (action) {
             case 'savegodetail':
                 this.model.goDetail();
@@ -199,14 +199,14 @@ export class TelephonyDockedCall {
     /**
      * end the call
      */
-    private endCall() {
+    public endCall() {
         this.telephony.terminateCall(this.calldata.id);
     }
 
     /**
      * toggles the closed state for the composer
      */
-    private toggleClosed() {
+    public toggleClosed() {
         this.isClosed = !this.isClosed;
     }
 
@@ -236,7 +236,7 @@ export class TelephonyDockedCall {
      *
      * @private
      */
-    private expand() {
+    public expand() {
         /// open the modal and set teh scope to telephony so the composer modal turns off several features like the toolbar and cannot also nto be closed
         this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector).subscribe(componentRef => {
             componentRef.instance.scope = 'telephony';

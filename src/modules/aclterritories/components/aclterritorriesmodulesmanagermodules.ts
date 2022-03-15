@@ -11,7 +11,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'aclterritorries-modulesmanager-modules',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmodulesmanagermodules.html',
+    templateUrl: '../templates/aclterritorriesmodulesmanagermodules.html',
 })
 export class ACLTerritorriesModulesmanagerModules {
 
@@ -19,7 +19,7 @@ export class ACLTerritorriesModulesmanagerModules {
     public modules: any[] = [];
     public types: any[] = [];
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
         this.loadModules();
     }
 

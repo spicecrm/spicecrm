@@ -10,20 +10,20 @@ import {territories} from '../../../services/territories.service';
 
 @Component({
     selector: 'field-territory-recent',
-    templateUrl: './src/modules/aclterritories/templates/fieldterritoryrecent.html'
+    templateUrl: '../templates/fieldterritoryrecent.html'
 })
 export class fieldTerritoryRecent {
     /**
      * array with the recent territories to be displayed
      */
-    private recentterritories: any[] = [];
+    public recentterritories: any[] = [];
 
     /**
      * event emitter when a territory is selected
      */
-    @Output() private selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, public model: model, public language: language, private modal: modal, private territories: territories) {
+    constructor(public metadata: metadata, public model: model, public language: language, public modal: modal, public territories: territories) {
         this.recentterritories = this.territories.getRecentTerritories(this.model.module, 50, this.model.isNew ? 'create': 'edit');
     }
 
@@ -32,7 +32,7 @@ export class fieldTerritoryRecent {
      *
      * @param territory the territory that has been selected
      */
-    private setTerritory(territory) {
+    public setTerritory(territory) {
         this.selectedTerritory.emit(territory);
     }
 }

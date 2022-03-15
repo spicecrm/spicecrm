@@ -14,18 +14,18 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser',
-    templateUrl: './src/modules/products/templates/productbrowser.html',
+    templateUrl: '../templates/productbrowser.html',
     providers: [productfinder, model]
 })
 export class ProductBrowser {
 
-    @ViewChild('productbrowsercontent', {read: ViewContainerRef, static: true}) private productbrowsercontent: ViewContainerRef;
-    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('productbrowsercontent', {read: ViewContainerRef, static: true}) public productbrowsercontent: ViewContainerRef;
+    @Output() public selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language) {
+    constructor(public language: language) {
     }
 
-    private selectionChanged(data) {
+    public selectionChanged(data) {
         this.selectionchanged.emit(data);
     }
 }

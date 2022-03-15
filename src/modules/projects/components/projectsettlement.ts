@@ -1,5 +1,5 @@
 /**
- * @module ModuleActivities
+ * @module ModuleProjects
  */
 import {
     Component, OnDestroy, OnInit, ViewChild, ViewContainerRef
@@ -23,36 +23,63 @@ declare var moment: any;
  * renders a list of activities on a WSB tio be settled
  */
 @Component({
-    templateUrl: './src/modules/projects/templates/projectsettlement.html',
-    providers: [model, view]
+    templateUrl: '../templates/projectsettlement.html',
+    providers: [model]
 })
 export class ProjectSettlement implements OnInit {
 
+    /**
+     * indicates when we are loading
+     *
+     * @private
+     */
+    public loading: boolean = false;
 
     /**
      * the componentconfig
      *
      * @private
      */
-    private componentconfig: any;
+    public componentconfig: any;
 
-    private projectActivities: any[] = [];
-    private projectActivityTypes: any[] = [];
-    private projectPlannedActivities: any[] = [];
-    private projectWBSs: any[] = [];
+    /**
+     * the prohect activities loaded from teh backend
+     *
+     * @private
+     */
+    public projectActivities: any[] = [];
+
+    /**
+     * the activity types loaded
+     *
+     * @private
+     */
+    public projectActivityTypes: any[] = [];
+
+    /**
+     * the planned activities loaded
+     *
+     * @private
+     */
+    public projectPlannedActivities: any[] = [];
+
+    /**
+     * the WBS elements laoded to settle
+     *
+     * @private
+     */
+    public projectWBSs: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private view: view,
-        private modelutilities: modelutilities,
-        private backend: backend,
-        private parent: model,
-        private language: language,
-        private navigationtab: navigationtab,
-        private layout: layout,
-        private router: Router
+        public metadata: metadata,
+        public modelutilities: modelutilities,
+        public backend: backend,
+        public parent: model,
+        public language: language,
+        public navigationtab: navigationtab,
+        public layout: layout,
+        public router: Router
     ) {
-        this.view.displayLabels = false;
     }
 
     public ngOnInit(): void {
@@ -66,7 +93,7 @@ export class ProjectSettlement implements OnInit {
      *
      * @param params the Route Params returned
      */
-    private initialize(params: Params) {
+    public initialize(params: Params) {
         // get the bean details
         this.parent.module = 'Projects';
         this.parent.id = params.id;
@@ -77,29 +104,92 @@ export class ProjectSettlement implements OnInit {
                 displaymodule: 'ProjectWBSs'
             });
 
-            this.backend.getRequest(`module/Projects/${this.parent.id}/unsettletactivities`).subscribe(
-                activities => {
-                    this.projectActivities = activities.ProjectActivities;
-
-                    // fill up the activities
-                    for (let projectActivity of this.projectActivities) {
-                        projectActivity = this.modelutilities.backendModel2spice('ProjectActivities', projectActivity);
-                        projectActivity.selected = true;
-                    }
-
-                    // sort the activities
-                    this.projectActivities.sort((a, b) => a.activity_start.isBefore(b.activity_end) ? -1 : 1);
-
-                    // fill up the rest
-                    this.projectPlannedActivities = activities.ProjectPlannedActivities;
-                    this.projectActivityTypes = activities.ProjectActivityTypes;
-                    this.projectWBSs = activities.ProjectWBSs;
-                }
-            );
+            this.loadUnsettledActivities();
         });
     }
 
-    private settle() {
+    /**
+     * loads the unsettled activities
+     *
+     * @private
+     */
+    public loadUnsettledActivities(){
+        this.loading = true;
+        this.backend.getRequest(`module/Projects/${this.parent.id}/unsettletactivities`).subscribe(
+            activities => {
+                this.loading = false;
+                this.projectActivities = activities.ProjectActivities;
+
+                // fill up the activities
+                for (let projectActivity of this.projectActivities) {
+                    projectActivity = this.modelutilities.backendModel2spice('ProjectActivities', projectActivity);
+                    projectActivity.selected = true;
+                }
+
+                // sort the activities
+                this.projectActivities.sort((a, b) => a.activity_start.isBefore(b.activity_end) ? -1 : 1);
+
+                // fill up the rest
+                this.projectPlannedActivities = activities.ProjectPlannedActivities;
+                this.projectActivityTypes = activities.ProjectActivityTypes;
+                this.projectWBSs = activities.ProjectWBSs;
+            },
+            err => {
+                this.loading = false;
+            }
+        );
+    }
+
+    /**
+     * returns the activities per Project
+     *
+     * @param projectWBS
+     * @private
+     */
+    public projectWBSActivities(projectWBS){
+        let plannedactivityIDs = this.projectPlannedActivities.filter(p => p.projectwbs_id == projectWBS.id).map(p => p.id);
+        return this.projectActivities.filter(a => plannedactivityIDs.indexOf(a.projectplannedactivity_id) >=0);
+    }
+
+    /**
+     * returns the total
+     *
+     * @param projectWBS
+     * @private
+     */
+    public projectWBSTotalSettlmentEffort(projectWBS){
+        let total = 0;
+        let plannedactivityIDs = this.projectPlannedActivities.filter(p => p.projectwbs_id == projectWBS.id).map(p => p.id);
+        for(let activity of this.projectActivities.filter(a => plannedactivityIDs.indexOf(a.projectplannedactivity_id) >=0)){
+            if(activity.selected && activity.settlement_type == 'regular'){
+                total += activity.corrected_duration ? activity.corrected_duration : activity.activity_duration;
+            }
+        }
+
+        let ret = {
+            total: total,
+            hours: Math.floor(total / 3600),
+            minutes: (total - (Math.floor(total / 3600) * 3600)) / 60,
+            display: ''
+        }
+
+        ret.display = ret.hours + ':' + (ret.minutes < 10 ? '0'+ret.minutes : ret.minutes);
+        return ret;
+    }
+
+    /**
+     * cheks that at least one item is selected
+     */
+    get canSettle(){
+        return this.projectActivities.filter(a => a.selected).length > 0;
+    }
+
+    /**
+     * run the settlement
+     *
+     * @private
+     */
+    public settle() {
         this.backend.postRequest(`module/Projects/${this.parent.id}/settletactivities`, {}, this.projectActivities.filter(a => a.selected)).subscribe(
             res => {
                 if (res.saledocid) {
@@ -116,8 +206,18 @@ export class ProjectSettlement implements OnInit {
      * @param end
      * @private
      */
-    private getDurationHours(start, end) {
+    public getDurationHours(start, end) {
         return Math.round(end.diff(start, 'hours', true) * 100) / 100;
+    }
+
+    /**
+     * track by function for the list for performance
+     *
+     * @param i
+     * @param item
+     */
+    public trackByFn(i, item) {
+        return item.id;
     }
 
 }

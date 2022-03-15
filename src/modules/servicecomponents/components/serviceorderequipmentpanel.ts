@@ -10,7 +10,7 @@ import {modellist} from "../../../services/modellist.service";
 
 @Component({
     selector: "serviceorder-equipment-panel",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceorderequipmentpanel.html",
+    templateUrl: "../templates/serviceorderequipmentpanel.html",
     providers: [relatedmodels, modellist]
 })
 export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
@@ -38,32 +38,32 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
     /**
      * the columns to be displayed
      */
-    private fieldsetFields: any[] = [];
+    public fieldsetFields: any[] = [];
 
     /**
      * all selected items
      */
-    private selected_items: any[] = [];
+    public selected_items: any[] = [];
 
     /**
      * list of all ServiceEquipmentItems
      */
-    private all_items: any = {};
+    public all_items: any = {};
 
     /**
      * sortfield
      */
-    private sortField: string = 'date_entered';
+    public sortField: string = 'date_entered';
 
     /**
      * subscription to the model data
      */
-    private subscription: any;
+    public subscription: any;
 
     /**
      * to recognize the change of the servicelocation (to load the new equipments)
      */
-    private servicelocationId: string = '';
+    public servicelocationId: string = '';
 
     /**
      * the used fieldsets
@@ -71,16 +71,16 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
     public currentProductType: string = "";
 
     constructor(
-        private language: language,
+        public language: language,
         @SkipSelf() public parent: model,
-        private model: model,
-        private modal: modal,
-        private metadata: metadata,
-        private view: view,
-        private injector: Injector,
+        public model: model,
+        public modal: modal,
+        public metadata: metadata,
+        public view: view,
+        public injector: Injector,
         public utils: modelutilities,
         public relatedmodels: relatedmodels,
-        private modellist: modellist,
+        public modellist: modellist,
         public cdRef: ChangeDetectorRef
     ) {
 
@@ -134,7 +134,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
     /**
      * build the items and render them in the container
      */
-    private setAllItems() {
+    public setAllItems() {
         this.all_items = {};
         this.modellist.initialize("ServiceEquipments");
         if (this.sortField) {
@@ -144,7 +144,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
         // if we don't have a serviceorder id, we give the servicelocation directly to the filter
         // when we change the servicelocation we need both information in the backend 'serviceorder' for old relations and 'servicelocation' for possible relations
         if(!this.model.isNew)  {
-            this.modellist.filtercontextbeanid = JSON.stringify({ serviceorder_id: this.model.id, servicelocation_id: this.model.data.servicelocation_id });
+            this.modellist.filtercontextbeanid = JSON.stringify({ serviceorder_id: this.model.id, servicelocation_id: this.model.getField('servicelocation_id') });
         } else {
             this.modellist.filtercontextbeanid = JSON.stringify({ serviceorder_id: '', servicelocation_id: this.servicelocationId });
         }
@@ -162,7 +162,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
     /**
      * returns the number of not deleted items
      */
-    private setSelectedItems(all_items) {
+    public setSelectedItems(all_items) {
         this.selected_items = this.model.getRelatedRecords(this.relation_link_name);
         // if we come from a ServiceEquipment -> set it as selected
         if(this.model?.parentmodel?.module == 'ServiceEquipments') {
@@ -183,7 +183,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
     /**
      * clearAllRelationships to the equipments (location changed!) and delete all equipments
      */
-    private clearAllSelectedItems() {
+    public clearAllSelectedItems() {
         this.all_items.list = this.all_items?.list?.filter(item => item?.selected);
     }
 
@@ -221,7 +221,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
  * @sort items by sortField: moment.date
  * @return items: any[]
  */
-    private sortItems(items) {
+    public sortItems(items) {
         return items.sort((a, b) => a[this.sortField] && b[this.sortField] ? a[this.sortField] > b[this.sortField] ? 1 : -1 : 0);
     }
 

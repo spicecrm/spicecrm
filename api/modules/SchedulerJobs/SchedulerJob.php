@@ -1,5 +1,5 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SchedulerJobs;
 
@@ -10,6 +10,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 
@@ -90,9 +91,7 @@ class SchedulerJob extends SugarBean
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        if (empty($this->next_run_date)) {
-            $this->next_run_date = $this->getNextRunDate();
-        }
+        $this->next_run_date = $this->getNextRunDate();
         return parent::save($check_notify, $fts_index_bean);
     }
 
@@ -117,7 +116,7 @@ class SchedulerJob extends SugarBean
     {
         if (empty($this->process_id)) return false;
 
-        if (is_windows()) {
+        if (SpiceUtils::isWindows()) {
             return exec("taskkill /F /PID {$this->process_id}");
         } else {
             return exec("kill -9 {$this->process_id}");
@@ -243,7 +242,7 @@ class SchedulerJob extends SugarBean
     {
         if ($this->notify_user != 1) return;
 
-        $user = BeanFactory::getBean('Users', $this->assigned_user_id);
+        $user = BeanFactory::getBean('Users', $this->created_by);
         $mailbox = Mailbox::getDefaultMailbox();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $currentUserName = empty($currentUser) ? 'Unknown' : "{$currentUser->user_name} ({$currentUser->first_name} {$currentUser->last_name})";

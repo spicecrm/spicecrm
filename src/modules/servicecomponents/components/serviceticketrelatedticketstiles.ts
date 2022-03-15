@@ -15,7 +15,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'service-ticket-related-tickets-tiles',
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketrelatedticketstiles.html',
+    templateUrl: '../templates/serviceticketrelatedticketstiles.html',
     providers: [relatedmodels]
 })
 export class ServiceTicketRelatedTicketsTiles implements OnInit {
@@ -23,26 +23,26 @@ export class ServiceTicketRelatedTicketsTiles implements OnInit {
     /**
      * the fieldset to be rendered
      */
-    @Input() private fieldset: string = 'df917124-b071-6f6c-22f5-4a2b3257a050';
+    @Input() public fieldset: string = 'df917124-b071-6f6c-22f5-4a2b3257a050';
 
     /**
      * the module filter to be used
      */
-    @Input() private modulefilter: string;
+    @Input() public modulefilter: string;
 
-    @Output() private count: EventEmitter<number> = new EventEmitter<number>();
+    @Output() public count: EventEmitter<number> = new EventEmitter<number>();
 
     /**
      * defines the current scope opf the tabes shwoing the open or the closed items
      */
-    private scope: 'open' | 'closed' = 'open';
+    public scope: 'open' | 'closed' = 'open';
 
     /**
      * all subscriptions for the component to be unsubscribed on destroy
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private model: model, private relatedmodels: relatedmodels, private metadata: metadata, private language: language) {
+    constructor(public model: model, public relatedmodels: relatedmodels, public metadata: metadata, public language: language) {
 
     }
 
@@ -73,7 +73,7 @@ export class ServiceTicketRelatedTicketsTiles implements OnInit {
     /**
      * checks on change and if changed loads the related models
      */
-    private loadrelated() {
+    public loadrelated() {
         if (this.contactid && this.contactid != this.relatedmodels.id) {
             this.relatedmodels.id = this.contactid;
             this.relatedmodels.getData().subscribe(loaded => {

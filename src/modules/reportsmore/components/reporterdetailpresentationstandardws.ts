@@ -19,7 +19,7 @@ import {ReporterDetailPresentationStandard} from "../../../modules/reports/compo
  */
 @Component({
     selector: 'reporter-detail-presentation-standardws',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationstandardws.html',
+    templateUrl: '../templates/reporterdetailpresentationstandardws.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationStandardWS extends ReporterDetailPresentationStandard {

@@ -22,21 +22,21 @@ declare var moment: any;
  */
 @Component({
     selector: 'reporter-integration-csvexport-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationcsvexportbutton.html'
+    templateUrl: '../templates/reporterintegrationcsvexportbutton.html'
 })
 export class ReporterIntegrationCSVexportButton {
 
     /**
      * the url for the download
      */
-    private loadUrl: any = undefined;
+    public loadUrl: any = undefined;
 
     /**
      * the filename for the download link
      */
-    private fileName: string = undefined;
+    public fileName: string = undefined;
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private modal: modal, private footer: footer, private reporterconfig: reporterconfig, private toast: toast) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public model: model, public modal: modal, public footer: footer, public reporterconfig: reporterconfig, public toast: toast) {
     }
 
     /**
@@ -49,7 +49,7 @@ export class ReporterIntegrationCSVexportButton {
     /**
      * the export trigger
      */
-    private exportCSV() {
+    public exportCSV() {
         // build wherecondition
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
@@ -64,7 +64,7 @@ export class ReporterIntegrationCSVexportButton {
         }
 
         // generate a filename
-        this.fileName = this.model.data.name.replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.csv';
+        this.fileName = this.model.getField('name').replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.csv';
 
         // render the loading modal and trigger the download
         let awaitpromise = this.modal.await(this.language.getLabel('LBL_LOADING'));

@@ -2,7 +2,7 @@
     <div *ngIf="docId && docId != ''" [ngClass]="containerLeftClass" style="height: 100%">
         <knowledge-browser-details-container-left [html]="model?.data?.description" [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
     </div>
-    <div *ngIf="docId && docId != '' && !inAddModal" class="slds-size--1-of-3 slds-theme--default slds-border--left">
+    <div [class.slds-hide]="!docId || inAddModal" class="slds-size--1-of-3 slds-theme--default slds-border--left">
         <knowledge-browser-details-container-right [selectedDoc]="docId"></knowledge-browser-details-container-right>
     </div>
     <div *ngIf="!selectedBook && docId == ''" class="slds-align--absolute-center slds-p-vertical--medium slds-height_full slds-text-heading--medium">

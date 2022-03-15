@@ -10,7 +10,7 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'service-docs-signature-content',
-    templateUrl: './src/modules/servicecomponents/templates/servicedocsignaturecontent.html',
+    templateUrl: '../templates/servicedocsignaturecontent.html',
     providers: [view]
 })
 export class ServiceDocSignatureContent {
@@ -33,14 +33,14 @@ export class ServiceDocSignatureContent {
     /**
      * inidcates that we are sending
      */
-    private sending: boolean = false;
+    public sending: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private modal: modal,
-        private view: view,
-        private session: session
+        public language: language,
+        public metadata: metadata,
+        public modal: modal,
+        public view: view,
+        public session: session
     ) {
     }
 
@@ -51,7 +51,7 @@ export class ServiceDocSignatureContent {
     /**
      * if it is allowed: go to edit mode
      */
-    private setViewData() {
+    public setViewData() {
         this.view.setEditMode();
         this.view.isEditable = true;
     }

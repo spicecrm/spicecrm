@@ -19,22 +19,22 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'lead-convert-opportunity-modal',
-    templateUrl: './src/modules/leads/templates/leadconvertopportunitymodal.html',
+    templateUrl: '../templates/leadconvertopportunitymodal.html',
     providers: [model, view]
 })
 export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
 
-    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true})  private detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true})  public detailcontainer: ViewContainerRef;
 
-    private self: any = {};
-    @Output() private converted: EventEmitter<any> = new EventEmitter<any>();
+    public self: any = {};
+    @Output() public converted: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the componentset to be rendered
      */
-    private componentSet: string;
+    public componentSet: string;
 
-    constructor(private language: language, @SkipSelf() private lead: model, private model: model, private metadata: metadata, private view: view, private modal: modal) {
+    constructor(public language: language, @SkipSelf() public lead: model, public model: model, public metadata: metadata, public view: view, public modal: modal) {
         this.model.module = 'Opportunities';
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -49,14 +49,14 @@ export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
         this.componentSet = componentconfig.componentset;
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * converts the lead to an opportunity
      */
-    private convert() {
+    public convert() {
         if ( !this.model.validate() ) return;
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             loadingModalRef.instance.messagelabel = 'creating Opportunity';

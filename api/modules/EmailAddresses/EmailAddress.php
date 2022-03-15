@@ -8,6 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
@@ -360,29 +361,26 @@ class EmailAddress extends SugarBean
      */
     public static function writeRelationshipAudit(array $dataBefore, array $dataAfter)
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $transactionId = LoggerManager::getLogger()->getTransactionId();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        foreach ($dataAfter as $fieldName => $valueAfter) {
+        if ($dataBefore['opt_in_status'] == $dataAfter['opt_in_status']) return;
 
-            if ($fieldName == 'date_modified' || $fieldName != 'opt_in_status' && $dataBefore[$fieldName] == $valueAfter) continue;
+        $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields']['opt_in_status']['type'];
+        $insertData = [
+            'id' => SpiceUtils::createGuid(),
+            'parent_id' => $dataAfter['id'],
+            'transaction_id' => $transactionId,
+            'date_created' => TimeDate::getInstance()->nowDb(),
+            'created_by' => $currentUser->id,
+            'field_name' => 'opt_in_status',
+            'data_type' => $fieldType,
+            'before_value' => $dataBefore['opt_in_status'],
+            'after_value' => $dataAfter['opt_in_status'],
+        ];
 
-            $fieldType = $dictionary['email_addr_bean_rel']['fields'][$fieldName]['type'];
-            $insertData = [
-                'id' => SpiceUtils::createGuid(),
-                'parent_id' => $dataBefore['id'],
-                'transaction_id' => $transactionId,
-                'date_created' => TimeDate::getInstance()->nowDb(),
-                'created_by' => $currentUser->id,
-                'field_name' => $fieldName,
-                'data_type' => $fieldType,
-                'before_value' => $dataBefore[$fieldName],
-                'after_value' => $valueAfter,
-            ];
-            $db->insertQuery('email_addr_bean_rel_audit', $insertData);
-        }
+        $db->insertQuery('email_addr_bean_rel_audit', $insertData);
     }
 
     /**

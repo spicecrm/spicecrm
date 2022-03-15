@@ -1,9 +1,10 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 //dictionary global variable => class name als key
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['ScrumTheme'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['ScrumTheme'] = [
     'table' => 'scrumthemes',
     'comment' => 'SCRUM Themes Module',
     'audited' => true,
@@ -92,5 +93,3 @@ $dictionary['ScrumTheme'] = [
 ];
 // default (Basic) fields & assignable (implements->assigned fields)
 VardefManager::createVardef('ScrumThemes', 'ScrumTheme', ['default', 'assignable']);
-
-

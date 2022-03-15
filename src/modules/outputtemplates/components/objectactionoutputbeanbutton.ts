@@ -10,7 +10,7 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanbutton.html'
+    templateUrl: '../templates/objectactionoutputbeanbutton.html'
 })
 export class ObjectActionOutputBeanButton {
 
@@ -26,12 +26,12 @@ export class ObjectActionOutputBeanButton {
     public actionconfig: {modal_actionset: string};
 
     constructor(
-        protected language: language,
-        protected model: model,
-        protected modal: modal,
-        protected backend: backend,
-        protected configuration: configurationService,
-        protected viewContainerRef: ViewContainerRef
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public backend: backend,
+        public configuration: configurationService,
+        public viewContainerRef: ViewContainerRef
     ) {
 
     }

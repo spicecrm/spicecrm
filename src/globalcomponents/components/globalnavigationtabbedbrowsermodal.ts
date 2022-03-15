@@ -11,16 +11,16 @@ import {language} from '../../services/language.service';
  * renders a modal with the list of tabs and allows closing them, navigating to as well as providing some additonal informations
  */
 @Component({
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedbrowsermodal.html'
+    templateUrl: '../templates/globalnavigationtabbedbrowsermodal.html'
 })
 export class GlobalNavigationTabbedBrowserModal {
 
     /**
      * reference to the modal component
      */
-    private self: any;
+   public self: any;
 
-    constructor(private navigation: navigation, private language: language) {
+    constructor(public navigation: navigation,public language: language) {
 
     }
 
@@ -51,7 +51,7 @@ export class GlobalNavigationTabbedBrowserModal {
      *
      * @param parenttab
      */
-    private subtabs(parenttab) {
+   public subtabs(parenttab) {
         return this.navigation.objectTabs.filter(tab => tab.parentid == parenttab);
     }
 
@@ -60,7 +60,7 @@ export class GlobalNavigationTabbedBrowserModal {
      *
      * @param tabid
      */
-    private closetab(tabid) {
+   public closetab(tabid) {
         this.navigation.closeObjectTab(tabid);
     }
 
@@ -68,7 +68,7 @@ export class GlobalNavigationTabbedBrowserModal {
      * activate the tab with the given id and close the modal
      * @param tabid
      */
-    private activateTab(tabid) {
+   public activateTab(tabid) {
         this.navigation.setActiveTab(tabid);
         this.close();
     }
@@ -76,7 +76,7 @@ export class GlobalNavigationTabbedBrowserModal {
     /**
      * close the tab
      */
-    private pintab(tab: objectTab) {
+   public pintab(tab: objectTab) {
         tab.pinned = !tab.pinned;
     }
 
@@ -85,14 +85,14 @@ export class GlobalNavigationTabbedBrowserModal {
      *
      * @param tab
      */
-    private clonetab(tab: objectTab) {
+   public clonetab(tab: objectTab) {
         this.navigation.cloneTab(tab.id);
     }
 
     /**
      * close the modal
      */
-    private close() {
+   public close() {
         this.self.destroy();
     }
 

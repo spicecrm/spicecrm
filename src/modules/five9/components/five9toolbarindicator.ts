@@ -27,50 +27,50 @@ declare var moment: any;
  * renders an indicator on the global toolbar that links to the five9 VOIP System
  */
 @Component({
-    templateUrl: './src/modules/five9/templates/five9toolbarindicator.html'
+    templateUrl: '../templates/five9toolbarindicator.html'
 })
 export class Five9ToolbarIndicator implements OnDestroy {
 
-    private socket: any;
+    public socket: any;
 
-    private username: string;
+    public username: string;
 
     /**
      * the status of the connection
      */
-    private five9status: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
+    public five9status: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
 
     /**
      * the url for the socket connection from the backend
      */
-    private socketurl: string;
+    public socketurl: string;
 
     /**
      * a unique id for the server to connect to the socket
      */
-    private socketid: string;
+    public socketid: string;
 
     /**
      * the socket status
      */
-    private socketconnected: boolean = false;
+    public socketconnected: boolean = false;
 
     /**
      * holds the subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    private _enabled: boolean = true;
+    public _enabled: boolean = true;
 
     constructor(
-        private language: language,
-        private configuration: configurationService,
-        private modal: modal,
-        private modelutilities: modelutilities,
-        private backend: backend,
-        private toast: toast,
-        private session: session,
-        private telephony: telephony
+        public language: language,
+        public configuration: configurationService,
+        public modal: modal,
+        public modelutilities: modelutilities,
+        public backend: backend,
+        public toast: toast,
+        public session: session,
+        public telephony: telephony
     ) {
         this.initialize();
     }
@@ -104,7 +104,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
         }
     }
 
-    private toggleconnection() {
+    public toggleconnection() {
         this.enabled = !this.enabled;
     }
 
@@ -125,7 +125,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
     /**
      * get the prefs and login
      */
-    private initialize() {
+    public initialize() {
 
         let config = this.configuration.getCapabilityConfig('socket');
         this.socketurl = config.socket_frontend;
@@ -139,7 +139,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private getPreferences(): Observable<string> {
+    public getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
         this.backend.getRequest('channels/voice/Five9/preferences').subscribe(prefs => {
             if (prefs.username) {
@@ -154,7 +154,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private setPreferences() {
+    public setPreferences() {
         this.modal.openModal('Five9Preferences').subscribe(componentRef => {
             componentRef.instance.saved$.subscribe(saved => {
                 this.getPreferences().subscribe(username => {
@@ -167,7 +167,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
     /**
      * login to the UC
      */
-    private login() {
+    public login() {
         // unsubscribe from all subscriptions
         this.subscriptions.unsubscribe();
         this.subscriptions = new Subscription();
@@ -200,7 +200,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
     /**
      * disconnects
      */
-    private disconnect() {
+    public disconnect() {
         this.five9status = 'disconnected';
 
         this.disconnectSocket();
@@ -211,7 +211,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
     /**
      * connect to the socket
      */
-    private connectSocket() {
+    public connectSocket() {
         // ensure we have an URL
         if (!this.socketurl) {
             return false;
@@ -233,7 +233,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
     /**
      * disconnect from the socket
      */
-    private disconnectSocket() {
+    public disconnectSocket() {
         if (this.socket) {
             this.socket.destroy();
             this.socket = undefined;
@@ -246,7 +246,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
      *
      * @param eventData
      */
-    private handleCallEvent(eventData: any) {
+    public handleCallEvent(eventData: any) {
         let call = this.telephony.calls.find(c => c.callid == eventData.id);
         if (call) {
             call.status = this.translateStatus(eventData.state);
@@ -271,7 +271,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
      *
      * @param eventData
      */
-    private addCall(eventData) {
+    public addCall(eventData) {
         /*
         let util = libphonenumber.PhoneNumberUtil.getInstance();
         let msisdn = eventData.direction == 'inbound' ? eventData.callernumber : eventData.callednumber;
@@ -286,7 +286,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
         });
     }
 
-    private translateStatus(status) {
+    public translateStatus(status) {
         switch (status) {
             case 'PROCEEDING':
                 return 'initial';
@@ -310,7 +310,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
      * @param relatedmodule
      * @param relatedrecord
      */
-    private initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
+    public initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
 
         // create a call and push to the telphony service
         let callid = this.modelutilities.generateGuid();
@@ -343,7 +343,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
      *
      * @param call
      */
-    private terminateCall(call: telephonyCallI) {
+    public terminateCall(call: telephonyCallI) {
         if (call.callid) {
             this.backend.deleteRequest(`channels/voice/Five9/call/${call.callid}`).subscribe(deleted => {
                 call.status = 'disconnected';

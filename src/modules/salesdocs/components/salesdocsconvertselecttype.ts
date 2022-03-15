@@ -12,7 +12,7 @@ import {configurationService} from "../../../services/configuration.service";
  * this is defined in the syssalesdoctypesflow
  */
 @Component({
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsconvertselecttype.html",
+    templateUrl: "../templates/salesdocsconvertselecttype.html",
 })
 export class SalesDocsConvertSelectType {
 
@@ -20,17 +20,17 @@ export class SalesDocsConvertSelectType {
      * reference to self added from teh modal service
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the available target types
      * @private
      */
-    private targetTypes: any[] = [];
+    public targetTypes: any[] = [];
 
-    private selectedType: string;
+    public selectedType: string;
 
-    constructor(public model: model, public modal: modal, private configuration: configurationService, private backend: backend, private injector: Injector) {
+    constructor(public model: model, public modal: modal, public configuration: configurationService, public backend: backend, public injector: Injector) {
         this.determineTargets();
     }
 
@@ -38,7 +38,7 @@ export class SalesDocsConvertSelectType {
      * loads teh target types from the flow
      * @private
      */
-    private determineTargets() {
+    public determineTargets() {
         let types = this.configuration.getData('salesdoctypes');
         let flows = this.configuration.getData('salesdoctypesflow');
         for (let target of flows.filter(f => f.from == this.model.getFieldValue('salesdoctype'))) {
@@ -58,7 +58,7 @@ export class SalesDocsConvertSelectType {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -67,7 +67,7 @@ export class SalesDocsConvertSelectType {
      *
      * @private
      */
-    private convert() {
+    public convert() {
         let loadmodal = this.modal.await('loading');
         this.backend.getRequest(`module/SalesDocs/${this.model.id}/convert/${this.selectedType}`).subscribe(
             targetData => {

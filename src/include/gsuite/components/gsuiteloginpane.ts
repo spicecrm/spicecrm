@@ -10,13 +10,14 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {libloader} from "../../../services/libloader.service";
 import {Md5} from "ts-md5";
 
+declare var gapi;
 /**
  * A component that handles the display of the SpiceCRM login form in the GSuite add-in
  * and the communication with SpiceCRM to confirm the login credentials.
  */
 @Component({
     selector: 'gsuite-login-pane',
-    templateUrl: './src/include/gsuite/templates/gsuiteloginpane.html'
+    templateUrl: '../templates/gsuiteloginpane.html'
 })
 export class GSuiteLoginPane {
 
@@ -36,15 +37,15 @@ export class GSuiteLoginPane {
     /**
      * save the backend url
      */
-    private selectedsite: string = '';
+    public selectedsite: string = '';
     /**
      * Previously used UI language.
      */
-    private lastSelectedLanguage: string = null;
+    public lastSelectedLanguage: string = null;
     /**
      * holds the google login scope
      */
-    private scope = [
+    public scope = [
         "profile",
         "email",
         "https://www.googleapis.com/auth/plus.me",
@@ -60,19 +61,19 @@ export class GSuiteLoginPane {
     /**
      * boolean to enable/disable the google login button
      */
-    private disabled: boolean = true;
+    public disabled: boolean = true;
     /**
      * boolean to show/hide google login button
      */
-    private googleLoginVisible: boolean = false;
+    public googleLoginVisible: boolean = false;
 
     constructor(
-        private router: Router,
+        public router: Router,
         public loginService: loginService,
-        private http: HttpClient,
-        private configuration: configurationService,
-        private session: session,
-        private libloader: libloader
+        public http: HttpClient,
+        public configuration: configurationService,
+        public session: session,
+        public libloader: libloader
     ) {
         this.configuration.loaded$.subscribe(loaded => {
             if(loaded) this.googleInit();
@@ -171,7 +172,7 @@ export class GSuiteLoginPane {
     /**
      * go to setting
      */
-    private goToSettings() {
+    public goToSettings() {
         this.promptUser = true;
 
         let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
@@ -193,6 +194,7 @@ export class GSuiteLoginPane {
                 let user_token = googleUser.getAuthResponse().id_token;
                 let access_token = googleUser.getAuthResponse().access_token;
                 this.loginService.oauthToken = user_token;
+                this.loginService.oauthIssuer = 'Google';
                 this.loginService.authData.userName = "";
                 this.loginService.authData.password = "";
                 // this.session.authData.sessionId = user_token;

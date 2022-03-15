@@ -16,7 +16,7 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: "system-input-module-filter",
-    templateUrl: "./src/systemcomponents/templates/systeminputmodulefilter.html",
+    templateUrl: "../templates/systeminputmodulefilter.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -26,20 +26,20 @@ import {metadata} from "../../services/metadata.service";
     ]
 })
 export class SystemInputModuleFilter implements ControlValueAccessor {
-    @Input() private disabled;
+    @Input() public disabled;
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     public modules: any[] = [];
     public _modulefilters: any[] = [];
-    private module: string = "";
-    private _modulefilter: string = "";
+    public module: string = "";
+    public _modulefilter: string = "";
 
     constructor(
-        private language: language,
-        private metadata: metadata
+        public language: language,
+        public metadata: metadata
     ) {
         this._modulefilters = this.metadata.getModuleFilters();
 

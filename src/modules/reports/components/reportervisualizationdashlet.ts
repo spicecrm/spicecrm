@@ -14,26 +14,26 @@ import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-visualization-dashlet',
-    templateUrl: './src/modules/reports/templates/reportervisualizationdashlet.html',
+    templateUrl: '../templates/reportervisualizationdashlet.html',
     providers: [model, reporterconfig]
 })
 export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
 
-    @Input() private id: string = '';
-    @Input() private config: any = undefined;
-    @Input() private parentModule: string = '';
-    @Input() private parentId: string = '';
-    private componentconfig: any = {};
-    private hasVisualization: boolean = false;
-    private vizData: any = {};
+    @Input() public id: string = '';
+    @Input() public config: any = undefined;
+    @Input() public parentModule: string = '';
+    @Input() public parentId: string = '';
+    public componentconfig: any = {};
+    public hasVisualization: boolean = false;
+    public vizData: any = {};
 
     /**
      * emit if a no access or not found error has been raised by the backend
      * allows to hide the container for the report dashlet
      */
-    @Output() private noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private model: model, private reporterconfig: reporterconfig) {
+    constructor(public model: model, public reporterconfig: reporterconfig) {
     }
 
     public ngOnInit() {

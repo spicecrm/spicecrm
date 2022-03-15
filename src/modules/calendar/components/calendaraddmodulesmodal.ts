@@ -9,7 +9,7 @@ import {calendar} from "../services/calendar.service";
  * Displays a modal with a list of possible modules to add calendar event.
  */
 @Component({
-    templateUrl: './src/modules/calendar/templates/calendaraddmodulesmodal.html',
+    templateUrl: '../templates/calendaraddmodulesmodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarAddModulesModal {
@@ -20,15 +20,15 @@ export class CalendarAddModulesModal {
     /**
      * reference of this component to be destroyed
      */
-    private self: any = {};
+    public self: any = {};
 
-    constructor(private language: language, private calendar: calendar) {
+    constructor(public language: language, public calendar: calendar) {
     }
 
     /**
      * close the modal and emit false
      */
-    private close() {
+    public close() {
         this.module$.emit(false);
         this.self.destroy();
     }
@@ -37,7 +37,7 @@ export class CalendarAddModulesModal {
      * emit the selected module and close the modal
      * @param module
      */
-    private save(module) {
+    public save(module) {
         this.module$.emit(module);
         this.self.destroy();
     }
@@ -49,7 +49,7 @@ export class CalendarAddModulesModal {
      * @param item
      * @return item.id
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

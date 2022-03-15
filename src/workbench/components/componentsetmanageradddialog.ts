@@ -12,16 +12,16 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'componensetmanager-add-dialog',
-    templateUrl: './src/workbench/templates/componentsetmanageradddialog.html'
+    templateUrl: '../templates/componentsetmanageradddialog.html'
 })
 export class ComponentsetManagerAddDialog {
-    @Input() private module: string = '';
-    @Input() private parent: string = '';
+    @Input() public module: string = '';
+    @Input() public parent: string = '';
 
-    private component: string = '';
-    private systemmodule: string = '';
-    private systemmodules: any[] = [];
-    private showDeprecatedWarning: boolean = false;
+    public component: string = '';
+    public systemmodule: string = '';
+    public systemmodules: any[] = [];
+    public showDeprecatedWarning: boolean = false;
 
     /**
      * reference to the modal self
@@ -33,16 +33,16 @@ export class ComponentsetManagerAddDialog {
      *
      * @private
      */
-    private moduleFilter: string;
+    public moduleFilter: string;
 
     /**
      * a text string for component filter
      *
      * @private
      */
-    private componentFilter: string;
+    public componentFilter: string;
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
         this.systemmodules = this.metadata.getSystemModules();
     }
 
@@ -70,7 +70,7 @@ export class ComponentsetManagerAddDialog {
      * @param component
      * @private
      */
-    private componentName(component) {
+    public componentName(component) {
         if (component) {
             if (component.deprecated == '1') {
                 return component.component + ' | dep.';
@@ -86,7 +86,7 @@ export class ComponentsetManagerAddDialog {
      * closes the dialog
      * @private
      */
-    private cancelDialog() {
+    public cancelDialog() {
         this.self.destroy();
     }
 
@@ -94,7 +94,7 @@ export class ComponentsetManagerAddDialog {
      * reacts to the escape
      * @private
      */
-    private onModalEscX() {
+    public onModalEscX() {
         this.cancelDialog();
     }
 
@@ -102,12 +102,12 @@ export class ComponentsetManagerAddDialog {
      * adds the component
      * @private
      */
-    private add() {
+    public add() {
         this.metadata.addComponentToComponentset(this.modelutilities.generateGuid(), this.parent, this.component);
         this.self.destroy();
     }
 
-    private checkDep(event) {
+    public checkDep(event) {
         let object = this.components.find(x => x.component === event);
         if (object.deprecated == '1') {
             this.showDeprecatedWarning = true;

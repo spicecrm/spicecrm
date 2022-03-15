@@ -9,32 +9,32 @@ import {Component} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 
 @Component({
-    templateUrl: './src/include/outlook/templates/outlookcalendaritemreadpane.html'
+    templateUrl: '../templates/outlookcalendaritemreadpane.html'
 })
 export class OutlookCalendarItemReadPane {
 
     /**
      * the outlook calendar item id
      */
-    private calendaritemid: string;
+    public calendaritemid: string;
 
     /**
      * the module this is linked to
      */
-    private module: string;
+    public module: string;
 
     /**
      * the id this is linked to
      */
-    private id: string;
+    public id: string;
 
     /**
      * the custom properties object
      */
-    private customProperties: any;
+    public customProperties: any;
 
     constructor(
-        private groupware: GroupwareService,
+        public groupware: GroupwareService,
     ) {
         this.groupware.getCalenderItemId().subscribe(id => {
             this.calendaritemid = id;

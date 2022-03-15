@@ -16,9 +16,9 @@ import { fieldGeneric } from './fieldgeneric';
  */
 @Component( {
     selector: 'field-indicator',
-    templateUrl: './src/objectfields/templates/fieldindicator.html',
+    templateUrl: '../templates/fieldindicator.html',
 })
-export class fieldImage extends fieldGeneric {
+export class fieldIndicator extends fieldGeneric {
 
     constructor(
         public model: model,

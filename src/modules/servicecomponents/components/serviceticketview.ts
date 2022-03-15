@@ -8,14 +8,14 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketview.html'
+    templateUrl: '../templates/serviceticketview.html'
 
 })
 export class ServiceTicketView implements OnInit {
 
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private metadata: metadata, private model: model, private elementRef: ElementRef) {
+    constructor(public metadata: metadata, public model: model, public elementRef: ElementRef) {
 
     }
 

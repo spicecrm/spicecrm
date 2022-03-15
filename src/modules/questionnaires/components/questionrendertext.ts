@@ -8,22 +8,20 @@ import { userpreferences} from '../../../services/userpreferences.service';
 
 @Component( {
     selector: 'question-render-text',
-    templateUrl: './src/modules/questionnaires/templates/questionrendertext.html',
+    templateUrl: '../templates/questionrendertext.html',
     styles: [
         '.questionset-render .sequenced { font-family: monospace; }',
-        '.questionset-render table.sequenced { margin: 0 0 0 auto; }',
-        // 'div.question-render-question:last-child { margin-bottom: 0 !important; }',
-        'div.question-render-question { border-radius:0; }'
+        '.questionset-render table.sequenced { margin: 0 0 0 auto; }'
     ]
 } )
 export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
 
-    @Input() private hideFinishedQuestions = false;
-    @Input() private imageWidthQuestion = 200;
+    @Input() public hideFinishedQuestions = false;
+    @Input() public imageWidthQuestion = 200;
 
-    private lengthLongestSequence = 0;
-    private questionNameSplitted: any[] = [];
-    private isInputInvalid = false;
+    public lengthLongestSequence = 0;
+    public questionNameSplitted: any[] = [];
+    public isInputInvalid = false;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService, public userpreferences: userpreferences ) {
         super( questionnaireParticipation );
@@ -47,7 +45,7 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
      * @param val
      * @private
      */
-    private set value( val: string ) {
+    public set value( val: string ) {
         val = val.trim();
         if ( this.questionMeta.parameter.numeric && val !== '' ) {
             let pref = this.userpreferences.toUse;
@@ -67,7 +65,7 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
      * Can handle numeric values.
      * @private
      */
-    private get value(): string {
+    public get value(): string {
         let val = this.qp.answers[this.questionId].answer_value;
         if ( this.questionMeta.parameter.numeric ) {
             val = val.split( '.' ).join( this.userpreferences.toUse.dec_sep );
@@ -75,7 +73,7 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
         return val;
     }
 
-    private forLoopArray( numElements: number ): any[] {
+    public forLoopArray( numElements: number ): any[] {
         return new Array(numElements);
     }
 
@@ -83,7 +81,7 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
      * The CSS styling for the html element "box", in case the question is from type "binary".
      * The styling might be affected by a previous or following binary question.
      */
-    private binaryTableStyle() {
+    public binaryTableStyle() {
         let style: any = {};
         /*
         if ( this.isToMergeWithPreviousQuestion ) {

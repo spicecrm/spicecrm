@@ -9,14 +9,14 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-visualize-item-google-maps',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorevisualizeitemgooglemaps.html'
+    templateUrl: '../templates/reportsdesignermorevisualizeitemgooglemaps.html'
 })
 export class ReportsDesignerMoreVisualizeItemGoogleMaps implements OnInit {
 
-    constructor(private language: language,
-                private model: model,
-                private modal: modal,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public reportsDesignerService: ReportsDesignerService) {
 
     }
 
@@ -58,14 +58,14 @@ export class ReportsDesignerMoreVisualizeItemGoogleMaps implements OnInit {
     * @param item
     * @return index
     */
-    protected trackByFnIndex(index, item) {
+    public trackByFnIndex(index, item) {
         return index;
     }
 
     /**
      * set the initial plugin properties data and load the context options
      */
-    private initializeProperties() {
+    public initializeProperties() {
         if (this.properties.googlemaps && this.properties.googlemaps.uid) return;
         this.properties.googlemaps = {
             uid: this.reportsDesignerService.generateGuid(),
@@ -98,7 +98,7 @@ export class ReportsDesignerMoreVisualizeItemGoogleMaps implements OnInit {
      * @param item
      * @return index
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.fieldid;
     }
 }

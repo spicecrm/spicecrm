@@ -42,13 +42,18 @@ $routes = [
         'route' => '/configuration/spiceui/core/categorytrees/{id}/categorytreenodes',
         'class' => SysCategoryTreesController::class,
         'function' => 'getTreeNodes',
-        'description' => 'gets all teh nodes of a tree',
+        'description' => 'gets all the nodes of a tree',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters' => [
             'id' => [
                 'in' => 'path',
                 'description' => 'the id of the tree',
                 'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'all' => [
+                'in' => 'query',
+                'description' => 'set to true to retuns all (active and inactive and invalid)',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ],

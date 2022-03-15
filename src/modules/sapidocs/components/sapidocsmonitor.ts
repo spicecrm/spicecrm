@@ -10,7 +10,7 @@ import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'sapidocs-monitor',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmonitor.html',
+    templateUrl: '../templates/sapidocsmonitor.html',
     providers: [modellist, model]
 })
 export class SAPIDOCsMonitor {
@@ -18,25 +18,25 @@ export class SAPIDOCsMonitor {
     /**
      * an elament ref to the container to render the compoonentsets
      */
-    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
 
     /**
      * holds references to the rendered components. if rerendering they need to be destoryed when the route changes
      */
-    private componentRefs: any = [];
+    public componentRefs: any = [];
 
     /**
      * true if the angular view has been initialized
      * @private
      */
-    private viewInitialized: boolean = false;
+    public viewInitialized: boolean = false;
 
     /**
      * the subscription to the list view changes since the component is rendered here
      */
-    private modellistSubscription: any;
+    public modellistSubscription: any;
 
-    constructor(private language: language, private metadata: metadata, private navigationtab: navigationtab, private modellist: modellist, private model: model) {
+    constructor(public language: language, public metadata: metadata, public navigationtab: navigationtab, public modellist: modellist, public model: model) {
         this.initialize();
     }
 
@@ -44,7 +44,7 @@ export class SAPIDOCsMonitor {
      * set the tab info
      * initialize the model list service
      */
-    private initialize() {
+    public initialize() {
         // set the tab info
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SAP_IDOCS_MONITOR'), displayicon: 'settings'});
 
@@ -62,7 +62,7 @@ export class SAPIDOCsMonitor {
      * set the component name build the container if the view is initialized
      * @private
      */
-    private handleListTypeChange() {
+    public handleListTypeChange() {
         if (!this.viewInitialized) return;
         this.buildContainer();
     }
@@ -86,7 +86,7 @@ export class SAPIDOCsMonitor {
      * renders a compoentnset in the container
      *
      */
-    private buildContainer() {
+    public buildContainer() {
         if (!this.modellist.currentList.listcomponent) {
             return;
         }

@@ -14,30 +14,56 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: '[global-header-search-results-item]',
-    templateUrl: './src/globalcomponents/templates/globalheadersearchresultsitem.html',
+    templateUrl: '../templates/globalheadersearchresultsitem.html',
     providers: [model, view],
     host: {
         "(click)": "navigateTo()"
     }
 })
 export class GlobalHeaderSearchResultsItem implements OnInit {
-    @Input() private hit: any = {};
-    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * the input
+     *
+     */
+    @Input()public hit: any = {};
 
-    private mainfieldset: string;
-    private subfieldsetfields: any[];
+    /**
+     * eits when selected
+     */
+    @Output()public selected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private view: view, private router: Router, private language: language, private metadata: metadata) {
+    /**
+     * held internally --if set to true the click will not navigate to the record but emit the model
+     *
+     */
+    public _noNavigaton: boolean = false;
+
+    /**
+     * an attribute that can be set to hide the close button
+     *
+     * @param value
+     */
+    @Input('global-header-search-results-item-nonavigation') set noNavigaton(value) {
+        if (value === false) {
+            this._noNavigaton = false;
+        } else {
+            this._noNavigaton = true;
+        }
+    }
+
+    /**
+     * the main fieldset
+     */
+    public mainfieldset: string;
+
+    /**
+     * the subfieldset displayed in the second line
+     */
+    public subfieldsetfields: any[];
+
+    constructor(public model: model,public view: view,public router: Router,public language: language,public metadata: metadata) {
         this.view.displayLabels = false;
-    }
-
-    private navigateTo() {
-        this.selected.emit(true);
-        this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
-    }
-
-    private gethref() {
-        return '#/module/' + this.model.module + '/' + this.model.id;
+        this.view.displayLinks = false;
     }
 
     public ngOnInit() {
@@ -50,6 +76,21 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
         this.mainfieldset = componentconfig.mainfieldset;
         if(componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
 
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.hit._source);
+        this.model.setData(this.hit._source);
     }
+
+
+    /**
+     * handles te navigation. If enabled navigates to the record, otherwise just emits the model
+     *
+     */
+    public navigateTo() {
+        if(this._noNavigaton) {
+            this.selected.emit(this.model);
+        } else {
+            this.selected.emit(true);
+            this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
+        }
+    }
+
 }

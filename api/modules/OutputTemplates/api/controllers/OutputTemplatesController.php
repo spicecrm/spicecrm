@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maretval
- * Date: 07.05.2019
- * Time: 13:20
- */
+/***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -44,7 +39,7 @@ class OutputTemplatesController
         $bean->margin_bottom = $body['margin_bottom'];
         $bean->page_size = $body['page_size'];
         $bean->page_orientation = $body['page_orientation'];
-
+        $bean->language = $body['language'];
         $bean->module_name = $body['parentype'];
         $bean->bean_id = $body['parentid'];
         $file = $bean->getPdfContent();

@@ -5,11 +5,10 @@ namespace SpiceCRM\modules\KReports;
 
 use DateInterval;
 use DateTime;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\modules\KReports\KReportUtil;
-use SpiceCRM\modules\KReports\KReportQueryArray;
 
-global $dictionary;
+use SpiceCRM\modules\KReports\KReportQueryArray;
 
 
 // require_once('modules/ACL/ACLController.php');
@@ -643,21 +642,21 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 if (isset($this->joinSegments[$pathName]) && ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'currency' || (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype']) && $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] == 'currency')) || $this->rootfieldNameMap[$thisListEntry['fieldid']]['type'] == 'currency' || $atLeast1CurrencyInSelect) {
                     // if we have a currency id and no SQL function select the currency .. if we have an SQL fnction select -99 for the system currency
                     if (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id']) && ($thisListEntry['sqlfunction'] == '-' || strtoupper($thisListEntry['sqlfunction']) == 'SUM')){
-                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . "." . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id'] . " as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . "." . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id'] . " as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     // BEGIN currency id value for kreporter field: field contains a currency conversion.
                     // Currency symbol will not be from record but from conversion
                     // Use new property kreportcurrency_id and enter currency id in kreporter field vardefs
                     elseif ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'])) {
-                        $this->selectString .= ", '" . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'] . "' as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", '" . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'] . "' as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     // END
                     // BEGIN CR1000035 currency field might not be linked to amount field.
                     elseif (isset($this->joinSegments[$pathName]['object']->field_name_map['currency_id']) ) {
-                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . ".currency_id as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . ".currency_id as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }// END
                     else {
-                        $this->selectString .= ", '-99' as '" . $thisListEntry['fieldid'] . "_curid'";
+                        $this->selectString .= ", '-99' as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     $this->unionSelectString .= ', ' . $thisListEntry['fieldid'] . "_curid";
 
@@ -965,13 +964,13 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 if ($valuekey != '')
                     $value = str_replace('T', ' ', $valuekey);
                 else
-                    $value = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$value), false);
+                    $value = TimeDate::getInstance()->to_db_date(str_replace('T', ' ' ,$value), false);
 
 
                 if ($valuetokey != '')
                     $valueto = str_replace('T', ' ' ,$valuetokey);
                 else
-                    $valueto = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$valueto), false);
+                    $valueto = TimeDate::getInstance()->to_db_date(str_replace('T', ' ' ,$valueto), false);
             }
             if ($this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo') {
                 //2011-07-17 .. db formated dtae stroed in key field
@@ -980,7 +979,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 else {
                     // legacy handling ... try to interpret date
                     $timeArray = explode(' ', str_replace('T', ' ', $value));
-                    $value = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
+                    $value = TimeDate::getInstance()->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                 }
 
                 if ($valueto != '' || $valuetokey != '') {
@@ -989,7 +988,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     else {
                         // legacy handling ... try to interpret date
                         $timeArray = explode(' ', str_replace('T', ' ', $valueto));
-                        $valueto = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
+                        $valueto = TimeDate::getInstance()->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                     }
                 }
             }
@@ -1041,7 +1040,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             break;
                         //		case 'date':
                         //		case 'datetime':
-                        //			$thisWhereString .= ' = \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                        //			$thisWhereString .= ' = \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                         //			break;
                         default:
                             //BEGIN ticket 0001025 maretval 2019-11-26 implement grouping in where clause
@@ -1107,7 +1106,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             case 'after':
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date no handled in client
-                // $thisWhereString .= ' > \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                // $thisWhereString .= ' > \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                 $thisWhereString .= ' > \'' . $value . '\'';
                 break;
             case 'less':
@@ -1116,7 +1115,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             case 'before':
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date no handled in client
-                // $thisWhereString .= ' < \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\'';
+                // $thisWhereString .= ' < \'' . TimeDate::getInstance()->to_db_date($value, false) . '\'';
                 $thisWhereString .= ' < \'' . $value . '\'';
                 break;
             case 'greaterequal':
@@ -1141,7 +1140,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date handling now on client side
                 if ($this->fieldNameMap[$fieldid]['type'] == 'date' || $this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo')
-                    // $thisWhereString .= ' >= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $GLOBALS['timedate']->to_db_date($valueto, false) . '\'';
+                    // $thisWhereString .= ' >= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . TimeDate::getInstance()->to_db_date($valueto, false) . '\'';
                     $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $valueto . '\'';
                 elseif ($this->fieldNameMap[$fieldid]['type'] == 'varchar' || $this->fieldNameMap[$fieldid]['type'] == 'name') {
                     //2012-11-24 change so we increae the last char by one ord numkber and change to a smaller than
@@ -1294,7 +1293,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 } else
                     // 2011-03-25 date handling no on client side
-                    //$thisWhereString .= ' >= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    //$thisWhereString .= ' >= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                     $thisWhereString .= ' >= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
             case 'lastnweeks':
@@ -1368,9 +1367,9 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     $date = time();
                     $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time() + $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 } else {
-                    //$conCatAdd = ' <= \'' . $GLOBALS['timedate']->to_db_date($value) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s') . '\'';
+                    //$conCatAdd = ' <= \'' . TimeDate::getInstance()->to_db_date($value) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s') . '\'';
                     // 2011-03-25 date handling now on client side
-                    // $thisWhereString .= ' <= \'' . $GLOBALS['timedate']->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
+                    // $thisWhereString .= ' <= \'' . TimeDate::getInstance()->to_db_date($value, false) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                     $thisWhereString .= ' <= \'' . $value . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' > \'' . date('Y-m-d H:i:s', time()) . '\'';
                 }
                 break;

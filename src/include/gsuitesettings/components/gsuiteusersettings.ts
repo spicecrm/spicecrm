@@ -14,26 +14,26 @@ import {configurationService} from '../../../services/configuration.service';
 declare var _: any;
 
 @Component({
-    templateUrl: './src/include/gsuitesettings/templates/gsuiteusersettings.html',
+    templateUrl: '../templates/gsuiteusersettings.html',
 })
 export class GSuiteUserSettings implements OnInit {
 
     /**
      * holds the folders that can be subscribed to
      */
-    private subscriptionScopes: string[] = ['Calendar'];
+    public subscriptionScopes: string[] = ['Calendar'];
 
     /**
      * a list of active subscriptions
      */
-    private subscriptions: any[] = [];
+    public subscriptions: any[] = [];
 
     /**
      * the config for the user
      */
-    private userconfig: any[] = [];
+    public userconfig: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private backend: backend, private configuration: configurationService) {
+    constructor(public metadata: metadata, public model: model, public backend: backend, public configuration: configurationService) {
 
     }
 
@@ -47,7 +47,7 @@ export class GSuiteUserSettings implements OnInit {
     /**
      * loads the config from the backend
      */
-    private getConfig() {
+    public getConfig() {
         this.backend.getRequest(`channels/groupware/gsuite/calendar/config/${this.model.id}`).subscribe(response => {
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
@@ -60,7 +60,7 @@ export class GSuiteUserSettings implements OnInit {
      *
      * @param folder_id
      */
-    private lastActive(folder_id) {
+    public lastActive(folder_id) {
         let sub = this.subscriptions.find(sub => sub.folder_id == folder_id);
         return sub ? sub.last_active : '';
     }
@@ -70,7 +70,7 @@ export class GSuiteUserSettings implements OnInit {
      *
      * @param sysmoduleid
      */
-    private getModuleNameById(sysmoduleid: string) {
+    public getModuleNameById(sysmoduleid: string) {
         return this.metadata.getModuleById(sysmoduleid);
     }
 
@@ -79,7 +79,7 @@ export class GSuiteUserSettings implements OnInit {
      *
      * @param sysmoduleid
      */
-    private isActive(scope: string) {
+    public isActive(scope: string) {
         return this.userconfig && this.userconfig.findIndex(r => r.scope == scope) >= 0;
     }
 
@@ -89,7 +89,7 @@ export class GSuiteUserSettings implements OnInit {
      * @param sysmoduleid
      * @param e
      */
-    private toggleActive(scope: string, e: MouseEvent) {
+    public toggleActive(scope: string, e: MouseEvent) {
         if (e) {
             this.backend.postRequest(`channels/groupware/gsuite/calendar/notifications/${this.model.id}/${scope}`).subscribe(res => {
                 this.userconfig = res.userconfig;

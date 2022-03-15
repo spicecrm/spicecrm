@@ -14,7 +14,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "bonus-cards-new-related-button",
-    templateUrl: "./src/modules/bonusprograms/templates/bonuscardnewrelatedbutton.html",
+    templateUrl: "../templates/bonuscardnewrelatedbutton.html",
     providers: [model]
 })
 export class BonusCardNewRelatedButton extends BonusCardNewButton {
@@ -32,7 +32,7 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
                 public model: model,
                 @SkipSelf() public parentModel: model,
                 public modelUtilities: modelutilities,
-                private relatedModels: relatedmodels) {
+                public relatedModels: relatedmodels) {
         super(language, metadata, modal, toast, backend, model, parentModel, modelUtilities);
 
     }
@@ -40,7 +40,7 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
     /**
      * add a new card with the program
      */
-    public addNew(program: { id: string, name: string, date_end: string, date_start: string }) {
+    public addNew(program: { id: string, name: string, validity_date_editable: number, date_end: string, date_start: string }) {
 
         this.model.id = undefined;
         let presets;
@@ -49,13 +49,14 @@ export class BonusCardNewRelatedButton extends BonusCardNewButton {
             presets = {
                 bonusprogram_id: program.id,
                 bonusprogram_name: program.name,
+                validity_date_editable: program.validity_date_editable,
                 purchase_date: this.modelUtilities.backend2spice(this.model.module, 'purchase_date', program.date_start),
                 valid_until: this.modelUtilities.backend2spice(this.model.module, 'valid_until', program.date_end),
             };
         }
 
-        if (!this.parentModel.data.id) {
-            this.parentModel.data.id = this.parentModel.id;
+        if (!this.parentModel.getField('id')) {
+            this.parentModel.setField('id', this.parentModel.id);
         }
 
         this.model.addModel('', this.parentModel, presets).subscribe(response => {

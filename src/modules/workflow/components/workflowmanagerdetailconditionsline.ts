@@ -15,7 +15,7 @@ import {footer} from "../../../services/footer.service";
 
 @Component({
     selector: '[workflow-manager-detail-conditions-line]',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailconditionsline.html',
+    templateUrl: '../templates/workflowmanagerdetailconditionsline.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailConditionsLine {
@@ -24,7 +24,7 @@ export class WorkflowManagerDetailConditionsLine {
     @Input() conditions: any = {};
     @Input() module: string = '';
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'WorkflowConditions';
 
         // set the view to edit mode
@@ -36,7 +36,7 @@ export class WorkflowManagerDetailConditionsLine {
 
     ngOnChanges() {
         this.model.id = this.condition.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.condition);
+        this.model.setData(this.condition);
     }
 
     removeCondition(){

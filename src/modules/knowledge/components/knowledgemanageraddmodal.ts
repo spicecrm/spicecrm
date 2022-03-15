@@ -10,7 +10,7 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: 'knowledge-manager-add-modal',
-    templateUrl: "./src/modules/knowledge/templates/knowledgemanageraddmodal.html",
+    templateUrl: "../templates/knowledgemanageraddmodal.html",
     providers: [model, KnowledgeService]
 })
 export class KnowledgeManagerAddModal implements AfterViewInit {
@@ -19,18 +19,18 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
     public activeTab: string = "tree";
     public self: any = {};
     public presets: any = {};
-    private showCopyContainer: boolean = false;
-    private response: Observable<object> = null;
-    private responseSubject: Subject<any> = null;
+    public showCopyContainer: boolean = false;
+    public response: Observable<object> = null;
+    public responseSubject: Subject<any> = null;
 
-    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
-    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) private tabsHeaderContainer: ViewContainerRef;
-    @ViewChild("footerContainer", {read: ViewContainerRef, static: true}) private footerContainer: ViewContainerRef;
+    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) public maincontainer: ViewContainerRef;
+    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) public tabsHeaderContainer: ViewContainerRef;
+    @ViewChild("footerContainer", {read: ViewContainerRef, static: true}) public footerContainer: ViewContainerRef;
 
-    constructor(private language: language,
-                private model: model,
-                private metadata: metadata,
-                private knowledgeService: KnowledgeService) {
+    constructor(public language: language,
+                public model: model,
+                public metadata: metadata,
+                public knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
@@ -71,7 +71,7 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
             });
     }
 
-    private confirmCopy() {
+    public confirmCopy() {
         this.copyPresets();
         this.model.save(true).subscribe(res => {
             this.responseSubject.next(this.model.data);
@@ -80,7 +80,7 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
         this.close();
     }
 
-    private copyPresets() {
+    public copyPresets() {
         let newGUID = this.model.generateGuid();
         this.model.id = newGUID;
         this.model.data.id = newGUID;
@@ -92,7 +92,7 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
         }
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 }

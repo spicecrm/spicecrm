@@ -3,6 +3,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -11,7 +12,6 @@ use Slim\Routing\RouteCollectorProxy;
 use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-
 
 class ConfiguratorController{
 
@@ -129,14 +129,13 @@ class ConfiguratorController{
      */
 
     public function checkMetaData( Request $req, Response $res, $args ): Response {
-        global  $dictionary;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
         # header("Access-Control-Allow-Origin: *");
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        foreach ($dictionary as $meta) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if ($meta['table'] == $args['table']) {
                 // check if we have a CR set
                 if ($meta['changerequests']['active'] && $_SESSION['SystemDeploymentCRsActiveCR'])
@@ -170,7 +169,6 @@ class ConfiguratorController{
      */
 
     public function writeConfig( Request $req, Response $res, $args ): Response {
-        global  $dictionary;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
@@ -209,7 +207,7 @@ class ConfiguratorController{
             */
 
             // check for CR relevancy
-            foreach ($dictionary as $meta) {
+            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
                 if ($meta['table'] == $args['table']) {
                     // check if we have a CR set
                     if ($meta['changerequests']['active'] && $_SESSION['SystemDeploymentCRsActiveCR'])

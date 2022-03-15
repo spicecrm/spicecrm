@@ -8,15 +8,9 @@
         </div>
         <ng-template #queuelist>
             <fieldset class="slds-form-element">
+                <div class="slds-grid slds-grid--vertical">
                 <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AVAILABLE_QUEUES"></system-label></legend>
-                <div class="slds-form-element__control">
-                    <span class="slds-radio" *ngFor="let queue of queues">
-                      <input type="radio" [id]="queue.id" [value]="queue.id" name="queue" [(ngModel)]="selectedqueueid"/>
-                      <label class="slds-radio__label" [attr.for]="queue.id">
-                        <span class="slds-radio_faux"></span>
-                        <span class="slds-form-element__label">{{queue.name}}</span>
-                      </label>
-                    </span>
+                <system-input-radio *ngFor="let queue of queues" [value]="queue.id" name="queue" [(ngModel)]="selectedqueueid">{{queue.name}}</system-input-radio>
                 </div>
             </fieldset>
             <div *ngIf="displaynote" class="slds-form-element slds-p-top--small">

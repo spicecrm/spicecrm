@@ -7,16 +7,16 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-optimisitclocking-modal-data-field',
-    templateUrl: './src/objectcomponents/templates/objectoptimisticlockingmodaldatafield.html',
+    templateUrl: '../templates/objectoptimisticlockingmodaldatafield.html',
     providers: [model]
 })
 export class ObjectOptimisticLockingModalDataField implements OnInit {
 
-    @Input() private fieldname: string = '';
-    @Input() private fieldmodule: string = '';
-    @Input() private fieldvalue: any;
+    @Input() public fieldname: string = '';
+    @Input() public fieldmodule: string = '';
+    @Input() public fieldvalue: any;
 
-    constructor(private model: model) {
+    constructor(public model: model) {
     }
 
     public ngOnInit() {

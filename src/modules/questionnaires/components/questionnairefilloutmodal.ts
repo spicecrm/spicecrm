@@ -13,7 +13,7 @@ import { backend } from '../../../services/backend.service';
 
 @Component({
     selector: 'questionnaire-fill-out-modal',
-    templateUrl: './src/modules/questionnaires/templates/questionnairefilloutmodal.html',
+    templateUrl: '../templates/questionnairefilloutmodal.html',
     providers: [model, view]
 })
 export class QuestionnaireFillOutModal implements OnInit {
@@ -24,28 +24,28 @@ export class QuestionnaireFillOutModal implements OnInit {
     @Input() public participationId: string;
     @Input() public saved$: EventEmitter<boolean> = new EventEmitter();
 
-    private self: any;
+    public self: any;
 
-    private questionnaireParticipation: questionnaireParticipationService;
-    private qp: questionnaireParticipationService; // shortcut
+    public questionnaireParticipation: questionnaireParticipationService;
+    public qp: questionnaireParticipationService; // shortcut
 
-    private qpIsDirty: boolean;
-    private qpIsSaving: boolean;
-    private qpIsLoaded: boolean;
+    public qpIsDirty: boolean;
+    public qpIsSaving: boolean;
+    public qpIsLoaded: boolean;
 
-    private componentconfig: any;
+    public componentconfig: any;
 
-    private offeredQuestionnaires = [];
+    public offeredQuestionnaires = [];
 
-    private get isAnonymous(): boolean {
+    public get isAnonymous(): boolean {
         return ( this.parentId === undefined || this.parentType === undefined ) && this.participationId === undefined;
     }
 
-    private idSelectedQuestionnaire: string;
+    public idSelectedQuestionnaire: string;
 
-    private awaitingEnd = false;
+    public awaitingEnd = false;
 
-    constructor( private modal: modal, private language: language, private metadata: metadata, private model: model, private view: view, private backend: backend ) { }
+    constructor( public modal: modal, public language: language, public metadata: metadata, public model: model, public view: view, public backend: backend ) { }
 
     public ngOnInit(): void {
         if ( this.isAnonymous && !this.questionnaireId ) this.loadQuestionnairesList();
@@ -60,7 +60,7 @@ export class QuestionnaireFillOutModal implements OnInit {
     /**
      * Load a list of all questionnaires - to offer them for selection.
      */
-    private loadQuestionnairesList() {
+    public loadQuestionnairesList() {
         this.backend.getRequest('module/Questionnaires', { limit: '-99'})
             .pipe(take(1))
             .subscribe( resp => {
@@ -72,7 +72,7 @@ export class QuestionnaireFillOutModal implements OnInit {
     /**
      * Cancel and close the modal window.
      */
-    private cancel() {
+    public cancel() {
         if ( this.qpIsSaving ) return;
         this.self.destroy();
     }
@@ -81,7 +81,7 @@ export class QuestionnaireFillOutModal implements OnInit {
      *  Save the current questionnaire answers. The whole questionnaire.
      *  Then save the extra fields of the participation, in case there are any.
      */
-    private saveAndClose( setCompleted: boolean ) {
+    public saveAndClose( setCompleted: boolean ) {
         if ( this.qpIsSaving ) return;
         this.awaitingEnd = true;
         this.qp.save( setCompleted )
@@ -109,7 +109,7 @@ export class QuestionnaireFillOutModal implements OnInit {
      * The function grants permission to close the window. Or not.
      * Depending on whether the questionnaire is dirty and - if so - the user agrees to discard the changes or not.
      */
-    private onModalEscX(): boolean {
+    public onModalEscX(): boolean {
         if ( this.qpIsSaving ) return; // Closing is not possible during the saving process.
         if ( this.qpIsDirty ) {
             this.modal.confirm( this.language.getLabel('Discard changes?'))

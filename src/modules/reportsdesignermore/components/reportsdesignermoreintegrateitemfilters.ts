@@ -9,18 +9,18 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'reports-designer-more-integrate-item-filters',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemfilters.html'
+    templateUrl: '../templates/reportsdesignermoreintegrateitemfilters.html'
 })
 export class ReportsDesignerMoreIntegrateItemFilters {
 
-    private expandedId: string = '';
-    protected savedFilters: any[];
-    protected isLoading: boolean = false;
+    public expandedId: string = '';
+    public savedFilters: any[];
+    public isLoading: boolean = false;
 
-    constructor(private language: language,
-                private model: model,
-                private backend: backend,
-                private modal: modal) {
+    constructor(public language: language,
+                public model: model,
+                public backend: backend,
+                public modal: modal) {
     }
 
     /**
@@ -40,7 +40,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
     /**
      * load the saved filters from backend
      */
-    private loadSaveFilters() {
+    public loadSaveFilters() {
         this.isLoading = true;
         this.backend.getRequest(`module/KReports/${this.model.id}/savedfilters`).subscribe(filters => {
             this.isLoading = false;
@@ -58,7 +58,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
      * delete the filter with the given id
      * @param filterId: string
      */
-    private deleteFilter(filterId) {
+    public deleteFilter(filterId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 this.backend.deleteRequest(`module/KReports/${this.model.id}/savedfilter/${filterId}`).subscribe(res => {
@@ -74,7 +74,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
      * toggle expansion
      * @param filterId: string
      */
-    private toggleExpansion(filterId) {
+    public toggleExpansion(filterId) {
         this.expandedId = this.expandedId == filterId ? '' : filterId;
     }
 
@@ -83,7 +83,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
      * @param selectedFilters: object[]
      * @return selectedFilters: object[]
      */
-    private mapFilterDefs(selectedFilters) {
+    public mapFilterDefs(selectedFilters) {
         if (selectedFilters && typeof selectedFilters == 'string') {
             selectedFilters = JSON.parse(selectedFilters);
         }
@@ -103,7 +103,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.savedfilter_id;
     }
 
@@ -114,7 +114,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
     * @param item
     * @return index
     */
-    private trackByFnFilterDef(index, item) {
+    public trackByFnFilterDef(index, item) {
         return item.fieldid;
     }
 }

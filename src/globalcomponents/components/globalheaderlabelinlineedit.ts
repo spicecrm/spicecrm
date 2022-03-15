@@ -10,19 +10,19 @@ import {session} from "../../services/session.service";
  */
 @Component({
     selector: 'global-header-label-inline-edit',
-    templateUrl: './src/globalcomponents/templates/globalheaderlabelinlineedit.html'
+    templateUrl: '../templates/globalheaderlabelinlineedit.html'
 })
 export class GlobalHeaderLabelInlineEdit {
 
-    constructor(private language: language,
-                private session: session) {
+    constructor(public language: language,
+               public session: session) {
     }
 
     /**
      * toogle inline edit enabled
      * @private
      */
-    private toggleEnabled() {
+   public toggleEnabled() {
         this.language.inlineEditEnabled = !this.language.inlineEditEnabled;
         this.language.currentlanguage$.emit(this.language.currentlanguage);
     }

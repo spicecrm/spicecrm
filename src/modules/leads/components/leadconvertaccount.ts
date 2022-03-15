@@ -18,30 +18,30 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: "lead-convert-account",
-    templateUrl: "./src/modules/leads/templates/leadconvertaccount.html",
+    templateUrl: "../templates/leadconvertaccount.html",
     providers: [view, model]
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * the content conatiner the componentset for the account edit is rendered in
      */
-    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
     /**
      * emits the model that has been created
      */
-    @Output() private account: EventEmitter<model> = new EventEmitter<model>();
+    @Output() public account: EventEmitter<model> = new EventEmitter<model>();
 
 
     /**
      * the component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * references to the components rendered in the view
      */
-    private componentRefs: any = [];
+    public componentRefs: any = [];
 
     /**
      * the account selected if there is one
@@ -52,10 +52,10 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * internal value for the checkbox allowing the user to select if he wants to link the lead to an account or not
      */
-    private _linktoaccount: boolean = true;
+    public _linktoaccount: boolean = true;
 
 
-    constructor(private view: view, private metadata: metadata, @SkipSelf() private lead: model, private model: model, private modelutilities: modelutilities, private fts: fts, private language: language) {
+    constructor(public view: view, public metadata: metadata, @SkipSelf() public lead: model, public model: model, public modelutilities: modelutilities, public fts: fts, public language: language) {
 
     }
 
@@ -130,7 +130,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * builds the container and renders the data
      */
-    private buildContainer() {
+    public buildContainer() {
         // Close any already open dialogs
         for (let component of this.componentRefs) {
             component.destroy();
@@ -150,12 +150,12 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
      *
      * @param accountdata
      */
-    private selectAccount(accountdata) {
+    public selectAccount(accountdata) {
         this.selectedAccount = accountdata;
 
         this.model.id = accountdata.id;
         this.model.isNew = false;
-        this.model.data = this.model.utils.backendModel2spice('Accounts', accountdata);
+        this.model.setData(accountdata);
         this.lead.setFields({
             account_id: this.model.id,
             account_linked_name: this.model.getField('name')
@@ -167,7 +167,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * then the user unlinks the account
      */
-    private unlinkAccount() {
+    public unlinkAccount() {
         this.selectedAccount = undefined;
 
         this.buildContainer();

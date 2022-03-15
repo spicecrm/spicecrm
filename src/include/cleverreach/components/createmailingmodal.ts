@@ -13,28 +13,28 @@ import {toast} from "../../../services/toast.service";
 import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
-    templateUrl: './src/include/cleverreach/templates/createmailingmodal.html'
+    templateUrl: '../templates/createmailingmodal.html'
 })
 export class CreateMailingModal implements OnInit {
 
-    private self: any = {};
-    private module: string = '';
-    private templates: any[] = [];
-    private selectedTemplate = "";
-    private mailing = new FormGroup({
+    public self: any = {};
+    public module: string = '';
+    public templates: any[] = [];
+    public selectedTemplate = "";
+    public mailing = new FormGroup({
         name: new FormControl(''),
         subject: new FormControl(''),
         html: new FormControl(''),
     });
 
     constructor(
-        private language: language,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast
+        public language: language,
+        public router: Router,
+        public metadata: metadata,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast
     ) {
     }
 
@@ -50,7 +50,7 @@ export class CreateMailingModal implements OnInit {
      * loads all templates from backend
      */
 
-    private loadTemplates() {
+    public loadTemplates() {
         this.backend.getRequest(`module/EmailTemplates/${this.model.module}/load`).subscribe(
             response => {
                 this.templates = response;
@@ -66,7 +66,7 @@ export class CreateMailingModal implements OnInit {
      * the html formcontrol value is the parsed html body of the response
      */
 
-    private renderTemplate(id) {
+    public renderTemplate(id) {
         this.selectedTemplate = id;
         this.backend.getRequest(`module/EmailTemplates/${this.selectedTemplate}/parse/${this.model.module}/${this.model.id}`).subscribe(
             response => {
@@ -82,7 +82,7 @@ export class CreateMailingModal implements OnInit {
      *
      */
 
-    private onSubmit() {
+    public onSubmit() {
         this.backend.postRequest(`channels/emarketing/cleverreach/${this.model.module}/${this.model.id}/sendmailing`, null, this.mailing.value).subscribe(
             response => {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
@@ -99,7 +99,7 @@ export class CreateMailingModal implements OnInit {
 
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

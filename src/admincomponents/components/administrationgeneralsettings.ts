@@ -11,14 +11,14 @@ import {currency} from "../../services/currency.service";
 
 @Component({
     selector: 'administration-general-setting',
-    templateUrl: './src/admincomponents/templates/administrationgeneralsettings.html',
+    templateUrl: '../templates/administrationgeneralsettings.html',
 })
 
 export class AdministrationGeneralSettings implements OnInit {
     /**
      * array to catch the settings
      */
-    private settings: any = {
+    public settings: any = {
         system: {
             name: '',
             site_url: '',
@@ -46,25 +46,25 @@ export class AdministrationGeneralSettings implements OnInit {
     /**
      * available options from backend
      */
-    private options: any = [];
+    public options: any = [];
 
     /**
      * currencies
      */
 
-    private currencies: any = [];
+    public currencies: any = [];
     /**
      * loading boolean
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private modal: modal,
-        private toast: toast,
-        private currency: currency,
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public modal: modal,
+        public toast: toast,
+        public currency: currency,
     ) {
 
     }
@@ -86,7 +86,7 @@ export class AdministrationGeneralSettings implements OnInit {
     /**
      * save the settings
      */
-    private save() {
+    public save() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.postRequest('configuration/settings', {}, this.settings).subscribe(response => {
                 if (response.status) {
@@ -99,7 +99,7 @@ export class AdministrationGeneralSettings implements OnInit {
         });
     }
 
-    private _loglevels = [];
+    public _loglevels = [];
 
     get loglevels() {
         return this._loglevels;

@@ -14,7 +14,7 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'groupware-detail-pane-bean',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpanebean.html',
+    templateUrl: '../templates/groupwaredetailpanebean.html',
     providers: [view, model]
 })
 export class GroupwareDetailPaneBean implements OnInit {
@@ -22,19 +22,19 @@ export class GroupwareDetailPaneBean implements OnInit {
     /**
      * Current bean.
      */
-    @Input() private bean: any;
-    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
+    @Input() public bean: any;
+    @Output() public selected: EventEmitter<any> = new EventEmitter<any>();
 
-    private mainfieldsetfields: any[];
-    private subfieldsetfields: any[];
+    public mainfieldsetfields: any[];
+    public subfieldsetfields: any[];
 
     constructor(
-        private groupware: GroupwareService,
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private router: Router,
-        private view: view
+        public groupware: GroupwareService,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public router: Router,
+        public view: view
     ) {
         this.view.displayLabels = false;
     }
@@ -43,7 +43,7 @@ export class GroupwareDetailPaneBean implements OnInit {
 
         this.model.module = this.bean.module;
         this.model.id = this.bean.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.bean.data);
+        this.model.setData(this.bean.data);
 
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig(
@@ -58,7 +58,7 @@ export class GroupwareDetailPaneBean implements OnInit {
         }
     }
 
-    private onClick(event) {
+    public onClick(event) {
         this.selected.emit({module: this.bean.module, id: this.bean.id});
         // this.router.navigate(['module/' + this.bean.module + '/' + this.bean.id]);
     }

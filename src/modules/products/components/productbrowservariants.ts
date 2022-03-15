@@ -15,16 +15,16 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-variants',
-    templateUrl: './src/modules/products/templates/productbrowservariants.html'
+    templateUrl: '../templates/productbrowservariants.html'
 })
 export class ProductBrowserVariants {
 
-    private timeout: any;
-    private fieldset: string = '';
-    @ViewChild('variantscontent', {read: ViewContainerRef, static: true}) private variantsContent: ViewContainerRef;
-    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
+    public timeout: any;
+    public fieldset: string = '';
+    @ViewChild('variantscontent', {read: ViewContainerRef, static: true}) public variantsContent: ViewContainerRef;
+    @Output() public selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
+    constructor(public metadata: metadata, public language: language, public backend: backend, public elementRef: ElementRef, public productfinder: productfinder) {
         this.fieldset = this.metadata.getComponentConfig('ProductBrowserVariants').fieldset;
     }
 
@@ -44,19 +44,19 @@ export class ProductBrowserVariants {
         this.productfinder.searchterm = value;
     }
 
-    private keyUp() {
+    public keyUp() {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
-    private onScroll(e) {
+    public onScroll(e) {
         let element = this.variantsContent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.productfinder.getMoreProductVariants();
         }
     }
 
-    private handleSelection(data) {
+    public handleSelection(data) {
         this.selectionchanged.emit(data);
     }
 }

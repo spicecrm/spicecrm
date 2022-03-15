@@ -10,7 +10,7 @@ import {modal} from '../../../services/modal.service';
 
 @Component({
     selector: '[questions-manager-edit-option-ist]',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditoptionist.html',
+    templateUrl: '../templates/questionsmanagereditoptionist.html',
     providers: [model,view]
 })
 export class QuestionsManagerEditOptionIst implements OnInit {
@@ -22,7 +22,7 @@ export class QuestionsManagerEditOptionIst implements OnInit {
     @Input() public isLastRow: boolean;
     @Output() public isDirty: boolean;
 
-    constructor( private language: language, private metadata: metadata, private model: model, private view: view, private modalservice: modal ) {
+    constructor( public language: language, public metadata: metadata, public model: model, public view: view, public modalservice: modal ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -30,17 +30,25 @@ export class QuestionsManagerEditOptionIst implements OnInit {
     public ngOnInit(): void {
         this.model.module = 'QuestionOptions';
         this.model.id = this.option.id;
-        this.model.data = this.option;
+        this.model.setData(this.option);
     }
 
-    private deleteOption(): void {
+    public deleteOption(): void {
         this.modalservice.confirm( this.language.getLabelFormatted( 'QST_DELETE_ANSWER_OPTION_LONG', this.option.name ), this.language.getLabel('QST_DELETE_ANSWER_OPTION' )).subscribe( answer => {
             if ( answer ) this.event.emit( 'delete');
         });
     }
 
-    private change() {
+    public change() {
         null;
+    }
+
+    public get canEditOption(): boolean {
+        return this.model.getField('new_with_id') || this.model.checkAccess('edit');
+    }
+
+    public get canDeleteOption(): boolean {
+        return this.model.getField('new_with_id') || this.model.checkAccess('delete');
     }
 
 }

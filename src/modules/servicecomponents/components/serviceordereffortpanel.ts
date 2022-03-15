@@ -8,7 +8,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "serviceorder-effort-panel",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortpanel.html"
+    templateUrl: "../templates/serviceordereffortpanel.html"
 })
 export class ServiceOrderEffortPanel implements OnInit {
 
@@ -41,7 +41,7 @@ export class ServiceOrderEffortPanel implements OnInit {
     /**
      * the columns to be displayed
      */
-    private fieldsetFields: any[] = [];
+    public fieldsetFields: any[] = [];
 
     /**
      * sortfield
@@ -51,7 +51,7 @@ export class ServiceOrderEffortPanel implements OnInit {
     /**
      * the columns to be displayed in detail container
      */
-    private fieldsetDetailItems: any[] = [];
+    public fieldsetDetailItems: any[] = [];
 
     /**
      * the used fieldsets
@@ -136,14 +136,14 @@ export class ServiceOrderEffortPanel implements OnInit {
  * @sort items by sortField: moment.date
  * @return items: any[]
  */
-    private sortItems(items) {
+    public sortItems(items) {
         return items.sort((a, b) => a[this.sortField] && b[this.sortField] ? a[this.sortField] > b[this.sortField] ? 1 : -1 : 0);
     }
 
-    private addItem() {
+    public addItem() {
         this.view.setEditMode();
-        if(this.metadata.getModuleDefs("Products").acl.list && this.metadata.getModuleDefs("Products").visible) {
-            if(this.metadata.getModuleDefs("ProductVariants").acl.list && this.metadata.getModuleDefs("ProductVariants").visible) {
+        if(this.metadata.checkModuleAcl('Products', 'list') && this.metadata.getModuleDefs("Products").visible) {
+            if(this.metadata.checkModuleAcl('ProductVariantss', 'list') && this.metadata.getModuleDefs("ProductVariants").visible) {
 
                 this.modal.openModal('ServiceOrderAddTypeSelector', true, this.injector).subscribe(addItemModal => {
                     addItemModal.instance.itemTypeSelected.subscribe(itemType => {

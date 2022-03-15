@@ -8,7 +8,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 
 @Component({
 
-    templateUrl: './src/modules/spiceimports/templates/spiceimports.html',
+    templateUrl: '../templates/spiceimports.html',
     providers: [
         spiceimportsservice
     ]
@@ -16,8 +16,8 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 
 export class SpiceImports implements OnInit {
 
-    constructor(private language: language,
-                private spiceimportsservice: spiceimportsservice) {
+    constructor(public language: language,
+                public spiceimportsservice: spiceimportsservice) {
     }
 
     ngOnInit() {

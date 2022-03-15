@@ -10,7 +10,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclterritorries-elementmanager-element-values',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanagerelementvalues.html',
+    templateUrl: '../templates/aclterritorrieselementmanagerelementvalues.html',
 })
 export class ACLTerritorriesElementmanagerElementValues implements OnChanges {
 
@@ -18,7 +18,7 @@ export class ACLTerritorriesElementmanagerElementValues implements OnChanges {
     @Input() public activeElement: string = '';
     public elementvalues: any[] = [];
 
-    constructor(private backend: backend, private modal: modal, private language: language) {
+    constructor(public backend: backend, public modal: modal, public language: language) {
     }
 
     public ngOnChanges() {

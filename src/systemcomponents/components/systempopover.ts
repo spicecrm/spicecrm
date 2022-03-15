@@ -7,17 +7,17 @@ import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 
 @Component({
-    templateUrl: './src/systemcomponents/templates/systempopover.html'
+    templateUrl: '../templates/systempopover.html'
 })
 export class SystemPopover implements OnInit {
     public popoverside: string = 'right';
     public popoverpos: string = 'top';
     public styles = null;
 
-    private hidePopoverTimeout: any = {};
+    public hidePopoverTimeout: any = {};
 
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
-    @ViewChild('popoverbody', {read: ViewContainerRef, static: true}) private popoverbody: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
+    @ViewChild('popoverbody', {read: ViewContainerRef, static: true}) public popoverbody: ViewContainerRef;
 
     public parentElementRef: any = null;
     public self: any = null;
@@ -25,22 +25,22 @@ export class SystemPopover implements OnInit {
     public componentset: string;
     public component: string;
 
-    private heightcorrection = 30;
-    private widthcorrection = 30;
+    public heightcorrection = 30;
+    public widthcorrection = 30;
 
     constructor(
-        private metadata: metadata,
+        public metadata: metadata,
     ) {
 
     }
 
-    private onMouseOver() {
+    public onMouseOver() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
     }
 
-    private onMouseOut() {
+    public onMouseOut() {
         this.closePopover(true);
     }
 
@@ -80,7 +80,7 @@ export class SystemPopover implements OnInit {
         this.styles = this.popoverStyle;
     }
 
-    private getNubbinClass() {
+    public getNubbinClass() {
         return (this.popoverside == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverpos;
     }
 

@@ -12,7 +12,7 @@ import {backend} from '../../../services/backend.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketnewbutton.html',
+    templateUrl: '../templates/serviceticketnewbutton.html',
     providers: [model]
 })
 export class ServiceTicketNewButton {
@@ -27,7 +27,7 @@ export class ServiceTicketNewButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(private injector: Injector, public language: language, public metadata: metadata, public backend: backend, public modal: modal, public model: model, public relatedmodels: relatedmodels, @SkipSelf() public parentmodel: model) {
+    constructor(public injector: Injector, public language: language, public metadata: metadata, public backend: backend, public modal: modal, public model: model, public relatedmodels: relatedmodels, @SkipSelf() public parentmodel: model) {
 
     }
 

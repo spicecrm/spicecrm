@@ -64,8 +64,9 @@ $app_list_strings = [
     ],
     'userabsences_type_dom' => [
         '' => '',
-        'Krankenstand' => 'Maladie',
-        'Urlaub' => 'Congé',
+        'Sick leave' => 'Maladie',
+        'Vacation' => 'Congé',
+        'HomeOffice' => 'Home Office',
     ],
     'industry_dom' =>
         [

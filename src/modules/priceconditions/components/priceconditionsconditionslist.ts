@@ -11,36 +11,36 @@ import {priceconditonsconfiguration} from '../services/priceconditonsconfigurati
 
 @Component({
     selector: 'price-conditions-conditions-list',
-    templateUrl: './src/modules/priceconditions/templates/priceconditionsconditionslist.html'
+    templateUrl: '../templates/priceconditionsconditionslist.html'
 })
 export class PriceConditionsConditionsList implements OnInit {
 
     /**
      * the id of the rendered condition type
      */
-    @Input() private conditiontypeid: string;
+    @Input() public conditiontypeid: string;
 
     /**
      * the id of the rendered determination
      */
-    @Input() private determinationid: string;
+    @Input() public determinationid: string;
 
     /**
      * the array of conditions to be rendered
      */
-    @Input() private conditions: any[] = [];
+    @Input() public conditions: any[] = [];
 
     /**
      * the type of the condiiton
      */
-    private conditiontype: 'A' | 'P' = 'A';
+    public conditiontype: 'A' | 'P' = 'A';
 
     /**
      * holds the fields for the determination strategy as per the determination_id
      */
-    private determinationfields: any[] = [];
+    public determinationfields: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model, private priceconditonsconfiguration: priceconditonsconfiguration, private backend: backend) {
+    constructor(public language: language, public metadata: metadata, public model: model, public priceconditonsconfiguration: priceconditonsconfiguration, public backend: backend) {
     }
 
     public ngOnInit(): void {
@@ -54,7 +54,7 @@ export class PriceConditionsConditionsList implements OnInit {
     /**
      * loads the conditon type (Amount or Percent)
      */
-    private determineConditionType() {
+    public determineConditionType() {
         this.conditiontype = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == this.conditiontypeid).valuetype;
     }
 
@@ -72,7 +72,7 @@ export class PriceConditionsConditionsList implements OnInit {
     /**
      * build teh fields for the determination in the proper sequence
      */
-    private getDeterminationIdFields() {
+    public getDeterminationIdFields() {
         let determinationelements = this.priceconditonsconfiguration.config.determinationelements.filter(d => d.pricedetermination_id == this.determinationid).sort((a, b) => a.priceconditionelement_index > b.priceconditionelement_index ? 1 : -1);
         let start = 0;
         for (let determinationelement of determinationelements) {
@@ -95,7 +95,7 @@ export class PriceConditionsConditionsList implements OnInit {
      * @param element
      * @param key
      */
-    private getValueFromKey(key, element) {
+    public getValueFromKey(key, element) {
         let val = key.substring(element.element_start, element.element_start + element.element_length);
         if (element.element_domain && this.language.languagedata.applist[element.element_domain]) {
             let textval = this.language.languagedata.applist[element.element_domain][val];

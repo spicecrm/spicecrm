@@ -7,11 +7,11 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 
 @Component({
     selector: 'sapidocs-manager-segments-tree',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentstree.html'
+    templateUrl: '../templates/sapidocsmanagersegmentstree.html'
 })
 export class SAPIDOCsManagerSegmentsTree {
 
-    constructor(private language: language, private sapIdocsManager: sapIdocsManager) {
+    constructor(public language: language, public sapIdocsManager: sapIdocsManager) {
 
     }
 
@@ -23,7 +23,7 @@ export class SAPIDOCsManagerSegmentsTree {
      * @param index
      * @param item
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 

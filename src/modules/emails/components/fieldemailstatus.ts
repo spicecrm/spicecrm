@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
-    templateUrl: './src/modules/emails/templates/fieldemailstatus.html'
+    templateUrl: '../templates/fieldemailstatus.html'
 })
 export class fieldEmailStatus extends fieldGeneric {
 

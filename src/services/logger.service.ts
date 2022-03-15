@@ -15,7 +15,7 @@ const noop = (): any => undefined;
 @Injectable()
 export class loggerService {
 
-    private sessionService: session;
+    public sessionService: session;
 
     /**
      * getter for
@@ -45,7 +45,7 @@ export class loggerService {
      *
      * returns if we are in angular in the developer mode
      */
-    private isDev() {
+    public isDev() {
         return isDevMode() || (this.sessionService && this.sessionService.isDev);
     }
 

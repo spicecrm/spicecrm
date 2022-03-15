@@ -1,28 +1,21 @@
-<div class="slds-grid">
-
-    <div class="slds-size--1-of-2 slds-m-left--x-small">
-
+<div class="slds-grid slds-gutters">
+    <div class="slds-col slds-size--1-of-2">
         <div class="slds-grid slds-grid--align-spread slds-m-bottom--medium">
-            <questionnaire-editor-questionset-add [questionnaire]="this.model" (newQuestionset)="addQuestionset($event)"></questionnaire-editor-questionset-add>
+            <questionnaire-editor-questionset-add (newQuestionset)="addQuestionset($event)"></questionnaire-editor-questionset-add><!-- [questionnaire]="this.model" -->
         </div>
-
         <div system-to-bottom class="slds-p-right--medium slds-m-bottom--medium dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
-            <div *ngFor="let questionset of questionsets; let i=index; trackBy:trackBy; let isLast = last" [class.slds-m-bottom--medium]="!isLast" class="slds-grid" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)">
-                <questionset-manager [questionset]="questionset" [categorypool]="categorypool" (changed)="changeQuestionset($event,i)" (deleted)="removeQuestionset(i)" style="width:100%"></questionset-manager>
+            <div *ngFor="let questionset of questionsets; let i=index; trackBy:trackBy; let isLast = last" [class.slds-m-bottom--medium]="!isLast" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)">
+                <questionset-manager class="slds-size--1-of-1" [questionset]="questionset" [categorypool]="categorypool" (changed)="changeQuestionset($event,i)" (deleted)="removeQuestionset(i)"></questionset-manager>
             </div>
         </div>
-
     </div>
-
-    <div class="slds-size--1-of-2 slds-p-horizontal--medium">
+    <div class="slds-col slds-size--1-of-2">
         <div class="slds-grid slds-grid--align-spread slds-p-bottom--medium">
             <div class="slds-border--bottom slds-grow slds-m-right--medium">{{lang.getLabel('LBL_PREVIEW')}}</div>
             <div><button class="slds-button slds-button_icon" (click)="reloadPreview()"><system-button-icon [icon]="'refresh'"></system-button-icon></button></div>
         </div>
         <div system-to-bottom class="slds-m-bottom--medium">
-            <questionnaire-render [questionnaireId]="model.id" class="slds-p-right--medium" style="display:block" [inModal]="false" [editMode]="'preview'" [showQuestionnaireTitle]="false"></questionnaire-render><!--*ngIf="!isLoading"--><!--*ngIf="!isLoading"-->
+            <questionnaire-render [questionnaireId]="model.id" class="slds-p-right--medium" [inModal]="false" [editMode]="'preview'" [showQuestionnaireTitle]="false"></questionnaire-render>
         </div>
-        <!--system-spinner *ngIf="isLoading"></system-spinner-->
     </div>
-
 </div>

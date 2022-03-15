@@ -14,14 +14,14 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser-attributes',
-    templateUrl: './src/modules/products/templates/productbrowserattributes.html'
+    templateUrl: '../templates/productbrowserattributes.html'
 })
 export class ProductBrowserAttributes {
 
-    @ViewChild('attributesheader', {read: ViewContainerRef, static: true}) private attributesheader: ViewContainerRef;
-    private attributeFilter: string = '';
+    @ViewChild('attributesheader', {read: ViewContainerRef, static: true}) public attributesheader: ViewContainerRef;
+    public attributeFilter: string = '';
 
-    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
+    constructor(public language: language, public backend: backend, public elementRef: ElementRef, public productfinder: productfinder) {
     }
 
     get hasSearchFilters() {
@@ -49,7 +49,7 @@ export class ProductBrowserAttributes {
         return attributes.sort((a,b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
     }
 
-    private clearFilters() {
+    public clearFilters() {
         this.productfinder.resetSearchFilters();
     }
 }

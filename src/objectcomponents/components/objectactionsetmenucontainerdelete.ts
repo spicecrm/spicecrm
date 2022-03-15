@@ -9,15 +9,15 @@ import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectactionsetmenucontainerdelete.html',
+    templateUrl: '../templates/objectactionsetmenucontainerdelete.html',
 })
 export class ObjectActionsetMenuContainerDelete {
 
-    constructor(private language: language, private model: model, private helper: helper) {
+    constructor(public language: language, public model: model, public helper: helper) {
 
     }
 
-    private doAction() {
+    public doAction() {
         if (!this.model.checkAccess('delete')) return;
 
         // this.showDialog = true;

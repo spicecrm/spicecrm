@@ -17,17 +17,17 @@ declare var moment: any;
 
 @Component({
     selector: "project-activity-dashlet",
-    templateUrl: "./src/modules/projects/templates/projectactivitydashlet.html",
+    templateUrl: "../templates/projectactivitydashlet.html",
     providers: [modellist]
 })
 export class ProjectActivityDashlet implements OnInit {
-    // private recent_project_activities: any = [];
-    private module: string = 'ProjectActivities';
+    // public recent_project_activities: any = [];
+    public module: string = 'ProjectActivities';
 
     /**
      * the subscription to the modellist
      */
-    private modellistsubscribe: any = undefined;
+    public modellistsubscribe: any = undefined;
 
     /**
      * the componentconfig
@@ -38,16 +38,16 @@ export class ProjectActivityDashlet implements OnInit {
     /**
      * all fields that are available
      */
-    // private allFields: any[] = [];
+    // public allFields: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private view: view,
-        private backend: backend,
-        private toast: toast,
-        private modellist: modellist
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public view: view,
+        public backend: backend,
+        public toast: toast,
+        public modellist: modellist
     ) {
 
         // get the config
@@ -113,7 +113,7 @@ export class ProjectActivityDashlet implements OnInit {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 
@@ -123,7 +123,7 @@ export class ProjectActivityDashlet implements OnInit {
      *
      * @param loadfromcache
      */
-    private loadRecentActivities() {
+    public loadRecentActivities() {
         this.modellist.setListType('owner', false, [{sortfield: this.sortfield, sortdirection: this.sortdirection}]);
         this.modellist.getListData();
     }

@@ -17,12 +17,12 @@ declare var _: any;
 
 @Component({
     selector: 'field-questionnaire',
-    templateUrl: './src/modules/questionnaires/templates/fieldquestionnaire.html'
+    templateUrl: '../templates/fieldquestionnaire.html'
 })
 export class fieldQuestionnaire extends fieldGeneric implements OnInit, OnDestroy {
 
-    private questionnaireParticipation: questionnaireParticipationService;
-    private questionnaireId = '';
+    public questionnaireParticipation: questionnaireParticipationService;
+    public questionnaireId = '';
 
     constructor( public model: model, public view: view, public language: language, public metadata: metadata, public router: Router ) {
         super(model, view, language, metadata, router);
@@ -37,7 +37,7 @@ export class fieldQuestionnaire extends fieldGeneric implements OnInit, OnDestro
     /**
      * Subscribe to data changes to reset the formatted value
      */
-    private subscribeToModelDataChange(): void {
+    public subscribeToModelDataChange(): void {
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
                 let dummy = this.model.getField('questionnaire_id');
@@ -55,7 +55,7 @@ export class fieldQuestionnaire extends fieldGeneric implements OnInit, OnDestro
     /**
      * Subscribe to changes of model edit status.
      */
-    private subscribeToModelEditCancel(): void {
+    public subscribeToModelEditCancel(): void {
         this.subscriptions.add(
             this.model.canceledit$.subscribe( () => {
                 this.questionnaireParticipation.reset();
@@ -74,14 +74,14 @@ export class fieldQuestionnaire extends fieldGeneric implements OnInit, OnDestro
      * Is called by the questionaire partition service every modification of answer data.
      * Keeps the model field up to date with the current answer data.
      */
-    private answersChanged(): void {
+    public answersChanged(): void {
         let answers = _.clone( this.questionnaireParticipation.getData());
         let data = { answers: answers, questionnaireId: this.model.getField('questionnaire_id') };
         this.value = data;
     }
 
-    private showQuestionnaire(): boolean {
-        return !this.model.isNew && !!this.questionnaireId;
+    public showQuestionnaire(): boolean {
+        return !!this.questionnaireId;
     }
 
 }
