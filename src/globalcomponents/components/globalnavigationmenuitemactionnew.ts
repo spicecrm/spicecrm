@@ -11,7 +11,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-navigation-menu-item-action-new',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemactionnew.html'
+    templateUrl: '../templates/globalnavigationmenuitemactionnew.html'
 })
 export class GlobalNavigationMenuItemActionNew implements OnInit {
 

@@ -27,7 +27,7 @@
     --brand-accessible: #CA1B21;
     --brand-accessible-active: #b3191e;
     --brand-header-contrast-cool: #a61419;
-    --brand-text-link: #002D31;
+    --brand-text-link: #1f1f1f;
     --color-background-inverse: #751b1e;
     --color-border-inverse: #751b1e;
     --color-background-success: #4bca81;
@@ -46,10 +46,15 @@
     --sds-c-textarea-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-button-text-color-hover: #ffffff;
+    --sds-c-toast-text-color: #ffffff;
 }
 
 html {
     font-family: 'Titillium Web', sans-serif;
+}
+
+a {
+    color: var(--brand-text-link);
 }
 
 /* hide spin buttons in number fields */
@@ -206,7 +211,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     .slds-max-medium-table_stacked-horizontal tr > td:first-child,
     .slds-max-medium-table--stacked-horizontal td,
     .slds-max-medium-table_stacked-horizontal td,
-    .slds-max-medium-table--stacked-horizontal tr > td:last-child
+    .slds-max-medium-table--stacked-horizontal tr > td:last-child,
     .slds-max-medium-table_stacked-horizontal tr > td:last-child {
         padding: .5em;
     }
@@ -453,4 +458,10 @@ input[type="submit"] {
 .slds-modal__footer .slds-button-group button:not(:first-of-type) {
     border-left: 0;
     margin-left: 0;
+}
+
+/** overwrite dropdown action links color, so it is better readable if the brand color is bright **/
+.slds-dropdown_actions a,
+.slds-dropdown--actions a {
+    color: var(--brand-text-link);
 }

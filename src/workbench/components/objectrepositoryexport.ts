@@ -8,18 +8,18 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'objectrepositoryexport',
-    templateUrl: './src/workbench/templates/objectrepositoryexport.html',
+    templateUrl: '../templates/objectrepositoryexport.html',
 })
 export class ObjectRepositoryExport {
 
-    private self;
-    private isLoading = false;
-    private repostring: string;
-    @ViewChild('inputField', {static: true}) private inputField: ElementRef;
+    public self;
+    public isLoading = false;
+    public repostring: string;
+    @ViewChild('inputField', {static: true}) public inputField: ElementRef;
 
-    constructor( private lang: language, private backend: backend, private toast: toast ) { }
+    constructor( public lang: language, public backend: backend, public toast: toast ) { }
 
-    private ngOnInit() {
+    public ngOnInit() {
         this.isLoading = true;
         this.backend.getRequest( 'configuration/configurator/objectrepository' ).subscribe( response => {
             this.repostring = response.repostring;
@@ -33,7 +33,7 @@ export class ObjectRepositoryExport {
 
     /*
     // Does not work:
-    private copyToClipboard() {
+    public copyToClipboard() {
         let selBox = document.createElement('textarea');
         selBox.style.position = 'fixed';
         selBox.style.left = selBox.style.top = selBox.style.opacity = '0';
@@ -49,7 +49,7 @@ export class ObjectRepositoryExport {
     */
 
     // Close the modal.
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 

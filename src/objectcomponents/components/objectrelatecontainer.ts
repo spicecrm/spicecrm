@@ -8,14 +8,14 @@ import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectrelatecontainer.html'
+    templateUrl: '../templates/objectrelatecontainer.html'
 })
 export class ObjectRelateContainer implements OnInit {
 
-    private componentconfig: any = {};
-    private componentset: string;
+    public componentconfig: any = {};
+    public componentset: string;
 
-    constructor(private model: model, private metadata: metadata) {
+    constructor(public model: model, public metadata: metadata) {
     }
 
     public ngOnInit() {

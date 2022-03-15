@@ -12,7 +12,7 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: "email-reply-button",
-    templateUrl: "./src/modules/emails/templates/emailreplybutton.html"
+    templateUrl: "../templates/emailreplybutton.html"
 })
 export class EmailReplyButton {
     /**
@@ -23,10 +23,10 @@ export class EmailReplyButton {
     public actionconfig;
 
     constructor(
-        private injector: Injector,
-        private model: model,
-        private metadata: metadata,
-        private modal: modal,
+        public injector: Injector,
+        public model: model,
+        public metadata: metadata,
+        public modal: modal,
     ) {
 
     }

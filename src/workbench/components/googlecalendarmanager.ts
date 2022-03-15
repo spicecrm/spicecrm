@@ -13,7 +13,7 @@ import {Subject} from 'rxjs';
 @Component({
     providers: [model, view],
     selector: "google-calendar-manager",
-    templateUrl: "./src/workbench/templates/googlecalendarmanager.html",
+    templateUrl: "../templates/googlecalendarmanager.html",
 })
 export class GoogleCalendarManager {
     public beans: any[] = [];
@@ -21,10 +21,10 @@ export class GoogleCalendarManager {
     public beanMappings: any[] = [];
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private model: model,
-        private toast: toast,
+        public backend: backend,
+        public language: language,
+        public model: model,
+        public toast: toast,
     ) {
         // todo check if logged in with google account
 
@@ -88,7 +88,7 @@ export class GoogleCalendarManager {
         });
     }
 
-    private getBeans() {
+    public getBeans() {
         let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest('channels/groupware/gsuite/calendar/beans').subscribe(
@@ -108,7 +108,7 @@ export class GoogleCalendarManager {
         return responseSubject.asObservable();
     }
 
-    private getCalendars() {
+    public getCalendars() {
         let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest('channels/groupware/gsuite/calendar/calendars').subscribe(
@@ -128,7 +128,7 @@ export class GoogleCalendarManager {
         return responseSubject.asObservable();
     }
 
-    private getBeanMappings() {
+    public getBeanMappings() {
         let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest('channels/groupware/gsuite/calendar/beanmappings').subscribe(

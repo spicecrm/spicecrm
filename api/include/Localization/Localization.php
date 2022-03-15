@@ -42,6 +42,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Localization manager
@@ -419,8 +420,8 @@ class Localization
     $translated = [];
     foreach($this->availableCharsets as $key)
     {
-     	 //$translated[$key] = translate($value);
-         $translated[$key] = translate($key);
+     	 //$translated[$key] = SpiceUtils::translate($value);
+         $translated[$key] = SpiceUtils::translate($key);
     }
 
 		return $translated;

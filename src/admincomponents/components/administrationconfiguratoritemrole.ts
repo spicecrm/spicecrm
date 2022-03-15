@@ -16,7 +16,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'administration-configurator-item-role',
-    templateUrl: './src/admincomponents/templates/administrationconfiguratoritemrole.html'
+    templateUrl: '../templates/administrationconfiguratoritemrole.html'
 })
 export class AdministrationConfiguratorItemRole implements OnInit{
 
@@ -25,7 +25,7 @@ export class AdministrationConfiguratorItemRole implements OnInit{
     @Output() fieldvalueChange: EventEmitter<string> = new EventEmitter<string>();
     roles: Array<any> = [];
 
-    constructor(private metadata: metadata){
+    constructor(public metadata: metadata){
         // this.roles.push({id: '*', name: '*'});
     }
 

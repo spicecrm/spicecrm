@@ -35,6 +35,9 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * handles the dictioonary elements
@@ -55,7 +58,7 @@ class SpiceDictionaryController
      */
     public function getDomains(Request $req, Response $res, array $args): Response
     {
-        $handler = new SpiceDictionaryHandler();
+        $handler = SpiceDictionaryHandler::getInstance();
         $results = [
             'domaindefinitions' => $handler->getDomainDefinitions(),
             'domainfields' => $handler->getDomainFields(),
@@ -82,7 +85,7 @@ class SpiceDictionaryController
             throw new UnauthorizedException('Admin Access Only');
         }
 
-        $handler = new SpiceDictionaryHandler();
+        $handler =  SpiceDictionaryHandler::getInstance();
 
         // get the body
         $body = $req->getParsedBody();
@@ -116,7 +119,7 @@ class SpiceDictionaryController
 
     public function getDefinitions(Request $req, Response $res, array $args): Response
     {
-        $handler = new SpiceDictionaryHandler();
+        $handler =  SpiceDictionaryHandler::getInstance();
         $results = [
             'domaindefinitions' => $handler->getDomainDefinitions(),
             'domainfields' => $handler->getDomainFields(),
@@ -149,7 +152,7 @@ class SpiceDictionaryController
 //            throw new UnauthorizedException('Admin Access Only');
 //        }
 
-        $handler = new SpiceDictionaryHandler();
+        $handler =  SpiceDictionaryHandler::getInstance();
 
         // get the body
         $body = $req->getParsedBody();
@@ -198,8 +201,8 @@ class SpiceDictionaryController
 
         $languages = $db->query("SELECT language_code FROM syslangs WHERE system_language = '1'");
         while($language = $db->fetchByAssoc($languages)){
-            $retArray[$language['language_code']]['global'] = return_app_list_strings_language('en_us', 'global');
-            $retArray[$language['language_code']]['custom'] = return_app_list_strings_language('en_us', 'custom');
+            $retArray[$language['language_code']]['global'] = SpiceUtils::returnAppListStringsLanguage('en_us', 'global');
+            $retArray[$language['language_code']]['custom'] = SpiceUtils::returnAppListStringsLanguage('en_us', 'custom');
 
 
             foreach($retArray[$language['language_code']]['custom'] as $dom => $values){
@@ -210,6 +213,46 @@ class SpiceDictionaryController
 
         }
 
+        return $res->withJson($retArray);
+    }
+
+
+    /**
+     * list all vardefs named after a reserved word
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getSpiceWords(Request $req, Response $res, array $args): Response{
+        $wording = new SpiceUIWordsLoader();
+        return $res->withJson($wording->getWords());
+    }
+    /**
+     * list all vardefs named after a reserved word
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function checkSpiceWordsInVardefs(Request $req, Response $res, array $args): Response{
+        $retArray = [];
+        $reservedWords = SpiceUIWordsLoader::getWords('db', null);
+        $qTables = "SHOW TABLES FROM ".SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $db = DBManagerFactory::getInstance();
+        $resTables = $db->query($qTables);
+        while($table = $db->fetchRow($resTables)){
+            $tableName = $table['Tables_in_'.SpiceConfig::getInstance()->config['dbconfig']['db_name']];
+            $qCol = "SHOW COLUMNS FROM ".$tableName;
+            $resCols = $db->query($qCol);
+            while($col = $db->fetchByAssoc($resCols)){
+                if(in_array(strtoupper($col['Field']), $reservedWords['reservedwords'])){
+                    $retArray[$tableName][] = $col['Field'];
+                }
+            }
+        }
         return $res->withJson($retArray);
     }
 

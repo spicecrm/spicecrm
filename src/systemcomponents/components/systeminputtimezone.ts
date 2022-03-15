@@ -11,7 +11,7 @@ declare var moment: any;
  */
 @Component({
     selector: "system-input-timezone",
-    templateUrl: "./src/systemcomponents/templates/systeminputtimezone.html",
+    templateUrl: "../templates/systeminputtimezone.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -25,8 +25,8 @@ export class SystemInputTimezone implements ControlValueAccessor {
     /**
      * input to disable the input
      */
-    @Input() private disabled = false;
-    @Input() private id = '';
+    @Input() public disabled = false;
+    @Input() public id = '';
 
     // for the value accessor
     public propagateChange = (_) => { 1; };
@@ -35,17 +35,17 @@ export class SystemInputTimezone implements ControlValueAccessor {
     /**
      * Holds the timezone
      */
-    private _timezone: string;
+    public _timezone: string;
 
     /**
      * all the timezones of the world (from moment.js)
      */
-    private timezones: any[] = [];
+    public timezones: any[] = [];
 
     /**
      * The offsets of the timezones (from moment.js)
      */
-    private offsetTimezones: number[] = [];
+    public offsetTimezones: number[] = [];
 
     constructor() {
         // Get the timezones from moment.js:

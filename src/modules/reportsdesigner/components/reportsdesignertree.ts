@@ -11,32 +11,32 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'reports-designer-tree',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignertree.html'
+    templateUrl: '../templates/reportsdesignertree.html'
 })
 export class ReportsDesignerTree {
 
-    protected modules: any[] = [];
-    private filterKey: string = '';
-    private isLoadingModuleFields: boolean = false;
-    private reportModuleFields: any = {};
+    public modules: any[] = [];
+    public filterKey: string = '';
+    public isLoadingModuleFields: boolean = false;
+    public reportModuleFields: any = {};
 
     /**
     * @output onUnionDelete: EventEmitter<string> = unionId
      */
-    @Output() private onUnionDelete: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public onUnionDelete: EventEmitter<string> = new EventEmitter<string>();
     /**
     * @output onUnionAdd: object[] = currentUnionFields
      */
-    @Output() private onUnionAdd: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public onUnionAdd: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private language: language,
-                private backend: backend,
-                private model: model,
-                private modal: modal,
-                private metadata: metadata,
-                private cdr: ChangeDetectorRef,
-                private injector: Injector,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public backend: backend,
+                public model: model,
+                public modal: modal,
+                public metadata: metadata,
+                public cdr: ChangeDetectorRef,
+                public injector: Injector,
+                public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -75,7 +75,7 @@ export class ReportsDesignerTree {
      * @set currentPath
      * @getModuleFields
      */
-    private onItemSelection(data, rootModule) {
+    public onItemSelection(data, rootModule) {
         this.reportsDesignerService.setCurrentPath(rootModule, data.path);
         this.getModuleFields(data.module, rootModule);
     }
@@ -83,7 +83,7 @@ export class ReportsDesignerTree {
     /**
     * @return filteredReportFields: object[]
      */
-    private getFilteredReportFields(reportFields) {
+    public getFilteredReportFields(reportFields) {
         return !this.filterKey ? reportFields : reportFields
             .filter(nodeFiled => {
                 return nodeFiled.name.toLowerCase().includes(this.filterKey.toLowerCase()) ||
@@ -95,7 +95,7 @@ export class ReportsDesignerTree {
     * @push module: object to union_modules
      * @set union_modules
      */
-    private addUnionModule() {
+    public addUnionModule() {
         this.modal.openModal('ReportsDesignerSelectModuleModal', true, this.injector)
             .subscribe(modalRef => {
                 modalRef.instance.response.subscribe(response => {
@@ -118,7 +118,7 @@ export class ReportsDesignerTree {
      * @setActiveModule
      * @emit unionId by onUnionDelete
      */
-    private deleteUnionModule(id) {
+    public deleteUnionModule(id) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 let unionModules = this.model.getField('union_modules');
@@ -139,7 +139,7 @@ export class ReportsDesignerTree {
     * loads the fields for a given module
      * @param unionId: string
      */
-    private initializeUnionListFields(unionId) {
+    public initializeUnionListFields(unionId) {
         const unionListFields = this.model.getField('unionlistfields');
         const listFields = this.model.getField('listfields');
         let newUnionListFields = listFields
@@ -173,7 +173,7 @@ export class ReportsDesignerTree {
      * @set isLoadingModuleFields
      * @set reportModuleFields[rootModule]
      */
-    private getModuleFields(forModule, rootModule) {
+    public getModuleFields(forModule, rootModule) {
         this.reportModuleFields[rootModule] = [];
         this.isLoadingModuleFields = true;
         this.cdr.detectChanges();
@@ -190,7 +190,7 @@ export class ReportsDesignerTree {
      * @set dragPlaceHolderNode
      * @insertBefore tr in origin container
      */
-    private dropExited(e) {
+    public dropExited(e) {
         let tr = document.createElement('tr');
         let td = document.createElement('td');
         td.colSpan = 10;
@@ -207,14 +207,14 @@ export class ReportsDesignerTree {
     /**
     * @removePlaceHolderElement
      */
-    private dropEntered(e) {
+    public dropEntered(e) {
         this.reportsDesignerService.removePlaceHolderElement(e.container.element.nativeElement);
     }
 
     /**
     * @set currentModule
      */
-    private setActiveModule(selectedModule) {
+    public setActiveModule(selectedModule) {
         this.reportsDesignerService.activeModule = selectedModule;
         if (!this.reportsDesignerService.getCurrentPath(selectedModule.module)) {
             this.reportsDesignerService.setCurrentPath(selectedModule.module, selectedModule.module);
@@ -227,7 +227,7 @@ export class ReportsDesignerTree {
      * @filter unionlistfields by unionId
      * @set currentUnionListFields
      */
-    private setCurrentUnionListFields(unionId) {
+    public setCurrentUnionListFields(unionId) {
         let unionListFields = this.model.getField('unionlistfields');
         unionListFields = !!unionListFields && unionListFields.length ? unionListFields : [];
         this.onUnionAdd.emit(unionListFields.filter(field => field.joinid == unionId));
@@ -240,7 +240,7 @@ export class ReportsDesignerTree {
      * @param item
      * @return index
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 }

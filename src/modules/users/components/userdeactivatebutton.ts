@@ -10,7 +10,7 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: "./src/modules/users/templates/userdeactivatebutton.html"
+    templateUrl: "../templates/userdeactivatebutton.html"
 })
 
 /**
@@ -18,7 +18,7 @@ import {toast} from "../../../services/toast.service";
  */
 export class UserDeactivateButton {
 
-    constructor(private language: language, private modal: modal, private model: model, private session: session, private injector: Injector, private backend: backend, private toast: toast) {
+    constructor(public language: language, public modal: modal, public model: model, public session: session, public injector: Injector, public backend: backend, public toast: toast) {
     }
 
     /**
@@ -31,7 +31,7 @@ export class UserDeactivateButton {
     /**
      * execute the action
      */
-    private execute() {
+    public execute() {
         if (this.model.getField('status') == 'Active') {
             this.modal.openModal("UserDeactivateModal", true, this.injector);
         } else {

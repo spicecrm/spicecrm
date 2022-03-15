@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from "@angular/core";
-import {Subject, Observable, of} from "rxjs";
+import {Subject, Observable, of, lastValueFrom} from "rxjs";
 import {configurationService} from "./configuration.service";
 
 /**
@@ -22,7 +22,7 @@ export class libloader {
     /**
      * holds the packages as defined in the database are loaded
      */
-    private loadedLibs: lib[] = [];
+    public loadedLibs: lib[] = [];
 
     /**
      * ToDo: implement the handler here
@@ -30,14 +30,14 @@ export class libloader {
      * an event emitter for the libs .. emits when a specific lib has been loaded
      * this is useful if the same li b is loading twice
      */
-    private loadedLibs$: EventEmitter<object> = new EventEmitter<object>();
+    public loadedLibs$: EventEmitter<object> = new EventEmitter<object>();
 
     /**
      * holds all scripts thar are loaded riect alreads
      */
-    private loadedDirect: string[] = [];
+    public loadedDirect: string[] = [];
 
-    constructor(private configuration: configurationService) {
+    constructor(public configuration: configurationService) {
     }
 
     /**
@@ -67,7 +67,7 @@ export class libloader {
                     cnt++;
                     // console.log("completed...", cnt == observables.length);
                     if (cnt == observables.length) {
-                        sub.next();
+                        sub.next(true);
                         sub.complete();
                     }
                 },
@@ -130,7 +130,7 @@ export class libloader {
      *
      * @param scripts
      */
-    private async loadScriptsDirect(scripts): Promise<any> {
+    public async loadScriptsDirect(scripts): Promise<any> {
         let sub = new Subject();
         let loadedcount = 0;
         for (let lib of scripts) {
@@ -148,7 +148,7 @@ export class libloader {
                 }
             );
         }
-        return sub.toPromise();
+        return lastValueFrom(sub.asObservable());
     }
 
     /**
@@ -182,9 +182,9 @@ export class libloader {
      *
      * @param src the source to be loaded
      */
-    private async loadScriptDirect(src: string): Promise<boolean> {
+    public async loadScriptDirect(src: string): Promise<boolean> {
         if (this.loadedDirect.indexOf(src) != -1) {
-            return of(true).toPromise();
+            return Promise.resolve(true);
         } else {
             let sub = new Subject<boolean>();
             // create the elemnt as script or stylesheet
@@ -218,7 +218,7 @@ export class libloader {
                 sub.complete();
             };
             document.getElementsByTagName("head")[0].appendChild(element);
-            return sub.toPromise();
+            return lastValueFrom(sub.asObservable());
         }
     }
 
@@ -227,7 +227,7 @@ export class libloader {
      *
      * @param name the name of the lib package
      */
-    private isLibLoaded(name): boolean {
+    public isLibLoaded(name): boolean {
         return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loaded') ? true : false;
     }
 
@@ -236,7 +236,7 @@ export class libloader {
      *
      * @param name the name of the lib package
      */
-    private isLibLoading(name): boolean {
+    public isLibLoading(name): boolean {
         return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loading') ? true : false;
     }
 }

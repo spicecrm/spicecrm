@@ -12,7 +12,7 @@ declare var _: any;
 
 @Component({
     selector: "system-module-tree",
-    templateUrl: "./src/systemcomponents/templates/systemmoduletree.html"
+    templateUrl: "../templates/systemmoduletree.html"
 })
 
 export class SystemModuleTree implements AfterViewInit {
@@ -25,11 +25,11 @@ export class SystemModuleTree implements AfterViewInit {
     /**
      * event emitter when an item is selected
      */
-    @Output() private itemSelected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public itemSelected: EventEmitter<any> = new EventEmitter<any>();
 
-    private selectedNodeId: string = '';
+    public selectedNodeId: string = '';
 
-    constructor(private language: language) {
+    constructor(public language: language) {
 
     }
 
@@ -41,7 +41,7 @@ export class SystemModuleTree implements AfterViewInit {
         this.itemSelected.emit({path: 'root:' + this.module, module: this.module, nodeId: 'root'});
     }
 
-    private emitSelected(data) {
+    public emitSelected(data) {
         this.selectedNodeId = data.nodeId;
         this.itemSelected.emit(data);
     }

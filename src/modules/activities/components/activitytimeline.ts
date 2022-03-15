@@ -18,7 +18,7 @@ import {Router} from "@angular/router";
 declare var moment;
 
 @Component({
-    templateUrl: './src/modules/activities/templates/activitytimeline.html',
+    templateUrl: '../templates/activitytimeline.html',
     providers: [activitiytimeline]
 })
 export class ActivityTimeline implements OnInit, OnDestroy {
@@ -26,12 +26,12 @@ export class ActivityTimeline implements OnInit, OnDestroy {
     /**
      * the componentconfig
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * the aggregates to be displayed
      */
-    private displayaggregates = {
+    public displayaggregates = {
         Activities: false,
         History: false
     };
@@ -103,7 +103,7 @@ export class ActivityTimeline implements OnInit, OnDestroy {
         this.activitiytimeline.getTimeLineData('History');
     }
 
-    private toggleAggregates(module: string, e: MouseEvent) {
+    public toggleAggregates(module: string, e: MouseEvent) {
         e.stopPropagation();
         this.displayaggregates[module] = !this.displayaggregates[module];
     }
@@ -120,7 +120,7 @@ export class ActivityTimeline implements OnInit, OnDestroy {
     /**
      * toggles the open and closed state on the timeline service
      */
-    private toggleOpen() {
+    public toggleOpen() {
         this.activitiytimeline.openness = !this.activitiytimeline.openness;
     }
 

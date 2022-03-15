@@ -74,11 +74,10 @@ class BreadCrumbStack
    {
       $this->stack = [];
       $this->stackMap = [];
-      
-      $admin = BeanFactory::getBean('Administration');
-	  $admin->retrieveSettings('tracker');      
- 
-      $this->deleteInvisible = !empty($admin->settings['tracker_Tracker']);
+
+      $trackerConfig = SpiceConfig::getInstance()->get('tracker');
+
+      $this->deleteInvisible = !empty($trackerConfig['tracker_Tracker']);
       $db = DBManagerFactory::getInstance();
       
       $module_query = '';

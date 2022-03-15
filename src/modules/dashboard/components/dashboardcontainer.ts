@@ -10,15 +10,15 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'dashboard-container',
-    templateUrl: './src/modules/dashboard/templates/dashboardcontainer.html',
+    templateUrl: '../templates/dashboardcontainer.html',
     providers: [model, view, dashboardlayout]
 })
 export class DashboardContainer implements OnChanges {
 
-    @Input() private dashboardid: string = '';
-    @Input() private context: string = 'Dashboard';
+    @Input() public dashboardid: string = '';
+    @Input() public context: string = 'Dashboard';
 
-    constructor(private dashboardlayout: dashboardlayout, private language: language, private router: Router, private model: model) {
+    constructor(public dashboardlayout: dashboardlayout, public language: language, public router: Router, public model: model) {
     }
 
     public loadDashboard() {
@@ -50,7 +50,7 @@ export class DashboardContainer implements OnChanges {
         this.loadDashboard();
     }
 
-    private navigate() {
+    public navigate() {
         this.router.navigate(['/module/Dashboards']);
     }
 }

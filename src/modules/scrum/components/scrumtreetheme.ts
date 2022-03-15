@@ -13,7 +13,7 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: '[scrum-tree-theme]',
-    templateUrl: './src/modules/scrum/templates/scrumtreetheme.html',
+    templateUrl: '../templates/scrumtreetheme.html',
     providers: [model, relatedmodels],
     host: {
         '(click)': "selectTheme()",
@@ -25,34 +25,34 @@ export class ScrumTreeTheme implements OnDestroy {
     /**
      * inidcates if the epics are laoded for this node
      */
-    private epicsloaded: boolean = false;
+    public epicsloaded: boolean = false;
 
     /**
      * input for the theme
      */
-    @Input() private theme: any = {};
+    @Input() public theme: any = {};
 
     /**
      * property for permission
      */
-    private disabled: boolean = true;
+    public disabled: boolean = true;
     /**
      * a check to toggle expansion
      */
-    private expanded: boolean = false;
+    public expanded: boolean = false;
 
     /**
      * a check to hide and disable the expansion button
      */
-    private has_epics: boolean;
+    public has_epics: boolean;
 
-    constructor(private scrum: scrum,
-                private language: language,
-                private modellist: modellist,
-                private metadata: metadata,
-                private model: model,
-                private backend: backend,
-                private epics: relatedmodels) {
+    constructor(public scrum: scrum,
+                public language: language,
+                public modellist: modellist,
+                public metadata: metadata,
+                public model: model,
+                public backend: backend,
+                public epics: relatedmodels) {
     }
 
     /**
@@ -69,7 +69,7 @@ export class ScrumTreeTheme implements OnDestroy {
         this.model.module = 'ScrumThemes';
         this.model.initialize();
         this.model.id = this.theme.id;
-        this.model.data = this.theme;
+        this.model.setData(this.theme);
 
         this.epics.module = this.model.module;
         this.epics.id = this.model.id;
@@ -95,14 +95,14 @@ export class ScrumTreeTheme implements OnDestroy {
     /**
      * send the id and the type of the selected object
      */
-    private selectTheme() {
+    public selectTheme() {
         this.scrum.selectedObject = {id: this.theme.id, type: 'ScrumThemes'};
     }
 
     /**
      * load all of the related scrum epics sorted by sequence
      */
-    private loadRelatedEpics() {
+    public loadRelatedEpics() {
         this.epics.sort.sortfield = 'sequence';
         this.epics.loaditems = -99;
         this.epics.getData().subscribe(loaded => {
@@ -113,7 +113,7 @@ export class ScrumTreeTheme implements OnDestroy {
     /**
      * expand if the epics are loaded
      */
-    private toggleExpand() {
+    public toggleExpand() {
         if (!this.epicsloaded) {
             this.loadRelatedEpics();
         }
@@ -125,7 +125,7 @@ export class ScrumTreeTheme implements OnDestroy {
      * reload the epics
      * @param event
      */
-    private loadChanges(event) {
+    public loadChanges(event) {
         this.has_epics = true;
         this.loadRelatedEpics();
     }

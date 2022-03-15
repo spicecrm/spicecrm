@@ -45,6 +45,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\UserPreferences\UserPreference;
@@ -324,7 +326,7 @@ class User extends Person
         // set some default preferences when creating a new user
         if ($setNewUserPreferences) {
             if (!$this->getPreference('calendar_publish_key')) {
-                $this->setPreference('calendar_publish_key', create_guid());
+                $this->setPreference('calendar_publish_key', SpiceUtils::createGuid());
             }
         }
 
@@ -731,8 +733,8 @@ class User extends Person
         $itemail = $this->email1;
 
         $emailObj = BeanFactory::getBean('Emails');
-        $emailObj->name = from_html($emailTempl->subject);
-        $emailObj->body = from_html($emailTempl->body_html);
+        $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
+        $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
         $emailObj->addEmailAddress('to', $itemail);
         $emailObj->to_be_sent = true;
 
@@ -811,7 +813,7 @@ class User extends Person
         $emailTemp->body_html = $htmlBody;
         $emailTemp->body = $body;
 
-        if (from_html($emailTemp->body_html) == '' && $current_user->is_admin) {
+        if (DBUtils::fromHtml($emailTemp->body_html) == '' && $current_user->is_admin) {
             global $app_strings;
             throw new Exception($result['message'] = $app_strings['LBL_EMAIL_TEMPLATE_EDIT_PLAIN_TEXT']);
         }
@@ -846,7 +848,7 @@ class User extends Person
         $sql = 'SELECT id,user_name FROM users WHERE status = \'Active\' AND deleted = 0';
         if (!empty($userIdToIgnore))
             $sql .= ' AND id <> "' . $db->quote($userIdToIgnore) . '"';
-        $sql .= ' AND LOWER(user_name) = "' . $db->quote(mb_strtolower($username)) . '" LIMIT 1';
+        $sql .= ' AND LOWER(user_name) = "' . $db->quote(mb_strtolower($username)) . '"';
         $user = $db->fetchOne($sql);
         return $user !== false;
     }
@@ -925,17 +927,22 @@ class User extends Person
      * @param $username The name of the user.
      * @return True if permanent or the amount of minutes in case the blocking is for a specific time.
      */
-    public static function isBlocked( $username ) {
+    public static function isBlocked( $username )
+    {
         $db = DBManagerFactory::getInstance();
 
-        $dtObj=new \DateTime();
-        $dtObj->setTimestamp(time());
-        $now = Timedate::getInstance()->asDb($dtObj);
+        $row = $db->fetchOne( sprintf("SELECT login_blocked, login_blocked_until FROM users WHERE user_name = '%s'", $db->quote( $username )));
 
-        $row = $db->fetchOne( sprintf('SELECT login_blocked, TIMESTAMPDIFF( SECOND, "'.$now.'", login_blocked_until ) as blocked_seconds FROM users WHERE user_name = "%s"', $db->quote( $username )));
-        if ( $row['login_blocked'] ) return true;
-        if ( $row['blocked_seconds'] > 0 ) return ceil( $row['blocked_seconds']/60 );
-        return false;
+        if ( $row['login_blocked'] ) return true; # The user is blocked permanently.
+        if ( $row['login_blocked_until'] === null ) return false; # The user (is not blocked permanently and) is not blocked temporarily.
+
+        # The user is blocked temporarily, so calculate the remaining blocking time:
+        $remainingBlockingSeconds =
+            ( new \DateTime( $row['login_blocked_until'], new \DateTimeZone('UTC')))->getTimestamp()
+            - ( new \DateTime( 'NOW', new \DateTimeZone('UTC')))->getTimestamp();
+        if ( $remainingBlockingSeconds > 0 ) return ceil( $remainingBlockingSeconds/60 ); # return the remaining blocking time (in minutes)
+
+        return false; # The user is not blocked any more (login_blocked_until is in the past).
     }
 
     /**

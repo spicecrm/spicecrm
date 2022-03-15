@@ -1,35 +1,11 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\SpiceACLObjects;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\SpiceACLObjects\SpiceACLObject;
 use stdClass;
@@ -66,9 +42,9 @@ class SpiceACLObjectsRESTHandler
         }
 
         // get action values
-        $authTypeFields = $db->query("SELECT id, action FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
-        while ($authTypeField = $db->fetchByAssoc($authTypeFields)) {
-            $retArray['authtypeactions'][] = $authTypeField;
+        $authTypeActions = $db->query("SELECT id, action, description FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
+        while ($authTypeAction = $db->fetchByAssoc($authTypeActions)) {
+            $retArray['authtypeactions'][] = $authTypeAction;
         }
 
         return $retArray;
@@ -83,7 +59,7 @@ class SpiceACLObjectsRESTHandler
     public function addACLModuleField($typeId, $field)
     {
         $db = DBManagerFactory::getInstance();
-        $newId = create_guid();
+        $newId = SpiceUtils::createGuid();
         $db->query("INSERT INTO spiceaclmodulefields (id, sysmodule_id, name) VALUES('$newId','$typeId','$field')");
 
         return [
@@ -120,7 +96,8 @@ class SpiceACLObjectsRESTHandler
         while($action = $db->fetchByassoc($actionsObj)){
             $actions[] = [
                 'id' => $action['id'],
-                'action' => $action['action']
+                'action' => $action['action'],
+                'description' => $action['description']
             ];
         }
         return $actions;
@@ -132,14 +109,15 @@ class SpiceACLObjectsRESTHandler
      * @return array
      * @throws \Exception
      */
-    public function addACLModuleAction($sysmoduleid, $action)
+    public function addACLModuleAction($sysmoduleid, $action, $description = null)
     {
         $db = DBManagerFactory::getInstance();
-        $actionId = create_guid();
-        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action) VALUES('$actionId', '$sysmoduleid', '$action')");
+        $actionId = SpiceUtils::createGuid();
+        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action, description) VALUES('$actionId', '$sysmoduleid', '$action', '$description')");
         return [
             'id' => $actionId,
-            'action' => $action
+            'action' => $action,
+            'description' => $description
         ];
     }
 
@@ -321,7 +299,7 @@ class SpiceACLObjectsRESTHandler
         // go through the objects and set the data, which are equal to all objects && save the objects
         foreach ($allObjects as $object) {
 
-            $object->id = create_guid();
+            $object->id = SpiceUtils::createGuid();
             $object->status = "d";
             $object->spiceaclobjecttype = "0";
             $object->sysmodule_id = $module;

@@ -9,22 +9,22 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: "user-roles-add-modal",
-    templateUrl: "./src/modules/users/templates/userrolesaddmodal.html"
+    templateUrl: "../templates/userrolesaddmodal.html"
 })
 export class UserRolesAddModal {
 
     @Input() public user_id = '';
     @Input() public noneUserRoles: any[] = [];
-    private sysuirole_id = '';
-    private self: any;
-    private response: Observable<object> = null;
-    private responseSubject: Subject<any> = null;
+    public sysuirole_id = '';
+    public self: any;
+    public response: Observable<object> = null;
+    public responseSubject: Subject<any> = null;
 
 
     constructor(
-        private language: language,
-        private toast: toast,
-        private backend: backend
+        public language: language,
+        public toast: toast,
+        public backend: backend
     ) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
@@ -46,25 +46,25 @@ export class UserRolesAddModal {
         return customRoles;
     }
 
-    private setRole(id) {
+    public setRole(id) {
         this.sysuirole_id = id;
     }
 
-    private cancel() {
+    public cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.cancel();
     }
 
-    private canSubmit(): boolean {
+    public canSubmit(): boolean {
         return this.sysuirole_id.length > 0;
     }
 
-    private add() {
+    public add() {
         this.backend.postRequest(`configuration/spiceui/core/roles/${this.sysuirole_id}/${this.user_id}/new`)
             .subscribe(
                 res => {

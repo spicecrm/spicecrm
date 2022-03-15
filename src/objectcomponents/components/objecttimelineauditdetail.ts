@@ -11,7 +11,7 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "object-timeline-audit-detail",
-    templateUrl: "./src/objectcomponents/templates/objecttimelineauditdetail.html"
+    templateUrl: "../templates/objecttimelineauditdetail.html"
 })
 export class ObjectTimelineAuditDetail {
 
@@ -20,11 +20,11 @@ export class ObjectTimelineAuditDetail {
      *
      * @private
      */
-    @Input() private auditLog;
+    @Input() public auditLog;
 
-    private loading: boolean = true;
+    public loading: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, @Optional() private model: model) {
+    constructor(public language: language, public metadata: metadata, @Optional() public model: model) {
     }
 
     public ngOnChanges() {

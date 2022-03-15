@@ -15,7 +15,7 @@ import {ObjectListViewAggregate} from './objectlistviewaggregate';
  */
 @Component({
     selector: 'object-listview-tags-aggregate',
-    templateUrl: './src/objectcomponents/templates/objectlistviewtagsaggregate.html'
+    templateUrl: '../templates/objectlistviewtagsaggregate.html'
 })
 export class ObjectListViewTagsAggregate extends ObjectListViewAggregate {
 
@@ -42,7 +42,7 @@ export class ObjectListViewTagsAggregate extends ObjectListViewAggregate {
      * returns if the current item (tag) is active
      * @param tag the item record from the elastic response
      */
-    private isactive(tag) {
+    public isactive(tag) {
         return this.modellist.checkAggregate('tags', tag.aggdata);
     }
 
@@ -51,7 +51,7 @@ export class ObjectListViewTagsAggregate extends ObjectListViewAggregate {
      *
      * @param tag the item record from the elastic response
      */
-    private toggle(tag) {
+    public toggle(tag) {
         if (!this.isactive(tag)) {
             this.modellist.setAggregate('tags', tag.aggdata);
             this.modellist.reLoadList();

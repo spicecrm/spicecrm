@@ -10,7 +10,7 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 
 @Component({
     selector: '[administration-api-inspector]',
-    templateUrl: './src/admincomponents/templates/administrationapiinspector.html',
+    templateUrl: '../templates/administrationapiinspector.html',
     providers: [administrationapiinspectorService]
 })
 
@@ -21,13 +21,13 @@ export class AdministrationAPIInspector {
      *
      * @private
      */
-    private toggleClassSub = [];
+    public toggleClassSub = [];
 
     constructor(
-        private toast: toast,
-        private modal: modal,
-        private injector: Injector,
-        private apiinspector: administrationapiinspectorService
+        public toast: toast,
+        public modal: modal,
+        public injector: Injector,
+        public apiinspector: administrationapiinspectorService
     ) {
     }
 
@@ -37,7 +37,7 @@ export class AdministrationAPIInspector {
      * @param e
      * @private
      */
-    private toggleUnauthorized(e: MouseEvent) {
+    public toggleUnauthorized(e: MouseEvent) {
        e.preventDefault();
        e.stopPropagation();
        this.apiinspector.apiFilterUnauthorized = !this.apiinspector.apiFilterUnauthorized;
@@ -49,7 +49,7 @@ export class AdministrationAPIInspector {
      * @param e
      * @private
      */
-    private toggleAdminOnly(e: MouseEvent) {
+    public toggleAdminOnly(e: MouseEvent) {
        e.preventDefault();
        e.stopPropagation();
        this.apiinspector.apiFilterAdminOnly = !this.apiinspector.apiFilterAdminOnly;
@@ -61,7 +61,7 @@ export class AdministrationAPIInspector {
      * @param e
      * @private
      */
-    private toggleValidatedOnly(e: MouseEvent) {
+    public toggleValidatedOnly(e: MouseEvent) {
        e.preventDefault();
        e.stopPropagation();
        this.apiinspector.apiFilterValidatedOnly = !this.apiinspector.apiFilterValidatedOnly;
@@ -74,7 +74,7 @@ export class AdministrationAPIInspector {
      * @private
      */
 
-    private selectNode(selectedId: string) {
+    public selectNode(selectedId: string) {
 
         this.apiinspector.selectAPI(selectedId);
     }

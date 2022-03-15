@@ -13,7 +13,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'object-listview-filter-panel-filter-myitems',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfiltermyitems.html',
+    templateUrl: '../templates/objectlistviewfilterpanelfiltermyitems.html',
     animations: [
         trigger('animatepopover', [
             transition(':enter', [
@@ -37,37 +37,37 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAccessor {
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * a reference to the popover
      */
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
 
     /**
      * defines if the popover is visible or not
      */
-    private showPopover: boolean = false;
+    public showPopover: boolean = false;
 
     /**
      * the filter value
      */
-    private _filterValue: string = 'all';
+    public _filterValue: string = 'all';
 
     /**
      * helper listener to close the popup when a click happens outside
      */
-    private clickListener: any = null;
+    public clickListener: any = null;
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private modellist: modellist) {
+    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language, public modellist: modellist) {
 
     }
 
     /**
      * a function that handöles the click registered by the renderer
      */
-    private onClick() {
+    public onClick() {
         if (!this.showPopover) {
             this.showPopover = true;
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -95,7 +95,7 @@ export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAcces
     /**
      * close the popover and if a cxlicklistener is defined close that one
      */
-    private closePopover() {
+    public closePopover() {
         this.showPopover = false;
         if (this.clickListener) {
             this.clickListener();
@@ -107,7 +107,7 @@ export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAcces
      *
      * @param event the event pased oin from the renderer
      */
-    private onDocumentClick(event: MouseEvent): void {
+    public onDocumentClick(event: MouseEvent): void {
         if (this.showPopover) {
             const clickedInside = this.elementRef.nativeElement.contains(event.target);
             if (!clickedInside) {
@@ -119,7 +119,7 @@ export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAcces
     /**
      * handle the popover style as this gets positioned properly
      */
-    private getPopoverStyle() {
+    public getPopoverStyle() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
         return {

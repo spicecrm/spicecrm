@@ -13,22 +13,22 @@ declare var moment: any;
 
 @Component({
     selector: 'contact-cc-details-tab',
-    templateUrl: './src/modules/accounts/templates/contactccdetailstab.html',
+    templateUrl: '../templates/contactccdetailstab.html',
     providers: [model]
 })
 export class ContactCCDetailsTab implements OnChanges, OnInit, AfterViewInit {
     @ViewChild('ccdetailscontainer', {
         read: ViewContainerRef,
         static: true
-    }) private ccdetailscontainer: ViewContainerRef;
-    @Input() private data: any = undefined;
-    @Input('contactid') private contactId: string = undefined;
-    @Input('ccid') private ccId: string = undefined;
-    @Input('ccname') private ccName: string = undefined;
+    }) public ccdetailscontainer: ViewContainerRef;
+    @Input() public data: any = undefined;
+    @Input('contactid') public contactId: string = undefined;
+    @Input('ccid') public ccId: string = undefined;
+    @Input('ccname') public ccName: string = undefined;
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model) {
     }
 
     public ngOnChanges() {
@@ -47,7 +47,7 @@ export class ContactCCDetailsTab implements OnChanges, OnInit, AfterViewInit {
      * Render the configured component set
      * @return void
      * */
-    private renderView() {
+    public renderView() {
         let componentconfig = this.metadata.getComponentConfig('ContactCCDetailsTab', 'Accounts');
         let componentSet = componentconfig.componentset;
         if (componentSet) {
@@ -64,20 +64,20 @@ export class ContactCCDetailsTab implements OnChanges, OnInit, AfterViewInit {
     * Set the model data
     * @return void
     * */
-    private setModelData() {
+    public setModelData() {
         if (this.data) {
             this.model.id = this.data.id;
-            this.model.data = this.data;
+            this.model.setData(this.data);
         } else {
             this.model.id = this.model.generateGuid();
-            this.model.data = {
+            this.model.setData({
                 id: this.model.id,
                 name: this.ccName,
                 contact_id: this.contactId,
                 companycode_id: this.ccId,
                 date_entered: new moment(),
                 date_modified: new moment(),
-            };
+            }, false);
         }
     }
 }

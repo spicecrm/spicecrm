@@ -115,7 +115,9 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
+import /*embed*/ {ObjectTabContainer} from './components/objecttabcontainer';
+import /*embed*/ {ObjectTabContainerItem} from './components/objecttabcontaineritem';
+import /*embed*/ {ObjectTabContainerItemHeader} from './components/objecttabcontaineritemheader';
 import /*embed*/ {ObjectVerticalTabContainer} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverticaltabcontaineritem';
 import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
@@ -202,6 +204,8 @@ import /*embed*/ {ObjectTimelineAuditlogModal} from "./components/objecttimeline
 import /*embed*/ {ObjectTimelineAuditDetail} from "./components/objecttimelineauditdetail";
 import /*embed*/ {ObjectTimelineItemLine} from "./components/objecttimelineitemline";
 import /*embed*/ {ObjectTimelineStencil} from "./components/objecttimelinestencil";
+import /*embed*/ {ObjectPopoverBodyItem} from "./components/objectpopoverbodyitem";
+import {ObjectPopoverHeader} from "./components/objectpopoverheader";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -380,7 +384,9 @@ import /*embed*/ {ObjectTimelineStencil} from "./components/objecttimelinestenci
         ObjectRecordMessagesBadge,
         ObjectActionDeactivateBeansButton,
         ObjectActionDeactivateBeansModal,
-        ObjectChecklists
+        ObjectChecklists,
+        ObjectPopoverBodyItem,
+        ObjectPopoverHeader
     ],
     exports: [
         ObjectListViewHeader,

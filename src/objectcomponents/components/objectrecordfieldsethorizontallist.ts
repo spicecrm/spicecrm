@@ -11,21 +11,21 @@ import {model} from '../../services/model.service';
  */
 @Component({
     selector: 'object-record-fieldset-horizontal-list',
-    templateUrl: './src/objectcomponents/templates/objectrecordfieldsethorizontallist.html'
+    templateUrl: '../templates/objectrecordfieldsethorizontallist.html'
 })
 export class ObjectRecordFieldsetHorizontalList implements OnInit {
 
     /**
      * the fieldset to be rendered
      */
-    @Input() private fieldset: string = '';
+    @Input() public fieldset: string = '';
 
     /**
      * the fieldset items
      */
-    private fieldsetitems: any[] = [];
+    public fieldsetitems: any[] = [];
 
-    constructor(private metadata: metadata, private model: model) {
+    constructor(public metadata: metadata, public model: model) {
     }
 
     /**

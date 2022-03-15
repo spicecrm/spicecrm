@@ -22,7 +22,7 @@ declare var _;
 
 @Component({
     selector: "system-select",
-    templateUrl: "./src/systemcomponents/templates/systemselect.html",
+    templateUrl: "../templates/systemselect.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
         provide: NG_VALUE_ACCESSOR,
@@ -71,16 +71,16 @@ export class SystemSelect implements ControlValueAccessor {
      * change emitter by ngModel
      * @private
      */
-    private onChange: (value: { id: string, name: string, group?: string } | string) => void;
+    public onChange: (value: { id: string, name: string, group?: string } | string) => void;
     /**
      * reference to the result list ul element
      * @private
      */
-    @ViewChild('resultList', {read: ViewContainerRef}) private resultListContainer: ViewContainerRef;
+    @ViewChild('resultList', {read: ViewContainerRef}) public resultListContainer: ViewContainerRef;
 
-    constructor(private elementRef: ElementRef,
-                private cdRef: ChangeDetectorRef,
-                private renderer: Renderer2) {
+    constructor(public elementRef: ElementRef,
+                public cdRef: ChangeDetectorRef,
+                public renderer: Renderer2) {
     }
 
     /**
@@ -232,7 +232,7 @@ export class SystemSelect implements ControlValueAccessor {
      * highlight the selected list items in the dom
      * @private
      */
-    private filterSearchList() {
+    public filterSearchList() {
 
         this.searchListVisible = true;
         this.focusedItemId = undefined;
@@ -259,7 +259,7 @@ export class SystemSelect implements ControlValueAccessor {
      * @param position
      * @private
      */
-    private generateHighlightHTMLContent(text: string, position: number) {
+    public generateHighlightHTMLContent(text: string, position: number) {
         return [text.slice(0, position), "<mark>", text.slice(position, position + this.value.length), "</mark>", text.slice(position + this.value.length)].join('');
     }
 
@@ -267,7 +267,7 @@ export class SystemSelect implements ControlValueAccessor {
      * handle the enter key press to emit the change
      * @private
      */
-    private handleEnterPress() {
+    public handleEnterPress() {
         if (!!this.focusedItemId) {
             this.onChange(
                 this.selectList.find(e => e.id == this.focusedItemId)
@@ -282,7 +282,7 @@ export class SystemSelect implements ControlValueAccessor {
      * @return array of the search list
      * @private
      */
-    private generateSearchList(): Array<{ id: string, name: string, group?: string }> {
+    public generateSearchList(): Array<{ id: string, name: string, group?: string }> {
 
         const searchList = [];
         const groups = _.uniq(this.selectList.map(e => e.group)).sort();
@@ -311,7 +311,7 @@ export class SystemSelect implements ControlValueAccessor {
      * @param event
      * @private
      */
-    private navigateThroughResultList(event: KeyboardEvent) {
+    public navigateThroughResultList(event: KeyboardEvent) {
 
         let list = !this.searchListVisible ? this.generateSearchList() : this.searchList;
         list = list.filter(e => !e.isGroup);
@@ -347,7 +347,7 @@ export class SystemSelect implements ControlValueAccessor {
      * @param direction
      * @private
      */
-    private scrollToFocusedSearchItem(direction: 'up' | 'down') {
+    public scrollToFocusedSearchItem(direction: 'up' | 'down') {
 
         if (!this.resultListContainer) return;
 

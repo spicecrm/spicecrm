@@ -13,7 +13,7 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
  */
 @Component({
     selector: 'spice-page-builder-element-spacer',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementspacer.html',
+    templateUrl: '../templates/spicepagebuilderelementspacer.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {

@@ -8,19 +8,19 @@ import {reporterconfig} from "../services/reporterconfig";
 
 @Component({
     selector: 'reporter-filter-item-reference',
-    templateUrl: './src/modules/reports/templates/reporterfilteritemreference.html'
+    templateUrl: '../templates/reporterfilteritemreference.html'
 })
 export class ReporterFilterItemReference implements OnInit {
     /**
      * whereCondition: object
      */
-    @Input() private whereCondition: any = {};
+    @Input() public whereCondition: any = {};
 
-    private fieldName: string;
+    public fieldName: string;
 
-    constructor(private language: language,
-                private reporterConfig: reporterconfig,
-                private model: model) {
+    constructor(public language: language,
+                public reporterConfig: reporterconfig,
+                public model: model) {
     }
 
     set referenceField(value: string) {

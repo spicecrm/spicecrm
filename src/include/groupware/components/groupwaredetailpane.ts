@@ -13,22 +13,22 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'groupware-detail-pane',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpane.html'
+    templateUrl: '../templates/groupwaredetailpane.html'
 })
 export class GroupwareDetailPane implements OnInit, OnDestroy {
 
     /**
      * boolean indicator that the component is loading
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private groupware: GroupwareService,
-        private router: Router,
-        private broadcast: broadcast,
-        private cdref: ChangeDetectorRef
+        public groupware: GroupwareService,
+        public router: Router,
+        public broadcast: broadcast,
+        public cdref: ChangeDetectorRef
     ) {
     }
 
@@ -58,7 +58,7 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'groupware.itemchanged':
                 this.loadRecords();
@@ -69,7 +69,7 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
     /**
      * loads records for the email addresses found in the item
      */
-    private loadRecords() {
+    public loadRecords() {
         this.loading = true;
 
         this.groupware.loadLinkedBeans().subscribe(
@@ -92,7 +92,7 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      *
      * @param bean
      */
-    private selectBean(bean) {
+    public selectBean(bean) {
         // this.loadRecord(bean.module, bean.id);
         this.router.navigate(["/groupware/details/" + bean.module + '/' + bean.id]);
     }

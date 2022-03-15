@@ -10,13 +10,13 @@ import {backend} from "./backend.service";
 export class currency {
     public currenciesFromBackend: any = [];
     constructor(
-        private configuration: configurationService,
-        private backend: backend
+        public configuration: configurationService,
+        public backend: backend
     ) {
     }
 
     get currencies() {
-        return this.configuration.getData('currencies');
+        return this.configuration.getData('currencies') ?? [];
     }
 
     public getCurrencies() {

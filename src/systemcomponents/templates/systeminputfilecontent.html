@@ -1,0 +1,30 @@
+<div class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-vertical--xx-small slds-is-relative slds-size--1-of-1">
+    <div *ngIf="!file; else fileContainer" class="slds-file-selector slds-file-selector_files slds-is-relative slds-size--1-of-1">
+        <div (system-drop-file)="uploadFile($event)" class="slds-file-selector__dropzone slds-p-around--small slds-is-relative slds-size--1-of-1">
+            <input #inputFile type="file" [accept]="accept" (change)="uploadFile(inputFile.files)" (click)="inputFile.value = null" [disabled]="disabled" [id]="elementID" class="slds-file-selector__input slds-assistive-text slds-has-error">
+            <label [for]="elementID" class="slds-file-selector__body" style="cursor: pointer">
+                <span class="slds-file-selector__button slds-button slds-button_neutral">
+                    <system-button-icon icon="upload" class="slds-m-right--xx-small slds-align--absolute-center"></system-button-icon> <system-label label="LBL_UPLOAD_FILE"></system-label>
+                </span>
+                <span class="slds-file-selector__text slds-medium-show">
+                    <system-label label="LBL_OR"></system-label> <system-label label="LBL_DROP_FILE"></system-label>
+                </span>
+            </label>
+        </div>
+    </div>
+    <ng-template #fileContainer>
+        <div class="slds-pill slds-pill_link slds-size--1-of-1">
+            <span class="slds-pill__icon_container slds-m-left--xxx-small">
+                <system-file-icon [filename]="file.file_name" divClass="" [filemimetype]="file.file_mime_type"  size="small"></system-file-icon>
+            </span>
+            <a href="javascript:void(0);" class="slds-pill__action slds-p-around--xx-small">
+                <div [system-title]="file.file_name" class="slds-pill__label slds-truncate" style="width: calc(100% - 20px)">
+                    {{file.file_name}}
+                </div>
+            </a>
+            <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove slds-m-right--xx-small" system-title="LBL_REMOVE" (click)="removeFile()">
+                <system-button-icon icon="close"></system-button-icon>
+            </button>
+        </div>
+    </ng-template>
+</div>

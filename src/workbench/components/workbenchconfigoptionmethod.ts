@@ -7,12 +7,12 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'workbench-config-option-method',
-    templateUrl: './src/workbench/templates/workbenchconfigoptionmethod.html'
+    templateUrl: '../templates/workbenchconfigoptionmethod.html'
 })
 export class WorkbenchConfigOptionMethod {
 
     public option: any = {};
-
-    constructor(private language: language, private view: view) {
+    public configValues = {};
+    constructor(public language: language, public view: view) {
     }
 }

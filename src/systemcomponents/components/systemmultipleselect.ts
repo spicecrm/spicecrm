@@ -20,7 +20,7 @@ declare var _;
  */
 @Component({
     selector: 'system-multiple-select',
-    templateUrl: './src/systemcomponents/templates/systemmultipleselect.html',
+    templateUrl: '../templates/systemmultipleselect.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -33,11 +33,11 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
     /**
      * if true set the input to disabled
      */
-    @Input() private disabled: boolean = false;
+    @Input() public disabled: boolean = false;
     /**
      * if true group values by the syntax "group{separator}item" by default true
      */
-    private grouped: boolean = false;
+    public grouped: boolean = false;
 
     @Input('grouped') set groupedSetter(val) {
         this.grouped = val !== false;
@@ -46,7 +46,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
     /**
      * if true show the values as pills by default true
      */
-    private showPills: boolean = true;
+    public showPills: boolean = true;
 
     @Input('showPills') set showPillsSetter(val) {
         this.showPills = val !== false;
@@ -68,7 +68,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
     /**
      * holds the group separator to be used when grouped is true
      */
-    private groupSeparator: string = '_';
+    public groupSeparator: string = '_';
     @Input('groupSeparator') set groupSeparatorSetter(val) {
         this.groupSeparator = !!val ? val : '_';
     }
@@ -84,27 +84,27 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * if true display the dropdown
      * @private
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
     /**
      * holds a click listener to allow removing it
      * @private
      */
-    private clickListener: any;
+    public clickListener: any;
     /**
      * object to allow check for items selection
      * @private
      */
-    private selectedItems: { [key: string]: boolean } = {};
+    public selectedItems: { [key: string]: boolean } = {};
     /**
      * holds the selected items text to display it in the inupt
      * @private
      */
-    private selectedCountText: string = '0 Selected Items';
+    public selectedCountText: string = '0 Selected Items';
     /**
      * holds the input tag style
      * @private
      */
-    private inputTagStyle: { color: string, cursor: string } = {
+    public inputTagStyle: { color: string, cursor: string } = {
         color: 'transparent',
         cursor: 'pointer'
     };
@@ -112,24 +112,24 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * holds the dropdown length class
      * @private
      */
-    private dropdownLengthClass: string = 'slds-dropdown_length-7';
+    public dropdownLengthClass: string = 'slds-dropdown_length-7';
     /**
      * holds eascape key listener
      * @private
      */
-    private escKeyListener: any;
+    public escKeyListener: any;
     /**
      * save on change function for ControlValueAccessor
      */
-    private onChange: (value: any[]) => void;
+    public onChange: (value: any[]) => void;
     /**
      * save on touched function for ControlValueAccessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
 
-    constructor(private elementRef: ElementRef,
-                private renderer: Renderer2,
-                private language: language) {
+    constructor(public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public language: language) {
     }
 
     /**
@@ -178,7 +178,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * build option groups
      * @private
      */
-    private buildOptionGroups(): void {
+    public buildOptionGroups(): void {
         this.parsedListItems = [];
         let newListItems;
 
@@ -227,11 +227,11 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * toggle open the dropdown
      * @private
      */
-    private onclick(): void {
+    public onclick(): void {
         this.isOpen = !this.isOpen;
     }
 
-    private subscribeToESCKeyUp() {
+    public subscribeToESCKeyUp() {
         this.escKeyListener = this.renderer.listen('document', 'keyup', (event: KeyboardEvent) => {
             if (event.key != 'Escape') return;
             this.isOpen = false;
@@ -242,7 +242,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * listen to mouse click after mouse leave to handle closing the dropdown
      * @private
      */
-    private onMouseLeave(): void {
+    public onMouseLeave(): void {
         if (this.clickListener) this.clickListener();
         if (this.isOpen) {
             this.clickListener = this.renderer
@@ -268,7 +268,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * @param listGroupValue
      * @private
      */
-    private toggleAddRemoveItem(itemValue: string, listGroupValue?: string): void {
+    public toggleAddRemoveItem(itemValue: string, listGroupValue?: string): void {
         const itemValueIndex = this.valueArray.indexOf(itemValue);
         let listGroupIndex = this.valueArray.indexOf(listGroupValue);
 
@@ -298,7 +298,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * @param groupValue
      * @private
      */
-    private toggleAddRemoveGroup(groupValue?: string): void {
+    public toggleAddRemoveGroup(groupValue?: string): void {
         if (this.groupHasItems(groupValue)) return;
 
         const groupIndex = this.valueArray.indexOf(groupValue);
@@ -320,7 +320,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * @param groupValue
      * @private
      */
-    private groupHasItems(groupValue) {
+    public groupHasItems(groupValue) {
         return this.valueArray.some(item => {
             const itemArray = item.split(this.groupSeparator);
             return (itemArray.length == 2 && itemArray[0] == groupValue);
@@ -334,7 +334,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * @param item
      * @return index
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
@@ -344,7 +344,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * @param value
      * @private
      */
-    private removeItem(index: number, value: string) {
+    public removeItem(index: number, value: string) {
         this.valueArray.splice(index, 1);
         this.selectedItems[value] = false;
         if (this.grouped && value.split(this.groupSeparator).length > 1) {
@@ -363,7 +363,7 @@ export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy
      * set selected count text
      * @private
      */
-    private setSelectedCountText(): void {
+    public setSelectedCountText(): void {
         if (this.grouped) {
             this.selectedCountText = `${this.valueArray.filter(value => value.includes(this.groupSeparator)).length} ${this.language.getLabel('LBL_SELECTED_ITEMS')}`;
         } else {

@@ -19,7 +19,7 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: 'object-list-header-actions-assign-modal',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsassignmodal.html',
+    templateUrl: '../templates/objectlistheaderactionsassignmodal.html',
     providers: [model, view]
 })
 export class ObjectListHeaderActionsAssignModal implements OnInit {
@@ -28,17 +28,17 @@ export class ObjectListHeaderActionsAssignModal implements OnInit {
      * reference to the modal self
      * @private
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * indicator if we are submitting data
      *
      * @private
      */
-    private submitting: boolean = false;
+    public submitting: boolean = false;
 
 
-    constructor(private view: view, private broadcast: broadcast, private backend: backend, private toast: toast, private modal: modal, private model: model, private modellist: modellist) {
+    constructor(public view: view, public broadcast: broadcast, public backend: backend, public toast: toast, public modal: modal, public model: model, public modellist: modellist) {
     }
 
     public ngOnInit() {
@@ -54,7 +54,7 @@ export class ObjectListHeaderActionsAssignModal implements OnInit {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -70,7 +70,7 @@ export class ObjectListHeaderActionsAssignModal implements OnInit {
      *
      * @private
      */
-    private reassign() {
+    public reassign() {
         this.submitting = true;
         let selectedIds = this.modellist.getSelectedIDs();
 

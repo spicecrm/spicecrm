@@ -14,17 +14,17 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'activitytimeline-summary-button',
-    templateUrl: './src/modules/activities/templates/activitytimelinesummarybutton.html',
+    templateUrl: '../templates/activitytimelinesummarybutton.html',
 })
 export class ActivityTimelineSummaryButton {
 
-    constructor(private model: model, private language: language, private router: Router, @Optional() private navigationtab: navigationtab) {
+    constructor(public model: model, public language: language, public router: Router, @Optional() public navigationtab: navigationtab) {
     }
 
     /**
      * navigate to the summary for the activities
      */
-    private displaySummary() {
+    public displaySummary() {
         let routeprefix = '';
         if (this.navigationtab?.tabid) {
             routeprefix = '/tab/' + this.navigationtab.tabid
