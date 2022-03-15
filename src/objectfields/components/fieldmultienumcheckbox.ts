@@ -9,7 +9,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-multienum-checkbox',
-    templateUrl: './src/objectfields/templates/fieldmultienumcheckbox.html'
+    templateUrl: '../templates/fieldmultienumcheckbox.html'
 })
 export class fieldMultienumCheckBox {
 
@@ -22,22 +22,23 @@ export class fieldMultienumCheckBox {
         this.fieldid = this.model.generateGuid();
     }
 
-    getValueArray(): Array<any> {
-        if (this.model.data[this.fieldname])
-            return this.model.data[this.fieldname].substring(1, this.model.data[this.fieldname].length - 1).split('^,^');
-        else
-            return [];
+    getValueArray(): any[] {
+        if (this.model.getField(this.fieldname)) {
+            return this.model.getField(this.fieldname).substring(1, this.model.getField(this.fieldname).length - 1).split('^,^');
+        }
+
+        return [];
     }
 
     get checked() {
-        if (this.model.data[this.fieldname]) {
+        if (this.model.getField(this.fieldname)) {
             let checked = false;
-            if (this.model.data[this.fieldname] == this.option.value) checked = true;
-            if (this.model.data[this.fieldname].indexOf('^' + this.option.value + '^') > -1) checked = true;
+            if (this.model.getField(this.fieldname) == this.option.value) checked = true;
+            if (this.model.getField(this.fieldname).indexOf('^' + this.option.value + '^') > -1) checked = true;
             return checked;
         }
-        else
-            return false;
+
+        return false;
     }
 
 
@@ -52,6 +53,6 @@ export class fieldMultienumCheckBox {
             valArray.splice(valIndex, 1);
         }
 
-        this.model.data[this.fieldname] = '^' + valArray.join('^,^') + '^';
+        this.model.setField(this.fieldname, '^' + valArray.join('^,^') + '^');
     }
 }

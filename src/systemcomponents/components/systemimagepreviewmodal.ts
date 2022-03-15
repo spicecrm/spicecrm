@@ -5,7 +5,7 @@ import {Component, Input} from '@angular/core';
 import {language} from '../../services/language.service';
 
 @Component({
-    templateUrl: './src/systemcomponents/templates/systemimagepreviewmodal.html'
+    templateUrl: '../templates/systemimagepreviewmodal.html'
 })
 export class SystemImagePreviewModal {
 
@@ -13,34 +13,34 @@ export class SystemImagePreviewModal {
      * reference to the modal itself
      * @private
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the soruce of the image
      * @private
      */
-    @Input() private imgsrc: string = '';
+    @Input() public imgsrc: string = '';
 
     /**
      * type of the image
      * @private
      */
-    @Input() private imgtype: string = '';
+    @Input() public imgtype: string = '';
 
     /**
      * the name of the image
      * @private
      */
-    @Input() private imgname: string = '';
+    @Input() public imgname: string = '';
 
     /**
      * can be set to true to display a page not available error
      * 
      * @private
      */
-    @Input() private loadingerror: boolean = false;
+    @Input() public loadingerror: boolean = false;
 
-    constructor(private language: language) {
+    constructor(public language: language) {
     }
 
     /**
@@ -48,7 +48,7 @@ export class SystemImagePreviewModal {
      *
      * @private
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
@@ -57,7 +57,7 @@ export class SystemImagePreviewModal {
      *
      * @private
      */
-    private download() {
+    public download() {
         let blob = this.b64toBlob(this.imgsrc.replace('data:' + this.imgtype + ';base64,', ''), this.imgtype);
         let blobUrl = URL.createObjectURL(blob);
         let a = document.createElement("a");
@@ -76,7 +76,7 @@ export class SystemImagePreviewModal {
      * @param sliceSize
      * @private
      */
-    private b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+    public b64toBlob(b64Data, contentType = '', sliceSize = 512) {
 
         let byteCharacters = atob(b64Data);
         let byteArrays = [];

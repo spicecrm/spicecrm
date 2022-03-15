@@ -103,7 +103,7 @@ $routes = [
                 'description' => 'the selected queries to be executed',
                 'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'example' => '[{"comment": "/* Table : accounts */",
-                                "statement": "ALTER TABLE accounts   add COLUMN `ticker_symbol` varchar(10)  NULL   COMMENT;",
+                                "statement": "ALTER TABLE accounts   add COLUMN ticker_symbol varchar(10)  NULL   COMMENT;",
                                 "md5": "e3b8c6e1834848a40867f9debbd794c4",
                                 "selected": true}]',
             ]

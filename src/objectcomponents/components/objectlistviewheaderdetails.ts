@@ -10,10 +10,10 @@ import {modellist} from '../../services/modellist.service';
  */
 @Component({
     selector: 'object-listview-header-details',
-    templateUrl: './src/objectcomponents/templates/objectlistviewheaderdetails.html'
+    templateUrl: '../templates/objectlistviewheaderdetails.html'
 })
 export class ObjectListViewHeaderDetails {
-    constructor(private modellist: modellist, private language: language) {
+    constructor(public modellist: modellist, public language: language) {
 
     }
 }

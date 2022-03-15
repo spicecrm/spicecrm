@@ -5,7 +5,8 @@
                 <system-icon [module]="moduleName" (click)="goToModule()"></system-icon>
                 <div class="slds-media__body">
                     <p class="slds-text-title--caps slds-line-height--reset">
-                        <a routerLink="/module/{{moduleName}}"><system-label-modulename [module]="moduleName"></system-label-modulename></a>
+                        <system-label-modulename *ngIf="!canGoToModule" [module]="moduleName"></system-label-modulename>
+                        <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName"></system-label-modulename></a>
                     </p>
                     <div>
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
@@ -16,12 +17,12 @@
                 </div>
             </div>
         </div>
-        <div class="slds-m-horizontal--x-small slds-show--medium">
+        <div class="slds-m-horizontal--x-small slds-show--medium slds-align--absolute-center">
             <object-subscription-button></object-subscription-button>
             <object-reminder-button></object-reminder-button>
             <object-status-network-button></object-status-network-button>
+            <object-action-container [actionset]="actionSet"></object-action-container>
         </div>
-        <object-action-container [actionset]="actionSet"></object-action-container>
     </div>
     <object-page-header-tags></object-page-header-tags>
 </div>

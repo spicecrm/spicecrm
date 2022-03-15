@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\SchedulerJobs\schedulerjobtasks;
 
 use SpiceCRM\includes\Logger\LoggerManager;

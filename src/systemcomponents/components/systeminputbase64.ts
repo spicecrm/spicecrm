@@ -12,20 +12,20 @@ const ngValueAccessor = {
 
 @Component({
     selector: 'system-input-base64',
-    templateUrl: './src/systemcomponents/templates/systeminputbase64.html',
+    templateUrl: '../templates/systeminputbase64.html',
     providers: [ngValueAccessor]
 })
 
 export class SystemInputBase64 {
 
-    @Input() private minHeight: number = 150;
-    @Input() private maxHeight: number = 500;
-    @Input() private disabled: boolean = false;
+    @Input() public minHeight: number = 150;
+    @Input() public maxHeight: number = 500;
+    @Input() public disabled: boolean = false;
 
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
-    private _value: string = '';
+    public _value: string = '';
 
     get value() {
         if(this._value && this._value != '') {

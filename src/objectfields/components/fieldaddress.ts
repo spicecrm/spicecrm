@@ -18,21 +18,21 @@ import {backend} from "../../services/backend.service";
  */
 @Component({
     selector: 'field-address',
-    templateUrl: './src/objectfields/templates/fieldaddress.html'
+    templateUrl: '../templates/fieldaddress.html'
 })
 export class fieldAddress extends fieldGeneric {
 
     /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
-    private strict: boolean = false;
+    public strict: boolean = false;
 
     public config_address_format: any = {};
 
     /**
      * a fallback address format in case none is specified
      */
-    private addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
+    public addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
 
     constructor(
         public model: model,
@@ -160,7 +160,7 @@ export class fieldAddress extends fieldGeneric {
     /**
      * getter for the field label if the form is rendered as subform
      */
-    private getAddressLabel() {
+    public getAddressLabel() {
         return this.language.getLabel(this.fieldconfig.label);
     }
 
@@ -169,7 +169,7 @@ export class fieldAddress extends fieldGeneric {
      *
      * @param field
      */
-    private fieldName(field) {
+    public fieldName(field) {
         return this.addresskey + 'address_' + field;
     }
 
@@ -177,7 +177,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the street
      */
     get street() {
-        return this.model.data[this.addresskey + 'address_street'];
+        return this.model.getField(this.addresskey + 'address_street');
     }
 
     /**
@@ -193,7 +193,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the street
      */
     get street_number() {
-        return this.model.data[this.addresskey + 'address_street_number'];
+        return this.model.getField(this.addresskey + 'address_street_number');
     }
 
     /**
@@ -210,7 +210,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the street
      */
     get street_number_suffix() {
-        return this.model.data[this.addresskey + 'address_street_number_suffix'];
+        return this.model.getField(this.addresskey + 'address_street_number_suffix');
     }
 
     /**
@@ -227,7 +227,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the attn field
      */
     get attn() {
-        return this.model.data[this.addresskey + 'address_attn'];
+        return this.model.getField(this.addresskey + 'address_attn');
     }
 
     /**
@@ -242,7 +242,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the city field
      */
     get city() {
-        return this.model.data[this.addresskey + 'address_city'];
+        return this.model.getField(this.addresskey + 'address_city');
     }
 
     /**
@@ -267,14 +267,14 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the city field
      */
     get district() {
-        return this.model.data[this.addresskey + 'address_district'];
+        return this.model.getField(this.addresskey + 'address_district');
     }
 
     /**
      * a getter for the postalcode
      */
     get postalcode() {
-        return this.model.data[this.addresskey + 'address_postalcode'];
+        return this.model.getField(this.addresskey + 'address_postalcode');
     }
 
     /**
@@ -290,7 +290,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the state
      */
     get state() {
-        return this.model.data[this.addresskey + 'address_state'];
+        return this.model.getField(this.addresskey + 'address_state');
     }
 
     /**
@@ -306,7 +306,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the country
      */
     get country() {
-        return this.model.data[this.addresskey + 'address_country'];
+        return this.model.getField(this.addresskey + 'address_country');
     }
 
     /**
@@ -322,7 +322,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the latitude
      */
     get latitude() {
-        return this.model.data[this.addresskey + 'address_latitude'];
+        return this.model.getField(this.addresskey + 'address_latitude');
     }
 
     /**
@@ -338,7 +338,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the longitude
      */
     get longitude() {
-        return this.model.data[this.addresskey + 'address_longitude'];
+        return this.model.getField(this.addresskey + 'address_longitude');
     }
 
     /**

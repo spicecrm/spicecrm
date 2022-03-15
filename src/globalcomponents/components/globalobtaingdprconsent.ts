@@ -14,28 +14,28 @@ import { backend } from '../../services/backend.service';
 
 @Component({
     selector: 'global-obtain-gdpr-consent',
-    templateUrl: './src/globalcomponents/templates/globalobtaingdprconsent.html',
+    templateUrl: '../templates/globalobtaingdprconsent.html',
 })
 export class GlobalObtainGDPRConsent {
 
     /*
      * The GDPR consent text.
      */
-    private consentText: string;
+   public consentText: string;
 
     /*
      * Indicates whether the consent is currently being saved to the backend.
      */
     public isSaving = false;
 
-    constructor( private sanitizer: DomSanitizer, private metadata: metadata, private language: language, private backend: backend, private loginService: loginService, private http: HttpClient, private configuration: configurationService, private session: session, private toast: toast ) {
+    constructor(public sanitizer: DomSanitizer,public metadata: metadata,public language: language,public backend: backend,public loginService: loginService,public http: HttpClient,public configuration: configurationService,public session: session,public toast: toast ) {
         this.retrieveConsentText();
     }
 
     /*
     *   Retrieve the currently defined GDPR consent text from the backend.
     */
-    private retrieveConsentText() {
+   public retrieveConsentText() {
         let headers = new HttpHeaders();
         headers = headers.set('OAuth-Token', this.session.authData.sessionId);
         this.http.get(this.configuration.getBackendUrl() + '/common/gdpr/portalGDPRconsentText', { headers: headers }).subscribe(( response: any ) => {

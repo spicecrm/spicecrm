@@ -42,7 +42,7 @@ export class SpiceImporterService {
             'LBL_RESULTS'
         ];
 
-    constructor(private language: language) {}
+    constructor(public language: language) {}
 
     get stepLongText() {
         return this.language.getLabel(this.importStepsText[this.currentImportStep], '', 'long');

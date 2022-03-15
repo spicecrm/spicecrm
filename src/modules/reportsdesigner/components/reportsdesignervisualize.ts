@@ -9,13 +9,13 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-visualize',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignervisualize.html'
+    templateUrl: '../templates/reportsdesignervisualize.html'
 })
 export class ReportsDesignerVisualize {
 
-    protected plugins: any[] = [];
-    protected radioButtonItems: string[] = ['1', '2', '3', '4', '5'];
-    protected layoutOptions: any = [
+    public plugins: any[] = [];
+    public radioButtonItems: string[] = ['1', '2', '3', '4', '5'];
+    public layoutOptions: any = [
         {value: '-', itemsCount: 0},
         {value: '1x1', itemsCount: 1},
         {value: '1x2', itemsCount: 2},
@@ -30,13 +30,13 @@ export class ReportsDesignerVisualize {
         {value: '2x1x4', itemsCount: 5},
     ];
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private reportsDesignerService: ReportsDesignerService,
-                private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public reportsDesignerService: ReportsDesignerService,
+                public model: model) {
     }
 
-    private _selectedLayout: any;
+    public _selectedLayout: any;
 
     /**
      * @return selectedLayout: string
@@ -126,14 +126,14 @@ export class ReportsDesignerVisualize {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
     /**
      * set the initial visualization params data
      */
-    private initializeVisualizationParams() {
+    public initializeVisualizationParams() {
         let visualizationParams = this.model.getField('visualization_params');
         if (!visualizationParams) {
             visualizationParams = {};

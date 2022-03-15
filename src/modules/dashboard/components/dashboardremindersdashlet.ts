@@ -14,13 +14,13 @@ declare var moment: any;
 
 @Component({
     selector: 'dashboard-reminders-dashlet',
-    templateUrl: './src/modules/dashboard/templates/dashboardremindersdashlet.html'
+    templateUrl: '../templates/dashboardremindersdashlet.html'
 })
 export class DashboardRemindersDashlet {
 
-    private dashletLabel: string = undefined;
+    public dashletLabel: string = undefined;
 
-    constructor(private language: language, private metadata: metadata, private reminder: reminder, private router: Router) {
+    constructor(public language: language, public metadata: metadata, public reminder: reminder, public router: Router) {
 
     }
 
@@ -41,23 +41,23 @@ export class DashboardRemindersDashlet {
             .sort((a, b) => a.reminder_date - b.reminder_date);
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.item_id;
     }
 
-    private goRecord(module, id) {
+    public goRecord(module, id) {
         this.router.navigate(['/module/' + module + '/' + id]);
     }
 
-    private deleteRecord(module, id) {
+    public deleteRecord(module, id) {
         this.reminder.deleteReminder(module, id);
     }
 
-    private getReminderDate(date) {
+    public getReminderDate(date) {
         return date.format('DD.MM.YYYY');
     }
 
-    private isOverdue(date) {
+    public isOverdue(date) {
         return date < new moment();
     }
 }

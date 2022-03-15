@@ -9,18 +9,18 @@ import {administration} from "../services/administration.service";
 
 @Component({
     selector: 'administration-card',
-    templateUrl: './src/admincomponents/templates/administrationhomescreencard.html'
+    templateUrl: '../templates/administrationhomescreencard.html'
 })
 
 export class AdministrationHomeScreenCard {
 
-    @Input() private adminNavigationBlock: any;
+    @Input() public adminNavigationBlock: any;
 
     constructor(
-        private router: Router,
-        private metadata: metadata,
-        private language: language,
-        private administration: administration
+        public router: Router,
+        public metadata: metadata,
+        public language: language,
+        public administration: administration
     ) {
     }
 
@@ -30,7 +30,7 @@ export class AdministrationHomeScreenCard {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 

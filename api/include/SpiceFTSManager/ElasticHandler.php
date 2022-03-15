@@ -10,6 +10,10 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
+
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class ElasticHandler
 {
@@ -224,8 +228,27 @@ class ElasticHandler
      */
     function getStats()
     {
+        $db = DBManagerFactory::getInstance();
         $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
         $response['_prefix'] = $this->indexPrefix;
+
+        // Determine the db table names
+        $dbTables = [];
+        foreach ( SpiceModules::getInstance()->modules as $moduleName => $v ) {
+            $dbTables[strtolower($moduleName)] = BeanFactory::getBean($moduleName)->table_name;
+        }
+
+        // get the indexing stats
+        foreach($response['indices'] as $index => $data){
+            $table = $dbTables[str_replace($response['_prefix'], '', $index)];
+            $count = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE deleted = 0");
+            $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE ((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1)");
+            $response['indexed'][$index] = [
+                'count' => $count['totalcount'],
+                'unindexed' => $unindexed['totalcount'],
+            ];
+        }
+
         return $response;
     }
 
@@ -333,17 +356,12 @@ class ElasticHandler
 
     function searchModule($module, $queryParam, $size = 25, $from = 0)
     {
-
-        $db = DBManagerFactory::getInstance();
-
         $response = json_decode($this->query('POST', $this->indexPrefix . strtolower($module) . '/_search', [], $queryParam), true);
         return $response;
     }
 
     function searchModules($modules, $queryParam, $size = 25, $from = 0)
     {
-        $db = DBManagerFactory::getInstance();
-
         $modString = '';
         foreach ($modules as $module) {
             if ($modString !== '') $modString .= ',';
@@ -577,6 +595,6 @@ class ElasticHandler
         //catch installation process and abort. table sysftslog will not exist at the point during installation
         if (!empty($GLOBALS['installing']))
             return false;
-        $db->query(sprintf("INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( '%s', '" . TimeDate::getInstance()->nowDb() . "', '%s', '%s', '%s', '%s', '%s')", create_guid(), $db->quote($method), $db->quote($url), $db->quote($status), $db->quote(str_replace("\\n", "", $request)), $db->quote($response)));
+        $db->query(sprintf("INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( '%s', '" . TimeDate::getInstance()->nowDb() . "', '%s', '%s', '%s', '%s', '%s')", SpiceUtils::createGuid(), $db->quote($method), $db->quote($url), $db->quote($status), $db->quote(str_replace("\\n", "", $request)), $db->quote($response)));
     }
 }

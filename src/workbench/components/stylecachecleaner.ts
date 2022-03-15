@@ -10,22 +10,22 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'style-cache-cleaner',
-    templateUrl: './src/workbench/templates/stylecachecleaner.html',
+    templateUrl: '../templates/stylecachecleaner.html',
 })
 export class StyleCacheCleaner {
-    private is_loading = false;
+    public is_loading = false;
 
     constructor(
-        private backend: backend,
-        private toast: toast,
-        private language: language
+        public backend: backend,
+        public toast: toast,
+        public language: language
     ) {}
 
 
     /**
      * Send a request to delete the following cache-file \vendor\dompdf\dompdf\lib\fonts\dompdf_font_family_cache.php
      */
-    private cleanCache() {
+    public cleanCache() {
         this.is_loading = true;
         this.backend.getRequest(`admin/cleanup/stylecache`).subscribe(
             res => {

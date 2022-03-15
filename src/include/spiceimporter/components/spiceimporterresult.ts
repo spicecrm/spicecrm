@@ -13,26 +13,26 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
 
 @Component({
     selector: 'spice-importer-result',
-    templateUrl: './src/include/spiceimporter/templates/spiceimporterresult.html',
+    templateUrl: '../templates/spiceimporterresult.html',
     styles: [
         ':host {height: 100%;}'
     ]
 })
 export class SpiceImporterResult {
-    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
 
     constructor(
-        private spiceImport: SpiceImporterService,
-        private toast: toast,
-        private language: language,
-        private session: session,
-        private configurationService: configurationService,
-        private model: model,
-        private router: Router
+        public spiceImport: SpiceImporterService,
+        public toast: toast,
+        public language: language,
+        public session: session,
+        public configurationService: configurationService,
+        public model: model,
+        public router: Router
     ) {
     }
 
-    private goToRecord(id) {
+    public goToRecord(id) {
         this.router.navigate([`/module/${this.model.module}/${id}`]);
     }
 

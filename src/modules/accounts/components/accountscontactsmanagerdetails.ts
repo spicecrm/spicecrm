@@ -23,7 +23,7 @@ declare var _;
 
 @Component({
     selector: 'accounts-contacts-manager-details',
-    templateUrl: './src/modules/accounts/templates/accountscontactsmanagerdetails.html',
+    templateUrl: '../templates/accountscontactsmanagerdetails.html',
     providers: [model, view]
 })
 export class AccountsContactsManagerDetails implements AfterViewInit, OnChanges {
@@ -32,12 +32,12 @@ export class AccountsContactsManagerDetails implements AfterViewInit, OnChanges 
     @Input('activecontactid') activeContactId: string = undefined;
     renderedComponents: Array<any> = [];
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private view: view,
-                private acmService: ACManagerService,
-                private relatedmodels: relatedmodels,
-                private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public view: view,
+                public acmService: ACManagerService,
+                public relatedmodels: relatedmodels,
+                public model: model) {
         this.model.module = 'Contacts';
     }
 

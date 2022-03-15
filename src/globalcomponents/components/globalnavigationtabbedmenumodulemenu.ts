@@ -25,7 +25,7 @@ import {GlobalNavigationMenuItemActionContainer} from "./globalnavigationmenuite
 
 @Component({
     selector: 'global-navigation-tabbed-module-menu',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedmenumodulemenu.html',
+    templateUrl: '../templates/globalnavigationtabbedmenumodulemenu.html',
     providers: [model],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -34,48 +34,48 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
     /**
      * reference to the container item where the indivvidual components can be rendered into dynamically
      */
-    @ViewChildren(GlobalNavigationMenuItemActionContainer) private menuItemlist: QueryList<GlobalNavigationMenuItemActionContainer>;
+    @ViewChildren(GlobalNavigationMenuItemActionContainer)public menuItemlist: QueryList<GlobalNavigationMenuItemActionContainer>;
 
     /**
      * the module to display the menu for
      */
-    @Input() private module: string;
+    @Input()public module: string;
 
     /**
      * emits if the users select an action or navigates away
      */
-    @Output() private actionTriggered: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output()public actionTriggered: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * the menuitems loaded from the compnentconfig
      */
-    private itemMenu: any[] = [];
+   public itemMenu: any[] = [];
 
     /**
      * indicator if the recent items are loaded
      */
-    private loadingRecent: boolean = false;
+   public loadingRecent: boolean = false;
 
     /**
      * the list of recent items for the module
      */
-    private recentitems: any[] = [];
+   public recentitems: any[] = [];
 
     /**
      * the list of favorites for the module
      */
-    private favorites: any[] = [];
+   public favorites: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private model: model,
-        private broadcast: broadcast,
-        private navigation: navigation,
-        private router: Router,
-        private language: language,
-        private recent: recent,
-        private favorite: favorite,
-        private cdRef: ChangeDetectorRef
+       public metadata: metadata,
+       public model: model,
+       public broadcast: broadcast,
+       public navigation: navigation,
+       public router: Router,
+       public language: language,
+       public recent: recent,
+       public favorite: favorite,
+       public cdRef: ChangeDetectorRef
     ) {
 
     }
@@ -95,6 +95,8 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
      * when the module changes reload the menu, recent items and favorites
      */
     public ngOnChanges(): void {
+        // reset the module to remove cached properties
+        this.model.reset();
         // set the module
         this.model.module = this.module;
 
@@ -136,7 +138,7 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
      * propagets the click to the respective item
      * @param actionid
      */
-    private propagateclick(actionid) {
+   public propagateclick(actionid) {
         // trigger the click
         this.menuItemlist.find(actionitem => actionitem.id == actionid)?.execute();
 
@@ -149,25 +151,30 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
      *
      * @param actionid the action id
      */
-    private isDisabled(actionid) {
-        let disabled = true;
+    public isDisabled(actionid) {
         if (this.menuItemlist) {
-            this.menuItemlist.some((actionitem: any) => {
-                if (actionitem.id == actionid) {
-                    disabled = actionitem.disabled;
-                    return true;
-                }
-            });
+            return this.menuItemlist.find(a => a.id == actionid)?.disabled;
         }
-        return disabled;
+        return false;
     }
 
+    /**
+     * determines based on the action ID if the component embedded in the container item is hidden
+     *
+     * @param actionid the action id
+     */
+    public isHidden(actionid) {
+        if (this.menuItemlist) {
+            return this.menuItemlist.find(a => a.id == actionid)?.hidden;
+        }
+        return false;
+    }
     /**
      * open a record with the given id from either tha favorites or the recent items
      *
      * @param recentid
      */
-    private openRecord(recentid) {
+   public openRecord(recentid) {
         // route to the record
         this.router.navigate(['/module/' + this.module + '/' + recentid]);
 

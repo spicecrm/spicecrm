@@ -14,7 +14,7 @@ import {SystemInputMedia} from '../../../systemcomponents/components/systeminput
 
 @Component({
     selector: 'media-file-uploader',
-    templateUrl: './src/modules/mediafiles/templates/mediafileuploader.html',
+    templateUrl: '../templates/mediafileuploader.html',
     providers: [mediafiles, model, view]
 })
 export class MediaFileUploader {
@@ -22,37 +22,37 @@ export class MediaFileUploader {
     /**
      * The upload progress in percent.
      */
-    private theProgress = 0;
+    public theProgress = 0;
 
     /**
      * Should the meta data be queried? Name, Copyright, ... Otherwise only the image input field will be displayed.
      */
-    private noMetaData = false;
+    public noMetaData = false;
 
     /**
      * Observable for submitting the ID of the new media file.
      */
-    private answer: Observable<boolean | string> = null;
+    public answer: Observable<boolean | string> = null;
 
     /**
      * Subject for submitting the ID of the new media file.
      */
-    private answerSubject: Subject<boolean | string> = null;
+    public answerSubject: Subject<boolean | string> = null;
 
     /**
      * Reference for the modal.
      */
-    private self: any;
+    public self: any;
 
     /**
      * Indicates whether saving is in progress.
      */
-    private isSaving = false;
+    public isSaving = false;
 
     /**
      * Indicates whether the user is currently editing.
      */
-    private isEditing = true;
+    public isEditing = true;
 
     /**
      * Reference to the input component. Is used to access public properties of the component.
@@ -62,14 +62,14 @@ export class MediaFileUploader {
     /**
      * Reference to the meta data of the media, delivered from SystemInputMedia.
      */
-    private mediaMetaData;
+    public mediaMetaData;
 
     /**
      * The ID of the fieldset.
      */
-    private fieldsetId: string;
+    public fieldsetId: string;
 
-    constructor(private mediafiles: mediafiles, private metadata: metadata, private backend: backend, private lang: language, private toast: toast, public model: model, public view: view) {
+    constructor(public mediafiles: mediafiles, public metadata: metadata, public backend: backend, public lang: language, public toast: toast, public model: model, public view: view) {
 
         this.answerSubject = new Subject<boolean>();
         this.answer = this.answerSubject.asObservable();
@@ -91,7 +91,7 @@ export class MediaFileUploader {
     /**
      * Handler when the cancel button has been clicked.
      */
-    private cancel(): void {
+    public cancel(): void {
         this.model.cancelEdit();
         this.answerSubject.next(false);
         this.answerSubject.complete();
@@ -101,7 +101,7 @@ export class MediaFileUploader {
     /**
      * Is everything ready to save?
      */
-    private get canSave(): boolean {
+    public get canSave(): boolean {
         return this.mediaMetaData && !this.isSaving;
     }
 
@@ -131,7 +131,7 @@ export class MediaFileUploader {
     /**
      * After the user finished his input operations: Save the media files model to the backend.
      */
-    private save(): void {
+    public save(): void {
         if (!this.canSave) return;
         this.isSaving = true;
 

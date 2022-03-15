@@ -168,7 +168,10 @@ class AuthenticationController
             /** @var User $userObj */
 
             if ($token) {
-                $userObj = $this->handleTokenAuth($token, $tokenIssuer);
+
+                $issuerObject = $this->getIssuerObject($tokenIssuer);
+                $userObj = $issuerObject->authenticate($token);
+
                 if ( !IpAddresses::checkIpAddress() ) {
                     if ( !User::isAdmin_byName( $userObj->user_name )) # don´t block the admin
                         throw ( new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked( true );
@@ -241,15 +244,40 @@ class AuthenticationController
 
     }
 
-    private function handleTokenAuth($token, $tokenIssuer)
+    /**
+     * get issuer class
+     * @throws \Exception
+     */
+    public static function getIssuerObject($tokenIssuer)
     {
+        $db = DBManagerFactory::getInstance();
+        $service = $db->fetchOne("SELECT class_name FROM authentication_services WHERE issuer = '$tokenIssuer'");
+
         $authenticationClass = "SpiceCRM\includes\authentication\\{$tokenIssuer}Authenticate\\{$tokenIssuer}Authenticate";
+
+        if (!empty($service)) $authenticationClass = $service['class_name'];
+
         if (class_exists($authenticationClass, true)) {
-            $authenticationController = new $authenticationClass();
-            return $authenticationController->authenticate($token);
+            return new $authenticationClass($tokenIssuer);
         } else {
             throw new \Exception("AuthenticationClass {$authenticationClass} not found");
         }
+    }
+
+    /**
+     * load all the oauth services
+     * @return array
+     * @throws Exception|\Exception
+     */
+    public static function loadServices(): array
+    {
+        $services = [];
+        $db = DBManagerFactory::getInstance();
+        $query = $db->query("SELECT s.*, c.config config FROM authentication_services s INNER JOIN sysauthconfig c ON s.issuer = c.issuer ORDER BY sequence");
+
+        while ($service = $db->fetchByAssoc($query)) $services[] = $service;
+
+        return $services;
     }
 
     private function logSuccessfulLogin(User $userObj)

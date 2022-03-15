@@ -14,26 +14,26 @@ declare var _: any;
 
 @Component({
     selector: '[administration-login-restriction-ip-addresses-row]',
-    templateUrl: './src/admincomponents/templates/administrationloginrestrictionipaddressesrow.html'
+    templateUrl: '../templates/administrationloginrestrictionipaddressesrow.html'
 })
 export class AdministrationLoginRestrictionIpAddressesRow {
 
-    @Input() private ipAddress: any;
-    @Output() private editing = new EventEmitter<boolean>();
-    @Input() private otherEditing: boolean;
+    @Input() public ipAddress: any;
+    @Output() public editing = new EventEmitter<boolean>();
+    @Input() public otherEditing: boolean;
 
-    private isEditing = false;
-    private backup: string;
+    public isEditing = false;
+    public backup: string;
 
-    constructor(private backend: backend, private toast: toast, private language: language ) { }
+    constructor(public backend: backend, public toast: toast, public language: language ) { }
 
-    private editDescription() {
+    public editDescription() {
         this.backup = this.ipAddress.description;
         this.isEditing = true;
         this.editing.emit(true);
     }
 
-    private save() {
+    public save() {
         this.isEditing = false;
         this.backend.putRequest('authentication/ipAddress/'+this.ipAddress.address, null, { description: this.ipAddress.description })
             .pipe(take(1))
@@ -49,7 +49,7 @@ export class AdministrationLoginRestrictionIpAddressesRow {
             });
     }
 
-    private cancel() {
+    public cancel() {
         this.isEditing = false;
         this.editing.emit(false);
         this.ipAddress.description = this.backup;

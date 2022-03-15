@@ -143,6 +143,7 @@ import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefil
 import /*embed*/ {DashletGenerator} from "./components/dashletgenerator";
 import /*embed*/ {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
+import /*embed*/ {MailboxesImpersonatedEWSTrafficManager} from "./components/mailboxesimpersonatedewstrafficmanager";
 
 @NgModule({
     imports: [
@@ -237,6 +238,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesA1SmsTrafficManager,
         MailboxesA1TrafficManager,
         MailboxesEWSTrafficManager,
+        MailboxesImpersonatedEWSTrafficManager,
         MailboxesEWSSelectFoldersModal,
         MailboxesTransportManager,
         SortPipe,

@@ -7,7 +7,9 @@ use DateTime;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class UserAbsence extends SugarBean
 {
@@ -18,9 +20,18 @@ class UserAbsence extends SugarBean
 
     public function get_summary_text()
     {
-        return $this->type;
-    }
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
+        $language = $currentUser->getPreference('language');
+        if ( empty( $language )) $language = 'en_us';
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage( $language );
+
+        $dateFormat = $currentUser->getPreference('datef');
+        if ( empty( $dateFormat )) $dateFormat = SpiceConfig::getInstance()->config['default_date_format'];
+        $start = ( new \DateTime( $this->starttime ))->format( $dateFormat );
+
+        return $app_list_strings['userabsences_type_dom'][$this->type].', '.$start;
+    }
     public function bean_implements($interface)
     {
         switch ($interface) {

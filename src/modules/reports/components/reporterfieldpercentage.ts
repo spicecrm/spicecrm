@@ -8,24 +8,24 @@ import {userpreferences} from '../../../services/userpreferences.service';
  * display formatted report record value with percentage
  */
 @Component({
-    templateUrl: './src/modules/reports/templates/reporterfieldpercentage.html',
+    templateUrl: '../templates/reporterfieldpercentage.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldPercentage implements OnInit {
     /**
      * report full record
      */
-    private record: any = {};
+    public record: any = {};
     /**
      * report field
      */
-    private field: any = {};
+    public field: any = {};
     /**
      * display value
      */
-    private value: string = '';
+    public value: string = '';
 
-    constructor(private userpreferences: userpreferences) {
+    constructor(public userpreferences: userpreferences) {
 
     }
 
@@ -40,7 +40,7 @@ export class ReporterFieldPercentage implements OnInit {
     /**
      * set formatted field value
      */
-    private setFormattedFieldValue() {
+    public setFormattedFieldValue() {
         if (this.record[this.field.fieldid]) {
             this.value = this.userpreferences.formatMoney(parseFloat(this.record[this.field.fieldid]), 2, 99) + '%';
         } else {

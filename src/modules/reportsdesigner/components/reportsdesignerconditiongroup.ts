@@ -9,7 +9,7 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-condition-group',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerconditiongroup.html',
+    templateUrl: '../templates/reportsdesignerconditiongroup.html',
     styles: [`
         .cdk-drop-list:hover {
             background: #fff
@@ -21,20 +21,20 @@ export class ReportsDesignerConditionGroup {
     /**
     * @input group: object
      */
-    @Input() private group: any;
+    @Input() public group: any;
     /**
     * @input canDelete: boolean
      */
-    @Input() private canDelete: boolean = false;
+    @Input() public canDelete: boolean = false;
     /**
     * @output groupDeleted: EventEmitter<string> = groupId
      */
-    @Output() private treeChange: EventEmitter<any> = new EventEmitter<any>();
-    private expanded: number;
+    @Output() public treeChange: EventEmitter<any> = new EventEmitter<any>();
+    public expanded: number;
 
-    constructor(private language: language,
-                private reportsDesignerService: ReportsDesignerService,
-                private model: model) {
+    constructor(public language: language,
+                public reportsDesignerService: ReportsDesignerService,
+                public model: model) {
     }
 
     get groupType(): string {
@@ -72,7 +72,7 @@ export class ReportsDesignerConditionGroup {
      * @moveItemInArray? item in group.conditions
      * @addCondition?
      */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
+    public onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
 
         if (dragEvent.previousContainer === dragEvent.container) {
@@ -85,28 +85,28 @@ export class ReportsDesignerConditionGroup {
     /**
     * @emit object = {action: string, id: string} by treeChange
      */
-    private addGroup() {
+    public addGroup() {
         this.treeChange.emit({action: 'addGroup', id: this.group.id});
     }
 
     /**
     * @emit object = {action: string, id: string} by treeChange
      */
-    private deleteGroup() {
+    public deleteGroup() {
         this.treeChange.emit({action: 'deleteGroup', id: this.group.id});
     }
 
     /**
     * @emit obj: object by treeChange
      */
-    private handleTreeChange(obj) {
+    public handleTreeChange(obj) {
         this.treeChange.emit(obj);
     }
 
     /**
     * @set expanded = conditionId | null
      */
-    private toggleExpand(conditionId) {
+    public toggleExpand(conditionId) {
         if (!this.reportsDesignerService.expertMode) return;
         this.expanded = conditionId == this.expanded ? null : conditionId;
     }
@@ -117,7 +117,7 @@ export class ReportsDesignerConditionGroup {
      * @push condition to group.conditions
      * @set whereConditions
      */
-    private addCondition(field) {
+    public addCondition(field) {
         let guid = this.reportsDesignerService.generateGuid();
         let path = `${this.reportsDesignerService.getCurrentPath()}::${field.id}`;
 
@@ -157,7 +157,7 @@ export class ReportsDesignerConditionGroup {
      * @filter whereConditions from deleted
      * @set group.conditions
      */
-    private deleteCondition(id) {
+    public deleteCondition(id) {
         this.group.conditions = this.group.conditions.filter(condition => condition.id != id);
         this.whereConditions = this.whereConditions.filter(condition => condition.id != id);
     }
@@ -170,7 +170,7 @@ export class ReportsDesignerConditionGroup {
      * @param item
      * @return index
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

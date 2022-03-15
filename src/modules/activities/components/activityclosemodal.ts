@@ -23,59 +23,59 @@ import {ActionActivityCloseButton} from "./actionactivityclosebutton";
  * The fields what are setted are configurated in the "module configuration"
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/activityclosemodal.html',
+    templateUrl: '../templates/activityclosemodal.html',
     providers: [view]
 })
 export class ActivityCloseModal implements OnInit {
     /**
      * a reference to the modal content to have a reference to scrolling
      */
-    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) private modalContent: ViewContainerRef;
+    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) public modalContent: ViewContainerRef;
     /**
      * the componentconfig that gets passed in when the modal is created
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
     /**
      * the actionset items to be rendered in the modal
      */
-    private actionSetItems: any = [];
+    public actionSetItems: any = [];
 
     /**
      * the new values for the model
      */
-    private newValueFields: any = [];
+    public newValueFields: any = [];
 
     /**
      * the componentset .. set from the button when opening the modal. Also set there in the action config
      */
-    private componentSet: string;
+    public componentSet: string;
 
     /**
      * the actionset .. set from the button when opening the modal. Also set there in the action config
      */
-    private actionSet: string;
+    public actionSet: string;
 
     /**
      * ToDo: add documentation what we need this for
      */
-    private actionSubject: Subject<any> = new Subject<any>();
-    private action$: Observable<any> = new Observable<any>();
+    public actionSubject: Subject<any> = new Subject<any>();
+    public action$: Observable<any> = new Observable<any>();
 
     @Input() public preventGoingToRecord = false;
 
     /**
      * a reference to the modal itself so the modal cann close itself
      */
-    private self: any = {};
+    public self: any = {};
 
     constructor(
-        private router: Router,
-        private language: language,
-        private model: model,
-        private view: view,
-        private metadata: metadata,
-        private modal: modal,
-        private toast: toast
+        public router: Router,
+        public language: language,
+        public model: model,
+        public view: view,
+        public metadata: metadata,
+        public modal: modal,
+        public toast: toast
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -92,14 +92,14 @@ export class ActivityCloseModal implements OnInit {
         this.setNewValues();
     }
 
-    private emitaction(event) {
+    public emitaction(event) {
         if(event) {
             this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
         }
         this.self.destroy();
     }
 
-    private closeModal() {
+    public closeModal() {
         // cancel Edit
         this.model.cancelEdit();
 
@@ -111,7 +111,7 @@ export class ActivityCloseModal implements OnInit {
         this.self.destroy();
     }
 
-    private setNewValues() {
+    public setNewValues() {
         this.newValueFields = JSON.parse(this.newValueFields);
         for(let newValueField of this.newValueFields) {
             this.model.setField(newValueField.name, newValueField.value);

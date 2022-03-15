@@ -11,7 +11,7 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: "system-input-companycodes",
-    templateUrl: "./src/systemcomponents/templates/systeminputcompanycodes.html",
+    templateUrl: "../templates/systeminputcompanycodes.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -25,25 +25,25 @@ export class SystemInputCompanycodes implements ControlValueAccessor {
     /**
      * input to disable the input
      */
-    @Input() private disabled = false;
+    @Input() public disabled = false;
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * holds the companycoded
      */
-    private _companycode: string;
+    public _companycode: string;
 
     /**
      * the available companycodes
      */
-    private _companycodes: any[] = [];
+    public _companycodes: any[] = [];
 
     constructor(
-        private language: language,
-        private configuration: configurationService
+        public language: language,
+        public configuration: configurationService
     ) {
         this._companycodes = this.configuration.getData('companycodes');
         if(typeof this._companycodes === 'object') {

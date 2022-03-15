@@ -8,27 +8,27 @@ import {Component, Input} from "@angular/core";
  */
 @Component({
     selector: "system-progress-list",
-    templateUrl: "./src/systemcomponents/templates/systemprogresslist.html"
+    templateUrl: "../templates/systemprogresslist.html"
 })
 export class SystemProgressList {
 
     /**
      * The progress of completion.
      */
-    @Input() private step: number = 0;
+    @Input() public step: number = 0;
 
     /**
      * the steps to be displayed as labels
      *
      * @private
      */
-    @Input() private steps: string[] = [];
+    @Input() public steps: string[] = [];
 
     /**
      * internal var to keep the value if se shoudl display shaded
      * @private
      */
-    private _shade: boolean = false;
+    public _shade: boolean = false;
 
     /**
      * inpout to set the shade param with a setter so we can simply checkl the existence of the attribute
@@ -52,7 +52,7 @@ export class SystemProgressList {
      * @param step
      * @private
      */
-    private getStepClass(step: string) {
+    public getStepClass(step: string) {
         let thisIndex = this.steps.indexOf(step);
         if (thisIndex == this.step) {
             return 'slds-is-active';
@@ -68,7 +68,7 @@ export class SystemProgressList {
      * @param step
      * @private
      */
-    private getStepComplete(step: string) {
+    public getStepComplete(step: string) {
         let thisIndex = this.steps.indexOf(step);
         if (thisIndex < this.step) {
             return true;

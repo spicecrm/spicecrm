@@ -19,7 +19,7 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
  */
 @Component({
     selector: 'media-file-picker',
-    templateUrl: './src/modules/mediafiles/templates/mediafilepicker.html',
+    templateUrl: '../templates/mediafilepicker.html',
     providers: [view, modellist, model]
 })
 export class MediaFilePicker extends ObjectModalModuleLookup {
@@ -32,9 +32,9 @@ export class MediaFilePicker extends ObjectModalModuleLookup {
     /**
      * event emitter for the response
      */
-    @Output() private answer: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public answer: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout, private elementRef: ElementRef) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout, public elementRef: ElementRef) {
         super(language, modellist, metadata, modelutilities, model, layout);
     }
 
@@ -56,7 +56,7 @@ export class MediaFilePicker extends ObjectModalModuleLookup {
      *
      * @param item
      */
-    private pick(item): void {
+    public pick(item): void {
         this.answer.emit({id: item});
         this.self.destroy();
     }
@@ -64,7 +64,7 @@ export class MediaFilePicker extends ObjectModalModuleLookup {
     /**
      * adds a new model
      */
-    private upload(): void {
+    public upload(): void {
         if (!this.metadata.checkModuleAcl('MediaFiles','create')) {
             return;
         }

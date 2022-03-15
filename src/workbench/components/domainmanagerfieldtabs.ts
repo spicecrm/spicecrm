@@ -18,16 +18,16 @@ import {domainmanager} from '../services/domainmanager.service';
  */
 @Component({
     selector: 'domain-manager-field-tabs',
-    templateUrl: './src/workbench/templates/domainmanagerfieldtabs.html'
+    templateUrl: '../templates/domainmanagerfieldtabs.html'
 })
 export class DomainManagerFieldTabs {
 
     /**
      * the scope for the tabbed view
      */
-    private tabScope: 'details' | 'validations' = 'details';
+    public tabScope: 'details' | 'validations' = 'details';
 
-    constructor(private domainmanager: domainmanager, private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast, private modal: modal, private injector: Injector) {
+    constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
 

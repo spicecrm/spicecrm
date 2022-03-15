@@ -9,7 +9,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'reporter-presentation-container',
-    templateUrl: './src/modules/reports/templates/reporterpresentationcontainer.html'
+    templateUrl: '../templates/reporterpresentationcontainer.html'
 })
 export class ReporterPresentationContainer {
 
@@ -21,14 +21,14 @@ export class ReporterPresentationContainer {
     /**
      * holds the title as emitted fromt eh container
      */
-    private dashletTitle: string;
+    public dashletTitle: string;
 
     /**
      * status to have the component hidden
      */
-    private isHidden: boolean = false;
+    public isHidden: boolean = false;
 
-    constructor(private model: model, private language: language) {
+    constructor(public model: model, public language: language) {
     }
 
     /**
@@ -42,7 +42,7 @@ export class ReporterPresentationContainer {
      * called when the container canot load the report
      * @param event
      */
-    private noAccess(event) {
+    public noAccess(event) {
         this.isHidden = event;
     }
 }

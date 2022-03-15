@@ -6,7 +6,9 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SugarBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 /*********************************************************************************
  * Description: This file handles the Data base functionality for the application.
@@ -92,6 +94,7 @@ class MysqliManager extends DBManager
         'short'    => 'smallint',
         'varchar'  => 'varchar',
         'text'     => 'text',
+        'json'     => 'longtext',
         'shorttext'=> 'text',
         'longtext' => 'longtext',
         'date'     => 'date',
@@ -140,6 +143,32 @@ class MysqliManager extends DBManager
         'row_count' => 'mysqli_num_rows',
         'affected_row_count' => 'mysqli_affected_rows',
     ];
+
+    /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SHOW TABLE STATUS");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $recordCount = $this->fetchByAssoc($this->query("SELECT count(*) records FROM {$table['Name']}"));
+
+            $tablesArray[] = [
+                'name' => $table['Name'],
+                'records' => (int)$recordCount['records'],
+                'size' => $table['Data_length'] + $table['Index_length']
+            ];
+            $dbCount += (int)$recordCount['records'];
+            $dbSize += (int)$table['Data_length'] + (int)$table['Index_length'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
 
     /**
      * @see MysqlManager::query()
@@ -582,7 +611,7 @@ class MysqliManager extends DBManager
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
 
-        if(!empty($GLOBALS['sugar_config']['check_query'])){
+        if(!empty(SpiceConfig::getInstance()->config['check_query'])){
             $this->checkQuery($sql);
         }
         if(!$execute) {
@@ -621,7 +650,7 @@ class MysqliManager extends DBManager
         foreach($badQuery as $table=>$data ){
             if(!empty($data)){
                 $warning = ' Table:' . $table . ' Data:' . $data;
-                if(!empty($GLOBALS['sugar_config']['check_query_log'])){
+                if(!empty(SpiceConfig::getInstance()->config['check_query_log'])){
                     LoggerManager::getLogger()->fatal($sql);
                     LoggerManager::getLogger()->fatal('CHECK QUERY:' .$warning);
                 }
@@ -848,7 +877,7 @@ class MysqliManager extends DBManager
             case 'add_time':
                 return "DATE_ADD($string, INTERVAL + CONCAT({$additional_parameters[0]}, ':', {$additional_parameters[1]}) HOUR_MINUTE)";
             case 'add_tz_offset' :
-                $getUserUTCOffset = $GLOBALS['timedate']->getUserUTCOffset();
+                $getUserUTCOffset = TimeDate::getInstance()->getUserUTCOffset();
                 $operation = $getUserUTCOffset < 0 ? '-' : '+';
                 return $string . ' ' . $operation . ' INTERVAL ' . abs($getUserUTCOffset) . ' MINUTE';
             case 'avg':
@@ -877,10 +906,9 @@ class MysqliManager extends DBManager
 
     protected function getEngine($bean)
     {
-        global $dictionary;
         $engine = null;
-        if (isset($dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = $dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
         }
         return $engine;
     }
@@ -1165,6 +1193,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @deprecated
      * Runs a query and returns a single row
      *
      * @param  string   $sql        SQL Statement to execute
@@ -1173,14 +1202,14 @@ class MysqliManager extends DBManager
      * @param  bool     $suppress   Message to log if error occurs
      * @return array    single row from the query
      */
-    public function fetchOne($sql, $dieOnError = false, $msg = '', $suppress = false)
-    {
-        if(stripos($sql, ' LIMIT ') === false) {
-            // little optimization to just fetch one row
-            $sql .= " LIMIT 0,1";
-        }
-        return parent::fetchOne($sql, $dieOnError, $msg, $suppress);
-    }
+//    public function fetchOne($sql, $dieOnError = false, $msg = '', $suppress = false)
+//    {
+//        if(stripos($sql, ' LIMIT ') === false) {
+//            // little optimization to just fetch one row
+//            $sql .= " LIMIT 0,1";
+//        }
+//        return parent::fetchOne($sql, $dieOnError, $msg, $suppress);
+//    }
 
     /**
      * @see DBManager::full_text_indexing_installed()
@@ -1410,6 +1439,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string

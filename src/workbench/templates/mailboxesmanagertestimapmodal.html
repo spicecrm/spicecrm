@@ -27,8 +27,7 @@
                 <span class="slds-p-horizontal--xx-small"><system-label label="LBL_OK"></system-label></span>
             </div>
             <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>
-            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
-            <button [disabled]="!validConnection" class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_OK"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
         </div>
     </system-modal-footer>
 </system-modal>

@@ -15,19 +15,19 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-units-of-measure',
-    templateUrl: './src/objectfields/templates/fieldunitsofmeasure.html'
+    templateUrl: '../templates/fieldunitsofmeasure.html'
 })
 export class fieldUnitsOfMeasure extends fieldGeneric {
 
-    private uoms: any[] = [];
+    public uoms: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public configuration: configurationService) {
         super(model, view, language, metadata, router);
 
         this.uoms = this.configuration.getData('uomunits');
     }
 
-    private getUOMLabel() {
+    public getUOMLabel() {
         if (this.value) {
             let uom = this.uoms.find(u => u.id == this.value);
             if (uom) return this.language.getLabel(uom.label);

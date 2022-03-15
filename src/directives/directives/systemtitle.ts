@@ -16,13 +16,13 @@ export class SystemTitleDirective implements OnDestroy {
     /**
      * the system label to be translated and set on the element title
      */
-    @Input('system-title') private label: string;
+    @Input('system-title') public label: string;
     /**
      * rxjs subscription to unsubscribe the observables
      */
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
-    constructor(private language: language, private elementRef: ElementRef) {
+    constructor(public language: language, public elementRef: ElementRef) {
         this.subscribeToCurrentLanguageChange();
     }
 
@@ -46,14 +46,14 @@ export class SystemTitleDirective implements OnDestroy {
     /**
      * subscribe to current language change and reset the element title
      */
-    protected subscribeToCurrentLanguageChange() {
+    public subscribeToCurrentLanguageChange() {
         this.subscription = this.language.currentlanguage$.subscribe(() => this.setElementTitleAttribute());
     }
 
     /**
      * set the element reference title attribute
      */
-    private setElementTitleAttribute() {
+    public setElementTitleAttribute() {
         this.elementRef.nativeElement.setAttribute('title', this.language.getLabel(this.label));
     }
 }

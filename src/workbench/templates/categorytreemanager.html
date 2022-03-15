@@ -20,10 +20,10 @@
         <div *ngFor="let selectedTreeNode of selectedTreeNodes; let i = index" style="min-height: 250px" class="slds-size--1-of-4 slds-is-relative slds-p-bottom--x-large" [ngClass]="{'slds-border--right': i < 3}">
             <div style="height: calc(100% - 10px)" class="slds-scrollable--y">
                 <div class="slds-m-around--xx-small slds-p-around--xx-small slds-grid" [ngClass]="{'slds-theme--shade': selectedTreeNode == node.id}" *ngFor="let node of getNodes(i)" (click)="setSelectedNodeID(i, node.id)">
-                    <div class="slds-truncate">{{node.node_name}} ({{node.node_key}})</div>
+                    <div class="slds-truncate" [ngClass]="getNodeStyle(node)" >{{node.node_name}} ({{node.node_key}})</div>
                     <ng-container *ngIf="selectedTreeNode == node.id">
                         <button class="slds-col--bump-left slds-button slds-button--icon" (click)="editNode(node)"><system-button-icon icon="edit"></system-button-icon></button>
-                        <button class="slds-button slds-button--icon"><system-button-icon icon="delete"></system-button-icon></button>
+                        <button class="slds-button slds-button--icon" (click)="deleteNode(node)"><system-button-icon icon="delete"></system-button-icon></button>
                     </ng-container>
                     <button class="slds-col--bump-left slds-button slds-button--icon" (click)="node.favorite = !node.favorite"><system-button-icon [ngStyle]="{opacity: node.favorite ? 1 : 0.3}" icon="favorite"></system-button-icon></button>
                     <button class="slds-button slds-button--icon" (click)="node.selectable = !node.selectable"><system-button-icon [ngStyle]="{opacity: node.selectable ? 1 : 0.3}" [icon]="node.selectable ? 'linked' : 'unlinked'"></system-button-icon></button>

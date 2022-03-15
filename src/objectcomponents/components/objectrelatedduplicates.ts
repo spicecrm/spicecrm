@@ -8,7 +8,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-relatedlist-duplicates',
-    templateUrl: './src/objectcomponents/templates/objectrelatedduplicates.html'
+    templateUrl: '../templates/objectrelatedduplicates.html'
 })
 export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     /**
@@ -21,37 +21,37 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      *
      * @private
      */
-    private duplicates: any[] = [];
+    public duplicates: any[] = [];
 
     /**
      * the complete duplicate count
      *
      * @private
      */
-    private duplicatecount: number = 0;
+    public duplicatecount: number = 0;
 
     /**
      * the toggle to open or close the panel
      *
      * @private
      */
-    private hideDuplicates: boolean = true;
+    public hideDuplicates: boolean = true;
 
     /**
      * indicates if we are loading
      *
      * @private
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
 
     /**
      * holds component subscriptions
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private model: model, private broadcast: broadcast) {
+    constructor(public model: model, public broadcast: broadcast) {
 
     }
 
@@ -81,7 +81,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      * @param message
      * @private
      */
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'model.delete':
                 if (message.messagedata.module == this.model.module) {
@@ -101,7 +101,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      * @param e
      * @private
      */
-    private toggleDuplicates(e: MouseEvent) {
+    public toggleDuplicates(e: MouseEvent) {
         e.stopPropagation();
         this.hideDuplicates = !this.hideDuplicates;
     }
@@ -111,7 +111,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      *
      * @private
      */
-    private checkDuplicates() {
+    public checkDuplicates() {
         this.isLoading = true;
         this.model.duplicateCheck().subscribe(
             data => {

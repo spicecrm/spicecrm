@@ -1,5 +1,6 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\includes\SugarObjects\templates\company;
 
 use SpiceCRM\data\BeanFactory;
@@ -42,7 +43,7 @@ class Company extends Basic
     {
         $id = parent::save($check_notify, $fts_index_bean);
 
-        if (empty(trim($this->email1))){
+        if (empty(trim($this->email1))) {
             return $this->id;
         }
 
@@ -64,7 +65,8 @@ class Company extends Basic
      * set the primary email address from the email1 field
      * @param string $primaryEmailAddressId
      */
-    private function setPrimaryAddress(string $primaryEmailAddressId) {
+    private function setPrimaryAddress(string $primaryEmailAddressId)
+    {
 
         $relationExists = false;
         $linkedEmailAddresses = $this->get_linked_beans('email_addresses');
@@ -88,7 +90,7 @@ class Company extends Basic
     }
 
     /**
-     * a helper function to reterieve a company via an email address
+     * a helper function to retrieve a company via an email address
      *
      * @param $email
      * @param bool $encode
@@ -100,11 +102,10 @@ class Company extends Basic
     {
         $email_addr = BeanFactory::getBean('EmailAddresses');
         $result = $email_addr->retrieve_by_string_fields(['email_address' => $email]);
-        if($result)
-        {
+        if ($result) {
             $sql = "SELECT bean_id FROM email_addr_bean_rel WHERE email_address_id = '{$email_addr->id}' AND bean_module = '$this->module_dir' AND deleted = 0";
             $row = $this->db->fetchByAssoc($this->db->query($sql));
-            if(!$row) return false;
+            if (!$row) return false;
             return $this->retrieve($row['bean_id'], $encode, $deleted, $relationships);
         }
         return false;
@@ -146,7 +147,8 @@ class Company extends Basic
     /**
      * fill in the email1 field called by fill_in_additional_detail_fields
      */
-    private function fillInEmail1Field() {
+    private function fillInEmail1Field()
+    {
         $emailAddresses = $this->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $emailAddress) {
             if ($emailAddress->primary_address != 1) continue;

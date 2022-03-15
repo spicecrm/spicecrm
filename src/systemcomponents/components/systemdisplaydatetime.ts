@@ -23,7 +23,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'system-display-datetime',
-    templateUrl: './src/systemcomponents/templates/systemdisplaydatetime.html',
+    templateUrl: '../templates/systemdisplaydatetime.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestroy {
@@ -31,30 +31,30 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
     /**
      * the number to be displayed
      */
-    @Input() private date: any;
+    @Input() public date: any;
 
     /**
      * set to true to not display the date
      *
      * @private
      */
-    @Input() private displayDate: boolean = true;
+    @Input() public displayDate: boolean = true;
 
     /**
      * set to false to not return the time value
      *
      * @private
      */
-    @Input() private displayTime: boolean = true;
+    @Input() public displayTime: boolean = true;
 
     /**
      * holds the components subscriptions
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language, private cdRef: ChangeDetectorRef, private session: session, private userpreferences: userpreferences) {
+    constructor(public language: language, public cdRef: ChangeDetectorRef, public session: session, public userpreferences: userpreferences) {
 
     }
 
@@ -84,7 +84,7 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
     /*
     * subscribe to pref changes
      */
-    private subscribeToPrefs() {
+    public subscribeToPrefs() {
         this.subscriptions.add(
             this.userpreferences.preferences$.subscribe(prefs => {
                 this.prefChanges(prefs);
@@ -98,14 +98,14 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      * @param prefs
      * @private
      */
-    private prefChanges(prefs) {
+    public prefChanges(prefs) {
         this.detectChanges();
     }
 
     /**
      * triggers the change detection when the language is changed
      */
-    private detectChanges() {
+    public detectChanges() {
         this.cdRef.detectChanges();
     }
 

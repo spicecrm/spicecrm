@@ -2,29 +2,29 @@
  * @module ObjectComponents
  */
 import {
-    Component, ElementRef, ViewChild, ChangeDetectorRef
+    Component
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {footer} from '../../services/footer.service';
 import {language} from "../../services/language.service";
-import {modal} from '../../services/modal.service';
+import {toast} from "../../services/toast.service";
+
 
 /**
  * renders a list of tags int eh object page header and allows editing and management of the tags
  */
 @Component({
     selector: 'object-page-header-tags',
-    templateUrl: './src/objectcomponents/templates/objectpageheadertags.html'
+    templateUrl: '../templates/objectpageheadertags.html'
 })
 export class ObjectPageHeaderTags {
 
     /**
      * indicates if we are editing
      */
-    private isEditing: boolean = false;
+    public isEditing: boolean = false;
 
-    constructor(private model: model, private metadata: metadata, private language: language) {
+    constructor(public model: model, public metadata: metadata, public language: language, public toast: toast) {
     }
 
     /**
@@ -52,7 +52,7 @@ export class ObjectPageHeaderTags {
     /**
      * switch to editing mode
      */
-    private editTags() {
+    public editTags() {
         this.isEditing = true;
         this.model.startEdit();
         /*
@@ -65,7 +65,7 @@ export class ObjectPageHeaderTags {
     /**
      * cancels the editing process
      */
-    private cancelEdit() {
+    public cancelEdit() {
         this.isEditing = false;
         this.model.cancelEdit();
     }
@@ -73,12 +73,12 @@ export class ObjectPageHeaderTags {
     /**
      * saves the changes
      */
-    private saveTags() {
+    public saveTags() {
         this.model.save();
         this.isEditing = false;
     }
 
-    private removeByIndex(index) {
+    public removeByIndex(index) {
         let tags = this.objecttags;
         tags.splice(index, 1);
         this.model.setField('tags', JSON.stringify(tags));
@@ -89,9 +89,17 @@ export class ObjectPageHeaderTags {
      *
      * @param tag the tag
      */
-    private addTag(tag) {
-        let tags = this.objecttags;
-        tags.push(tag);
+    public addTag(tag) {
+        // convert array tags to lower case for easier check
+        let tags = this.objecttags.map(tagV => tagV.toLowerCase());
+        // check if tag exists in array
+        if(tags.includes(tag.toLowerCase())) {
+            this.toast.sendToast(this.language.getLabel('LBL_TAG_EXISTS', '', 'short'), 'warning');
+            return;
+        } else {
+            this.objecttags.indexOf(tag);
+            tags.push(tag)
+        }
         this.model.setField('tags', JSON.stringify(tags));
     }
 }

@@ -12,7 +12,7 @@ import {configurationService} from "../../../services/configuration.service";
 declare var _;
 
 @Component({
-    templateUrl: './src/include/spicetexts/templates/spicetextsaddmodal.html',
+    templateUrl: '../templates/spicetextsaddmodal.html',
     providers: [model, view]
 })
 
@@ -24,13 +24,13 @@ export class SpiceTextsAddModal implements OnInit {
     public response: any = new Subject<any>();
     public self: any = {};
     public saveTriggered: boolean = false;
-    private loading: string = '';
+    public loading: string = '';
 
-    constructor(private model: model,
-                private configurationService: configurationService,
-                private view: view,
-                private backend: backend,
-                private language: language) {
+    constructor(public model: model,
+                public configurationService: configurationService,
+                public view: view,
+                public backend: backend,
+                public language: language) {
         this.model.module = 'SpiceTexts';
     }
 
@@ -95,25 +95,28 @@ export class SpiceTextsAddModal implements OnInit {
         this.view.setEditMode();
     }
 
-    private getFieldStyle(field) {
+    public getFieldStyle(field) {
         return this.model.getFieldMessages(field, 'error') ? 'slds-has-error' : '';
     }
 
-    private initializeModel() {
+    public initializeModel() {
         this.model.initialize();
-        this.model.data.parent_id = this.parent.id;
-        this.model.data.parent_type = this.parent.module;
+        this.model.setFields({
+            parent_id : this.parent.id,
+            parent_type: this.parent.module
+        })
+
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
-    private isLoading(field) {
+    public isLoading(field) {
         return this.loading == field;
     }
 
-    private save() {
+    public save() {
         this.saveTriggered = true;
         if (!this.model.validate()) {
             return this.saveTriggered = false;
@@ -133,7 +136,7 @@ export class SpiceTextsAddModal implements OnInit {
         this.saveTriggered = false;
     }
 
-    private cancel() {
+    public cancel() {
         this.response.next(false);
         this.response.complete();
         this.self.destroy();

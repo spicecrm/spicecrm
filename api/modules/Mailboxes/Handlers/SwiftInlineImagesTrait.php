@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use DOMDocument;
@@ -47,7 +49,11 @@ trait SwiftInlineImagesTrait
      */
     private function generateInlineImage(Swift_Message &$message, DOMElement $image): string {
         $imageData = $image->getAttribute('src');
-        $decodedImageData = base64_decode(substr($imageData, 21));
+
+        // check if the image src has charset param and set the proper data start position
+        $stringPos = strpos('charset=utf-8' , $imageData) == 14 ? 35 : 21;
+
+        $decodedImageData = base64_decode(substr($imageData, $stringPos));
         $imageName = SpiceUtils::createGuid() . '.png';
         $inlineImage = Swift_Image::newInstance($decodedImageData, $imageName, 'image/png')
             ->setDisposition('inline');
@@ -62,10 +68,12 @@ trait SwiftInlineImagesTrait
      */
     private function replaceInlineImage(Swift_Message &$message, string $cid): void {
         $doc = new DOMDocument();
-        $doc->loadHTML($message->getBody());
+        // load html and use utf-8 encoding
+        $doc->loadHTML('<?xml encoding="utf-8"?>' . $message->getBody());
         $selector = new DOMXPath($doc);
 
-        $inlineImages = $selector->query("//img[contains(@src, 'data:image/png;base64,')]");
+        // query all inline images. some images include charset utf-8 in the src
+        $inlineImages = $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
 
         // replace the first one
         $inlineImage = $inlineImages->item(0);

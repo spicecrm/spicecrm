@@ -11,16 +11,16 @@ import {MailboxEmailToLeadModal} from "./mailboxemailtoleadmodal";
 
 @Component({
     selector: "mailbox-email-to-lead-emailbutton",
-    templateUrl: "./src/modules/mailboxes/templates/mailboxemailtoleadbutton.html",
+    templateUrl: "../templates/mailboxemailtoleadbutton.html",
 })
 export class MailboxEmailToLeadButton {
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private toast: toast,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public toast: toast,
     ) {}
 
     public execute() {

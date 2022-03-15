@@ -12,14 +12,14 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane-attachments',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepaneattachments.html'
+    templateUrl: '../templates/groupwareemailarchivepaneattachments.html'
 })
 export class GroupwareEmailArchivePaneAttachments {
 
     constructor(
-        private groupware: GroupwareService,
-        private changeDetectorRef: ChangeDetectorRef,
-        private configurationService: configurationService
+        public groupware: GroupwareService,
+        public changeDetectorRef: ChangeDetectorRef,
+        public configurationService: configurationService
     ) {
         this.loadAttachments();
     }

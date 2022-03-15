@@ -17,7 +17,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-recordview',
-    templateUrl: './src/objectcomponents/templates/objectrecordview.html',
+    templateUrl: '../templates/objectrecordview.html',
     providers: [model]
 })
 export class ObjectRecordView implements OnInit, OnDestroy {
@@ -25,35 +25,35 @@ export class ObjectRecordView implements OnInit, OnDestroy {
      * the name of the module
      * @private
      */
-    private moduleName: any = '';
+    public moduleName: any = '';
 
     /**
      * the componentconfig
      * @private
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * any subnscriptions thois component might have that need to be destroyed when the component is destroyed
      * @private
      */
-    private componentSubscriptions: Subscription = new Subscription();
+    public componentSubscriptions: Subscription = new Subscription();
 
     /**
      * indicates if the model here is loaded
      *
      * @private
      */
-    private modelloaded: boolean = false;
+    public modelloaded: boolean = false;
 
     constructor(
-        private broadcast: broadcast,
-        private navigation: navigation,
-        private navigationtab: navigationtab,
-        private activatedRoute: ActivatedRoute,
-        private metadata: metadata,
-        private model: model,
-        private favorite: favorite,
+        public broadcast: broadcast,
+        public navigation: navigation,
+        public navigationtab: navigationtab,
+        public activatedRoute: ActivatedRoute,
+        public metadata: metadata,
+        public model: model,
+        public favorite: favorite,
     ) {
 
     }
@@ -110,12 +110,12 @@ export class ObjectRecordView implements OnInit, OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         switch (message.messagetype) {
 
             case 'model.save':
                 if (this.model.module === message.messagedata.module && this.model.id === message.messagedata.id) {
-                    this.model.data = message.messagedata.data;
+                    this.model.setData(message.messagedata.data);
 
                     // update the tab info
                     this.navigationtab.setTabInfo({
@@ -127,7 +127,7 @@ export class ObjectRecordView implements OnInit, OnDestroy {
         }
     }
 
-    private setTabTitle() {
+    public setTabTitle() {
         this.navigationtab.setTabInfo({
             displayname: this.model.getField('summary_text'),
             displaymodule: this.model.module
