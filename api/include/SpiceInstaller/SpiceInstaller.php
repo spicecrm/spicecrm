@@ -631,7 +631,7 @@ class SpiceInstaller
     {
         $confLoader = new SpiceUIConfLoader();
         // load some packages to enable a good start
-        $loadPackages = ['core', 'aclessentials', 'ftsreference'];
+        $loadPackages = ['core', 'aclessentials', 'ftsreference', 'schedulerjobs'];
         foreach ($loadPackages as $loadPackage) {
             $confLoader->loadPackage($loadPackage);
         }
