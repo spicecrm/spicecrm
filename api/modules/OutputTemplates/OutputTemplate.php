@@ -73,7 +73,7 @@ class OutputTemplate extends SugarBean
             $html = $templateCompiler->compile(html_entity_decode( $this->body), $bean, $this->language, $this->additonalValues);
         } else {
             $html = '<style>' . $this->getStyle() . '</style>' . $templateCompiler->compile('<body><header>'
-                    .html_entity_decode( $this->header ).'</header><footer>'.html_entity_decode( $this->footer ).'</footer><main>'.html_entity_decode( $this->body ).'</main></body>', $bean, $this->language, $this->additonalValues);
+                    .html_entity_decode( $this->header ).'</header><main>'.html_entity_decode( $this->body ).'</main><footer>'.html_entity_decode( $this->footer ).'</footer></body>', $bean, $this->language, $this->additonalValues);
         }
 
         return $html;
