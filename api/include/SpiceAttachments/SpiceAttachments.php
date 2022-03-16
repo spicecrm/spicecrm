@@ -14,7 +14,6 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
 use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachment;
@@ -314,7 +313,7 @@ class SpiceAttachments
         return $md5;
     }
 
-    public static function saveDocumentRevisionAttachment($beanName, $beanId, DocumentRevision $doc): void {
+    public static function saveDocumentAttachment($beanName, $beanId, $doc): void {
         $db          = DBManagerFactory::getInstance();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $guid        = SpiceUtils::createGuid();
