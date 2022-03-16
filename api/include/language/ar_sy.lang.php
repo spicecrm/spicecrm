@@ -2157,9 +2157,9 @@ $app_list_strings['systemdeploymentpackage_repair_dom'] = [
 ];
 
 //include('modules/Administration/'];
-$app_list_strings['systemdeploymentpackage_repair_modules_dom'] = [
-    SpiceUtils::translate('LBL_ALL_MODULES', 'Administration') => SpiceUtils::translate('LBL_ALL_MODULES', 'الإدارة')
-];
+//$app_list_strings['systemdeploymentpackage_repair_modules_dom'] = [
+//    SpiceUtils::translate('LBL_ALL_MODULES', 'Administration') => SpiceUtils::translate('LBL_ALL_MODULES', 'الإدارة')
+//];
 foreach ($beanList as $module => $bean) {
     $app_list_strings['systemdeploymentpackage_repair_modules_dom'][$module] = $module;
 }

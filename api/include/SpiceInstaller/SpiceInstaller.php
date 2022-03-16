@@ -490,9 +490,9 @@ class SpiceInstaller
         ksort($globalBeanList);
 
         foreach ($globalBeanList as $dir => $bean) {
-            if ($bean == 'Administration') { // for core edition
-                require_once('metadata/system_config.php');
-            } else {
+//            if ($bean == 'Administration') { // for core edition
+//                require_once('metadata/system_config.php');
+//            } else {
                 // in core edition some modules might be missing
                 // ignore them when it encountered
                 if (file_exists('modules/' . $dir . '/vardefs.php')) {
@@ -500,7 +500,7 @@ class SpiceInstaller
                 } else {
                     continue;
                 }
-            }
+//            }
 
             if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
                 continue;
@@ -631,7 +631,7 @@ class SpiceInstaller
     {
         $confLoader = new SpiceUIConfLoader();
         // load some packages to enable a good start
-        $loadPackages = ['core', 'aclessentials', 'ftsreference'];
+        $loadPackages = ['core', 'aclessentials', 'ftsreference', 'schedulerjobs'];
         foreach ($loadPackages as $loadPackage) {
             $confLoader->loadPackage($loadPackage);
         }
