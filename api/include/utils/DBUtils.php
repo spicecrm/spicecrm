@@ -59,7 +59,7 @@ class DBUtils
      * @param bool $encode Default true
      * @return string
      */
-    public static function fromHtml($string, $encode = true): string {
+    public static function fromHtml($string, $encode = true) {
         if (!is_string($string) || !$encode) {
             if(is_null($string)){
                 return '';
