@@ -59,11 +59,8 @@ class DBUtils
      * @param bool $encode Default true
      * @return string
      */
-    public static function fromHtml($string, $encode = true): string {
+    public static function fromHtml($string, $encode = true) {
         if (!is_string($string) || !$encode) {
-            if(is_null($string)){
-                return '';
-            }
             return $string;
         }
 
@@ -81,7 +78,6 @@ class DBUtils
         if (!isset($cache[$string])) {
             $cache[$string] = str_ireplace($toHTML_values, $toHTML_keys, $string);
         }
-        file_put_contents('spicecrm.log', __LINE__. ' fromHtml() '. gettype($cache[$string])."\n", FILE_APPEND);
         return $cache[$string];
     }
 }
