@@ -12,6 +12,9 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
+
 class ElasticHandler
 {
     var $indexName = 'spicecrm';
@@ -229,9 +232,15 @@ class ElasticHandler
         $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
         $response['_prefix'] = $this->indexPrefix;
 
+        // Determine the db table names
+        $dbTables = [];
+        foreach ( SpiceModules::getInstance()->modules as $moduleName => $v ) {
+            $dbTables[strtolower($moduleName)] = BeanFactory::getBean($moduleName)->table_name;
+        }
+
         // get the indexing stats
         foreach($response['indices'] as $index => $data){
-            $table = str_replace($response['_prefix'], '', $index);
+            $table = $dbTables[str_replace($response['_prefix'], '', $index)];
             $count = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE deleted = 0");
             $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE ((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1)");
             $response['indexed'][$index] = [
