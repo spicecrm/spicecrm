@@ -81,7 +81,7 @@ class DBUtils
         if (!isset($cache[$string])) {
             $cache[$string] = str_ireplace($toHTML_values, $toHTML_keys, $string);
         }
-        file_put_contents('spicecrm.log', __LINE__. ' fromHtml() '. gettype($cache[$string])."\n", FILE_APPEND);
+        // file_put_contents('spicecrm.log', __LINE__. ' fromHtml() '. gettype($cache[$string])."\n", FILE_APPEND);
         return $cache[$string];
     }
 }
