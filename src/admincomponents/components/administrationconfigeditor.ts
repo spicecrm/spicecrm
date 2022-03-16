@@ -1,14 +1,12 @@
 /**
  * @module AdminComponentsModule
  */
-import {
-    Component,
-    OnInit
-} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
+import { toast } from '../../services/toast.service';
 
 /**
  * a simple config editor that allows editing config settings for a specific subtree
@@ -38,7 +36,8 @@ export class AdministrationConfigEditor implements OnInit {
         public metadata: metadata,
         public language: language,
         public backend: backend,
-        public modal: modal
+        public modal: modal,
+        public toast: toast
     ) {
 
     }
@@ -81,6 +80,56 @@ export class AdministrationConfigEditor implements OnInit {
                 this.loading = false;
                 modalRef.instance.self.destroy();
             });
+        });
+    }
+
+    /**
+     * Copy configuration values to clipboard.
+     */
+    public copyData(): void {
+        let selBox = document.createElement('textarea');
+        selBox.style.position = 'fixed';
+        selBox.style.left = '0';
+        selBox.style.top = '0';
+        selBox.style.opacity = '0';
+        let valsToCopy = {};
+        for( let item of this.componentconfig.items ) valsToCopy[item.name] = ( this.configvalues.hasOwnProperty( item.name ) ? this.configvalues[item.name] : null );
+        selBox.value = JSON.stringify(valsToCopy);
+        document.body.appendChild(selBox);
+        selBox.focus();
+        selBox.select();
+        document.execCommand('copy');
+        document.body.removeChild(selBox);
+        this.toast.sendToast( 'Data of all fields copied to clipboard.', 'success');
+    }
+
+    /**
+     * Paste configuration data from clipboard.
+     */
+    public pasteData(): void {
+        navigator.clipboard.readText().then( textData => {
+            let objectData;
+            let numberPasted = 0, numberEmptied = 0;
+            try {
+                objectData = JSON.parse( textData );
+            } catch( e ) {
+                this.toast.sendToast( 'No valid configuration data found in clipboard.', 'error');
+                return;
+            }
+            for( let item of this.componentconfig.items ) {
+                if( objectData.hasOwnProperty( item.name ) ) {
+                    this.configvalues[item.name] = objectData[item.name];
+                    numberPasted++;
+                } else {
+                    this.configvalues[item.name] = null;
+                    numberEmptied++;
+                }
+            }
+            let numberUnknownValues = Object.keys( objectData ).length - numberPasted;
+            let comment = '';
+            comment += ( numberUnknownValues ? numberUnknownValues+' unknown values ignored. ':'' );
+            comment += ( numberEmptied ? numberEmptied+' fields emptied, because no data definied. ':'' );
+            this.toast.sendToast('Data pasted from clipboard successfully. ' + comment + 'Don´t forget to save data.', 'success', null, 25 );
         });
     }
 
