@@ -313,7 +313,7 @@ class SpiceACLObject extends SugarBean
 
         // check the obejctfield values if this profile qualifies
         if (!$this->checkBeanObjectFieldAccess($bean, $objectData['objectelementvalues']))
-            return [];
+            return false;
 
         // workaround for module Users (table has no assigned_user_id field)
         // simulate assigned_user_id by allocating id
@@ -325,11 +325,11 @@ class SpiceACLObject extends SugarBean
         if ((($objectData['spiceaclowner'] && !$objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsOwner($bean)) ||
             ((!$objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsCreator($bean)) ||
             (($objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && (!SpiceACLUsers::checkCurrentUserIsOwner($bean) || !SpiceACLUsers::checkCurrentUserIsCreator($bean))))
-            return [];
+            return false;
 
         // check that the territory matches
         if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id']))
-            return [];
+            return false;
 
         return $objectData['objectactions'];
     }
