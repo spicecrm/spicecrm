@@ -48,6 +48,30 @@
                     </div>
                 </div>
 
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control slds-m-vertical--medium">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" id="cbKeepAssignedUser" [(ngModel)]="keepAssignedUser" [disabled]="isAfterUpload || isUploading" />
+                            <label class="slds-checkbox__label" for="cbKeepAssignedUser">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">Keep assigned user. Otherwise, the records will be assigned to <i>you</i>.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control slds-m-vertical--medium">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" id="cbKeepEnteredModifiedData" [(ngModel)]="keepEnteredModifiedInfo" [disabled]="isAfterUpload || isUploading" />
+                            <label class="slds-checkbox__label" for="cbKeepEnteredModifiedData">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">Keep entered/modified info. Otherwise, <i>you</i> will be noted in the record - with the <i>current</i> time stamp.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div *ngIf="!isAfterUpload && !isUploading">
                     <div class="slds-m-vertical--medium">Upload and import the file &quot;<b>{{filename}}</b>&quot;?</div>
                     <div><button class="slds-button slds-button--brand" (click)="uploadFile()">{{lang.getLabel('LBL_UPLOAD_AND_IMPORT')}}</button></div>
