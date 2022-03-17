@@ -768,7 +768,7 @@ class Email extends SugarBean
         }
 
         if($mailbox->track_mailbox) {
-           $this->generateTrackingPixel();
+            $this->generateTrackingPixel();
         }
 
         $mailbox->initTransportHandler();
@@ -1362,7 +1362,7 @@ class Email extends SugarBean
         return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
     }
 
-    public function addDocumentAttachment(DocumentRevision $doc): void {
-        SpiceAttachments::saveDocumentRevisionAttachment('Emails', $this->id, $doc);
+    public function addDocumentAttachment($doc): void {
+        SpiceAttachments::saveDocumentAttachment('Emails', $this->id, $doc);
     }
 }
