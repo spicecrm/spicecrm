@@ -71,7 +71,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     public useStylesheets: boolean;
 
-    public signaturePreviousPosition: number = -1;
+    public signaturePosition: number = -1;
 
     constructor(public model: model,
                 public view: view,
@@ -149,6 +149,10 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         if (!!this.fieldconfig?.useSignature) {
             await this.loadMailboxSignature();
             this.loadUserSignature();
+            this.selectedSignatureId = this.model.getFieldValue("signature");
+            if(this.selectedSignatureId) {
+                this.renderSelectedSignature();
+            }
         }
         this.modelChangesSubscriber();
     }
@@ -158,20 +162,38 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     public renderSelectedSignature() {
 
-        this.clearSignature();
+        if (!this.value) this.value = '';
+
+        const tempElement: HTMLElement = document.createElement('div');
+        tempElement.innerHTML = this.value;
+
+        let selectedEleSign = tempElement.querySelectorAll("div[data-signature]");
+        let selectedEleReply = tempElement.querySelectorAll("div[spicecrm_reply_quote]");
+
+
+        // keep text till signature or reply (find index position)
+        this.signaturePosition = tempElement.innerHTML.indexOf(selectedEleReply[0]?.outerHTML);
+        if(selectedEleSign.length > 0) {
+            this.signaturePosition = tempElement.innerHTML.indexOf(selectedEleSign[0]?.outerHTML);
+        }
+
+        // remove signature from value
+        selectedEleSign[0]?.parentNode.removeChild(selectedEleSign[0]);
+        this.value = tempElement.innerHTML;
+
+        // set signature to non-db field (keep it after expanding)
+        this.model.setField("signature",this.selectedSignatureId);
 
         if (!this.selectedSignatureId) return;
 
-        if (!this.value) this.value = '';
-
         const signature = this.signatures.find(s => s.id == this.selectedSignatureId);
-        const html = `<div data-signature="" style="margin: 10px 0">${signature.content}</div>`;
+        const html = `<div data-signature="" class="data-signature" style="margin: 10px 0">${signature.content}</div>`;
 
-        if (this.signaturePreviousPosition > -1) {
-            this.value = `${this.value.slice(0, this.signaturePreviousPosition)} ${html} ${this.value.slice(html.length + this.signaturePreviousPosition)}`;
-        } else {
-            this.value = `<p><br></p> ${html} ${this.value}`;
-        }
+        this.value = [
+            this.value.slice(0, this.signaturePosition),
+            html,
+            selectedEleReply[0]?.outerHTML
+        ].join('<p><br></p>');
     }
 
     /**
@@ -211,13 +233,11 @@ export class fieldRichText extends fieldGeneric implements OnInit {
                     this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
 
                     this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
-                    this.selectedSignatureId = mailboxId;
-                    this.renderSelectedSignature();
+                    // this.selectedSignatureId = mailboxId;
+                    // this.renderSelectedSignature();
                 });
         } else {
             this.addSignature(mailboxId, signatureContent, 'LBL_MAILBOX');
-            this.selectedSignatureId = mailboxId;
-            this.renderSelectedSignature();
         }
     }
 
@@ -246,29 +266,6 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         if (!userSignatures) return;
         const noMailboxSignature = this.signatures.length == 0;
         this.addSignature('user', userSignatures, 'LBL_MY_SIGNATURE');
-        if (noMailboxSignature) {
-            this.selectedSignatureId = 'user';
-            this.renderSelectedSignature();
-        }
-    }
-
-    /**
-     * clear the signature from the body
-     * @private
-     */
-    public clearSignature() {
-
-        if (!this.value) return;
-
-        const tempElement: HTMLElement = document.createElement('div');
-        tempElement.innerHTML = this.value;
-
-        Array.from(tempElement.querySelectorAll('div[data-signature]'))
-            .forEach(el => {
-                this.signaturePreviousPosition = tempElement.innerHTML.indexOf(el.outerHTML);
-                el.parentNode.removeChild(el);
-            });
-        this.value = tempElement.innerHTML;
     }
 
     public setStylesheetField() {
