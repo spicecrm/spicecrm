@@ -1,11 +1,10 @@
 <?php
 
-use SpiceCRM\modules\SystemTenants\SystemTenant;
-
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SystemTenants\api\controllers;
 
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
