@@ -1815,6 +1815,12 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'P2' => 'medium',
         'P3' => 'low',
     ];
+    $app_list_strings['serviceticket_type_dom'] = [
+        'request' => 'Request',
+        'claim' => 'Claim',
+        'congrats' => 'Congratulations',
+    ];
+
     $app_list_strings['serviceticket_resaction_dom'] = [
         '' => '',
         'credit' => 'issue creditnote',
