@@ -167,6 +167,7 @@ import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferenc
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
 import {SystemPDFContainer} from "./components/systempdfcontainer";
+import {SystemInputColor} from "./components/systeminputcolor";
 
 @NgModule({
     imports: [
@@ -223,6 +224,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemInputEnum,
         SystemInputMultiEnum,
         SystemInputActionset,
+        SystemInputColor,
         SystemInputComponentset,
         SystemInputCountry,
         SystemInputCountryCode,
@@ -453,7 +455,8 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemInputFileContent,
         SystemModalHeaderEmpty,
         SystemWrappedText,
-        SystemPDFContainer
+        SystemPDFContainer,
+        SystemInputColor
     ]
 })
 export class SystemComponents {}
