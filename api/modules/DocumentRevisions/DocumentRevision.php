@@ -103,7 +103,7 @@ class DocumentRevision extends SugarBean {
      * find all revisions that have a status released and set them to active
      */
 	private function archiveAllRevisions(){
-	    $active = $this->get_full_list("", "{$this->table_name}.documentrevisionstatus = 'r'");
+        $active = $this->get_full_list("", "document_id='{$this->document_id}' AND {$this->table_name}.documentrevisionstatus = 'r'");
 	    foreach($active as $activeDocument){
 	        $activeDocument->documentrevisionstatus = 'a';
 	        $activeDocument->save();
