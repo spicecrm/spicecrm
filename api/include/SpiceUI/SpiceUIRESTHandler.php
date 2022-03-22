@@ -1226,4 +1226,34 @@ $db = DBManagerFactory::getInstance();
 
         return $response;
     }
+
+    /**
+     * gets all asstes stored in the databasae
+     *
+     * @return void
+     */
+    public function getAssets(){
+        $db = DBManagerFactory::getInstance();
+
+        $assets = [];
+        $assetsObj = $db->query("SELECT * FROM sysuiassets");
+        while($asset = $db->fetchByAssoc($assetsObj)){
+            $assets[] = $asset;
+        }
+        return $assets;
+    }
+
+    /**
+     * gets all asstes stored in the databasae
+     *
+     * @return void
+     */
+    public function setAssets($assets){
+        $db = DBManagerFactory::getInstance();
+
+        foreach($assets as $asset){
+            $db->upsertQuery('sysuiassets', ['id' => $assets['id']], $asset);
+        }
+        return true;
+    }
 }
