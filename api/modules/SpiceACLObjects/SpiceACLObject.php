@@ -313,7 +313,7 @@ class SpiceACLObject extends SugarBean
 
         // check the obejctfield values if this profile qualifies
         if (!$this->checkBeanObjectFieldAccess($bean, $objectData['objectelementvalues']))
-            return [];
+            return false;
 
         // workaround for module Users (table has no assigned_user_id field)
         // simulate assigned_user_id by allocating id
@@ -325,11 +325,11 @@ class SpiceACLObject extends SugarBean
         if ((($objectData['spiceaclowner'] && !$objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsOwner($bean)) ||
             ((!$objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsCreator($bean)) ||
             (($objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && (!SpiceACLUsers::checkCurrentUserIsOwner($bean) || !SpiceACLUsers::checkCurrentUserIsCreator($bean))))
-            return [];
+            return false;
 
         // check that the territory matches
         if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id']))
-            return [];
+            return false;
 
         return $objectData['objectactions'];
     }
@@ -414,6 +414,7 @@ class SpiceACLObject extends SugarBean
         $fieldvalues = $this->db->query("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
         while ($fieldvalue = $this->db->fetchByAssoc($fieldvalues)) {
             switch ($fieldvalue['operator']) {
+                // equal =
                 case 'EQ':
                     $filters['must'][] = [
                         'term' => [
@@ -421,20 +422,23 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // is not empty
                 case 'ISNEMPTY':
                     $filters['must'][] = [
-                        'exits' => [
+                        'exists' => [
                             'field' => $fieldvalue['name']
                         ]
                     ];
                     break;
+                // is empty
                 case 'ISEMPTY':
                     $filters['must_not'][] = [
-                        'exits' => [
+                        'exists' => [
                             'field' => $fieldvalue['name']
                         ]
                     ];
                     break;
+                    // current user field
                 case 'CU':
                     if (!empty($fieldvalue['value1'])) {
                         $filters['must'][] = [
@@ -444,6 +448,7 @@ class SpiceACLObject extends SugarBean
                         ];
                     }
                     break;
+                    // not equal
                 case 'NE':
                     $filters['must_not'][] = [
                         'term' => [
@@ -451,6 +456,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // like
                 case 'LK':
                     $filters['must'][] = [
                         'wildcard' => [
@@ -458,6 +464,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // starts with
                 case 'SW':
                     $filters['must'][] = [
                         'wildcard' => [
@@ -465,6 +472,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                // starts not with
                 case 'SN':
                     $filters['must_not'][] = [
                         'wildcard' => [
@@ -472,9 +480,13 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // greater
                 case 'GT':
+                    // greater equal
                 case 'GTE':
+                    // less
                 case 'LT':
+                    // less equal
                 case 'LTE':
                     $filters['must'][] = [
                         'range' => [
@@ -484,6 +496,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // in
                 case 'IN':
                     $valArray = explode(',', $fieldvalue['value1']);
                     foreach ($valArray as $valIndex => $valValue)
@@ -494,6 +507,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // not in
                 case 'NI':
                     $valArray = explode(',', $fieldvalue['value1']);
                     foreach ($valArray as $valIndex => $valValue)
