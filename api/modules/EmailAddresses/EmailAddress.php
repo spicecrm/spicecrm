@@ -346,8 +346,10 @@ class EmailAddress extends SugarBean
      * @param string $text Dirty email address in the following form: "name" <email@example.com>
      * @return string clean email address
      */
-    public static function cleanAddress(string $text): ?string
+    public static function cleanAddress(?string $text): ?string
     {
+        if(empty($text)) return $text;
+
         $text = DBUtils::fromHtml($text);
         preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $text, $matches);
         return $matches[0][0];
