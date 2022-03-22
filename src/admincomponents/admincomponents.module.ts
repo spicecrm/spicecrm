@@ -91,6 +91,7 @@ import /*embed*/ {AdministrationBlockedUsers} from './components/administrationb
 import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
 
 import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
+import {AdministrationAssetManager} from "./components/administrationassetmanager";
 
 @NgModule({
     imports: [
@@ -166,7 +167,8 @@ import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/adminis
         AdministrationLoginRestrictionIpAddressesRow,
         AdministrationPasswordConfig,
         AdministrationBlockedUsers,
-        AdministrationLoginManagement
+        AdministrationLoginManagement,
+        AdministrationAssetManager
     ],
     entryComponents: [
         AdministrationMain,
