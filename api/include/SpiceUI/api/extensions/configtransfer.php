@@ -48,6 +48,16 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_BOOL,
                 'description' => 'Ignore table data for tables that are unknown in the CRM.'
             ],
+            'keepAssignedUser' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'description' => 'Keep assigned user.'
+            ],
+            'keepEnteredModifiedInfo' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'description' => 'Keep entered/modified information.'
+            ],
             'file' => [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_BASE64,
