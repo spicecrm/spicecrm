@@ -129,7 +129,17 @@ class SystemTenant extends SpiceBean
      */
     public function getCopyTables(): array
     {
-        return [];
+        return [
+            'spiceaclmoduleactions',
+            'spiceaclmodulefields',
+            'spiceaclobjectactions',
+            'spiceaclobjectfields',
+            'spiceaclobjects',
+            'spiceaclobjectvalues',
+            'spiceaclprofiles',
+            'spiceaclprofiles_spiceaclobjects',
+            'spiceaclstandardactions',
+        ];
     }
 
     /**
