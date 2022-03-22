@@ -499,7 +499,7 @@ class SpiceACL
                 if ($aclObjectData['spiceaclobjecttype'] != 0)
                     continue;
 
-                $activitiesAllowed = array_merge($activitiesAllowed, $this->aclObject->getObjectActivities($bean, $aclObjectData));
+                $activitiesAllowed = array_merge($activitiesAllowed, $this->aclObject->getObjectActivities($bean, $aclObjectData) ?: []);
             }
 
             // only unique values
@@ -514,9 +514,11 @@ class SpiceACL
 
                     // match the object without activitiy
                     $activities = $this->aclObject->getObjectActivities($bean, $aclObjectData);
-                    foreach ($activitiesAllowed as $allowedid => $allwoedaction) {
-                        if (!isset($activities[$allowedid])) {
-                            unset($activitiesAllowed[$allowedid]);
+                    if($activities !== false) {
+                        foreach ($activitiesAllowed as $allowedid => $allwoedaction) {
+                            if (in_array($allwoedaction, $activities) === false) {
+                                unset($activitiesAllowed[$allowedid]);
+                            }
                         }
                     }
 
