@@ -453,11 +453,15 @@ class SpiceUtils
     /**
      * This function will take a string that has tokens like {0}, {1} and will replace
      * those tokens with the args provided
-     * @param    $format string to format
+     * @param    $format string or null to format
      * @param    $args args to replace
      * @return array|string|string[] $result a formatted string
      */
-    public static function stringFormat(string $format, $args) {
+    public static function stringFormat($format, $args) {
+        if(empty($format)){
+            return '';
+        }
+
         $result = $format;
 
         /** Bug47277 fix.

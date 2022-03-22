@@ -2,13 +2,13 @@
  * @module ObjectComponents
  */
 import {
-    Component, ElementRef, ViewChild, ChangeDetectorRef
+    Component
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {footer} from '../../services/footer.service';
 import {language} from "../../services/language.service";
-import {modal} from '../../services/modal.service';
+import {toast} from "../../services/toast.service";
+
 
 /**
  * renders a list of tags int eh object page header and allows editing and management of the tags
@@ -24,7 +24,7 @@ export class ObjectPageHeaderTags {
      */
     public isEditing: boolean = false;
 
-    constructor(public model: model, public metadata: metadata, public language: language) {
+    constructor(public model: model, public metadata: metadata, public language: language, public toast: toast) {
     }
 
     /**
@@ -90,8 +90,16 @@ export class ObjectPageHeaderTags {
      * @param tag the tag
      */
     public addTag(tag) {
-        let tags = this.objecttags;
-        tags.push(tag);
+        // convert array tags to lower case for easier check
+        let tags = this.objecttags.map(tagV => tagV.toLowerCase());
+        // check if tag exists in array
+        if(tags.includes(tag.toLowerCase())) {
+            this.toast.sendToast(this.language.getLabel('LBL_TAG_EXISTS', '', 'short'), 'warning');
+            return;
+        } else {
+            this.objecttags.indexOf(tag);
+            tags.push(tag)
+        }
         this.model.setField('tags', JSON.stringify(tags));
     }
 }
