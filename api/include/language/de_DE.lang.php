@@ -1486,6 +1486,11 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'P2' => 'mittel',
         'P3' => 'niedrig',
     ];
+    $app_list_strings['serviceticket_type_dom'] = [
+        'request' => 'Anfrage',
+        'claim' => 'Beschwerde',
+        'congrats' => 'Lob',
+    ];
     $app_list_strings['serviceticket_resaction_dom'] = [
         '' => '',
         'credit' => 'Gutschrift ausstellen',
