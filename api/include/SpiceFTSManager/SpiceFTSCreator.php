@@ -43,11 +43,6 @@ class SpiceFTSCreator {
 
     }
 
-    public function displayDefaultConfForm(){
-        $sm = new Sugar_Smarty();
-        return $sm->display("modules/Administration/templates/FTSDefault.tpl");
-    }
-
 
     public function createDefaultConf(){
         //get modules which are already in sysfts

@@ -442,8 +442,9 @@ class SpiceInstaller
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
-        $vardef = new VardefManager();
-        $vardef->clearVardef();
+// will break installation under php8.1 and is unnecessary
+//        $vardef = new VardefManager();
+//        $vardef->clearVardef();
 
         // workaround create table from metadata definitions now
         foreach ($rel_dictionary as $rel_name => $rel_data) {
@@ -489,9 +490,9 @@ class SpiceInstaller
         ksort($globalBeanList);
 
         foreach ($globalBeanList as $dir => $bean) {
-            if ($bean == 'Administration') { // for core edition
-                require_once('metadata/system_config.php');
-            } else {
+//            if ($bean == 'Administration') { // for core edition
+//                require_once('metadata/system_config.php');
+//            } else {
                 // in core edition some modules might be missing
                 // ignore them when it encountered
                 if (file_exists('modules/' . $dir . '/vardefs.php')) {
@@ -499,7 +500,7 @@ class SpiceInstaller
                 } else {
                     continue;
                 }
-            }
+//            }
 
             if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
                 continue;
@@ -630,7 +631,7 @@ class SpiceInstaller
     {
         $confLoader = new SpiceUIConfLoader();
         // load some packages to enable a good start
-        $loadPackages = ['core', 'aclessentials', 'ftsreference'];
+        $loadPackages = ['core', 'aclessentials', 'ftsreference', 'schedulerjobs'];
         foreach ($loadPackages as $loadPackage) {
             $confLoader->loadPackage($loadPackage);
         }
@@ -673,11 +674,14 @@ class SpiceInstaller
 
 
         $db = $this->createDatabase($postData);
+        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
 
         $repair = new AdminController();
 
         if (!empty($db)) {
+            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->createTables($db);
+            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->insertDefaults($db);
             $this->createCurrentUser($db, $postData);
             $this->retrieveCoreandLanguages($db, $postData);

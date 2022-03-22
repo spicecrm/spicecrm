@@ -19,7 +19,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\Administration\Administration;
+//use SpiceCRM\modules\Administration\Administration;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 require_once('include/utils.php');
@@ -87,8 +87,8 @@ try {
     }
 
 
-    $system_config = new Administration();
-    $system_config->retrieveSettings();
+//    $system_config = new Administration();
+//    $system_config->retrieveSettings();
 
 
     $RESTManager->initialize($app);
