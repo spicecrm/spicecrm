@@ -32,11 +32,11 @@
                             <div class="slds-truncate">{{language.getFieldDisplayName(model.module, auditEntry.field_name)}}
                             </div>
                         </td>
-                        <td scope="row">
-                            <div class="slds-truncate">{{auditEntry.before_value_string}}</div>
+                        <td scope="row" class="slds-cell-wrap">
+                            <div class="slds-line-clamp" >{{auditEntry.before_value_string}}</div>
                         </td>
                         <td scope="row">
-                            <div class="slds-truncate">{{auditEntry.after_value_string}}</div>
+                            <div class="slds-line-clamp" >{{auditEntry.after_value_string}}</div>
                         </td>
                     </tr>
                 </ng-container>

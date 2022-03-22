@@ -6,7 +6,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Administration\Administration;
+//use SpiceCRM\modules\Administration\Administration;
 
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_CORE_WARNING);
 
@@ -39,7 +39,7 @@ SpiceDictionaryHandler::loadMetaDataFiles();
 UploadStream::register();
 SpiceModules::getInstance()->loadModules();
 SpiceDictionaryHandler::loadMetaDataDefinitions();
-$system_config = (new Administration())->retrieveSettings();
+//$system_config = (new Administration())->retrieveSettings();
 
 /**
  * ----- Run the Job Tasks -------
