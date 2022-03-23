@@ -142,19 +142,33 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     /**
      * call to load the initial values
      */
-    public async ngOnInit() {
+    public ngOnInit() {
         this.setStylesheetField();
         this.setStylesheetsToUse();
         this.setHtmlValue();
         if (!!this.fieldconfig?.useSignature) {
-            await this.loadMailboxSignature();
-            this.loadUserSignature();
             this.selectedSignatureId = this.model.getFieldValue("signature");
-            if(this.selectedSignatureId) {
-                this.renderSelectedSignature();
-            }
+            this.loadUserSignature();
+            this.modelChangesSubscriber();
+            this.loadMailboxSignature(this.model.getField('mailbox_id'), true);
         }
-        this.modelChangesSubscriber();
+    }
+
+    /**
+     * returns the scope for the mailbox field from the config
+     */
+    get scope() {
+        return this.fieldconfig.scope ? this.fieldconfig.scope : 'outboundsingle';
+    }
+
+    /**
+     * signature changed (if mailbox -> load signature)
+     */
+    public changeSignature() {
+        if(this.selectedSignatureId == 'mailbox') {
+            this.loadMailboxSignature(this.model.getField('mailbox_id'), true);
+        }
+        this.renderSelectedSignature();
     }
 
     /**
@@ -182,7 +196,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         this.value = tempElement.innerHTML;
 
         // set signature to non-db field (keep it after expanding)
-        this.model.setField("signature",this.selectedSignatureId);
+        this.model.setField("signature", this.selectedSignatureId);
 
         if (!this.selectedSignatureId) return;
 
@@ -218,26 +232,31 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * push the signature option
      * @private
      */
-    public loadMailboxSignature(): Promise<any> | void {
+    public loadMailboxSignature(mailboxId, render): Promise<any> | void {
 
         if (!this.isEditMode()) return;
 
-        const mailboxId = this.model.getField('mailbox_id');
         if (!mailboxId) return;
 
         const signatureContent: string = this.configurationService.getData('mailbox_signature_' + mailboxId);
         if (!signatureContent) {
             return lastValueFrom(this.backend.get('Mailboxes', mailboxId))
                 .then((data: any) => {
-                    if (!data.email_signature) return;
+                    // if (!data.email_signature) return;
                     this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
 
-                    this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
-                    // this.selectedSignatureId = mailboxId;
-                    // this.renderSelectedSignature();
+                    this.addSignature('mailbox', data.email_signature, 'LBL_MAILBOX_SIGNATURE');
+
+                    if(render) {
+                        this.renderSelectedSignature();
+                    }
                 });
         } else {
-            this.addSignature(mailboxId, signatureContent, 'LBL_MAILBOX');
+            this.addSignature('mailbox', signatureContent, 'LBL_MAILBOX');
+
+            if(render) {
+                this.renderSelectedSignature();
+            }
         }
     }
 
@@ -316,8 +335,8 @@ export class fieldRichText extends fieldGeneric implements OnInit {
             this.setHtmlValue();
         }));
         this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe(mailboxId => {
-            if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
-                this.loadMailboxSignature();
+            if (this.fieldconfig?.useSignature && !!mailboxId && this.model.getField('signature') == 'mailbox') {
+                this.loadMailboxSignature(mailboxId, true);
             }
         }));
     }
