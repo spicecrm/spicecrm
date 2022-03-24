@@ -212,6 +212,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemGooglePlacesSearch,
         SystemIcon,
         SystemFileIcon,
+        SystemIframeModal,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -321,6 +322,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemInputFile,
         SystemInputFileContent,
         SystemWrappedText
+
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
