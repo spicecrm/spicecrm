@@ -146,19 +146,12 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         this.setStylesheetField();
         this.setStylesheetsToUse();
         this.setHtmlValue();
+        this.modelChangesSubscriber();
         if (!!this.fieldconfig?.useSignature) {
             this.selectedSignatureId = this.model.getFieldValue("signature");
             this.loadUserSignature();
-            this.modelChangesSubscriber();
             this.loadMailboxSignature(this.model.getField('mailbox_id'), true);
         }
-    }
-
-    /**
-     * returns the scope for the mailbox field from the config
-     */
-    get scope() {
-        return this.fieldconfig.scope ? this.fieldconfig.scope : 'outboundsingle';
     }
 
     /**
