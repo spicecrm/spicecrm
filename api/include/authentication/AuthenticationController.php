@@ -66,6 +66,12 @@ class AuthenticationController
      * @var bool
      */
     public $systemTenantLegalNoticeAccepted = false;
+    /**
+     * holds a boolean of the wizard completion
+     *
+     * @var bool
+     */
+    public $systemTenantWizardCompleted = false;
 
     public $errorReason;
     public $errorCode;
@@ -374,6 +380,7 @@ class AuthenticationController
             $this->systemtenantid = $tenant->id;
             $this->systemtenantname = $tenant->name;
             $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
+            $this->systemTenantWizardCompleted = $tenant->wizard_completed;
         }
     }
 
@@ -412,6 +419,7 @@ class AuthenticationController
             'tenant_id' => $currentUser->systemtenant_id,
             'tenant_name' => $this->systemtenantname,
             'tenant_accepted_legal_notice' => $this->systemTenantLegalNoticeAccepted,
+            'tenant_wizard_completed' => $this->systemTenantWizardCompleted,
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
             'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
