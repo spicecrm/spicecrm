@@ -77,7 +77,23 @@ export class fieldCategoriesTree {
      * determine if we shoudl display level 4 and there is a level 4
      */
     get shifttree() {
-        return !!this.levels[2] && this.categories.filter(c => c.parent_id == this.levels[2]).length > 0;
+        return !!this.levels[1] && this.has4Levels(this.levels[1]);// this.categories.filter(c => c.parent_id == this.levels[2]).length > 0;
+    }
+
+    /**
+     * returns if we have 4 levels under the second level
+     * ensures that if we have 4 levels this is left open
+     *
+     * @param level1
+     * @private
+     */
+    private has4Levels(level1){
+        for(let level2 of this.categories.filter(c => c.parent_id == level1)){
+            if(this.categories.filter(c => c.parent_id == level2.id).length > 0) {
+                return true
+            };
+        }
+        return false;
     }
 
     public nodeStyle(n){
