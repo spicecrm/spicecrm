@@ -124,6 +124,7 @@ export class loginService {
                     this.session.authData.tenant_id = response.tenant_id;
                     this.session.authData.tenant_name = response.tenant_name;
                     this.session.authData.tenant_accepted_legal_notice = response.tenant_accepted_legal_notice;
+                    this.session.authData.tenant_wizard_completed = response.tenant_wizard_completed;
                     this.session.authData.userName = response.user_name;
                     this.session.authData.userimage = response.user_image;
                     this.session.authData.first_name = response.first_name;
