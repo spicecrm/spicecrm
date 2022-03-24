@@ -65,17 +65,25 @@ class SystemTenant extends SpiceBean
         $installer->insertDefaults($db);
         // create local and in tenant
 
-        $this->copyDataFromSource($config, $preserved_db_name);
-
         if (!$config['tenant']['disable_copy_config']) {
             $installer->retrieveCoreandLanguages($db, ['language' => ['language_code' => 'en_us']]);
         }
 
+        $this->copyMetadataFromSource($config, $preserved_db_name);
+
         $admin = new AdminController();
-        $admin->repairAndRebuildforInstaller();
+        $repairResponse = json_decode(
+            $admin->repairAndRebuildforInstaller()
+        );
+
+        // execute the repair query to insert the missing tables
+        if (!empty($repairResponse->sql)) {
+            $db->query($repairResponse->sql);
+        }
+
+        $this->copyModulesDataFromSource($config, $preserved_db_name);
 
         // set the fts setting
-
 
         $this->copyConfig($db, $config, 'fts');
         $this->copyConfig($db, $config, 'default_preferences');
@@ -83,7 +91,8 @@ class SystemTenant extends SpiceBean
         $this->copyConfig($db, $config, 'core');
 
         $db->transactionCommit();
-        // switch back to current dabatase
+
+        // switch back to current database
         DBManagerFactory::switchInstance($preserved_db_name, $config);
 
         $this->initialized = true;
@@ -93,17 +102,36 @@ class SystemTenant extends SpiceBean
     }
 
     /**
+     * copy metadata tables from source to tenant db
+     * @throws Exception
+     */
+    private function copyMetadataFromSource(array $config, string $sourceDBName)
+    {
+        $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getMetadataCopyTables());
+        $this->copyFromSource($config, $sourceDBName, $tables);
+    }
+
+    /**
+     * copy modules tables from source to tenant db
+     * @throws Exception
+     */
+    private function copyModulesDataFromSource(array $config, string $sourceDBName)
+    {
+        $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getModulesCopyTables());
+        $this->copyFromSource($config, $sourceDBName, $tables);
+    }
+
+    /**
      * copy data from the source to the tenant db
      * @param array $config
      * @param string $sourceDBName
+     * @param array $tables
      * @return void
      * @throws Exception
      */
-    public function copyDataFromSource(array $config, string $sourceDBName)
+    public function copyFromSource(array $config, string $sourceDBName, array $tables)
     {
         $sourceDB = DBManagerFactory::switchInstance($sourceDBName, $config);
-
-        $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getCopyTables());
 
         if (count($tables) == 0) return;
 
@@ -124,10 +152,10 @@ class SystemTenant extends SpiceBean
     }
 
     /**
-     * get a list of tables to be copied from the source to the tenant db
+     * get a list of metadata tables to be copied from the source to the tenant db
      * @return string[]
      */
-    public function getCopyTables(): array
+    public function getMetadataCopyTables(): array
     {
         return [
             'spiceaclmoduleactions',
@@ -140,6 +168,15 @@ class SystemTenant extends SpiceBean
             'spiceaclprofiles_spiceaclobjects',
             'spiceaclstandardactions',
         ];
+    }
+
+    /**
+     * get a list of module tables to be copied from the source to the tenant db
+     * @return string[]
+     */
+    public function getModulesCopyTables(): array
+    {
+        return [];
     }
 
     /**
