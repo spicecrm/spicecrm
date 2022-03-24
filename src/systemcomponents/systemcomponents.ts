@@ -213,6 +213,7 @@ import {SystemIframeModal} from "./components/systemiframemodal";
         SystemGooglePlacesSearch,
         SystemIcon,
         SystemFileIcon,
+        SystemIframeModal,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -322,6 +323,7 @@ import {SystemIframeModal} from "./components/systemiframemodal";
         SystemInputFile,
         SystemInputFileContent,
         SystemWrappedText
+
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
