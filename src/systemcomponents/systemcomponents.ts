@@ -167,6 +167,7 @@ import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferenc
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
 import {SystemPDFContainer} from "./components/systempdfcontainer";
+import {SystemIframeModal} from "./components/systemiframemodal";
 
 @NgModule({
     imports: [
@@ -212,6 +213,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemGooglePlacesSearch,
         SystemIcon,
         SystemFileIcon,
+        SystemIframeModal,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -321,6 +323,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
         SystemInputFile,
         SystemInputFileContent,
         SystemWrappedText
+
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
