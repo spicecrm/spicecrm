@@ -67,6 +67,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'type' => 'json',
             'vname' => 'LBL_ACCEPT_DATA'
         ],
+        'wizard_completed' => [
+            'name' => 'wizard_completed',
+            'type' => 'bool',
+            'vname' => 'LBL_WIZARD_COMPLETED',
+            'default' => 0
+        ],
         'users' => [
             'name' => 'users',
             'type' => 'link',
