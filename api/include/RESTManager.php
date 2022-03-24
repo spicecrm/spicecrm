@@ -499,7 +499,7 @@ class RESTManager
                     $routeObject->add(ValidationMiddleware::class);
                 }
 
-                if (!empty($authController->systemtenantid) && in_array($route['method'], ['put', 'post', 'delete']) && $route['function'] !== 'acceptLegalNotice') {
+                if (!$authController->isAdmin() && !empty($authController->systemtenantid) && in_array($route['method'], ['put', 'post', 'delete']) && $route['function'] !== 'acceptLegalNotice') {
                     $routeObject->add(TenantMiddleware::class);
                 }
 
