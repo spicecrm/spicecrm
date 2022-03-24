@@ -11,6 +11,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
 
 class SystemTenant extends SpiceBean
@@ -70,6 +71,8 @@ class SystemTenant extends SpiceBean
         }
 
         $this->copyMetadataFromSource($config, $preserved_db_name);
+
+        SpiceModules::getInstance()->loadModules(true);
 
         $admin = new AdminController();
         $repairResponse = json_decode(
