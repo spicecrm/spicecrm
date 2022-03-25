@@ -903,7 +903,7 @@ export class modellist implements OnDestroy {
             {
                 id: 'all',
                 global: '1',
-                name: `${this.language.getLabel('LBL_ALL')} ${this.language.getModuleName(this.module)}`,
+                name: `${this.language.getModuleCombinedLabel('LBL_ALL', this.module)}`,
                 listcomponent: 'ObjectList'
             }
         ];
@@ -913,7 +913,7 @@ export class modellist implements OnDestroy {
             this.standardLists.push({
                 id: 'owner',
                 global: '1',
-                name: `${this.language.getLabel('LBL_MY')} ${this.language.getModuleName(this.module)}`,
+                name: `${this.language.getModuleCombinedLabel('LBL_MY', this.module)}`,
                 listcomponent: 'ObjectList'
             });
         }
