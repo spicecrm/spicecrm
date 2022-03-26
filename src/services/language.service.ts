@@ -3,10 +3,11 @@
  */
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Subject} from 'rxjs';
+import {Subject, throwError} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
+import {broadcast} from './broadcast.service';
 import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
 
@@ -40,12 +41,29 @@ export class language {
      */
     public inlineEditEnabled: boolean = false;
 
+    /**
+     * the indexed db to proxy the language
+     *
+     * @private
+     */
+    private db: any;
+
     constructor(
         public http: HttpClient,
         public configurationService: configurationService,
         public session: session,
+        public broadcast: broadcast,
         public metadata: metadata
     ) {
+        // open the database
+        this.openDB('language').then(
+            db => {
+                this.db = db;
+            }
+        );
+
+        // subscribe to the broadcast to catch the logout
+        this.broadcast.message$.subscribe(message => this.handleLogout(message));
     }
 
     /**
@@ -66,7 +84,133 @@ export class language {
      * a getter for the current language
      */
     get currentlanguage() {
-        return this._currentlanguage;
+        return !!this._currentlanguage ? this._currentlanguage : localStorage.getItem('spiceuilanguage');
+    }
+
+    /**
+     * handle the message broadcast and if messagetype is logout reset the data
+     *
+     * @param message the message received
+     */
+    public handleLogout(message) {
+        if (message.messagetype == 'logout') {
+            this.clearDB();
+        }
+    }
+
+    /**
+     * opens an indexed DB in the browser to store the config data
+     *
+     * @param dbname
+     * @private
+     */
+    private openDB(dbname): Promise<IDBDatabase> {
+        return new Promise<IDBDatabase>((resolve, reject) => {
+            if (!indexedDB) {
+                reject('IndexedDB not available');
+            }
+            const request = indexedDB.open(dbname, 1);
+            let db: IDBDatabase;
+            request.onsuccess = (event: Event) => {
+                db = request.result;
+                resolve(db);
+            };
+            request.onerror = (event: Event) => {
+                reject(`IndexedDB error: ${request.error}`);
+            };
+            request.onupgradeneeded = (event: Event) => {
+                db = request.result;
+                db.createObjectStore("languages", {keyPath: "language_code"});
+                db.createObjectStore("applang", {keyPath: "language_code"});
+                db.createObjectStore("applist", {keyPath: "language_code"});
+                resolve(db);
+            };
+        });
+    }
+
+    /**
+     * writes a data set record to the db
+     * @param id
+     * @param data
+     */
+    public writeStore(store, data) {
+        // check that we have a db
+        if(!this.db) return;
+
+        this.db.transaction([store], "readwrite").objectStore(store).add(data);
+    }
+
+    /**
+     * reads a data set record from the DB
+     * @param id
+     */
+    public readStore(store, id?): Observable<any> {
+        // if we do not have a db return an empty array
+        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
+
+        // process normally
+        let retSubject = new Subject<any>();
+        let transaction = this.db.transaction([store], "readwrite");
+        let objectStore = transaction.objectStore(store);
+        let request = objectStore.get(id);
+        request.onerror = (event) => {
+            retSubject.error(false);
+        };
+        request.onsuccess = (event) => {
+            if(event.target.result?.data) {
+                retSubject.next(event.target.result.data);
+                retSubject.complete();
+            } else {
+                retSubject.error(false);
+            }
+        };
+        return retSubject.asObservable();
+    }
+
+
+    /**
+     * reads all records from the DB in form of an array with the data attribute
+     *
+     * @param id
+     */
+    public readStoreAll(store): Observable<any> {
+        // if we do not have a db return an empty array
+        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
+
+        // process normally
+        let retSubject = new Subject<any>();
+        let transaction = this.db.transaction([store], "readwrite");
+        let objectStore = transaction.objectStore(store);
+        let request = objectStore.getAll()
+        request.onerror = (event) => {
+            retSubject.error(false);
+        };
+        request.onsuccess = (event) => {
+            if(event.target.result && event.target.result.length > 0) {
+                retSubject.next(event.target.result);
+                retSubject.complete();
+            } else {
+                retSubject.error(false);
+            }
+        };
+        return retSubject.asObservable();
+    }
+
+
+    /**
+     * clears the db
+     *
+     * @private
+     */
+    public clearDB(){
+        // only if we do have a db
+        if(!this.db) return;
+
+        // process the cleanup
+        let transaction = this.db.transaction(["languages", "applang", "applist"], "readwrite");
+        transaction.objectStore('languages').clear();
+        transaction.objectStore('applang').clear();
+        transaction.objectStore('applist').clear();
     }
 
     /**
@@ -75,6 +219,35 @@ export class language {
      * @param loadhandler the loadhandler from the loader service
      */
     public getLanguage(loadhandler: Subject<string>) {
+        this.readStoreAll('languages').subscribe({
+            next: (languages) => {
+                this.languagedata.languages = {available: languages};
+                this.readStore('applang', this.currentlanguage).subscribe({
+                    next: (applang) => {
+                        this.languagedata.applang = applang;
+                    }
+                });
+                this.readStore('applist', this.currentlanguage).subscribe({
+                    next: (applist) => {
+                        this.languagedata.applist = applist;
+                    }
+                });
+
+                loadhandler.next('getLanguage');
+            },
+            error: () => {
+                this.loadLanguage().subscribe(() => {
+
+                    // write to the database
+                    for(let language of this.languagedata.languages.available){
+                        this.writeStore('languages', language);
+                    }
+
+                    loadhandler.next('getLanguage');
+                });
+            }
+        })
+        /*
         if (sessionStorage[window.btoa('languageData' + this.session.authData.sessionId)] && sessionStorage[window.btoa('languageData' + this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
             let response = this.session.getSessionData('languageData');
             this.languagedata = response;
@@ -83,10 +256,44 @@ export class language {
             }
             loadhandler.next('getLanguage');
         } else {
-            this.loadLanguage().subscribe(() => {
-                loadhandler.next('getLanguage');
-            });
+
         }
+        */
+    }
+
+    /**
+     * switches the language
+     * @param language
+     */
+    public switchLanguage(language): Observable<any>{
+        let retSubject = new Subject();
+        this.currentlanguage = language;
+        this.readStore('applang', language).subscribe({
+            next: (applang) => {
+                this.languagedata.applang = applang;
+                this.readStore('applist', language).subscribe({
+                    next: (applist) => {
+                        this.languagedata.applist = applist;
+
+                        // emit that the language has changed
+                        this.currentlanguage$.emit(this.currentlanguage);
+
+                        retSubject.next(true);
+                        retSubject.complete();
+                    }
+                });
+            },
+            error: () => {
+
+                this.loadLanguage().subscribe({
+                    next: () => {
+                        retSubject.next(true);
+                        retSubject.complete();
+                    }
+                });
+            }
+        })
+        return retSubject.asObservable();
     }
 
     /**
@@ -94,12 +301,6 @@ export class language {
      */
     public loadLanguage( setOnBackend = true ): Observable<any> {
         let retSubject = new Subject();
-
-        if (this.currentlanguage == '') {
-            if (localStorage.getItem('spiceuilanguage')) {
-                this.currentlanguage = localStorage.getItem('spiceuilanguage');
-            }
-        }
 
         // consturct the URL
         let url = this.configurationService.getBackendUrl() + '/system/language';
@@ -112,8 +313,14 @@ export class language {
         ).subscribe(
             (res: any) => {
                 let response = res.body;
-                this.session.setSessionData('languageData', response);
+                // this.session.setSessionData('languageData', response);
+
+                // set the response
                 this.languagedata = response;
+
+                // write to the store
+                this.writeStore('applang', {language_code: this.currentlanguage, data: this.languagedata.applang});
+                this.writeStore('applist', {language_code: this.currentlanguage, data: this.languagedata.applist});
 
                 if (this.currentlanguage == '') {
                     this.currentlanguage = response.languages.default;

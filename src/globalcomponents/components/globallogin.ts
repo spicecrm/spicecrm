@@ -108,19 +108,25 @@ export class GlobalLogin {
             // try to login with the found token
             this.loginService.oauthToken = sessionStorage['OAuth-Token'];
             this.loginService.oauthIssuer = 'SpiceCRM';
-            this.loginService.login().subscribe(
-                res => {
+            this.loginService.login(false).subscribe({
+                next: (res) => {
                     this.broadcast.broadcastMessage('login');
-                    this.loginService.load();
+                    // this.loginService.load();
                 },
-                err => {
+                error: (err) => {
                     this.loginService.oauthToken = null;
                     this.loginService.oauthIssuer = null;
+
+                    // set that we propmt the user
                     this.promptUser = true;
                 }
-            );
+            });
         } else {
+
+            // set that we propmt the user
             this.promptUser = true;
+
+
 
             let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
             let selectedsite = sessionStorage.getItem(siteHash);
@@ -167,15 +173,15 @@ export class GlobalLogin {
                 this.loginService.oauthToken = null;
                 this.loginService.oauthIssuer = null;
             }
-            this.loginService.login().subscribe(
-                success => {
+            this.loginService.login().subscribe({
+                next: (success) => {
                     // clear all toasts
                     this.toast.clearAll();
 
                     // reset the logging in state
                     this.loggingIn = false;
                 },
-                error => {
+                error: (error) => {
                     switch (error.errorCode) {
                         // invalid password/user
                         case 1:
@@ -189,11 +195,10 @@ export class GlobalLogin {
                             this.messageId = this.toast.sendToast('error logging on', 'error', error.message);
                             break;
                     }
-
                     // reset the logging in state
                     this.loggingIn = false;
                 }
-            );
+            });
         }
     }
 
