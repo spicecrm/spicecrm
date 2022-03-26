@@ -13,7 +13,6 @@ import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
-import {take} from 'rxjs/operators';
 
 interface loginAuthDataIf {
     userName: string;
@@ -23,8 +22,15 @@ interface loginAuthDataIf {
 @Injectable()
 export class loginService {
 
+    /**
+     * keeps the url we originally come from so in case the user is not authenticate
+     * we can then redirect the user to that URL
+     */
     public redirectUrl: string = '';
 
+    /**
+     * the auth data
+     */
     public authData: loginAuthDataIf = {
         userName: '',
         password: ''
@@ -64,7 +70,7 @@ export class loginService {
     /**
      * logs into the backend
      */
-    public login(): Observable<boolean> {
+    public login(refresh: boolean = true): Observable<boolean> {
 
         // the impersonateion name
         let impersonationUser: string;
@@ -105,8 +111,8 @@ export class loginService {
         let params: any = {};
         if ( impersonationUser ) params.impersonationuser = encodeURIComponent( impersonationUser );
         this.http.get(loginUrl, { headers, params })
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     if (res.result == false) {
                         this.toast.sendToast('error authenticating', 'error', res.error);
                     }
@@ -142,12 +148,12 @@ export class loginService {
                     this.broadcast.broadcastMessage('login');
 
                     // load the UI
-                    this.load();
+                    this.load(refresh);
 
                     loginSuccess.next(true);
                     loginSuccess.complete();
                 },
-                (err: any) => {
+                error: (err: any) => {
                     switch (err.status) {
                         case 401:
                             loginSuccess.error(err.error.error);
@@ -158,7 +164,8 @@ export class loginService {
                             break;
                     }
                     loginSuccess.complete();
-                });
+                }
+            });
 
         return loginSuccess.asObservable();
     }
@@ -193,8 +200,8 @@ export class loginService {
         }
 
         this.http.get(loginUrl, {headers})
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     let response = res;
                     this.session.authData.sessionId = response.id;
 
@@ -207,7 +214,7 @@ export class loginService {
                     // broadcast that we have a relogin
                     this.broadcast.broadcastMessage('relogin');
                 },
-                (err: any) => {
+                error: (err: any) => {
                     switch (err.status) {
                         case 401:
                             loginSuccess.error(err.error.error);
@@ -218,8 +225,8 @@ export class loginService {
                             break;
                     }
                     loginSuccess.complete();
-                });
-
+                }
+            });
         return loginSuccess.asObservable();
     }
 
@@ -240,8 +247,10 @@ export class loginService {
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
             );
-            this.http.post(renewUrl, {newpwd: newPassword}, {headers}).subscribe(res => {
-                // do nmothing
+            this.http.post(renewUrl, {newpwd: newPassword}, {headers}).subscribe({
+                next: res => {
+                    // do nmothing
+                }
             });
         }
     }
@@ -249,8 +258,8 @@ export class loginService {
     /**
      * starts the loaded upon successful login
      */
-    public load() {
-        this.loader.load().subscribe((val) => {
+    public load(refresh: boolean = true) {
+        this.loader.load(refresh).subscribe((val) => {
             this.redirect(val);
         });
     }

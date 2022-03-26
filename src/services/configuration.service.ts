@@ -9,7 +9,7 @@ import {broadcast} from './broadcast.service';
 import {Router} from '@angular/router';
 import {HttpClient} from "@angular/common/http";
 import {Title} from "@angular/platform-browser";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable, Subject, throwError} from "rxjs";
 
 import {Md5} from "ts-md5";
 
@@ -67,6 +67,13 @@ export class configurationService {
 
     public locationHash: string;
 
+    /**
+     * handler to the indexed DB
+     *
+     * @private
+     */
+    private db: any;
+
     constructor(public http: HttpClient,
                 public session: session,
                 public broadcast: broadcast,
@@ -75,6 +82,21 @@ export class configurationService {
 
         // add a new behaviour subject
         this.loaded$ = new BehaviorSubject<boolean>(false);
+
+        // open a DB for the config
+        this.openDB('config').then(
+            db => {
+                this.db = db;
+                // reinitialize from the database
+                this.readStoreAll('appdata').subscribe({
+                    next: (data) => {
+                        for(let d of data){
+                            this.appdata[d.id] = d.data;
+                        }
+                    }
+                })
+            }
+        );
 
         this.locationHash = Md5.hashStr('spiceuisites' + window.location.origin + window.location.pathname).toString();
         let storedSites = localStorage.getItem(this.locationHash);
@@ -150,6 +172,7 @@ export class configurationService {
                 }
             );
 
+
     }
 
     /**
@@ -163,11 +186,126 @@ export class configurationService {
         }
     }
 
+
+    /**
+     * opens an indexed DB in the browser to store the config data
+     *
+     * @param dbname
+     * @private
+     */
+    private openDB(dbname): Promise<IDBDatabase> {
+        return new Promise<IDBDatabase>((resolve, reject) => {
+            if (!indexedDB) {
+                reject('IndexedDB not available');
+            }
+            const request = indexedDB.open(dbname, 2);
+            let db: IDBDatabase;
+            request.onsuccess = (event: Event) => {
+                db = request.result;
+                resolve(db);
+            };
+            request.onerror = (event: Event) => {
+                reject(`IndexedDB error: ${request.error}`);
+            };
+            request.onupgradeneeded = (event: Event) => {
+                db = request.result;
+                db.createObjectStore("appdata", {keyPath: "id"});
+                resolve(db);
+            };
+        });
+    }
+
+    /**
+     * writes a data set record to the db
+     * @param id
+     * @param data
+     */
+    public writeStore(store, id, data) {
+        // just return if we do not have a db
+        if(!this.db) return;
+
+        // process the write
+        this.db.transaction([store], "readwrite").objectStore(store).add({data, id});
+    }
+
+    /**
+     * reads a data set record from the DB
+     * @param id
+     */
+    public readStore(store, id?): Observable<any> {
+        // if we do not have a db return an empty array
+        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
+
+        let retSubject = new Subject<any>();
+        let transaction = this.db.transaction([store], "readwrite");
+        let objectStore = transaction.objectStore(store);
+        let request = objectStore.get(id);
+        request.onerror = (event) => {
+            retSubject.error(false);
+        };
+        request.onsuccess = (event) => {
+            if(event.target.result?.data) {
+                retSubject.next(event.target.result.data);
+                retSubject.complete();
+            } else {
+                retSubject.error(false);
+            }
+        };
+        return retSubject.asObservable();
+    }
+
+    /**
+     * reads all records from the DB in form of an array with the data attribute
+     *
+     * @param id
+     */
+    public readStoreAll(store): Observable<any> {
+        // if we do not have a db return an empty array
+        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
+
+        // process the request
+        let retSubject = new Subject<any>();
+        let transaction = this.db.transaction([store], "readwrite");
+        let objectStore = transaction.objectStore(store);
+        let request = objectStore.getAll()
+        request.onerror = (event) => {
+            retSubject.error(false);
+        };
+        request.onsuccess = (event) => {
+            if(event.target.result && event.target.result.length > 0) {
+                let records = [];
+                for(let r of event.target.result){
+                    records.push(r.data);
+                }
+                retSubject.next(records);
+                retSubject.complete();
+            } else {
+                retSubject.error(false);
+            }
+        };
+        return retSubject.asObservable();
+    }
+
+    /**
+     * clears the db
+     *
+     * @private
+     */
+    public clearDB(){
+        // only if we have a database
+        if(!this.db) return;
+
+        // clear the database
+        let transaction = this.db.transaction(["appdata"], "readwrite");
+        transaction.objectStore('appdata').clear();
+    }
+
     /**
      * resets the complete app data object
      */
     public reset() {
         this.appdata = {};
+        this.clearDB();
     }
 
     public setSiteData(data) {
@@ -320,6 +458,9 @@ export class configurationService {
     public setData(key, data) {
         // console.log('setData',key,data);
         this.appdata[key] = data;
+
+        // write also to the store
+        this.writeStore('appdata', key, data);
 
         // emit the key
         this.datachanged$.emit(key);
