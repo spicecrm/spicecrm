@@ -88,8 +88,8 @@ export class GSuiteLoginPane {
 
             this.http.get(this.configuration.getBackendUrl() + '/authentication/login', {
                 headers
-            }).subscribe(
-                (res: any) => {
+            }).subscribe({
+                next: (res: any) => {
                     let repsonse = res;
                     this.session.authData.sessionId = repsonse.id;
                     this.session.authData.userId = repsonse.userid;
@@ -106,13 +106,14 @@ export class GSuiteLoginPane {
                     // this.configuration.data.backendUrl = backendurl;
                     this.loginService.load();
                 },
-                (err: any) => {
+                error: (err: any) => {
                     switch (err.status) {
                         case 401:
                             this.promptUser = true;
                             break;
                     }
-                });
+                }
+            });
         } else {
             this.goToSettings();
         }
@@ -128,14 +129,14 @@ export class GSuiteLoginPane {
         if (this.username && this.username.length > 0 && this.password && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
-            this.loginService.login().subscribe(
-                () => {
+            this.loginService.login(true).subscribe({
+                next: () => {
                     // todo handle login
                 },
-                () => {
+                error: () => {
                     this.goToSettings();
                 }
-            );
+            });
         }
     }
 

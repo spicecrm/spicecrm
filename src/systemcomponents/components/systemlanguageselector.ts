@@ -3,6 +3,7 @@
  */
 import {Component, EventEmitter, Input, OnInit} from "@angular/core";
 import {language} from "../../services/language.service";
+import {modal} from "../../services/modal.service";
 
 declare var _: any;
 
@@ -32,7 +33,7 @@ export class SystemLanguageSelector implements OnInit{
      */
     @Input() public displaylabel: boolean = true;
 
-    constructor(public language: language) {
+    constructor(public language: language, public modal: modal) {
         this.compId = _.uniqueId();
     }
 
@@ -59,9 +60,24 @@ export class SystemLanguageSelector implements OnInit{
      * @param value
      */
     set currentlanguage(value) {
-        this.language.currentlanguage = value;
-        this.language.loadLanguage();
+        let loadModal = this.modal.await('LBL_LOADING');
+        this.language.switchLanguage(value).subscribe({
+            next: () => {
+                loadModal.emit(true);
+            }
+        });
         this.selected.emit(true);
     }
 
+    /**
+     * reloads the current language
+     */
+    public reloadCurrentLanguage(){
+        let loadModal = this.modal.await('LBL_LOADING');
+        this.language.loadLanguage(false).subscribe({
+            next: () => {
+                loadModal.emit(true);
+            }
+        });
+    }
 }
