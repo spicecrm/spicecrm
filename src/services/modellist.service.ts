@@ -633,14 +633,14 @@ export class modellist implements OnDestroy {
 
         if (!this.useCache) return;
 
-        this.configuration.setData('lastlist_' + this.module, {
+        this.configuration.setData('lastlist' + this.module, JSON.stringify({
             listdata: this.listData,
             sortarray: this.sortArray,
             searchterm: this.searchTerm,
             searchaggregates: this.searchAggregates,
             selectedaggregates: this.selectedAggregates,
             buckets: this.buckets
-        });
+        }));
     }
 
     /**
@@ -649,7 +649,7 @@ export class modellist implements OnDestroy {
      */
     public loadFromSession(): boolean {
         this.useCache = true;
-        let sessionData = this.configuration.getData('lastlist_' + this.module);
+        let sessionData = JSON.parse(this.configuration.getData('lastlist' + this.module));
         if (!!sessionData && sessionData.buckets?.bucketfield == this.buckets?.bucketfield) {
             this.listData = sessionData.listdata;
             this.searchTerm = sessionData.searchterm;
