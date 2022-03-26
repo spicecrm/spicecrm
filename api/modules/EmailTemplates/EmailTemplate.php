@@ -77,7 +77,7 @@ class EmailTemplate extends SugarBean {
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues ),
             # 'body_html' => '<style>'.$this->getStyle().'</style>'.$this->parseField('body_html', $bean, $additionalValues ),
-            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues ),
+            'body_html' => '<head><style>'.$this->getStyle().'</style></head>'.$this->parseHTMLTextField('body_html', $bean, $additionalValues ),
         ];
         $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
 
