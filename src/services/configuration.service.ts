@@ -225,7 +225,8 @@ export class configurationService {
         if(!this.db) return;
 
         // process the write
-        this.db.transaction([store], "readwrite").objectStore(store).add({data, id});
+        id = id.toLowerCase();
+        this.db.transaction([store], "readwrite").objectStore(store).put({data, id});
     }
 
     /**
