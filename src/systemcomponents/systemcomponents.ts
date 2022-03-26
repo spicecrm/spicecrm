@@ -167,6 +167,7 @@ import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferenc
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
 import {SystemPDFContainer} from "./components/systempdfcontainer";
+import {SystemIframeModal} from "./components/systemiframemodal";
 import {SystemInputColor} from "./components/systeminputcolor";
 
 @NgModule({
@@ -213,6 +214,7 @@ import {SystemInputColor} from "./components/systeminputcolor";
         SystemGooglePlacesSearch,
         SystemIcon,
         SystemFileIcon,
+        SystemIframeModal,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,

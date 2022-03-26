@@ -123,6 +123,12 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     public setDisplayValue() {
         this.displayValue = this.model.getField('recipient_addresses')
             .filter(address => {
+                if(address.address_type == 'cc') {
+                    this.showCCField = true;
+                }
+                if(address.address_type == 'bcc') {
+                    this.showBCCField = true;
+                }
                 return this.fieldconfig.addresstype == 'to' ? ['to', 'cc', 'bcc'].indexOf(address.address_type) > -1 : address.address_type == (this.fieldconfig.addresstype || 'from');
 
             });
