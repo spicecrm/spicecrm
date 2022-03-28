@@ -276,7 +276,7 @@ export class configurationService {
             if(event.target.result && event.target.result.length > 0) {
                 let records = [];
                 for(let r of event.target.result){
-                    records.push(r.data);
+                    records.push(r);
                 }
                 retSubject.next(records);
                 retSubject.complete();
