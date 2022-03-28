@@ -14,23 +14,21 @@ class APILogEntryHandler
 {
     private $logEntry;
     private $startingTime;
-    private $logging = false;
 
     private $responseWithHeaders = false;
+
+    private $logtables = [];
 
     const DIRECTION_INBOUND  = 'I';
     const DIRECTION_OUTBOUND = 'O';
 
     static function getTimestamp(){
-        if(function_exists('hrtime' && 1 == 2)) {
-            return  hrtime(true);
-        } else {
-            $thisMS = round(microtime() * 1000);
-            while (strlen($thisMS) < 3)
-                $thisMS = '0' . $thisMS;
-
-            return   time() . $thisMS;
+        $thisMS = round(microtime() * 1000);
+        while (strlen($thisMS) < 3) {
+            $thisMS = '0' . $thisMS;
         }
+
+        return   time() . $thisMS;
     }
 
     /**
@@ -107,38 +105,44 @@ class APILogEntryHandler
     }
 
     /**
-     * Checks the config table whether or not should the request be logged.
+     * Checks the config table wether or not the request should be logged.
      * And depending on the results logs the request or not.
      *
+     * @param bool $force if set to true forces the entry to be written
+     * @param $logtable if force is set a logtable to write to can be specified. If force is not set this is ignored
+     *
+     * @return void
      * @throws \Exception
      */
-    public function writeOutogingLogEntry(bool $force = false): void {
-        $this->logging = false;
-        $logEntry = false;
+    public function writeOutogingLogEntry(bool $force = false, $logtable = ''): void {
         $spice_config = SpiceConfig::getInstance()->config;
+
+        if($force === true ?? $logtable){
+            $this->logtables[] = $logtable;
+        }
+
         if (!$force && ($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance()->tableExists('sysapilogconfig'))) {
             // check if this request has to be logged by some rules...
-            $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE
+            $sql = "SELECT count(id) cnt, logtable FROM sysapilogconfig WHERE
               (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND
               (method = '{$this->logEntry->method}' OR method = '*') AND
               (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND
               (ip = '{$this->logEntry->ip}' OR ip = '*') AND
-              is_active = 1";
+              is_active = 1 GROUP BY logtable";
             $res = DBManagerFactory::getInstance()->query($sql);
-            $row = DBManagerFactory::getInstance()->fetchByAssoc($res);
-            if ($row['cnt'] > 0) {
-                $logEntry = true;
+            while($row = DBManagerFactory::getInstance()->fetchByAssoc($res)){
+                if(array_search($row['logtable'] ?: 'sysapilog',$this->logtables) === false) $this->logtables[] = $row['logtable'] ?: 'sysapilog';
             }
         }
 
         // write the log
-        if($force === true || $logEntry === true){
+        if(count($this->logtables) > 0){
             $this->logging = true;
             $this->logEntry->id = SpiceUtils::createGuid();
-            $id = DBManagerFactory::getInstance('spicelogger')->insertQuery('sysapilog', (array) $this->logEntry);
+            foreach ($this->logtables as $lt) {
+                DBManagerFactory::getInstance('spicelogger')->insertQuery($lt, (array)$this->logEntry);
+            }
         }
-
-        $this->logging = false;
     }
 
     /**
@@ -183,9 +187,10 @@ class APILogEntryHandler
             $this->logEntry->transaction_id = $transactionId;
         }
 
-
         // update the log...
-        // $result = DBManagerFactory::getInstance()->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array) $this->logEntry);
+        foreach ($this->logtables as $lt) {
+            DBManagerFactory::getInstance('spicelogger')->updateQuery($lt, ['id' => $this->logEntry->id], (array)$this->logEntry);
+        }
     }
 
     /**
