@@ -175,7 +175,7 @@ class ServiceCalendar extends SugarBean
      *
      * @param $date
      */
-    private function getNextWorkingStartTime($date = null)
+    public function getNextWorkingStartTime($date = null)
     {
 
         // create a new Startdate time object
