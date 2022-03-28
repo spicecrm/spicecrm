@@ -66,7 +66,7 @@ class ServiceCalendar extends SugarBean
 
         $this->workingtimes = [];
         $this->workingdays = [];
-        $workingTimes = $db->query("SELECT id, dayofweek, timestart, timeend FROM servicecalendartimes WHERE servicecalendar_id = '$this->id' ORDER BY dayofweek, timestart");
+        $workingTimes = $db->query("SELECT id, dayofweek, timestart, timeend FROM servicecalendartimes WHERE servicecalendar_id = '$this->id' AND deleted = 0 ORDER BY dayofweek, timestart");
         while ($workingTime = $db->fetchByAssoc($workingTimes)) {
             $this->workingtimes[] = (object)$workingTime;
             if (array_search($workingTime['dayofweek'], $this->workingdays) === false) $this->workingdays[] = $workingTime['dayofweek'];
@@ -171,15 +171,16 @@ class ServiceCalendar extends SugarBean
     /**
      * returns the next working timestart date
      *
-     * @ToDo: Test ... this function is not yet tested
+     * @ToDo: Test ... this function (is not yet tested) has been tested for PCS/Friesach
      *
      * @param $date
      */
     public function getNextWorkingStartTime($date = null)
     {
-
         // create a new Startdate time object
         $startDate = new DateTime($date ? $date->format('c') : '');
+        // set the start date to the timezone of the service calendar
+        $startDate->setTimezone( new DateTimeZone($this->timezone ));
 
         // check if we have a workingday .. otherwise move one day and set to 00:00
         while (!$this->isWorkingDay($startDate) || $this->isHoliday($startDate)) {
@@ -195,7 +196,8 @@ class ServiceCalendar extends SugarBean
         // the simples of while loops
         while (!$this->checkCalendartimes($startDate)) ;
 
-        // return the startdate
+        // return the start date (converted to the timezone of the given function parameter or UTC)
+        $startDate->setTimezone( $date ? $date->getTimezone() : new DateTimeZone('UTC'));
         return $startDate;
     }
 
