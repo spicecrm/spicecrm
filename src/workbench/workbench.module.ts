@@ -86,6 +86,7 @@ import {MailboxesA1SmsTrafficManager} from "./components/mailboxesa1smstrafficma
 import {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
 import {MailboxesEWSTrafficManager} from "./components/mailboxesewstrafficmanager";
 import {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
+import {MailboxesImpersonatedEWSTrafficManager} from "./components/mailboxesimpersonatedewstrafficmanager";
 import {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
 import {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
@@ -135,7 +136,6 @@ import {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilder
 import {DashletGenerator} from "./components/dashletgenerator";
 import {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
-import {MailboxesImpersonatedEWSTrafficManager} from "./components/mailboxesimpersonatedewstrafficmanager";
 import {APIlogConfig} from "./components/apilogconfig";
 
 @NgModule({
@@ -256,6 +256,7 @@ import {APIlogConfig} from "./components/apilogconfig";
         APIlogConfig,
         APIlogViewer,
         APIlogViewerModal,
+        APIlogConfig,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
         ModuleFilterBuilderFilterDetails,

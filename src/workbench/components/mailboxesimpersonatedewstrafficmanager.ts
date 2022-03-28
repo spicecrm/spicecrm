@@ -13,7 +13,7 @@ import {Observable, Subject} from "rxjs";
  * renders the config component for the mailgun transport handler
  */
 @Component({
-    templateUrl: "../../workbench/templates/mailboxesimpersonatedewstrafficmanager.html",
+    templateUrl: "../templates/mailboxesimpersonatedewstrafficmanager.html",
 })
 export class MailboxesImpersonatedEWSTrafficManager {
     constructor(
