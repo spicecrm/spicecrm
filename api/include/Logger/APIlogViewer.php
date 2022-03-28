@@ -62,7 +62,7 @@ class APIlogViewer {
         $logtable = 'sysapilog';
         if($queryParams['logtable'] && $queryParams['logtable'] != 'sysapilog'){
             $logtables = $this->getLogTables();
-            if(array_search($queryParams['logtable'], $logtables)){
+            if(array_search($queryParams['logtable'], $logtables) === false){
                 throw (new NotFoundException("Logtable not found"))->setLookedFor($logtable);
             }
             $logtable = $queryParams['logtable'];
