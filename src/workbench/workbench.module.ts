@@ -144,6 +144,7 @@ import /*embed*/ {DashletGenerator} from "./components/dashletgenerator";
 import /*embed*/ {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 import /*embed*/ {MailboxesImpersonatedEWSTrafficManager} from "./components/mailboxesimpersonatedewstrafficmanager";
+import {APIlogConfig} from "./components/apilogconfig";
 
 @NgModule({
     imports: [
@@ -260,6 +261,7 @@ import /*embed*/ {MailboxesImpersonatedEWSTrafficManager} from "./components/mai
         CRMLogViewerList,
         CRMLogViewerModal,
         CRMLogViewerListModal,
+        APIlogConfig,
         APIlogViewer,
         APIlogViewerModal,
         ModuleFilterBuilder,
