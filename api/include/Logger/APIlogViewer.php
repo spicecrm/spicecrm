@@ -118,7 +118,7 @@ class APIlogViewer {
         // check if we have a specific log table
         if($logtable && $logtable != 'sysapilog'){
             $logtables = $this->getLogTables();
-            if(array_search($logtable, $logtables)){
+            if(array_search($logtable, $logtables) === false){
                 throw (new NotFoundException("Logtable not found"))->setLookedFor($logtable);
             }
         } else {
