@@ -1086,9 +1086,9 @@ export class modellist implements OnDestroy {
         if (this.getGlobal()) {
             switch (action) {
                 case 'delete':
-                    return this.canDelete() && this.session.authData.admin;
+                    return this.canDelete() && (this.session.authData.admin || this.metadata.checkModuleAcl(this.module, 'moduleadmin'));
                 case 'edit':
-                    return this.session.authData.admin;
+                    return this.session.authData.admin || this.metadata.checkModuleAcl(this.module, 'moduleadmin');
                 default:
                     return false;
             }
