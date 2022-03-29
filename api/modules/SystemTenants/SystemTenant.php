@@ -9,6 +9,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSRESTManager;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -94,6 +95,10 @@ class SystemTenant extends SpiceBean
         $this->copyConfig($db, $config, 'core');
 
         $db->transactionCommit();
+
+        // initialize elastic search
+        $ftsManager = new SpiceFTSRESTManager();
+        $ftsManager->initialize();
 
         // switch back to current database
         DBManagerFactory::switchInstance($preserved_db_name, $config);
