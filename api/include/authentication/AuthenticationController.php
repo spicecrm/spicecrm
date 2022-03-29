@@ -380,7 +380,7 @@ class AuthenticationController
             $this->systemtenantid = $tenant->id;
             $this->systemtenantname = $tenant->name;
             $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
-            $this->systemTenantWizardCompleted = $tenant->wizard_completed;
+            $this->systemTenantWizardCompleted = boolval($tenant->wizard_completed);
         }
     }
 
