@@ -19,48 +19,6 @@
     </div>
 </div>
 <div class="slds-form-element slds-p-vertical--small">
-    <label class="slds-form-element__label">Database Access User</label>
-    <div class="slds-form-element__control">
-        <div class="slds-select_container">
-            <select class="slds-select" [(ngModel)]="spiceinstaller.dbaccessuser">
-                <option value="admin">Database Admin</option>
-                <option value="newdbuser">New User</option>
-                <option value="existinguser">Existing User</option>
-            </select>
-        </div>
-    </div>
-</div>
-<div *ngIf="spiceinstaller.dbaccessuser == 'newdbuser'" class="slds-form-element slds-p-vertical--small">
-    <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !userNameCondition}">
-        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Database User Name</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.new_db_user_name"/>
-            <div *ngIf="!userNameCondition" class="slds-form-element__help">This field is required</div>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--small">
-        <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Database User Password</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.new_db_password"/>
-        </div>
-    </div>
-</div>
-<div *ngIf="spiceinstaller.dbaccessuser == 'existinguser'" class="slds-form-element slds-p-vertical--small">
-    <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !userNameCondition}">
-        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Database User Name</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.ext_db_user_name"/>
-            <div *ngIf="!userNameCondition" class="slds-form-element__help">This field is required</div>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--small">
-        <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Database User Password</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.ext_db_password"/>
-        </div>
-    </div>
-</div>
-<div class="slds-form-element slds-p-vertical--small">
     <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Port</label>
     <div class="slds-form-element__control">
         <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_port"/>
