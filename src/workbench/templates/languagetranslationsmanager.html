@@ -29,7 +29,7 @@
             <div class="slds-select_container" style="min-width: 150px;">
                 <select class="slds-select" [(ngModel)]="selectedLanguage" (change)="getTranslations()" [disabled]="isLoading">
                     <option></option>
-                    <option *ngFor="let lang of languages" [value]="lang.language">{{lang.text}}</option>
+                    <option *ngFor="let lang of languages" [ngValue]="lang.language">{{lang.text}}</option>
                 </select>
             </div>
         </div>
@@ -46,7 +46,7 @@
     <div *ngIf="isLoading" class="slds-align_absolute-center" style="height: 100%;">
         <system-spinner></system-spinner>
     </div>
-    <div *ngFor="let label of labels | slice:0:20; trackBy: trackByFn">
+    <div *ngFor="let label of labels | slice:0:100; trackBy: trackByFn">
         <div class="slds-card slds-m-around--small">
             <div class="slds-card__header">
                 <h2 class="slds-text-heading--small">
@@ -87,6 +87,9 @@
                 </div>
                 <div class="slds-grid slds-p-top--x-small">
                     <div class="slds-col--bump-left">
+                        <button *ngIf="cantranslate" type="button" class="slds-button slds-button--neutral" (click)="translate(label)">
+                            <system-label label="LBL_GOOGLE_TRANSLATE"></system-label>
+                        </button>
                         <button type="button" class="slds-button slds-button--brand" [disabled]="!canSave(label)" (click)="save(label)">
                             <system-label label="LBL_SAVE"></system-label>
                         </button>
