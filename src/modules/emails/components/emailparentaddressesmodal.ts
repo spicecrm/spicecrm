@@ -62,7 +62,7 @@ export class EmailParentAddressesModal implements OnInit {
                 loading.emit(true);
             },
             () => {
-                this.toast.sendToast('LBL_SYSTEM_ERROR', 'error');
+                this.toast.sendToast('LBL_NO_RELATED_EMAILADDRESSES_FOUND', 'error');
                 loading.emit(true);
                 this.close();
             }
