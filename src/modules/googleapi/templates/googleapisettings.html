@@ -7,11 +7,15 @@
 <div [system-overlay-loading-spinner]="loading" class="slds-p-horizontal--small slds-theme--default" system-to-bottom-noscroll>
     <div class="slds-grid slds-grid--vertical-align-center slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4" label="LBL_GOOGLE_MAPS_KEY"></system-label>
-        <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.mapskey" />
+        <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.mapskey"/>
+    </div>
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-vertical--xx-small">
+        <system-label class="slds-size--1-of-4" label="LBL_GOOGLE_TRANSLATE_KEY"></system-label>
+        <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.languagekey"/>
     </div>
     <div class="slds-grid slds-grid--vertical-align-center slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4" label="LBL_GOOGLE_CLIENTID"></system-label>
-        <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.clientid" />
+        <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.clientid"/>
     </div>
     <div class="slds-grid slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4 slds-p-vertical--xx-small" label="LBL_GOOGLE_CLIENTJSON"></system-label>
