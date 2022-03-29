@@ -81,10 +81,6 @@ export class SpiceInstallerDatabase {
             lc_collate: this.spiceinstaller.lc_collate,
             lc_ctype: this.spiceinstaller.lc_ctype
         };
-        if (this.spiceinstaller.dbaccessuser == 'existinguser') {
-            body.db_user_name = this.spiceinstaller.ext_db_user_name;
-            body.db_password = this.spiceinstaller.ext_db_password;
-        }
 
         this.hostNameCondition = this.spiceinstaller.db_host_name.length > 0;
         this.userNameCondition = this.spiceinstaller.db_user_name.length > 0;
@@ -110,12 +106,6 @@ export class SpiceInstallerDatabase {
                             collation: this.spiceinstaller.collation,
                             charset: this.charset
                         };
-                        if (this.spiceinstaller.dbaccessuser == 'newdbuser') {
-                            this.spiceinstaller.configObject.databaseuser = {
-                                db_user_name: this.spiceinstaller.new_db_user_name,
-                                db_password: this.spiceinstaller.new_db_password
-                            };
-                        }
                         this.spiceinstaller.selectedStep.completed = true;
                         this.spiceinstaller.steps[3] = this.spiceinstaller.selectedStep;
                         this.spiceinstaller.next(this.spiceinstaller.steps[3]);
