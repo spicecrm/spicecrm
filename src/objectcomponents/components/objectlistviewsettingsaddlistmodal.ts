@@ -8,6 +8,7 @@ import {modellist} from "../../services/modellist.service";
 import {metadata} from "../../services/metadata.service";
 
 @Component({
+    selector: 'object-listview-settings-addlistmodal',
     templateUrl: '../templates/objectlistviewsettingsaddlistmodal.html'
 })
 export class ObjectListViewSettingsAddlistModal implements OnInit {
