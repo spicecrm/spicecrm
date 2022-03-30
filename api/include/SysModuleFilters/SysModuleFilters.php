@@ -780,6 +780,9 @@ class SysModuleFilters
             case 'equals':
                 return $bean->{$condition->field} == $condition->filtervalue;
                 break;
+            case 'notequals':
+                return $bean->{$condition->field} != $condition->filtervalue;
+                break;
             case 'equalr':
                 $relatedField = $bean->field_name_map[$condition->field]['id_name'];
                 $filtervalues = explode('::', $condition->filtervalue);
