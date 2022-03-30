@@ -233,20 +233,5 @@ class SystemTenant extends SpiceBean
                 DBManagerFactory::switchInstance(SpiceConfig::getInstance()->config['dbconfig']['db_name'], SpiceConfig::getInstance()->config);
             }
         }
-
-        // if we are in a tenant update the central user record as well
-        if(empty($bean->systemtenant_id) && !empty(AuthenticationController::getInstance()->systemtenantid)){
-            // switchto the master database
-            DBManagerFactory::switchInstance(SpiceConfig::getInstance()->config['dbconfig']['db_name'], SpiceConfig::getInstance()->config);
-            $masterUser = BeanFactory::getBean('Users', $bean->id);
-            // map all fields
-            foreach ($bean->field_defs as $fieldname => $fieldDefs){
-                if ($fieldname == 'systemtenant_id' || $fieldDefs['type'] == 'link' || $fieldDefs['source'] == 'non-db') continue;
-                $masterUser->{$fieldname} = $bean->{$fieldname};
-            }
-            // save user
-            $masterUser->save();
-            DBManagerFactory::switchInstance(AuthenticationController::getInstance()->systemtenantid, SpiceConfig::getInstance()->config);
-        }
     }
 }
