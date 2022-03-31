@@ -386,10 +386,9 @@ class SysModuleFilters
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
                 return "({$tablename}.{$condition->field} >= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 00:00:00' AND {$tablename}.{$condition->field} <= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59')";
                 break;
-            case 'inlessthanndays':
             case 'inlessthandays':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
-                $date->add(new DateInterval("P{$condition->filtervalue}D"));
+                $date->sub(new DateInterval("P{$condition->filtervalue}D"));
                 return "{$tablename}.{$condition->field} <= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59'";
                 break;
             case 'inmorethanndays':
