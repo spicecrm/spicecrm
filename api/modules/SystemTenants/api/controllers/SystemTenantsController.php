@@ -4,7 +4,6 @@
 
 namespace SpiceCRM\modules\SystemTenants\api\controllers;
 
-use Exception;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -41,7 +40,6 @@ class SystemTenantsController
      * @param array $args
      * @return Response
      * @throws UnauthorizedException
-     * @throws Exception
      */
     public function loadDemoData(Request $req, Response $res, array $args): Response
     {
@@ -69,7 +67,7 @@ class SystemTenantsController
                 $populatedTables[] = "leads";
             }
 
-            DBManagerFactory::switchToMasterDatabase();
+            DBManagerFactory::switchInstance(SpiceConfig::getInstance()->config['dbconfig']['db_name'], SpiceConfig::getInstance()->config);
         }
 
         return $res->withJson(["populatedTables" => $populatedTables]);
@@ -84,7 +82,6 @@ class SystemTenantsController
      * @param array $args
      * @return Response
      * @throws BadRequestException
-     * @throws Exception
      */
     public function acceptLegalNotice(Request $req, Response $res, array $args): Response
     {
@@ -94,9 +91,10 @@ class SystemTenantsController
             throw new BadRequestException('Only allowed when logged in to a tenant.');
         }
 
-        DBManagerFactory::switchToMasterDatabase();
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        DBManagerFactory::switchInstance($dbName, SpiceConfig::getInstance()->config);
 
-        /* @var SystemTenant $tenant */
+        /* @var SystemTenant */
         $tenant = BeanFactory::getBean('SystemTenants', $authController->systemtenantid);
 
         $tenant->accept_data = json_encode([
@@ -105,8 +103,6 @@ class SystemTenantsController
         ]);
 
         $tenant->save();
-
-        $tenant->switchToTenant();
 
         return $res->withJson(['success' => true]);
 
