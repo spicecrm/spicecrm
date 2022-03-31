@@ -1152,7 +1152,7 @@ class SpiceFTSHandler
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $searchterm = strtolower(trim((string)$searchterm));
+        $searchterm = mb_strtolower(trim((string)$searchterm), (SpiceConfig::getInstance()->config['fts']['searchterm_encoding'] ? SpiceConfig::getInstance()->config['fts']['searchterm_encoding']: 'UTF-8'));
 
         if (empty($modules)) {
             $modulesArray = $this->getGlobalSearchModules();
@@ -1363,7 +1363,7 @@ class SpiceFTSHandler
      */
     function getModuleSearchResults($module, $searchterm, $searchtags, $params, $aggregates = [], $sort = [], $required = [])
     {
-        $searchterm = strtolower(trim((string)$searchterm));
+        $searchterm = mb_strtolower(trim((string)$searchterm), (SpiceConfig::getInstance()->config['fts']['searchterm_encoding'] ? SpiceConfig::getInstance()->config['fts']['searchterm_encoding']: 'UTF-8'));
 
         $searchresults = [];
 
@@ -1521,7 +1521,7 @@ class SpiceFTSHandler
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $searchterm = strtolower(trim((string)$searchterm));
+        $searchterm = mb_strtolower(trim((string)$searchterm), (SpiceConfig::getInstance()->config['fts']['searchterm_encoding'] ? SpiceConfig::getInstance()->config['fts']['searchterm_encoding']: 'UTF-8'));
 
         $exportresults = [];
 
