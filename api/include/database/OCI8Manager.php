@@ -1576,7 +1576,7 @@ class OCI8Manager extends DBManager
     public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
 
-        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'");
+        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'", true );
         while ($row = $this->fetchByAssoc($query)) {
             $id = $row['id'];
         }
