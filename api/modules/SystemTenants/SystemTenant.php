@@ -31,7 +31,7 @@ class SystemTenant extends SpiceBean
      * called fromt he authentication
      */
     public function switchToTenant(){
-        DBManagerFactory::switchInstance($this->id, SpiceConfig::getInstance()->config);
+        DBManagerFactory::switchDatabase($this->id);
 
         // reloads the config
         SpiceConfig::getInstance()->reloadConfig();
@@ -55,11 +55,8 @@ class SystemTenant extends SpiceBean
         $db = DBManagerFactory::getInstance();
         $db->createDatabase($this->id);
 
-        // memorize the current db name so we can switch back after the new tenant has been initialized
-        $preserved_db_name = $config['dbconfig']['db_name'];
-
         // switch to ne database
-        $db = DBManagerFactory::switchInstance($this->id, $config);
+        $db = DBManagerFactory::switchDatabase($this->id);
 
         // run installer on new database
         $installer = new  SpiceInstaller();
@@ -71,7 +68,7 @@ class SystemTenant extends SpiceBean
             $installer->retrieveCoreandLanguages($db, ['language' => ['language_code' => 'en_us']]);
         }
 
-        $this->copyMetadataFromSource($config, $preserved_db_name);
+        $this->copyMetadataFromSource();
 
         SpiceModules::getInstance()->loadModules(true);
 
@@ -85,7 +82,7 @@ class SystemTenant extends SpiceBean
             $db->query($repairResponse->sql);
         }
 
-        $this->copyModulesDataFromSource($config, $preserved_db_name);
+        $this->copyModulesDataFromSource();
 
         // set the fts setting
 
@@ -101,7 +98,7 @@ class SystemTenant extends SpiceBean
         $ftsManager->initialize();
 
         // switch back to current database
-        DBManagerFactory::switchInstance($preserved_db_name, $config);
+        DBManagerFactory::switchToMasterDatabase();
 
         $this->initialized = true;
         $this->save();
@@ -113,33 +110,31 @@ class SystemTenant extends SpiceBean
      * copy metadata tables from source to tenant db
      * @throws Exception
      */
-    private function copyMetadataFromSource(array $config, string $sourceDBName)
+    private function copyMetadataFromSource()
     {
         $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getMetadataCopyTables());
-        $this->copyFromSource($config, $sourceDBName, $tables);
+        $this->copyFromSource($tables);
     }
 
     /**
      * copy modules tables from source to tenant db
      * @throws Exception
      */
-    private function copyModulesDataFromSource(array $config, string $sourceDBName)
+    private function copyModulesDataFromSource()
     {
         $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getModulesCopyTables());
-        $this->copyFromSource($config, $sourceDBName, $tables);
+        $this->copyFromSource($tables);
     }
 
     /**
      * copy data from the source to the tenant db
-     * @param array $config
-     * @param string $sourceDBName
      * @param array $tables
      * @return void
      * @throws Exception
      */
-    public function copyFromSource(array $config, string $sourceDBName, array $tables)
+    public function copyFromSource(array $tables)
     {
-        $sourceDB = DBManagerFactory::switchInstance($sourceDBName, $config);
+        $sourceDB = DBManagerFactory::switchToMasterDatabase();
 
         if (count($tables) == 0) return;
 
@@ -150,7 +145,7 @@ class SystemTenant extends SpiceBean
             }
         }
 
-        $tenantDB = DBManagerFactory::switchInstance($this->id, $config);
+        $tenantDB = DBManagerFactory::switchDatabase($this->id);
 
         foreach ($tables as $table) {
             foreach ($table->data as $row) $tenantDB->insertQuery($table->name, $row);
@@ -206,32 +201,52 @@ class SystemTenant extends SpiceBean
      * @param $bean
      * @param $event
      * @param $arguments
+     * @throws Exception
      */
     public function handleUserAfterSaveHook(&$bean, $event, $arguments)
     {
-        // if we have a user ina tenant and are not in the tenant
-        // central user maintenance int eh master
-        if(!empty($bean->systemtenant_id) && empty(AuthenticationController::getInstance()->systemtenantid)){
+        $tenantId = AuthenticationController::getInstance()->systemtenantid;
+
+        // if we have a user in a tenant and are not in the tenant central user maintenance in the master db
+        if(!empty($bean->systemtenant_id) && empty($tenantId) && DBManagerFactory::$dbConfig['dbconfig']['db_name'] != $tenantId){
             $tenant = $this->retrieve($bean->systemtenant_id);
             if($tenant) {
-                DBManagerFactory::switchInstance($tenant->id, SpiceConfig::getInstance()->config);
+                DBManagerFactory::switchDatabase($tenant->id);
 
                 // get a new user in the tenant and see if it exists
-                $tenantuser = BeanFactory::getBean('Users');
-                if(!$tenantuser->retrieve($bean->id)){
-                    $tenantuser->new_with_id = true;
+                $tenantUser = BeanFactory::getBean('Users');
+                if(!$tenantUser->retrieve($bean->id)){
+                    $tenantUser->new_with_id = true;
                 };
+
                 // map all fields
                 foreach ($bean->field_defs as $fieldname => $fieldDefs){
                     if ($fieldname == 'systemtenant_id' || $fieldDefs['type'] == 'link' || $fieldDefs['source'] == 'non-db') continue;
-                    $tenantuser->{$fieldname} = $bean->{$fieldname};
+                    $tenantUser->{$fieldname} = $bean->{$fieldname};
                 }
-                // save user
-                $tenantuser->save();
 
-                // switch back
-                DBManagerFactory::switchInstance(SpiceConfig::getInstance()->config['dbconfig']['db_name'], SpiceConfig::getInstance()->config);
+                $tenantUser->save();
+
+                DBManagerFactory::switchToMasterDatabase();
             }
+        }
+
+        // if we are in a tenant update the central user record as well
+        if(empty($bean->systemtenant_id) && !empty($tenantId) && DBManagerFactory::$dbConfig['dbconfig']['db_name'] == $tenantId){
+
+            DBManagerFactory::switchToMasterDatabase();
+
+            $masterUser = BeanFactory::getBean('Users', $bean->id);
+            if($masterUser) {
+                // map all fields
+                foreach ($bean->field_defs as $fieldname => $fieldDefs) {
+                    if ($fieldname == 'systemtenant_id' || $fieldDefs['type'] == 'link' || $fieldDefs['source'] == 'non-db') continue;
+                    $masterUser->{$fieldname} = $bean->{$fieldname};
+                }
+
+                $masterUser->save();
+            }
+            DBManagerFactory::switchDatabase(AuthenticationController::getInstance()->systemtenantid);
         }
     }
 }
