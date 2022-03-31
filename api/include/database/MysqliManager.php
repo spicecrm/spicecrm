@@ -592,7 +592,7 @@ class MysqliManager extends DBManager
         }
 
         // run the query
-        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")");
+        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")", true );
     }
 
     /**

@@ -53,14 +53,6 @@ export class spiceinstaller {
     public debug: number = 0;
     public ssl: boolean = false;
     public collation: string = '';
-    public dbaccessuser: string = 'admin';
-    /**
-     * existing or new user for database access
-     */
-    public new_db_user_name: string = '';
-    public new_db_password: string = '';
-    public ext_db_user_name: string = '';
-    public ext_db_password: string = '';
     /**
      * postgresql additional parameters
      */

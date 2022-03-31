@@ -12,7 +12,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\utils\DBUtils;
 
 class ConfigTransferController
 {
@@ -225,15 +224,15 @@ class ConfigTransferController
                     foreach ( $rows as $k2 => $v2 ) {
                         $vals = (array)$v2;
                         unset( $vals['date_indexed'] ); // The new records are not yet fts indexed, so no time stamp should be entered.
-                        if ( empty( $params['keepAssignedUser'] )) $vals['assigned_user_id'] = $currentUser->id;
+                        if ( empty( $params['keepAssignedUser'] ) and array_key_exists('assigned_user_id', $vals )) $vals['assigned_user_id'] = $currentUser->id;
                         # If keepEnteredModifiedInfo is not explicitly set,
                         # set the timestamps date_entered and date_modified to now
                         # and set the user that entered and modified to the current user:
                         if ( empty( $params['keepEnteredModifiedInfo'] )) {
-                            $vals['date_entered'] = $nowDb;
-                            $vals['date_modified'] = $nowDb;
-                            $vals['modified_user_id'] = $currentUser->id;
-                            $vals['created_by'] = $currentUser->id;
+                            if ( array_key_exists('date_entered', $vals )) $vals['date_entered'] = $nowDb;
+                            if ( array_key_exists('date_modified', $vals )) $vals['date_modified'] = $nowDb;
+                            if ( array_key_exists('modified_user_id', $vals )) $vals['modified_user_id'] = $currentUser->id;
+                            if ( array_key_exists('created_by', $vals )) $vals['created_by'] = $currentUser->id;
                         }
                         $db->upsertQuery($tablename, ["id" => $vals["id"]], $vals);
                         $numberLinesInserted++;
