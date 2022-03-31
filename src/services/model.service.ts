@@ -1507,6 +1507,11 @@ export class model implements OnDestroy {
                 if (!copyRule.params?.number || !copyRule.params?.unit) return fromFieldDate;
 
                 return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
+            case "currentYear":
+                date = new moment.utc().tz(timeZone);
+                let year = date.year();
+                return year;
+
         }
         return "";
     }
