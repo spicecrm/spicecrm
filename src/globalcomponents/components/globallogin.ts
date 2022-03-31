@@ -221,6 +221,8 @@ export class GlobalLogin {
                 this.selectedlanguage = this.lastSelectedLanguage;
             } else if (this.configuration.data.languages) {
                 this.selectedlanguage = this.configuration.data.languages.default;
+            } else {
+                this.selectedlanguage = 'en_us';
             }
         }
         return this._selectedlanguage;
