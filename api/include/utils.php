@@ -897,14 +897,6 @@ function can_start_session() {
     return empty($session_id) ? true : false;
 }
 
-/**
- * @deprecated moved to SpiceUtils
- * @return bool
- */
-function inDeveloperMode() {
-    return isset(SpiceConfig::getInstance()->config['developerMode']) && SpiceConfig::getInstance()->config['developerMode'];
-}
-
 
 /**
  * @deprecated moved to SpiceUtils
