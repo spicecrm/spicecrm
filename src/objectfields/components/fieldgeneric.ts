@@ -166,7 +166,6 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     public setFocus() {
         setTimeout(() => {
             if (this.focuselement) {
-                if (!this.focuselement.element.nativeElement.tabIndex) this.focuselement.element.nativeElement.tabIndex = '-1';
                 this.focuselement.element.nativeElement.focus();
             }
         });
