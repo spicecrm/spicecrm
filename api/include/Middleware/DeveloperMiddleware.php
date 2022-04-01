@@ -15,6 +15,8 @@ class DeveloperMiddleware
         if (SpiceConfig::getInstance()->config['developerMode'] === true || SpiceConfig::getInstance()->config['developerMode'] == 1 || (SpiceConfig::getInstance()->config['developerMode'] == 2 && $request->getHeaderLine('developermode') == 1)) {
             ini_set('display_errors', 1);
             SpiceConfig::getInstance()->config['developerMode'] = true;
+        } else {
+
         }
 
         // invoke the request
