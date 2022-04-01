@@ -372,8 +372,8 @@ export class configurationService {
     public getSysinfo() {
         this.reloading = true;
         let sysinfo = this.http.get(this.getBackendUrl() + '/sysinfo');
-        sysinfo.subscribe(
-            (res: any) => {
+        sysinfo.subscribe({
+            next: (res: any) => {
                 if (res) {
                     this.data.languages = res.languages;
                     this.data.backendextensions = res.extensions;
@@ -393,7 +393,7 @@ export class configurationService {
                 // set the title
                 this.title.setTitle(this.systemName);
             },
-            (err: any) => {
+            error: (err: any) => {
                 this.reloading = false;
                 this.initialized = true;
 
@@ -402,7 +402,8 @@ export class configurationService {
                 this.setFavIcon();
 
                 // this.toast.sendToast('error connecting to Backend', 'error', 'please contact your System administrator');
-            });
+            }
+        });
         return sysinfo;
     }
 
