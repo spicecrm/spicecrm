@@ -556,7 +556,7 @@ class SpiceUtils
      */
     public static function inDeveloperMode(): bool {
         return isset(SpiceConfig::getInstance()->config['developerMode'])
-            && SpiceConfig::getInstance()->config['developerMode'];
+            && SpiceConfig::getInstance()->config['developerMode'] === true;
     }
 
     /**
