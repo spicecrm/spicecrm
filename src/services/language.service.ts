@@ -84,7 +84,10 @@ export class language {
      * a getter for the current language
      */
     get currentlanguage() {
-        return !!this._currentlanguage ? this._currentlanguage : localStorage.getItem('spiceuilanguage');
+        // return !!this._currentlanguage ? this._currentlanguage : localStorage.getItem('spiceuilanguage');
+        let cl = !!this._currentlanguage ? this._currentlanguage : localStorage.getItem('spiceuilanguage');
+        if (!cl) cl = 'en_us';
+        return cl;
     }
 
     /**
