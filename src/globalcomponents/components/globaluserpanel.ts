@@ -123,6 +123,36 @@ export class GlobaUserPanel {
     }
 
     /**
+     * returns if the logged in user is an admin
+     */
+    get displayDeveloperMode(){
+        return this.session.authData.admin && (this.config.data.systemparameters.developermode != '0' && this.config.data.systemparameters.developermode !== false);
+    }
+
+    /**
+     * returns if we can set the developermode
+     */
+    get canSetDeveloperMode(){
+        return this.config.data.systemparameters.developermode == '2';
+    }
+
+    /**
+     * gets the developermode
+     */
+    get developermode(){
+        return (this.config.data.systemparameters.developermode == '1' || this.config.data.systemparameters.developermode === true) || (this.canSetDeveloperMode && this.session.developerMode);
+    }
+
+    /**
+     * sets the developermode
+     *
+     * @param value
+     */
+    set developermode(value){
+        if(this.canSetDeveloperMode) this.session.developerMode = value;
+    }
+
+    /**
      * changes the users timezone
      *
      * @param value
