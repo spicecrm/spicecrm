@@ -70,6 +70,11 @@ export class session {
      */
     public sessionData: any = {};
 
+    /**
+     * can be set by developers and triggers the developer mode flag to be sent in the header
+     */
+    public developerMode: boolean = false;
+
 
     // public footercontainer: any = null;
 
@@ -88,6 +93,12 @@ export class session {
         let headers = new HttpHeaders();
         headers = headers.set('OAuth-Token', this.authData.sessionId);
         headers = headers.set('OAuth-Issuer', 'SpiceCRM');
+
+        // set the developer mode
+        if(this.developerMode){
+            headers = headers.set('developermode', '1');
+        }
+
         return headers;
     }
 
