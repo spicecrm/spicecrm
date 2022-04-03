@@ -203,50 +203,6 @@ export class GlobalLogin {
     }
 
     /**
-     * setter for the selected language
-     *
-     * @param value the language code
-     */
-    set selectedlanguage(value) {
-        this._selectedlanguage = value;
-        this.language.currentlanguage = value;
-    }
-
-    /**
-     * getter for the selected language
-     */
-    get selectedlanguage() {
-        if (!this._selectedlanguage) {
-            if (this.lastSelectedLanguage) {
-                this.selectedlanguage = this.lastSelectedLanguage;
-            } else if (this.configuration.data.languages) {
-                this.selectedlanguage = this.configuration.data.languages.default;
-            } else {
-                this.selectedlanguage = 'en_us';
-            }
-        }
-        return this._selectedlanguage;
-    }
-
-    /**
-     * returns the available languages for the chosen backend system
-     */
-   public getLanguages() {
-        let langArray = [];
-
-        if (this.configuration.data.languages) {
-            // this.selectedlanguage = this.configuration.data.languages.default;
-            for (let language of this.configuration.data.languages.available) {
-                langArray.push({
-                    language: language.language_code,
-                    text: language.language_name
-                });
-            }
-        }
-        return langArray;
-    }
-
-    /**
      * returns thecurrent site id from the configuration service
      */
     get currentSiteId() {
