@@ -374,6 +374,61 @@ class SpiceUtils
     }
 
     /**
+     * @param $errno
+     * @param $errstr
+     * @param $errfile
+     * @param $errline
+     */
+    public static function StackTraceErrorHandler($errno, $errstr, $errfile, $errline) {
+        $error_msg = " $errstr occurred in <b>$errfile</b> on line $errline [" . date("Y-m-d H:i:s") . ']';
+        $halt_script = true;
+        switch ($errno) {
+            case 2048: return; //depricated we have lots of these ignore them
+            case E_USER_NOTICE:
+            case E_NOTICE:
+                if (error_reporting() & E_NOTICE) {
+                    $halt_script = false;
+                    $type = 'Notice';
+                } else
+                    return;
+                break;
+            case E_USER_WARNING:
+            case E_COMPILE_WARNING:
+            case E_CORE_WARNING:
+            case E_WARNING:
+
+                $halt_script = false;
+                $type = "Warning";
+                break;
+
+            case E_USER_ERROR:
+            case E_COMPILE_ERROR:
+            case E_CORE_ERROR:
+            case E_ERROR:
+
+                $type = "Fatal Error";
+                break;
+
+            case E_PARSE:
+
+                $type = "Parse Error";
+                break;
+
+            default:
+                //don't know what it is might not be so bad
+                $halt_script = false;
+                $type = "Unknown Error ($errno)";
+                break;
+        }
+        $error_msg = '<b>' . $type . '</b>:' . $error_msg;
+        echo $error_msg;
+        self::displayStackTrace();
+        if ($halt_script) {
+            exit - 1;
+        }
+    }
+
+    /**
      * @param false $textOnly
      */
     public static function displayStackTrace(bool $textOnly = false): void {
@@ -601,16 +656,6 @@ class SpiceUtils
         $sugar_web_service_order_by = $field_name;
         usort($beans, "cmp_beans");
         return $beans;
-    }
-
-    /**
-     * This is a utility function for 508 Compliance.  It returns the lang=[Current Language] text string used
-     * inside the <html> tag.  If no current language is specified, it defaults to lang='en'.
-     *
-     * @return String The lang=[Current Language] markup to insert into the <html> tag
-     */
-    public static function getLanguageHeader(): string {
-        return isset($GLOBALS['current_language']) ? "lang='{$GLOBALS['current_language']}'" : "lang='en'";
     }
 
     /**
