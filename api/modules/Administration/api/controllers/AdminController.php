@@ -137,6 +137,10 @@ class AdminController
             // handle sytem settings
             foreach ($postBody['system'] as $itemname => $itemvalue) {
                 switch ($itemname) {
+                    // do not write the unique key
+                    case 'unique_key':
+                        break;
+                        // name goes to database
                     case 'name':
                         SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
                         $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
@@ -150,6 +154,7 @@ class AdminController
 
             // handle advanced settings
             foreach ($postBody['advanced'] as $itemname => $itemvalue) {
+                if(!$itemvalue) continue;
                 SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
                 $diffArray[$itemname] = $itemvalue;
             }
