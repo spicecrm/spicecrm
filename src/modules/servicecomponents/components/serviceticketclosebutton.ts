@@ -39,7 +39,7 @@ export class ServiceTicketCloseButton {
         if(resolveDate && resolveDate.isBefore(new moment())) {
             this.modal.openModal('ServiceTicketCloseModal', true, this.injector);
         } else {
-            this.model.startEdit(true, true);
+            this.model.startEdit(true);
             this.model.setField('serviceticket_status', this.item.status_to);
             if (this.model.validate()) {
                 this.model.save();
