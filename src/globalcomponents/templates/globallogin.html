@@ -10,15 +10,15 @@
                 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
                     <form *ngIf="!showForgotPass" (submit)="login()">
                         <div class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1" placeholder="Username" />
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                                <system-utility-icon icon="user" addclasses="slds-input__icon slds-icon-text-default"></system-utility-icon>
+                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-vertical--xx-small" tabindex="1" placeholder="Username" />
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2" placeholder="Password" />
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                                <system-utility-icon icon="lock" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
+                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
                             </div>
                         </div>
                         <div *ngIf="sites.length > 1" class="slds-form-element slds-m-vertical--small">
