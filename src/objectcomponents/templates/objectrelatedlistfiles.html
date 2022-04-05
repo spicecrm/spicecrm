@@ -41,7 +41,7 @@
         </div>
         <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
     </div>
-    <div class="slds-card__body" @displaycard *ngIf="isopen">
+    <div class="slds-card__body slds-card__body_inner" @displaycard *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
             <div object-related-card-file *ngFor="let file of filteredFiles" [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent"></div>
         </div>
