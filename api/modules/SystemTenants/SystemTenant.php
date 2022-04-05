@@ -9,6 +9,8 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSRESTManager;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -98,6 +100,7 @@ class SystemTenant extends SpiceBean
 
         // initialize elastic search
         $ftsManager = new SpiceFTSRESTManager();
+        SpiceFTSHandler::getInstance()->elasticHandler->indexPrefix = "{$config['fts']['prefix']}{$this->id}_";
         $ftsManager->initialize();
 
         // switch back to current database
