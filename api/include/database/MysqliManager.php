@@ -173,7 +173,7 @@ class MysqliManager extends DBManager
     /**
      * @see MysqlManager::query()
      */
-    
+
     public function query($sql, $dieOnError = false, $msg = '', $suppress = false, $keepResult = false)
     {
 
@@ -347,7 +347,7 @@ class MysqliManager extends DBManager
 
 
         if (is_null($configOptions))
-            $configOptions = SpiceConfig::getInstance()->config['dbconfig'];
+            $configOptions = $this->dbConfig['dbconfig'];
 
         if (!isset($this->database)) {
 
@@ -1588,7 +1588,7 @@ class MysqliManager extends DBManager
      * @inheritDoc
      */
     public function convertDBCharset($charset, $collation): bool {
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "ALTER DATABASE {$dbName} CHARACTER SET {$charset} COLLATE {$collation}";
         $this->query($sql);
 
@@ -1623,7 +1623,7 @@ class MysqliManager extends DBManager
      */
     public function getTablesCharsetInfo(): array {
         $result = [];
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "SELECT table_name,CCSA.character_set_name, CCSA.collation_name FROM information_schema.TABLES T,
                 information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
                 WHERE CCSA.collation_name = T.table_collation
@@ -1644,7 +1644,7 @@ class MysqliManager extends DBManager
      * @throws Exception
      */
     public function getDatabaseCharset(): array {
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "SELECT SCHEMA_NAME 'database', default_character_set_name 'charset', DEFAULT_COLLATION_NAME 'collation'
                 FROM information_schema.SCHEMATA WHERE schema_name='{$dbName}';";
         $query = $this->query($sql);
