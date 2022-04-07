@@ -9,13 +9,12 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSRESTManager;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\modules\Administration\api\controllers\AdminController;
 
 class SystemTenant extends SpiceBean
 {
@@ -75,17 +74,7 @@ class SystemTenant extends SpiceBean
 
         $this->copyMetadataFromSource($config, $preserved_db_name);
 
-        SpiceModules::getInstance()->loadModules(true);
-
-        $admin = new AdminController();
-        $repairResponse = json_decode(
-            $admin->repairAndRebuildforInstaller()
-        );
-
-        // execute the repair query to insert the missing tables
-        if (!empty($repairResponse->sql)) {
-            $db->query($repairResponse->sql);
-        }
+        $this->repairDBTables();
 
         $this->copyModulesDataFromSource($config, $preserved_db_name);
 
@@ -110,6 +99,44 @@ class SystemTenant extends SpiceBean
         $this->save();
 
         return true;
+    }
+
+    /**
+     * repair the database tables from vardefs
+     *  copied from AdminController::buildSQLforRepair
+     * @return void
+     * @throws Exception
+     */
+    private function repairDBTables()
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $repairedTables = [];
+
+        foreach (SpiceModules::getInstance()->getModuleList() as $moduleName) {
+
+            $bean = BeanFactory::getBean($moduleName);
+
+            if (($bean instanceof SugarBean) && !$repairedTables[$bean->table_name]) {
+                $db->repairTable($bean);
+                $repairedTables[$bean->table_name] = true;
+            }
+
+            // check on audit tables
+            if (($bean instanceof SugarBean) && $bean->is_AuditEnabled() && !isset($repairedTables[$bean->table_name . '_audit'])) {
+                $sql .= $bean->update_audit_table(false);
+                $repairedTables[$bean->table_name . '_audit'] = true;
+            }
+        }
+
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
+
+            if (!isset($meta['table']) || $repairedTables[$meta['table']]) continue;
+
+            $db->repairTableParams($meta['table'], $meta['fields'], $meta['indices'], true, $meta['engine']);
+
+            $repairedTables[$meta['table']] = true;
+        }
     }
 
     /**
