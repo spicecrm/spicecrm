@@ -62,21 +62,24 @@ class SystemTenant extends SpiceBean
         // switch to ne database
         $db = DBManagerFactory::switchInstance($this->id, $config);
 
-        // run installer on new database
-        $installer = new  SpiceInstaller();
-        $installer->createTables($db);
-        $installer->insertDefaults($db);
-        // create local and in tenant
+        // create the db tables
+        $this->createMissingTables();
 
+        // insert default configs
+        $installer = new SpiceInstaller();
+        $installer->insertDefaults($db);
+
+        // create local and in tenant
         if (!$config['tenant']['disable_copy_config']) {
             $installer->retrieveCoreandLanguages($db, ['language' => ['language_code' => 'en_us']]);
         }
 
-        $this->copyMetadataFromSource($config, $preserved_db_name);
+        $this->copyMetadataFromMaster();
 
-        $this->repairDBTables();
+        // create the missing db tables after copying the metadata from the master
+        $this->createMissingTables();
 
-        $this->copyModulesDataFromSource($config, $preserved_db_name);
+        $this->copyModulesDataFromMaster();
 
         // set the fts setting
 
@@ -103,11 +106,11 @@ class SystemTenant extends SpiceBean
 
     /**
      * repair the database tables from vardefs
-     *  copied from AdminController::buildSQLforRepair
      * @return void
      * @throws Exception
+     * @see AdminController::buildSQLforRepair
      */
-    private function repairDBTables()
+    private function createMissingTables()
     {
         $db = DBManagerFactory::getInstance();
 
@@ -124,7 +127,7 @@ class SystemTenant extends SpiceBean
 
             // check on audit tables
             if (($bean instanceof SugarBean) && $bean->is_AuditEnabled() && !isset($repairedTables[$bean->table_name . '_audit'])) {
-                $sql .= $bean->update_audit_table(false);
+                $sql .= $bean->update_audit_table();
                 $repairedTables[$bean->table_name . '_audit'] = true;
             }
         }
@@ -140,34 +143,36 @@ class SystemTenant extends SpiceBean
     }
 
     /**
-     * copy metadata tables from source to tenant db
+     * copy metadata tables from master to tenant db
      * @throws Exception
      */
-    private function copyMetadataFromSource(array $config, string $sourceDBName)
+    private function copyMetadataFromMaster()
     {
-        $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getMetadataCopyTables());
-        $this->copyFromSource($config, $sourceDBName, $tables);
+        $tables = array_map(function ($tableName) {
+            return (object)['name' => $tableName, 'data' => []];
+        }, $this->getMetadataCopyTables());
+        $this->copyFromMaster($tables);
     }
 
     /**
-     * copy modules tables from source to tenant db
+     * copy modules tables from master to tenant db
      * @throws Exception
      */
-    private function copyModulesDataFromSource(array $config, string $sourceDBName)
+    private function copyModulesDataFromMaster()
     {
-        $tables = array_map(function ($tableName) {return (object)['name' => $tableName, 'data' => []];}, $this->getModulesCopyTables());
-        $this->copyFromSource($config, $sourceDBName, $tables);
+        $tables = array_map(function ($tableName) {
+            return (object)['name' => $tableName, 'data' => []];
+        }, $this->getModulesCopyTables());
+        $this->copyFromMaster($tables);
     }
 
     /**
-     * copy data from the source to the tenant db
-     * @param array $config
-     * @param string $sourceDBName
+     * copy data from the master to the tenant db
      * @param array $tables
      * @return void
      * @throws Exception
      */
-    public function copyFromSource(array $config, string $sourceDBName, array $tables)
+    public function copyFromMaster(array $tables)
     {
         $db = DBManagerFactory::getInstance();
 
@@ -181,7 +186,7 @@ class SystemTenant extends SpiceBean
     }
 
     /**
-     * get a list of metadata tables to be copied from the source to the tenant db
+     * get a list of metadata tables to be copied from the master to the tenant db
      * @return string[]
      */
     public function getMetadataCopyTables(): array
@@ -200,7 +205,7 @@ class SystemTenant extends SpiceBean
     }
 
     /**
-     * get a list of module tables to be copied from the source to the tenant db
+     * get a list of module tables to be copied from the master to the tenant db
      * @return string[]
      */
     public function getModulesCopyTables(): array
