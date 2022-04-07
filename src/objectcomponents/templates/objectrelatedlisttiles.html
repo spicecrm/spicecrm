@@ -1,5 +1,5 @@
 <object-related-card [componentconfig]="componentconfig">
-    <div #mainContainer  class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
+    <div #mainContainer  class="slds-card__body slds-card__body_inner slds-grid slds-wrap slds-grid--pull-padded">
         <ng-container *ngIf="aclAccess; else noaccess">
             <div *ngFor="let relateditem of relatedmodels.items" [ngClass]="getTileWidthClass" class="slds-p-around--xx-small">
                 <div class="slds-box slds-box--x-small slds-media slds-card__tile" object-related-card-tile [fieldset]="componentconfig.fieldset" [data]="relateditem"></div>

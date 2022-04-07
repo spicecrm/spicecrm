@@ -34,6 +34,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceFTSRESTManager
@@ -95,10 +96,9 @@ class SpiceFTSRESTManager
         }
         else{
             // CR100349 remove methods from install_utils.php that are required from classes in use
-            if(!function_exists('create_date')) require_once 'include/utils.php';
             $job = BeanFactory::newBean('SchedulerJobs');
-            $job->name = (!empty($mod_strings['LBL_OOTB_FTS_INDEX']) ? $mod_strings['LBL_OOTB_FTS_INDEX'] : "SpiceCRM Full Text Indexing");
-            $job->date_time_start = SpiceUtils::createDate(date('Y'),date('n'),date('d')) . ' ' . create_time(0,0,1);
+            $job->name = "SpiceCRM Full Text Indexing";
+            $job->date_time_start = TimeDate::getInstance()->nowDb();
             $job->job = "function::fullTextIndex";
             $job->job_interval = '*/1::*::*::*::*';
             $job->status = "Active";

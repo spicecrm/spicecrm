@@ -133,4 +133,11 @@ export class AdministrationConfigEditor implements OnInit {
         });
     }
 
+    /**
+     * The label for the header.
+     */
+    public get label() {
+        return this.componentconfig.label ? this.componentconfig.label : 'LBL_EDITOR';
+    }
+
 }

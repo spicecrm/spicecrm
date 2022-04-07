@@ -4,6 +4,7 @@
 import {Component, EventEmitter, Input, OnInit} from "@angular/core";
 import {language} from "../../services/language.service";
 import {modal} from "../../services/modal.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 declare var _: any;
 
@@ -33,7 +34,7 @@ export class SystemLanguageSelector implements OnInit{
      */
     @Input() public displaylabel: boolean = true;
 
-    constructor(public language: language, public modal: modal) {
+    constructor(public language: language, public modal: modal, public userpreferences: userpreferences) {
         this.compId = _.uniqueId();
     }
 
@@ -64,6 +65,8 @@ export class SystemLanguageSelector implements OnInit{
         this.language.switchLanguage(value).subscribe({
             next: () => {
                 loadModal.emit(true);
+                // set in the preferences
+                this.userpreferences.setPreference('language', value);
             }
         });
         this.selected.emit(true);
@@ -74,7 +77,7 @@ export class SystemLanguageSelector implements OnInit{
      */
     public reloadCurrentLanguage(){
         let loadModal = this.modal.await('LBL_LOADING');
-        this.language.loadLanguage(false).subscribe({
+        this.language.loadLanguage().subscribe({
             next: () => {
                 loadModal.emit(true);
             }
