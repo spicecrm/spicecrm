@@ -6,6 +6,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -68,6 +69,11 @@ class EmailSchedulesController
         $postBody = $req->getParsedBody();
 
         $emailscheduleId = $this->saveBean($postBody, $args['id']);
+
+        // limit to a maximum of 50
+        if(count($postBody['ids']) > 50){
+            throw new ForbiddenException('Maximum Number for email schedules is 50');
+        }
 
         if (!empty($emailscheduleId) && count($postBody['ids']) > 0) {
 
@@ -186,9 +192,9 @@ class EmailSchedulesController
 
                     $seed = BeanFactory::getBean($related);
                     if($seed->field_defs['is_inactive']){
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
                     } else {
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related)];
                     }
                 }
             }
@@ -229,6 +235,12 @@ class EmailSchedulesController
                 }
 
             }
+        }
+
+
+        // limit to a maximum of 50
+        if(count($relatedbeans) + count($postBody['linkedbeans']) > 50){
+            throw new ForbiddenException('Maximum Number for email schedules is 50');
         }
 
         // create the scheduleid

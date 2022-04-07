@@ -78,6 +78,7 @@ export class language {
 
         // set it to the configuration service
         this.configurationService.setData('currentlanguage', language);
+        sessionStorage.language = language;
 
         this._currentlanguage = language;
     }
@@ -86,7 +87,7 @@ export class language {
      * a getter for the current language
      */
     get currentlanguage() {
-        return !!this._currentlanguage ? this._currentlanguage : this.configurationService.getData('currentlanguage');
+        return !!this._currentlanguage ? this._currentlanguage : (this.configurationService.getData('currentlanguage') ?? sessionStorage.language);
     }
 
     /**
