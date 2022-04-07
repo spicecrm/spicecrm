@@ -142,24 +142,15 @@ class SystemTenant extends SpiceBean
      */
     public function copyFromSource(array $config, string $sourceDBName, array $tables)
     {
-        $sourceDB = DBManagerFactory::switchInstance($sourceDBName, $config);
+        $db = DBManagerFactory::getInstance();
+
+        $masterDBName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
 
         if (count($tables) == 0) return;
 
         foreach ($tables as $table) {
-            $insertData = $sourceDB->query("SELECT * FROM {$table->name}");
-            while ($row = $sourceDB->fetchByAssoc($insertData)) {
-                $table->data[] = $row;
-            }
+            $db->query("INSERT INTO {$table->name} SELECT * FROM $masterDBName.{$table->name}");
         }
-
-        $tenantDB = DBManagerFactory::switchInstance($this->id, $config);
-
-        foreach ($tables as $table) {
-            foreach ($table->data as $row) $tenantDB->insertQuery($table->name, $row);
-        }
-
-        unset($tables);
     }
 
     /**
