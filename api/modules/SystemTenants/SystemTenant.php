@@ -177,12 +177,13 @@ class SystemTenant extends SpiceBean
         $masterDBName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
 
         // set array key to table name
-        foreach ($tables as $table) $tables[$table] = $table;
+        $tables = array_fill_keys($tables, true);
 
         foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
 
             if (!$tables[$meta['table']]) continue;
 
+            $table = $meta['table'];
             $fields = [];
 
             // get the table fields list
