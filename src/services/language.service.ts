@@ -72,22 +72,22 @@ export class language {
      * @param language the language to set the srvice to
      */
     set currentlanguage(language) {
-        if(typeof language !== 'string' || language === null) {
+        if (typeof language !== 'string' || language === null) {
             language = this.getDefaultLanguage();
         }
-        this._currentlanguage = language;
 
-        localStorage.setItem('spiceuilanguage', language);
+        // set it to the configuration service
+        this.configurationService.setData('currentlanguage', language);
+        sessionStorage.language = language;
+
+        this._currentlanguage = language;
     }
 
     /**
      * a getter for the current language
      */
     get currentlanguage() {
-        // return !!this._currentlanguage ? this._currentlanguage : localStorage.getItem('spiceuilanguage');
-        let cl = !!this._currentlanguage ? this._currentlanguage : localStorage.getItem('spiceuilanguage');
-        if (!cl) cl = 'en_us';
-        return cl;
+        return !!this._currentlanguage ? this._currentlanguage : (this.configurationService.getData('currentlanguage') ?? sessionStorage.language);
     }
 
     /**
@@ -138,7 +138,7 @@ export class language {
      */
     public writeStore(store, data) {
         // check that we have a db
-        if(!this.db) return;
+        if (!this.db) return;
 
         this.db.transaction([store], "readwrite").objectStore(store).add(data);
     }
@@ -149,7 +149,7 @@ export class language {
      */
     public readStore(store, id?): Observable<any> {
         // if we do not have a db return an empty array
-        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
+        if (!this.db) return throwError(() => new Error('no indexedDB Support'));
 
         // process normally
         let retSubject = new Subject<any>();
@@ -160,7 +160,7 @@ export class language {
             retSubject.error(false);
         };
         request.onsuccess = (event) => {
-            if(event.target.result?.data) {
+            if (event.target.result?.data) {
                 retSubject.next(event.target.result.data);
                 retSubject.complete();
             } else {
@@ -178,7 +178,7 @@ export class language {
      */
     public readStoreAll(store): Observable<any> {
         // if we do not have a db return an empty array
-        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
+        if (!this.db) return throwError(() => new Error('no indexedDB Support'));
 
         // process normally
         let retSubject = new Subject<any>();
@@ -189,7 +189,7 @@ export class language {
             retSubject.error(false);
         };
         request.onsuccess = (event) => {
-            if(event.target.result && event.target.result.length > 0) {
+            if (event.target.result && event.target.result.length > 0) {
                 retSubject.next(event.target.result);
                 retSubject.complete();
             } else {
@@ -205,9 +205,9 @@ export class language {
      *
      * @private
      */
-    public clearDB(){
+    public clearDB() {
         // only if we do have a db
-        if(!this.db) return;
+        if (!this.db) return;
 
         // process the cleanup
         let transaction = this.db.transaction(["languages", "applang", "applist"], "readwrite");
@@ -225,6 +225,7 @@ export class language {
         this.readStoreAll('languages').subscribe({
             next: (languages) => {
                 this.languagedata.languages = {available: languages};
+
                 this.readStore('applang', this.currentlanguage).subscribe({
                     next: (applang) => {
                         this.languagedata.applang = applang;
@@ -242,35 +243,25 @@ export class language {
                 this.loadLanguage().subscribe(() => {
 
                     // write to the database
-                    for(let language of this.languagedata.languages.available){
+                    for (let language of this.languagedata.languages.available) {
                         this.writeStore('languages', language);
                     }
 
                     loadhandler.next('getLanguage');
                 });
             }
-        })
-        /*
-        if (sessionStorage[window.btoa('languageData' + this.session.authData.sessionId)] && sessionStorage[window.btoa('languageData' + this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
-            let response = this.session.getSessionData('languageData');
-            this.languagedata = response;
-            if (this.currentlanguage == '') {
-                this.currentlanguage = response.languages.default;
-            }
-            loadhandler.next('getLanguage');
-        } else {
-
-        }
-        */
+        });
     }
 
     /**
      * switches the language
      * @param language
      */
-    public switchLanguage(language): Observable<any>{
+    public switchLanguage(language): Observable<any> {
         let retSubject = new Subject();
         this.currentlanguage = language;
+
+        // attempts to read from the store. if fails load from backend
         this.readStore('applang', language).subscribe({
             next: (applang) => {
                 this.languagedata.applang = applang;
@@ -287,7 +278,6 @@ export class language {
                 });
             },
             error: () => {
-
                 this.loadLanguage().subscribe({
                     next: () => {
                         retSubject.next(true);
@@ -302,38 +292,40 @@ export class language {
     /**
      * loads the language as set in the current language
      */
-    public loadLanguage( setOnBackend = true ): Observable<any> {
+    public loadLanguage(): Observable<any> {
         let retSubject = new Subject();
 
         // consturct the URL
         let url = this.configurationService.getBackendUrl() + '/system/language';
-        if(this.currentlanguage) url += '/' + this.currentlanguage;
+        if (this.currentlanguage) url += '/' + this.currentlanguage;
 
         // get the language
         this.http.get(
             url,
-            {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: setOnBackend ? 1:0 }}
-        ).subscribe(
-            (res: any) => {
-                let response = res.body;
-                // this.session.setSessionData('languageData', response);
+            {headers: this.session.getSessionHeader(), observe: "response"}
+        ).subscribe({
+                next: (res: any) => {
+                    let response = res.body;
+                    // this.session.setSessionData('languageData', response);
 
-                // set the response
-                this.languagedata = response;
+                    // set the response
+                    this.languagedata = response;
 
-                // write to the store
-                this.writeStore('applang', {language_code: this.currentlanguage, data: this.languagedata.applang});
-                this.writeStore('applist', {language_code: this.currentlanguage, data: this.languagedata.applist});
+                    // in case we have no language set .. set it
+                    if (!this.currentlanguage) {
+                        this.currentlanguage = response.language;
+                    }
 
-                if (this.currentlanguage == '') {
-                    this.currentlanguage = response.languages.default;
+                    // write to the store
+                    this.writeStore('applang', {language_code: this.currentlanguage, data: this.languagedata.applang});
+                    this.writeStore('applist', {language_code: this.currentlanguage, data: this.languagedata.applist});
+
+                    // emit that the language has changed
+                    this.currentlanguage$.emit(this.currentlanguage);
+
+                    retSubject.next(true);
+                    retSubject.complete();
                 }
-
-                // emit that the language has changed
-                this.currentlanguage$.emit(this.currentlanguage);
-
-                retSubject.next(true);
-                retSubject.complete();
             }
         );
 
@@ -464,8 +456,11 @@ export class language {
      */
     public getLabelFormatted(label: string, replacements: any, length: 'default' | 'long' | 'short' = 'default') {
         let replArray: string[];
-        if (Array.isArray(replacements)) replArray = replacements;
-        else replArray = new Array(replacements);
+        if (Array.isArray(replacements)) {
+            replArray = replacements;
+        } else {
+            replArray = new Array(replacements);
+        }
         let x = 0;
         return this.getLabel(label, '', length)
             .replace(/%(s|%)/g, (...args) => {
@@ -507,7 +502,7 @@ export class language {
      * @param module
      */
     public getModuleCombinedLabel(label, module) {
-        if(!module) return 'no module defined';
+        if (!module) return 'no module defined';
         if (this.languagedata.applang[label + '_' + module.toUpperCase()]) {
             return this.getLabel(label + '_' + module.toUpperCase());
         } else {
@@ -815,8 +810,8 @@ export class language {
      * @param a The first string.
      * @param b The second string.
      */
-    public compareStrings( a: string, b: string ): number {
-        return a.localeCompare( b, this._currentlanguage.slice( 0, 2 ));
+    public compareStrings(a: string, b: string): number {
+        return a.localeCompare(b, this._currentlanguage.slice(0, 2));
     }
 
     /**
@@ -825,8 +820,8 @@ export class language {
      *
      * @param array The array of strings to sort.
      */
-    public sortArray( array: string[], reverse = false ): void {
-        array.sort( ( a, b ) => this.compareStrings( a, b ) * ( reverse?-1:1 ));
+    public sortArray(array: string[], reverse = false): void {
+        array.sort((a, b) => this.compareStrings(a, b) * (reverse ? -1 : 1));
     }
 
     /**
@@ -836,8 +831,8 @@ export class language {
      * @param array The array of objects to sort.
      * @param property The property to be used for sorting.
      */
-    public sortObjects( array: object[], property: string, reverse = false ): void {
-        array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ) * ( reverse?-1:1 ));
+    public sortObjects(array: object[], property: string, reverse = false): void {
+        array.sort((a, b) => this.compareStrings(a[property], b[property]) * (reverse ? -1 : 1));
     }
 
     /**
@@ -845,8 +840,8 @@ export class language {
      *
      * @param string The string.
      */
-    public ucFirst( string ): string {
-        return string.charAt(0).toLocaleUpperCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    public ucFirst(string): string {
+        return string.charAt(0).toLocaleUpperCase(this._currentlanguage.slice(0, 2)) + string.slice(1);
     }
 
     /**
@@ -854,8 +849,8 @@ export class language {
      *
      * @param string The string.
      */
-    public lcFirst( string ): string {
-        return string.charAt(0).toLocaleLowerCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    public lcFirst(string): string {
+        return string.charAt(0).toLocaleLowerCase(this._currentlanguage.slice(0, 2)) + string.slice(1);
     }
 
 }

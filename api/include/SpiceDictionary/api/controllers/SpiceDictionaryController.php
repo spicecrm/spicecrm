@@ -240,16 +240,13 @@ class SpiceDictionaryController
     public function checkSpiceWordsInVardefs(Request $req, Response $res, array $args): Response{
         $retArray = [];
         $reservedWords = SpiceUIWordsLoader::getWords('db', null);
-        $qTables = "SHOW TABLES FROM ".SpiceConfig::getInstance()->config['dbconfig']['db_name'];
         $db = DBManagerFactory::getInstance();
-        $resTables = $db->query($qTables);
-        while($table = $db->fetchRow($resTables)){
-            $tableName = $table['Tables_in_'.SpiceConfig::getInstance()->config['dbconfig']['db_name']];
-            $qCol = "SHOW COLUMNS FROM ".$tableName;
-            $resCols = $db->query($qCol);
-            while($col = $db->fetchByAssoc($resCols)){
-                if(in_array(strtoupper($col['Field']), $reservedWords['reservedwords'])){
-                    $retArray[$tableName][] = $col['Field'];
+        $tables = $db->getTablesArray();
+        foreach($tables as $table) {
+            $columns = $db->get_columns($table);
+            foreach($columns as $columnName => $column) {
+                if(in_array(strtoupper($column['name']), $reservedWords['reservedwords'])){
+                    $retArray[$table][] = $column['name'];
                 }
             }
         }
