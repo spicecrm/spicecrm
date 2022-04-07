@@ -88,12 +88,12 @@ class SystemTenant extends SpiceBean
         $this->copyConfig($db, $config, 'system');
         $this->copyConfig($db, $config, 'core');
 
-        $db->transactionCommit();
-
         // initialize elastic search
         $ftsManager = new SpiceFTSRESTManager();
         SpiceFTSHandler::getInstance()->elasticHandler->indexPrefix = "{$config['fts']['prefix']}{$this->id}_";
         $ftsManager->initialize();
+
+        $db->transactionCommit();
 
         // switch back to current database
         DBManagerFactory::switchInstance($preserved_db_name, $config);
@@ -181,7 +181,7 @@ class SystemTenant extends SpiceBean
         if (count($tables) == 0) return;
 
         foreach ($tables as $table) {
-            $db->query("INSERT INTO {$table->name} SELECT * FROM $masterDBName.{$table->name}");
+            $r = $db->query("INSERT INTO {$table->name} SELECT * FROM $masterDBName.{$table->name}");
         }
     }
 
