@@ -7,7 +7,6 @@ use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -48,15 +47,9 @@ class ConfigTransferController
      */
     static function fetchAllTablenamesOfDB()
     {
-        $db = DBManagerFactory::getInstance();
         if (self::$allTablenamesOfDB !== null) return;
-        if ($db->dbType == 'oci8') {
-            $result = $db->query('SELECT table_name FROM user_tables ORDER BY TABLE_NAME');
-            while ($row = $db->fetchByAssoc($result)) self::$allTablenamesOfDB[] = strtolower($row['table_name']);
-        } else {
-            $result = $db->query(sprintf('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = "%s" ORDER BY TABLE_NAME', SpiceConfig::getInstance()->config['dbconfig']['db_name']));
-            while ($row = $db->fetchByAssoc($result)) self::$allTablenamesOfDB[] = $row['TABLE_NAME'];
-        }
+        self::$allTablenamesOfDB = DBManagerFactory::getInstance()->getTablesArray();
+        sort( self::$allTablenamesOfDB );
         foreach (self::$blacklistedTablesRegex as $k => $v) self::$blacklistedTablesRegex[$k] = '/^' . $v . '$/';
         foreach (self::$allTablenamesOfDB as $v) if (strpos($v, 'sys') === 0) {
             if (preg_filter(self::$blacklistedTablesRegex, '$0', $v)) self::$blacklistedTables[] = $v;

@@ -315,8 +315,7 @@ class RESTManager
      * @return string
      */
     public function outputError($exception): string {
-        $inDevMode = (isset(SpiceConfig::getInstance()->config['developerMode'])
-                    and SpiceConfig::getInstance()->config['developerMode']);
+        $inDevMode = SpiceUtils::inDeveloperMode();
 
         if (is_object($exception)) {
             if (is_a( $exception, Exception::class)) {

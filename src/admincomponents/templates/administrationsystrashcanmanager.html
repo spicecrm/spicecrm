@@ -33,7 +33,7 @@
         <tbody>
             <tr *ngFor="let record of records">
                 <td role="gridcell" class="slds-cell-shrink">
-                    <system-icon [module]="getModule(record.recordmodule)" size="small"></system-icon>
+                    <system-icon [module]="record.recordmodule" size="small"></system-icon>
                 </td>
                 <td scope="row">
                     <div class="slds-truncate">{{record.recordmodule}}</div>
