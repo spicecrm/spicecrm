@@ -33,14 +33,14 @@ export class QuestionsManagerEditText extends QuestionsManagerEditBasic implemen
     /**
      * Getter for the sequenced flag, stored in the question parameters.
      */
-    public get isinput(): boolean {
+    public get isInput(): boolean {
         return !!this.questionparameters.isinput;
     }
 
     /**
      * Setter for the sequenced flag, stored in the question parameters.
      */
-    public set isinput( value: boolean ) {
+    public set isInput( value: boolean ) {
         this.questionparameters.isinput = value;
         this.writeQuestionparametersToModel();
     }

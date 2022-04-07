@@ -1,25 +1,28 @@
-<div class="slds-grid">
-    <div class="slds-p-right--medium" style="width:100%;">
-        <label for="{{compId}}-questiontext" class="slds-form-element__label"><system-label label="LBL_QUESTION_TEXT"></system-label></label>
-        <input id="{{compId}}-questiontext" type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
+<div class="slds-grid slds-gutters_direct-x-small">
+    <div class="slds-col slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_QUESTION_TEXT"></system-label></label>
+        <input type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
     </div>
-    <div style="width:4rem">
+    <div class="slds-col slds-form-element" [ngClass]="{'slds-has-error':nameMissing}">
+        <label class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+        <input type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()"  (change)="nameChanged()">
+    </div>
+    <div class="slds-col slds-grow-none">
         <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_IMAGE"></system-label></label><br>
         <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>
     </div>
 </div>
 
-<div class="slds-m-top--xx-small slds-m-bottom--large" [ngClass]="{'slds-has-error':nameMissing}">
-    <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
-    <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()"  (change)="nameChanged()">
+<div class="slds-m-vertical_medium">
+    <system-checkbox [(ngModel)]="answerRequired"><system-label label="LBL_ANSWER_REQUIRED"></system-label></system-checkbox>
 </div>
 
-<div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-m-top_small">
+<div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-m-top_medium">
     <div class="slds-form-element">
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="numEntries" (change)="setNumEntries()" [disabled]="!canAddOption">
-                    <option *ngFor="let i of [3,4,5,6,7,8,9,10]" value="{{i}}">{{i}}<system-label [label]="'LBL_ENTRIES'"></system-label></option>
+                    <option *ngFor="let i of [3,4,5,6,7,8,9,10]" value="{{i}}">{{i}} <system-label [label]="'LBL_ENTRIES'"></system-label></option>
                 </select>
             </div>
         </div>
@@ -30,7 +33,7 @@
         <system-label label="LBL_ADD_ENTRY"></system-label>
     </button>
     <ng-container *ngIf="options.length > 0">
-        <span><system-label [label]="'LBL_SET_VALUES'"></system-label>:&nbsp;</span>
+        <span class="slds-m-right--small"><system-label [label]="'LBL_SET_VALUES'"></system-label>:</span>
         <button class="slds-button slds-button_neutral" (click)="fillRange(1,options.length)">1 … {{options.length}}</button>
         <button class="slds-button slds-button_neutral" (click)="fillRange(options.length,1)">{{options.length}} … 1</button>
         <button class="slds-button slds-button_neutral" (click)="fillRange((options.length-1)/-2,(options.length-1)/2)">-{{(options.length-1)/2}} … +{{(options.length-1)/2}}</button>
@@ -82,8 +85,8 @@
                 <system-button-icon [icon]="'arrowup'"></system-button-icon>
                 <span class="slds-assistive-text"><system-label label="LBL_UP"></system-label></span>
             </button>
-            <button
-                    class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionDown(i)" title="{{language.getLabel('LBL_DOWN')}}" [disabled]="isLastRow  || !canMoveOption(option)">
+            <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled"
+                (click)="optionDown(i)" title="{{language.getLabel('LBL_DOWN')}}" [disabled]="isLastRow  || !canMoveOption(option)">
                 <system-button-icon [icon]="'arrowdown'"></system-button-icon>
                 <span class="slds-assistive-text"><system-label label="LBL_DOWN"></system-label></span>
             </button><button
