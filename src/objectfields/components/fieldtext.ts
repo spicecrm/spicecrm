@@ -105,6 +105,27 @@ export class fieldText extends fieldGeneric implements OnInit {
     }
 
     /**
+     * use the speech API and read the text
+     */
+    public toSpeech(){
+        let speech = new SpeechSynthesisUtterance();
+        speech.text = this.value;
+        speech.lang = this.getSpeechLanguage();
+        speechSynthesis.speak(speech);
+    }
+
+    /**
+     * get the speec api language from teh logged on language
+     *
+     * @private
+     */
+    private getSpeechLanguage(){
+        let langArray = this.language.currentlanguage.split('_');
+        if(langArray.length != 2) return 'en-US';
+        return langArray[0] + '-' + langArray[1].toUpperCase();
+    }
+
+    /**
      * returns true if the field is to be displaxed truncated
      */
     get truncated() {
