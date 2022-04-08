@@ -27,7 +27,7 @@ declare var _: any;
  */
 @Component({
     selector: 'system-navigation-manager-route-container',
-    templateUrl: './src/systemcomponents/templates/systemnavigationmanagerroutecontainer.html',
+    templateUrl: '../templates/systemnavigationmanagerroutecontainer.html',
     providers: [navigationtab]
 })
 export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy {
@@ -35,44 +35,44 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
     /**
      * the tab object
      */
-    @Input() private object: objectTab;
+    @Input() public object: objectTab;
 
     /**
      * the tabid
      */
-    @Input() private tabid: string;
+    @Input() public tabid: string;
 
     /**
      * the id of the parenttab if this is a subtab
      */
-    @Input() private parentttabid: string;
+    @Input() public parentttabid: string;
 
     /**
      * inidcates if the tab is loaded
      */
-    private loaded = false;
+    public loaded = false;
 
     /**
      * the component from the dynamic route to be rendered
      */
-    private routercomponent: string;
+    public routercomponent: string;
 
     /**
      * internally held rendere path
      */
-    private renderedPath: string;
+    public renderedPath: string;
 
     /**
      * internally held rendered component
      */
-    private rendererParams: string;
+    public rendererParams: string;
 
     /**
      * holds component subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private language: language, private router: Router, private broadcast: broadcast, @SkipSelf() private navigation: navigation, private navigationtab: navigationtab, private changeDetectorRef: ChangeDetectorRef) {
+    constructor(public metadata: metadata, public language: language, public router: Router, public broadcast: broadcast, @SkipSelf() public navigation: navigation, public navigationtab: navigationtab, public changeDetectorRef: ChangeDetectorRef) {
         this.changeDetectorRef.detach();
 
         // add  subscription to the nav service
@@ -144,7 +144,7 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
     /**
      * set the parent tab id to the navigation tab service
      */
-    private setParentTabId() {
+    public setParentTabId() {
         // pass on the tab id if we are not on main, the navigation is subtabbed and the object allows for subtabs
         if (this.tabid != 'main' && this.navigation.navigationparadigm == 'subtabbed' && this.object.enablesubtabs) {
             this.navigationtab.tabid = this.parentttabid ? this.parentttabid : this.tabid;

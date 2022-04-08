@@ -11,6 +11,7 @@ import {
     Input
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
+import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {currency} from '../../../services/currency.service';
@@ -18,7 +19,7 @@ import {modellist} from '../../../services/modellist.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
-import {CdkDragDrop} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
 import {ListTypeI} from "../../../services/interfaces.service";
 import {skip} from "rxjs/operators";
 
@@ -29,60 +30,140 @@ declare var _: any;
  */
 @Component({
     selector: 'spice-kanban',
-    templateUrl: './src/include/spicepath/templates/spicekanban.html',
+    templateUrl: '../templates/spicekanban.html',
     providers: [model]
 })
 export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * reference to the utility bar if one is rendered
      */
-    @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) private kanbanUtilityBar: ViewContainerRef;
+    @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) public kanbanUtilityBar: ViewContainerRef;
 
     /**
      * the component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * subscription to the modellist for type changes
      */
-    private modellistsubscribe: any = undefined;
+    public modellistsubscribe: any = undefined;
 
     /**
      * holds the config data for the beanguides
      */
-    private confdata: any;
+    public confdata: any;
 
     /**
      * holds the info on the stages to be displayed
      */
-    private stages: any[] = [];
+    public stages: any[] = [];
     /**
      * collects all of the fields and their operation type
      */
-    private sumfields: any[] = [];
+    public sumfields: any[] = [];
     /**
      * hidden statges that are rendered in teh utility bar
      */
-    private hiddenstages: any[] = [];
+    public hiddenstages: any[] = [];
 
     /**
      * holds an array of currencies
      */
     public currencies: any[] = [];
 
-    private loadLabel: boolean = false;
+    public sortfields: any[] = [];
 
-    constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
+    public loadLabel: boolean = false;
+    /**
+     * holds the status network items
+     */
+    public statusNetworkItems: any[] = [];
+    /**
+     * holds the status network field
+     */
+    public statusField: string = '';
+    /**
+     * holds the status network managed boolean
+     */
+    public statusNetworkManaged: boolean = false;
+
+    constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency) {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
         this.currencies = this.currency.getCurrencies();
+        this.loadSortFields();
+
+    }
+
+    /**
+     * getter for the sortfield
+     */
+    get sortField() {
+        return !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortfield : 'select';
+    }
+
+    /**
+     * sets the sortfield and pushes it to the sortArray of the modellist
+     * @param field
+     */
+    set sortField(field: string) {
+        !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortfield = field :
+        this.modellist.sortArray.push({
+            sortfield: field,
+            sortdirection: this.sortDirection
+        });
+    }
+
+    /**
+     * getter for disabling the sortdirection selection if the sortfield is an empty string
+     */
+    get isDisabled() {
+        return this.sortField == 'select';
+    }
+    /**
+     * getter for the sortfield
+     */
+    get sortDirection() {
+        return !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortdirection : 'ASC';
+    }
+
+    set sortDirection(direction: string) {
+        this.modellist.sortArray[0].sortdirection = direction;
+    }
+
+
+
+    /**
+     * loads the sortfields from the fts configuration
+     * @private
+     */
+    public loadSortFields() {
+        this.backend.getRequest('configuration/elastic/' + this.modellist.module + '/fields').subscribe(fields => {
+            let filtered = fields.filter(field => field.enablesort);
+            this.sortfields = filtered.map(field => field.fieldname);
+        });
+    }
+
+    /**
+     * load status network from metadata
+     * @private
+     */
+    private loadStatusNetwork() {
+        const managed = this.metadata.checkStatusManaged(this.modellist.module);
+        if (managed != false) {
+            this.statusField = managed.statusField;
+            this.statusNetworkItems = managed.statusNetwork;
+            this.statusNetworkManaged = true;
+        }
     }
 
     /**
      * load ths stage data and build the buckts we are searching for to build the kanban board
      */
     public ngOnInit() {
+
+        this.loadStatusNetwork();
         this.confdata = this.configuration.getData('spicebeanguides')[this.modellist.module];
         let stages = this.confdata.stages;
 
@@ -148,6 +229,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.modellistsubscribe = this.modellist.listType$.pipe(skip(1)).subscribe(newType =>
             this.handleListTypeChange(newType)
         );
+
     }
 
     /**
@@ -159,6 +241,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         // reset buckets
         this.modellist.buckets = {};
+        this.modellist.setToSession();
 
     }
 
@@ -167,7 +250,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         if (newType.listcomponent != 'SpiceKanban') return;
         this.modellist.reLoadList();
     }
@@ -185,7 +268,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 
@@ -212,7 +295,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param stagedata
      */
 
-    private getStageCount(stagedata) {
+    public getStageCount(stagedata) {
         try {
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
@@ -228,7 +311,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param stagedata
      * @param aggregatefield
      */
-    private getStageSum(stagedata, aggregatefield) {
+    public getStageSum(stagedata, aggregatefield) {
         try {
             let aggname = "_bucket_agg_" + aggregatefield.name;
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
@@ -249,7 +332,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stage
      */
-    private getStageItems(stage) {
+    public getStageItems(stage) {
         let stageData = this.getStageData(stage);
         let items: any[] = [];
         for (let item of this.modellist.listData.list) {
@@ -265,7 +348,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param amount the amount
      */
-    private getMoney(amount) {
+    public getMoney(amount) {
         return this.userpreferences.formatMoney(parseFloat(amount), 0);
     }
 
@@ -288,7 +371,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * checks if there are more records to load
      */
-    private loadmore() {
+    public loadmore() {
         // no further load if we are loading already
         if (this.modellist.isLoading) return false;
 
@@ -311,7 +394,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stagedata
      */
-    private getStageLabel(stagedata) {
+    public getStageLabel(stagedata) {
         if (stagedata.stage_label) {
             return stagedata.stage_label;
         } else {
@@ -324,7 +407,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * helper to get the currency symbol
      * @param aggregatefield
      */
-    private getCurrencySymbol(aggregatefield): string {
+    public getCurrencySymbol(aggregatefield): string {
         if (this.metadata.getFieldType(this.modellist.module, aggregatefield.name) == 'currency') {
             let currencySymbol: string;
             let currencyid = -99;
@@ -345,7 +428,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param event
      */
-    private handleDrop(event: CdkDragDrop<any>) {
+    public handleDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
             // a little bit of an ugly hack to get the drop information to the item so the item can handle the moel upadet
             event.item.data._KanbanDrop = {
@@ -361,13 +444,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param event
      */
-    private handleHiddenDrop(event: CdkDragDrop<any>) {
+    public handleHiddenDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
             // initialize the model
             this.model.module = this.modellist.module;
             this.model.initialize();
             this.model.id = event.item.data.id;
-            this.model.data = this.model.utils.backendModel2spice(this.modellist.module, _.clone(event.item.data));
+            this.model.setData(_.clone(event.item.data));
 
             // initialize the field statis
             this.model.initializeFieldsStati();
@@ -393,8 +476,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param item
      */
-    private allowDrag(item) {
-        return this.draganddropenabled && item.acl.edit;
+    public allowDrag(item) {
+        return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from));
     }
 
     /**
@@ -414,9 +497,18 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param aggregatefield
      */
-    private getTitle(aggregatefield) {
+    public getTitle(aggregatefield) {
         return this.language.getLabel("LBL_" + aggregatefield.name.toUpperCase());
 
     }
 
+    /**
+     * method to be passed to drop list to disable dropping based on status network
+     * @param stage
+     */
+    public dropEnterAllowed(stage: any) {
+        return (item: CdkDrag) => {
+            return !this.statusNetworkManaged || this.statusNetworkItems.filter(e => e.status_to == stage.stage).some(e => e.status_from == item.data[this.statusField])
+        }
+    }
 }

@@ -11,15 +11,15 @@ import {modal} from "../../services/modal.service";
  */
 @Component({
     selector: 'object-action-beantomail-button',
-    templateUrl: './src/objectcomponents/templates/objectactionbeantomailbutton.html'
+    templateUrl: '../templates/objectactionbeantomailbutton.html'
 })
 export class ObjectActionBeanToMailButton {
 
     constructor(
-        private language: language,
-        private modal: modal,
-        private model: model,
-        private viewContainerRef: ViewContainerRef
+        public language: language,
+        public modal: modal,
+        public model: model,
+        public viewContainerRef: ViewContainerRef
     ) {
 
     }

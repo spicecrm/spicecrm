@@ -10,11 +10,11 @@ import { modal } from "../../../services/modal.service";
 
 @Component({
     selector: 'questionnaire-preview-button',
-    templateUrl: './src/modules/questionnaires/templates/questionnairepreviewbutton.html',
+    templateUrl: '../templates/questionnairepreviewbutton.html',
 })
 export class QuestionnairePreviewButton {
 
-    constructor( private language: language, private model: model, private modalservice: modal ) { }
+    constructor( public language: language, public model: model, public modalservice: modal ) { }
 
     public execute(): void {
         this.modalservice.openModal( 'QuestionnairePreview' ).subscribe( modal => modal.instance.questionnaireId = this.model.id );

@@ -19,18 +19,18 @@ declare var Office: any;
  */
 @Component({
     selector: 'outlook-pane',
-    templateUrl: './src/include/outlook/templates/outlookpane.html'
+    templateUrl: '../templates/outlookpane.html'
 })
 export class OutlookPane implements OnInit {
 
     constructor(
-        private configuration: OutlookConfiguration,
-        private groupware: GroupwareService,
-        private router: Router,
-        private session: session,
-        private model: model,
-        private metadata: metadata,
-        private broadcast: broadcast
+        public configuration: OutlookConfiguration,
+        public groupware: GroupwareService,
+        public router: Router,
+        public session: session,
+        public model: model,
+        public metadata: metadata,
+        public broadcast: broadcast
     ) {
         // ToDo: implement pinned pane that relaod when item is changed
         Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, () => {
@@ -59,7 +59,7 @@ export class OutlookPane implements OnInit {
      * set the message id and navigate to the base route
      * @private
      */
-    private itemChanged() {
+    public itemChanged() {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
         this.groupware.emailId = '';
 

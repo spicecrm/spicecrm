@@ -15,7 +15,7 @@ import {footer} from "../../../services/footer.service";
 
 @Component({
     selector: '[workflow-manager-detail-tasks-line]',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksline.html',
+    templateUrl: '../templates/workflowmanagerdetailtasksline.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailTasksLine {
@@ -24,7 +24,7 @@ export class WorkflowManagerDetailTasksLine {
     @Input() tasks: any = {};
     @Input() fields: Array<any> = [];
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'WorkflowTaskDefinitions';
 
         this.view.displayLabels = false;
@@ -33,7 +33,7 @@ export class WorkflowManagerDetailTasksLine {
 
     ngOnChanges() {
         this.model.id = this.task.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.task);
+        this.model.setData(this.task);
     }
 
     getTaskName(taskID, renderMultiple = false) {
@@ -49,7 +49,7 @@ export class WorkflowManagerDetailTasksLine {
         }
 
         // render the multiple next indicator
-        if(renderMultiple && this.model.data.tasktype == 'decision' && this.model.data.decisions && this.model.data.decisions.length > 0){
+        if(renderMultiple && this.model.getField('tasktype') == 'decision' && this.model.getField('decisions') && this.model.getField('decisions').length > 0){
             taskname = '[..]';
         }
 

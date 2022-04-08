@@ -4,7 +4,7 @@
 import {Component, OnInit,EventEmitter} from '@angular/core';
 
 @Component({
-    templateUrl: "./src/systemcomponents/templates/systemlabeleditorglobalcustommodal.html",
+    templateUrl: "../templates/systemlabeleditorglobalcustommodal.html",
 })
 export class SystemLabelEditorGlobalCustomModal {
 
@@ -13,13 +13,13 @@ export class SystemLabelEditorGlobalCustomModal {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * event emitter for the label scope
      * @private
      */
-    private labelscope: EventEmitter<string> = new EventEmitter<string>();
+    public labelscope: EventEmitter<string> = new EventEmitter<string>();
 
 
     constructor(
@@ -27,7 +27,7 @@ export class SystemLabelEditorGlobalCustomModal {
     ) {
     }
 
-    private setLabel(labelScope){
+    public setLabel(labelScope){
         this.labelscope.emit(labelScope);
         this.self.destroy();
     }

@@ -5,7 +5,7 @@ import {Component, EventEmitter, Input, Output} from "@angular/core";
 
 @Component({
     selector: "system-tree-item",
-    templateUrl: "./src/systemcomponents/templates/systemtreeitem.html"
+    templateUrl: "../templates/systemtreeitem.html"
 })
 
 export class SystemTreeItem {
@@ -43,12 +43,12 @@ export class SystemTreeItem {
     /*
     * @input config: object
     */
-    @Input() private config: any = {};
+    @Input() public config: any = {};
     /*
     * @input isDragging: boolean
     */
-    @Input() private isDragging: boolean = false;
-    private dragPosition: string = '';
+    @Input() public isDragging: boolean = false;
+    public dragPosition: string = '';
 
     /*
     * @param parentId: string
@@ -75,7 +75,7 @@ export class SystemTreeItem {
     * @set dragPosition
     * @emit null | object by @output dragPositionChange
     */
-    private setPosition(position) {
+    public setPosition(position) {
         this.dragPosition = position;
         if (!this.isDragging) return;
         this.dragPositionChange.emit(!position ? null : {id: this.item.id, position});

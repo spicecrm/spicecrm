@@ -17,17 +17,17 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'select-tree',
-    templateUrl: './src/objectfields/templates/fieldselecttree.html'
+    templateUrl: '../templates/fieldselecttree.html'
 })
 export class fieldSelectTree extends fieldGeneric {
-    private fields = [];
+    public fields = [];
 
-    private show_tree: boolean = false;
-    private show_search: boolean = false;
-    private search: string;
-    private sel_fields = [];
+    public show_tree: boolean = false;
+    public show_search: boolean = false;
+    public search: string;
+    public sel_fields = [];
 
-    private clickListener: any;
+    public clickListener: any;
 
 
     constructor(
@@ -36,9 +36,9 @@ export class fieldSelectTree extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private config: configurationService,
-        private elementRef: ElementRef,
+        public backend: backend,
+        public config: configurationService,
+        public elementRef: ElementRef,
         public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);
@@ -73,10 +73,10 @@ export class fieldSelectTree extends fieldGeneric {
     get display_value() {
         let txt = '';
         for(let field_keyname of this.fields) {
-            if (this.model.data[field_keyname]) {
+            if (this.model.getField(field_keyname)) {
                 let field_name = "";
                 for(let key in this.sel_fields) {
-                    if(this.sel_fields[key].keyname === this.model.data[field_keyname]) {
+                    if(this.sel_fields[key].keyname === this.model.getField(field_keyname)) {
                         field_name = this.sel_fields[key].name;
                     }
                 }
@@ -130,9 +130,11 @@ export class fieldSelectTree extends fieldGeneric {
 
     public unchooseSelField() {
 
-        for(let i = 0; i < this.fields.length; i++) {
-            this.model.data[this.fields[i]] = '';
+        let modelFields: any = {};
+        for(let field of this.fields){
+            modelFields[field] = '';
         }
+        this.model.setFields(modelFields);
     }
 
     public onClick(event: MouseEvent): void {

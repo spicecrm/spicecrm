@@ -1,6 +1,6 @@
 <div class="slds-p-around--xx-small" [system-overlay-loading-spinner]="model.isSaving">
-    <div class="slds-form-element slds-p-horizontal--xx-small" (click)="onFocus()">
-        <field-container field="name"></field-container>
+    <div (click)="onHeaderClick()">
+        <object-record-fieldset [fieldset]="headerFieldSet"></object-record-fieldset>
     </div>
     <ng-container *ngIf="isExpanded">
         <object-record-fieldset [fieldset]="formFieldSet" [direction]="'vertical'"></object-record-fieldset>

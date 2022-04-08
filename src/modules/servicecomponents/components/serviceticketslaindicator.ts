@@ -19,14 +19,14 @@ declare var moment: any;
  * displays the SLA Status as an indicator
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketslaindicator.html'
+    templateUrl: '../templates/serviceticketslaindicator.html'
 })
 export class ServiceTicketSLAIndicator extends fieldGeneric {
 
     /**
      * represent the time lesft. This is calculated staticaly since the getter is costly on performance
      */
-    private timeLeft: string = '';
+    public timeLeft: string = '';
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);

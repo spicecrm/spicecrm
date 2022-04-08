@@ -1,12 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
-/*
- * Copyright notice
- * 
- * (c) 2016 twentyreasons business solutions GmbH <office@twentyreasons.com>
- * 
- * All rights reserved
- */
 namespace SpiceCRM\modules\MediaFiles;
 
 use SpiceCRM\data\SugarBean;

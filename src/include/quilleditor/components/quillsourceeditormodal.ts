@@ -4,6 +4,7 @@
 
 import {Component} from '@angular/core';
 import {SystemRichTextSourceModal} from "../../../systemcomponents/components/systemrichtextsourcemodal";
+import {systemrichtextservice} from "../../../systemcomponents/services/systemrichtext.service";
 
 
 /**
@@ -11,7 +12,8 @@ import {SystemRichTextSourceModal} from "../../../systemcomponents/components/sy
  */
 @Component({
     selector: 'quill-source-editor-modal',
-    templateUrl: './src/include/quilleditor/templates/quillsourceeditormodal.html'
+    templateUrl: '../templates/quillsourceeditormodal.html',
+    providers: [systemrichtextservice]
 })
 export class QuillSourceEditorModal extends SystemRichTextSourceModal {
 

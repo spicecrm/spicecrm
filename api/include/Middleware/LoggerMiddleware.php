@@ -9,6 +9,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class LoggerMiddleware
@@ -84,8 +85,9 @@ class LoggerMiddleware
      * @throws \Exception
      */
     private function writeLogEntry() {
+        $spice_config = SpiceConfig::getInstance()->config;
         $this->logging = false;
-        if(DBManagerFactory::getInstance()->tableExists('sysapilogconfig')){
+        if($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance()->tableExists('sysapilogconfig')){
             // check if this request has to be logged by some rules...
             $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE
               (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND

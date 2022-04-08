@@ -14,7 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'user-add-button',
-    templateUrl: "./src/modules/users/templates/useraddbutton.html"
+    templateUrl: "../templates/useraddbutton.html"
 })
 
 export class UserAddButton {
@@ -24,7 +24,7 @@ export class UserAddButton {
      */
     public disabled: boolean = true;
 
-    constructor(private modal: modal, private language: language, private model: model, private session: session, private metadata: metadata, private injector: Injector, private configurationService: configurationService) {
+    constructor(public modal: modal, public language: language, public model: model, public session: session, public metadata: metadata, public injector: Injector, public configurationService: configurationService) {
         // CR1000463: use spiceacl to enable listing and access foreign user records
         // keep BWC for old modules/ACL/ACLController.php
         let _aclcontroller = this.configurationService.getSystemParamater('aclcontroller');
@@ -42,7 +42,7 @@ export class UserAddButton {
      *
      * @private
      */
-    private execute() {
+    public execute() {
         this.modal.openModal("UserAddModal", true, this.injector);
     }
 }

@@ -13,12 +13,13 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {modellist} from "../../../services/modellist.service";
+import {lastValueFrom} from "rxjs";
 
 /**
  * a button to display an extend modal for the bonus card
  */
 @Component({
-    templateUrl: './src/modules/bonusprograms/templates/bonuscardbulkextendbutton.html',
+    templateUrl: '../templates/bonuscardbulkextendbutton.html',
     providers: [model]
 })
 export class BonusCardBulkExtendButton {
@@ -63,7 +64,7 @@ export class BonusCardBulkExtendButton {
 
         this.backend.getRequest(url, {cardsIds}).subscribe(async (res) => {
 
-            processing.next();
+            processing.next(true);
             processing.complete();
 
             if (res.cardsIds?.length == 0) {
@@ -71,7 +72,7 @@ export class BonusCardBulkExtendButton {
             }
 
             const text = `${this.language.getLabel('MSG_CARDS_TO_EXTEND')} ${res.cardsIds.length}`;
-            const confirmAnswer = await this.modal.confirm(text, 'LBL_BULK_EXTEND').toPromise();
+            const confirmAnswer = await lastValueFrom(this.modal.confirm(text, 'LBL_BULK_EXTEND'));
 
             if (!confirmAnswer) return;
 

@@ -5,14 +5,14 @@ import {Component, ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} fro
 
 @Component({
     selector: "system-component-container",
-    templateUrl: "./src/systemcomponents/templates/systemcomponentcontainer.html"
+    templateUrl: "../templates/systemcomponentcontainer.html",
 })
 export class SystemComponentContainer implements AfterViewInit {
 
-    @ViewChild("container", {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
-    private containerRef: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild("container", {read: ViewContainerRef, static: true}) public container: ViewContainerRef;
+    public containerRef = new EventEmitter<ViewContainerRef>();
 
-    private loaded: false;
+    public loaded: boolean = false;
     public containerComponent: string = "";
 
     public ngAfterViewInit() {

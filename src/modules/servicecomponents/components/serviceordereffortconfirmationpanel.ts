@@ -8,7 +8,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 import {ServiceOrderEffortPanel} from "./serviceordereffortpanel";
 
 @Component({
-    templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortconfirmationpanel.html"
+    templateUrl: "../templates/serviceordereffortconfirmationpanel.html"
 })
 export class ServiceOrderEffortConfirmationPanel extends ServiceOrderEffortPanel implements OnInit {
 

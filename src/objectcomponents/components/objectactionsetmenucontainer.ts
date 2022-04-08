@@ -13,7 +13,7 @@ import {helper} from '../../services/helper.service';
 
 @Component({
     selector: 'object-actionset-menu-container',
-    templateUrl: './src/objectcomponents/templates/objectactionsetmenucontainer.html',
+    templateUrl: '../templates/objectactionsetmenucontainer.html',
     providers: [popup, helper]
 })
 export class ObjectActionsetMenuContainer implements AfterViewInit {
@@ -23,7 +23,7 @@ export class ObjectActionsetMenuContainer implements AfterViewInit {
     @Input() actionset: string = '';
     @Output() action: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private language: language, private model: model, private metadata: metadata, private elementRef: ElementRef, private popup: popup, private helper: helper) {
+    constructor(public language: language, public model: model, public metadata: metadata, public elementRef: ElementRef, public popup: popup, public helper: helper) {
 
     }
 

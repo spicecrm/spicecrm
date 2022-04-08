@@ -22,16 +22,16 @@ import {userpreferences} from "../../../services/userpreferences.service";
  */
 @Component({
     selector: 'spice-calculator-modal',
-    templateUrl: './src/include/spicemath/templates/spicecalculatormodal.html',
+    templateUrl: '../templates/spicecalculatormodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceCalculatorModal {
-    private readonly decimalSeparator: string;
-    private readonly seperator: string;
+    public readonly decimalSeparator: string;
+    public readonly seperator: string;
 
     @ViewChild('calculator') spicecalculator;
 
-    constructor(private userPreferences: userpreferences) {
+    constructor(public userPreferences: userpreferences) {
         this.decimalSeparator = this.userPreferences.toUse.dec_sep ?? '.';
         this.seperator = (this.decimalSeparator === ',')? '.' : ',';
     }
@@ -52,7 +52,7 @@ export class SpiceCalculatorModal {
      * holds a subject object for the value emission
      * @private
      */
-    private valueSubject = new Subject<number>();
+    public valueSubject = new Subject<number>();
     /**
      * holds a value observable
      */

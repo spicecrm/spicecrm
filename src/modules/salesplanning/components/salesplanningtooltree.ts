@@ -9,7 +9,7 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'sales-planning-tool-tree',
-    templateUrl: './src/modules/salesplanning/templates/salesplanningtooltree.html'
+    templateUrl: '../templates/salesplanningtooltree.html'
 })
 
 export class SalesPlanningToolTree implements OnInit {
@@ -20,7 +20,7 @@ export class SalesPlanningToolTree implements OnInit {
     public undoneonly: boolean = false;
     @Output() public selectNode: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private language: language, private modal: modal, private backend: backend, private planningService: SalesPlanningService) {
+    constructor(public language: language, public modal: modal, public backend: backend, public planningService: SalesPlanningService) {
     }
 
     get unDoneOnly() {
@@ -49,7 +49,7 @@ export class SalesPlanningToolTree implements OnInit {
     * @push nodeItem to nodeItems
     * @build tree
     */
-    private getNodeItems(parentId = '', item?) {
+    public getNodeItems(parentId = '', item?) {
         this.isLoading = parentId.length == 0 ? '*' : parentId;
         this.planningService.setRetrieveParams(this.treeItems, item, true);
         let params = {
@@ -77,7 +77,7 @@ export class SalesPlanningToolTree implements OnInit {
     * @sort nodeItems
     * @add treeNode recursively
     */
-    private buildTree() {
+    public buildTree() {
         this.treeItems = [];
         this.sortItems();
         this.addTreeNode();
@@ -86,7 +86,7 @@ export class SalesPlanningToolTree implements OnInit {
     /*
     * @sort nodeItems by (sortseq | name)
     */
-    private sortItems() {
+    public sortItems() {
         this.nodeItems.sort((a, b) => {
             if (!isNaN(a.sortseq) && !isNaN(b.sortseq) && a.sortseq != b.sortseq) {
                 return +a.sortseq > +b.sortseq ? 1 : -1;
@@ -99,7 +99,7 @@ export class SalesPlanningToolTree implements OnInit {
     /*
     * @sort nodeItems by (sortseq | name)
     */
-    private addTreeNode(parentId = '', level = 1) {
+    public addTreeNode(parentId = '', level = 1) {
         for (let item of this.nodeItems) {
             if (item.parent_id == parentId) {
                 item.level = level;
@@ -119,7 +119,7 @@ export class SalesPlanningToolTree implements OnInit {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
@@ -129,7 +129,7 @@ export class SalesPlanningToolTree implements OnInit {
     * @set selectedNode
     * @emit selectNode: void
     */
-    private selectTreeItem(item) {
+    public selectTreeItem(item) {
         this.treeItems.some(treeItem => {
             if (treeItem.id == item.id) {
                 if (this.planningService.isEditing) {
@@ -161,7 +161,7 @@ export class SalesPlanningToolTree implements OnInit {
     * @build tree if item collapsed
     * @stopPropagation e
     */
-    private toggleOpen(treeItem, e) {
+    public toggleOpen(treeItem, e) {
         this.nodeItems.some((item) => {
                 if (item.id == treeItem.id) {
                     item.expanded = !item.expanded;
@@ -189,7 +189,7 @@ export class SalesPlanningToolTree implements OnInit {
     * @param id: string
     * @return isSelected: boolean
     */
-    private isSelected(id) {
+    public isSelected(id) {
         return this.planningService.selectedNode && this.planningService.selectedNode.id == id;
     }
 
@@ -199,7 +199,7 @@ export class SalesPlanningToolTree implements OnInit {
     * @reset selectedNode
     * @reset selectedNodes
     */
-    private resetData() {
+    public resetData() {
         this.nodeItems = [];
         this.treeItems = [];
         this.planningService.selectedNode = undefined;

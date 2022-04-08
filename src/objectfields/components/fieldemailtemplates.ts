@@ -15,12 +15,12 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'field-email-templates',
-    templateUrl: './src/objectfields/templates/fieldemailtemplates.html'
+    templateUrl: '../templates/fieldemailtemplates.html'
 })
 export class fieldEmailTemplates extends fieldGeneric implements OnInit {
 
-    private isLoaded: boolean = false;
-    private availableTemplates: any[] = [];
+    public isLoaded: boolean = false;
+    public availableTemplates: any[] = [];
 
     constructor(
         public model: model,
@@ -28,9 +28,9 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private modal: modal,
-        private configuration: configurationService
+        public backend: backend,
+        public modal: modal,
+        public configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
@@ -52,7 +52,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
     }
 
-    private getValue() {
+    public getValue() {
         for (let template of this.availableTemplates) {
             if (template.id == this.value) {
                 return template.name;
@@ -97,27 +97,33 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
      *
      * @param event
      */
-    private chooseTemplate(event) {
+    public chooseTemplate(event) {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
                 this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
                     // nur überschreiben wenn nicht bereits ein subject angegeben wurde.
-                    if (!this.model.data[this.subjectField]) {
+                    if (!this.model.getField(this.subjectField)) {
                         this.model.setField(this.subjectField, data.subject);
                     }
-                    // Check if element with class "spicecrm_quote" should kept on the bottom (it is for the email-reply)
-                    if(this.addtocurrentquote) {
 
-                        // create a new document to manage the current html string (body)
-                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
-                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
-                        let selectedEle = virtualDocument.querySelectorAll(".spicecrm_quote");
+                    // create a new document to manage the current html string (body)
+                    let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
+                    virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
 
-                        // keep the html with the class "spicecrm_quote" and set the template
-                        this.model.setField(this.bodyField, data.body_html + selectedEle[0].outerHTML);
-                    } else {
-                        this.model.setField(this.bodyField, data.body_html);
-                    }
+                    let selectedEleTemp = virtualDocument.querySelectorAll("div[spicecrm_temp_quote]");
+                    let selectedEleSign = virtualDocument.querySelectorAll("div[data-signature]");
+                    let selectedEleReply = virtualDocument.querySelectorAll("div[spicecrm_reply_quote]");
+
+                    selectedEleTemp[0]?.parentNode.removeChild(selectedEleTemp[0]);
+
+                    let newBody = [
+                        '<div class="spicecrm_temp_quote">' + data.body_html + '</div>',
+                        selectedEleSign[0]?.outerHTML,
+                        selectedEleReply[0]?.outerHTML
+                    ].join("<p><br></p>");
+
+                    this.model.setField(this.bodyField, newBody);
+
                     modalRef.instance.self.destroy();
                 });
             });

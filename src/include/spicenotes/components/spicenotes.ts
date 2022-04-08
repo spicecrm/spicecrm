@@ -13,34 +13,34 @@ import {broadcast} from '../../../services/broadcast.service';
 declare var moment: any;
 
 /**
- * handles the spicenotes on the object allowing users to add quick notes (private or global visible)
+ * handles the spicenotes on the object allowing users to add quick notes (public or global visible)
  */
 @Component({
-    templateUrl: './src/include/spicenotes/templates/spicenotes.html'
+    templateUrl: '../templates/spicenotes.html'
 })
 export class SpiceNotes implements OnInit {
 
     /**
      * vraible for th ebingind to the new note when the user enters on e
      */
-    private newNote: string = '';
+    public newNote: string = '';
 
     /**
      * keep track if the textarea is active (focused)
      */
-    private _active = false;
+    public _active = false;
 
     /**
-     * indicator that the new note is considered private and not global so only visible to the user who created it or admins
+     * indicator that the new note is considered public and not global so only visible to the user who created it or admins
      */
-    private isPrivate: boolean = false;
+    public isPrivate: boolean = false;
 
     /**
      * the list of notes
      */
     public notes: any = [];
 
-    constructor(private model: model, private language: language, private session: session, private backend: backend, private broadcast: broadcast) {
+    constructor(public model: model, public language: language, public session: session, public backend: backend, public broadcast: broadcast) {
 
     }
 
@@ -92,7 +92,7 @@ export class SpiceNotes implements OnInit {
         });
     }
 
-    private broadcastCount(){
+    public broadcastCount(){
         this.broadcast.broadcastMessage('spicenotes.loaded', {module: this.model.module, id: this.model.id, spicenotescount: this.notes.length});
 
     }
@@ -100,23 +100,23 @@ export class SpiceNotes implements OnInit {
     /**
      * resets the note when the user cancels
      */
-    private clearNote() {
+    public clearNote() {
         this.newNote = '';
-        this.isPrivate = false;
+        this.isPrivate = true;
     }
 
 
     /**
      * tgggle a note privat or global
      */
-    private togglePrivate() {
+    public togglePrivate() {
         this.isPrivate = !this.isPrivate;
     }
 
     /**
-     * returns the proper icon for a private vs global note
+     * returns the proper icon for a public vs global note
      */
-    private getPrivateIcon() {
+    public getPrivateIcon() {
         if (this.isPrivate) {
             return 'lock';
         } else {
@@ -141,14 +141,14 @@ export class SpiceNotes implements OnInit {
     /**
      * triggered when the textarea gets the focus
      */
-    private onFocus() {
+    public onFocus() {
         this._active = true;
     }
 
     /**
      * triggered when the textarea has a blur event
      */
-    private onBlur() {
+    public onBlur() {
         this._active = false;
     }
 

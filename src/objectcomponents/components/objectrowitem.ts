@@ -11,7 +11,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[object-row-item]',
-    templateUrl: './src/objectcomponents/templates/objectrowitem.html',
+    templateUrl: '../templates/objectrowitem.html',
     providers: [model, view],
 })
 /**
@@ -32,15 +32,15 @@ export class ObjectRowItemComponent implements OnInit
     @Input('selected')
     @HostBinding('class.slds-is-active')
     @HostBinding('class.slds-is-selected')
-    private _selected:boolean = false;
+    public _selected:boolean = false;
 
     @Output() select = new EventEmitter();
 
     constructor(
-        private model: model,
-        private view: view,
-        private router: Router,
-        private language: language
+        public model: model,
+        public view: view,
+        public router: Router,
+        public language: language
     ) {
 
     }
@@ -48,9 +48,9 @@ export class ObjectRowItemComponent implements OnInit
     ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.listItem.id;
-        this.model.data = this.listItem;
+        this.model.setData(this.listItem);
 
-        this.view.isEditable = this.inlineedit && this.model.data.acl.edit;
+        this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');
     }
 
     set selected(val:boolean)

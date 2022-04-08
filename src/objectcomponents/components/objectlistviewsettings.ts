@@ -11,29 +11,29 @@ import {ObjectListViewSettingsSetfieldsModal} from "./objectlistviewsettingssetf
 
 @Component({
     selector: 'object-listview-settings',
-    templateUrl: './src/objectcomponents/templates/objectlistviewsettings.html',
+    templateUrl: '../templates/objectlistviewsettings.html',
 
 })
 export class ObjectListViewSettings {
 
     constructor(
-        private language: language,
-        private elementRef: ElementRef,
-        private modal: modal,
-        private modellist: modellist,
-        private renderer: Renderer2,
-        private injector: Injector,
-        private toast: toast
+        public language: language,
+        public elementRef: ElementRef,
+        public modal: modal,
+        public modellist: modellist,
+        public renderer: Renderer2,
+        public injector: Injector,
+        public toast: toast
     ) {
     }
 
-    private add() {
+    public add() {
         this.modal.openModal('ObjectListViewSettingsAddlistModal', true, this.injector).subscribe(modalref => {
             modalref.instance.modalmode = 'add';
         });
     }
 
-    private edit() {
+    public edit() {
         if (!this.modellist.checkAccess('edit')) {
             return false;
         }
@@ -43,20 +43,20 @@ export class ObjectListViewSettings {
         });
     }
 
-    private save() {
+    public save() {
         this.modellist.updateListType().subscribe(saved => {
             this.toast.sendToast('List Saved');
         });
     }
 
-    private setfields() {
+    public setfields() {
         if (!this.modellist.checkAccess('edit')) {
             return false;
         }
         this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
     }
 
-    private delete() {
+    public delete() {
         if (!this.modellist.checkAccess('delete')) {
             return false;
         }

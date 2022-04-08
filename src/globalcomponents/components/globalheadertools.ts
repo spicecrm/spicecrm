@@ -1,33 +1,39 @@
 /**
  * @module GlobalComponents
  */
-import {Component, AfterViewInit, ViewContainerRef, ViewChild} from '@angular/core';
+import {Component, AfterViewInit, ViewContainerRef, ViewChild, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {session} from '../../services/session.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {broadcast} from '../../services/broadcast.service';
 
+
+/**
+ * renders the components as part of the globak Headerr tools in the upper right corner of the app
+ */
 @Component({
     selector: 'global-header-tools',
-    templateUrl: './src/globalcomponents/templates/globalheadertools.html'
+    templateUrl: '../templates/globalheadertools.html'
 })
-export class GlobalHeaderTools implements AfterViewInit {
+export class GlobalHeaderTools implements OnInit{
 
-    @ViewChild('toolcontainer', {read: ViewContainerRef, static: true}) private toolcontainer: ViewContainerRef;
-    private containerItems: any[] = [];
+    /**
+     * the componentset to be rendered
+     */
+    public componentset: string;
 
-    constructor(private session: session, private metadata: metadata, private router: Router, private language: language, private broadcast: broadcast) {
+    constructor(public session: session, public metadata: metadata, public router: Router, public language: language, public broadcast: broadcast) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
     }
 
-    public ngAfterViewInit() {
+    public ngOnInit() {
         this.buildTools();
     }
 
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':
@@ -37,22 +43,9 @@ export class GlobalHeaderTools implements AfterViewInit {
         }
     }
 
-    private buildTools() {
-
-        // destrioy the current container
-        this.containerItems.forEach(item => {
-            item.destroy();
-        });
-        this.containerItems = [];
-
+    public buildTools() {
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderTools');
-        if (!componentconfig.componentset) return false;
-        let components = this.metadata.getComponentSetObjects(componentconfig.componentset);
-        for (let component of components) {
-            this.metadata.addComponent(component.component, this.toolcontainer).subscribe(itemRef => {
-                this.containerItems.push(itemRef);
-            });
-        }
+        this.componentset = componentconfig.componentset;
     }
 
 }

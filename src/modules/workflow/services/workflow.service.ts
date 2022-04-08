@@ -18,7 +18,7 @@ export class workflow {
     public id: string = '';
     public loading: boolean = false;
 
-    constructor(private backend: backend, private broadcast: broadcast) {
+    constructor(public backend: backend, public broadcast: broadcast) {
     }
 
     /**
@@ -119,7 +119,7 @@ export class workflow {
     /**
      * broadcasts the number of open workflows found
      */
-    private broadcastOpenCount() {
+    public broadcastOpenCount() {
         this.broadcast.broadcastMessage('workflows.loaded', {
             module: this.module,
             id: this.id,

@@ -7,7 +7,7 @@ import {ServiceOrderEffortItem} from "./serviceordereffortitem";
 
 @Component({
     selector: "[serviceorder-effort-confirmation-item]",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortconfirmationitem.html",
+    templateUrl: "../templates/serviceordereffortconfirmationitem.html",
     providers: [model, view]
 })
 export class ServiceOrderEffortConfirmationItem extends ServiceOrderEffortItem implements OnInit  {
@@ -42,7 +42,7 @@ export class ServiceOrderEffortConfirmationItem extends ServiceOrderEffortItem i
      * enable detele only for the items added in the confirmation
      */
     get candelete() {
-        return this.model.data.confirmadded;
+        return this.model.getField('confirmadded');
     }
 
 }

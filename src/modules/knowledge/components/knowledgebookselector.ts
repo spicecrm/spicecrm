@@ -12,15 +12,15 @@ import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: "knowledge-book-selector",
-    templateUrl: "./src/modules/knowledge/templates/knowledgebookselector.html",
+    templateUrl: "../templates/knowledgebookselector.html",
     providers: [model]
 })
 export class KnowledgeBookSelector {
 
     public searchTerm: string = "";
     public searchOpen: boolean = false;
-    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) private inputContainer: ViewContainerRef;
-    @Input() private editable: boolean = true;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) public inputContainer: ViewContainerRef;
+    @Input() public editable: boolean = true;
 
     constructor(public language: language,
                 public model: model,
@@ -67,31 +67,33 @@ export class KnowledgeBookSelector {
         };
     }
 
-    private editBook(bookId) {
-        this.model.id = bookId;
+    public editBook(bookToEdit) {
+        this.model.id = bookToEdit.id;
+        this.model.acl = bookToEdit.acl;
         this.model.edit(true);
         this.searchOpen = false;
     }
 
-    private deleteBook(bookId) {
-        this.model.id = bookId;
+    public deleteBook(bookToDelete) {
+        this.model.id = bookToDelete.id;
+        this.model.acl = bookToDelete.acl;
         this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('LBL_DELETE')).subscribe(answer => {
             if (answer) {
                 this.model.delete().subscribe(res => {
                     this.deselectBook();
-                    this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookId);
+                    this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookToDelete.id);
                 });
             }
         });
     }
 
-    private selectBook(book) {
+    public selectBook(book) {
         this.knowledgeService.selectedBook = book;
         this.knowledgeService.setLastViewedBook();
         this.searchOpen = false;
     }
 
-    private deselectBook() {
+    public deselectBook() {
         this.knowledgeService.selectedBook = undefined;
         this.knowledgeService.selectedDoc = "";
         this.knowledgeService.documents = [];
@@ -101,7 +103,7 @@ export class KnowledgeBookSelector {
         // this.knowledgeService.favoriteDisable();
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

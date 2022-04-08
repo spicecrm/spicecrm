@@ -13,7 +13,7 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
  */
 @Component({
     selector: 'spice-page-builder-element-image',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementimage.html',
+    templateUrl: '../templates/spicepagebuilderelementimage.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
@@ -54,7 +54,7 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**
      * open media file picker
      */
-    private openMediaFilePicker() {
+    public openMediaFilePicker() {
         this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
             if (!!src) {
                 this.element.attributes.src = src;

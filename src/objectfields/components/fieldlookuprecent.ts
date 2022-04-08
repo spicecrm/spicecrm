@@ -3,30 +3,31 @@
  */
 import {Component, Input, Output, OnInit, EventEmitter, OnChanges} from '@angular/core';
 import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
 import {recent} from '../../services/recent.service';
+import {language} from '../../services/language.service';
+import {session} from '../../services/session.service';
 
 /**
  * renders the recent items container in module lookup fields like parent, lookup and others
  */
 @Component({
     selector: 'field-lookup-recent',
-    templateUrl: './src/objectfields/templates/fieldlookuprecent.html'
+    templateUrl: '../templates/fieldlookuprecent.html'
 })
 export class fieldLookupRecent implements OnChanges {
 
     /**
      * the module for the recent items
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * emits the selectes item
      */
-    @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
-    private recentItems: any[] = [];
+    @Output() public selectedObject: EventEmitter<any> = new EventEmitter<any>();
+    public recentItems: any[] = [];
 
-    constructor(public model: model, public recent: recent, public language: language) {
+    constructor(public model: model, public recent: recent, public language: language, public session: session, ) {
 
     }
 
@@ -38,12 +39,22 @@ export class fieldLookupRecent implements OnChanges {
     }
 
     /**
+     * special handling on the users field to have a shortcut to the current user
+     * @param e
+     */
+    public setCurrentUser(e: MouseEvent){
+        // stop the event
+        e.preventDefault();
+        this.selectedObject.emit({id: this.session.authData.userId, text: this.session.authData.display_name});
+    }
+
+    /**
      * handels when the userr selects an item
      *
      * @param event
      * @param recentItem
      */
-    private setParent(event, recentItem) {
+    public setParent(event, recentItem) {
         // stop the event
         event.preventDefault();
 
@@ -53,7 +64,7 @@ export class fieldLookupRecent implements OnChanges {
     /**
      * get the recent items filtered by the module
      */
-    private getRecent() {
+    public getRecent() {
         this.recentItems = [];
         let recent = this.recent.getModuleRecent(this.module).subscribe(recentItems => {
             this.recentItems = recentItems;

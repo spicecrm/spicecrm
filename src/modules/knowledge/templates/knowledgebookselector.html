@@ -8,10 +8,10 @@
                     </span>
                     <span class="slds-pill__label slds-p-left--xx-small">{{selectedBook.name}}</span>
                     <span>
-                        <button *ngIf="editable" class="slds-button slds-button--icon" (click)="editBook(selectedBook.id)">
+                        <button *ngIf="editable" class="slds-button slds-button--icon" (click)="editBook(selectedBook)">
                             <system-button-icon icon="edit"></system-button-icon>
                         </button>
-                        <button *ngIf="editable" class="slds-button slds-button--icon" (click)="deleteBook(selectedBook.id)">
+                        <button *ngIf="editable" class="slds-button slds-button--icon" (click)="deleteBook(selectedBook)">
                             <system-button-icon icon="delete"></system-button-icon>
                         </button>
                         <button class="slds-button slds-button--icon slds-pill__remove" (click)="deselectBook()">

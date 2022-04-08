@@ -14,12 +14,12 @@ import {model} from '../../services/model.service';
  */
 @Component({
     selector: 'object-listview-aggregates-button',
-    templateUrl: './src/objectcomponents/templates/objectlistviewaggregatesbutton.html'
+    templateUrl: '../templates/objectlistviewaggregatesbutton.html'
 })
 export class ObjectListViewAggregatesButton {
 
     constructor(
-        private modellist: modellist
+        public modellist: modellist
     ) {
 
     }
@@ -27,7 +27,7 @@ export class ObjectListViewAggregatesButton {
     /**
      * toggles the display attribute on the modellist service
      */
-    private toggleaggregates() {
+    public toggleaggregates() {
         // make sure no filters are displayed
         this.modellist.displayFilters = false;
 

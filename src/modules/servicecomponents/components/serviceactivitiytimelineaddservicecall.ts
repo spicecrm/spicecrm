@@ -13,7 +13,7 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 @Component({
     selector: 'service-activitiytimeline-add-servicecall',
-    templateUrl: './src/modules/servicecomponents/templates/serviceactivitytimelineaddservicecall.html',
+    templateUrl: '../templates/serviceactivitytimelineaddservicecall.html',
     providers: [model, view]
 })
 export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
@@ -21,16 +21,16 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
     /**
      * the fieldset for the header. Pulled from the componentnconfig for the component and the module
      */
-    private headerFieldSet: string = '';
+    public headerFieldSet: string = '';
 
     /**
      * the fieldset for the body. Pulled from the componentnconfig for the component and the module
      */
-    private bodyFieldSet: string = '';
+    public bodyFieldSet: string = '';
 
     public isExpanded: boolean = false;
 
-    constructor(private metadata: metadata, private activitiytimeline: activitiytimeline, private model: model, private view: view, private language: language, private modal: modal, private ViewContainerRef: ViewContainerRef) {}
+    constructor(public metadata: metadata, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public ViewContainerRef: ViewContainerRef) {}
 
     public ngOnInit() {
         // initialize the model
@@ -40,8 +40,8 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
         // name is not necessarily loaded
         this.activitiytimeline.parent.data$.subscribe(data => {
             // if we still have the same model .. update
-            if (data.id == this.model.data.parent_id) {
-                this.model.data.parent_name = data.summary_text;
+            if (data.id == this.model.getField('parent_id')) {
+                this.model.setField('parent_name', data.summary_text);
             }
         });
 
@@ -56,34 +56,34 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
 
     }
 
-    private initializeCall(){
+    public initializeCall(){
         this.model.module = 'ServiceCalls';
         this.model.initializeModel(this.activitiytimeline.parent);
 
     }
 
-    private onFocus() {
+    public onFocus() {
         if(!this.isExpanded) {
             this.isExpanded = true;
             this.initializeCall();
         }
     }
 
-    private expand(){
+    public expand(){
         this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector).subscribe(componentref => {
             componentref.instance.setModel(this.model);
         })
     }
 
-    private collapse(){
+    public collapse(){
         this.isExpanded = false;
     }
 
-    private cancel(){
+    public cancel(){
         this.isExpanded = false;
     }
 
-    private save(){
+    public save(){
         this.model.save().subscribe(data => {
             this.initializeCall();
             this.isExpanded = false;

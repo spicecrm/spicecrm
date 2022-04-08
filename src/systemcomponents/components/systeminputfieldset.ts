@@ -11,7 +11,7 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: "system-input-fieldset",
-    templateUrl: "./src/systemcomponents/templates/systeminputfieldset.html",
+    templateUrl: "../templates/systeminputfieldset.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -25,30 +25,30 @@ export class SystemInputFieldset implements ControlValueAccessor {
     /**
      * input to disable the input
      */
-    @Input() private disabled = false;
+    @Input() public disabled = false;
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * hods the fieldset
      */
-    private _fieldset: string;
+    public _fieldset: string;
 
     /**
      * the fieldsets available
      */
-    private _fieldsets: any[] = [];
+    public _fieldsets: any[] = [];
 
     /**
      * the current module
      */
-    private _module: string = '';
+    public _module: string = '';
 
     constructor(
-        private language: language,
-        private metadata: metadata,
+        public language: language,
+        public metadata: metadata,
     ) {
         this._fieldsets = this.metadata.getFieldSets();
     }
@@ -73,7 +73,7 @@ export class SystemInputFieldset implements ControlValueAccessor {
     /**
      * sets the module from a selected fieldset
      */
-    private detectModule() {
+    public detectModule() {
         // set the module if a fieldset is set
         if (this._fieldset) {
             this._module = this.metadata.getFieldset(this._fieldset).module;

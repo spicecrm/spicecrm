@@ -14,7 +14,7 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 import {ActivityTimelineAddItem} from "../../../modules/activities/components/activitytimelineadditem";
 
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceactivitiytimelineaddservicenote.html',
+    templateUrl: '../templates/serviceactivitiytimelineaddservicenote.html',
     providers: [model, view]
 })
 export class ServiceActivitiyTimelineAddServiceNote extends ActivityTimelineAddItem {

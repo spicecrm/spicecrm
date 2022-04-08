@@ -14,12 +14,12 @@ import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
     selector: 'mailchimp-create-campaign-modal',
-    templateUrl: './src/include/mailchimp/templates/mailchimpcreatecampaignmodal.html'
+    templateUrl: '../templates/mailchimpcreatecampaignmodal.html'
 })
 export class MailChimpCreateCampaignModal {
 
-    private self: any = {};
-    private campaign = new FormGroup({
+    public self: any = {};
+    public campaign = new FormGroup({
         name: new FormControl(''),
         subject: new FormControl(''),
         type: new FormControl(''),
@@ -27,17 +27,17 @@ export class MailChimpCreateCampaignModal {
     });
 
     constructor(
-        private language: language,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private model: model,
-        private modal: modal,
-        private toast: toast
+        public language: language,
+        public router: Router,
+        public metadata: metadata,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public toast: toast
     ) {
     }
 
-    private onSubmit() {
+    public onSubmit() {
         this.backend.postRequest(`channels/emarketing/mailchimp/${this.model.module}/${this.model.id}`, null, this.campaign.value).subscribe(
             response => {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
@@ -54,7 +54,7 @@ export class MailChimpCreateCampaignModal {
 
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

@@ -12,13 +12,13 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-float',
-    templateUrl: './src/objectfields/templates/fieldfloat.html'
+    templateUrl: '../templates/fieldfloat.html'
 })
 export class fieldFloat extends fieldGeneric implements OnInit {
 
-    @ViewChild('floatinput', {static: false}) private inputel: ElementRef;
+    @ViewChild('floatinput', {static: false}) public inputel: ElementRef;
 
-    private textvalue: string = '';
+    public textvalue: string = '';
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
@@ -31,14 +31,14 @@ export class fieldFloat extends fieldGeneric implements OnInit {
         }));
     }
 
-    private getValAsText() {
+    public getValAsText() {
         if (this.value === undefined) return '';
         let val = parseFloat(this.value);
         if (isNaN(val)) return '';
         return this.userpreferences.formatMoney(val);
     }
 
-    private checkInput(e) {
+    public checkInput(e) {
         let allowedKeys = ['ArrowRight', 'ArrowLeft', 'Backspace', 'Delete'];
         let regex = /^[0-9.,]+$/;
         if (!regex.test(e.key) && allowedKeys.indexOf(e.key) < 0) {
@@ -47,7 +47,7 @@ export class fieldFloat extends fieldGeneric implements OnInit {
         }
     }
 
-    private changed() {
+    public changed() {
         let curpos = this.inputel.nativeElement.selectionEnd;
         let val: any = this.textvalue;
         val = val.split(this.userpreferences.toUse.num_grp_sep).join('');

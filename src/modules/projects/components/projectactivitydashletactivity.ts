@@ -18,7 +18,7 @@ declare var moment: any;
 
 @Component({
     selector: "project-activity-dashlet-activity",
-    templateUrl: "./src/modules/projects/templates/projectactivitydashletactivity.html",
+    templateUrl: "../templates/projectactivitydashletactivity.html",
     providers: [model, view]
 })
 export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
@@ -28,30 +28,30 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private plannedActivities: any = [];
-    private selected_wbs = null;
-    private wbs_search_term = "";
-    private show_wbs_results = false;
+    public plannedActivities: any = [];
+    public selected_wbs = null;
+    public wbs_search_term = "";
+    public show_wbs_results = false;
 
     // the current set minutes
-    private activityminutes: number = 15;
+    public activityminutes: number = 15;
 
     // the currrent set hours
-    private activitiyhours: number = 0;
+    public activitiyhours: number = 0;
 
-    private activitiyDateStart: any;
-    private activitiyDateEnd: any;
+    public activitiyDateStart: any;
+    public activitiyDateEnd: any;
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private view: view,
-        private backend: backend,
-        private toast: toast,
-        private modellist: modellist
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public view: view,
+        public backend: backend,
+        public toast: toast,
+        public modellist: modellist
     ) {
         this.view.displayLabels = false;
         this.model.module = "ProjectActivities";
@@ -105,14 +105,14 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      * @param data
      * @private
      */
-    private modelchanged(data) {
+    public modelchanged(data) {
         if (this.activityminutes != data.duration_minutes || this.activitiyhours != data.duration_hours) {
             // set the new values
             this.activityminutes = data.duration_minutes;
             this.activitiyhours = data.duration_hours;
 
             // calculate the end date
-            this.activitiyDateEnd = moment(this.model.data.activity_start);
+            this.activitiyDateEnd = moment(this.model.getField('activity_start'));
             this.activitiyDateEnd.add(this.activityminutes, "m");
             this.activitiyDateEnd.add(this.activitiyhours, "h");
 
@@ -122,7 +122,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
             // set the current date start so we have a reference for changes
             this.activitiyDateStart = new moment(data.activity_start);
             // calculate a new end date with the new duration
-            this.activitiyDateEnd = moment(this.model.data.activity_start);
+            this.activitiyDateEnd = moment(this.model.getField('activity_start'));
             this.activitiyDateEnd.add(this.activityminutes, "m");
             this.activitiyDateEnd.add(this.activitiyhours, "h");
 
@@ -132,8 +132,8 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
             this.model.setField('activity_end', this.activitiyDateEnd);
         } else if (data.activity_end && Math.round(moment.duration(data.activity_end.diff(this.activitiyDateEnd)).asMinutes()) != 0) {
             // calculate a new duration based on the new end
-            this.activitiyDateEnd = moment(this.model.data.activity_end);
-            let duration = Math.round(moment.duration(this.model.data.activity_end.diff(data.activity_start)).asMinutes());
+            this.activitiyDateEnd = moment(this.model.getField('activity_end'));
+            let duration = Math.round(moment.duration(this.model.getField('activity_end').diff(data.activity_start)).asMinutes());
             // get minutes and hours
             if (duration > 0) {
                 this.activitiyhours = Math.floor(duration / 60);
@@ -156,26 +156,26 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private validate() {
+    public validate() {
         if (!this.selected_wbs) {
             return false;
         }
 
-        if (this.model.data.duration_hours < 1 && this.model.data.duration_minutes < 1) {
+        if (this.model.getField('duration_hours') < 1 && this.model.getField('duration_minutes') < 1) {
             return false;
         }
-        if (this.model.data.duration_hours < 0 || this.model.data.duration_minutes < 0) {
+        if (this.model.getField('duration_hours') < 0 || this.model.getField('duration_minutes') < 0) {
             return false;
         }
 
-        if (!this.model.data.name) {
+        if (!this.model.getField('name')) {
             return false;
         }
 
         /**
          * needs to be on the same day
          */
-        if (this.model.data.activity_start.dayOfYear() != this.model.data.activity_end.dayOfYear()) {
+        if (this.model.getField('activity_start').dayOfYear() != this.model.getField('activity_end').dayOfYear()) {
             return false;
         }
 
@@ -187,7 +187,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private save() {
+    public save() {
         if (!this.validate()) {
             return false;
         }
@@ -213,7 +213,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
      *
      * @private
      */
-    private reset() {
+    public reset() {
         this.model.id = "";
         this.model.initializeModel();
 

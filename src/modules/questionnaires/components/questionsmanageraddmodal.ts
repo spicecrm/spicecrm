@@ -12,7 +12,7 @@ import { QuestionsManagerEditMulti } from './questionsmanagereditmulti';
 
 @Component({
     selector: 'questions-manager-addmodal',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanageraddmodal.html',
+    templateUrl: '../templates/questionsmanageraddmodal.html',
     providers: [model,view]
 })
 export class QuestionsManagerAddModal implements OnInit {
@@ -23,17 +23,17 @@ export class QuestionsManagerAddModal implements OnInit {
     @Input() public questiontype: string;
 
     public response: Observable<object> = null;
-    private responseSubject: Subject<any> = null;
+    public responseSubject: Subject<any> = null;
 
-    private isLoading = false;
+    public isLoading = false;
 
-    private self: any;
+    public self: any;
 
-    private questiontypes_dom: any;
+    public questiontypes_dom: any;
 
-    @ViewChild(QuestionsManagerEditMulti, {static:false}) private refQuestionsManagerEditMulti;
+    @ViewChild(QuestionsManagerEditMulti, {static:false}) public refQuestionsManagerEditMulti;
 
-    constructor( private language: language, private model: model, private toast: toast, private backend: backend, private view: view ) {
+    constructor( public language: language, public model: model, public toast: toast, public backend: backend, public view: view ) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
     }
@@ -56,7 +56,7 @@ export class QuestionsManagerAddModal implements OnInit {
         }
     }
 
-    private cancelModal(): void {
+    public cancelModal(): void {
         this.responseSubject.next( false );
         this.responseSubject.complete();
         this.self.destroy();
@@ -66,7 +66,7 @@ export class QuestionsManagerAddModal implements OnInit {
         this.cancelModal();
     }
 
-    private saveQuestion(): void {
+    public saveQuestion(): void {
         let emptyRows = false;
         if ( this.questionset.data.questiontype === 'multi' ) this.refQuestionsManagerEditMulti.doBeforeSavingQuestion();
         if ( this.questionset.data.questiontype === 'single' || this.questionset.data.questiontype === 'multi' ) {
@@ -82,7 +82,7 @@ export class QuestionsManagerAddModal implements OnInit {
         if ( emptyRows ) {
             this.toast.sendToast( 'You have empty rows. Complete or delete them before saving!', 'error', '', true );
         } else {
-            if ( !!this.model.data.name ) {
+            if ( !!this.model.getField('name') ) {
                 this.model.save().subscribe(modeldata => {
                     this.responseSubject.next( this.model.data );
                     this.responseSubject.complete();
@@ -92,7 +92,7 @@ export class QuestionsManagerAddModal implements OnInit {
         }
     }
 
-    private get savingAllowed(): boolean {
+    public get savingAllowed(): boolean {
         return !!this.model.getField('name');
     }
 

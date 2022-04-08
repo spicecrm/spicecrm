@@ -16,22 +16,22 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-variant',
-    templateUrl: './src/modules/products/templates/productbrowservariant.html',
+    templateUrl: '../templates/productbrowservariant.html',
     providers: [model]
 })
 export class ProductBrowserVariant implements OnInit {
 
-    @Input() private productvariant: any = {};
-    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
-    private opened: boolean = false;
-    private fieldset: string;
-    private detailsFieldset: string;
+    @Input() public productvariant: any = {};
+    @Output() public selectionchanged: EventEmitter<any> = new EventEmitter<any>();
+    public opened: boolean = false;
+    public fieldset: string;
+    public detailsFieldset: string;
 
-    constructor(private model: model,
-                private modelutilities: modelutilities,
-                private language: language,
-                private metadata: metadata,
-                private productfinder: productfinder) {
+    constructor(public model: model,
+                public modelutilities: modelutilities,
+                public language: language,
+                public metadata: metadata,
+                public productfinder: productfinder) {
     }
 
     get buttonIcon() {
@@ -45,7 +45,7 @@ export class ProductBrowserVariant implements OnInit {
     public ngOnInit() {
         this.model.id = this.productvariant.id;
         this.model.module = 'ProductVariants';
-        this.model.data = this.modelutilities.backendModel2spice('ProductVariants', this.productvariant);
+        this.model.setData(this.productvariant);
 
         const config = this.metadata.getComponentConfig('ProductBrowserVariant', 'ProductVariants');
         this.fieldset = !!config && !!config.fieldset ? config.fieldset : undefined;
@@ -53,18 +53,18 @@ export class ProductBrowserVariant implements OnInit {
 
     }
 
-    private toggleOpen() {
+    public toggleOpen() {
         this.opened = !this.opened;
     }
 
-    private godetail() {
+    public godetail() {
         this.selectionchanged.emit({
             type: 'ProductVariant',
             object: this.model
         });
     }
 
-    private edit() {
+    public edit() {
         this.model.edit(true);
     }
 }

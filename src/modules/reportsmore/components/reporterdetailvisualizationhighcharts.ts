@@ -22,40 +22,40 @@ declare var _: any;
  */
 @Component({
     selector: 'reporter-detail-visualization-highcharts',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailvisualizationhighcharts.html',
+    templateUrl: '../templates/reporterdetailvisualizationhighcharts.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
     /**
      * save the visualization data
      */
-    private vizdata: any = {};
+    public vizdata: any = {};
     /**
      * save the high chart instance
      */
-    private chart: any = {};
+    public chart: any = {};
     /**
      * save if the chart series has data or not
      */
-    private noData = false;
+    public noData = false;
     /**
      * save the chart element id
      */
-    private chart_element_id: string;
+    public chart_element_id: string;
 
     constructor(
-        private metadata: metadata,
-        private broadcast: broadcast,
-        private model: model,
-        private language: language,
-        private backend: backend,
-        private activatedRoute: ActivatedRoute,
-        private navigation: navigation,
-        private elementRef: ElementRef,
-        private utils: modelutilities,
-        private libloader: libloader,
-        private zone: NgZone,
-        private cdRef: ChangeDetectorRef
+        public metadata: metadata,
+        public broadcast: broadcast,
+        public model: model,
+        public language: language,
+        public backend: backend,
+        public activatedRoute: ActivatedRoute,
+        public navigation: navigation,
+        public elementRef: ElementRef,
+        public utils: modelutilities,
+        public libloader: libloader,
+        public zone: NgZone,
+        public cdRef: ChangeDetectorRef
     ) {
         // don't use the vizdata.uid in case the same report is rendered multiple times...
         this.chart_element_id = 'high-charts-' + this.utils.generateGuid();
@@ -71,7 +71,7 @@ export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
     /**
      * load the high chart library and pass the report data to it
      */
-    private loadHighChart() {
+    public loadHighChart() {
 
         if (!this.vizdata.data.chart.height) {
             this.vizdata.data.chart.height = this.elementRef.nativeElement.height;

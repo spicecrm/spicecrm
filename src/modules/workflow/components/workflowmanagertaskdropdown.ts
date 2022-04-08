@@ -11,7 +11,7 @@ import {model} from '../../../services/model.service';
 @Pipe({name: 'filteractual'})
 export class filteractualpipe {
 
-    constructor(private model: model) {
+    constructor(public model: model) {
 
     }
 
@@ -22,7 +22,7 @@ export class filteractualpipe {
 
 @Component({
     selector: 'workflow-manager-taskdropdown',
-    templateUrl: './src/modules/workflow/templates/workflowmanagertaskdropdown.html'
+    templateUrl: '../templates/workflowmanagertaskdropdown.html'
 })
 export class WorkflowManagerTaskdropdown{
 
@@ -30,16 +30,16 @@ export class WorkflowManagerTaskdropdown{
     @Input() field : string = '';
     @Input() disabled: boolean = false;
 
-    constructor(private model: model) {
+    constructor(public model: model) {
 
     }
 
     set value(value){
-        this.model.data[this.field] = value;
+        this.model.setField(this.field, value);
     }
 
     get value(){
-        return this.model.data[this.field];
+        return this.model.getField(this.field);
     }
 
 

@@ -29,17 +29,17 @@ export class SystemDropdownTriggerSimpleDirective implements OnDestroy {
     /**
      * the click lisetner that listenes to any click evbent outside of the element
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * the input. allows disbaling the trigger if the buttopn e.g. is disabled
      */
-    @Input('system-dropdown-trigger-simple') private dropdowntriggerdisabled: boolean = false;
+    @Input('system-dropdown-trigger-simple') public dropdowntriggerdisabled: boolean = false;
 
     constructor(
-        private renderer: Renderer2,
-        private cdRef: ChangeDetectorRef,
-        private elementRef: ElementRef
+        public renderer: Renderer2,
+        public cdRef: ChangeDetectorRef,
+        public elementRef: ElementRef
     ) {
 
     }
@@ -55,7 +55,7 @@ export class SystemDropdownTriggerSimpleDirective implements OnDestroy {
      * @param event
      */
     @HostListener('click', ['$event'])
-    private openDropdown(event) {
+    public openDropdown(event) {
         if(!this.dropdowntriggerdisabled) {
             this.dropDownOpen = !this.dropDownOpen;
 
@@ -77,7 +77,7 @@ export class SystemDropdownTriggerSimpleDirective implements OnDestroy {
      *
      * @param event
      */
-    private onClick(event): void {
+    public onClick(event): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             this.dropDownOpen = false;
             this.cdRef.detectChanges();

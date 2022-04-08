@@ -10,12 +10,12 @@ import {sapIDOCSegmentI} from "../interfaces/moudesapidocs.interfaces";
 
 @Component({
     selector: 'sapidocs-manager',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanager.html',
+    templateUrl: '../templates/sapidocsmanager.html',
     providers: [sapIdocsManager]
 })
 export class SAPIDOCsManager {
 
-    constructor(private language: language, private navigationtab: navigationtab, private modal: modal, private injector: Injector, private sapIdocsManager: sapIdocsManager) {
+    constructor(public language: language, public navigationtab: navigationtab, public modal: modal, public injector: Injector, public sapIdocsManager: sapIdocsManager) {
         // set the tab name
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SAP_IDOCS_MANAGER'), displayicon: 'settings'});
     }
@@ -23,14 +23,14 @@ export class SAPIDOCsManager {
     /**
      * saves the changes
      */
-    private saveChanges() {
+    public saveChanges() {
         this.sapIdocsManager.updateSegments();
     }
 
     /**
      * adds a new idoc type
      */
-    private addIdocType() {
+    public addIdocType() {
         this.modal.openModal('SAPIDOCsManagerIDOCTypeAddModal', true, this.injector);
     }
 

@@ -10,18 +10,18 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: '[product-group-manager-details-attributes-validation-item]',
-    templateUrl: './src/modules/products/templates/productgroupmanagerdetailsattributesvalidationitem.html',
+    templateUrl: '../templates/productgroupmanagerdetailsattributesvalidationitem.html',
     providers: [model, view]
 })
 export class ProductGroupManagerDetailsAttributesValidationItem {
-    @Input() private item: any;
-    @Input() private listFields: any[] = [];
+    @Input() public item: any;
+    @Input() public listFields: any[] = [];
 
-    constructor(private language: language,
-                private backend: backend,
-                private metadata: metadata,
-                private view: view,
-                private model: model) {
+    constructor(public language: language,
+                public backend: backend,
+                public metadata: metadata,
+                public view: view,
+                public model: model) {
         this.view.displayLabels = false;
     }
 
@@ -33,10 +33,10 @@ export class ProductGroupManagerDetailsAttributesValidationItem {
         this.view.isEditable = this.canEdit;
         this.model.module = 'ProductAttributeValueValidations';
         this.model.id = this.item.id;
-        this.model.data = this.item;
+        this.model.setData(this.item);
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

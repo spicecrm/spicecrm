@@ -13,7 +13,7 @@ declare var _: any;
 
 @Component( {
     selector: 'questionset-render',
-    templateUrl: './src/modules/questionnaires/templates/questionsetrender.html',
+    templateUrl: '../templates/questionsetrender.html',
     styles: [
         '.questionset-render.in-modal .questionset-render-header, .questionset-render.in-modal .questionset-render-footer { flex-grow: 0; flex-shrink: 0; }',
         '.questionset-render.in-modal .questionset-render-questions { flex-shrink: 1; flex-grow: 1; overflow-y: scroll; }',
@@ -26,7 +26,7 @@ declare var _: any;
 } )
 export class QuestionsetRender implements OnInit {
 
-    private _ = _; // Workaround to use _ (underscore.js) inside the html template.
+    public _ = _; // Workaround to use _ (underscore.js) inside the html template.
 
     public qp: questionnaireParticipationService;
 
@@ -38,14 +38,14 @@ export class QuestionsetRender implements OnInit {
 
     public questionset: any;
 
-    private textIsCollapsable = false;
-    private textIsCollapsed = false;
+    public textIsCollapsable = false;
+    public textIsCollapsed = false;
 
-    @ViewChild('box', {read: ElementRef, static: false}) private box: ElementRef;
+    @ViewChild('box', {read: ElementRef, static: false}) public box: ElementRef;
 
-    private isCompleteChange = new EventEmitter();
+    public isCompleteChange = new EventEmitter();
 
-    constructor( private language: language, private questionnaireParticipation: questionnaireParticipationService ) {
+    constructor( public language: language, public questionnaireParticipation: questionnaireParticipationService ) {
         this.qp = questionnaireParticipation;
     }
 
@@ -61,15 +61,15 @@ export class QuestionsetRender implements OnInit {
 
     }
 
-    private toggleText(): void {
+    public toggleText(): void {
         this.textIsCollapsed = !this.textIsCollapsed;
     }
 
-    private get percentOfFinishedQuestions(): number {
+    public get percentOfFinishedQuestions(): number {
         return this.questionnaireParticipation.percentOfFinishedQuestionsInQuestionset[this.questionsetId];
     }
 
-    private get allQuestionsFinished(): number {
+    public get allQuestionsFinished(): number {
         return this.questionnaireParticipation.allQuestionsOfQuestionsetFinished[this.questionsetId];
     }
 

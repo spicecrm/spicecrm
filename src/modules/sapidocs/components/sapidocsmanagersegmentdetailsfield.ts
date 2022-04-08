@@ -10,21 +10,21 @@ import {sapIDOCFieldI} from "../../../modules/sapidocs/interfaces/moudesapidocs.
 
 @Component({
     selector: 'sapidocs-manager-segment-details-field',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetailsfield.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetailsfield.html'
 })
 export class SAPIDOCsManagerSegmentDetailsField implements OnDestroy {
 
     /**
      * holds the details about the idoc field
      */
-    private field: sapIDOCFieldI;
+    public field: sapIDOCFieldI;
 
     /**
      * holds the subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language, private backend: backend, private sapIdocsManager: sapIdocsManager, private cdRef: ChangeDetectorRef) {
+    constructor(public language: language, public backend: backend, public sapIdocsManager: sapIdocsManager, public cdRef: ChangeDetectorRef) {
         this.subscriptions.add(
             this.sapIdocsManager.selectedfield$.subscribe(fieldid => {
                 if(fieldid) {
@@ -43,7 +43,7 @@ export class SAPIDOCsManagerSegmentDetailsField implements OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    private setboolfield(fieldname, fieldvalue){
+    public setboolfield(fieldname, fieldvalue){
         this.field[fieldname] = fieldvalue ? '1' : '0';
     }
 

@@ -66,16 +66,16 @@ export class questionnaireParticipationService {
 
     public isCompleted = false;
 
-    private initByParent = false;
-    private initByParticipation = false;
-    private initByQuestionnaire = false;
+    public initByParent = false;
+    public initByParticipation = false;
+    public initByQuestionnaire = false;
 
-    private routeForSave: string;
+    public routeForSave: string;
 
     /**
      * isDirty indicates that one or more question answers has been given/changed and that the information is still not saved to the backend.
      */
-    private _isDirty = false;
+    public _isDirty = false;
     public get isDirty(): boolean {
         return this._isDirty;
     }
@@ -88,8 +88,8 @@ export class questionnaireParticipationService {
     /**
      * Indicator of loading status.
      */
-    private _isLoadedQuestionnaire = false;
-    private _isLoadedParticipation = false;
+    public _isLoadedQuestionnaire = false;
+    public _isLoadedParticipation = false;
     public get isLoadedQuestionnaire(): boolean {
         return this._isLoadedQuestionnaire;
     }
@@ -112,7 +112,7 @@ export class questionnaireParticipationService {
     /**
      * isSaving indicates that the saving of the answers is in progress.
      */
-    private _isSaving = false;
+    public _isSaving = false;
     public get isSaving(): boolean {
         return this._isSaving;
     }
@@ -124,10 +124,11 @@ export class questionnaireParticipationService {
 
     public answersChanged$ = new EventEmitter();
 
-    constructor( private backend: backend, private toast: toast, private language: language, private helper: helper, private broadcast: broadcast ) { }
+    constructor( public backend: backend, public toast: toast, public language: language, public helper: helper, public broadcast: broadcast ) { }
 
-    public init_byParent( parentId: string, parentType: string ): Observable<any> {
+    public init_byParent( parentId: string, parentType: string, questionnaireId: string = null ): Observable<any> {
         this.initByParent = true;
+        if ( questionnaireId ) this.questionnaireId = questionnaireId;
         this.parentId = parentId;
         this.parentType = parentType;
         this.routeForSave = 'module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId;
@@ -168,6 +169,8 @@ export class questionnaireParticipationService {
         this.answers[questionId].answer_value = value;
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( questionId, backupForNetworkError );
         else this.isDirty = true;
+
+        this.answersChanged$.emit();
 
     }
 
@@ -220,7 +223,7 @@ export class questionnaireParticipationService {
     /**
      * Determine the number of currently selected answer options (checkboxes).
      */
-    private numOptionsSelected( questionId: string ): number {
+    public numOptionsSelected( questionId: string ): number {
         let numChecked = 0;
         if ( this.answers[questionId].options ) {
             for ( let optionId of Object.keys( this.answers[questionId].options )) {
@@ -233,9 +236,11 @@ export class questionnaireParticipationService {
     /**
      * An answer option (radio button or checkbox) was clicked.
      */
-    public clickAnswerOption( optionId: string, event: any ): boolean {
+    public clickAnswerOption( optionId: string, event?: any ): boolean {
 
-        event.stopPropagation();
+        if(event) {
+            event.stopPropagation();
+        }
         let question = this.questionoptions[optionId].parentQuestion;
 
         // If the edit mode is 'off' or 'postview', a input/change is not allowed. --> Do nothing and return false.
@@ -287,9 +292,9 @@ export class questionnaireParticipationService {
      * Load the questionnaire (with question sets, questions and question options)
      * and do all the other stuff like building arrays, sorting, building of question meta data and initializing the answers object.
      */
-    private loadQuestionnaire(): Observable<any> {
+    public loadQuestionnaire(): Observable<any> {
         this.isLoadedParticipation = true; // Only in case there was no participation to load.
-        let responseSubject = new Subject<any>();
+        let responseSubject = new Subject<void>();
         this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/render' ).subscribe( ( response: any ) => {
             this.questionnaire = response;
             this.doBasics();
@@ -308,7 +313,7 @@ export class questionnaireParticipationService {
      * Do some basic stuff:
      * Set IDs of parents. And: Create object "questionoptions".
      */
-    private doBasics() {
+    public doBasics() {
         if ( this.questionnaire.questionsets ) {
             for ( let questionsetId in this.questionnaire.questionsets ) {
                 if ( this.questionnaire.questionsets[questionsetId].questions ) {
@@ -334,7 +339,7 @@ export class questionnaireParticipationService {
      * Because question sets, questions and question options might be displayed sorted, we have to hold them in arrays.
      * From the backend we got the data as objects. So build the arrays:
      */
-    private buildArrays() {
+    public buildArrays() {
         this.questionsetsArray = []; // Array of the question sets.
         this.questionsArray = {}; // Arrays of the questions, grouped by question set id.
         this.questionoptionsArray = {}; // Arrays of the question options, grouped by question id.
@@ -358,7 +363,7 @@ export class questionnaireParticipationService {
     }
 
     // Sort the questionsets - by position field or date_entered:
-    private sortQuestionsets() {
+    public sortQuestionsets() {
         this.questionsetsArray.sort( ( a, b ) => {
             let dummy = a.position - b.position;
             if( dummy !== 0 ) return dummy;
@@ -371,7 +376,7 @@ export class questionnaireParticipationService {
     }
 
     // Sort the questions - by position field or date_entered:
-    private sortQuestions() {
+    public sortQuestions() {
         for ( let questionset of this.questionsetsArray ) {
             if ( questionset.shuffle == 1 ) {
                 this.helper.shuffle( this.questionsArray[questionset.id] );
@@ -390,7 +395,7 @@ export class questionnaireParticipationService {
         }
     }
 
-    private sortQuestionoptions() {
+    public sortQuestionoptions() {
         // Sort the question options - by position field. Only for questions with options (i.e. not for text questions):
         for ( let questionset of this.questionsetsArray ) {
             for ( let question of this.questionsArray[questionset.id] ) {
@@ -431,13 +436,13 @@ export class questionnaireParticipationService {
     /**
      * Sort the questionnaire data got from the backend.
      */
-    private sortData() {
+    public sortData() {
         this.sortQuestionsets();
         this.sortQuestions();
         this.sortQuestionoptions();
     }
 
-    private buildQuestionMetaData() {
+    public buildQuestionMetaData() {
         for ( let questionset of this.questionsetsArray ) {
             for( let question of this.questionsArray[questionset.id] ) {
                 // if ( typeof question.questionparameter === 'undefined' ) question.questionparameter = {};
@@ -455,7 +460,7 @@ export class questionnaireParticipationService {
      * @param questiontype
      * @private
      */
-    private questiontypeWithOptions( questiontype: string ): boolean {
+    public questiontypeWithOptions( questiontype: string ): boolean {
         return questiontype.match( /^binary|single|multi|ist|rating|ratinggroup$/ ) !== null;
     }
 
@@ -463,7 +468,7 @@ export class questionnaireParticipationService {
      *
      * @private
      */
-    private initAnswers() {
+    public initAnswers() {
         for ( let questionset of this.questionsetsArray ) {
             for ( let question of this.questionsArray[questionset.id] ) {
                 if ( !this.answers[question.id] ) this.answers[question.id] = {};
@@ -479,10 +484,10 @@ export class questionnaireParticipationService {
         }
     }
 
-    private loadParticipation_byParent(): Observable<any> {
-        let responseSubject = new Subject<any>();
+    public loadParticipation_byParent(): Observable<any> {
+        let responseSubject = new Subject<void>();
         this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
-            this.questionnaireId = response.questionnaireId;
+            if ( response.questionnaireId ) this.questionnaireId = response.questionnaireId;
             // In case the edit mode is "off" or "preview" there are no answer values to load:
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
             this.loadQuestionnaire().subscribe( () => {
@@ -498,8 +503,8 @@ export class questionnaireParticipationService {
         return responseSubject;
     }
 
-    private loadParticipation_byParticipation(): Observable<any> {
-        let responseSubject = new Subject<any>();
+    public loadParticipation_byParticipation(): Observable<any> {
+        let responseSubject = new Subject<void>();
         this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParticipation/'+this.participationId ).subscribe( response => {
             this.questionnaireId = response.questionnaireId;
             this.loadQuestionnaire().subscribe( () => {
@@ -513,7 +518,7 @@ export class questionnaireParticipationService {
         return responseSubject;
     }
 
-    private insertLoadedAnswers( answers: any ): void {
+    public insertLoadedAnswers( answers: any ): void {
         for ( let questionId in answers ) {
             if ( this.answers[questionId] === undefined ) this.answers[questionId] = {};
             if ( answers[questionId].answer_value !== undefined ) {
@@ -623,7 +628,7 @@ export class questionnaireParticipationService {
                 this.isSaving = false;
                 this.isDirty = false;
                 this.isCompleted = !!response.isCompleted;
-                if ( this.initByQuestionnaire ) this.participationId = response.questionnaireParticipationId;
+                if ( this.initByQuestionnaire || this.initByParent ) this.participationId = response.questionnaireParticipationId;
                 finishedSaving$.emit( true );
                 if ( !this.initByQuestionnaire ) {
                     this.broadcast.broadcastMessage('questionnaireParticipation.filledIn', {

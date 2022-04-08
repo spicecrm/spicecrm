@@ -10,6 +10,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\TimeDate;
 
 
 class ProspectListsController
@@ -46,7 +47,7 @@ class ProspectListsController
         }
 
         $queryArray = $seed->create_new_list_query('', $listWhereClause, [], [], false, '', true, $seed, true);
-        $query = "INSERT INTO prospect_lists_prospects (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->table_name}.id, '{$listDef['module']}' module, now(), 0 {$queryArray['from']} {$queryArray['where']})";
+        $query = "INSERT INTO prospect_lists_prospects (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->table_name}.id, '{$listDef['module']}' module, '".TimeDate::getInstance()->nowDb()."', 0 {$queryArray['from']} {$queryArray['where']})";
         $db->query($query);
 
         return $res->withJson([
@@ -115,7 +116,7 @@ class ProspectListsController
 
         // check if we have a list of ids to add
         if(count($idList) > 0){
-            $query = "INSERT INTO prospect_lists_prospects (id, prospect_list_id, related_id, related_type, date_modified, deleted) (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->table_name}.id, '{$postBody['module']}' module, now(), 0 FROM {$seed->table_name} WHERE id IN ('" . join("','", $idList) . "'))";
+            $query = "INSERT INTO prospect_lists_prospects (id, prospect_list_id, related_id, related_type, date_modified, deleted) (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->table_name}.id, '{$postBody['module']}' module, '".TimeDate::getInstance()->nowDb()."', 0 FROM {$seed->table_name} WHERE id IN ('" . join("','", $idList) . "'))";
             $db->query($query);
         }
 

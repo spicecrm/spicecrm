@@ -46,7 +46,8 @@ import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketr
 import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceticketrelatedticketstiles";
 import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator';
 import /*embed*/ {fieldBooleanBullet} from './fields/fieldbooleanbullet';
-import /*embed*/ {fieldServiceQueue} from './fields/fieldServiceQueue';
+import /*embed*/ {fieldServiceQueue} from './fields/fieldservicequeue';
+import /*embed*/ {fieldServiceEnhancedCategories} from './fields/fieldserviceenhancedcategories';
 
 import /*embed*/ {ServiceOrderNewButton} from "./components/serviceordernewbutton";
 import /*embed*/ {ServiceOrderEffortItem} from "./components/serviceordereffortitem";
@@ -87,6 +88,7 @@ import /*embed*/ {ServiceDocSignatureModal} from "./components/servicedocsignatu
         fieldWarrantyIndicator,
         fieldBooleanBullet,
         fieldServiceQueue,
+        fieldServiceEnhancedCategories,
         SignServiceOrderModalButtonComponent,
         SignServiceOrderModalComponent,
         ServiceOrderSummaryComponent,

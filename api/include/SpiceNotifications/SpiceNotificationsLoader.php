@@ -40,8 +40,8 @@ class SpiceNotificationsLoader
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
         $notifications = [];
-        $query = $db->query("SELECT * FROM spicenotifications WHERE deleted <> 1 AND user_id = '{$current_user->id}'
-                            ORDER BY notification_date desc LIMIT {$limit} OFFSET {$offset}");
+        $query = $db->limitQuery("SELECT * FROM spicenotifications WHERE deleted <> 1 AND user_id = '{$current_user->id}'
+                            ORDER BY notification_date desc", $offset, $limit);
 
         while ($notification = $db->fetchByAssoc($query)) {
             if (empty($notification['bean_id']) || empty($notification['bean_module'])) {

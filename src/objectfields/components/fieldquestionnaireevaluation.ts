@@ -12,12 +12,12 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-questionnaire-evaluation',
-    templateUrl: './src/objectfields/templates/fieldquestionnaireevaluation.html'
+    templateUrl: '../templates/fieldquestionnaireevaluation.html'
 })
 export class fieldQuestionnaireEvaluation extends fieldGeneric {
 
-    private categories: any[] = [];
-    private isEvaluationAvailable = false;
+    public categories: any[] = [];
+    public isEvaluationAvailable = false;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend ) {
         super(model, view, language, metadata, router);

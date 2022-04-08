@@ -18,7 +18,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
  */
 @Component({
     selector: 'aclterritorries-manager-territory',
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritory.html',
+    templateUrl: '../templates/aclterritorriesmanagerterritory.html',
     providers: [model, view]
 })
 export class ACLTerritorriesManagerTerritory implements OnChanges {
@@ -27,30 +27,30 @@ export class ACLTerritorriesManagerTerritory implements OnChanges {
      * input for the id of the selected territory
      * required to trigger ngOnChanges
      */
-    @Input() private modelid;
+    @Input() public modelid;
 
     /**
-     * input for the data of thje selöected territory
+     * input for the data of thje selected territory
      */
-    @Input() private modeldata;
+    @Input() public modeldata;
 
     /**
      * input for the selected territorytype
      */
-    @Input() private territorytype: string = '';
+    @Input() public territorytype: string = '';
 
     /**
      * the id of the loaded territory typy
      */
-    private loadedterritorytype: string = '';
+    public loadedterritorytype: string = '';
 
     /**
      * the data of the laoded territorytype
      */
-    private territorrytypedetails: any = {};
+    public territorrytypedetails: any = {};
 
 
-    constructor(private backend: backend, private modal: modal, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public model: model, public view: view, public language: language, public modelutilities: modelutilities) {
         this.model.module = 'SpiceACLTerritories';
         this.view.isEditable = true;
     }
@@ -62,9 +62,9 @@ export class ACLTerritorriesManagerTerritory implements OnChanges {
     /**
      * handles the changes in the onChange lifecycle
      */
-    private handleChanges(){
+    public handleChanges(){
         this.model.id = this.modelid;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.modeldata);
+        this.model.setData( this.modeldata);
 
         // load type
         if (this.territorytype != '' && this.territorytype != this.loadedterritorytype) {
@@ -78,7 +78,7 @@ export class ACLTerritorriesManagerTerritory implements OnChanges {
     /**
      * cancel the editing process
      */
-    private cancelEdit() {
+    public cancelEdit() {
         this.model.cancelEdit();
         this.view.setViewMode();
     }
@@ -86,7 +86,7 @@ export class ACLTerritorriesManagerTerritory implements OnChanges {
     /**
      * save the territory changes
      */
-    private saveTerritory() {
+    public saveTerritory() {
         this.model.save().subscribe(success => {
             this.modeldata = this.model.data;
             this.view.setViewMode();

@@ -88,7 +88,7 @@ class SpiceFileUtils
      * @param $context
      * @return boolean - Returns a file pointer on success, false otherwise
      */
-    public static function spiceFopen($filename, $mode, $use_include_path = false, $context = null):bool {
+    public static function spiceFopen($filename, $mode, $use_include_path = false, $context = null) {
         //check to see if the file exists, if not then use touch to create it.
         if (!file_exists($filename)) {
             self::spiceTouch($filename);
@@ -372,5 +372,116 @@ class SpiceFileUtils
             $cdir = "cache";
         }
         return "$cdir/$file";
+    }
+
+    /**
+     * @param $the_name
+     * @param $the_array
+     * @param $the_file
+     * @param string $mode
+     * @param string $header
+     * @return bool
+     */
+    public static function spiceWriteArrayToFile( $the_name, $the_array, $the_file, $mode="w", $header='' )
+    {
+        if(!empty($header) && ($mode != 'a' || !file_exists($the_file))){
+            $the_string = $header;
+        }else{
+            $the_string =   "<?php\n" .
+                '// created: ' . date('Y-m-d H:i:s') . "\n";
+        }
+        $exp = var_export($the_array, TRUE);
+        $patterns = [
+            "/array \(/" => '[',
+            "/^([ ]*)\)(,?)$/m" => '$1]$2',
+            "/=>[ ]?\n[ ]+\[/" => '=> [',
+            "/([ ]*)(\'[^\']+\') => ([\[\'])/" => '$1$2 => $3',
+        ];
+        $exp = preg_replace(array_keys($patterns), array_values($patterns), $exp);
+        $the_string .= "\$$the_name = $exp;";
+
+        return self::spiceFilePutContents($the_file, $the_string, LOCK_EX) !== false;
+    }
+
+    /**
+     * Guess MIME type for file
+     * @param string $filename
+     * @return string MIME type
+     */
+    public static function getMimeSoap($filename)
+    {
+        $mime_types = [
+
+            'txt' => 'text/plain',
+            'htm' => 'text/html',
+            'html' => 'text/html',
+            'php' => 'text/html',
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'json' => 'application/json',
+            'xml' => 'application/xml',
+            'swf' => 'application/x-shockwave-flash',
+            'flv' => 'video/x-flv',
+
+            // images
+            'png' => 'image/png',
+            'jpe' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'jpg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            'ico' => 'image/vnd.microsoft.icon',
+            'tiff' => 'image/tiff',
+            'tif' => 'image/tiff',
+            'svg' => 'image/svg+xml',
+            'svgz' => 'image/svg+xml',
+
+            // archives
+            'zip' => 'application/zip',
+            'rar' => 'application/x-rar-compressed',
+            'exe' => 'application/x-msdownload',
+            'msi' => 'application/x-msdownload',
+            'cab' => 'application/vnd.ms-cab-compressed',
+
+            // audio/video
+            'mp3' => 'audio/mpeg',
+            'qt' => 'video/quicktime',
+            'mov' => 'video/quicktime',
+
+            // adobe
+            'pdf' => 'application/pdf',
+            'psd' => 'image/vnd.adobe.photoshop',
+            'ai' => 'application/postscript',
+            'eps' => 'application/postscript',
+            'ps' => 'application/postscript',
+
+            // ms office
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'rtf' => 'application/rtf',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+
+            // open office
+            'odt' => 'application/vnd.oasis.opendocument.text',
+            'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+        ];
+
+        $nameArray = explode('.', $filename);
+        $ext = strtolower(array_pop($nameArray));
+        if (array_key_exists($ext, $mime_types)) {
+            $mime = $mime_types[$ext];
+        } else if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME);
+            $mime = finfo_file($finfo, $filename);
+            finfo_close($finfo);
+        } else if (function_exists('mime_content_type')) {
+            $mime = mime_content_type($filename);
+        } else {
+            $mime = ' application/octet-stream';
+        }
+        return $mime;
     }
 }

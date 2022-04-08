@@ -13,7 +13,7 @@ import {productfinder} from "../services/productfinder.service";
 
 @Component({
     selector: 'product-group-manager-details-attributes',
-    templateUrl: './src/modules/products/templates/productgroupmanagerdetailsattributes.html',
+    templateUrl: '../templates/productgroupmanagerdetailsattributes.html',
     providers: [relatedmodels]
 })
 export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
@@ -21,19 +21,19 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
     public fields: any[] = [];
     public attributes: any[] = [];
     public filterKeyword: string = '';
-    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) private buttonContainer: ViewContainerRef;
-    @ViewChild('itemcontainer', {read: ViewContainerRef, static: true}) private itemContainer: ViewContainerRef;
-    private allExpanded: boolean = false;
-    private isLoading: boolean = true;
-    private modelSubscription: Subscription = new Subscription();
+    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) public buttonContainer: ViewContainerRef;
+    @ViewChild('itemcontainer', {read: ViewContainerRef, static: true}) public itemContainer: ViewContainerRef;
+    public allExpanded: boolean = false;
+    public isLoading: boolean = true;
+    public modelSubscription: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private backend: backend,
-                private metadata: metadata,
-                private productFinder: productfinder,
-                private broadcast: broadcast,
-                private relatedmodels: relatedmodels,
-                private model: model) {
+    constructor(public language: language,
+                public backend: backend,
+                public metadata: metadata,
+                public productFinder: productfinder,
+                public broadcast: broadcast,
+                public relatedmodels: relatedmodels,
+                public model: model) {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
         this.relatedmodels.relatedModule = 'ProductAttributes';
@@ -59,17 +59,17 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
         this.modelSubscription.unsubscribe();
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
-    private sortAttributes(array) {
+    public sortAttributes(array) {
         return array.sort((a, b) => {
             return +a.sort_sequence > +b.sort_sequence ? 1 : -1;
         });
     }
 
-    private saveSubscriber() {
+    public saveSubscriber() {
         this.modelSubscription = this.broadcast.message$.subscribe(msg => {
             let resData = msg.messagedata;
             if (resData.module == 'ProductAttributes' && msg.messagetype == 'model.save') {
@@ -79,8 +79,8 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
         });
     }
 
-    private handleAddEvent(item) {
-        item.parent_name = this.productFinder.searchfocus.object.id != this.model.id ? this.model.data.summary_text : '';
+    public handleAddEvent(item) {
+        item.parent_name = this.productFinder.searchfocus.object.id != this.model.id ? this.model.getField('summary_text') : '';
         item.parent_id = this.model.id;
         this.attributes = [...this.attributes, item];
         this.attributes = this.sortAttributes(this.attributes);

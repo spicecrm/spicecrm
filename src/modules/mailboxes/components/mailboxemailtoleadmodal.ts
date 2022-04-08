@@ -9,18 +9,18 @@ import {view} from "../../../services/view.service";
 
 @Component({
     providers: [model, view],
-    templateUrl: "./src/modules/mailboxes/templates/mailboxemailtoleadmodal.html",
+    templateUrl: "../templates/mailboxemailtoleadmodal.html",
 })
 export class MailboxEmailToLeadModal implements OnInit, AfterViewInit {
 
-    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
-    private email: any = null;
-    private self: any = null;
+    public email: any = null;
+    public self: any = null;
 
-    private componentRefs: Array<any> = [];
+    public componentRefs: Array<any> = [];
 
-    private leadFields: Array<string> = [
+    public leadFields: Array<string> = [
         "first_name",
         "last_name",
         "department",
@@ -36,10 +36,10 @@ export class MailboxEmailToLeadModal implements OnInit, AfterViewInit {
     ];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private view: view,
-        private model: model
+        public language: language,
+        public metadata: metadata,
+        public view: view,
+        public model: model
     ) {
         this.model.module = "Leads";
 
@@ -78,7 +78,7 @@ export class MailboxEmailToLeadModal implements OnInit, AfterViewInit {
     }
 
     public setField(fieldData){
-        this.model.data[fieldData.field] = fieldData.value;
+        this.model.setField(fieldData.field, fieldData.value);
     }
 
     public saveLead(){

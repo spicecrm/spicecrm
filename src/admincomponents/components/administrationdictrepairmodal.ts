@@ -11,7 +11,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-modal',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairmodal.html'
+    templateUrl: '../templates/administrationdictrepairmodal.html'
 })
 export class AdministrationDictRepairModal {
 
@@ -19,35 +19,35 @@ export class AdministrationDictRepairModal {
      * flag for synchronisation
      * @private
      */
-    private synced:boolean = false;
+    public synced:boolean = false;
     /**
      * array container for the statements
      * @private
      */
-    private sql: any =[];
+    public sql: any =[];
     /**
      * whole untouched sql string
      * @private
      */
-    private wholeSQL: string;
+    public wholeSQL: string;
     /**
      * array container of database errors from backend
      * @private
      */
-    private dbErrors: any = [];
+    public dbErrors: any = [];
     /**
      * modal reference
      * @private
      */
-    private self: any = {};
-    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
+    public self: any = {};
+    constructor(public backend: backend, public toast: toast, public language: language, public modal: modal) {
     }
 
     /**
      * destroy modal instance
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -61,7 +61,7 @@ export class AdministrationDictRepairModal {
     /**
      * execute db repair and save the response
      */
-    private doRepair() {
+    public doRepair() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             const selectedqueries = this.sql.filter(query => query.selected);
         this.backend.postRequest('admin/repair/database', {}, {selectedqueries}).subscribe((result: any) => {
@@ -93,7 +93,7 @@ export class AdministrationDictRepairModal {
     /**
      * copy the selected SQL statements to the clipboard
      */
-    private copy2clipboard() {
+    public copy2clipboard() {
         const selectedQueries = this.sql.filter(query => query.selected);
         const selectedStatements = selectedQueries.map(query => query.statement);
         const text = selectedStatements.toString().replace(/;,/g, ';\n');
@@ -105,7 +105,7 @@ export class AdministrationDictRepairModal {
     /**
      * selects all the queries
      */
-    private selectAll() {
+    public selectAll() {
      this.sql.forEach(query => {query.selected = true});
     }
 

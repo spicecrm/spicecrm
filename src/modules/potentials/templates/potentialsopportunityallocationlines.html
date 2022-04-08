@@ -26,7 +26,7 @@
         </tbody>
         <tbody system-table-stencils *ngIf="isLoading" [columns]="4" [select]="false" [tools]="false"></tbody>
     </table>
-    <div *ngIf="isEditing"
+    <div *ngIf="model.isEditing"
          class="slds-p-around--small slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-wrap">
         <div class="slds-size--1-of-1 slds-large-size--1-of-2">
             <field-messages fieldname="opportunityrevenuelines"></field-messages>

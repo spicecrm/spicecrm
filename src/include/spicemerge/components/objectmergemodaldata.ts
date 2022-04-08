@@ -14,12 +14,12 @@ import {objectmerge} from '../services/objectmerge.service';
  */
 @Component({
     selector: 'object-merge-modal-data',
-    templateUrl: './src/include/spicemerge/templates/objectmergemodaldata.html',
+    templateUrl: '../templates/objectmergemodaldata.html',
     providers: [view]
 })
 export class ObjectMergeModalData {
 
-    constructor(private view: view, private metadata: metadata, private modellist: modellist, private objectmerge: objectmerge, private model: model) {
+    constructor(public view: view, public metadata: metadata, public modellist: modellist, public objectmerge: objectmerge, public model: model) {
         this.view.displayLabels = false;
     }
 
@@ -35,7 +35,7 @@ export class ObjectMergeModalData {
      *
      * @private
      */
-    private getSelected() {
+    public getSelected() {
         return this.modellist.listData.list.filter(i => i.selected);
     }
 
@@ -45,8 +45,8 @@ export class ObjectMergeModalData {
      * @param id
      * @private
      */
-    private isCurrentModel(id) {
-        return this.model.id && (this.model.id == id || this.model.data.id == id);
+    public isCurrentModel(id) {
+        return this.model.id && (this.model.id == id);
     }
 
     /**
@@ -54,11 +54,11 @@ export class ObjectMergeModalData {
      * @param id
      * @private
      */
-    private selectAllFields(id) {
+    public selectAllFields(id) {
         this.objectmerge.setAllfieldSources(id);
     }
 
-    private showField(field) {
+    public showField(field) {
         for (let selected of this.getSelected()) {
             if (selected[field.name] != '') {
                 return true;

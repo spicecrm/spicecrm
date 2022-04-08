@@ -13,27 +13,27 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'field-territory',
-    templateUrl: './src/modules/aclterritories/templates/fieldterritory.html'
+    templateUrl: '../templates/fieldterritory.html'
 })
 export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
 
     /**
      * click lisatener to haneld the open Popup
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * set to true if the search popup is open
      */
-    private territorySearchOpen: boolean = false;
+    public territorySearchOpen: boolean = false;
 
     /**
      * the search term entered
      */
-    private territorySearchTerm: string = '';
+    public territorySearchTerm: string = '';
 
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private elementRef: ElementRef, private renderer: Renderer2, private modal: modal, private territories: territories, private injector: Injector) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public renderer: Renderer2, public modal: modal, public territories: territories, public injector: Injector) {
         super(model, view, language, metadata, router);
     }
 
@@ -61,7 +61,7 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
         }
     }
 
-    private closePopups() {
+    public closePopups() {
         this.clickListener();
 
         if (this.value) {
@@ -71,11 +71,11 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
         this.territorySearchOpen = false;
     }
 
-    private clearField() {
+    public clearField() {
         this.value = '';
     }
 
-    private onFocus() {
+    public onFocus() {
         this.territorySearchOpen = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
@@ -84,14 +84,14 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
         return this.model.getFieldValue(this.fieldname + '_name');
     }
 
-    private setTerritory(territory) {
+    public setTerritory(territory) {
         this.territorySearchOpen = false;
         this.territorySearchTerm = '';
         this.value = territory.id;
         this.model.setField(this.fieldname + '_name', territory.name);
     }
 
-    private openSearchModal() {
+    public openSearchModal() {
         this.territorySearchOpen = false;
         this.modal.openModal('fieldTerritorySearchModal', true, this.injector).subscribe(selectModal => {
             selectModal.instance.searchTerm = this.territorySearchTerm;

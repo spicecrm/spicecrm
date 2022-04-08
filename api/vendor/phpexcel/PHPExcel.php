@@ -286,7 +286,6 @@ class PHPExcel
 		switch($What){
 		case 'all':
 			return $this->_ribbonBinObjects;
-			break;
 		case 'names':
 		case 'data':
 			if(is_array($this->_ribbonBinObjects) && array_key_exists($What, $this->_ribbonBinObjects)){

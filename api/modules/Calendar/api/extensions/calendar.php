@@ -84,6 +84,12 @@ $routes = [
                 'required'    => true,
                 'description' => 'End date',
             ],
+            'searchTerm'    => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'Search Term',
+            ],
             'users'    => [
                 'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_STRING,
@@ -118,6 +124,12 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_DATETIME,
                 'required'    => true,
                 'description' => 'End date',
+            ],
+            'searchTerm'    => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'Search Term',
             ],
             'users'  => [
                 'in'          => 'query',

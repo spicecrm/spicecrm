@@ -9,7 +9,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "serviceorder-item-panel",
-    templateUrl: "./src/modules/servicecomponents/templates/serviceorderitempanel.html"
+    templateUrl: "../templates/serviceorderitempanel.html"
 })
 export class ServiceOrderItemPanel implements OnInit {
 
@@ -51,7 +51,7 @@ export class ServiceOrderItemPanel implements OnInit {
 
     constructor(
         public language: language,
-        // @SkipSelf() private parent: model,
+        // @SkipSelf() public parent: model,
         public model: model,
         public modal: modal,
         public metadata: metadata,
@@ -126,14 +126,14 @@ export class ServiceOrderItemPanel implements OnInit {
      * @sort items by sortField: moment.date
      * @return items: any[]
      */
-    private sortItems(items) {
+    public sortItems(items) {
         return items.sort((a, b) => a[this.sortField] && b[this.sortField] ? a[this.sortField] > b[this.sortField] ? 1 : -1 : 0);
     }
 
-    private addItem() {
+    public addItem() {
         this.view.setEditMode();
-        if(this.metadata.getModuleDefs("Products").acl.list && this.metadata.getModuleDefs("Products").visible) {
-            if(this.metadata.getModuleDefs("ProductVariants").acl.list && this.metadata.getModuleDefs("ProductVariants").visible) {
+        if(this.metadata.checkModuleAcl('Products', 'list') && this.metadata.getModuleDefs("Products").visible) {
+            if(this.metadata.checkModuleAcl('ProductVariants', 'list') && this.metadata.getModuleDefs("ProductVariants").visible) {
 
                 this.modal.openModal('ServiceOrderAddTypeSelector', true, this.injector).subscribe(addItemModal => {
                     addItemModal.instance.itemTypeSelected.subscribe(itemType => {

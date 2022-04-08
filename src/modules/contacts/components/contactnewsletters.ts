@@ -9,22 +9,22 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "contact-newsletters",
-    templateUrl: "./src/modules/contacts/templates/contactnewsletters.html"
+    templateUrl: "../templates/contactnewsletters.html"
 })
 export class ContactNewsletters {
 
-    private rawResult: any = {};
-    private availableNewsLetters: any[] = [];
-    private subscribedNewsLetters: any[] = [];
+    public rawResult: any = {};
+    public availableNewsLetters: any[] = [];
+    public subscribedNewsLetters: any[] = [];
 
-    private selectedAvailable: any[] = [];
-    private selectedSubscribed: any[] = [];
+    public selectedAvailable: any[] = [];
+    public selectedSubscribed: any[] = [];
 
-    private multiselect: boolean = false;
+    public multiselect: boolean = false;
 
     public self: any = {};
 
-    constructor(private language: language, private backend: backend, private metadata: metadata, private model: model) {
+    constructor(public language: language, public backend: backend, public metadata: metadata, public model: model) {
         // get the newsletters
         this.backend.getRequest("module/Contacts/" + this.model.id + "/newsletters/subscriptions" ).subscribe((results: any) => {
 
@@ -89,11 +89,11 @@ export class ContactNewsletters {
         });
     }
 
-    private closePopup() {
+    public closePopup() {
         this.self.destroy();
     }
 
-    private keypressed(event) {
+    public keypressed(event) {
         // check the control key to enable MultiSelect
         if (event.type === "keydown" && event.key === "Control" && this.multiselect === false) {
             this.multiselect = true;
@@ -104,7 +104,7 @@ export class ContactNewsletters {
         }
     }
 
-    private isSelected(pool, id) {
+    public isSelected(pool, id) {
         switch (pool) {
             case "available":
                 if (this.selectedAvailable.indexOf(id) >= 0) {
@@ -121,7 +121,7 @@ export class ContactNewsletters {
         }
     }
 
-    private selectNewsletter(pool, id) {
+    public selectNewsletter(pool, id) {
         switch (pool) {
             case "available":
                 if (this.multiselect === false) {
@@ -148,7 +148,7 @@ export class ContactNewsletters {
         }
     }
 
-    private subscribe() {
+    public subscribe() {
         this.selectedAvailable.forEach((item) => {
             this.availableNewsLetters.some((targetitem, targetindex) => {
                 if (item == targetitem.id) {
@@ -160,7 +160,7 @@ export class ContactNewsletters {
         this.selectedAvailable = [];
     }
 
-    private unsubscribe() {
+    public unsubscribe() {
         this.selectedSubscribed.forEach((item) => {
             this.subscribedNewsLetters.some((targetitem, targetindex) => {
                 if (item == targetitem.id) {
@@ -172,7 +172,7 @@ export class ContactNewsletters {
         this.selectedSubscribed = [];
     }
 
-    private save() {
+    public save() {
         let postBody = {
             subscribed: this.subscribedNewsLetters,
             unsubscribed: this.availableNewsLetters

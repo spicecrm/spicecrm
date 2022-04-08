@@ -7,16 +7,16 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: "knowledge-browser-details-container-right",
-    templateUrl: "./src/modules/knowledge/templates/knowledgebrowserdetailscontainerright.html"
+    templateUrl: "../templates/knowledgebrowserdetailscontainerright.html"
 })
 export class KnowledgeBrowserDetailsContainerRight implements OnDestroy {
     public componentconfig: any = {};
-    @ViewChild("itemscontainer", {read: ViewContainerRef, static: true}) private itemsContainer: ViewContainerRef;
-    @Input("selectedDoc") private docId: string = "";
-    private renderedComponents: any[] = [];
+    @ViewChild("itemscontainer", {read: ViewContainerRef, static: true}) public itemsContainer: ViewContainerRef;
+    @Input("selectedDoc") public docId: string = "";
+    public renderedComponents: any[] = [];
 
-    constructor(private language: language,
-                private metadata: metadata) {
+    constructor(public language: language,
+                public metadata: metadata) {
     }
 
     public ngOnInit() {

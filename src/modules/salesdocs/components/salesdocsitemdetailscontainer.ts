@@ -15,7 +15,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'salesdocs-item-details-container',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsitemdetailscontainer.html',
+    templateUrl: '../templates/salesdocsitemdetailscontainer.html',
     providers: [model]
 })
 export class SalesDocsItemDetailsContainer implements OnInit {
@@ -23,18 +23,18 @@ export class SalesDocsItemDetailsContainer implements OnInit {
     /**
      * the item to be displayed
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
-    private detailcomponentset: string;
+    public detailcomponentset: string;
 
-    constructor(private language: language,  private model: model, private view: view, private configuration: configurationService) {
+    constructor(public language: language,  public model: model, public view: view, public configuration: configurationService) {
 
     }
 
     public ngOnInit(): void {
         this.model.module = 'SalesDocItems';
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+        this.model.setData(this.item);
 
         // determine if we have a detail component set to be rendered
         let itemTypes = this.configuration.getData('salesdocitemtypes');

@@ -10,15 +10,15 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-actionset-menu-container-edit',
-    templateUrl: './src/objectcomponents/templates/objectactionsetmenucontaineredit.html',
+    templateUrl: '../templates/objectactionsetmenucontaineredit.html',
 })
 export class ObjectActionsetMenuContainerEdit {
 
-    constructor(private language: language, private model: model) {
+    constructor(public language: language, public model: model) {
 
     }
 
-    private doAction(){
+    public doAction(){
         if(!this.model.checkAccess('edit'))            return;
 
         this.model.edit(true);

@@ -14,16 +14,16 @@ import {footer} from "../../../services/footer.service";
 
 @Component({
     selector: '[workflow-manager-detail-tasksystemactions-line]',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksystemactionsline.html',
+    templateUrl: '../templates/workflowmanagerdetailtasksystemactionsline.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailTaskSystemactionsLine {
 
-    @Input() private systemaction: any = {};
-    @Input() private systemactions: any = {};
-    @Input() private module: string = '';
+    @Input() public systemaction: any = {};
+    @Input() public systemactions: any = {};
+    @Input() public module: string = '';
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
         this.model.module = 'WorkflowSystemActions';
 
         // set the view to edit mode
@@ -34,10 +34,10 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
 
     public ngOnChanges() {
         this.model.id = this.systemaction.id;
-        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.systemaction);
+        this.model.setData(this.systemaction);
     }
 
-    private removeDecision() {
+    public removeDecision() {
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Systemaction';
             componenRef.instance.message = 'are you sure you want to delete the system action?';

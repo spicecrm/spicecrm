@@ -11,7 +11,7 @@ import {Subscription} from "rxjs";
 declare var _: any;
 
 @Component({
-    templateUrl: "./src/modules/salesdocs/templates/salesdocsconvertbutton.html"
+    templateUrl: "../templates/salesdocsconvertbutton.html"
 })
 export class SalesDocsConvertButton implements OnDestroy {
 
@@ -25,9 +25,9 @@ export class SalesDocsConvertButton implements OnDestroy {
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(public metadata: metadata, public model: model, public modal: modal, private configuration: configurationService, private injector: Injector) {
+    constructor(public metadata: metadata, public model: model, public modal: modal, public configuration: configurationService, public injector: Injector) {
 
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
@@ -47,7 +47,7 @@ export class SalesDocsConvertButton implements OnDestroy {
      * determine the state of the button on model changes
      * @private
      */
-    private determineState(): void {
+    public determineState(): void {
         // check that uiser can create a salesdoc
         if (!this.metadata.checkModuleAcl('SalesDocs', 'create')) {
             this.disabled = true;

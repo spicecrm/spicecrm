@@ -19,7 +19,7 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-filter-panel',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html',
+    templateUrl: '../templates/objectlistviewfilterpanel.html',
     host: {
         class: 'slds-is-fixed'
     }
@@ -29,16 +29,16 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     /**
      * the default filter object
      */
-    private filter = {
+    public filter = {
         logicaloperator: 'and',
         groupscope: 'all',
         geography: {},
         conditions: []
     };
 
-    private subcriptions: Subscription = new Subscription();
+    public subcriptions: Subscription = new Subscription();
 
-    constructor(private elementRef: ElementRef, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
+    constructor(public elementRef: ElementRef, public language: language, public metadata: metadata, public modellist: modellist, public model: model, public renderer: Renderer2) {
         // subscribe to the list type selected to handle the filters set by the listtype
         this.subcriptions.add(
             this.modellist.listType$.subscribe(newList => {
@@ -54,7 +54,7 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     /**
      * resets the filter data when the list is changed
      */
-    private setFilter() {
+    public setFilter() {
         // create a shallow copy of the filter and use locally
         this.filter = {...this.modellist.getFilterDefs()};
 
@@ -102,7 +102,7 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     /**
      * saves the filter
      */
-    private save() {
+    public save() {
         if (this.isChanged) {
             this.modellist.updateListType({
                 filterdefs: JSON.stringify(this.filter)
@@ -118,7 +118,7 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     /**
      * cancels the edit and resets the filöter to the current defined one
      */
-    private cancel() {
+    public cancel() {
         this.filter = {...this.modellist.getFilterDefs()};
 
         // close the filter panel
@@ -128,14 +128,14 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     /**
      * remove all Filters
      */
-    private removeAllFilters() {
+    public removeAllFilters() {
         this.filter.conditions = [];
     }
 
     /**
      * adds a new filter expression
      */
-    private addExpression(e) {
+    public addExpression(e) {
         e.preventDefault();
         e.stopPropagation();
         let expression = {
@@ -151,7 +151,7 @@ export class ObjectListViewFilterPanel implements OnDestroy {
      *
      * @param index index of the filter item
      */
-    private deleteItem(index) {
+    public deleteItem(index) {
         this.filter.conditions.splice(index, 1);
     }
 

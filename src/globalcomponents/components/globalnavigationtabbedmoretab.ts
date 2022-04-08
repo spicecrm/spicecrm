@@ -12,7 +12,7 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'global-navigation-tabbed-more-tab',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedmoretab.html',
+    templateUrl: '../templates/globalnavigationtabbedmoretab.html',
     host: {
         '[class.slds-context-bar__item]': '1',
         '[class.slds-is-active]': 'activeItem'
@@ -22,7 +22,7 @@ export class GlobalNavigationTabbedMoreTab {
 
     public moreObjects: objectTab[] = [];
 
-    constructor(private navigation: navigation, private language: language, public elementRef: ElementRef) {
+    constructor(public navigation: navigation,public language: language, public elementRef: ElementRef) {
 
     }
 
@@ -38,7 +38,7 @@ export class GlobalNavigationTabbedMoreTab {
      *
      * @param tabid
      */
-    private setActiveTab(tabid) {
+   public setActiveTab(tabid) {
         this.navigation.setActiveTab(tabid);
     }
 
@@ -47,7 +47,7 @@ export class GlobalNavigationTabbedMoreTab {
      *
      * @param tabid
      */
-    private closeObjectTab(tabid) {
+   public closeObjectTab(tabid) {
         this.navigation.closeObjectTab(tabid);
     }
 

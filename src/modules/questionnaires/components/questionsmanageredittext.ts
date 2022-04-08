@@ -9,11 +9,11 @@ import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
 
 @Component({
     selector: 'questions-manager-edit-text',
-    templateUrl: './src/modules/questionnaires/templates/questionsmanageredittext.html'
+    templateUrl: '../templates/questionsmanageredittext.html'
 })
 export class QuestionsManagerEditText extends QuestionsManagerEditBasic implements OnInit {
 
-    private answer: any = {}; // No array, only one element (a text answer)
+    public answer: any = {}; // No array, only one element (a text answer)
 
     /**
      * Getter for the sequenced flag, stored in the question parameters.
@@ -27,6 +27,21 @@ export class QuestionsManagerEditText extends QuestionsManagerEditBasic implemen
      */
     public set sequenced( value: boolean ) {
         this.questionparameters.sequenced = value;
+        this.writeQuestionparametersToModel();
+    }
+
+    /**
+     * Getter for the sequenced flag, stored in the question parameters.
+     */
+    public get isinput(): boolean {
+        return !!this.questionparameters.isinput;
+    }
+
+    /**
+     * Setter for the sequenced flag, stored in the question parameters.
+     */
+    public set isinput( value: boolean ) {
+        this.questionparameters.isinput = value;
         this.writeQuestionparametersToModel();
     }
 

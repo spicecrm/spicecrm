@@ -12,7 +12,8 @@ import {toast} from "../../../services/toast.service";
  * a modal that loads the holidays from teh calendarific service
  */
 @Component({
-    templateUrl: './src/modules/holidaycalendars/templates/holidaycalendarlistgetholidaysmodal.html',
+    selector: 'holiday-calendar-list-get-holidays-modal',
+    templateUrl: '../templates/holidaycalendarlistgetholidaysmodal.html',
 })
 export class HolidayCalendarListGetHolidaysModal {
 
@@ -20,34 +21,34 @@ export class HolidayCalendarListGetHolidaysModal {
      * reference to the modal
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the country
      *
      * @private
      */
-    private country: string;
+    public country: string;
 
     /**
      * the year to get the holidays for
      *
      * @private
      */
-    private year: string;
+    public year: string;
 
     constructor(
-        private backend: backend,
-        private model: model,
-        private toast: toast,
+        public backend: backend,
+        public model: model,
+        public toast: toast,
     ) {
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private load() {
+    public load() {
         this.backend.getRequest(`module/SystemHolidayCalendars/${this.model.id}/calendarific/${this.country}/${this.year}`).subscribe(
             res => {
                 this.close();

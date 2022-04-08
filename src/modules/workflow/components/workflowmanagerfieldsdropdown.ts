@@ -12,7 +12,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-fieldsdropdown',
-    templateUrl: './src/modules/workflow/templates/workflowmanagerfieldsdropdown.html'
+    templateUrl: '../templates/workflowmanagerfieldsdropdown.html'
 })
 export class WorkflowManagerFieldsdropdown implements OnChanges {
 
@@ -20,7 +20,7 @@ export class WorkflowManagerFieldsdropdown implements OnChanges {
     @Input() module: string = '';
     fields: Array<any> = [];
 
-    constructor(private model: model, private language: language, private metadata: metadata) {
+    constructor(public model: model, public language: language, public metadata: metadata) {
 
     }
 
@@ -37,10 +37,10 @@ export class WorkflowManagerFieldsdropdown implements OnChanges {
     }
 
     set value(value) {
-        this.model.data[this.field] = value;
+        this.model.setField(this.field, value);
     }
 
     get value() {
-        return this.model.data[this.field];
+        return this.model.getField(this.field);
     }
 }

@@ -15,7 +15,7 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'field-page-builder',
-    templateUrl: './src/include/spicepagebuilder/templates/fieldpagebuilder.html',
+    templateUrl: '../templates/fieldpagebuilder.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewInit {
@@ -23,12 +23,12 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
      * holds the spice page builder html code
      * @private
      */
-    private parsedHtml: SafeResourceUrl;
+    public parsedHtml: SafeResourceUrl;
     /**
      * holds the iframe height
      * @private
      */
-    private iframeHeight: number = 250;
+    public iframeHeight: number = 250;
 
     constructor(public model: model,
                 public view: view,
@@ -74,7 +74,7 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
      * subscribe to model data changes
      * @private
      */
-    private modelChangesSubscriber() {
+    public modelChangesSubscriber() {
         this.subscriptions.add(
             this.model.data$.subscribe(() =>
                 this.setHtmlValue()
@@ -91,7 +91,7 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
      * set parsed html value
      * @private
      */
-    private setHtmlValue() {
+    public setHtmlValue() {
         if (!this.value) return;
         this.parsedHtml = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + encodeURIComponent(this.value));
         this.cdRef.detectChanges();
@@ -101,18 +101,18 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
      * open page builder modal
      * @private
      */
-    private openPageBuilder() {
+    public openPageBuilder() {
         const bodySPBFieldName = this.fieldconfig.bodySPBField || 'body_spb';
         this.modal.openModal('SpicePageBuilder', true, this.injector).subscribe(modalRef => {
             if (!!this.value) {
-                modalRef.instance.spicePageBuilderService.page = JSON.parse(JSON.stringify(this.model.data[bodySPBFieldName]));
+                modalRef.instance.spicePageBuilderService.page = JSON.parse(JSON.stringify(this.model.getField(bodySPBFieldName)));
             }
             modalRef.instance.spicePageBuilderService.response.subscribe(res => {
                 if (!res) return;
                 this.model.setField(bodySPBFieldName, res);
                 const loadingModal = this.modal.await('LBL_PARSING_HTML');
 
-                this.backend.postRequest('common/mjml/json2html', {}, {json: this.model.data[bodySPBFieldName]}).subscribe(res => {
+                this.backend.postRequest('common/mjml/json2html', {}, {json: this.model.getField(bodySPBFieldName)}).subscribe(res => {
                     if (!res || !res.html) {
                         this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                         loadingModal.emit(true);
@@ -132,7 +132,7 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
      * set the iframe initial height
      * @private
      */
-    private setIframeHeight() {
+    public setIframeHeight() {
         const height = parseInt(this.fieldconfig.initialHeight, 10);
         if (!height || isNaN(height)) return;
         this.iframeHeight = height;

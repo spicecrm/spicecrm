@@ -80,16 +80,7 @@ $routes = [
                 'required' => false
             ]
         ]
-    ],
-// no longer in use
-//    [
-//        'method'      => 'get',
-//        'route'       => '/module/History/{parentmodule}/{parentid}',
-//        'class'       => HistoryKRESTController::class,
-//        'function'    => 'loadHistory',
-//        'description' => '',
-//        'options'     => ['noAuth' => false, 'adminOnly' => false],
-//    ],
+    ]
 ];
 
 $RESTManager->registerRoutes($routes);

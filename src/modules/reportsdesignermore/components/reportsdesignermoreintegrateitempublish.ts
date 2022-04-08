@@ -9,15 +9,15 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'reports-designer-more-integrate-item-target-list',
-    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitempublish.html',
+    templateUrl: '../templates/reportsdesignermoreintegrateitempublish.html',
 })
 export class ReportsDesignerMoreIntegrateItemPublish {
 
-    constructor(private language: language,
-                private model: model,
-                private metadata: metadata,
-                private injector: Injector,
-                private modal: modal) {
+    constructor(public language: language,
+                public model: model,
+                public metadata: metadata,
+                public injector: Injector,
+                public modal: modal) {
     }
 
     get canClearModule() {
@@ -64,7 +64,7 @@ export class ReportsDesignerMoreIntegrateItemPublish {
     /**
      * set the initial plugin properties
      */
-    private initializeProperties() {
+    public initializeProperties() {
         let integrationParams = this.model.getField('integration_params');
         if (!integrationParams.kpublishing) {
             integrationParams.kpublishing = {
@@ -85,7 +85,7 @@ export class ReportsDesignerMoreIntegrateItemPublish {
      * @param field: string
      * @param value: boolean
      */
-    private setValue(field, value) {
+    public setValue(field, value) {
         this.properties[field] = value ? 'on' : 'off';
     }
 
@@ -93,11 +93,11 @@ export class ReportsDesignerMoreIntegrateItemPublish {
      * @param field: string
      * @return checkboxValue: boolean
      */
-    private getCheckboxValue(field) {
+    public getCheckboxValue(field) {
         return this.properties[field] == 'on';
     }
 
-    private searchModule() {
+    public searchModule() {
         this.modal.openModal('ReportsDesignerSelectModuleModal', true, this.injector)
             .subscribe(modalRef => {
                 modalRef.instance.response.subscribe(response => {
@@ -108,7 +108,7 @@ export class ReportsDesignerMoreIntegrateItemPublish {
             });
     }
 
-    private clearModule() {
+    public clearModule() {
         if (!this.canClearModule) return;
         this.properties.subpanelModule = '';
     }

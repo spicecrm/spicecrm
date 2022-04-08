@@ -22,7 +22,7 @@ export class libloader {
     /**
      * holds the packages as defined in the database are loaded
      */
-    private loadedLibs: lib[] = [];
+    public loadedLibs: lib[] = [];
 
     /**
      * ToDo: implement the handler here
@@ -30,14 +30,14 @@ export class libloader {
      * an event emitter for the libs .. emits when a specific lib has been loaded
      * this is useful if the same li b is loading twice
      */
-    private loadedLibs$: EventEmitter<object> = new EventEmitter<object>();
+    public loadedLibs$: EventEmitter<object> = new EventEmitter<object>();
 
     /**
      * holds all scripts thar are loaded riect alreads
      */
-    private loadedDirect: string[] = [];
+    public loadedDirect: string[] = [];
 
-    constructor(private configuration: configurationService) {
+    constructor(public configuration: configurationService) {
     }
 
     /**
@@ -67,7 +67,7 @@ export class libloader {
                     cnt++;
                     // console.log("completed...", cnt == observables.length);
                     if (cnt == observables.length) {
-                        sub.next();
+                        sub.next(true);
                         sub.complete();
                     }
                 },
@@ -130,25 +130,24 @@ export class libloader {
      *
      * @param scripts
      */
-    private async loadScriptsDirect(scripts): Promise<any> {
-        let sub = new Subject();
-        let loadedcount = 0;
-        for (let lib of scripts) {
-            await this.loadScriptDirect(lib.src).then(
-                success => {
-                    loadedcount++;
-                    if (loadedcount == scripts.length) {
-                        sub.next({script: name, loaded: true, status: "Loaded"});
-                        sub.complete();
+    public async loadScriptsDirect(scripts): Promise<any> {
+
+        return new Promise(async (next, error) => {
+            let loadedcount = 0;
+            for (let lib of scripts) {
+                await this.loadScriptDirect(lib.src).then(
+                    success => {
+                        loadedcount++;
+                        if (loadedcount == scripts.length) {
+                            next({script: lib.name, loaded: true, status: "Loaded"});
+                        }
+                    },
+                    err => {
+                        error({script: lib.name, loaded: false, status: "error"});
                     }
-                },
-                error => {
-                    sub.error({script: name, loaded: false, status: "error"});
-                    sub.complete();
-                }
-            );
-        }
-        return sub.toPromise();
+                );
+            }
+        });
     }
 
     /**
@@ -182,43 +181,39 @@ export class libloader {
      *
      * @param src the source to be loaded
      */
-    private async loadScriptDirect(src: string): Promise<boolean> {
+    public async loadScriptDirect(src: string): Promise<boolean> {
         if (this.loadedDirect.indexOf(src) != -1) {
-            return of(true).toPromise();
+            return Promise.resolve(true);
         } else {
-            let sub = new Subject<boolean>();
-            // create the elemnt as script or stylesheet
-            let element: any = {};
-            if (src.endsWith('.css')) {
-                element = document.createElement("link");
-                element.rel = "stylesheet";
-                element.href = src;
-            } else {
-                element = document.createElement("script");
-                element.type = "text/javascript";
-                element.src = src;
-            }
+            return new Promise((next, error) => {
+                let element: any = {};
+                if (src.endsWith('.css')) {
+                    element = document.createElement("link");
+                    element.rel = "stylesheet";
+                    element.href = src;
+                } else {
+                    element = document.createElement("script");
+                    element.type = "text/javascript";
+                    element.src = src;
+                }
 
-            if (element.readyState) {  // IE
-                element.onreadystatechange = () => {
-                    if (element.readyState === "loaded" || element.readyState === "complete") {
-                        element.onreadystatechange = null;
-                        sub.next(true);
-                        sub.complete();
-                    }
+                if (element.readyState) {  // IE
+                    element.onreadystatechange = () => {
+                        if (element.readyState === "loaded" || element.readyState === "complete") {
+                            element.onreadystatechange = null;
+                            next(true);
+                        }
+                    };
+                } else {  // Others
+                    element.onload = () => {
+                        next(true);
+                    };
+                }
+                element.onerror = (err: any) => {
+                    error(false);
                 };
-            } else {  // Others
-                element.onload = () => {
-                    sub.next(true);
-                    sub.complete();
-                };
-            }
-            element.onerror = (error: any) => {
-                sub.error(false);
-                sub.complete();
-            };
-            document.getElementsByTagName("head")[0].appendChild(element);
-            return sub.toPromise();
+                document.getElementsByTagName("head")[0].appendChild(element);
+            })
         }
     }
 
@@ -227,7 +222,7 @@ export class libloader {
      *
      * @param name the name of the lib package
      */
-    private isLibLoaded(name): boolean {
+    public isLibLoaded(name): boolean {
         return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loaded') ? true : false;
     }
 
@@ -236,7 +231,7 @@ export class libloader {
      *
      * @param name the name of the lib package
      */
-    private isLibLoading(name): boolean {
+    public isLibLoading(name): boolean {
         return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loading') ? true : false;
     }
 }

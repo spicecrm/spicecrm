@@ -24,7 +24,7 @@ declare var _: any;
  */
 @Component({
     selector: 'spice-kanban-tile',
-    templateUrl: './src/include/spicepath/templates/spicekanbantile.html',
+    templateUrl: '../templates/spicekanbantile.html',
     providers: [model, view],
     host: {
         '[class]': "'slds-item'"
@@ -35,29 +35,29 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
     /**
      * the item
      */
-    @Input() private item: any = {};
+    @Input() public item: any = {};
 
     /**
      * the componentconfig
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * the fields to be displayed in the tile
      */
-    private componentFields: any = {};
+    public componentFields: any = {};
 
     /**
      * the subscription to the model to keep and kill on destroy
      */
-    private modelSubscription: any;
+    public modelSubscription: any;
 
     /**
      * hold various subscriptions for the tile
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata, private broadcast: broadcast, private changeDetectorRef: ChangeDetectorRef) {
+    constructor(public modellist: modellist, public model: model, public view: view, public metadata: metadata, public broadcast: broadcast, public changeDetectorRef: ChangeDetectorRef) {
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
         this.componentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
 
@@ -73,7 +73,7 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
         // initialize the model
         this.model.module = this.modellist.module;
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.modellist.module, _.clone(this.item));
+        this.model.setData(_.clone(this.item));
 
         // initialize the field statis
         this.model.initializeFieldsStati();
@@ -138,7 +138,7 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
     /**
      * subscribe to the model save event. This is required since the change detection is set to push strategy and so we need to react to changes in the component
      */
-    private subscribeToSave() {
+    public subscribeToSave() {
 
         this.modelSubscription = this.model.saved$.subscribe(changeddata => {
             // detect changes
@@ -149,7 +149,7 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
     /**
      * subscribe to broadcast
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
 
         this.modelSubscription = this.model.saved$.subscribe(changeddata => {
             // detect changes
@@ -169,7 +169,7 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
     /**
      * navigate to the detial of the record
      */
-    private goDetail() {
+    public goDetail() {
         this.model.goDetail();
     }
 

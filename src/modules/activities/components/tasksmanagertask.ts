@@ -26,7 +26,7 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'tasks-manager-task',
-    templateUrl: './src/modules/activities/templates/tasksmanagertask.html',
+    templateUrl: '../templates/tasksmanagertask.html',
     providers: [model, view]
 })
 export class TasksManagerTask implements OnInit {
@@ -34,24 +34,24 @@ export class TasksManagerTask implements OnInit {
     /**
      * the task as input objects
      */
-    @Input() private task: any = {};
+    @Input() public task: any = {};
 
     /**
      * the id of the current focusssed task
      */
-    @Input() private focus: string = '';
+    @Input() public focus: string = '';
 
     /**
      * emit the task id if the current task is selected
      */
-    @Output() private taskselected: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public taskselected: EventEmitter<string> = new EventEmitter<string>();
 
     /**
      * the fields to be displayed per the fieldset assigned
      */
-    private fielsetFields: any[] = [];
+    public fielsetFields: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modelutilities: modelutilities, private view: view) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modelutilities: modelutilities, public view: view) {
         let componentconfig = this.metadata.getComponentConfig('TasksManagerTask', 'Tasks');
         if (componentconfig.fieldset) {
             this.fielsetFields = this.metadata.getFieldSetItems(componentconfig.fieldset);
@@ -64,14 +64,14 @@ export class TasksManagerTask implements OnInit {
     public ngOnInit() {
         this.model.module = 'Tasks';
         this.model.id = this.task.id;
-        this.model.data = this.modelutilities.backendModel2spice('Tasks', this.task);
+        this.model.setData(this.task);
     }
 
     /**
      * a getter to check if the task is completed
      */
     get isCompleted() {
-        return this.model.data.status == 'Completed';
+        return this.model.getField('status') == 'Completed';
     }
 
     /**
@@ -107,15 +107,15 @@ export class TasksManagerTask implements OnInit {
     /**
      * complete the task with one click
      */
-    private completeTask() {
-        this.model.data.status = 'Completed';
+    public completeTask() {
+        this.model.setField('status', 'Completed');
         this.model.save();
     }
 
     /**
      * select the task and emit the id
      */
-    private selectTask() {
+    public selectTask() {
         this.taskselected.emit(this.model.id);
     }
 }

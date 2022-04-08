@@ -11,7 +11,7 @@ import {broadcast} from "../../../services/broadcast.service";
 
 
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmodulesmanager.html',
+    templateUrl: '../templates/aclterritorriesmodulesmanager.html',
 })
 export class ACLTerritorriesModulessmanager {
 
@@ -19,7 +19,7 @@ export class ACLTerritorriesModulessmanager {
 
     activeType: string = '';
 
-    constructor(private backend: backend, private navigation: navigation, private elementRef: ElementRef) {
+    constructor(public backend: backend, public navigation: navigation, public elementRef: ElementRef) {
         // set theenavigation paradigm
         // this.navigation.setActiveModule('Tasks');
     }

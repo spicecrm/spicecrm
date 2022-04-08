@@ -18,13 +18,13 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
     selector: 'dictionary-manager-relationships',
-    templateUrl: './src/workbench/templates/dictionarymanagerrelationships.html',
+    templateUrl: '../templates/dictionarymanagerrelationships.html',
 })
 export class DictionaryManagerRelationships {
 
-    private currentRelationship: Relationship;
+    public currentRelationship: Relationship;
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -42,7 +42,7 @@ export class DictionaryManagerRelationships {
     /**
      * react to the click to add a new dictionary definition
      */
-    private addDictionaryRelationship(event: MouseEvent) {
+    public addDictionaryRelationship(event: MouseEvent) {
         event.stopPropagation();
         this.modal.openModal('DictionaryManagerRelationshipAdd', true, this.injector);
     }
@@ -53,7 +53,7 @@ export class DictionaryManagerRelationships {
      * @param event
      * @param id
      */
-    private deleteDictionaryRelationship(event: MouseEvent, id: string) {
+    public deleteDictionaryRelationship(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
@@ -71,7 +71,7 @@ export class DictionaryManagerRelationships {
      *
      * @param relationship
      */
-    private isLeft(relationship: Relationship) {
+    public isLeft(relationship: Relationship) {
         return relationship.lhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition;
     }
 
@@ -80,7 +80,7 @@ export class DictionaryManagerRelationships {
      *
      * @param id
      */
-    private setActiveId(id) {
+    public setActiveId(id) {
         this.dictionarymanager.currentDictionaryRelationship = id;
         this.currentRelationship = this.dictionarymanager.dictionaryrelationships.find(r => r.id == id);
     }

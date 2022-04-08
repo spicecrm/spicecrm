@@ -9,7 +9,7 @@ import {sapIDOCSegmentI, sapIDOCTypeI} from "../interfaces/moudesapidocs.interfa
 
 @Component({
     selector: '[sapidocs-manager-segments-tree-ipoc-type]',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentstreeidoctype.html',
+    templateUrl: '../templates/sapidocsmanagersegmentstreeidoctype.html',
     host: {
         '[attr.aria-expanded]': 'expanded',
         '[attr.aria-level]': 'level + 1'
@@ -21,24 +21,24 @@ export class SAPIDOCsManagerSegmentsTreeIdocType implements OnInit {
     /**
      * the segment
      */
-    @Input() private idoctype: sapIDOCTypeI;
+    @Input() public idoctype: sapIDOCTypeI;
 
     /**
      * the level
      */
-    @Input() private level: number = 0;
+    @Input() public level: number = 0;
 
     /**
      * the segments underneath this one
      */
-    private children: any[] = [];
+    public children: any[] = [];
 
     /**
      * if the node is expanded
      */
-    private expanded: boolean = false;
+    public expanded: boolean = false;
 
-    constructor(private language: language, private modal: modal, private injector: Injector, private sapIdocsManager: sapIdocsManager) {
+    constructor(public language: language, public modal: modal, public injector: Injector, public sapIdocsManager: sapIdocsManager) {
 
     }
 
@@ -54,18 +54,18 @@ export class SAPIDOCsManagerSegmentsTreeIdocType implements OnInit {
     /**
      * toggle open or closed
      */
-    private toggle() {
+    public toggle() {
         this.expanded = !this.expanded;
     }
 
-    private select(e: MouseEvent) {
+    public select(e: MouseEvent) {
         e.stopPropagation();
         this.sapIdocsManager.selectSegment(undefined);
     }
 
 
     // open the add segment modal
-    private addSegment() {
+    public addSegment() {
         this.modal.openModal('SAPIDOCsManagerSegmentAddModal', true, this.injector).subscribe(componentRef => {
             componentRef.instance.idoctyp = this.idoctype.idoctyp;
             componentRef.instance.mestyp = this.idoctype.mestyp;
@@ -97,7 +97,7 @@ export class SAPIDOCsManagerSegmentsTreeIdocType implements OnInit {
      * @param index
      * @param item
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 

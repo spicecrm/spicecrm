@@ -11,11 +11,11 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-enummulti',
-    templateUrl: './src/objectfields/templates/fieldenummulti.html'
+    templateUrl: '../templates/fieldenummulti.html'
 })
 export class fieldEnumMulti extends fieldGeneric implements OnInit {
-    private options: any[] = [];
-    private selectedValues: any[] = [];
+    public options: any[] = [];
+    public selectedValues: any[] = [];
 
     constructor(
         public model: model,
@@ -23,13 +23,13 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
+        public elementRef: ElementRef,
         public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);
     }
 
-    private showSelect: boolean = false;
+    public showSelect: boolean = false;
     clickListener: any;
 
     public ngOnInit() {
@@ -41,7 +41,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
     }
 
 
-    private getValue(): string {
+    public getValue(): string {
         let retarray: any[] = [];
         for(let selval of this.selectedValues){
             retarray.push(this.options[selval]);
@@ -49,7 +49,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         return retarray.join(', ');
     }
 
-    private getValues(){
+    public getValues(){
         let retArray = [];
 
         let values = this.getValueArray();
@@ -72,15 +72,15 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         return retArray;
     }
 
-    private getValueArray(): any[] {
+    public getValueArray(): any[] {
         try {
-            return this.model.data[this.fieldname].substring(1, this.model.data[this.fieldname].length - 1).split('^,^');
+            return this.model.getField(this.fieldname).substring(1, this.model.getField(this.fieldname).length - 1).split('^,^');
         } catch (e) {
             return [];
         }
     }
 
-    private buildOptions() {
+    public buildOptions() {
         // reset the options
         this.options = [];
         this.selectedValues = this.getValueArray();

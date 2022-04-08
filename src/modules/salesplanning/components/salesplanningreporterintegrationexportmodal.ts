@@ -12,57 +12,57 @@ import {backend} from '../../../services/backend.service';
  * an export component for the reporter that allows wroiting the plannign nodes form the report
  */
 @Component({
-    templateUrl: './src/modules/salesplanning/templates/salesplanningreporterintegrationexportmodal.html'
+    templateUrl: '../templates/salesplanningreporterintegrationexportmodal.html'
 })
 export class SalesPlanningReporterIntegrationExportModal implements OnInit {
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
     /**
      * an aray of planning versions
      */
-    private salespanningversions: any [] = [];
+    public salespanningversions: any [] = [];
 
     /**
      * the selected version
      */
-    private _selectedversion: string = '';
+    public _selectedversion: string = '';
 
     /**
      * holds the characteristics for the selected version
      */
-    private scopesetcharacteristics: any[] = [];
+    public scopesetcharacteristics: any[] = [];
 
     /**
      * the node name fields
      */
-    private nodenamefield: string = '';
+    public nodenamefield: string = '';
 
     /**
      * an array with the reporterfields
      * gets decoded once and then used in various select fields
      */
-    private reporterFields: any[] = [];
+    public reporterFields: any[] = [];
 
     /**
      * indicates that the chars are getting loaded
      */
-    private characteristicsloading: boolean = false;
+    public characteristicsloading: boolean = false;
 
     /**
      * array holding the set values for the territory
      */
-    private territory: any = {
+    public territory: any = {
         fixedvalue: '',
         fixedvalues: [],
         valuefield: '',
         namefield: ''
     };
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model) {
+    constructor(public language: language, public metadata: metadata, public backend: backend, public model: model) {
     }
 
     /**
@@ -111,7 +111,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -120,7 +120,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
      *
      * @param scopeSetId
      */
-    private getCharacteristics(scopeSetId) {
+    public getCharacteristics(scopeSetId) {
         // set to loading
         this.characteristicsloading = true;
 
@@ -188,7 +188,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
     /**
      * exports the planning data
      */
-    private exportPlanningScope() {
+    public exportPlanningScope() {
         // build wherecondition
         /*
         let whereConditions: any[] = [];

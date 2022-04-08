@@ -10,27 +10,27 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanageradddefinitionmodal.html',
+    templateUrl: '../templates/dictionarymanageradddefinitionmodal.html',
 })
 export class DictionaryManagerAddDefinitionModal {
 
     /**
      * reference to the modal self
      */
-    private self: any;
+    public self: any;
 
     /**
      * the domain definition
      */
-    private dictionarydefinition: DictionaryDefinition;
+    public dictionarydefinition: DictionaryDefinition;
 
     /**
      * messages collected
      * @private
      */
-    private messages: DictionaryManagerMessage[] = [];
+    public messages: DictionaryManagerMessage[] = [];
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modelutilities: modelutilities) {
         this.dictionarydefinition = {
             id: this.modelutilities.generateGuid(),
             name: '',
@@ -45,7 +45,7 @@ export class DictionaryManagerAddDefinitionModal {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -54,7 +54,7 @@ export class DictionaryManagerAddDefinitionModal {
      * @param field
      * @private
      */
-    private getMessages(field) {
+    public getMessages(field) {
         return this.messages.filter(m => m.field == field);
     }
 
@@ -97,7 +97,7 @@ export class DictionaryManagerAddDefinitionModal {
     /**
      * saves the modal
      */
-    private save() {
+    public save() {
         if (this.canSave) {
             this.dictionarydefinition.id = this.modelutilities.generateGuid();
             this.dictionarymanager.dictionarydefinitions.push(this.dictionarydefinition);

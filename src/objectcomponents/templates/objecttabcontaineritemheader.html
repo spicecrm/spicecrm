@@ -1,2 +1,2 @@
 <ng-container *ngIf="displayName"><system-label [label]="tab.name"></system-label></ng-container>
-<ng-container #headercontainer></ng-container>
+<system-dynamic-component [component]="tab.headercomponent"></system-dynamic-component>

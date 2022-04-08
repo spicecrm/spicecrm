@@ -11,38 +11,38 @@ import {territories} from '../../../services/territories.service';
  * renders a modal allowing the user to find a territory and select it
  */
 @Component({
-    templateUrl: './src/modules/aclterritories/templates/fieldterritorysearchmodal.html'
+    templateUrl: '../templates/fieldterritorysearchmodal.html'
 })
 export class fieldTerritorySearchModal implements OnInit {
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
     /**
      * a string to search for
      */
-    private searchTerm: string = '';
+    public searchTerm: string = '';
 
     /**
      * the territories returned by the current search
      */
-    private searchterritories: any[] = [];
+    public searchterritories: any[] = [];
 
     /**
      * for a potential later to be implemtned filter by the territory elementvalues
      */
-    private moduleElements: any[] = [];
-    private moduleElementsValues: any = {};
+    public moduleElements: any[] = [];
+    public moduleElementsValues: any = {};
 
     /**
      * the event emitter to emit when a territory has been selected
      */
-    @Output() private selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
 
 
-    constructor(private metadata: metadata, public model: model, public language: language, private territories: territories) {
+    constructor(public metadata: metadata, public model: model, public language: language, public territories: territories) {
     }
 
     /**
@@ -87,7 +87,7 @@ export class fieldTerritorySearchModal implements OnInit {
     /**
      * closes the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -97,7 +97,7 @@ export class fieldTerritorySearchModal implements OnInit {
      * @param territory the territory
      * @param elementidthe id of the value
      */
-    private getElementValue(territory, elementid) {
+    public getElementValue(territory, elementid) {
         try {
             return territory.elementvalues[elementid].elementdescription;
         } catch (e) {
@@ -110,7 +110,7 @@ export class fieldTerritorySearchModal implements OnInit {
      *
      * @param territory the territory object
      */
-    private selectTerritory(territory) {
+    public selectTerritory(territory) {
         this.selectedTerritory.emit(territory);
         this.close();
     }
