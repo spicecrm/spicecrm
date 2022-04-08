@@ -1,12 +1,13 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, Renderer2, ElementRef} from '@angular/core';
+import {Component, Input, Renderer2, ElementRef, OnDestroy} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {reminder} from '../../services/reminder.service';
 import {language} from '../../services/language.service';
 import {userpreferences} from '../../services/userpreferences.service';
+import {Subscription} from "rxjs";
 
 /**
 * @ignore
@@ -15,37 +16,54 @@ declare var moment: any;
 
 @Component({
     selector: 'object-reminder-button',
-    templateUrl: './src/objectcomponents/templates/objectreminderbutton.html'
+    templateUrl: '../templates/objectreminderbutton.html'
 })
-export class ObjectReminderButton {
+export class ObjectReminderButton implements OnDestroy{
 
-    private showDialog: boolean = false;
-    private reminderDate: Date = new moment();
-    private hasReminder: boolean = false;
-    private clickListener: any;
+    public showDialog: boolean = false;
+    public reminderDate: Date = new moment();
+    public hasReminder: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private renderer: Renderer2, private elementRef: ElementRef, private reminder: reminder, private userpreferences: userpreferences) {
+    /**
+     * a listner that subscribes to document clicks top close the popover
+     */
+    public clickListener: any;
 
-        if (!this.reminder.loaded) {
-            this.reminder.loaded$.subscribe(loaded => {
+    /**
+     * subscriptions for this component
+     * @private
+     */
+    private subscriptions: Subscription = new Subscription();
+
+    constructor(public language: language, public metadata: metadata, public model: model, public renderer: Renderer2, public elementRef: ElementRef, public reminder: reminder, public userpreferences: userpreferences) {
+
+        // subscribe to model changes
+        this.subscriptions.add(
+            this.reminder.changed$.subscribe(loaded => {
                 this.loadReminder();
-            });
-        }
+            })
+        );
 
         // oad in any case
         this.loadReminder();
 
     }
 
-    private loadReminder() {
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    public loadReminder() {
         let hasReminder = this.reminder.getReminder(this.model.module, this.model.id);
         if (hasReminder !== false) {
             this.hasReminder = true;
             this.reminderDate = new moment(hasReminder);
+        } else {
+            this.hasReminder = false;
         }
     }
 
-    private toggleDatePicker() {
+    public toggleDatePicker() {
         this.showDialog = !this.showDialog;
 
         // toggle the listener
@@ -67,19 +85,19 @@ export class ObjectReminderButton {
         return this.model.isEditing;
     }
 
-    private clearReminder() {
+    public clearReminder() {
         this.reminder.deleteReminder(this.model.module, this.model.id);
         this.hasReminder = false;
     }
 
-    private setReminder(event) {
+    public setReminder(event) {
         this.showDialog = false;
         this.hasReminder = true;
         this.reminderDate = new moment(event);
         this.reminder.setReminder(this.model, this.reminderDate);
     }
 
-    private getReminderDate() {
+    public getReminderDate() {
         // let date = new moment(this.reminderDate);
         return this.reminderDate.format(this.userpreferences.getDateFormat());
     }

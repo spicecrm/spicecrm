@@ -3,22 +3,22 @@
 * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
 * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
 * You can contact us at info@spicecrm.io
-* 
+*
 * SpiceCRM is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
-* 
+*
 * SpiceCRM is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
@@ -100,7 +101,7 @@ class SpiceFTSBeanHandler
         foreach ($this->indexProperties as $indexProperty) {
             $indexValue = $this->getFieldValue($indexProperty);
             if ($indexValue['fieldvalue'] == '0' || !empty($indexValue['fieldvalue'])) {
-                $indexArray[$indexValue['fieldname']] = from_html($indexValue['fieldvalue']); //use from_html to avoid things like ' being translated to &#039 on bean::save()
+                $indexArray[$indexValue['fieldname']] = DBUtils::fromHtml($indexValue['fieldvalue']); //use from_html to avoid things like ' being translated to &#039 on bean::save()
 
                 // handling for the activities
                 if (!empty($indexProperty['activitytype'])) {
@@ -131,7 +132,7 @@ class SpiceFTSBeanHandler
                             }
                             break;
                         default:
-                            $indexArray['_' . $indexProperty['activitytype']] = from_html($indexValue['fieldvalue']);
+                            $indexArray['_' . $indexProperty['activitytype']] = DBUtils::fromHtml($indexValue['fieldvalue']);
                             break;
                     }
                 }
@@ -167,7 +168,7 @@ class SpiceFTSBeanHandler
         }
 
         // add the summary text
-        $indexArray['summary_text'] = from_html($this->seed->get_summary_text()); //use from_html to avoid things like ' being translated to &#039 on bean::save()
+        $indexArray['summary_text'] = DBUtils::fromHtml($this->seed->get_summary_text()); //use from_html to avoid things like ' being translated to &#039 on bean::save()
 
         // call module funtion
         if (method_exists($this->seed, 'add_fts_fields')) {
@@ -270,7 +271,7 @@ class SpiceFTSBeanHandler
 
     private function getFieldValue($indexproperty)
     {
-        
+
 
         $pathRecords = explode('::', $indexproperty['path']);
         $valueBean = null;
@@ -293,7 +294,11 @@ class SpiceFTSBeanHandler
                             $beans = array_merge($beans, $thisBeans);
                         }
                     } else {
-                        $valueBean->load_relationship($pathRecordDetails[2]);
+
+                        if (!$valueBean->load_relationship($pathRecordDetails[2])) {
+                            return false;
+                        }
+
                         $beans = $valueBean->{$pathRecordDetails[2]}->getBeans();
                     }
 
@@ -421,7 +426,7 @@ class SpiceFTSBeanHandler
 
     public function mapModule()
     {
-        
+
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($this->seedModule, true);
         $properties = [
             '_module' => [

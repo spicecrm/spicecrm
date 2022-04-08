@@ -15,7 +15,7 @@ declare var _: any;
 
 @Component({
     selector: 'administration-password-config',
-    templateUrl: './src/admincomponents/templates/administrationpasswordconfig.html'
+    templateUrl: '../templates/administrationpasswordconfig.html'
 })
 export class AdministrationPasswordConfig implements OnInit {
 
@@ -23,9 +23,9 @@ export class AdministrationPasswordConfig implements OnInit {
      * inidcates that we are loading
      * @private
      */
-    private isLoading = true;
+    public isLoading = true;
 
-    private config = {
+    public config = {
         minpwdlength: 6,
         oneupper: true,
         onelower: true,
@@ -34,19 +34,19 @@ export class AdministrationPasswordConfig implements OnInit {
         pwdvaliditydays: 0
     };
 
-    private configBackup: any;
+    public configBackup: any;
 
-    constructor( private backend: backend, private modal: modal, private toast: toast, private language: language ) { }
+    constructor( public backend: backend, public modal: modal, public toast: toast, public language: language ) { }
 
-    private configIsDirty() {
+    public configIsDirty() {
         return !_.isEqual( this.config, this.configBackup );
     }
 
-    private cancel() {
+    public cancel() {
         this.config = JSON.parse(JSON.stringify( this.configBackup ));
     }
 
-    private save() {
+    public save() {
         let config = {
             minpwdlength: this.config.minpwdlength,
             oneupper: this.config.oneupper ? '1':'0',
@@ -69,7 +69,7 @@ export class AdministrationPasswordConfig implements OnInit {
         this.loadConfig();
     }
 
-    private loadConfig() {
+    public loadConfig() {
         this.isLoading = true;
         this.backend.getRequest('configuration/configurator/editor/passwordsetting')
             .pipe(take(1))

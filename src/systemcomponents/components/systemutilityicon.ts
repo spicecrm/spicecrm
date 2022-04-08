@@ -16,7 +16,7 @@ import {
  */
 @Component({
     selector: 'system-utility-icon',
-    templateUrl: './src/systemcomponents/templates/systemutilityicon.html',
+    templateUrl: '../templates/systemutilityicon.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemUtilityIcon implements OnChanges{
@@ -28,34 +28,34 @@ export class SystemUtilityIcon implements OnChanges{
      *  - it can hold sprite, icon and size override. e.g. 'standard:decision:medium'
      *
      */
-    @Input() private icon: string = '';
+    @Input() public icon: string = '';
 
     /**
      * the size of the icon
      */
-    @Input() private size: 'large' | 'small' | 'x-small' | 'xx-small' = 'small';
+    @Input() public size: 'large' | 'small' | 'x-small' | 'xx-small' = 'small';
 
     /**
      * a string of classes that can be passed in and is added to the SVG
      */
-    @Input() private addclasses: string = '';
+    @Input() public addclasses: string = '';
 
     /**
      * an optional color class: can be any of the avialable SLDS icon color classes
      */
-    @Input() private colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light' = 'slds-icon-text-default';
+    @Input() public colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light' = 'slds-icon-text-default';
 
     /**
      * a string for the title that is rendered as part of the SVG HTML element
      */
-    @Input() private title: string = '';
+    @Input() public title: string = '';
 
     /**
      * emits the click event
      */
-    @Output() private click: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
+    @Output() public click: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
 
-    constructor(private cdref: ChangeDetectorRef) {
+    constructor(public cdref: ChangeDetectorRef) {
 
     }
 
@@ -71,14 +71,14 @@ export class SystemUtilityIcon implements OnChanges{
     /**
      * returns the SVG href
      */
-    private getSvgHRef() {
+    public getSvgHRef() {
         return './vendor/sldassets/icons/' + this._sprite + '-sprite/svg/symbols.svg#' + this._icon;
     }
 
     /**
      * retuns the icon class for the ngClass in the template
      */
-    private getIconClass() {
+    public getIconClass() {
         return 'slds-icon  slds-icon--' + this._size + ' ' + this.colorclass + ' ' + this.addclasses;
 
     }

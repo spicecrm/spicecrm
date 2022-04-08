@@ -33,11 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Email'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
     'table' => 'emails',
     'acl_fields' => false,
     'comment' => 'Contains a record of emails sent to and from the Sugar application',
@@ -274,6 +273,13 @@ $dictionary['Email'] = [
             'type'    => 'bool',
             'default' => false,
         ],
+        'signature' => [
+            'name'       => 'signature',
+            'vname'      => 'LBL_SIGNATURE',
+            'type'       => 'varchar',
+            'source'  => 'non-db',
+            'reportable' => false,
+        ],
 
         /* relationship collection attributes */
         /* added to support InboundEmail */
@@ -472,6 +478,13 @@ $dictionary['Email'] = [
             'len'    => 36,
             'comment' => 'Reference Email ID to trace reply forward emails',
         ],
+        'emailtrackingactions' => [
+            'name' => 'emailtrackingactions',
+            'type' => 'link',
+            'module' => 'EmailTrackingActions',
+            'relationship' => 'email_emailtrackingactions',
+            'source' => 'non-db'
+        ]
         /* end relationship collections */
 
     ], /* end fields() array */
@@ -609,16 +622,15 @@ $dictionary['Email'] = [
     ], // end indices
 ];
 //BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 //END
 #create relationship to parent
-$dictionary['Email']['fields']['emailtemplate_id'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['emailtemplate_id'] = [
     'name'  => 'emailtemplate_id',
     'type'  => 'id',
     'vname' => 'LBL_EMAILTEMPLATE',
 ];
 
-$dictionary['Email']['fields']['emailtemplate_name'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['emailtemplate_name'] = [
     'source'    => 'non-db',
     'name'      => 'emailtemplate_name',
     'vname'     => 'LBL_EMAILTEMPLATE',
@@ -631,7 +643,7 @@ $dictionary['Email']['fields']['emailtemplate_name'] = [
     'rname'     => 'name',
 ];
 
-$dictionary['Email']['fields']['emailtemplates_link'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['emailtemplates_link'] = [
     'name'         => 'emailtemplates_link',
     'type'         => 'link',
     'relationship' => 'emailtemplates_emails',
@@ -642,14 +654,14 @@ $dictionary['Email']['fields']['emailtemplates_link'] = [
 ];
 
 #create index
-$dictionary['Email']['indices']['emailtemplates_emails_emailtemplate_id'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Email']['indices']['emailtemplates_emails_emailtemplate_id'] = [
     'name'   => 'emailtemplates_emails_emailtemplate_id',
     'type'   => 'index',
     'fields' => ['emailtemplate_id'],
 ];
 
 if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
-    $dictionary['Email']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['servicetickets'] = [
         'name'         => 'servicetickets',
         'vname'        => 'LBL_EMAILS_SERVICETICKETS_REL',
         'type'         => 'link',
@@ -660,7 +672,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     ];
 }
 if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
-    $dictionary['Email']['fields']['serviceorders'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['serviceorders'] = [
         'name'         => 'serviceorders',
         'vname'        => 'LBL_EMAILS_SERVICEORDERS_REL',
         'type'         => 'link',

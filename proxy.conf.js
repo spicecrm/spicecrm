@@ -1,18 +1,20 @@
+const fs = require('fs');
+const devTarget = fs.readFileSync('dev_server.url', 'utf8');
+
 const PROXY_CONFIG = [
     {
         context: [
             "/config",
-            "/proxy",
-            "/dist",
+            "/api",
             "/vendor",
-            "/sldassets"
+            "/node_modules",
         ],
-        target: "http://localhost/spicecrm_fe_factory",
+        target: devTarget.toString(),
         secure: false,
-        "bypass": function (req, res, proxyOptions) {
-            req.headers['authorization'] = 'Basic xxx';
-        }
+        changeOrigin: true,
+        logLevel: 'debug'
     }
 ]
+
 
 module.exports = PROXY_CONFIG;

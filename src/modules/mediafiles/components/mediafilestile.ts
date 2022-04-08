@@ -18,7 +18,7 @@ import {mediafiles} from '../../../services/mediafiles.service';
  */
 @Component({
     selector: 'media-files-tile',
-    templateUrl: './src/modules/mediafiles/templates/mediafilestile.html',
+    templateUrl: '../templates/mediafilestile.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [mediafiles, model, view]
 })
@@ -27,24 +27,24 @@ export class MediaFilesTile implements OnInit {
     /**
      * the data for the model
      */
-    @Input() private data: any;
+    @Input() public data: any;
 
     /**
      * if this is rendered as a select box
      */
-    @Input() private selectbox: boolean = false;
+    @Input() public selectbox: boolean = false;
 
     /**
      * the fieldset to be rendered
      */
-    private fieldset: string;
+    public fieldset: string;
 
     /**
      * the actionset to be rendered
      */
-    private actionset: string;
+    public actionset: string;
 
-    constructor( private metadata: metadata, private model: model, private view: view, private sanitizer: DomSanitizer, private modal: modal, private mediafiles: mediafiles ) {
+    constructor( public metadata: metadata, public model: model, public view: view, public sanitizer: DomSanitizer, public modal: modal, public mediafiles: mediafiles ) {
         // load the config
         this.getConfig();
     }
@@ -60,7 +60,7 @@ export class MediaFilesTile implements OnInit {
     /**
      * sets the view properties
      */
-    private initializeView() {
+    public initializeView() {
         this.view.isEditable = false;
         this.view.displayLabels = false;
 
@@ -72,7 +72,7 @@ export class MediaFilesTile implements OnInit {
     /**
      * loads the config for the component
      */
-    private getConfig() {
+    public getConfig() {
         let config = this.metadata.getComponentConfig('MediaFilesTile', 'MediaFiles');
 
         this.fieldset = config.fieldset;
@@ -82,10 +82,10 @@ export class MediaFilesTile implements OnInit {
     /**
      * loads the model from teh data
      */
-    private initializeModel() {
+    public initializeModel() {
         this.model.module = 'MediaFiles';
         this.model.id = this.data.id;
-        this.model.data = this.model.utils.backendModel2spice('MediaFiles', this.data);
+        this.model.setData(this.data);
     }
 
     /**
@@ -102,7 +102,7 @@ export class MediaFilesTile implements OnInit {
     /**
      * Show the image with maximal size in a modal window.
      */
-    private expand() {
+    public expand() {
         this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
             modalref.instance.imgname = this.model.getFieldValue('name');
             modalref.instance.imgtype = this.model.getFieldValue('filetype');

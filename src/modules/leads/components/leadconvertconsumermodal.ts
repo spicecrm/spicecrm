@@ -19,7 +19,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'lead-convert-opportunity-modal',
-    templateUrl: './src/modules/leads/templates/leadconvertconsumermodal.html',
+    templateUrl: '../templates/leadconvertconsumermodal.html',
     providers: [model, view]
 })
 export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
@@ -27,19 +27,19 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
     /**
      * reference to the modal itself
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * ebent emitter when the conversion is completed
      */
-    @Output() private converted: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public converted: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the componentset to be rendered
      */
-    private componentSet: string;
+    public componentSet: string;
 
-    constructor(private language: language, @SkipSelf() private lead: model, private model: model, private metadata: metadata, private view: view, private modal: modal) {
+    constructor(public language: language, @SkipSelf() public lead: model, public model: model, public metadata: metadata, public view: view, public modal: modal) {
         this.model.module = 'Consumers';
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -69,14 +69,14 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * converts the lead to a consumer
      */
-    private convert() {
+    public convert() {
         if (!this.model.validate()) return;
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             loadingModalRef.instance.messagelabel = 'creating Consumer';
@@ -85,7 +85,7 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
                 this.lead.setField('status', 'Converted');
                 this.lead.setField('consumer_id', this.model.id);
                 this.lead.save().subscribe(leaddata => {
-                    this.lead.data = this.lead.utils.backendModel2spice('Leads', leaddata);
+                    this.lead.setData(leaddata);
                     loadingModalRef.instance.self.destroy();
                     this.close();
                 });

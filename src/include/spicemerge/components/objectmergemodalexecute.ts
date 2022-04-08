@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
     selector: 'object-merge-modal-execute',
-    templateUrl: './src/include/spicemerge/templates/objectmergemodalexecute.html'
+    templateUrl: '../templates/objectmergemodalexecute.html'
 })
 export class ObjectMergeModalExecute {
 

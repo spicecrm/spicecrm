@@ -8,7 +8,7 @@ import {session} from "../../../services/session.service";
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: "./src/modules/users/templates/userresetpasswordbutton.html"
+    templateUrl: "../templates/userresetpasswordbutton.html"
 })
 
 /**
@@ -16,7 +16,7 @@ import {language} from "../../../services/language.service";
  */
 export class UserResetPasswordButton {
 
-    constructor(private modal: modal, private language: language, private model: model, private session: session, private injector: Injector) {
+    constructor(public modal: modal, public language: language, public model: model, public session: session, public injector: Injector) {
     }
 
     /**
@@ -31,7 +31,7 @@ export class UserResetPasswordButton {
     /**
      * triger the reset
      */
-    private execute() {
+    public execute() {
         if (!this.session.isAdmin) {
             return;
         }

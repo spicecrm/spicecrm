@@ -221,6 +221,15 @@ class SpiceAttachmentsController
         return $res->withJson(SpiceAttachments::getAnalysis());
     }
 
+    public function getMissingFiles(Request $req, Response $res, array $args): Response
+    {
+        $files = SpiceAttachments::getMissingFiles();
+        $files['attachments']['label'] = 'LBL_ATTACHMENTS';
+        $files['emails']['label'] = 'LBL_EMAILS';
+        $files['notes']['label'] = 'LBL_NOTES';
+        return $res->withJson( $files );
+    }
+
     /**
      * analyses the entreis
      *

@@ -21,38 +21,38 @@ declare var moment: any;
  * displays a timeline summary with all activities from the parent record. Activities are on the left hand side, details on teh right hand side
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/activitytimelinesummary.html',
+    templateUrl: '../templates/activitytimelinesummary.html',
     providers: [activitiytimeline, model]
 })
 export class ActivityTimelineSummary implements OnInit, OnDestroy {
     /**
      * a reference to the list container. Required to have a scroll handle and do the infinite scrolling
      */
-    @ViewChild('listContainer', {read: ViewContainerRef, static: true}) private listContainer: ViewContainerRef;
+    @ViewChild('listContainer', {read: ViewContainerRef, static: true}) public listContainer: ViewContainerRef;
 
     /**
      * the module of the selcted activitis
      */
-    private activitymodule: string;
+    public activitymodule: string;
 
     /**
      * the id of the current selcted activitiy
      */
-    private activityid: string;
+    public activityid: string;
 
     /**
      * the data of the current selcted activitiy
      */
-    private activitydata: any;
+    public activitydata: any;
 
     /**
      * a subscription to cath the loading event
      */
-    private subscription: any;
+    public subscription: any;
 
-    private componentconfig: any;
+    public componentconfig: any;
 
-    constructor(private metadata: metadata, private parent: model, private language: language, private activitiytimeline: activitiytimeline, private navigationtab: navigationtab, private layout: layout) {
+    constructor(public metadata: metadata, public parent: model, public language: language, public activitiytimeline: activitiytimeline, public navigationtab: navigationtab, public layout: layout) {
 
         // check the componentconfig wether to use fts or not
         this.componentconfig = this.metadata.getComponentConfig('ActivityTimelineSummary');
@@ -99,7 +99,7 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
     /**
      * reloads the list
      */
-    private reload() {
+    public reload() {
         this.activitiytimeline.reload();
     }
 
@@ -108,7 +108,7 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
      *
      * @param params the Route Params returned
      */
-    private initialize(params: Params) {
+    public initialize(params: Params) {
         // get the bean details
         this.parent.module = params.module;
         this.parent.id = params.id;
@@ -128,7 +128,7 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
      *
      * @param e the event emitted from teh DOM element
      */
-    private onScroll(e) {
+    public onScroll(e) {
         let element = this.listContainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             if (this.activitiytimeline.canLoadMore('History')) {
@@ -142,7 +142,7 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
      *
      * @param activity the activity
      */
-    private setActivitiy(activity) {
+    public setActivitiy(activity) {
         this.activitymodule = activity.module;
         this.activityid = activity.id;
         this.activitydata = activity.data;
@@ -151,7 +151,7 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
     /**
      * clears the active activitiy
      */
-    private clearActivitiy() {
+    public clearActivitiy() {
         this.activitymodule = '';
         this.activityid = '';
         this.activitydata = '';
@@ -160,14 +160,14 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
     /**
      * navigates to the parent model record. Used in the breadcrumbs
      */
-    private goModel() {
+    public goModel() {
         this.parent.goDetail();
     }
 
     /**
      * navigates to the parent module. Used in the breadcrumbs
      */
-    private goModule() {
+    public goModule() {
         this.parent.goModule();
     }
 }

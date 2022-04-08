@@ -10,6 +10,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Represents a many to many relationship that is table based.
@@ -140,7 +141,7 @@ class M2MRelationship extends SugarRelationship
     protected function getRowToInsert($lhs, $rhs, $additionalFields = [])
     {
         // 20reasons modification for mobile Client to get created relationship ID
-        $this->relid = create_guid();
+        $this->relid = SpiceUtils::createGuid();
         $row = [
             "id" => $this->relid,
             $this->def['join_key_lhs'] => $lhs->id,

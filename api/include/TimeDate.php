@@ -42,6 +42,7 @@ use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -127,7 +128,7 @@ class TimeDate
 
     /**
      * Current time
-     * @var SugarDateTime
+     * @var DateTime
      */
     protected $now;
 
@@ -513,7 +514,7 @@ class TimeDate
      * Get DateTime from DB date string
      *
      * @param string $date
-     * @return SugarDateTime
+     * @return DateTime
      */
     public function fromDbDate($date)
     {
@@ -532,7 +533,7 @@ class TimeDate
      *
      * @param string $date
      * @param string $format format to accept
-     * @return SugarDateTime
+     * @return DateTime
      */
     public function fromDbFormat($date, $format)
     {
@@ -549,7 +550,7 @@ class TimeDate
      *
      * @param string $date
      * @param User $user
-     * @return SugarDateTime
+     * @return DateTime
      */
     public function fromUser($date, User $user = null)
     {
@@ -576,7 +577,7 @@ class TimeDate
      *
      * @param string $date
      * @param User $user
-     * @return SugarDateTime
+     * @return DateTime
      */
     public function fromString($date, User $user = null)
     {
@@ -592,7 +593,7 @@ class TimeDate
      * Create DateTime from timestamp
      *
      * @param interger|string $ts
-     * @return SugarDateTime
+     * @return DateTime
      */
     public function fromTimestamp($ts)
     {
@@ -741,7 +742,7 @@ class TimeDate
     /**
      * Get 'now' DateTime object
      * @param bool $userTz return in user timezone?
-     * @return SugarDateTime
+     * @return DateTime
      */
     public function getNow($userTz = false)
     {
@@ -883,7 +884,7 @@ class TimeDate
         }
         $now = new DateTime("now", $tz);
         $off = $now->getOffset();
-        $translated = translate('timezone_dom','',$name);
+        $translated = SpiceUtils::translate('timezone_dom','',$name);
         if(is_string($translated) && !empty($translated) && $translated != 'timezone_dom') {
             $name = $translated;
         }

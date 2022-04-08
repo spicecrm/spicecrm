@@ -15,15 +15,15 @@ declare var moment: any;
 
 @Component({
     selector: '[spice-timestream-header]',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestreamheader.html'
+    templateUrl: '../templates/spicetimestreamheader.html'
 })
 export class SpiceTimestreamHeader {
 
-    @Input() private timestream: any = {};
+    @Input() public timestream: any = {};
 
-    private dateElements: any[] = [];
+    public dateElements: any[] = [];
 
-    constructor(private elementRef: ElementRef, private userpreferences: userpreferences) {
+    constructor(public elementRef: ElementRef, public userpreferences: userpreferences) {
 
     }
 
@@ -77,7 +77,7 @@ export class SpiceTimestreamHeader {
         return periods;
     }
 
-    private getPeriodStyle() {
+    public getPeriodStyle() {
         return {
             width: 100 / this.periods.length + '%'
         };

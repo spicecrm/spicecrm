@@ -11,36 +11,36 @@ declare var moment: any;
 declare var _: any;
 
 /**
- * renders a panel with the particopating users and contacts in the activity
+ * renders a panel with the participating users and contacts in the activity
  */
 @Component({
     selector: 'activity-participation-panel',
-    templateUrl: './src/modules/activities/templates/activityparticipationpanel.html',
+    templateUrl: '../templates/activityparticipationpanel.html',
     providers: [view]
 })
 export class ActivityParticipationPanel{
 
     /**
-     * the partcipants as input gtom the field since this is rendered as part of a field
+     * the participants as input to the field since this is rendered as part of a field
      */
-    @Input() private participants: any[] = [];
+    @Input() public participants: any[] = [];
 
     /**
      * indicates if we are editing or not. This trigers if the remove button is visible
      */
-    @Input() private editmode: boolean = false;
+    @Input() public editmode: boolean = false;
 
     /**
      * the fieldset to render in the table
      */
-    @Input() private fieldset: string;
+    @Input() public fieldset: string;
 
     /**
      * an event emitter if an item is removed from the array. The field this is embedded in shoudl handle the removal from the relationship
      */
-    @Output() private remove: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public remove: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private metadata: metadata, private view: view, private language: language) {
+    constructor(public model: model, public metadata: metadata, public view: view, public language: language) {
         this.view.isEditable = false;
         this.view.displayLabels = false;
     }
@@ -50,7 +50,7 @@ export class ActivityParticipationPanel{
      *
      * @param participant
      */
-    private removeParticipant(participant) {
+    public removeParticipant(participant) {
         this.remove.emit(participant);
     }
 
@@ -60,7 +60,7 @@ export class ActivityParticipationPanel{
      * @param participant
      * @param index
      */
-    private participantid(index, participant) {
+    public participantid(index, participant) {
         return participant.id;
     }
 

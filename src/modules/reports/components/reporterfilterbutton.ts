@@ -8,7 +8,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-button',
-    templateUrl: './src/modules/reports/templates/reporterfilterbutton.html'
+    templateUrl: '../templates/reporterfilterbutton.html'
 })
 export class ReporterFilterButton implements OnChanges, OnDestroy{
 
@@ -19,7 +19,7 @@ export class ReporterFilterButton implements OnChanges, OnDestroy{
     showFilters: boolean = false;
     @Output() filter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor( private language: language, private reporterconfig: reporterconfig) {
+    constructor( public language: language, public reporterconfig: reporterconfig) {
     }
 
     ngOnChanges(){

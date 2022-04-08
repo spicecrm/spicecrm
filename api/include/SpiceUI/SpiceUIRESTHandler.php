@@ -13,6 +13,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
 
@@ -436,7 +437,7 @@ $db = DBManagerFactory::getInstance();
 
         switch ($args['action']) {
             case 'new':
-                $guid = create_guid();
+                $guid = SpiceUtils::createGuid();
                 $entry = $this->db->fetchByAssoc($this->db->query("SELECT * FROM sysuiuserroles WHERE sysuirole_id = '$sysuirole_id' AND user_id = '$user_id'"));
                 if (!$entry) {
                     $insertData = [
@@ -847,7 +848,7 @@ $db = DBManagerFactory::getInstance();
     public function getLibraries()
     {
         $return = [];
-        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.rank ASC";
+        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.libsequence ASC";
         $res = $this->db->query($sql);
         while ($row = $this->db->fetchByAssoc($res)) {
             $return[$row['name']][] = ['loaded' => false, 'src' => $row['src']];
@@ -1110,7 +1111,7 @@ $db = DBManagerFactory::getInstance();
     function addListType($module, $params)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $newGuid = create_guid();
+        $newGuid = SpiceUtils::createGuid();
         $insertData = array_merge([
             'id' => $newGuid,
             'created_by_id' => $current_user->id,

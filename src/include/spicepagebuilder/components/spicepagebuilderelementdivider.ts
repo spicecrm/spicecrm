@@ -13,7 +13,7 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
  */
 @Component({
     selector: 'spice-page-builder-element-divider',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementdivider.html',
+    templateUrl: '../templates/spicepagebuilderelementdivider.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {

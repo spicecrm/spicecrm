@@ -14,16 +14,16 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-record-details-related-list-tab',
-    templateUrl: './src/objectcomponents/templates/objectrecorddetailsrelatedlisttab.html'
+    templateUrl: '../templates/objectrecorddetailsrelatedlisttab.html'
 })
 export class ObjectRecordDetailsRelatedListTab {
 
     /**
      * @ignore
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor( private language: language) {
+    constructor( public language: language) {
     }
 
 }

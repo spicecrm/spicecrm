@@ -16,22 +16,22 @@ declare var _;
 
 @Component({
     selector: 'module-builder-filter-details',
-    templateUrl: './src/workbench/templates/modulefilterbuilderfilterdetails.html',
+    templateUrl: '../templates/modulefilterbuilderfilterdetails.html',
 })
 export class ModuleFilterBuilderFilterDetails implements OnChanges {
 
-    @Input() private filter: any;
-    private primaryGroup: any = {
+    @Input() public filter: any;
+    public primaryGroup: any = {
         logicaloperator: 'and',
         groupscope: 'all',
         conditions: []
     }
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private metadata: metadata,
-        private toast: toast,
+        public backend: backend,
+        public language: language,
+        public metadata: metadata,
+        public toast: toast,
     ) {
 
     }
@@ -49,7 +49,7 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
         }
     }
 
-    private save() {
+    public save() {
         this.cleangroup(this.primaryGroup);
         this.filter.filterdefs = this.primaryGroup;
         this.metadata.setModuleFilter(this.filter.id, this.filter.name, this.filter.module, this.filter.type);
@@ -57,7 +57,7 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
             .subscribe(res => this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success"));
     }
 
-    private cleangroup(group) {
+    public cleangroup(group) {
         for (let condition of group.conditions) {
             let i = group.conditions.indexOf(condition);
             if (condition.deleted === true) {

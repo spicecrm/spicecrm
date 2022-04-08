@@ -14,7 +14,7 @@ import {modal} from "../../services/modal.service";
  */
 @Component({
     selector: 'object-action-modal-save-button',
-    templateUrl: './src/objectcomponents/templates/objectactionmodalsavebutton.html',
+    templateUrl: '../templates/objectactionmodalsavebutton.html',
     providers: [helper]
 })
 export class ObjectActionModalSaveButton {
@@ -24,12 +24,12 @@ export class ObjectActionModalSaveButton {
      */
     @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    private actionconfig: any = {};
+    public actionconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal,  @Optional()private modalwindow: modalwindow) {}
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal,  @Optional()public modalwindow: modalwindow) {}
 
     get displayLabel() {
-        // see if we have a abel configured
+        // see if we have a label configured
         if(this.actionconfig.label) return this.actionconfig.label;
 
         // else standard labels
@@ -43,8 +43,9 @@ export class ObjectActionModalSaveButton {
                     modalRef.instance.messagelabel = 'LBL_CHECKING_DUPLICATES';
                     this.model.duplicateCheck(true).subscribe(dupdata => {
                         modalRef.instance.self.destroy();
-                        if (dupdata.length > 0) {
-                            this.model.duplicates = dupdata;
+                        if (dupdata.count > 0) {
+                            this.model.duplicates = dupdata.records;
+                            this.model.duplicatecount = dupdata.count;
                             // this.modalContent.element.nativeElement.scrollTop = 0;
                             // this.showDuplicatesTable = true;
                             this.modal.confirm(this.language.getLabel('MSG_DUPLICATES_FOUND', null,'long'), this.language.getLabel('MSG_DUPLICATES_FOUND')).subscribe(confirmed => {
@@ -66,7 +67,7 @@ export class ObjectActionModalSaveButton {
      *
      * @param goDetail if set to true the system will naviaget to the detail fo teh record after saving
      */
-    private saveModel() {
+    public saveModel() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
             this.model.save(true).subscribe(status => {

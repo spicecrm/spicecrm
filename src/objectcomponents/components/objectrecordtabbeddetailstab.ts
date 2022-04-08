@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-tabbed-details-tab',
-    templateUrl: './src/objectcomponents/templates/objectrecordtabbeddetailstab.html'
+    templateUrl: '../templates/objectrecordtabbeddetailstab.html'
 })
 export class ObjectRecordTabbedDetailsTab implements AfterViewInit {
 
@@ -18,7 +18,7 @@ export class ObjectRecordTabbedDetailsTab implements AfterViewInit {
     @Input()componentset: string = '';
     componentRefs: Array<any> = [];
 
-    constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language) {
+    constructor(public view: view, public metadata: metadata, public componentFactoryResolver: ComponentFactoryResolver, public model: model, public language: language) {
 
     }
 

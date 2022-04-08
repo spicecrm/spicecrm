@@ -13,25 +13,25 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 @Component({
     selector: 'activity-timeline-summary-item-view',
-    templateUrl: './src/modules/activities/templates/activitytimelinesummaryitemview.html',
+    templateUrl: '../templates/activitytimelinesummaryitemview.html',
     providers: [model]
 })
 export class ActivityTimelineSummaryItemView implements OnChanges{
-    @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) private detailContainer: ViewContainerRef;
+    @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) public detailContainer: ViewContainerRef;
 
-    @Input() private module: '';
-    @Input() private id: '';
-    @Input() private data: '';
-    private componentRefs: any[] = [];
+    @Input() public module: '';
+    @Input() public id: '';
+    @Input() public data: '';
+    public componentRefs: any[] = [];
 
-    constructor(private metadata: metadata, private parent: model, private model: model, private language: language, private activitiytimeline: activitiytimeline, private activatedRoute: ActivatedRoute) {
+    constructor(public metadata: metadata, public parent: model, public model: model, public language: language, public activitiytimeline: activitiytimeline, public activatedRoute: ActivatedRoute) {
 
     }
 
     public ngOnChanges() {
         this.model.module = this.module;
         this.model.id = this.id;
-        this.model.data = this.data;
+        this.model.setData(this.data, false);
 
         for (let component of this.componentRefs) {
             component.destroy();

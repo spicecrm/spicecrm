@@ -12,20 +12,20 @@ import {fieldGeneric} from './fieldgeneric';
 
 @Component({
     selector: 'field-module-lookup',
-    templateUrl: './src/objectfields/templates/fieldmodulelookup.html',
+    templateUrl: '../templates/fieldmodulelookup.html',
     providers: [popup],
 })
 export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
-    private relateIdField: string = '';
-    private relateNameField: string = '';
-    @Input() private module: string = '';
+    public relateIdField: string = '';
+    public relateNameField: string = '';
+    @Input() public module: string = '';
 
-    private _selected_item: any = null;
+    public _selected_item: any = null;
 
-    private clickListener: any;
+    public clickListener: any;
 
-    private show_search_results: boolean = false;
-    private search_term: string = '';
+    public show_search_results: boolean = false;
+    public search_term: string = '';
 
     @Output() public select = new EventEmitter();
 
@@ -36,8 +36,8 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
     ) {
         super(model, view, language, metadata, router);
         this.popup.closePopup$.subscribe(() => this.closePopups());
@@ -59,10 +59,10 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         }
     }
 
-    private closePopups() {
+    public closePopups() {
         this.clickListener();
 
-        if (this.model.data[this.relateIdField]) {
+        if (this.model.getField(this.relateIdField)) {
             this.search_term = '';
         }
 
@@ -70,7 +70,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
 
     }
 
-    private onFocus() {
+    public onFocus() {
         this.show_search_results = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
@@ -107,7 +107,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         if (this.selected_item && this.selected_item.id) {
             return this.selected_item.id;
         } else if (this.relateIdField) {
-            return this.model.data[this.relateIdField];
+            return this.model.getField(this.relateIdField);
         } else {
             return '';
         }
@@ -117,18 +117,18 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         if (this.selected_item && this.selected_item.summary_text) {
             return this.selected_item.summary_text;
         } else if (this.relateNameField) {
-            return this.model.data[this.relateNameField];
+            return this.model.getField(this.relateNameField);
         } else {
             return '';
         }
     }
 
-    private goToDetail() {
+    public goToDetail() {
         // go to the record
         this.router.navigate(['/module/' + this.module + '/' + this.selected_item.id]);
     }
 
-    private getSearchStyle() {
+    public getSearchStyle() {
         if (this.show_search_results) {
             let rect = this.elementRef.nativeElement.getBoundingClientRect();
             return {
@@ -138,7 +138,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         }
     }
 
-    private clear() {
+    public clear() {
         this.search_term = '';
         this.selected_item = null;
     }

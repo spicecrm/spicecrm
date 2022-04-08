@@ -9,7 +9,7 @@ declare var _: any;
 
 @Component({
     selector: "system-tree",
-    templateUrl: "./src/systemcomponents/templates/systemtree.html",
+    templateUrl: "../templates/systemtree.html",
     styles: ['.cdk-drag-animating {transition: none}']
 })
 
@@ -62,9 +62,9 @@ export class SystemTree implements OnChanges {
     @Output() public onTreeDrop: EventEmitter<any> = new EventEmitter<any>();
 
     public tree: any[] = [];
-    private dragPosition: any;
-    private isDragging: boolean = false;
-    private treeConfig: any = {
+    public dragPosition: any;
+    public isDragging: boolean = false;
+    public treeConfig: any = {
         draggable: false,
         canadd: false,
         expandall: false,
@@ -109,7 +109,7 @@ export class SystemTree implements OnChanges {
     * @add treeItem recursively
     * @set hasChildren
     */
-    private buildTree() {
+    public buildTree() {
         this.tree = [];
         this.sortBySequence();
         this.addTreeItem();
@@ -124,7 +124,7 @@ export class SystemTree implements OnChanges {
     * @reset sourceList
     * @sort by parent_sequence
     */
-    private sortBySequence() {
+    public sortBySequence() {
         this.sourceList.sort((a, b) => a.name && b.name ? a.name > b.name ? 1 : -1 : 0);
         let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
         this.sourceList = [];
@@ -153,7 +153,7 @@ export class SystemTree implements OnChanges {
     *   hasChildren: boolean
     * }
     */
-    private addTreeItem(parentId = '', level = 1) {
+    public addTreeItem(parentId = '', level = 1) {
         for (let item of this.sourceList) {
             if (!item.parent_id && parentId == '' || item.parent_id == parentId) {
                 if (!item.systemTreeDefs) {
@@ -174,7 +174,7 @@ export class SystemTree implements OnChanges {
     /*
     * @set hasChildren for each tree item from the sourceList
     */
-    private setHasChildren() {
+    public setHasChildren() {
         this.tree.forEach(item => {
             item.systemTreeDefs.hasChildren = this.sourceList.some(i => i.parent_id == item.id);
         });
@@ -193,7 +193,7 @@ export class SystemTree implements OnChanges {
     * @reset dragPosition
     * @emit object: {itemWithNewParent, itemsWithNewSequence} by @output onTreeDrop
     */
-    private handleDrop(dragEvent: CdkDragDrop<any>) {
+    public handleDrop(dragEvent: CdkDragDrop<any>) {
         this.isDragging = false;
         if (!this.dragPosition) return;
         let oldParentId = dragEvent.item.data.parent_id;
@@ -261,7 +261,7 @@ export class SystemTree implements OnChanges {
     * @param value
     * @set isDragging
     */
-    private setIsDragging(value) {
+    public setIsDragging(value) {
         this.isDragging = value;
     }
 
@@ -269,7 +269,7 @@ export class SystemTree implements OnChanges {
     * @param pos: null | object = {id: string, position: 'before' | 'item' | 'after'}
     * @set dragPosition
     */
-    private handleDragPosition(pos) {
+    public handleDragPosition(pos) {
         this.dragPosition = pos;
     }
 
@@ -278,7 +278,7 @@ export class SystemTree implements OnChanges {
     * @set item.systemTreeDefs.expanded
     * @build tree
     */
-    private handleExpand(id) {
+    public handleExpand(id) {
         this.sourceList.some(item => {
             if (item.id == id) {
                 item.systemTreeDefs.expanded = !item.systemTreeDefs.expanded;
@@ -296,7 +296,7 @@ export class SystemTree implements OnChanges {
     * @handle? expand
     * @emit id by @output selectedItemChange
     */
-    private handleClick(id) {
+    public handleClick(id) {
         this.tree.some(item => {
             if (item.id == id) {
                 if (item.systemTreeDefs && item.systemTreeDefs.clickable) {
@@ -325,7 +325,7 @@ export class SystemTree implements OnChanges {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

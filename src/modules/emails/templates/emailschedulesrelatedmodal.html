@@ -39,7 +39,7 @@
                             <td>
                                 <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
                                     <div class="slds-truncate"> <system-icon [addclasses]="link.disabled && (!link.linkedbeans || link.linkedbeans.length == 0) ? 'slds-icon_disabled' : null" [size]="'small'" [module]="link.module"></system-icon></div>
-                                    <div class="slds-truncate"><system-label [label]="link.vname"></system-label></div>
+                                    <div class="slds-truncate"><system-label-modulename [module]="link.module"></system-label-modulename></div>
                                 </div>
                             </td>
                             <td class="slds-text-align--center">

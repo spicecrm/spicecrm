@@ -19,7 +19,7 @@
                 </label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select [(ngModel)]="selectedSignatureId" (ngModelChange)="renderSelectedSignature()" [disabled]="signatures?.length == 0" class="slds-select">
+                        <select [(ngModel)]="selectedSignatureId" (ngModelChange)="changeSignature()" [disabled]="signatures?.length == 0" class="slds-select">
                             <option value="">
                                 <system-label label="LBL_NONE"></system-label>
                             </option>

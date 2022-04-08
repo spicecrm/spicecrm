@@ -16,7 +16,7 @@ declare var _: any;
  */
 @Component({
     selector: '[activity-participation-panel-header]',
-    templateUrl: './src/modules/activities/templates/activityparticipationpanelheader.html',
+    templateUrl: '../templates/activityparticipationpanelheader.html',
     providers: [model]
 })
 export class ActivityParticipationPanelHeader implements OnInit {
@@ -24,12 +24,12 @@ export class ActivityParticipationPanelHeader implements OnInit {
     /**
      * the fieldset as input parameter
      */
-    @Input() private fieldset: string;
+    @Input() public fieldset: string;
 
     /**
      * the fields in the fieldset
      */
-    private fieldsetfields: any[] = [];
+    public fieldsetfields: any[] = [];
 
     /**
      * sets the model module to contacts
@@ -38,7 +38,7 @@ export class ActivityParticipationPanelHeader implements OnInit {
      * @param metadata
      * @param view
      */
-    constructor(private model: model, private metadata: metadata, private view: view) {
+    constructor(public model: model, public metadata: metadata, public view: view) {
         this.model.module = 'Contacts';
     }
 

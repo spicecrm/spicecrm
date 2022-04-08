@@ -10,7 +10,7 @@ import {Subject, Observable} from 'rxjs';
 
 @Component({
     selector: 'system-confirm-dialog',
-    templateUrl: './src/systemcomponents/templates/systemconfirmdialog.html',
+    templateUrl: '../templates/systemconfirmdialog.html',
     styles: [':host { position: relative; z-index: 9100; }']
 })
 export class SystemConfirmDialog  {
@@ -22,7 +22,7 @@ export class SystemConfirmDialog  {
     title: string = 'title';
     message: string = 'message';
 
-    constructor(private language: language) {
+    constructor(public language: language) {
         this.answerSubject = new Subject<boolean>();
         this.answer = this.answerSubject.asObservable();
     }

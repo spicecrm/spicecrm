@@ -9,7 +9,7 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'select-tree-tree',
-    templateUrl: './src/objectfields/templates/fieldselecttreetree.html'
+    templateUrl: '../templates/fieldselecttreetree.html'
 })
 export class fieldSelectTreeTree
 {
@@ -24,13 +24,13 @@ export class fieldSelectTreeTree
     @Output('choose') choose_emitter = new EventEmitter();
 
     // loading indicator
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     constructor(
-        private model:model,
-        private backend:backend,
-        private config:configurationService,
-        private language:language,
+        public model:model,
+        public backend:backend,
+        public config:configurationService,
+        public language:language,
     )
     {
         this.resetLevels();

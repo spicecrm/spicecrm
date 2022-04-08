@@ -12,35 +12,35 @@ import {model} from "../../../services/model.service";
  * Display edit fields for spice attachment
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentseditmodal.html',
+    templateUrl: '../templates/spiceattachmentseditmodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceAttachmentsEditModal implements OnInit {
     /**
      * passed from the modal trigger
      */
-    private attachment: any = {};
+    public attachment: any = {};
 
     /**
      * holds the local input data to update the original attachment after save
      */
-    private inputData: {display_name?: string, category_ids?: string[], text?: string} = {};
+    public inputData: {display_name?: string, category_ids?: string[], text?: string} = {};
     /**
      * holds the available categories
      * @private
      */
-    protected categories: any[] = [];
+    public categories: any[] = [];
     /**
      * holds references of self to destroy the modal
      * @private
      */
-    private self: any = {};
+    public self: any = {};
 
-    constructor(private configurationService: configurationService,
-                private toast: toast,
-                private language: language,
-                private model: model,
-                private backend: backend) {
+    constructor(public configurationService: configurationService,
+                public toast: toast,
+                public language: language,
+                public model: model,
+                public backend: backend) {
     }
 
     /**
@@ -61,7 +61,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
      * close the modal
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -69,7 +69,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
      * save the attachment changes
      * @private
      */
-    private save() {
+    public save() {
         const body = {
             category_ids: this.inputData.category_ids.join(','),
             text: this.inputData.text,

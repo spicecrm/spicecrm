@@ -10,23 +10,23 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-filter-builder-expression-group',
-    templateUrl: './src/systemcomponents/templates/systemfilterbuilderfilterexpressiongroup.html',
+    templateUrl: '../templates/systemfilterbuilderfilterexpressiongroup.html',
 })
 export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
 
-    @Input() private module: string;
-    @Input() private filtergroup: any;
-    @Input() private candelete: boolean = false;
+    @Input() public module: string;
+    @Input() public filtergroup: any;
+    @Input() public candelete: boolean = false;
 
-    @Output() private expressionChanged: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public expressionChanged: EventEmitter<any> = new EventEmitter<any>();
 
-    private expressions: any[] = [];
-    private groups: any[] = [];
+    public expressions: any[] = [];
+    public groups: any[] = [];
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private metadata: metadata
+        public backend: backend,
+        public language: language,
+        public metadata: metadata
     ) {
 
     }
@@ -43,7 +43,7 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
         }
     }
 
-    private addExpression() {
+    public addExpression() {
         let expression = {
             field: '',
             operator: '',
@@ -55,7 +55,7 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
         this.expressionChanged.emit(true);
     }
 
-    private addGroup() {
+    public addGroup() {
         let group = {
             logicaloperator: 'and',
             groupscope: 'all',
@@ -66,17 +66,17 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
     }
 
 
-    private delete() {
+    public delete() {
         this.filtergroup.deleted = true;
         this.expressionChanged.emit(true);
     }
 
-    private filterchanged() {
+    public filterchanged() {
         this.cleanDeleted();
         this.expressionChanged.emit(true);
     }
 
-    private cleanDeleted() {
+    public cleanDeleted() {
         let newFilterGroupCondition = [];
         for (let filterGroupCondition of this.filtergroup.conditions) {
             if (filterGroupCondition.deleted !== true) {

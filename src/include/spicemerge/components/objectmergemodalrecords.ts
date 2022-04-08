@@ -12,7 +12,7 @@ import {modellist} from '../../../services/modellist.service';
  */
 @Component({
     selector: 'object-merge-modal-records',
-    templateUrl: './src/include/spicemerge/templates/objectmergemodalrecords.html',
+    templateUrl: '../templates/objectmergemodalrecords.html',
 })
 export class ObjectMergeModalRecords {
 
@@ -21,9 +21,9 @@ export class ObjectMergeModalRecords {
      *
      * @private
      */
-    private listFields: any[] = [];
+    public listFields: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private modellist: modellist) {
+    constructor(public metadata: metadata, public model: model, public modellist: modellist) {
         let componentconfig = this.metadata.getComponentConfig('ObjectMergeModalRecords', this.model.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
@@ -40,7 +40,7 @@ export class ObjectMergeModalRecords {
      * @param id
      * @private
      */
-    private isCurrentModel(id) {
+    public isCurrentModel(id) {
         return this.model.id && this.model.id == id;
     }
 
@@ -51,7 +51,7 @@ export class ObjectMergeModalRecords {
      * @param data
      * @private
      */
-    private disableSelect(data) {
+    public disableSelect(data) {
         if (data.id == this.model.id || !data.acl?.delete) {
             return true;
         } else {

@@ -9,14 +9,14 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: 'object-model-popover-related-item',
-    templateUrl: './src/objectcomponents/templates/objectmodelpopoverrelateditem.html',
+    templateUrl: '../templates/objectmodelpopoverrelateditem.html',
     providers: [model, view]
 })
 export class ObjectModelPopoverRelatedItem {
 
-    @Input() private module: string = '';
-    @Input() private item: any = {};
-    @Input() private fields: any[] = [];
+    @Input() public module: string = '';
+    @Input() public item: any = {};
+    @Input() public fields: any[] = [];
 
     constructor(
         public language: language,
@@ -30,10 +30,10 @@ export class ObjectModelPopoverRelatedItem {
     public ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.item.id;
-        this.model.data = this.item;
+        this.model.setData(this.item);
     }
 
-    private goDetail() {
+    public goDetail() {
         this.model.goDetail();
     }
 

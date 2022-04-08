@@ -9,12 +9,12 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
  */
 @Component({
     selector: 'mailbox-manager-emails',
-    templateUrl: './src/modules/mailboxes/templates/mailboxmanageremails.html',
+    templateUrl: '../templates/mailboxmanageremails.html',
 })
 export class MailboxManagerEmails {
 
     constructor(
-        private mailboxesEmails: mailboxesEmails
+        public mailboxesEmails: mailboxesEmails
     ) {
     }
 
@@ -24,14 +24,14 @@ export class MailboxManagerEmails {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 
     /**
      * load more if the scroll position reached the bottom
      */
-    private loadmore(scrollContainer: HTMLElement) {
+    public loadmore(scrollContainer: HTMLElement) {
         if (scrollContainer.scrollTop + scrollContainer.clientHeight + 50 > scrollContainer.scrollHeight) {
             this.mailboxesEmails.loadMore();
         }

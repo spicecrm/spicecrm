@@ -14,7 +14,7 @@ import {helper} from "../../services/helper.service";
 
 @Component({
     selector: 'administration-dict-repair-db-columns-modal',
-    templateUrl: './src/admincomponents/templates/administrationdictrepairdbcolumnsmodal.html'
+    templateUrl: '../templates/administrationdictrepairdbcolumnsmodal.html'
 })
 export class AdministrationDictRepairDbColumnsModal {
 
@@ -22,13 +22,13 @@ export class AdministrationDictRepairDbColumnsModal {
      * reference to the modal
      * @private
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the module selected
      * @private
      */
-    private _module: string = '';
+    public _module: string = '';
 
     /**
      * the list of modules
@@ -39,15 +39,15 @@ export class AdministrationDictRepairDbColumnsModal {
      * list of all fields in teh module
      * @private
      */
-    private allFields: any = [];
+    public allFields: any = [];
 
     constructor(
-        private backend: backend,
-        private toast: toast,
-        private language: language,
-        private modal: modal,
-        private metadata: metadata,
-        private helper: helper
+        public backend: backend,
+        public toast: toast,
+        public language: language,
+        public modal: modal,
+        public metadata: metadata,
+        public helper: helper
     ) {
         this.modules = this.metadata.getModules();
         this.modules.sort();
@@ -67,7 +67,7 @@ export class AdministrationDictRepairDbColumnsModal {
     /**
      * get all the db columns for one module
      */
-    private mergeColumns() {
+    public mergeColumns() {
         this.allFields = [];
         // get all db columns from the backend
         this.backend.getRequest('dictionary/browser/' + this.module + '/dbcolumns').subscribe((result: any) => {
@@ -122,7 +122,7 @@ export class AdministrationDictRepairDbColumnsModal {
      *
      * @private
      */
-    private selectAll() {
+    public selectAll() {
         for (let field of this.allFields.filter(f => f.db_available && !f.vardef_available)) {
             field.todelete = true;
         }
@@ -145,14 +145,14 @@ export class AdministrationDictRepairDbColumnsModal {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * execute db repair
      */
-    private doRepair() {
+    public doRepair() {
 
         // build the list of selected columns and set it into the helper message
         let todeleteString = '';
@@ -170,7 +170,7 @@ export class AdministrationDictRepairDbColumnsModal {
     /**
      * after the answer the delete is executed
      */
-    private delete() {
+    public delete() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             let postData = {
                 dbcolumns: this.allFields.filter(f => f.todelete),

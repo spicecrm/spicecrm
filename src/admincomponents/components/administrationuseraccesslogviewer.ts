@@ -12,7 +12,7 @@ import {toast} from '../../services/toast.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationuseraccesslogviewer.html'
+    templateUrl: '../templates/administrationuseraccesslogviewer.html'
 })
 export class AdministrationUserAccessLogViewer {
 
@@ -20,51 +20,51 @@ export class AdministrationUserAccessLogViewer {
      * the limit of records to fetch in on go
      * @private
      */
-    private limit = '250';
+    public limit = '250';
 
     /**
      * a filter for the username or IP
      * @private
      */
-    private filter: string = '';
+    public filter: string = '';
 
     /**
      * a date end to go back from in the search
      * @private
      */
-    private dateEnd: any;
+    public dateEnd: any;
 
     /**
      * inidicates that we are loading
      *
      * @private
      */
-    private isLoading = false;
+    public isLoading = false;
 
     /**
      * set if failed only shoudl be loaded
      *
      * @private
      */
-    private failedOnly: boolean = false;
+    public failedOnly: boolean = false;
 
     /**
      * the entries retrieved
      *
      * @private
      */
-    private entries: any[] = [];
+    public entries: any[] = [];
 
-    constructor(private backend: backend, private modal: modal, private toast: toast) {
+    constructor(public backend: backend, public modal: modal, public toast: toast) {
 
     }
 
-    private setNow() {
+    public setNow() {
         this.dateEnd = new moment();
     }
 
     // Load the log entries from the backend.
-    private loadData() {
+    public loadData() {
 
         if (!this.isLoading) {
 
@@ -97,7 +97,7 @@ export class AdministrationUserAccessLogViewer {
      *
      * @private
      */
-    private loadMore() {
+    public loadMore() {
         if (!this.isLoading) {
 
             this.isLoading = true;
@@ -124,7 +124,7 @@ export class AdministrationUserAccessLogViewer {
     }
 
     // Load button was pressed.
-    private buttonLoad() {
+    public buttonLoad() {
         this.loadData();
     }
 

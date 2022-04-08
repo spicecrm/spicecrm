@@ -10,7 +10,7 @@ import {language} from '../../../services/language.service';
 import {modelattachments} from '../../../services/modelattachments.service';
 
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentspanelheader.html',
+    templateUrl: '../templates/spiceattachmentspanelheader.html',
     providers:[modelattachments]
 
 })
@@ -19,14 +19,14 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
     /**
      * subscroibe to the broadcast to catch when the panel issues the number
      */
-    private broadcastSubscription: any = {};
+    public broadcastSubscription: any = {};
 
     /**
      * the count recieved
      */
-    private attachmentcount: number = 0;
+    public attachmentcount: number = 0;
 
-    constructor(private model: model, private modelattachments: modelattachments, private language: language, private broadcast: broadcast) {
+    constructor(public model: model, public modelattachments: modelattachments, public language: language, public broadcast: broadcast) {
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -55,7 +55,7 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
      *
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagedata.module !== this.model.module && message.messagedata.id !== this.model.id){
             return;

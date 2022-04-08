@@ -143,4 +143,5 @@ export interface SubscriptionI {
     user_id: string;
     bean_id: string;
     bean_module: string;
+    data: any;
 }

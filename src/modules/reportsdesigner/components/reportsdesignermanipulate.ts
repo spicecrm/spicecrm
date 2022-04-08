@@ -11,15 +11,15 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-manipulate',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignermanipulate.html'
+    templateUrl: '../templates/reportsdesignermanipulate.html'
 })
 export class ReportsDesignerManipulate {
 
-    constructor(private language: language,
-                private modelUtilities: modelutilities,
-                private modal: modal,
-                private model: model,
-                private reportsDesignerService: ReportsDesignerService) {
+    constructor(public language: language,
+                public modelUtilities: modelutilities,
+                public modal: modal,
+                public model: model,
+                public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -50,7 +50,7 @@ export class ReportsDesignerManipulate {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.fieldid;
     }
 
@@ -60,7 +60,7 @@ export class ReportsDesignerManipulate {
     * @splice listFields add newItem
     * @set listFields
     */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
+    public onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
 
         if (dragEvent.previousContainer === dragEvent.container) {
@@ -87,7 +87,7 @@ export class ReportsDesignerManipulate {
     * @push newItem to unionListFields
     * @set unionlistfields
     */
-    private addListItemToUnionFields(listItem) {
+    public addListItemToUnionFields(listItem) {
         const unionModules = this.model.getField('union_modules');
         if (!unionModules || !unionModules.length || unionModules.length == 0) return;
 
@@ -121,7 +121,7 @@ export class ReportsDesignerManipulate {
     * @filter unionListFields from deleted item
     * @set unionlistfields
     */
-    private deleteListItemToUnionFields(fieldId) {
+    public deleteListItemToUnionFields(fieldId) {
         let unionListFields = this.model.getField('unionlistfields');
         if (!unionListFields || !unionListFields.length || unionListFields.length == 0) return;
 
@@ -133,7 +133,7 @@ export class ReportsDesignerManipulate {
     * @param field: object
      * @return newItem: object
      */
-    private generateNewItem(field = null, sequence) {
+    public generateNewItem(field = null, sequence) {
         let id = this.reportsDesignerService.generateGuid();
         return {
             fieldid: id,
@@ -161,7 +161,7 @@ export class ReportsDesignerManipulate {
     * delete the record with the given index
     * @param fieldId: string
     */
-    private deleteField(fieldId) {
+    public deleteField(fieldId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
                 let listFields = this.listFields.slice();

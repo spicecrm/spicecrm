@@ -18,13 +18,14 @@ class SpiceUIActionsetsController
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
-        $actionsets = $db->query("SELECT sysuiactionsets.id acid, sysuiactionsetitems.*, sysuiactionsets.module, sysuiactionsets.name  FROM sysuiactionsets LEFT JOIN sysuiactionsetitems ON sysuiactionsets.id = sysuiactionsetitems.actionset_id ORDER BY actionset_id, sequence");
+        $actionsets = $db->query("SELECT sysuiactionsets.id acid, sysuiactionsetitems.*, sysuiactionsets.module, sysuiactionsets.name, sysuiactionsets.grouped  FROM sysuiactionsets LEFT JOIN sysuiactionsetitems ON sysuiactionsets.id = sysuiactionsetitems.actionset_id ORDER BY actionset_id, sequence");
         while ($actionset = $db->fetchByAssoc($actionsets)) {
 
             if (!isset($retArray[$actionset['acid']])) {
                 $retArray[$actionset['acid']] = [
                     'id' => $actionset['acid'],
                     'name' => $actionset['name'],
+                    'grouped' => $actionset['grouped'],
                     'module' => $actionset['module'],
                     'package' => $actionset['package'],
                     'version' => $actionset['version'],
@@ -47,13 +48,14 @@ class SpiceUIActionsetsController
             }
         }
 
-        $actionsets = $db->query("SELECT sysuicustomactionsets.id acid, sysuicustomactionsetitems.*, sysuicustomactionsets.module, sysuicustomactionsets.name  FROM sysuicustomactionsets LEFT JOIN sysuicustomactionsetitems ON sysuicustomactionsets.id = sysuicustomactionsetitems.actionset_id ORDER BY actionset_id, sequence");
+        $actionsets = $db->query("SELECT sysuicustomactionsets.id acid, sysuicustomactionsetitems.*, sysuicustomactionsets.module, sysuicustomactionsets.name, sysuicustomactionsets.grouped  FROM sysuicustomactionsets LEFT JOIN sysuicustomactionsetitems ON sysuicustomactionsets.id = sysuicustomactionsetitems.actionset_id ORDER BY actionset_id, sequence");
         while ($actionset = $db->fetchByAssoc($actionsets)) {
 
             if (!isset($retArray[$actionset['acid']])) {
                 $retArray[$actionset['acid']] = [
                     'id' => $actionset['acid'],
                     'name' => $actionset['name'],
+                    'grouped' => $actionset['grouped'],
                     'module' => $actionset['module'],
                     'package' => $actionset['package'],
                     'version' => $actionset['version'],
@@ -95,10 +97,13 @@ class SpiceUIActionsetsController
 
         // add items
         foreach ($data['add'] as $actionsetid => $actionsetdata) {
-            $db->query("INSERT INTO sysui" . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . "actionsets (id, module, name, package, version) VALUES('$actionsetid', '" . $actionsetdata['module'] . "', '" . $actionsetdata['name'] . "', '" . $actionsetdata['package'] . "','" . $actionsetdata['version'] . "')");
+
+            $tableName = 'sysui' . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . 'actionsets';
+
+            $db->query("INSERT INTO $tableName (id, module, name, grouped, package, version) VALUES('$actionsetid', '{$actionsetdata['module']}', '{$actionsetdata['name']}', '{$actionsetdata['grouped']}', '{$actionsetdata['package']}','{$actionsetdata['version']}')");
 
             // add to the CR
-            if ($cr) $cr->addDBEntry("sysui" . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . "actionsets", $actionsetid, 'I', $actionsetdata['module'] . "/" . $actionsetdata['name']);
+            if ($cr) $cr->addDBEntry($tableName, $actionsetid, 'I', $actionsetdata['module'] . "/" . $actionsetdata['name']);
 
             $controller = new SpiceUIActionsetsController;
             $controller->setActionSetItems($actionsetdata);
@@ -107,14 +112,16 @@ class SpiceUIActionsetsController
         // handle the update
         foreach ($data['update'] as $actionsetid => $actionsetdata) {
 
+            $tableName = 'sysui' . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . 'actionsets';
+
             // get the record and check for change
-            $record = $db->fetchByAssoc($db->query("SELECT * FROM sysui" . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . "actionsets WHERE id='$actionsetid'"));
-            if ($record['name'] != $actionsetdata['name'] || $record['package'] != $actionsetdata['package'] || $record['version'] != $actionsetdata['version']) {
+            $record = $db->fetchByAssoc($db->query("SELECT * FROM $tableName WHERE id='$actionsetid'"));
+            if ($record['name'] != $actionsetdata['name'] || $record['grouped'] != $actionsetdata['grouped'] || $record['package'] != $actionsetdata['package'] || $record['version'] != $actionsetdata['version']) {
                 // update the record
-                $db->query("UPDATE sysui" . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . "actionsets SET name='" . $actionsetdata['name'] . "', package='" . $actionsetdata['package'] . "', version='" . $actionsetdata['version'] . "' WHERE id='$actionsetid'");
+                $db->query("UPDATE $tableName SET name='{$actionsetdata['name']}', grouped='{$actionsetdata['grouped']}', package='{$actionsetdata['package']}', version='{$actionsetdata['version']}' WHERE id='$actionsetid'");
 
                 // add to the CR
-                if ($cr) $cr->addDBEntry("sysui" . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . "actionsets", $actionsetid, 'U', $actionsetdata['module'] . "/" . $actionsetdata['name']);
+                if ($cr) $cr->addDBEntry($tableName . "actionsets", $actionsetid, 'U', $actionsetdata['module'] . "/" . $actionsetdata['name']);
             }
             $controller = new SpiceUIActionsetsController;
             $controller->setActionSetItems($actionsetdata);
@@ -168,7 +175,6 @@ class SpiceUIActionsetsController
                     }
 
                 } else {
-                    console.log("try to delete: " + $item['id']);
                     // remove it
                     $db->query("DELETE FROM sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems WHERE id='{$item['id']}'");
                     // add to the CR

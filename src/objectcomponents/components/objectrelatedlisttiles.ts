@@ -20,7 +20,7 @@ import {ObjectRelatedList} from "./objectrelatedlist";
 
 @Component({
     selector: 'object-relatedlist-tiles',
-    templateUrl: './src/objectcomponents/templates/objectrelatedlisttiles.html',
+    templateUrl: '../templates/objectrelatedlisttiles.html',
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistTiles extends ObjectRelatedList {
@@ -28,7 +28,7 @@ export class ObjectRelatedlistTiles extends ObjectRelatedList {
     /**
      * container reference for the main div
      */
-    @ViewChild('mainContainer', {read: ViewContainerRef, static: true}) private mainContainer: ViewContainerRef;
+    @ViewChild('mainContainer', {read: ViewContainerRef, static: true}) public mainContainer: ViewContainerRef;
 
     constructor(public language: language,
                 public metadata: metadata,

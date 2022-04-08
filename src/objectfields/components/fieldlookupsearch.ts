@@ -15,64 +15,64 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'field-lookup-search',
-    templateUrl: './src/objectfields/templates/fieldlookupsearch.html',
+    templateUrl: '../templates/fieldlookupsearch.html',
     providers: [modellist]
 })
 export class fieldLookupSearch implements OnInit, OnChanges {
     /**
      * the searchterm entered
      */
-    private searchTerm: string = '';
+    public searchTerm: string = '';
 
     /**
      * a timeout to have a delay when typing until the search starts
      */
-    private searchTimeout: any = {};
+    public searchTimeout: any = {};
 
     /**
      * the module we are searching for
      */
-    @Input() private module: string = '';
+    @Input() public module: string = '';
 
     /**
      * an optional mddulefilter to be appilied to the searches
      */
-    @Input() private modulefilter: string = '';
+    @Input() public modulefilter: string = '';
 
     /**
      * set to disable the add functionality by the config
      */
-    @Input() private disableadd: boolean = false;
+    @Input() public disableadd: boolean = false;
 
     /**
      * a relate filter for the modellist
      */
-    @Input() private relatefilter: relateFilter;
+    @Input() public relatefilter: relateFilter;
 
     /**
      * additonal input for the id of the relate filter so the onChange can detect and trigger a reload
      */
-    @Input() private relateId: string;
+    @Input() public relateId: string;
 
     /**
      * an emitter if an object has been selected
      */
-    @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedObject: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * emit to open the modal for the search
      */
-    @Output() private searchWithModal = new EventEmitter();
+    @Output() public searchWithModal = new EventEmitter();
 
     /**
      * emits when the searchterm has been changed
      */
-    @Output() private searchtermChange = new EventEmitter<string>();
+    @Output() public searchtermChange = new EventEmitter<string>();
 
     /**
      * holds the various subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     @Input() set searchterm(value) {
         this.searchTerm = value;
@@ -82,7 +82,7 @@ export class fieldLookupSearch implements OnInit, OnChanges {
         this.searchTimeout = window.setTimeout(() => this.doSearch(), 500);
     }
 
-    constructor(private metadata: metadata, public model: model, public modellist: modellist, public language: language, private modal: modal) {
+    constructor(public metadata: metadata, public model: model, public modellist: modellist, public language: language, public modal: modal) {
     }
 
     /**
@@ -124,7 +124,7 @@ export class fieldLookupSearch implements OnInit, OnChanges {
     /**
      * run the search
      */
-    private doSearch() {
+    public doSearch() {
         if (this.searchTerm !== '' && this.searchTerm !== this.modellist.searchTerm) {
             this.modellist.searchTerm = this.searchTerm;
             this.modellist.getListData();
@@ -136,7 +136,7 @@ export class fieldLookupSearch implements OnInit, OnChanges {
      *
      * @param data the data of the selected model
      */
-    private setItem(data: any) {
+    public setItem(data: any) {
         // reset and emit the empty searchterm
         this.searchTerm = '';
         this.searchtermChange.emit(this.searchTerm);
@@ -150,7 +150,7 @@ export class fieldLookupSearch implements OnInit, OnChanges {
      *
      * @param record the created record
      */
-    private recordAdded(record) {
+    public recordAdded(record) {
         this.setItem(record.data);
     }
 

@@ -10,7 +10,7 @@ import {ButtonI, DividerI, HTMLCodeI, ImageI, SpacerI, TextI} from "../interface
  */
 @Component({
     selector: 'spice-page-builder-editor',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuildereditor.html',
+    templateUrl: '../templates/spicepagebuildereditor.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderEditor {
@@ -29,7 +29,7 @@ export class SpicePageBuilderEditor {
     /**
      * code container reference to beatify
      */
-    @ViewChild('codeContainer', {read: ViewContainerRef, static: false}) private codeContainer: ViewContainerRef;
+    @ViewChild('codeContainer', {read: ViewContainerRef, static: false}) public codeContainer: ViewContainerRef;
 
 
     /**
@@ -39,14 +39,14 @@ export class SpicePageBuilderEditor {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /**
      * close the modal and pass false for no changes
      */
-    private cancel() {
+    public cancel() {
         this.response.next(false);
         this.response.complete();
         this.self.destroy();
@@ -55,7 +55,7 @@ export class SpicePageBuilderEditor {
     /**
      * close the modal and emit response true for the element
      */
-    private confirm() {
+    public confirm() {
         this.response.next(JSON.parse(JSON.stringify(this.element)));
         this.response.complete();
         this.self.destroy();

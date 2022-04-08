@@ -17,7 +17,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'user-deactivate-select-user',
-    templateUrl: "./src/modules/users/templates/userdeactivateselectuser.html"
+    templateUrl: "../templates/userdeactivateselectuser.html"
 })
 export class UserDeactivateSelectUser implements OnDestroy {
 
@@ -25,19 +25,19 @@ export class UserDeactivateSelectUser implements OnDestroy {
     /**
      * holds the components subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * the current selected item
      */
-    private selectedItem: any;
+    public selectedItem: any;
 
     /**
      * an emitter for the userid
      */
-    @Output() private  userid$: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public  userid$: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal) {
 
     }
 
@@ -51,7 +51,7 @@ export class UserDeactivateSelectUser implements OnDestroy {
         return this.language.getModuleCombinedLabel('LBL_SEARCH', 'Users');
     }
 
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = 'Users';
             selectModal.instance.multiselect = false;
@@ -66,7 +66,7 @@ export class UserDeactivateSelectUser implements OnDestroy {
         });
     }
 
-    private clearField() {
+    public clearField() {
         this.selectedItem = undefined;
     }
 

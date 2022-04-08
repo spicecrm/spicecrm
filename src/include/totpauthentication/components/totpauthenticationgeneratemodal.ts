@@ -11,7 +11,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "totp-authentication-generate-modal",
-    templateUrl: "./src/include/totpauthentication/templates/totpauthenticationgeneratemodal.html"
+    templateUrl: "../templates/totpauthenticationgeneratemodal.html"
 })
 export class TOTPAuthenticationGenerateModal implements OnInit {
 
@@ -20,39 +20,39 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the base 64 encoded QR code
      * @private
      */
-    private QRCode: string;
+    public QRCode: string;
 
     /**
      * the secret generated
      *
      * @private
      */
-    private secret: string;
+    public secret: string;
 
-    private name: string;
+    public name: string;
 
     /**
      * the code entered to validate
      *
      * @private
      */
-    private code: string = '';
+    public code: string = '';
 
-    constructor(private language: language, private metadata: metadata, private modal: modal, private model: model, private backend: backend, private toast: toast) {
+    constructor(public language: language, public metadata: metadata, public modal: modal, public model: model, public backend: backend, public toast: toast) {
 
     }
 
     public ngOnInit() {
-        let await = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
+        let loading = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
         this.backend.getRequest(`authentication/totp/generate`).subscribe(
             res => {
-                await.emit(true);
+                loading.emit(true);
                 if (res.secret) {
                     this.QRCode = 'data:image/png;base64,' + res.qrcode;
                     this.secret = res.secret;
@@ -65,7 +65,7 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
             () => {
                 this.toast.sendToast('Error generating Code', 'error');
                 this.close();
-                await.emit(true);
+                loading.emit(true);
             });
     }
 
@@ -74,11 +74,11 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
      *
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
-    private save() {
+    public save() {
         this.backend.putRequest(`authentication/totp/validate/${this.code}`).subscribe(
             res => {
                 if (res.validated) {

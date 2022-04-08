@@ -39,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let log of jobLogs; trackBy: trackByFn" [system-model-provider]="{module: log.rel_module, id: log.rel_id, data: null}" class="slds-hint-parent" [ngStyle]="{'opacity':isReLoading?0.33:1}">
+                    <tr *ngFor="let log of jobLogs; trackBy: trackByFn" [system-model-provider]="{module: log.rel_module, id: log.rel_id, data: null}" class="slds-hint-parent" [ngStyle]="{'opacity':isLoading?0.33:1}">
                         <td [system-model-popover]="!!log.rel_id" [enablelink]="!!log.rel_id">
                             <div class="slds-truncate">{{log.name}}</div>
                         </td>

@@ -17,7 +17,7 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: "email-to-object-emailtext",
-    templateUrl: "./src/modules/emails/templates/emailtoobjectemailtext.html"
+    templateUrl: "../templates/emailtoobjectemailtext.html"
 })
 export class EmailToObjectEmailText implements OnDestroy, OnInit {
 
@@ -30,16 +30,16 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
 
     @Output() public setfield: EventEmitter<any> = new EventEmitter<any>();
 
-    private clickListener: any = null;
-    private displayContextMenu: boolean = false;
-    private displayContextCoordinates: any = {top: 0, left: 0};
-    private _striped_content: string;
+    public clickListener: any = null;
+    public displayContextMenu: boolean = false;
+    public displayContextCoordinates: any = {top: 0, left: 0};
+    public _striped_content: string;
 
     constructor(
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        private language: language,
-        private metadata: metadata,
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public language: language,
+        public metadata: metadata,
     ) {
 
     }
@@ -84,7 +84,7 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
         }
     }
 
-    private showContextMenu(event) {
+    public showContextMenu(event) {
         if (this.selectedText) {
             // prevent the browser context Menu
             event.preventDefault();
@@ -114,7 +114,7 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
         return stylecoords;
     }
 
-    private onClick(event: MouseEvent): void {
+    public onClick(event: MouseEvent): void {
         if (!this.contextMenu.element.nativeElement.contains(event.target)) {
             this.displayContextMenu = false;
             if (this.clickListener) {
@@ -124,7 +124,7 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
         }
     }
 
-    private setField(field) {
+    public setField(field) {
         this.displayContextMenu = false;
         if (this.clickListener) {
             this.clickListener();

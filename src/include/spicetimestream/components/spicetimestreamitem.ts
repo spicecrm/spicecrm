@@ -17,7 +17,7 @@ declare var moment: any;
 
 @Component({
     selector: '[spice-timestream-item]',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestreamitem.html'
+    templateUrl: '../templates/spicetimestreamitem.html'
 })
 export class SpiceTimestreamItem implements OnInit {
 
@@ -26,24 +26,24 @@ export class SpiceTimestreamItem implements OnInit {
      *
      * @private
      */
-    @Input() private timestream: any = {};
+    @Input() public timestream: any = {};
 
     /**
      *
      * @private
      */
-    @Input() private element: any = {};
+    @Input() public element: any = {};
 
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * holds the componentconfig
      *
      * @private
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private metadata: metadata, private userpreferences: userpreferences) {
+    constructor(public metadata: metadata, public userpreferences: userpreferences) {
 
     }
 
@@ -105,7 +105,7 @@ export class SpiceTimestreamItem implements OnInit {
      *
      * @private
      */
-    private getStart() {
+    public getStart() {
         let totaldays = this.timestream.dateEnd.diff(this.timestream.dateStart, 'days');
         let startOffset = this.startdate.diff(this.timestream.dateStart, 'days');
         return startOffset / totaldays * 100;
@@ -117,19 +117,19 @@ export class SpiceTimestreamItem implements OnInit {
      *
      * @private
      */
-    private getStartFromEnd() {
+    public getStartFromEnd() {
         let totaldays = this.timestream.dateEnd.diff(this.timestream.dateStart, 'days');
         let startOffset = this.enddate.diff(this.timestream.dateStart, 'days');
         return startOffset / totaldays * 100;
     }
 
-    private getWidth() {
+    public getWidth() {
         let totaldays = this.timestream.dateEnd.diff(this.timestream.dateStart, 'days');
         let length = this.enddate.diff(this.startdate, 'days');
         return length / totaldays * 100;
     }
 
-    private getElementStyle() {
+    public getElementStyle() {
         if (this.elementstart && this.elementend) {
             if (this.timestream.dateEnd.diff(this.timestream.dateStart, 'days') > 0) {
                 return {
