@@ -31,9 +31,9 @@
             <span class="slds-form-element__label"><system-label label="LBL_LINK"></system-label></span>
         </label>
         <label class="slds-checkbox" for="default">
-            <input [disabled]="!view.isEditMode()" type="checkbox" id="default" [(ngModel)]="configValues.default"/>
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="default" [(ngModel)]="configValues.hidden"/>
             <span class="slds-checkbox--faux"></span>
-            <span class="slds-form-element__label"><system-label label="LBL_DEFAULT"></system-label></span>
+            <span class="slds-form-element__label"><system-label label="LBL_HIDDEN"></system-label></span>
         </label>
         <label class="slds-checkbox" for="hidelabel">
             <input [disabled]="!view.isEditMode()" type="checkbox" id="hidelabel" [(ngModel)]="configValues.hidelabel"/>
