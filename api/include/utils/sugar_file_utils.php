@@ -36,7 +36,8 @@
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * @deprecated moved to SpiceFileUtils
@@ -54,10 +55,11 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  * @return boolean - Returns true on success false on failure
  */
 function sugar_mkdir($pathname, $mode=null, $recursive=false, $context='') {
-	$mode = get_mode('dir_mode', $mode);
+	$mode = SpiceFileUtils::getMode('dir_mode', $mode);
 
-	if ( sugar_is_dir($pathname,$mode) )
-	    return true;
+	if (SpiceFileUtils::spiceIsDir($pathname,$mode)) {
+        return true;
+    }
 
 	$result = false;
 	if(empty($mode))
@@ -69,16 +71,16 @@ function sugar_mkdir($pathname, $mode=null, $recursive=false, $context='') {
 	}
 
 	if($result){
-		if(!sugar_chmod($pathname, $mode)){
+		if (!SpiceFileUtils::spiceChmod($pathname, $mode)) {
 			return false;
 		}
 		if(!empty(SpiceConfig::getInstance()->config['default_permissions']['user'])){
-			if(!sugar_chown($pathname)){
+			if (!SpiceFileUtils::spiceChown($pathname)) {
 				return false;
 			}
 		}
 		if(!empty(SpiceConfig::getInstance()->config['default_permissions']['group'])){
-   			if(!sugar_chgrp($pathname)) {
+   			if (!SpiceFileUtils::spiceChgrp($pathname)) {
    				return false;
    			}
 		}
@@ -100,7 +102,7 @@ function clean_path( $path )
 {
     // clean directory/file path with a functional equivalent
     $appendpath = '';
-    if ( is_windows() && strlen($path) >= 2 && $path[0].$path[1] == "\\\\" ) {
+    if (SpiceUtils::isWindows() && strlen($path) >= 2 && $path[0].$path[1] == "\\\\") {
         $path = substr($path,2);
         $appendpath = "\\\\";
     }
@@ -128,8 +130,8 @@ function clean_path( $path )
  */
 function sugar_fopen($filename, $mode, $use_include_path=false, $context=null){
 	//check to see if the file exists, if not then use touch to create it.
-	if(!file_exists($filename)){
-		sugar_touch($filename);
+	if (!file_exists($filename)) {
+		SpiceFileUtils::spiceTouch($filename);
 	}
 
 	if(empty($context)) {
@@ -157,7 +159,7 @@ function sugar_fopen($filename, $mode, $use_include_path=false, $context=null){
 function sugar_file_put_contents($filename, $data, $flags=null, $context=null){
 	//check to see if the file exists, if not then use touch to create it.
 	if(!file_exists($filename)){
-		sugar_touch($filename);
+		SpiceFileUtils::spiceTouch($filename);
 	}
 
 	if ( !is_writable($filename) ) {
@@ -217,7 +219,7 @@ function sugar_file_put_contents_atomic($filename, $data, $mode='wb', $use_inclu
 
     if(file_exists($filename))
     {
-       return sugar_chmod($filename, 0655);
+       return SpiceFileUtils::spiceChmod($filename, 0655);
     }
 
     return false;
@@ -237,7 +239,7 @@ function sugar_file_put_contents_atomic($filename, $data, $mode='wb', $use_inclu
 function sugar_file_get_contents($filename, $use_include_path=false, $context=null){
 	//check to see if the file exists, if not then use touch to create it.
 	if(!file_exists($filename)){
-		sugar_touch($filename);
+		SpiceFileUtils::spiceTouch($filename);
 	}
 
 	if ( !is_readable($filename) ) {
@@ -284,13 +286,13 @@ function sugar_touch($filename, $time=null, $atime=null) {
        return $result;
    }
 	if(!empty(SpiceConfig::getInstance()->config['default_permissions']['file_mode'])){
-		sugar_chmod($filename, SpiceConfig::getInstance()->config['default_permissions']['file_mode']);
+		SpiceFileUtils::spiceChmod($filename, SpiceConfig::getInstance()->config['default_permissions']['file_mode']);
 	}
 	if(!empty(SpiceConfig::getInstance()->config['default_permissions']['user'])){
-		sugar_chown($filename);
+		SpiceFileUtils::spiceChown($filename);
 	}
 	if(!empty(SpiceConfig::getInstance()->config['default_permissions']['group'])){
-		sugar_chgrp($filename);
+		SpiceFileUtils::spiceChgrp($filename);
 	}
 
    return true;
@@ -309,9 +311,9 @@ function sugar_touch($filename, $time=null, $atime=null) {
 function sugar_chmod($filename, $mode=null) {
     if ( !is_int($mode) )
         $mode = (int) $mode;
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		if(!isset($mode)){
-			$mode = get_mode('file_mode', $mode);
+			$mode = SpiceFileUtils::getMode('file_mode', $mode);
 		}
         if(isset($mode) && $mode > 0){
 		   return @chmod($filename, $mode);
@@ -333,7 +335,7 @@ function sugar_chmod($filename, $mode=null) {
  * @return boolean - Returns TRUE on success or FALSE on failure.
  */
 function sugar_chown($filename, $user='') {
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		if(strlen($user)){
 			return chown($filename, $user);
 		}else{
@@ -359,7 +361,7 @@ function sugar_chown($filename, $user='') {
  * @return boolean - Returns TRUE on success or FALSE on failure.
  */
 function sugar_chgrp($filename, $group='') {
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		if(!empty($group)){
 			return chgrp($filename, $group);
 		}else{
@@ -389,7 +391,7 @@ function get_mode($key = 'dir_mode', $mode=null) {
 	if ( !is_int($mode) )
         $mode = (int) $mode;
 
-	if(!is_windows()){
+	if (!SpiceUtils::isWindows()) {
 		$conf_inst= SpiceConfig::getInstance();
 		$mode = $conf_inst->get('default_permissions.'.$key, $mode);
 	}

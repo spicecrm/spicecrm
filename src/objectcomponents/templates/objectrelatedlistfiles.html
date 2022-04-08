@@ -1,37 +1,26 @@
-<!--
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
--->
-
 <div class="slds-card slds-card_boundary slds-m-bottom--medium" (system-drop-file)="fileDrop($event)">
     <div class="slds-card__header slds-grid">
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <system-icon [icon]="'file'" [size]="'small'"></system-icon>
             <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
                 <h2>
-                    <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small"><system-label label="LBL_FILES"></system-label> ({{modelattachments.files.length}})</span>
+                    <a *ngIf="!componentconfig.alwaysExpanded" href="javascript:void(0);" class="slds-text-link--reset">
+                        <span class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{modelattachments.files.length}})</span>
                     </a>
+                    <span *ngIf="componentconfig.alwaysExpanded" class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{modelattachments.files.length}})</span>
                 </h2>
-                <system-utility-icon *ngIf="modelattachments.files.length > 0" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
+                <system-utility-icon *ngIf="modelattachments.files.length > 0 && !componentconfig.alwaysExpanded" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
             <button class="slds-button slds-button--icon-border slds-m-right--xx-small" (click)="toggleBigThumbnail()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
                 <system-utility-icon size="x-small" [icon]="componentconfig?.bigThumbnail ? 'file' : 'ad_set'"></system-utility-icon>
             </button>
-            <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="!componentconfig.disableFilter" class="slds-form-element slds-grid slds-grid--vertical-align-center">
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
                     <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
                     <input type="text" class="slds-input" [ngModel]="filterTerm" (ngModelChange)="setFilteredFiles('input', $event)">
                 </div>
             </div>
-            <div class="slds-form-element slds-p-horizontal--x-small slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="!componentconfig.disableCategories" class="slds-form-element slds-p-horizontal--x-small slds-grid slds-grid--vertical-align-center">
                 <div system-title="LBL_CATEGORIES" class="slds-m-horizontal--xx-small">
                     <system-utility-icon icon="tile_card_list" size="x-small"></system-utility-icon>
                 </div>
@@ -48,7 +37,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             </div>
         </header>
         <div class="slds-no-flex slds-button-group" role="group">
-            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--icon-border slds-m-vertical--xx-small" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
+            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--icon-border x-slds-m-vertical--xx-small" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
         </div>
         <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
     </div>

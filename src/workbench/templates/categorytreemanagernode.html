@@ -1,0 +1,71 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_TREE_NODE"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-grid--vertical">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" >
+                    <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+                <div class="slds-form-element__control">
+                    <system-input-label [(ngModel)]="node.node_name"></system-input-label>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-4 slds-p-right--xx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_KEY"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" required="" [(ngModel)]="node.node_key" class="slds-input" />
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-4 slds-p-left--xx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_STATUS"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="node.node_status">
+                            <option value="c"><system-label label="LBL_STATUS_CREATED"></system-label></option>
+                            <option value="a"><system-label label="LBL_STATUS_ACTIVE"></system-label></option>
+                            <option value="i"><system-label label="LBL_STATUS_INACTIVE"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-4 slds-p-left--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_SELECTABLE"></system-label></label>
+                    <div class="slds-form-element__control slds-p-vertical--xx-small">
+                        <system-checkbox [(ngModel)]="node.selectable"></system-checkbox>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-4">
+                    <label class="slds-form-element__label"><system-label label="LBL_FAVORITE"></system-label></label>
+                    <div class="slds-form-element__control slds-p-vertical--xx-small">
+                        <system-checkbox [(ngModel)]="node.favorite"></system-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_VALID_FROM"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-input-date [(ngModel)]="node.valid_from"></system-input-date>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_VALID_TO"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-input-date [(ngModel)]="node.valid_to"></system-input-date>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
+                <div class="slds-form-element__control">
+                    <textarea  class="slds-textarea" [(ngModel)]="node.node_description"></textarea>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="addParamsComponent">
+            <system-dynamic-component [component]="addParamsComponent" [componentattributes]="{addParams: addParams}"></system-dynamic-component>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button_neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button_brand" [disabled]="!canSave" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleEmails
  */
@@ -35,7 +23,7 @@ declare var _;
  */
 @Component({
     selector: 'email-templates-editor',
-    templateUrl: "./src/modules/emails/templates/emailtemplateseditor.html",
+    templateUrl: "../templates/emailtemplateseditor.html",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
@@ -46,11 +34,11 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**
      * the currently selected tab
      */
-    private selectedTab: 'editor' | 'preview' = 'editor';
+    public selectedTab: 'editor' | 'preview' = 'editor';
     /**
      * holds the fields names to be used from the component config
      */
-    private fieldsNames: {
+    public fieldsNames: {
         /** holds the body html field name */
         bodyHtmlField?: string,
         /** holds the body spice page builder field name */
@@ -66,22 +54,22 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**
      * holds the active editor
      */
-    private activeEditor: 'richText' | 'pageBuilder';
+    public activeEditor: 'richText' | 'pageBuilder';
     /**
      * holds the iframe height from parent
      * @private
      */
-    private iframeHeight: number = 250;
+    public iframeHeight: number = 250;
     /**
      * holds the component config load from parent
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private model: model,
-                private cdRef: ChangeDetectorRef,
-                private modal: modal,
-                private injector: Injector,
-                private view: view) {
+    constructor(public model: model,
+                public cdRef: ChangeDetectorRef,
+                public modal: modal,
+                public injector: Injector,
+                public view: view) {
     }
 
     /**
@@ -95,7 +83,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set active editor and subscribe to model data changes
      */
     public ngAfterViewInit() {
-        this.setActiveEditor(this.model.data[this.fieldsNames.bodyHtmlField], this.model.data[this.fieldsNames.bodySPBField]);
+        this.setActiveEditor(this.model.getField(this.fieldsNames.bodyHtmlField), this.model.getField(this.fieldsNames.bodySPBField));
         this.subscribeToModelChanges();
     }
 
@@ -127,7 +115,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set the iframe initial height
      * @private
      */
-    private setIframeHeight() {
+    public setIframeHeight() {
         const height = parseInt(this.componentconfig.previewInitialHeight, 10);
         if (!height || isNaN(height)) return;
         this.iframeHeight = height;
@@ -137,7 +125,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set the body fields name
      * @private
      */
-    private setBodyFieldsName() {
+    public setBodyFieldsName() {
         if (!!this.componentconfig.bodyHtmlField) this.fieldsNames.bodyHtmlField = this.componentconfig.bodyHtmlField;
         if (!!this.componentconfig.bodySPBField) this.fieldsNames.bodySPBField = this.componentconfig.bodySPBField;
         if (!!this.componentconfig.subjectField) this.fieldsNames.subjectField = this.componentconfig.subjectField;
@@ -149,7 +137,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * subscribe to model data changes
      * @private
      */
-    private subscribeToModelChanges() {
+    public subscribeToModelChanges() {
         this.subscription.add(
             this.model.data$.subscribe(data =>
                 this.setActiveEditor(data[this.fieldsNames.bodyHtmlField], data[this.fieldsNames.bodySPBField])
@@ -165,9 +153,9 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * @param bodySPB
      * @private
      */
-    private setActiveEditor(body: string, bodySPB: string) {
+    public setActiveEditor(body: string, bodySPB: string) {
         this.activeEditor = !body ? undefined : (!bodySPB || _.isEmpty(bodySPB)) ? 'richText' : 'pageBuilder';
-        this.model.data.via_spb = this.activeEditor == 'pageBuilder';
+        this.model.data.via_spb =  this.activeEditor == 'pageBuilder';
         this.cdRef.detectChanges();
     }
 
@@ -176,15 +164,15 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * @param value
      * @private
      */
-    private setSelectedTab(value: 'editor' | 'preview') {
-        if (value == 'preview' && !this.model.data[this.fieldsNames.bodyHtmlField]) return;
+    public setSelectedTab(value: 'editor' | 'preview') {
+        if (value == 'preview' && !this.model.getField(this.fieldsNames.bodyHtmlField)) return;
         this.selectedTab = value;
     }
 
     /**
      * open lookup modal to select an email template to be copied to the body
      */
-    private copyFromTemplate() {
+    public copyFromTemplate() {
         this.modal.openModal('ObjectModalModuleLookup', true, this.injector)
             .subscribe(selectModal => {
                 selectModal.instance.module = 'EmailTemplates';

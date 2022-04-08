@@ -41,6 +41,7 @@ use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 
 class Opportunity extends SugarBean
@@ -150,7 +151,7 @@ class Opportunity extends SugarBean
             $oppStage = BeanFactory::getBean('OpportunityStages');
             if ($oppStage) {
                 if (empty($this->id)) {
-                    $this->id = create_guid();
+                    $this->id = SpiceUtils::createGuid();
                     $this->new_with_id = true;
                 }
 

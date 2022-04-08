@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -127,7 +115,9 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
+import /*embed*/ {ObjectTabContainer} from './components/objecttabcontainer';
+import /*embed*/ {ObjectTabContainerItem} from './components/objecttabcontaineritem';
+import /*embed*/ {ObjectTabContainerItemHeader} from './components/objecttabcontaineritemheader';
 import /*embed*/ {ObjectVerticalTabContainer} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverticaltabcontaineritem';
 import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
@@ -214,6 +204,8 @@ import /*embed*/ {ObjectTimelineAuditlogModal} from "./components/objecttimeline
 import /*embed*/ {ObjectTimelineAuditDetail} from "./components/objecttimelineauditdetail";
 import /*embed*/ {ObjectTimelineItemLine} from "./components/objecttimelineitemline";
 import /*embed*/ {ObjectTimelineStencil} from "./components/objecttimelinestencil";
+import /*embed*/ {ObjectPopoverBodyItem} from "./components/objectpopoverbodyitem";
+import {ObjectPopoverHeader} from "./components/objectpopoverheader";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -392,7 +384,9 @@ import /*embed*/ {ObjectTimelineStencil} from "./components/objecttimelinestenci
         ObjectRecordMessagesBadge,
         ObjectActionDeactivateBeansButton,
         ObjectActionDeactivateBeansModal,
-        ObjectChecklists
+        ObjectChecklists,
+        ObjectPopoverBodyItem,
+        ObjectPopoverHeader
     ],
     exports: [
         ObjectListViewHeader,

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReportsDesigner
  */
@@ -22,18 +10,18 @@ declare var _;
 
 @Component({
     selector: 'reports-designer-filter',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerfilter.html'
+    templateUrl: '../templates/reportsdesignerfilter.html'
 })
 export class ReportsDesignerFilter implements OnChanges, OnDestroy {
 
     /**
     * @input module: {module: string, unionid: string}
     */
-    @Input() private module: any = {};
-    private rootGroup: any = {};
-    private subscription: Subscription = new Subscription();
+    @Input() public module: any = {};
+    public rootGroup: any = {};
+    public subscription: Subscription = new Subscription();
 
-    constructor(private reportsDesignerService: ReportsDesignerService, private model: model) {
+    constructor(public reportsDesignerService: ReportsDesignerService, public model: model) {
     }
 
     /**
@@ -86,7 +74,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
      * @param id: string = guid
      * @return group: object
      */
-    protected generateGroup(parent = '-', id = this.reportsDesignerService.generateGuid()) {
+    public generateGroup(parent = '-', id = this.reportsDesignerService.generateGuid()) {
         return {
             id: id,
             groupid: id,
@@ -105,7 +93,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
      * @buildTree
      * @set whereGroups
      */
-    private loadWhereGroups() {
+    public loadWhereGroups() {
         this.rootGroup = {};
 
         const existingRootGroup = this.whereGroups && this.whereGroups.length && this.whereGroups
@@ -128,7 +116,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
      * @cleanGroup
      * @buildTree
      */
-    private handleTreeChange(obj) {
+    public handleTreeChange(obj) {
         switch (obj.action) {
             case 'deleteGroup':
                 this.whereGroups = this.whereGroups.filter(group => group.id != obj.id);
@@ -141,7 +129,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         }
     }
 
-    private buildTree() {
+    public buildTree() {
         this.rootGroup.children = [];
         this.addGroupChildren(this.rootGroup);
     }
@@ -150,7 +138,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @param group
      * @set group.conditions from whereConditions
      */
-    private setGroupConditions(group) {
+    public setGroupConditions(group) {
         group.conditions = this.whereConditions ? this.whereConditions
             .filter(condition => condition.groupid == group.id) : [];
     }
@@ -161,7 +149,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @push group Item to parent.children array
     * @call self and pass the group as parent
     */
-    private addGroupChildren(parent) {
+    public addGroupChildren(parent) {
         for (let group of this.whereGroups) {
             if (group.parent == parent.id) {
                 let newGroup = {...group};
@@ -177,7 +165,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @markDeletedGroupChildren
     * @filter whereGroups from deleted
     */
-    private cleanGroup(parentId) {
+    public cleanGroup(parentId) {
         this.markDeletedGroupChildren(parentId);
         this.whereGroups = this.whereGroups.filter(group => !group.deleted);
         this.cleanWhereConditions();
@@ -189,7 +177,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     * @call markDeletedGroupChildren
     * @set group.deleted = true
     */
-    private markDeletedGroupChildren(parentId) {
+    public markDeletedGroupChildren(parentId) {
         for (let group of this.whereGroups) {
             if (group.parent == parentId) {
                 this.markDeletedGroupChildren(group.id);
@@ -201,7 +189,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     /**
     * @filter whereConditions by condition.groupid
      */
-    private cleanWhereConditions() {
+    public cleanWhereConditions() {
         if (!this.whereConditions) return;
         this.whereConditions = this.whereConditions
             .filter(condition => this.whereGroups.some(group => group.id == condition.groupid));

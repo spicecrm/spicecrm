@@ -1,0 +1,81 @@
+<field-label *ngIf="addressType == 'cc' || addressType == 'bcc'" [fieldconfig]="{label: 'LBL_' + addressType.toUpperCase()}"></field-label>
+<div class="slds-grid slds-grid--vertical-align-center">
+    <div class="slds-combobox_container slds-grow">
+        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox" [class.slds-is-open]="isDropdownVisible">
+            <div class="slds-combobox__form-element" role="none">
+                <div class="slds-pill_container" (click)="onFieldClick()">
+                    <ul cdkDropList [cdkDropListData]="addressType" (cdkDropListDropped)="drop$.emit($event)" cdkDropListOrientation="horizontal" class="slds-listbox slds-listbox_horizontal slds-size--1-of-1" role="listbox">
+                        <li *ngFor="let addr of displayValue" cdkDrag [cdkDragData]="addr" [cdkDragBoundary]="parent.elementRef" (cdkDragStarted)="parent.dragging = true" (cdkDragEnded)="parent.dragging = false" class="slds-listbox-item slds-drag--preview" role="presentation" style="cursor: grab; list-style: none;">
+                                  <span class="slds-pill" role="option">
+                                        <span *ngIf="!!addr.parent_id && !!addr.parent_type" class="slds-icon_container">
+                                            <system-icon [module]="addr.parent_type" size="x-small" divClass="slds-p-right--x-small"></system-icon>
+                                        </span>
+                                        <span class="slds-pill__label">
+                                            {{addr.email_address}}
+                                        </span>
+                                        <span class="slds-icon_container slds-pill__remove" style="cursor: pointer">
+                                          <system-button-icon [icon]="'close'" (click)="removeEmailAddress($event, addr.id)"></system-button-icon>
+                                        </span>
+                                  </span>
+                        </li>
+                        <li *ngIf="!parent.dragging" class="slds-listbox-item slds-grow" role="presentation">
+                            <div class="slds-form-element__control slds-input-has-icon--right slds-input-has-icon_group-right slds-grow">
+                                <div class="slds-input__icon-group slds-input__icon-group_right slds-m-right--xx-small">
+                                    <ng-content></ng-content>
+                                </div>
+                                <input type="text" [attr.system-autofocus]="addressType == 'to'" [(ngModel)]="inputTextValue" (blur)="onBlur()" (keyup)="onKeyUp($event)" (keydown.,)="$event.preventDefault()"
+                                       autocomplete="new-email-address" system-title="LBL_ADD_EMAILADDRESS" system-placeholder="LBL_ADD_EMAILADDRESS"
+                                       class="slds-p-horizontal--x-small slds-size--1-of-1">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                <div *ngIf="!searchAllowed; else searchContainer">
+
+                    <div *ngIf="isValidEmailAddress; else invalidEmailAddressContainer" (click)="addEmailAddressFromInput(); hideDropdown()"
+                         class="slds-size--1-of-1 slds-grid slds-grid--vertical-align-center slds-p-around--x-small" style="cursor:pointer;">
+                        <system-label label="LBL_USE" style="display: block"></system-label>
+                        <div class="slds-truncate slds-grow slds-m-left--xx-small" [title]="inputTextValue" style="font-family: sans-serif; font-weight: bold">
+                            {{inputTextValue}}
+                        </div>
+                    </div>
+                    <ng-template #invalidEmailAddressContainer>
+                        <div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+                            <system-utility-icon icon="warning" size="x-small" colorclass="slds-icon-text-warning" class="slds-m-right--xx-small"
+                                                 style="display: block"></system-utility-icon>
+                            <div class="slds-grow slds-grid slds-grid--vertical-align-center slds-truncate" [title]="inputTextValue">
+                                <system-label label="LBL_INPUT_INVALID" style="display: block; white-space: nowrap;"></system-label>
+                                <div class="slds-truncate slds-grow slds-m-left--xx-small" style="font-style: italic">
+                                    "{{inputTextValue}}"
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+                <ng-template #searchContainer>
+                    <system-spinner *ngIf="searchResultsLoading" size="12" class="slds-grid slds-p-around--small"></system-spinner>
+                    <ul *ngIf="searchResults?.length > 0" class="slds-listbox slds-listbox_vertical" role="presentation">
+                        <li role="presentation" class="slds-listbox__item" *ngFor="let searchResult of searchResults" (click)="selectEmailAddress(searchResult)">
+                            <div class="slds-listbox__option slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+                                <system-icon class="slds-p-right--x-small" [module]="searchResult.module" size="x-small"></system-icon>
+                                <div class="slds-media__body">
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        {{searchResult.email_address}} • {{searchResult.summary_text}}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div *ngIf="searchResults?.length == 0 && !searchResultsLoading" class="slds-p-around--x-small">
+                        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <button *ngIf="hasParent" system-title="LBL_SELECT_PARENT_EMAIL" class="slds-button--icon slds-button--icon-border-filled slds-m-left--xx-small" (click)="searchParentEmailAddresses()">
+        <system-button-icon icon="record_lookup"></system-button-icon>
+    </button>
+</div>

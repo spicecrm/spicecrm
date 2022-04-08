@@ -5,6 +5,10 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SecurityUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 if (!defined('sugarEntry')) define('sugarEntry', true);
@@ -138,10 +142,8 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
             return;
         } // if
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
 
-        $temp = new $class_name();
+        $temp = BeanFactory::getBean($module_name);
         foreach ($ids as $id) {
             $seed = @clone($temp);
             if ($using_cp)
@@ -201,9 +203,8 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
             LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entry');
             return;
         } // if
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $seed = new $class_name();
+
+        $seed = BeanFactory::getBean($module_name);
         foreach ($name_value_list as $name => $value) {
             if (is_array($value) && $value['name'] == 'id') {
                 $seed->retrieve($value['value']);
@@ -273,7 +274,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
     public function login($user_auth, $application = '', $name_value_list = [])
     {
         LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->login');
-        global $system_config;
+//        global $system_config;
         $error = new SoapError();
 
         try {
@@ -286,15 +287,15 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
             return;
         }
 
-        $system_config = BeanFactory::getBean('Administration');
-        $system_config->retrieveSettings('system');
+//        $system_config = BeanFactory::getBean('Administration');
+//        $system_config->retrieveSettings('system');
 
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         //$current_user = $user;
         self::$helperObject->login_success($name_value_list);
         $current_user->loadPreferences();
         $_SESSION['is_valid_session'] = true;
-        $_SESSION['ip_address'] = query_client_ip();
+        $_SESSION['ip_address'] = SecurityUtils::queryClientIp();
         $_SESSION['user_id'] = $current_user->id;
         $_SESSION['type'] = 'user';
         $_SESSION['avail_modules'] = self::$helperObject->get_user_module_list($current_user);
@@ -309,7 +310,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
         $nameValueArray['user_language'] = self::$helperObject->get_name_value('user_language', $current_language);
         $cur_id = $current_user->getPreference('currency');
         $nameValueArray['user_currency_id'] = self::$helperObject->get_name_value('user_currency_id', $cur_id);
-        $nameValueArray['user_is_admin'] = self::$helperObject->get_name_value('user_is_admin', is_admin($current_user));
+        $nameValueArray['user_is_admin'] = self::$helperObject->get_name_value('user_is_admin', SpiceUtils::isAdmin($current_user));
         $nameValueArray['user_default_team_id'] = self::$helperObject->get_name_value('user_default_team_id', $current_user->default_team);
         $nameValueArray['user_default_dateformat'] = self::$helperObject->get_name_value('user_default_dateformat', $current_user->getPreference('datef'));
         $nameValueArray['user_default_timeformat'] = self::$helperObject->get_name_value('user_default_timeformat', $current_user->getPreference('timef'));
@@ -343,14 +344,8 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
 
     	$modules = [];
         $availModules = array_keys($_SESSION['avail_modules']); //ACL check already performed.
-        switch ($filter) {
-            case 'default':
-                $modules = self::$helperObject->get_visible_modules($availModules);
-                break;
-            case 'all':
-            default:
-                $modules = self::$helperObject->getModulesFromList(array_flip($availModules), $availModules);
-        }
+        $modules = self::$helperObject->getModulesFromList(array_flip($availModules), $availModules);
+
 
         LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_available_modules');
     	return ['modules'=> $modules];
@@ -384,10 +379,10 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
         $results = [];
         foreach ($modules as $mod) {
             if (strtolower($mod) == 'app_strings') {
-                $values = return_application_language($current_language);
+                $values = SpiceUtils::returnApplicationLanguage($current_language);
                 $key = 'app_strings';
             } else if (strtolower($mod) == 'app_list_strings') {
-                $values = return_app_list_strings_language($current_language);
+                $values = SpiceUtils::returnAppListStringsLanguage($current_language);
                 $key = 'app_list_strings';
             } else {
                 $values = return_module_language($current_language, $mod);
@@ -449,9 +444,8 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
             SpiceConfig::getInstance()->config['list_max_entries_per_page'] = $max_results;
         } // if
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $seed = new $class_name();
+
+        $seed = BeanFactory::getBean($module_name);
 
         if (!self::$helperObject->checkACLAccess($seed, 'Export', $error, 'no_access')) {
             LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entry_list');
@@ -552,7 +546,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
         require_once('include/utils/UnifiedSearchAdvanced.php');
         require_once 'include/utils.php';
         $usa = new UnifiedSearchAdvanced();
-        if (!file_exists($cachedfile = sugar_cached('modules/unified_search_modules.php'))) {
+        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
             $usa->buildCache();
         }
 
@@ -581,7 +575,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
         LoggerManager::getLogger()->info('SugarWebServiceImpl->search_by_module - search string = ' . $search_string);
 
         if (!empty($search_string) && isset($search_string)) {
-            $search_string = trim(DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($search_string, 'UNIFIED_SEARCH')))));
+            $search_string = trim(DBManagerFactory::getInstance()->quote(SpiceUtils::securexss(DBUtils::fromHtml(SpiceUtils::cleanString($search_string, 'UNIFIED_SEARCH')))));
             foreach ($modules_to_search as $name => $beanName) {
         		$where_clauses_array = [];
     			$unifiedSearchFields = [];

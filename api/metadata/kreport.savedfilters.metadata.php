@@ -11,8 +11,9 @@
  *
  * You can contact us at info@kreporter.org
  * ****************************************************************************** */
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-$dictionary['KReportSavedFilter'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['KReportSavedFilter'] = [
     'table' => 'kreportsavedfilters',
     'fields' => [
         'id' => [
@@ -164,4 +165,3 @@ $dictionary['KReportSavedFilter'] = [
         ['name' => 'idx_kreport_id_del', 'type' => 'index', 'fields' => ['kreport_id', 'deleted']],
     ],
 ];
-

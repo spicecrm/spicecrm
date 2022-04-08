@@ -6,6 +6,10 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SecurityUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 if (!defined('sugarEntry')) define('sugarEntry', true);
@@ -114,10 +118,8 @@ class SugarWebServiceImpl
             return;
         }
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
 
-        $temp = new $class_name();
+        $temp = BeanFactory::getBean($module_name);
         foreach ($ids as $id) {
             $seed = @clone($temp);
             if ($using_cp) {
@@ -189,9 +191,7 @@ class SugarWebServiceImpl
             SpiceConfig::getInstance()->config['list_max_entries_per_page'] = $max_results;
         } // if
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $seed = new $class_name();
+        $seed = BeanFactory::getBean($module_name);
 
         if (!self::$helperObject->checkQuery($error, $query, $order_by)) {
             LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entry_list');
@@ -382,9 +382,8 @@ class SugarWebServiceImpl
             return;
         } // if
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $mod = new $class_name();
+
+        $mod = BeanFactory::getBean($module_name);
         $mod->retrieve($module_id);
 
         if (!self::$helperObject->checkQuery($error, $related_module_query)) {
@@ -463,9 +462,8 @@ class SugarWebServiceImpl
             LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entry');
             return;
         } // if
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $seed = new $class_name();
+
+        $seed = BeanFactory::getBean($module_name);
         foreach ($name_value_list as $name => $value) {
             if (is_array($value) && $value['name'] == 'id') {
                 $seed->retrieve($value['value']);
@@ -545,10 +543,10 @@ class SugarWebServiceImpl
     public function login($user_auth, $application = '', $name_value_list = [])
     {
         LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->login');
-        global $system_config;
+//        global $system_config;
 
-        $system_config = BeanFactory::getBean('Administration');
-        $system_config->retrieveSettings('system');
+//        $system_config = BeanFactory::getBean('Administration');
+//        $system_config->retrieveSettings('system');
         try {
             AuthenticationController::getInstance()->authenticate($user_auth['user_name'], $user_auth['password']);
         } catch (\SpiceCRM\includes\ErrorHandlers\UnauthorizedException $e) {
@@ -564,7 +562,7 @@ class SugarWebServiceImpl
         self::$helperObject->login_success($name_value_list);
         $current_user->loadPreferences();
         $_SESSION['is_valid_session'] = true;
-        $_SESSION['ip_address'] = query_client_ip();
+        $_SESSION['ip_address'] = SecurityUtils::queryClientIp();
         $_SESSION['user_id'] = $current_user->id;
         $_SESSION['type'] = 'user';
         $_SESSION['avail_modules'] = self::$helperObject->get_user_module_list($current_user);
@@ -601,14 +599,14 @@ class SugarWebServiceImpl
         $error = new SoapError();
         $logicHook = LogicHook::getInstance();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
-            $logicHook->call_custom_logic('Users', 'after_logout');
+            if($current_user) $logicHook->call_custom_logic('Users', $current_user,'after_logout');
             LoggerManager::getLogger()->info('End: SugarWebServiceImpl->logout');
             return;
         } // if
 
-        $current_user->call_custom_logic('before_logout');
+        if($current_user) $current_user->call_custom_logic('before_logout');
         session_destroy();
-        $logicHook->call_custom_logic('Users', 'after_logout');
+        if($current_user)  $logicHook->call_custom_logic('Users', $current_user, 'after_logout');
         LoggerManager::getLogger()->info('End: SugarWebServiceImpl->logout');
     } // fn
 
@@ -623,16 +621,7 @@ class SugarWebServiceImpl
     {
         LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_server_info');
         require_once('sugar_version.php');
-        require_once('modules/Administration/Administration.php');
-
-        $admin = BeanFactory::getBean('Administration');
-        $admin->retrieveSettings('info');
-        $sugar_version = '';
-        if (isset($admin->settings['info_sugar_version'])) {
-            $sugar_version = $admin->settings['info_sugar_version'];
-        } else {
-            $sugar_version = '1.0';
-        }
+        global $sugar_version;
 
         LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_server_info');
 	return ['flavor' => 'Spice', 'version' => $sugar_version, 'gmt_time' => TimeDate::getInstance()->nowDb()];
@@ -679,9 +668,8 @@ class SugarWebServiceImpl
             return;
         } // if
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $seed = new $class_name();
+
+        $seed = BeanFactory::getBean($module_name);
         if ($seed->ACLAccess('ListView', true) || $seed->ACLAccess('DetailView', true) || $seed->ACLAccess('EditView', true)) {
             $return = self::$helperObject->get_return_module_fields($seed, $module_name, $fields);
             LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_module_fields SUCCESS for ' . $module_name);
@@ -709,86 +697,6 @@ class SugarWebServiceImpl
         LoggerManager::getLogger()->info('End: SugarWebServiceImpl->seamless_login');
         return 1;
     }
-
-    /**
-     * Add or replace the attachment on a Note.
-     * Optionally you can set the relationship of this note to Accounts/Contacts and so on by setting related_module_id, related_module_name
-     *
-     * @param String $session -- Session ID returned by a previous call to login.
-     * @param Array 'note' -- Array String 'id' -- The ID of the Note containing the attachment
-     *                              String 'filename' -- The file name of the attachment
-     *                              Binary 'file' -- The binary contents of the file.
-     *                                String 'related_module_id' -- module id to which this note to related to
-     *                                String 'related_module_name' - module name to which this note to related to
-     *
-     * @return Array 'id' -- String - The ID of the Note
-     * @exception 'SoapFault' -- The SOAP error, if any
-     */
-    function set_note_attachment($session, $note)
-    {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->set_note_attachment');
-        $error = new SoapError();
-        $module_name = '';
-        $module_access = '';
-        $module_id = '';
-        if (!empty($note['related_module_id']) && !empty($note['related_module_name'])) {
-            $module_name = $note['related_module_name'];
-            $module_id = $note['related_module_id'];
-            $module_access = 'read';
-        }
-        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, $module_access, 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_note_attachment');
-            return;
-        } // if
-
-        require_once('modules/Notes/NoteSoap.php');
-        $ns = new NoteSoap();
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_note_attachment');
-	return ['id'=>$ns->newSaveFile($note)];
-    } // fn
-
-    /**
-     * Retrieve an attachment from a note
-     * @param String $session -- Session ID returned by a previous call to login.
-     * @param String $id -- The ID of the appropriate Note.
-     * @return Array 'note_attachment' -- Array String 'id' -- The ID of the Note containing the attachment
-     *                                          String 'filename' -- The file name of the attachment
-     *                                          Binary 'file' -- The binary contents of the file.
-     *                                            String 'related_module_id' -- module id to which this note is related
-     *                                            String 'related_module_name' - module name to which this note is related
-     * @exception 'SoapFault' -- The SOAP error, if any
-     */
-    function get_note_attachment($session, $id)
-    {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_note_attachment');
-        $error = new SoapError();
-        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_note_attachment');
-            return;
-        } // if
-        require_once('modules/Notes/Note.php');
-        $note = new Note();
-
-        $note->retrieve($id);
-        if (!self::$helperObject->checkACLAccess($note, 'DetailView', $error, 'no_access')) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_note_attachment');
-            return;
-        } // if
-
-        require_once('modules/Notes/NoteSoap.php');
-        $ns = new NoteSoap();
-        if (!isset($note->filename)) {
-            $note->filename = '';
-        }
-        $file = $ns->retrieveFile($id, $note->filename);
-        if ($file == -1) {
-            $file = '';
-        }
-
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_note_attachment');
-	return ['note_attachment'=> ['id'=>$id, 'filename'=>$note->filename, 'file'=>$file, 'related_module_id' => $note->parent_id, 'related_module_name' => $note->parent_type]];
-
-    } // fn
 
     /**
      * sets a new revision for this document
@@ -847,7 +755,7 @@ class SugarWebServiceImpl
         if (!empty($dr->filename)) {
             $filename = "upload://{$dr->id}";
             if (filesize($filename) > 0) {
-                $contents = sugar_file_get_contents($filename);
+                $contents = SpiceFileUtils::spiceFileGetContents($filename);
             } else {
                 $contents = '';
             }
@@ -895,7 +803,7 @@ class SugarWebServiceImpl
         require_once('include/utils/UnifiedSearchAdvanced.php');
         require_once 'include/utils.php';
         $usa = new UnifiedSearchAdvanced();
-        if (!file_exists($cachedfile = sugar_cached('modules/unified_search_modules.php'))) {
+        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
             $usa->buildCache();
         }
 
@@ -912,7 +820,7 @@ class SugarWebServiceImpl
         LoggerManager::getLogger()->info('SugarWebServiceImpl->search_by_module - search string = ' . $search_string);
 
         if (!empty($search_string) && isset($search_string)) {
-            $search_string = trim(DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($search_string, 'UNIFIED_SEARCH')))));
+            $search_string = trim(DBManagerFactory::getInstance()->quote(SpiceUtils::securexss(DBUtils::fromHtml(SpiceUtils::cleanString($search_string, 'UNIFIED_SEARCH')))));
             foreach ($modules_to_search as $name => $beanName) {
     		$where_clauses_array = [];
 			$unifiedSearchFields = [];
@@ -1100,9 +1008,8 @@ LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
         global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $seed = new $class_name();
+
+        $seed = BeanFactory::getBean($module_name);
 
         if (!self::$helperObject->checkQuery($error, $query)) {
             LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entries_count');

@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
@@ -36,6 +10,10 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
+
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class ElasticHandler
 {
@@ -250,8 +228,27 @@ class ElasticHandler
      */
     function getStats()
     {
+        $db = DBManagerFactory::getInstance();
         $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
         $response['_prefix'] = $this->indexPrefix;
+
+        // Determine the db table names
+        $dbTables = [];
+        foreach ( SpiceModules::getInstance()->modules as $moduleName => $v ) {
+            $dbTables[strtolower($moduleName)] = BeanFactory::getBean($moduleName)->table_name;
+        }
+
+        // get the indexing stats
+        foreach($response['indices'] as $index => $data){
+            $table = $dbTables[str_replace($response['_prefix'], '', $index)];
+            $count = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE deleted = 0");
+            $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE ((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1)");
+            $response['indexed'][$index] = [
+                'count' => $count['totalcount'],
+                'unindexed' => $unindexed['totalcount'],
+            ];
+        }
+
         return $response;
     }
 
@@ -359,17 +356,12 @@ class ElasticHandler
 
     function searchModule($module, $queryParam, $size = 25, $from = 0)
     {
-
-        $db = DBManagerFactory::getInstance();
-
         $response = json_decode($this->query('POST', $this->indexPrefix . strtolower($module) . '/_search', [], $queryParam), true);
         return $response;
     }
 
     function searchModules($modules, $queryParam, $size = 25, $from = 0)
     {
-        $db = DBManagerFactory::getInstance();
-
         $modString = '';
         foreach ($modules as $module) {
             if ($modString !== '') $modString .= ',';
@@ -603,6 +595,6 @@ class ElasticHandler
         //catch installation process and abort. table sysftslog will not exist at the point during installation
         if (!empty($GLOBALS['installing']))
             return false;
-        $db->query(sprintf("INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( '%s', '" . TimeDate::getInstance()->nowDb() . "', '%s', '%s', '%s', '%s', '%s')", create_guid(), $db->quote($method), $db->quote($url), $db->quote($status), $db->quote(str_replace("\\n", "", $request)), $db->quote($response)));
+        $db->query(sprintf("INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( '%s', '" . TimeDate::getInstance()->nowDb() . "', '%s', '%s', '%s', '%s', '%s')", SpiceUtils::createGuid(), $db->quote($method), $db->quote($url), $db->quote($status), $db->quote(str_replace("\\n", "", $request)), $db->quote($response)));
     }
 }

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -32,27 +20,27 @@ import {modal} from '../../services/modal.service';
  * per componentconfig also all fields can be enabled or a specific fieldset
  */
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsexportcsvselectfields.html',
+    templateUrl: '../templates/objectlistheaderactionsexportcsvselectfields.html',
 })
 export class ObjectListHeaderActionsExportCSVSelectFields {
 
     /**
      * reference to the modal itself
      */
-    private self: any;
+    public self: any;
 
-    private multiselect: boolean = true;
-    private selectedAvailableFields: any[] = [];
-    private selectedListFields: any[] = [];
-    private availableFields: any[] = [];
-    private exportFields: any[] = [];
+    public multiselect: boolean = true;
+    public selectedAvailableFields: any[] = [];
+    public selectedListFields: any[] = [];
+    public availableFields: any[] = [];
+    public exportFields: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modellist: modellist,
-        private modal: modal
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modellist: modellist,
+        public modal: modal
     ) {
 
         // get the current last fields
@@ -93,7 +81,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
      *
      * @param field the fieldmetadata
      */
-    private isExportable(field) {
+    public isExportable(field) {
         return field.type != 'link';
     }
 
@@ -102,7 +90,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
      *
      * @param event
      */
-    private onFieldDrop(event) {
+    public onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }
@@ -110,7 +98,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
     /*
      select the field whenc lciked int he container
      */
-    private selectField(container, field) {
+    public selectField(container, field) {
         switch (container) {
             case 'available':
                 if (this.multiselect === false) {
@@ -140,7 +128,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
     /*
      function to set the aria-selected attr on a field
      */
-    private isSelected(container, field) {
+    public isSelected(container, field) {
         switch (container) {
             case 'available':
                 return this.selectedAvailableFields.indexOf(field) >= 0;
@@ -152,7 +140,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
     /*
      move selected field to the othe container
      */
-    private moveFields(fromContainer) {
+    public moveFields(fromContainer) {
         switch (fromContainer) {
             case 'available':
                 this.selectedAvailableFields.forEach((item) => {
@@ -180,7 +168,7 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
         }
     }
 
-    private sortAvailableFields() {
+    public sortAvailableFields() {
         this.availableFields = this.availableFields.sort((a, b) => {
             return this.language.getFieldDisplayName(this.model.module, a).toLowerCase() > this.language.getFieldDisplayName(this.model.module, b).toLowerCase() ? 1 : -1;
         });

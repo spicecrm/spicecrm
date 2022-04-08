@@ -36,6 +36,7 @@
 <?php
 
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 
 require('service/core/SugarSoapService.php');
 require('vendor/nusoap/nusoap.php');
@@ -76,7 +77,7 @@ abstract class PHP5Soap extends SugarSoapService{
 		if (stristr($qs, 'wsdl') || $HTTP_RAW_POST_DATA == ''){
 			$wsdlCacheFile = $this->getWSDLPath(false);
 			if (stristr($qs, 'wsdl')) {
-			    $contents = @sugar_file_get_contents($wsdlCacheFile);
+			    $contents = @SpiceFileUtils::spiceFileGetContents($wsdlCacheFile);
 			    if($contents !== false) {
 					header("Content-Type: text/xml; charset=ISO-8859-1\r\n");
 					print $contents;

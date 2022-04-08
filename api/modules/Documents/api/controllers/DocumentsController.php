@@ -35,6 +35,7 @@ use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Class DocumentsController
@@ -62,7 +63,7 @@ class DocumentsController
         $body = $req->getParsedBody();
 
         $documentRevision = BeanFactory::getBean('DocumentRevisions');
-        $documentRevision->id = create_guid();
+        $documentRevision->id = SpiceUtils::createGuid();
         $documentRevision->new_with_id = true;
 
         // generate the attachment

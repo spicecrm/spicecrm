@@ -1,7 +1,9 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['CallAttempt'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['CallAttempt'] = [
     'table' => 'callattempts',
     'comment' => 'Call attempts Module',
     'audited' =>  true,

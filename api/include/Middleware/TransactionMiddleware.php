@@ -36,22 +36,21 @@ class TransactionMiddleware
     /**
      * Starts the DB transaction before the script is executed.
      */
-    private function startTransaction() {
+    public function startTransaction() {
         DBManagerFactory::getInstance()->transactionStart();
-
     }
 
     /**
      * Commits the DB transaction after successfully executing the script.
      */
-    private function commitTransaction() {
+    public function commitTransaction() {
         DBManagerFactory::getInstance()->transactionCommit();
     }
 
     /**
      * Rolls back the DB transaction in case of DB errors during the execution of the script.
      */
-    private function rollbackTransaction() {
+    public function rollbackTransaction() {
         DBManagerFactory::getInstance()->transactionRollback();
     }
 

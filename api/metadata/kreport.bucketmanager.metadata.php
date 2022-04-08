@@ -11,8 +11,9 @@
  *
  * You can contact us at info@kreporter.org
  * ****************************************************************************** */
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-$dictionary['KReportGroupings'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['KReportGroupings'] = [
     'table' => 'kreportgroupings',
     'fields' => [
         'id' => [

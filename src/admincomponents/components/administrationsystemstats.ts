@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AdminComponentsModule
  */
@@ -21,7 +9,7 @@ import {backend} from '../../services/backend.service';
 import {helper} from '../../services/helper.service';
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationsystemstats.html'
+    templateUrl: '../templates/administrationsystemstats.html'
 })
 export class AdministrationSystemStats {
 
@@ -30,28 +18,28 @@ export class AdministrationSystemStats {
      *
      * otherwise a spinner is rendered for the user
      */
-    private loaded: boolean = false;
+    public loaded: boolean = false;
 
     /**
      * holds the stats
      */
-    private stats: any = {};
+    public stats: any = {};
 
     /**
      * the total number of DB records
      */
-    private totaldbrecords: number = 0;
+    public totaldbrecords: number = 0;
 
     /**
      * the total db size
      */
-    private totaldbsize: number = 0;
+    public totaldbsize: number = 0;
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private backend: backend,
-        private helper: helper
+        public metadata: metadata,
+        public language: language,
+        public backend: backend,
+        public helper: helper
     ) {
         this.loadStats();
     }
@@ -59,7 +47,7 @@ export class AdministrationSystemStats {
     /**
      * loads the stats from the backend
      */
-    private loadStats() {
+    public loadStats() {
         this.loaded = false;
         this.backend.getRequest('configuration/systemstats').subscribe(stats => {
             this.stats = stats;
@@ -75,16 +63,16 @@ export class AdministrationSystemStats {
     /**
      * reloads
      */
-    private refresh() {
+    public refresh() {
         this.loadStats();
     }
 
     /**
      * a getter for the full number of records on elastic
      */
-    get totalelasticrecords() {
+    public totalelasticrecords(type: 'total'|'primaries') {
         try {
-            return this.stats.elastic._all.total.docs.count;
+            return this.stats.elastic._all[type].docs.count;
         } catch (e) {
             return 0;
         }
@@ -93,9 +81,9 @@ export class AdministrationSystemStats {
     /**
      * a getter for the total size fo the elastic index
      */
-    get totalelasticsize() {
+    public totalelasticsize(type: 'total'|'primaries') {
         try {
-            return this.stats.elastic._all.total.store.size_in_bytes;
+            return this.stats.elastic._all[type].store.size_in_bytes;
         } catch (e) {
             return 0;
         }
@@ -127,7 +115,7 @@ export class AdministrationSystemStats {
      * a getter to compute the full size of the system consumed
      */
     get totalsize() {
-        return this.totaldbsize + this.totalelasticsize + this.uploadsize;
+        return this.totaldbsize + this.totalelasticsize('total') + this.uploadsize;
     }
 
     /**
@@ -136,14 +124,14 @@ export class AdministrationSystemStats {
      * @param column the name of the column
      * @param asc defaults to true, send flase to sort descending
      */
-    private sortby(column, asc: boolean = true) {
+    public sortby(column, asc: boolean = true) {
         this.stats.database.sort((a, b) => a[column] > b[column] ? (asc ? -1 : 1) : (asc ? 1 : -1));
     }
 
     /**
      * calculates the total DB size after the data has been loaded
      */
-    private calculateTotalsDB() {
+    public calculateTotalsDB() {
         this.totaldbrecords = 0;
         this.totaldbsize = 0;
         for (let table of this.stats.database) {
@@ -157,7 +145,7 @@ export class AdministrationSystemStats {
      *
      * @param size the size to be formatted
      */
-    private humanReadableSize(size) {
+    public humanReadableSize(size) {
         return this.helper.humanFileSize(size);
     }
 
@@ -166,9 +154,9 @@ export class AdministrationSystemStats {
      *
      * @param tablename
      */
-    private ftsDocumentCount(tablename) {
+    public ftsDocumentCount(tablename, type: 'total'|'primaries') {
         try {
-            return this.stats.elastic.indices[this.stats.elastic._prefix + tablename].total.docs.count;
+            return this.stats.elastic.indices[this.stats.elastic._prefix + tablename][type].docs.count;
         } catch (e) {
             return '';
         }
@@ -179,9 +167,9 @@ export class AdministrationSystemStats {
      *
      * @param tablename
      */
-    private ftsIndexSize(tablename) {
+    public ftsIndexSize(tablename, type: 'total'|'primaries') {
         try {
-            return this.humanReadableSize(this.stats.elastic.indices[this.stats.elastic._prefix + tablename].total.store.size_in_bytes);
+            return this.humanReadableSize(this.stats.elastic.indices[this.stats.elastic._prefix + tablename][type].store.size_in_bytes);
         } catch (e) {
             return '';
         }

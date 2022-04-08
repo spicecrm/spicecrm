@@ -37,6 +37,7 @@
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\DBUtils;
 
 require_once 'modules/OAuthTokens/OAuthToken.php';
 require_once 'modules/OAuthKeys/OAuthKey.php';
@@ -141,7 +142,7 @@ class SugarOAuthServer
     }
 
     /**
-     * Decode POST/GET via from_html()
+     * Decode POST/GET via DBUtils::fromHtml()
      * @return array decoded data
      */
     protected function decodePostGet()
@@ -149,7 +150,7 @@ class SugarOAuthServer
         $data = $_GET;
         $data = array_merge($data, $_POST);
         foreach($data as $k => $v) {
-            $data[$k] = from_html($v);
+            $data[$k] = DBUtils::fromHtml($v);
         }
         return $data;
     }

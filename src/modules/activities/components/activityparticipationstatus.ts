@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleActivities
  */
@@ -26,7 +14,7 @@ import {view} from '../../../services/view.service';
  */
 @Component({
     selector: 'activity-participation-status',
-    templateUrl: './src/modules/activities/templates/activityparticipationstatus.html',
+    templateUrl: '../templates/activityparticipationstatus.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -40,34 +28,34 @@ export class ActivityParticipationStatus implements ControlValueAccessor {
     /**
      * the parent record - Meeting or Call
      */
-    @Input() private parent: model;
+    @Input() public parent: model;
 
     /**
      * the parent record - Contact or User
      */
-    @Input() private model: model;
+    @Input() public model: model;
 
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
+    public onChange: (value: string) => void;
 
     /**
      * for the value accessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
 
     /**
      * the acceptance status
      */
-    private status: 'none' | 'accept' | 'decline' | 'tentative' = 'none';
+    public status: 'none' | 'accept' | 'decline' | 'tentative' = 'none';
 
     /**
      * set when updating the backend
      */
-    private updating: boolean = false;
+    public updating: boolean = false;
 
-    constructor(private view: view, private session: session, private cdRef: ChangeDetectorRef, private backend: backend, private toast: toast) {
+    constructor(public view: view, public session: session, public cdRef: ChangeDetectorRef, public backend: backend, public toast: toast) {
     }
 
     /**
@@ -87,25 +75,25 @@ export class ActivityParticipationStatus implements ControlValueAccessor {
     /**
      * accepts the activity
      */
-    private accept() {
+    public accept() {
         this.setStatus('accept');
     }
 
     /**
      * declines the activity
      */
-    private decline() {
+    public decline() {
         this.setStatus('decline');
     }
 
     /**
      * marks the acceptnace as tentative
      */
-    private tentative() {
+    public tentative() {
         this.setStatus('tentative');
     }
 
-    private setStatus(status) {
+    public setStatus(status) {
         this.updating = true;
         this.backend.postRequest(`module/${this.parent.module}/${this.parent.id}/status/${this.model.id}/${status}`).subscribe(res => {
             this.status = status;

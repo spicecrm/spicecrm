@@ -1,8 +1,9 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary ['SpiceACLProfile'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
     'table' => 'spiceaclprofiles',
     'fields' => [
         'status' => [
@@ -32,4 +33,3 @@ $dictionary ['SpiceACLProfile'] = [
 ];
 
 VardefManager::createVardef('SpiceACLProfiles', 'SpiceACLProfile', ['default']);
-

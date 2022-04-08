@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
@@ -35,7 +23,7 @@ interface menuItem {
 
 @Component({
     selector: 'global-navigation-menu-item',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitem.html',
+    templateUrl: '../templates/globalnavigationmenuitem.html',
     host: {
         '[class.slds-context-bar__item]': 'true',
         '[class.slds-is-active]': 'isActive()'
@@ -45,41 +33,41 @@ interface menuItem {
 export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestroy {
 
 
-    @ViewChild('menulist', {read: ViewContainerRef, static: true}) private menulist: ViewContainerRef;
-    @ViewChild('menucontainer', {read: ViewContainerRef, static: true}) private menucontainer: ViewContainerRef;
+    @ViewChild('menulist', {read: ViewContainerRef, static: true})public menulist: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: true})public menucontainer: ViewContainerRef;
 
     /**
      * reference to the container item where the indivvidual components can be rendered into dynamically
      */
-    @ViewChildren(GlobalNavigationMenuItemActionContainer) private menuItemlist: QueryList<GlobalNavigationMenuItemActionContainer>;
+    @ViewChildren(GlobalNavigationMenuItemActionContainer)public menuItemlist: QueryList<GlobalNavigationMenuItemActionContainer>;
 
-    private clickListener: any;
-    @Input() private itemtext: string = 'test';
-    @Input() private item: menuItem = {
+   public clickListener: any;
+    @Input()public itemtext: string = 'test';
+    @Input()public item: menuItem = {
         module: null,
         name: null
     };
 
-    private isOpen: boolean = false;
-    private isInitialized: boolean = false;
+   public isOpen: boolean = false;
+   public isInitialized: boolean = false;
 
-    private itemMenu: any[] = [];
-    private favorites: any[] = [];
-    private menucomponents: any[] = [];
+   public itemMenu: any[] = [];
+   public favorites: any[] = [];
+   public menucomponents: any[] = [];
 
-    constructor(private metadata: metadata,
-                private language: language,
-                private router: Router,
-                private elementRef: ElementRef,
-                private broadcast: broadcast,
-                private navigation: navigation,
-                private model: model,
-                private recent: recent,
-                private favorite: favorite,
-                private renderer: Renderer2) {
+    constructor(public metadata: metadata,
+               public language: language,
+               public router: Router,
+               public elementRef: ElementRef,
+               public broadcast: broadcast,
+               public navigation: navigation,
+               public model: model,
+               public recent: recent,
+               public favorite: favorite,
+               public renderer: Renderer2) {
     }
 
-    private executeMenuItem(id) {
+   public executeMenuItem(id) {
         this.itemMenu.some((item, index) => {
             if (item.id === id) {
                 switch (item.action) {
@@ -93,12 +81,12 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         });
     }
 
-    private navigateTo() {
+   public navigateTo() {
         this.isOpen = false;
         this.router.navigate(['/module/' + this.item.module]);
     }
 
-    private navigateRecent(recentid) {
+   public navigateRecent(recentid) {
         this.isOpen = false;
         this.router.navigate(['/module/' + this.item.module + '/' + recentid]);
     }
@@ -114,7 +102,7 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         this.model.module = this.item.module;
     }
 
-    private toggleOpen() {
+   public toggleOpen() {
         if (!this.isInitialized) this.initialize();
         this.isOpen = !this.isOpen;
 
@@ -129,7 +117,7 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
     }
 
 
-    private initialize() {
+   public initialize() {
         // get recent .. if it is an observable .. wait ..
         if(this.item.module != 'Home') {
             this.recent.getModuleRecent(this.item.module).subscribe(recentItems => {
@@ -144,25 +132,25 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         return this.recent.moduleItems[this.item.module] ? this.recent.moduleItems[this.item.module] : [];
     }
 
-    private getFavorites() {
+   public getFavorites() {
         return this.favorite.getFavorites(this.item.module);
     }
 
-    private onClick(event: MouseEvent): void {
+   public onClick(event: MouseEvent): void {
         if (!this.elementRef.nativeElement.contains(event.target) || (this.elementRef.nativeElement.contains(event.target) && this.menulist.element.nativeElement.contains(event.target))) {
             this.isOpen = false;
         }
     }
 
-    private hasMenu() {
+   public hasMenu() {
         return this.itemMenu.length > 0 || this.metadata.getModuleTrackflag(this.item.module);
     }
 
-    private getMenuLabel(menuitem) {
+   public getMenuLabel(menuitem) {
         return this.language.getLabel(this.item.module, menuitem);
     }
 
-    private isActive(): boolean {
+   public isActive(): boolean {
         if (this.navigation.activeModule == this.item.module) {
             return true;
         } else {
@@ -179,7 +167,7 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         this.model.module = this.item.module;
     }
 
-    private buildMenu() {
+   public buildMenu() {
         return true;
         this.destroyMenu();
         for (let menuitem of this.itemMenu) {
@@ -205,7 +193,7 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         this.destroyMenu();
     }
 
-    private destroyMenu() {
+   public destroyMenu() {
         // destroy all components
         for (let component of this.menucomponents) {
             component.destroy();
@@ -217,17 +205,11 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
      *
      * @param actionid the action id
      */
-    private isDisabled(actionid) {
-        let disabled = true;
+   public isDisabled(actionid) {
         if (this.menuItemlist) {
-            this.menuItemlist.some((actionitem: any) => {
-                if (actionitem.id == actionid) {
-                    disabled = actionitem.disabled;
-                    return true;
-                }
-            });
+            return this.menuItemlist.find(a => a.id == actionid)?.disabled;
         }
-        return disabled;
+        return false;
     }
 
     /**
@@ -235,24 +217,18 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
      *
      * @param actionid the action id
      */
-    private isHidden(actionid) {
-        let hidden = false;
+   public isHidden(actionid) {
         if (this.menuItemlist) {
-            this.menuItemlist.some((actionitem: any) => {
-                if (actionitem.id == actionid) {
-                    hidden = actionitem.hidden;
-                    return true;
-                }
-            });
+            return this.menuItemlist.find(a => a.id == actionid)?.hidden;
         }
-        return hidden;
+        return false;
     }
 
     /**
      * propagets the click to the respective item
      * @param actionid
      */
-    private propagateclick(actionid) {
+   public propagateclick(actionid) {
         this.menuItemlist.some(actionitem => {
             if (actionitem.id == actionid) {
                 if (!actionitem.disabled) actionitem.execute();

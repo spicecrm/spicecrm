@@ -33,9 +33,11 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-global $dictionary;
-$dictionary['Role'] = ['table' => 'roles'
-                               ,'fields' => [
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['Role'] = [
+    'table' => 'roles',
+    'fields' => [
   'id' =>
   [
     'name' => 'id',
@@ -124,6 +126,4 @@ $dictionary['Role'] = ['table' => 'roles'
        ['name' =>'rolespk', 'type' =>'primary', 'fields'=> ['id']],
        ['name' =>'idx_role_id_del', 'type' =>'index', 'fields'=> ['id', 'deleted']],
     ]
-
 ];
-?>

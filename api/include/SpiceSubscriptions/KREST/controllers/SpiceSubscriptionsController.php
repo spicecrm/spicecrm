@@ -21,7 +21,7 @@ class SpiceSubscriptionsController
         if ($bean) {
             $loader = new SpiceSubscriptionsLoader();
             $loader->addSubscription($bean);
-            return $res->withStatus(200);
+            return $res->withJson([], 200);
         }
 
         return $res->withStatus(404);
@@ -40,7 +40,7 @@ class SpiceSubscriptionsController
         $loader = new SpiceSubscriptionsLoader();
         $loader->deleteSubscription($args['beanModule'], $args['beanId']);
 
-        return $res->withStatus(200);
+        return $res->withJson([], 200);
     }
 
     /**

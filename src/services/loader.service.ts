@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -24,18 +12,18 @@ import {broadcast} from './broadcast.service';
 
 @Injectable()
 export class loader {
-    private module: string = '';
-    private id: string = '';
-    private data: any = {};
-    private loaderHandler: Subject<string> = new Subject<string>();
-    private loadComplete: Subject<boolean>;
-    private start: any = '';
-    private counterCompleted = 0;
-    private progress = 0;
-    private activeLoader: string = '';
-    private loadPhase: string = 'system';
+    public module: string = '';
+    public id: string = '';
+    public data: any = {};
+    public loaderHandler: Subject<string> = new Subject<string>();
+    public loadComplete: Subject<boolean>;
+    public start: any = '';
+    public counterCompleted = 0;
+    public progress = 0;
+    public activeLoader: string = '';
+    public loadPhase: string = 'system';
 
-    private loadElements: any = {
+    public loadElements: any = {
         system: [
             {
                 name: 'getLanguage',
@@ -52,11 +40,11 @@ export class loader {
     };
 
     constructor(
-        private http: HttpClient,
-        private broadcast: broadcast,
-        private configuration: configurationService,
-        private session: session,
-        private language: language
+        public http: HttpClient,
+        public broadcast: broadcast,
+        public configuration: configurationService,
+        public session: session,
+        public language: language
     ) {
         this.loaderHandler.subscribe(val => this.handleLoaderHandler());
     }
@@ -64,7 +52,7 @@ export class loader {
     /**
      * gets the set tasks from teh backend
      */
-    private getLoadTasks(): Observable<boolean> {
+    public getLoadTasks(): Observable<boolean> {
         let retSubject = new Subject<boolean>();
         this.http.get(
             this.configuration.getBackendUrl() + "/system/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
@@ -132,7 +120,7 @@ export class loader {
         return this.loadComplete.asObservable();
     }
 
-    private resetLoader() {
+    public resetLoader() {
         // reset the progress
         this.counterCompleted = 0;
         this.progress = 0;
@@ -156,13 +144,21 @@ export class loader {
         this.counterCompleted = 0;
         this.progress = 0;
 
-        for (let loadElement of this.loadElements) {
-            loadElement.status = 'initial';
+        for (let loaditem of this.loadElements.system) {
+            loaditem.status = 'initial';
+        }
+
+        for (let loaditem of this.loadElements.primary) {
+            loaditem.status = 'initial';
+        }
+
+        for (let loaditem of this.loadElements.secondary) {
+            loaditem.status = 'initial';
         }
     }
 
 
-    private setComplete() {
+    public setComplete() {
         let t1 = performance.now();
         if (t1 - this.start > 500) {
             this.complete();
@@ -171,13 +167,13 @@ export class loader {
         }
     }
 
-    private complete() {
+    public complete() {
         // emit true
         this.loadComplete.next(true);
         this.loadComplete.complete();
     }
 
-    private handleLoaderHandler() {
+    public handleLoaderHandler() {
         let loadActive = false;
 
         for (let loadElement of this.loadElements[this.loadPhase]) {
@@ -218,7 +214,7 @@ export class loader {
 
     }
 
-    private handleRouteElement(loadElement) {
+    public handleRouteElement(loadElement) {
         let loadroute = loadElement.route ? loadElement.route : '/system/spiceui/core/loadtasks/'+loadElement.id;
         this.http.get(
             this.configuration.getBackendUrl() + loadroute,

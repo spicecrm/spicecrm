@@ -1,1 +1,0 @@
-"use strict";function not(t,e){function r(){return!r.pred.apply(r.thisArg,arguments)}return r.pred=t,r.thisArg=e,r}Object.defineProperty(exports,"__esModule",{value:!0}),exports.not=not;

@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceLanguages;
 
 use DirectoryIterator;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceLanguageFilesToDB {
 
@@ -164,7 +165,7 @@ class SpiceLanguageFilesToDB {
             if ( $v['toTransfer'] ) {
                 if ( $existingLabel = $this->db->fetchOne( sprintf( 'SELECT * FROM syslanguagecustomlabels WHERE name = "%s"', $this->db->quote( $name )))) {
                     $labelGuid = $existingLabel['id'];
-                } else $labelGuid = create_guid();
+                } else $labelGuid = SpiceUtils::createGuid();
                 $result = $this->db->query( sprintf( 'REPLACE INTO syslanguagecustomlabels SET id = "%s", name = "%s"', $labelGuid, $this->db->quote( $name )));
                 if ( !$this->db->getAffectedRowCount( $result )) {
                     $dbInsertionError = true;
@@ -176,7 +177,7 @@ class SpiceLanguageFilesToDB {
                 foreach ( $v['translations'] as $lang => $string ) {
                     if ( $existingTranslation = $this->db->fetchOne( sprintf( 'SELECT * FROM syslanguagecustomtranslations WHERE syslanguagelabel_id = "%s"', $labelGuid ))) {
                         $translationGuid = $existingTranslation['id'];
-                    } else $translationGuid = create_guid();
+                    } else $translationGuid = SpiceUtils::createGuid();
                     $result = $this->db->query( sprintf( 'REPLACE INTO syslanguagecustomtranslations SET id = "%s", syslanguagelabel_id = "%s", syslanguage = "%s", translation_default = "%s"', $translationGuid, $labelGuid, $this->db->quote( $lang ), $this->db->quote( $string ) ));
                     if ( !$this->db->getAffectedRowCount( $result )) {
                         $dbInsertionError = true;

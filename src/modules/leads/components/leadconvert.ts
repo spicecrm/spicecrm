@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleLeads
  */
@@ -31,7 +19,7 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'lead-convert',
-    templateUrl: './src/modules/leads/templates/leadconvert.html',
+    templateUrl: '../templates/leadconvert.html',
     providers: [model, view]
 })
 export class LeadConvert {
@@ -39,42 +27,42 @@ export class LeadConvert {
     /**
      * the module name .. fixed lead
      */
-    private moduleName = 'Leads';
+    public moduleName = 'Leads';
 
     /**
      * the contact this is converted to
      */
-    private contact: model = undefined;
+    public contact: model = undefined;
 
     /**
      * the accpount this is converted to
      */
-    private account: model = undefined;
+    public account: model = undefined;
 
     /**
      * the opportunity this gets converted to
      */
-    private opportunity: model = undefined;
+    public opportunity: model = undefined;
 
     /**
      * the current convert step
      */
-    private currentConvertStep: number = 0;
+    public currentConvertStep: number = 0;
 
     /**
      * the availabel convert steps
      *
      * currently hardcoded .. might make sense to create a generic conmvert method that allows multi step conversion
      */
-    private convertSteps: string[] = ['Account', 'Contact', 'Opportunity'];
+    public convertSteps: string[] = ['Account', 'Contact', 'Opportunity'];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private navigationtab: navigationtab,
-        private modal: modal,
-        private toast: toast,
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public navigationtab: navigationtab,
+        public modal: modal,
+        public toast: toast,
     ) {
 
         this.loadLead();
@@ -84,14 +72,14 @@ export class LeadConvert {
     /**
      * caled when the component initializes loading the lead from teh route data
      */
-    private loadLead() {
+    public loadLead() {
         // get the bean details
         this.model.module = this.moduleName;
         this.model.id = this.navigationtab.activeRoute.params.id;
         this.model.getData(true, 'detailview').subscribe(data => {
             this.model.startEdit();
             this.navigationtab.setTabInfo({
-                displayname: this.language.getLabel('LBL_CONVERT_LEAD') + ': ' + this.model.data.summary_text,
+                displayname: this.language.getLabel('LBL_CONVERT_LEAD') + ': ' + this.model.getField('summary_text'),
                 displaymodule: 'Leads'
             });
         });
@@ -102,7 +90,7 @@ export class LeadConvert {
      *
      * @param convertStep
      */
-    private getStepClass(convertStep: any) {
+    public getStepClass(convertStep: any) {
         let thisIndex = this.convertSteps.indexOf(convertStep);
         if (thisIndex == this.currentConvertStep) {
             return 'slds-is-active';
@@ -116,7 +104,7 @@ export class LeadConvert {
      * rerutns true if the step is completed for the display
      * @param convertStep
      */
-    private getStepComplete(convertStep: any) {
+    public getStepComplete(convertStep: any) {
         let thisIndex = this.convertSteps.indexOf(convertStep);
         if (thisIndex < this.currentConvertStep) {
             return true;
@@ -128,7 +116,7 @@ export class LeadConvert {
     /**
      *determines the width in % for the style of the progress bar
      */
-    private getProgressBarWidth() {
+    public getProgressBarWidth() {
         return {
             width: (this.currentConvertStep / (this.convertSteps.length - 1) * 100) + '%'
         };
@@ -167,7 +155,7 @@ export class LeadConvert {
     /**
      * moves one step backwards
      */
-    private prevStep() {
+    public prevStep() {
         if (this.currentConvertStep > 0) {
             this.currentConvertStep--;
         }
@@ -176,21 +164,21 @@ export class LeadConvert {
     /**
      * determines if the next button is shown
      */
-    private showNext() {
+    public showNext() {
         return this.currentConvertStep < this.convertSteps.length - 1;
     }
 
     /**
      * detemrines if the save button is shown
      */
-    private showSave() {
+    public showSave() {
         return this.currentConvertStep == this.convertSteps.length - 1;
     }
 
     /**
      * converts the lead
      */
-    private convert() {
+    public convert() {
 
         // build save actions
         let createSaveActions = [];
@@ -233,7 +221,7 @@ export class LeadConvert {
         this.modal.openModal('LeadConvertModal', false).subscribe(modalref => {
             modalref.instance.saveactions = createSaveActions;
             modalref.instance.completed.subscribe(completed => {
-                this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
+                this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.getField('summary_text') + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
 
                 // close the tab
                 this.navigationtab.closeTab();
@@ -246,7 +234,7 @@ export class LeadConvert {
     /*
      * sets the contact from the component
      */
-    private setContact(contact) {
+    public setContact(contact) {
         this.contact = contact;
     }
 
@@ -254,7 +242,7 @@ export class LeadConvert {
      * sets the account from the component
      * @param account
      */
-    private setAccount(account) {
+    public setAccount(account) {
         this.account = account;
     }
 
@@ -262,7 +250,7 @@ export class LeadConvert {
      * sets the opportunity from the component
      * @param opportunity
      */
-    private setOpportunity(opportunity) {
+    public setOpportunity(opportunity) {
         this.opportunity = opportunity;
     }
 }

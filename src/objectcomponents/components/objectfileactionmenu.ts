@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -24,25 +12,25 @@ import {modal} from '../../services/modal.service';
  */
 @Component({
     selector: "object-file-action-menu",
-    templateUrl: "./src/objectcomponents/templates/objectfileactionmenu.html"
+    templateUrl: "../templates/objectfileactionmenu.html"
 })
 export class ObjectFileActionMenu {
 
-    @Input() private file: any;
+    @Input() public file: any;
 
-    constructor(private broadcast: broadcast,
-                private modelattachments: modelattachments,
-                private language: language,
-                private elementRef: ElementRef,
-                private modalservice: modal,
-                private injector: Injector) {
+    constructor(public broadcast: broadcast,
+                public modelattachments: modelattachments,
+                public language: language,
+                public elementRef: ElementRef,
+                public modalservice: modal,
+                public injector: Injector) {
 
     }
 
     /**
      * determines where the menu is opened
      */
-    private getDropdownLocationClass() {
+    public getDropdownLocationClass() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         if (window.innerHeight - rect.bottom < 100) {
             return "slds-dropdown--bottom";
@@ -54,7 +42,7 @@ export class ObjectFileActionMenu {
      *
      * ToDo: add ACL Check
      */
-    private deleteFile() {
+    public deleteFile() {
         this.modalservice.confirm(this.language.getLabel('QST_DELETE_FILE'), this.language.getLabel('QST_DELETE_FILE', null, 'short')).subscribe((answer) => {
             if (answer) this.modelattachments.deleteAttachment(this.file.id);
         });
@@ -63,7 +51,7 @@ export class ObjectFileActionMenu {
     /**
      * triggers the download of the file
      */
-    private downloadFile() {
+    public downloadFile() {
         this.modelattachments.downloadAttachment(this.file.id, this.file.name);
     }
 
@@ -71,7 +59,7 @@ export class ObjectFileActionMenu {
      * open edit modal and fill in the input data
      * @private
      */
-    private edit() {
+    public edit() {
         this.modalservice.openModal('SpiceAttachmentsEditModal', true, this.injector).subscribe(
             modalRef => {
                 modalRef.instance.attachment = this.file;

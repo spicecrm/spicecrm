@@ -38,6 +38,7 @@ namespace SpiceCRM\modules\Trackers;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class Tracker extends SugarBean
 {
@@ -57,7 +58,7 @@ class Tracker extends SugarBean
         if (empty($_SESSION['breadCrumbs'])) {
             $breadCrumb = new BreadCrumbStack($user_id, $modules);
             $_SESSION['breadCrumbs'] = $breadCrumb;
-            LoggerManager::getLogger()->info(string_format($GLOBALS['app_strings']['LBL_BREADCRUMBSTACK_CREATED'], [$user_id]));
+            LoggerManager::getLogger()->info(SpiceUtils::stringFormat($GLOBALS['app_strings']['LBL_BREADCRUMBSTACK_CREATED'], [$user_id]));
         } else {
             $breadCrumb = $_SESSION['breadCrumbs'];
             $module_query = '';

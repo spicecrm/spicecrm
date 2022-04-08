@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -21,39 +9,39 @@ import {toast} from '../../services/toast.service';
 declare var window: any;
 
 @Component({
-    templateUrl: './src/systemcomponents/templates/speechrecognition.html'
+    templateUrl: '../templates/speechrecognition.html'
 })
 export class SpeechRecognition implements OnInit {
 
-    private self;
+    public self;
 
-    private recognition: any;
-    private start_timestamp: any;
+    public recognition: any;
+    public start_timestamp: any;
 
-    private textfield: any;
-    private part1fromField: string;
-    private part2fromField: string;
+    public textfield: any;
+    public part1fromField: string;
+    public part2fromField: string;
 
-    private theText = '';
-    private theTextNewest = '';
+    public theText = '';
+    public theTextNewest = '';
 
-    private theTextHtml = '';
+    public theTextHtml = '';
 
-    private dirty = false;
+    public dirty = false;
 
-    private errorOccurred = false;
+    public errorOccurred = false;
 
-    private toRestart = false;
-    private recognizing = false;
-    private cancelling = false;
-    private stopping = false;
-    private pausing = false;
-    private working = false;
+    public toRestart = false;
+    public recognizing = false;
+    public cancelling = false;
+    public stopping = false;
+    public pausing = false;
+    public working = false;
 
-    private languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
-    private selectedLanguage = 0;
+    public languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
+    public selectedLanguage = 0;
 
-    constructor(private language: language, private metadata: metadata, private toast: toast, private changeDetRef: ChangeDetectorRef, private applicationRef: ApplicationRef) {
+    constructor(public language: language, public metadata: metadata, public toast: toast, public changeDetRef: ChangeDetectorRef, public applicationRef: ApplicationRef) {
     }
 
     public ngOnInit() {
@@ -163,17 +151,17 @@ export class SpeechRecognition implements OnInit {
 
     }
 
-    private doRestart() {
+    public doRestart() {
         this.toRestart = true;
         this.recognition.stop();
     }
 
-    private applyText() {
+    public applyText() {
         this.theText += (this.theText === '' ? this.capitalize(this.theTextNewest) : this.theTextNewest);
         this.theTextNewest = '';
     }
 
-    private acceptAndClose() {
+    public acceptAndClose() {
 
         this.applyText();
 
@@ -197,20 +185,20 @@ export class SpeechRecognition implements OnInit {
 
     }
 
-    private start(event = null) {
+    public start(event = null) {
         if (this.recognizing) return;
         this.recognizing = true;
         this.recognition.start();
         if (event) this.start_timestamp = event.timeStamp;
     }
 
-    private buttonAcceptClose() {
+    public buttonAcceptClose() {
         this.stopping = true;
         if (this.pausing) this.acceptAndClose();
         else this.recognition.stop();
     }
 
-    private buttonPause() {
+    public buttonPause() {
         this.pausing = !this.pausing;
         this.changeDetRef.detectChanges();
         this.applicationRef.tick();
@@ -218,29 +206,29 @@ export class SpeechRecognition implements OnInit {
         !this.pausing && this.recognition.start();
     }
 
-    private buttonCancel() {
+    public buttonCancel() {
         this.cancelling = true;
         this.pausing && this.recognition.start();
         this.recognition.abort();
         this.self.destroy();
     }
 
-    private changeLang(event) {
+    public changeLang(event) {
         this.selectedLanguage = event.target.selectedIndex;
         this.recognition.lang = this.languages[this.selectedLanguage].id;
         this.doRestart();
     }
 
-    private capitalize(string: string) {
+    public capitalize(string: string) {
         if (this.part1fromField.length === 0) return string.replace(/\S/, m => m.toUpperCase());
         else return string;
     }
 
-    private linebreaks2html(string: string) {
+    public linebreaks2html(string: string) {
         return string.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
     }
 
-    private sendErrorToast(message: string) {
+    public sendErrorToast(message: string) {
         this.toast.sendToast(this.language.getLabel('ERR_SPEECH_RECOGNITION') + ': ' + message + '.', 'error', '', false);
     }
 }

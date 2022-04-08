@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleCalendar
  */
@@ -43,7 +31,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-week',
-    templateUrl: './src/modules/calendar/templates/calendarsheetweek.html',
+    templateUrl: '../templates/calendarsheetweek.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetWeek implements OnChanges, OnDestroy {
@@ -54,63 +42,63 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * holds sheet hours
      */
-    protected sheetHours: any[] = [];
+    public sheetHours: any[] = [];
     /**
      * children reference of the drop targets
      */
-    @ViewChildren(CalendarSheetDropTarget) protected dropTargets: QueryList<CalendarSheetDropTarget>;
+    @ViewChildren(CalendarSheetDropTarget) public dropTargets: QueryList<CalendarSheetDropTarget>;
     /**
      * container reference for the main div
      */
-    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) protected sheetContainer: ViewContainerRef;
+    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) public sheetContainer: ViewContainerRef;
     /**
      * element reference for the scrollbar
      */
-    @ViewChild('scrollContainer', {read: ViewContainerRef, static: true}) protected scrollContainer: ViewContainerRef;
+    @ViewChild('scrollContainer', {read: ViewContainerRef, static: true}) public scrollContainer: ViewContainerRef;
     /**
      * the change date comes from the parent
      */
-    @Input() protected setdate: any = {};
+    @Input() public setdate: any = {};
     /**
      * holds a boolean of google events visibility
      */
-    @Input() protected googleIsVisible: boolean = true;
+    @Input() public googleIsVisible: boolean = true;
     /**
      * holds the owner multi events
      */
-    protected ownerMultiEvents: any[] = [];
+    public ownerMultiEvents: any[] = [];
     /**
      * holds the google multi events
      */
-    protected googleMultiEvents: any[] = [];
+    public googleMultiEvents: any[] = [];
     /**
      * holds the owner events
      */
-    private ownerEvents: any[] = [];
+    public ownerEvents: any[] = [];
     /**
      * holds the users events
      */
-    private userEvents: any[] = [];
+    public userEvents: any[] = [];
     /**
      * holds the users multi events
      */
-    private userMultiEvents: any[] = [];
+    public userMultiEvents: any[] = [];
     /**
      * holds the google events
      */
-    private googleEvents: any[] = [];
+    public googleEvents: any[] = [];
     /**
      * subscription to handle unsubscribe
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
     /**
      * holds the resize listener
      */
-    private resizeListener: any;
+    public resizeListener: any;
 
     constructor(public language: language,
                 public cdRef: ChangeDetectorRef,
-                private renderer: Renderer2,
+                public renderer: Renderer2,
                 public calendar: calendar) {
         this.buildHours();
         this.buildSheetDays();
@@ -350,7 +338,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * @param date: moment
      * @return color: string
      */
-    protected isToday(date: any) {
+    public isToday(date: any) {
         let today = new moment();
         return today.year() === date.year() && today.month() === date.month() && today.date() == date.date();
     }
@@ -359,7 +347,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * subscribe to user calendar changes
      * subscribe to resize event to reset the events style
      */
-    private subscribeToChanges() {
+    public subscribeToChanges() {
         this.subscription.add(
             this.calendar.layoutChange$.subscribe(() => {
                 this.buildSheetDays();
@@ -385,7 +373,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * sort allMultiEvents
      */
-    private arrangeMultiEvents() {
+    public arrangeMultiEvents() {
 
         this.sheetDays.forEach(day => day.events = []);
 
@@ -430,7 +418,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * correct the start and end hours for the event preview
      * @return events
      */
-    private correctHours(events) {
+    public correctHours(events) {
         events.map(event => {
             if (!event.isMulti) {
                 let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
@@ -449,7 +437,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * load owner events from service and rearrange the multi events
      */
-    private getOwnerEvents() {
+    public getOwnerEvents() {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
         this.arrangeMultiEvents();
@@ -473,7 +461,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * load google events from service and rearrange the multi events
      */
-    private getGoogleEvents() {
+    public getGoogleEvents() {
         this.googleEvents = [];
         this.googleMultiEvents = [];
         this.arrangeMultiEvents();
@@ -498,7 +486,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * load other user events from service and rearrange the multi events
      */
-    private getUserEvents(calendar) {
+    public getUserEvents(calendar) {
         this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
@@ -532,7 +520,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * load other users events from service and rearrange the multi events
      */
-    private getUsersEvents() {
+    public getUsersEvents() {
         this.userEvents = [];
         this.userMultiEvents = [];
         this.arrangeMultiEvents();
@@ -564,7 +552,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * filter the out of range events or the absence events
      * @return events
      */
-    private filterEvents(events) {
+    public filterEvents(events) {
         return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour || ('absence' == event.type));
     }
 
@@ -572,7 +560,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * @param dragEvent: CdkDragEnd
      * call calendar.onEventDrop and pass the dropTargets reference for this sheet
      */
-    private onEventDrop(dragEvent: CdkDragEnd) {
+    public onEventDrop(dragEvent: CdkDragEnd) {
         this.calendar.onEventDrop(dragEvent, this.dropTargets);
     }
 }

@@ -5,6 +5,8 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SecurityUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
@@ -68,7 +70,7 @@ class SoapHelperWebServices
                     $required = 1;
                 }
                 if (isset($var['options'])) {
-                    $options_dom = translate($var['options'], $value->module_dir);
+                    $options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
 					if(!is_array($options_dom)) $options_dom = [];
                     foreach ($options_dom as $key => $oneOption)
                         $options_ret[$key] = $this->get_name_value($key, $oneOption);
@@ -88,7 +90,7 @@ class SoapHelperWebServices
                     $link_fields[$var['name']] = $entry;
                 } else {
                     if ($translate) {
-                        $entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+                        $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
                     } else {
                         $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
                     }
@@ -180,7 +182,8 @@ class SoapHelperWebServices
      */
     function validate_authenticated($session_id)
     {
-        return AuthenticationController::getInstance()->token === $session_id;
+        return AuthenticationController::getInstance()->authenticate(null, null, $session_id, 'SpiceCRM');
+        // return AuthenticationController::getInstance()->token === $session_id;
     }
 
     /**
@@ -193,7 +196,7 @@ class SoapHelperWebServices
     {
 
         // grab client ip address
-        $clientIP = query_client_ip();
+        $clientIP = SecurityUtils::queryClientIp();
         $classCheck = 0;
         // check to see if config entry is present, if not, verify client ip
         if (!isset (SpiceConfig::getInstance()->config['verify_client_ip']) || SpiceConfig::getInstance()->config['verify_client_ip'] == true) {
@@ -239,7 +242,8 @@ class SoapHelperWebServices
             return false;
         } // if
 
-        global $beanList, $beanFiles;
+        $beanList = \SpiceCRM\includes\SugarObjects\SpiceModules::getInstance()->getBeanList();
+
         if (!empty($module_name)) {
             if (empty($beanList[$module_name])) {
                 LoggerManager::getLogger()->error('SoapHelperWebServices->checkSessionAndModuleAccess - module does not exists - ' . $module_name);
@@ -296,29 +300,7 @@ class SoapHelperWebServices
     function get_user_module_list($user)
     {
         LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_user_module_list');
-        global $app_list_strings, $current_language;
-        $app_list_strings = return_app_list_strings_language($current_language);
-        $modules = query_module_access_list($user);
         SpiceACL::getInstance()->filterModuleList($modules, false);
-        global $modInvisList;
-
-        foreach ($modInvisList as $invis) {
-            $modules[$invis] = 'read_only';
-        }
-
-        $actions = ACLAction::getUserActions($user->id, true);
-        foreach ($actions as $key => $value) {
-            if (isset($value['module']) && $value['module']['access']['aclaccess'] < ACL_ALLOW_ENABLED) {
-                if ($value['module']['access']['aclaccess'] == ACL_ALLOW_DISABLED) {
-                    unset($modules[$key]);
-                } else {
-                    $modules[$key] = 'read_only';
-                } // else
-            } else {
-                $modules[$key] = '';
-            } // else
-        } // foreach
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_user_module_list');
         return $modules;
 
     }
@@ -326,26 +308,8 @@ class SoapHelperWebServices
     function check_modules_access($user, $module_name, $action = 'write')
     {
         LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->check_modules_access');
-        if (!isset($_SESSION['avail_modules'])) {
-            $_SESSION['avail_modules'] = $this->get_user_module_list($user);
-        }
-        if (isset($_SESSION['avail_modules'][$module_name])) {
-            if ($action == 'write' && $_SESSION['avail_modules'][$module_name] == 'read_only') {
-                if (is_admin($user)) {
-                    LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_modules_access - SUCCESS: Admin can even write to read_only module');
-                    return true;
-                } // if
-                LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_modules_access - FAILED: write action on read_only module only available to admins');
-                return false;
-            } elseif ($action == 'write' && strcmp(strtolower($module_name), 'users') == 0 && !$user->isAdminForModule($module_name)) {
-                //rrs bug: 46000 - If the client is trying to write to the Users module and is not an admin then we need to stop them
-                return false;
-            }
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_modules_access - SUCCESS');
-            return true;
-        }
+        return SpiceACL::getInstance()->checkAccess($module_name, 'list');
         LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_modules_access - FAILED: Module info not available in $_SESSION');
-        return false;
 
     }
 
@@ -530,7 +494,7 @@ class SoapHelperWebServices
         if ($module == 'Users' && $value->id != $current_user->id) {
             $value->user_hash = '';
         }
-        $value = clean_sensitive_data($value->field_defs, $value);
+        $value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
         LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_return_value_for_fields');
 		return ['id'=>$value->id,
             'module_name' => $module,
@@ -551,7 +515,6 @@ class SoapHelperWebServices
     function getRelationshipResults($bean, $link_field_name, $link_module_fields, $optional_where = '')
     {
         LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->getRelationshipResults');
-        global $timedate;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $bean->load_relationship($link_field_name);
@@ -585,7 +548,7 @@ class SoapHelperWebServices
                 if (is_a($bean, 'User') && $current_user->id != $bean->id && isset($row['user_hash'])) {
                     $row['user_hash'] = "";
                 }
-                $row = clean_sensitive_data($bean->field_defs, $row);
+                $row = SpiceUtils::cleanSensitiveData($bean->field_defs, $row);
                 $list[] = $row;
             }
             LoggerManager::getLogger()->info('End: SoapHelperWebServices->getRelationshipResults');
@@ -606,7 +569,7 @@ class SoapHelperWebServices
         if ($module == 'Users' && $bean->id != $current_user->id) {
             $bean->user_hash = '';
         }
-        $bean = clean_sensitive_data($bean->field_defs, $bean);
+        $bean = SpiceUtils::cleanSensitiveData($bean->field_defs, $bean);
 
         if (empty($link_name_to_value_fields_array) || !is_array($link_name_to_value_fields_array)) {
             LoggerManager::getLogger()->debug('End: SoapHelperWebServices->get_return_value_for_link_fields - Invalid link information passed ');
@@ -674,9 +637,8 @@ class SoapHelperWebServices
             LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_relationship');
             return false;
         } // if
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
-        $mod = new $class_name();
+
+        $mod = BeanFactory::getBean($module_name);
         $mod->retrieve($module_id);
         if (!$mod->ACLAccess('DetailView')) {
             LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_relationship');
@@ -719,13 +681,11 @@ class SoapHelperWebServices
 
 		$ret_values = [];
 
-        $class_name = $beanList[$module_name];
-        require_once($beanFiles[$class_name]);
 		$ids = [];
         $count = 1;
         $total = sizeof($name_value_lists);
         foreach ($name_value_lists as $name_value_list) {
-            $seed = new $class_name();
+            $seed = BeanFactory::getBean($module_name);
 
             $seed->update_vcal = false;
             foreach ($name_value_list as $value) {
@@ -867,7 +827,7 @@ class SoapHelperWebServices
         if ($module == 'Users' && $value->id != $current_user->id) {
             $value->user_hash = '';
         }
-        $value = clean_sensitive_data($value->field_defs, $value);
+        $value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
         LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_entries');
 		return ['id'=>$value->id,
             'module_name' => $module,
@@ -915,8 +875,8 @@ class SoapHelperWebServices
             } // if
         }
         LoggerManager::getLogger()->info("Users language is = " . $current_language);
-        $app_strings = return_application_language($current_language);
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_strings = SpiceUtils::returnApplicationLanguage($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
         LoggerManager::getLogger()->info('End: SoapHelperWebServices->login_success');
     } // fn
 
@@ -1055,6 +1015,7 @@ class SoapHelperWebServices
 
 
     /**
+     * @deprecated
      * decrypt a string use the TripleDES algorithm. This meant to be
      * modified if the end user chooses a different algorithm
      *
@@ -1066,13 +1027,13 @@ class SoapHelperWebServices
     {
         LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->decrypt_string');
         if (function_exists('mcrypt_cbc')) {
-            require_once('modules/Administration/Administration.php');
-            $focus = BeanFactory::getBean('Administration');
-            $focus->retrieveSettings();
-            $key = '';
-            if (!empty($focus->settings['ldap_enc_key'])) {
-                $key = $focus->settings['ldap_enc_key'];
-            }
+//            require_once('modules/Administration/Administration.php');
+//            $focus = BeanFactory::getBean('Administration');
+//            $focus->retrieveSettings();
+//            $key = '';
+//            if (!empty($focus->settings['ldap_enc_key'])) {
+//                $key = $focus->settings['ldap_enc_key'];
+//            }
             if (empty($key)) {
                 LoggerManager::getLogger()->info('End: SoapHelperWebServices->decrypt_string - empty key');
                 return $string;

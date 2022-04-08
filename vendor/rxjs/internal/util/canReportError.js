@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Subscriber_1=require("../Subscriber");function canReportError(r){for(;r;){var e=r,o=e.closed,t=e.destination,e=e.isStopped;if(o||e)return!1;r=t&&t instanceof Subscriber_1.Subscriber?t:null}return!0}exports.canReportError=canReportError;

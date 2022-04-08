@@ -28,11 +28,14 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\database;
 
-
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * OCI8 driver
@@ -147,6 +150,7 @@ class OCI8Manager extends DBManager
         'html' => 'clob',
         'longhtml' => 'clob',
         'date' => 'date',
+        'json'     => 'clob',
         'datetime' => 'date',
         'datetimecombo' => 'date',
         'time' => 'date',
@@ -174,6 +178,31 @@ class OCI8Manager extends DBManager
 
     public $transactional = false;
 
+    /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SELECT table_name, num_rows FROM user_tables ORDER BY table_name");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $size = $this->fetchByAssoc($this->query("SELECT segment_name,sum(bytes) bytes FROM user_segments WHERE segment_type='TABLE' AND segment_name=upper('{$table['table_name']}') GROUP BY segment_name"));
+
+            $tablesArray[] = [
+                'name' => strtolower($table['table_name']),
+                'records' => (int)$table['num_rows'],
+                'size' => (int)$size['bytes']
+            ];
+            $dbCount += (int)$table['num_rows'];
+            $dbSize += (int)$size['bytes'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
 
     //--------------------------------------------------------------------------
     //   Extended the functionality of implemented functions in DB Manager
@@ -296,7 +325,7 @@ class OCI8Manager extends DBManager
             case 'add_time':
                 return "$string + {$additional_parameters[0]}/24 + {$additional_parameters[1]}/1440";
             case 'add_tz_offset' :
-                $getUserUTCOffset = $GLOBALS['timedate']->getUserUTCOffset();
+                $getUserUTCOffset = TimeDate::getInstance()->getUserUTCOffset();
                 $operation = $getUserUTCOffset < 0 ? '-' : '+';
 
                 return $string . ' ' . $operation . ' ' . abs($getUserUTCOffset) . '/1440';
@@ -891,7 +920,7 @@ class OCI8Manager extends DBManager
         // UTF8 uses multibyte for characters, which can lead to overflow issues therefore the size must be mapped to CHAR
         if (!empty($fieldDef['len'])) {
             if (in_array($colBaseType, ['nvarchar', 'nchar', 'varchar', 'varchar2', 'char',
-                'clob', 'blob', 'text'])) {
+                'clob', 'blob', 'json', 'text'])) {
                 $colType = "$colBaseType(${fieldDef['len']} CHAR)";
             } elseif (($colBaseType == 'decimal' || $colBaseType == 'float')) {
                 if (!empty($fieldDef['precision']) && is_numeric($fieldDef['precision']))
@@ -1206,10 +1235,11 @@ class OCI8Manager extends DBManager
 
     public function getGuidSQL()
     {
-        return "'" . create_guid_section(3) . "-' || sys_guid()";
+        return "'" . SpiceUtils::createGuidSection(3) . "-' || sys_guid()";
     }
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string
@@ -1338,15 +1368,15 @@ class OCI8Manager extends DBManager
                     continue;
                 }
 
-                if ($this->isTextType($def['type'])) {
+                if ($this->isTextType( $def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
-                    $tmp2->{$field} = from_html($bean->{$field});
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB;
-                } else if ($this->getColumnType($def['type']) == 'blob') {
-                    $tmp2->{$field} = from_html($bean->{$field});
+                } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_BLOB;
@@ -1390,15 +1420,15 @@ class OCI8Manager extends DBManager
                     continue;
                 }
                 //generate lob
-                if ($this->isTextType($def['type'])) {
+                if ($this->isTextType($def['dbtype'] ?: $def['type'])) {
                     // clean the incoming value...
                     // actually was a bug before, because sugar took the direct bean value and opened everything instead of escaping
-                    $tmp2->{$field} = from_html($bean->{$field});
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyClob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_CLOB; // value is 112
-                } else if ($this->getColumnType($def['type']) == 'blob') {
-                    $tmp2->{$field} = from_html($bean->{$field});
+                } else if ($this->getColumnType($def['dbtype'] ?: $def['type']) == 'blob') {
+                    $tmp2->{$field} = DBUtils::fromHtml($bean->{$field});
                     $tmp->{$field} = $this->getEmptyBlob();
                     $lob_fields[$field] = ":" . $field;
                     $lob_dataType[$field] = OCI_B_BLOB; // value is 113
@@ -1460,20 +1490,19 @@ class OCI8Manager extends DBManager
      */
     public function insertQuery($table, array $data, $execute = true)
     {
-        global $dictionary;
         $copy = array_merge([], $data);
         $lob_fields = [];
         $lob_dataType = [];
         // find the dictionary table
-        foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
-                    if ($this->type_map[$vardef['type']] == 'clob') {
-                        $copy[$field] = from_html($data[$field]);
+                    if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
+                        $copy[$field] = DBUtils::fromHtml($data[$field]);
                         $data[$field] = $this->getEmptyClob();
                         $lob_fields[$field] = ":" . $field;
                         $lob_dataType[$field] = OCI_B_CLOB;
-                    } elseif ($vardef['type'] == 'blob') {
+                    } elseif ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob') {
                         $data[$field] = $this->getEmptyBlob();
                         $lob_fields[$field] = ":" . $field;
                         $lob_dataType[$field] = OCI_B_CLOB;
@@ -1500,14 +1529,13 @@ class OCI8Manager extends DBManager
      */
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
-        global $dictionary;
         $retVal = false;
 
         $copy = array_merge([], $data);
         $lob_fields = [];
         $lob_dataType = [];
 
-        foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
 
 
@@ -1516,12 +1544,12 @@ class OCI8Manager extends DBManager
                     $vardef = $dictionaryDefs['fields'][$key];
                     if(!$vardef) continue;
 
-                    if (!empty($val) && $this->type_map[$vardef['type']] == 'clob') {
-                        $copy[$key] = from_html($val);
+                    if (!empty($val) && $this->type_map[$vardef['dbtype'] ?: $vardef['type']] == 'clob') {
+                        $copy[$key] = DBUtils::fromHtml($val);
                         $sets[] = "$key = {$this->getEmptyClob()}";
                         $lob_fields[$key] = ":" . $key;
                         $lob_dataType[$key] = OCI_B_CLOB;
-                    } elseif (!empty($val) && $vardef['type'] == 'blob') {
+                    } elseif (!empty($val) && ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob')) {
                         $sets[] = "$key = {$this->getEmptyBlob()}";
                         $lob_fields[$key] = ":" . $key;
                         $lob_dataType[$key] = OCI_B_CLOB;
@@ -1579,7 +1607,7 @@ class OCI8Manager extends DBManager
     function isNullable($vardef)
     {
         // text is blank in oracle
-        if (!empty($vardef['type']) && $this->isTextType($vardef['type'])) {
+        if (!empty($vardef['type']) && $this->isTextType($vardef['dbtype'] ?: $vardef['type'])) {
             return false;
         }
         return parent::isNullable($vardef);

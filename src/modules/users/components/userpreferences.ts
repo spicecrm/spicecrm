@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleUsers
  */
@@ -35,7 +23,7 @@ declare var _: any;
  */
 @Component({
     selector: 'user-preferences',
-    templateUrl: './src/modules/users/templates/userpreferences.html',
+    templateUrl: '../templates/userpreferences.html',
     providers: [view]
 })
 export class UserPreferences implements OnDestroy {
@@ -43,12 +31,12 @@ export class UserPreferences implements OnDestroy {
      * holds the loaded preferences
      * @private
      */
-    private preferences: any = {};
+    public preferences: any = {};
     /**
      * holds the names of the default preferences to be loaded
      * @private
      */
-    private names = [
+    public names = [
         'export_delimiter',
         'default_export_charset',
         'currency',
@@ -76,66 +64,66 @@ export class UserPreferences implements OnDestroy {
      * holds an empty  dashboard to help set empty value for default dashboard
      * @private
      */
-    private defaultDashboardPlaceHolder = {};
+    public defaultDashboardPlaceHolder = {};
 
     /**
      * holds the dashboard sets
      * @private
      */
-    private dashboardSets: any[] = [];
+    public dashboardSets: any[] = [];
     /**
      * holds the dashboard set data
      * @private
      */
-    private dashboardSetData = {};
+    public dashboardSetData = {};
     /**
      * holds the home dashboard data
      * @private
      */
-    private homeDashboardData: any = {};
+    public homeDashboardData: any = {};
     /**
      * holds a list of available dashboards
      * @private
      */
-    private dashboards: any[] = [];
+    public dashboards: any[] = [];
     /**
      * holds a subscription to subscribe on preferences loaded
      * @private
      */
-    private loadedSubscription = new Subject<string>();
+    public loadedSubscription = new Subject<string>();
     /**
      * true if the user is admin or the current user
      * @private
      */
-    private canEdit: boolean;
+    public canEdit: boolean;
     /**
      * holds the current user boolean
      * @private
      */
-    private isCurrentUser: boolean;
+    public isCurrentUser: boolean;
 
     /**
      * inidcates if the preferences are being loaded
      */
-    private isLoading: boolean = true;
+    public isLoading: boolean = true;
     /**
      * holds the subscriptions to unsubscribe
      * @private
      */
-    private subscriptions: Subscription;
+    public subscriptions: Subscription;
 
     constructor(
-        private backend: backend,
-        private view: view,
-        private toast: toast,
-        private currency: currency,
-        private language: language,
-        private preferencesService: userpreferences,
-        private session: session,
-        private model: model,
-        private broadcast: broadcast,
-        private configuration: configurationService,
-        private metadata: metadata) {
+        public backend: backend,
+        public view: view,
+        public toast: toast,
+        public currency: currency,
+        public language: language,
+        public preferencesService: userpreferences,
+        public session: session,
+        public model: model,
+        public broadcast: broadcast,
+        public configuration: configurationService,
+        public metadata: metadata) {
 
         this.loadInitialValues();
     }
@@ -151,9 +139,9 @@ export class UserPreferences implements OnDestroy {
      * set the initial local list values
      * @private
      */
-    private loadInitialValues() {
+    public loadInitialValues() {
         this.view.isEditable = true;
-        this.isCurrentUser = this.session.authData.userId == this.model.data.id;
+        this.isCurrentUser = this.session.authData.userId == this.model.getField('id');
 
         // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
         // CR1000463: use spiceacl to enable editing
@@ -178,7 +166,7 @@ export class UserPreferences implements OnDestroy {
      * to enable us set empty value for the home dashboard preference
      * @private
      */
-    private loadDasboardPlaceHolder() {
+    public loadDasboardPlaceHolder() {
         this.defaultDashboardPlaceHolder = {
             id: '',
             name: this.language.getLabel('LBL_ROLE_DEFAULT_DASHBOARD')
@@ -189,7 +177,7 @@ export class UserPreferences implements OnDestroy {
      * load user preferences
      * @private
      */
-    private loadPreferences() {
+    public loadPreferences() {
         if (this.isCurrentUser) {
 
             this.subscriptions = this.loadedSubscription.subscribe(() => {
@@ -202,7 +190,7 @@ export class UserPreferences implements OnDestroy {
             this.preferencesService.getPreferences(this.loadedSubscription);
 
         } else if (this.canEdit) {
-            this.backend.getRequest('module/Users/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
+            this.backend.getRequest(`module/Users/${this.model.id}/preferences/global`, {}).subscribe(prefs => {
                     this.isLoading = false;
                     this.preferences = prefs;
 
@@ -220,7 +208,7 @@ export class UserPreferences implements OnDestroy {
      * loads dashboards and dashboard sets lists
      * @private
      */
-    private loadDashboardsLists() {
+    public loadDashboardsLists() {
         this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboards: any) => {
                 // inject empty record for "default dashboard", add the rest
@@ -239,7 +227,7 @@ export class UserPreferences implements OnDestroy {
      * @param value
      * @private
      */
-    private setDashboardSetData(value) {
+    public setDashboardSetData(value) {
         this.preferences.home_dashboardset = value;
         this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
     }
@@ -249,7 +237,7 @@ export class UserPreferences implements OnDestroy {
      * @param value
      * @private
      */
-    private setHomeDashboardData(value) {
+    public setHomeDashboardData(value) {
         this.homeDashboardData = this.dashboards.find(dashboard => dashboard.id == value);
     }
 
@@ -257,7 +245,7 @@ export class UserPreferences implements OnDestroy {
      * set view mode
      * @private
      */
-    private cancel() {
+    public cancel() {
         this.view.setViewMode();
     }
 
@@ -265,10 +253,10 @@ export class UserPreferences implements OnDestroy {
      * save preferences changes
      * @private
      */
-    private save() {
+    public save() {
 
         if (!this.isCurrentUser) {
-            this.backend.postRequest('module/Users/' + this.model.data.id + '/preferences/global', {}, this.preferences).subscribe(
+            this.backend.postRequest(`module/Users/${this.model.id}/preferences/global`, {}, this.preferences).subscribe(
                 savedprefs => {
                     this.preferences = savedprefs;
                     this.view.setViewMode();

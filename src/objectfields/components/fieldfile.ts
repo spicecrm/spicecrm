@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -28,16 +16,19 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 
+/**
+ * @deprecated replaced by fieldModelAttachment
+ */
 @Component({
     selector: 'field-file',
-    templateUrl: './src/objectfields/templates/fieldfile.html'
+    templateUrl: '../templates/fieldfile.html'
 })
 export class fieldFile extends fieldGeneric {
 
-    @ViewChild('fileupload', {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
-    private showUploadModal: boolean = false;
-    private theFile: string = '';
-    private theProgress: number = 0;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: false}) public fileupload: ViewContainerRef;
+    public showUploadModal: boolean = false;
+    public theFile: string = '';
+    public theProgress: number = 0;
 
     constructor(
         public model: model,
@@ -45,12 +36,12 @@ export class fieldFile extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private configurationService: configurationService,
-        private session: session,
-        private toast: toast,
-        private modal: modal,
-        private backend: backend,
-        private helper: helper
+        public configurationService: configurationService,
+        public session: session,
+        public toast: toast,
+        public modal: modal,
+        public backend: backend,
+        public helper: helper
     ) {
         super(model, view, language, metadata, router);
     }
@@ -78,7 +69,7 @@ export class fieldFile extends fieldGeneric {
     /**
      * handles the upload of the file
      */
-    private uploadFile() {
+    public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         this.doupload(files);
     }
@@ -87,7 +78,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param files
      */
-    private doupload(files) {
+    public doupload(files) {
         this.showUploadModal = true;
         this.theFile = files[0].name;
         this.uploadAttachmentsBase64(files).subscribe((retVal: any) => {
@@ -104,12 +95,12 @@ export class fieldFile extends fieldGeneric {
         }, () => this.closeUploadPopup());
     }
 
-    private removeFile() {
+    public removeFile() {
         this.value = '';
         this.model.setField('file_mime_type', '');
     }
 
-    private closeUploadPopup() {
+    public closeUploadPopup() {
         this.showUploadModal = false;
     }
 
@@ -179,7 +170,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param file
      */
-    private readFile(file): Observable<any> {
+    public readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader = new FileReader();
         /* tslint:disable:no-string-literal */
@@ -199,7 +190,7 @@ export class fieldFile extends fieldGeneric {
         return responseSubject.asObservable();
     }
 
-    private getBarStyle() {
+    public getBarStyle() {
         return {
             width: this.theProgress + '%'
         };
@@ -212,7 +203,7 @@ export class fieldFile extends fieldGeneric {
      * @param contentType
      * @param sliceSize
      */
-    private b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+    public b64toBlob(b64Data, contentType = '', sliceSize = 512) {
 
         let byteCharacters = atob(b64Data);
         let byteArrays = [];
@@ -237,7 +228,7 @@ export class fieldFile extends fieldGeneric {
     /**
      * doanloads the attachment via ajax request
      */
-    private downloadAttachment() {
+    public downloadAttachment() {
         this.backend.getRequest('module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
@@ -254,7 +245,7 @@ export class fieldFile extends fieldGeneric {
     /**
      * a preview window for the file. if there is not a file type that can be previewed the file is downloaded
      */
-    private previewFile() {
+    public previewFile() {
 
         if (this.model.getFieldValue('file_mime_type')) {
             let fileTypeArray = this.model.getFieldValue('file_mime_type').split("/");
@@ -311,7 +302,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param event
      */
-    private preventdefault(event: any) {
+    public preventdefault(event: any) {
         if ((event.dataTransfer.items.length == 1 && event.dataTransfer.items[0].kind === 'file') || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
@@ -323,7 +314,7 @@ export class fieldFile extends fieldGeneric {
      *
      * @param files
      */
-    private onDrop(files: FileList) {
+    public onDrop(files: FileList) {
             this.doupload(files);
     }
 

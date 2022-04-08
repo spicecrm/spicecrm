@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpiceAttachments
  */
@@ -24,35 +12,35 @@ import {model} from "../../../services/model.service";
  * Display edit fields for spice attachment
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentseditmodal.html',
+    templateUrl: '../templates/spiceattachmentseditmodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceAttachmentsEditModal implements OnInit {
     /**
      * passed from the modal trigger
      */
-    private attachment: any = {};
+    public attachment: any = {};
 
     /**
      * holds the local input data to update the original attachment after save
      */
-    private inputData: {display_name?: string, category_ids?: string[], text?: string} = {};
+    public inputData: {display_name?: string, category_ids?: string[], text?: string} = {};
     /**
      * holds the available categories
      * @private
      */
-    protected categories: any[] = [];
+    public categories: any[] = [];
     /**
      * holds references of self to destroy the modal
      * @private
      */
-    private self: any = {};
+    public self: any = {};
 
-    constructor(private configurationService: configurationService,
-                private toast: toast,
-                private language: language,
-                private model: model,
-                private backend: backend) {
+    constructor(public configurationService: configurationService,
+                public toast: toast,
+                public language: language,
+                public model: model,
+                public backend: backend) {
     }
 
     /**
@@ -73,7 +61,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
      * close the modal
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -81,7 +69,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
      * save the attachment changes
      * @private
      */
-    private save() {
+    public save() {
         const body = {
             category_ids: this.inputData.category_ids.join(','),
             text: this.inputData.text,

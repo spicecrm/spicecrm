@@ -41,6 +41,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
 
 /*********************************************************************************
@@ -169,7 +170,7 @@ class UserPreference extends SugarBean
     }
 
     /**
-     * Set preference by name and category. Saving will be done in utils.php -> sugar_cleanup
+     * Set preference by name and category. Saving will be done in SugarUtils::spiceCleanup()
      *
      * @param string $name name of the preference to retreive
      * @param mixed $value value of the preference to set
@@ -237,7 +238,7 @@ class UserPreference extends SugarBean
 
 
     /**
-     * Delete preference by name and category. Saving will be done in utils.php -> sugar_cleanup
+     * Delete preference by name and category. Saving will be done in SugarUtils::spiceCleanup()
      *
      * @param string $name name of the preference to retreive
      * @param string $category name of the category to retreive, defaults to global scope
@@ -265,7 +266,7 @@ class UserPreference extends SugarBean
     }
 
     /**
-     * Loads preference by category from database. Saving will be done in utils.php -> sugar_cleanup
+     * Loads preference by category from database. Saving will be done in SugarUtils::spiceCleanup()
      *
      * @param string $category name of the category to retreive, defaults to global scope
      * @return bool successful?
@@ -353,9 +354,8 @@ class UserPreference extends SugarBean
      */
     public function getUserDateTimePreferences()
     {
-        global   $timedate;
+        $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
 
         $user = $this->_userFocus;
 
@@ -404,7 +404,7 @@ class UserPreference extends SugarBean
 
     /**
      * Saves all preferences into the database that are in the session. Expensive, this is called by default in
-     * sugar_cleanup if a setPreference has been called during one round trip.
+     * SugarUtils::spiceCleanup() if a setPreference has been called during one round trip.
      *
      * @global user will use current_user if no user specificed in $user param
      * @param user $user User object to retrieve, otherwise user current_user
@@ -512,7 +512,7 @@ class UserPreference extends SugarBean
         $db = DBManagerFactory::getInstance();
 
         // Admin-only function; die if calling as a non-admin
-        if(!is_admin($current_user)){
+        if (!SpiceUtils::isAdmin($current_user)) {
             sugar_die('only admins may call this function');
         }
 

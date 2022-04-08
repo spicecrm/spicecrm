@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -32,7 +20,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: "object-relatedlist-files",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedlistfiles.html",
+    templateUrl: "../templates/objectrelatedlistfiles.html",
     providers: [modelattachments],
     animations: [
         trigger('animateicon', [
@@ -68,50 +56,50 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * holds the filtered files list
      * @private
      */
-    protected filteredFiles: any[] = [];
+    public filteredFiles: any[] = [];
     /**
      * the fileupload elelent
      */
-    @ViewChild("fileupload", {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
+    @ViewChild("fileupload", {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
     /**
      * @ignore
      *
      * passed in component config
      */
-    private componentconfig: any = {};
+    @Input() public componentconfig: any = {};
     /**
      * @ignore
      *
      * keeps if the modal is open or not
      */
-    private isopen: boolean = true;
+    public isopen: boolean = true;
     /**
      * holds the selected category value
      * @private
      */
-    private selectedCategoryId: string = '';
+    public selectedCategoryId: string = '';
     /**
      * holds the filter term for files
      * @private
      */
-    private filterTerm: string = '';
+    public filterTerm: string = '';
     /**
      * holds the available categories
      * @private
      */
-    protected categories: any[] = [];
+    public categories: any[] = [];
     /**
      * holds the search timeout
      * @private
      */
-    private filterTimeout: number;
+    public filterTimeout: number;
 
     /**
      * holds the components subscriptions
      *
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * contructor sets the module and id for the laoder
@@ -126,17 +114,17 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param configurationService
      * @param modalservice
      */
-    constructor(private modelattachments: modelattachments,
-                private language: language,
-                private model: model,
-                private renderer: Renderer2,
-                private toast: toast,
-                private footer: footer,
-                private metadata: metadata,
-                private backend: backend,
-                private broadcast: broadcast,
-                private configurationService: configurationService,
-                private modalservice: modal) {
+    constructor(public modelattachments: modelattachments,
+                public language: language,
+                public model: model,
+                public renderer: Renderer2,
+                public toast: toast,
+                public footer: footer,
+                public metadata: metadata,
+                public backend: backend,
+                public broadcast: broadcast,
+                public configurationService: configurationService,
+                public modalservice: modal) {
     }
 
     /**
@@ -157,7 +145,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * load categories from backend or from configuration data
       * @private
      */
-    private loadCategories() {
+    public loadCategories() {
         if (!!this.configurationService.getData('spiceattachments_categories')) {
             return this.categories = this.configurationService.getData('spiceattachments_categories');
         }
@@ -174,7 +162,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param message
      * @private
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         if(message.messagetype == 'model.merge' && message.messagedata.module == this.model.module && message.messagedata.id == this.model.id){
             this.loadFiles();
         }
@@ -183,7 +171,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     /**
      * initializes the model attachments service and loads the attachments
      */
-    private loadFiles() {
+    public loadFiles() {
         // set input base64 files
         if (this.files.length > 0) {
             this.doupload(this.files);
@@ -194,7 +182,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
         });
     }
 
-    private setModelData() {
+    public setModelData() {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }
@@ -202,7 +190,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     /**
      * toggle open and closed .. called from teh template button
      */
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this.isopen = !this.isopen;
     }
@@ -212,7 +200,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param event
      */
-    private preventdefault(event: any) {
+    public preventdefault(event: any) {
         if ((event.dataTransfer.items.length >= 1 && this.hasOneItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
@@ -227,7 +215,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param items the items from the event
      */
-    private hasOneItemsFile(items) {
+    public hasOneItemsFile(items) {
         for (let item of items) {
             if (item.kind == 'file') {
                 return true;
@@ -242,7 +230,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param event the drop event
      */
-    private onDrop(event: any) {
+    public onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
         if (files && files.length >= 1) {
@@ -255,7 +243,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param event the drop event
      */
-    private fileDrop(files) {
+    public fileDrop(files) {
         if (files && files.length >= 1) {
             this.doupload(files);
         }
@@ -264,7 +252,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     /**
      * triggers a file upload. From the select button firing the hidden file upload input
      */
-    private selectFile() {
+    public selectFile() {
         let event = new MouseEvent("click", {bubbles: true});
         this.fileupload.element.nativeElement.dispatchEvent(event);
     }
@@ -272,7 +260,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     /**
      * does the upload oif the files
      */
-    private uploadFile() {
+    public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         this.doupload(files);
     }
@@ -282,7 +270,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param files an array with files
      */
-    private doupload(files) {
+    public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files);
     }
 
@@ -292,7 +280,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param value
      * @private
      */
-    private setFilteredFiles(action: string, value: string) {
+    public setFilteredFiles(action: string, value: string) {
         switch (action) {
             case 'category':
                 this.selectedCategoryId = value;

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -22,19 +10,19 @@ export class helper {
 
     public dialog: any = null;
 
-    private _base64_keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    public _base64_keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-    constructor(private modalservice: modal) {
-    } // private metadata: metadata, private footer: footer
+    constructor(public modalservice: modal) {
+    } // public metadata: metadata, public footer: footer
 
     /*
      * for the GUID Generation
      */
-    private getRand() {
+    public getRand() {
         return Math.random();
     }
 
-    private S4() {
+    public S4() {
         /* tslint:disable:no-bitwise */
         return (((1 + this.getRand()) * 0x10000) | 0).toString(16).substring(1);
         /* tslint:enable:no-bitwise */
@@ -142,7 +130,7 @@ export class helper {
         return t;
     }
 
-    private _utf8_encodeBase64(e) {
+    public _utf8_encodeBase64(e) {
         let t = '';
         e = e.replace(/\r\n/g, "\n");
         for (let n = 0; n < e.length; n++) {
@@ -163,7 +151,7 @@ export class helper {
         return t;
     }
 
-    private _utf8_decodeBase64(e) {
+    public _utf8_decodeBase64(e) {
         let t = '', n = 0, r = 0, c1 = 0, c2 = 0, c3 = 0;
         while (n < e.length) {
             r = e.charCodeAt(n);
@@ -297,7 +285,7 @@ export class helper {
      * for passwords: returns a random character of a specific type (lower, upper, digit, special).
      * @private
      */
-    private pwRandomChar( type: string ): string {
+    public pwRandomChar( type: string ): string {
         let specialChars = '!"#$%&\'()*+,-./:;<=>?@[\\]^_{|}~';
         switch( type ) {
             case 'upper':   return String.fromCharCode( Math.floor( Math.random() * 26 ) + 65 );

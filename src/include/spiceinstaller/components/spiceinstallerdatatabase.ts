@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SpiceInstallerModule
  */
@@ -22,34 +10,37 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-database',
-    templateUrl: './src/include/spiceinstaller/templates/spiceinstallerdatabase.html'
+    templateUrl: '../templates/spiceinstallerdatabase.html'
 })
 
 export class SpiceInstallerDatabase {
     /**
      * condition booleans
      */
-    private hostNameCondition: boolean = true;
-    private userNameCondition: boolean = true;
-    private dbNameCondition: boolean = true;
+    public hostNameCondition: boolean = true;
+    public userNameCondition: boolean = true;
+    public dbNameCondition: boolean = true;
 
-    private loading: boolean = false;
+    public loading: boolean = false;
 
-    private charset: string = '';
+    public charset: string = '';
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private spiceinstaller: spiceinstaller
+        public toast: toast,
+        public http: HttpClient,
+        public spiceinstaller: spiceinstaller
     ) {
-
+        // if we only have one ... set the extension by default
+        if(spiceinstaller.dbdrivers.length == 1){
+            spiceinstaller.db_type = spiceinstaller.dbdrivers[0].extension;
+        }
     }
 
     /**
      * checks if a connection with the database is possible with the inserted input,
      * saves the configuration
      */
-    private checkDB() {
+    public checkDB() {
         switch (this.spiceinstaller.db_type) {
             case 'mysql': // backward compatibility
             case 'mysqli':

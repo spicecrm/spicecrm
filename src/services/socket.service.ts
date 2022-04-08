@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -29,22 +17,22 @@ export class socket {
     /**
      * the url for the socket connection from the backend
      */
-    private socketUrl: string;
+    public socketUrl: string;
     /**
      * holds the socket id from the backend
      * @private
      */
-    private socketId: string;
+    public socketId: string;
     /**
      * holds the sockets
      * @private
      */
-    private sockets: { [key: string]: SocketObjectI } = {};
+    public sockets: { [key: string]: SocketObjectI } = {};
 
     constructor(
-        private configuration: configurationService,
-        private broadcast: broadcast,
-        private session: session
+        public configuration: configurationService,
+        public broadcast: broadcast,
+        public session: session
     ) {
     }
 
@@ -134,7 +122,7 @@ export class socket {
      * load socket config from spice config
      * @private
      */
-    private setSocketData() {
+    public setSocketData() {
         let config = this.configuration.getCapabilityConfig('socket');
         this.socketUrl = config.socket_frontend;
         this.socketId = config.socket_id;
@@ -145,7 +133,7 @@ export class socket {
      * @param namespace
      * @private
      */
-    private initializeSocket(namespace: string): SocketObjectI {
+    public initializeSocket(namespace: string): SocketObjectI {
 
         const resSubject = new Subject<SocketEventI>();
 
@@ -182,7 +170,7 @@ export class socket {
      * @param resSubject
      * @private
      */
-    private handleConnectEvent(namespace: string, resSubject: Subject<SocketEventI>) {
+    public handleConnectEvent(namespace: string, resSubject: Subject<SocketEventI>) {
 
         if (!this.sockets[namespace]?.rooms) return;
 
@@ -201,7 +189,7 @@ export class socket {
      * @param data
      * @private
      */
-    private handleCustomEvent(resSubject: Subject<SocketEventI>, event: string, data: any) {
+    public handleCustomEvent(resSubject: Subject<SocketEventI>, event: string, data: any) {
         resSubject.next({
             type: event,
             data: data

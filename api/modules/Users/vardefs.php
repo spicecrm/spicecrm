@@ -2,39 +2,40 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-global $dictionary;
-$dictionary['User'] = [
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
     'table' => 'users',
     'audited' => true,
     'fields' => [
@@ -298,7 +299,6 @@ $dictionary['User'] = [
             'name' => 'date_modified',
             'vname' => 'LBL_DATE_MODIFIED',
             'type' => 'datetime',
-            'required' => true,
             'studio' => [
                 'editview' => false,
                 'quickcreate' => false,
@@ -531,7 +531,7 @@ $dictionary['User'] = [
             'name' => 'activity_status_date_modified',
             'type' => 'datetime',
             'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODFIFIED',
+            'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
             'comment' => 'non db field retrieved from the relationship to the meeting call etc'
         ],
         'activity_required' => [
@@ -700,8 +700,7 @@ $dictionary['User'] = [
             'type' => 'varchar',
             'source' => 'non-db',
             'group' => 'email1',
-            'merge_filter' => 'enabled',
-            'required' => true,
+            'merge_filter' => 'enabled'
         ],
         'primary_address' => [
             'name' => 'primary_address',
@@ -1115,9 +1114,8 @@ $dictionary['User'] = [
 ];
 
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
-    $dictionary['User']['fields']['servicequeues'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicequeues'] = [
         'vname' => 'LBL_SERVICEQUEUES',
         'name' => 'servicequeues',
         'type' => 'link',
@@ -1130,7 +1128,7 @@ if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
 }
 // CR1000333
 if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
-    $dictionary['User']['fields']['systemdeploymentreleases'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentreleases'] = [
         'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
         'name' => 'systemdeploymentreleases',
         'type' => 'link',
@@ -1141,7 +1139,7 @@ if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRel
     ];
 }
 if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
-    $dictionary['User']['fields']['cr_user_role'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['cr_user_role'] = [
         'vname' => 'LBL_ROLE',
         'name' => 'cr_user_role',
         'type' => 'multienum',
@@ -1149,7 +1147,7 @@ if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')
         'source' => 'non-db',
         'comment' => 'representation of user_role column in join table systemdeploymentcrs_users'
     ];
-    $dictionary['User']['fields']['systemdeploymentcrs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentcrs'] = [
         'name' => 'systemdeploymentcrs',
         'type' => 'link',
         'relationship' => 'systemdeploymentcrs_users',
@@ -1162,7 +1160,7 @@ if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')
 
 }
 if (file_exists("modules/ServiceTickets")) {
-    $dictionary['User']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
         'relationship' => 'servicetickets_users',
@@ -1174,7 +1172,7 @@ if (file_exists("modules/ServiceTickets")) {
 }
 // Not sure we need this at all.... commented for now
 //if (file_exists("extensions/modules/ServiceEquipments")) {
-//    $dictionary['User']['fields']['serviceequipments'] = array(
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['serviceequipments'] = array(
 //        'name' => 'serviceequipments',
 //        'type' => 'link',
 //        'relationship' => 'serviceequipments_users',
@@ -1185,7 +1183,7 @@ if (file_exists("modules/ServiceTickets")) {
 //    );
 //}
 if (file_exists("extensions/modules/Shops")) {
-    $dictionary['User']['fields']['shops'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['shops'] = [
         'name' => 'shops',
         'type' => 'link',
         'vname' => 'LBL_SHOP',
@@ -1197,7 +1195,7 @@ if (file_exists("extensions/modules/Shops")) {
 }
 
 if (file_exists("modules/DistributionLists")) {
-    $dictionary['User']['fields']['distributionlists'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['distributionlists'] = [
         'name' => 'distributionlists',
         'vname' => 'LBL_DISTRIBUTIONLISTS',
         'type' => 'link',
@@ -1208,4 +1206,3 @@ if (file_exists("modules/DistributionLists")) {
         'comment' => 'DistributionLists the user is allocated to'
     ];
 }
-

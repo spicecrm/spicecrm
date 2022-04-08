@@ -5,12 +5,13 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\KReports\KReport;
 use SpiceCRM\modules\KReports\KReportPluginManager;
-use SpiceCRM\modules\KReports\KReportUtil;
 use SpiceCRM\modules\KReports\KReportPresentationManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -314,7 +315,7 @@ class KReporterRESTHandler
     {
         global $app_list_strings, $current_language;
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
@@ -330,7 +331,7 @@ class KReporterRESTHandler
         global $app_list_strings,  $current_language;
 $db = DBManagerFactory::getInstance();
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
@@ -465,7 +466,7 @@ $db = DBManagerFactory::getInstance();
 
         $returnArray = [];
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         // explode the path
         $pathArray = explode('::', $path);
@@ -727,9 +728,9 @@ $db = DBManagerFactory::getInstance();
         $nodeModule = BeanFactory::getBean($module);
 
         $nodeModule->load_relationships();
-        // print_r($GLOBALS['dictionary']);//
+        // print_r(SpiceDictionaryHandler::getInstance()->dictionary);//
         // 2011-07-21 add audit table
-        if (isset($GLOBALS['dictionary'][$nodeModule->object_name]['audited']) && $GLOBALS['dictionary'] [$nodeModule->object_name]['audited'])
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->object_name]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->object_name]['audited'])
             $functionsArray[] = [
                 'path' => /* ($requester != '' ? $requester. '#': '') . */
                     'audit:' . $module . ':audit',
@@ -768,7 +769,7 @@ $db = DBManagerFactory::getInstance();
                     $returnArray[] = [
                         'path' => /* ($requester != '' ? $requester. '#': '') . */
                             'link:' . $module . ':' . $field_name,
-                        'module' => ((translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (translate($field_defs
+                        'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                         ['vname'], $module))),
                         'bean' => $nodeModule->$field_name->focus->object_name,
                         'leaf' => false
@@ -777,7 +778,7 @@ $db = DBManagerFactory::getInstance();
                     $returnArray[] = [
                         'path' => /*  ($requester != '' ? $requester. '#': '') . */
                             'link:' . $module . ':' . $field_name,
-                        'module' => translate($field_defs['module'], $module),
+                        'module' => SpiceUtils::translate($field_defs['module'], $module),
                         'bean' => $nodeModule->$field_name->focus->object_name,
                         'leaf' => false
                     ];
@@ -801,7 +802,7 @@ $db = DBManagerFactory::getInstance();
                 if (isset($field_defs['vname']))
                     $returnArray [] = [
                         'path' => 'relate:' . $module . ':' . $field_name,
-                        'module' => ((translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (translate($field_defs
+                        'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                         ['vname'], $module))),
                         'bean' => $field_defs['module'],
                         'leaf' => false
@@ -809,7 +810,7 @@ $db = DBManagerFactory::getInstance();
                 elseif (isset($field_defs['module']))
                     $returnArray[] = [
                         'path' => 'relate:' . $module . ':' . $field_name,
-                        'module' => translate($field_defs['module'], $module),
+                        'module' => SpiceUtils::translate($field_defs['module'], $module),
                         'bean' => $field_defs['module'],
                         'leaf' => false
                     ];
@@ -861,7 +862,7 @@ $db = DBManagerFactory::getInstance();
                         // 2011-10-15 if the kreporttype is set return it
                         //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
                         'type' => (isset($field_defs['kreporttype'])) ? $field_defs['kreporttype'] : $field_defs['type'],
-                        'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
+                        'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                         'leaf' => true,
                         'options' => $field_defs['options']
                     ];
@@ -967,25 +968,16 @@ $db = DBManagerFactory::getInstance();
 
         global $current_language, $app_list_strings;
         $db = DBManagerFactory::getInstance();
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         // initialize Return Array
         $retData = [];
 
-        //added maretval 2019-05-03
-        //handle reportId
-        if (!KReportUtil::KReportValueIsAnId($reportId)) {
-            return $retData;
-        }
         // get the report and the vizParams
         $thisReport = BeanFactory::getBean('KReports', $reportId);
 
-        //handle start not set and start content (added maretval 2019-05-03)
-        if (!isset($requestParams['start']) || !KReportUtil::KReportValueIsIntegerOnly((int)$requestParams['start']))
-            $requestParams['start'] = 0;
-        //handle limit not set and limit content (added maretval 2019-05-03)
-        if (!isset($requestParams['limit']) || !KReportUtil::KReportValueIsIntegerOnly((int)$requestParams['limit']))
-            $requestParams['limit'] = 0;
+        $requestParams['start'] = $requestParams['start'] ?: 0;
+        $requestParams['limit'] = $requestParams['limit'] ?: 0;
 
         // set request Paramaters
         $reportParams = ['noFormat' => true, 'start' => isset($requestParams['start']) ? $requestParams['start'] : 0, 'limit' => isset($requestParams['limit']) ? $requestParams['limit'] : 0];
@@ -1184,21 +1176,11 @@ $db = DBManagerFactory::getInstance();
 
         $retData = [];
 
-        //added maretval 2019-05-03
-        //handle reportId
-        if (!KReportUtil::KReportValueIsAnId($reportId)) {
-            return $retData;
-        }
-
         // get the report and the vizParams
         $thisReport = BeanFactory::getBean('KReports', $reportId);
 
-        //handle start not set and start content (added maretval 2019-05-03)
-        if (!isset($requestParams['start']) || !KReportUtil::KReportValueIsIntegerOnly($requestParams['start']))
-            $requestParams['start'] = 0;
-        //handle limit not set and limit content (added maretval 2019-05-03)
-        if (!isset($requestParams['limit']) || !KReportUtil::KReportValueIsIntegerOnly($requestParams['limit']))
-            $requestParams['limit'] = 1000;
+        $requestParams['start'] = $requestParams['start'] ?: 0;
+        $requestParams['limit'] = $requestParams['limit'] ?: 1000;
 
         // set request Paramaters
         $reportParams = ['noFormat' => true, 'start' => isset($requestParams['start']) ? $requestParams['start'] : 0, 'limit' => isset($requestParams['limit']) ? $requestParams['limit'] : 0];
@@ -1251,10 +1233,8 @@ $db = DBManagerFactory::getInstance();
 
         // if a filter is set evaluate it .. comes from the dashlet
         if (!empty($requestParams['filter'])) {
-            if (KReportUtil::KReportValueIsAnId($requestParams['filter'])) {
-                $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '" . $requestParams['filter'] . "'"));
-                $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
-            }
+            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '" . $requestParams['filter'] . "'"));
+            $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
         }
 
         //get parent bean
@@ -1465,15 +1445,8 @@ $db = DBManagerFactory::getInstance();
         $fieldname = $params['fieldname'];
         $fieldvalue = $params['fieldvalue'];
 
-        $start = $params['start'];
-        $limit = $params['limit'];
-
-        //added maretval 2019-05-03
-        if (isset($params['start']) && !KReportUtil::KReportValueIsIntegerOnly($params['start']))
-            $start = 0;
-        if (isset($params['limit']) && !KReportUtil::KReportValueIsIntegerOnly($params['limit']))
-            $start = 0;
-
+        $start = $params['start'] ?: 0;
+        $limit = $params['limit'] ?: 0;
 
         //remoteFiter
         if (isset($params['filter'])) {
@@ -1505,8 +1478,8 @@ $db = DBManagerFactory::getInstance();
 
         switch ($getValuesFrom) {
             case 'dom':
-                $app_list_strings = return_app_list_strings_language($current_language);
-                $app_strings = return_application_language($current_language);
+                $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+                $app_strings = SpiceUtils::returnApplicationLanguage($current_language);
 
                 if (isset($app_list_strings[$dom])) {
                     $useArray = $app_list_strings[$dom];
@@ -1573,9 +1546,9 @@ $db = DBManagerFactory::getInstance();
                 //Get table_name from $module
                 $q = "SELECT DISTINCT(" . $fieldname . ") colvalue "
                     . " FROM " . $bean->table_name . " "
-                    . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 "
-                    . " LIMIT " . $start . ", " . $limit . ";";
-                if (!$res = DBManagerFactory::getInstance()->query($q))
+                    . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 ";
+//                    . " LIMIT " . $start . ", " . $limit . ";";
+                if (!$res = DBManagerFactory::getInstance()->limitQuery($q, $start, $limit))
                     LoggerManager::getLogger()->fatal("DB query error " . DBManagerFactory::getInstance()->last_error);
                 while ($row = DBManagerFactory::getInstance()->fetchByAssoc($res)) {
                     $useArray[$row['colvalue']] = $row['colvalue'];

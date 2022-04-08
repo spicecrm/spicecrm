@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReportsDesigner
  */
@@ -21,7 +9,7 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-condition-group',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerconditiongroup.html',
+    templateUrl: '../templates/reportsdesignerconditiongroup.html',
     styles: [`
         .cdk-drop-list:hover {
             background: #fff
@@ -33,20 +21,20 @@ export class ReportsDesignerConditionGroup {
     /**
     * @input group: object
      */
-    @Input() private group: any;
+    @Input() public group: any;
     /**
     * @input canDelete: boolean
      */
-    @Input() private canDelete: boolean = false;
+    @Input() public canDelete: boolean = false;
     /**
     * @output groupDeleted: EventEmitter<string> = groupId
      */
-    @Output() private treeChange: EventEmitter<any> = new EventEmitter<any>();
-    private expanded: number;
+    @Output() public treeChange: EventEmitter<any> = new EventEmitter<any>();
+    public expanded: number;
 
-    constructor(private language: language,
-                private reportsDesignerService: ReportsDesignerService,
-                private model: model) {
+    constructor(public language: language,
+                public reportsDesignerService: ReportsDesignerService,
+                public model: model) {
     }
 
     get groupType(): string {
@@ -84,7 +72,7 @@ export class ReportsDesignerConditionGroup {
      * @moveItemInArray? item in group.conditions
      * @addCondition?
      */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
+    public onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
 
         if (dragEvent.previousContainer === dragEvent.container) {
@@ -97,28 +85,28 @@ export class ReportsDesignerConditionGroup {
     /**
     * @emit object = {action: string, id: string} by treeChange
      */
-    private addGroup() {
+    public addGroup() {
         this.treeChange.emit({action: 'addGroup', id: this.group.id});
     }
 
     /**
     * @emit object = {action: string, id: string} by treeChange
      */
-    private deleteGroup() {
+    public deleteGroup() {
         this.treeChange.emit({action: 'deleteGroup', id: this.group.id});
     }
 
     /**
     * @emit obj: object by treeChange
      */
-    private handleTreeChange(obj) {
+    public handleTreeChange(obj) {
         this.treeChange.emit(obj);
     }
 
     /**
     * @set expanded = conditionId | null
      */
-    private toggleExpand(conditionId) {
+    public toggleExpand(conditionId) {
         if (!this.reportsDesignerService.expertMode) return;
         this.expanded = conditionId == this.expanded ? null : conditionId;
     }
@@ -129,7 +117,7 @@ export class ReportsDesignerConditionGroup {
      * @push condition to group.conditions
      * @set whereConditions
      */
-    private addCondition(field) {
+    public addCondition(field) {
         let guid = this.reportsDesignerService.generateGuid();
         let path = `${this.reportsDesignerService.getCurrentPath()}::${field.id}`;
 
@@ -169,7 +157,7 @@ export class ReportsDesignerConditionGroup {
      * @filter whereConditions from deleted
      * @set group.conditions
      */
-    private deleteCondition(id) {
+    public deleteCondition(id) {
         this.group.conditions = this.group.conditions.filter(condition => condition.id != id);
         this.whereConditions = this.whereConditions.filter(condition => condition.id != id);
     }
@@ -182,7 +170,7 @@ export class ReportsDesignerConditionGroup {
      * @param item
      * @return index
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

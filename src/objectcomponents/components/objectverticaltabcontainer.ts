@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -22,13 +10,14 @@ import {
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {session} from '../../services/session.service';
+import {model} from '../../services/model.service';
 
 /**
  * renders a vertical tab container
  */
 @Component({
     selector: 'object-vertical-tab-container',
-    templateUrl: './src/objectcomponents/templates/objectverticaltabcontainer.html',
+    templateUrl: '../templates/objectverticaltabcontainer.html',
     styles: [
             `.slds-is-active {
             font-weight: 600;
@@ -48,25 +37,30 @@ export class ObjectVerticalTabContainer implements OnInit {
     /**
      * the reference to the container
      */
-    @ViewChild('tabscontainer', {read: ViewContainerRef, static: true}) private tabscontainer: ViewContainerRef;
+    @ViewChild('tabscontainer', {read: ViewContainerRef, static: true}) public tabscontainer: ViewContainerRef;
 
     /**
      * the number of the active tab
      */
-    private activeTab: number = 0;
+    public activeTab: number = 0;
 
     /**
      * holds which tabs have been activated already. Since tabs are only rendered when selected
      * for performance reasons this is the array to hold which have been rendered already
      */
-    private activatedTabs: number[] = [0];
+    public activatedTabs: number[] = [0];
 
     /**
-     * the component config
+     * the componentconfig
      */
-    public componentconfig: any = [];
+    public componentconfig: any;
 
-    constructor(private language: language, public metadata: metadata, private session: session) {
+    /**
+     * the tabs to be rendered
+     */
+    public tabs: any[] = [];
+
+    constructor(public language: language, public metadata: metadata, public session: session, private model: model) {
     }
 
     /**
@@ -81,20 +75,23 @@ export class ObjectVerticalTabContainer implements OnInit {
                 if (item.componentconfig.adminonly && !this.session.isAdmin) continue;
 
                 // else add the tab
-                this.componentconfig.push(item.componentconfig);
+                this.tabs.push(item.componentconfig);
             }
         }
     }
 
     /**
-     * a simple getter to see if the tabs are defined
+     * returns if the item is hideden
+     * @param itemconfig
      */
-    private getTabs() {
-        try {
-            return this.componentconfig ? this.componentconfig : [];
-        } catch (e) {
-            return [];
-        }
+    public isHidden(itemconfig){
+        // check that we have acl access
+        if(itemconfig.acl && !this.model.checkAccess(itemconfig.acl)) return true;
+
+        // check that we have mode state access
+        if(itemconfig.requiredmodelstate && !this.model.checkModelState(itemconfig.requiredmodelstate)) return true;
+
+        return false;
     }
 
     /**
@@ -102,7 +99,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      *
      * @param index
      */
-    private setActiveTab(index) {
+    public setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
     }
@@ -112,15 +109,15 @@ export class ObjectVerticalTabContainer implements OnInit {
      *
      * @param tabindex
      */
-    private checkRenderTab(tabindex) {
-        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.componentconfig && this.componentconfig[tabindex].forcerender);
+    public checkRenderTab(tabindex) {
+        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.tabs && this.tabs[tabindex].forcerender);
     }
 
     /**
      * gets the style display property for the tab
      * @param tabindex
      */
-    private getDisplay(tabindex) {
+    public getDisplay(tabindex) {
         let rect = this.tabscontainer.element.nativeElement.getBoundingClientRect();
 
         if (tabindex !== this.activeTab) {
@@ -139,7 +136,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      *
      * ToDo: check if we still need this
      */
-    private getTabsStyle() {
+    public getTabsStyle() {
         let rect = this.tabscontainer.element.nativeElement.getBoundingClientRect();
         return {
             'height': 'calc(99.9vh - ' + (rect.top) + 'px)',
@@ -156,7 +153,7 @@ export class ObjectVerticalTabContainer implements OnInit {
      * @param tabindex
      * @param nrErrors
      */
-    private showErrorsOnTab(tabindex, nrErrors) {
+    public showErrorsOnTab(tabindex, nrErrors) {
         this.componentconfig[tabindex].hasErrors = nrErrors;
     }
 

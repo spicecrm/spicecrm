@@ -1,9 +1,12 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\FileUtils;
 
 /**
  *  Attention: this class is not finished yet... nor tested...
@@ -43,7 +46,7 @@ class DomPdfHandler extends LibPdfHandler
     public function getFontDirCacheFolder(){
         $rootDir = realpath(__DIR__ . "/../../../../");
         $fontDir = isset(SpiceConfig::getInstance()->config['dompdf']['fontDir']) ? SpiceConfig::getInstance()->config['dompdf']['fontDir'] : 'dompdf/fonts/';
-        return $rootDir.'/'.create_cache_directory($fontDir);
+        return $rootDir . '/' . FileUtils::createCacheDirectory($fontDir);
     }
 
     /**
@@ -53,7 +56,7 @@ class DomPdfHandler extends LibPdfHandler
     public function getFontCacheCacheFolder(){
         $rootDir = realpath(__DIR__ . "/../../../../");
         $fontCache = isset(SpiceConfig::getInstance()->config['dompdf']['fontCache']) ? SpiceConfig::getInstance()->config['dompdf']['fontCache'] : 'dompdf/lib/fonts/';
-        return $rootDir.'/'.create_cache_directory($fontCache);
+        return $rootDir . '/' . FileUtils::createCacheDirectory($fontCache);
     }
 
 

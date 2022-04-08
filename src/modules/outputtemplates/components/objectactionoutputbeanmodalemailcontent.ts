@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -23,7 +11,7 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'object-action-output-bean-modal-email-content',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodalemailcontent.html',
+    templateUrl: '../templates/objectactionoutputbeanmodalemailcontent.html',
     providers: [view, model]
 })
 export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
@@ -58,20 +46,20 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
      *
      * @private
      */
-    private attachmentsPanelRef: any;
+    public attachmentsPanelRef: any;
 
     /**
      * inidcates that we are sending
      */
-    private sending: boolean = false;
+    public sending: boolean = false;
 
     constructor(
-        private language: language,
-        private model: model,
-        private metadata: metadata,
-        private modal: modal,
-        private view: view,
-        private session: session
+        public language: language,
+        public model: model,
+        public metadata: metadata,
+        public modal: modal,
+        public view: view,
+        public session: session
     ) {
     }
 
@@ -92,27 +80,32 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
      * set all email-model data
      * set copy rules from parent
      */
-    private setModelData() {
+    public setModelData() {
         this.model.module = "Emails";
 
         this.model.initialize(this.parent);
-        this.model.data.parent_type = this.parent.module;
-        this.model.data.parent_id = this.parent.data.id;
-        this.model.data.parent_name = this.parent.data.name;
-        this.model.isNew = true;
-        this.model.data.assigned_user_id = this.session.authData.userId;
-        this.model.data.assigned_user_name = this.session.authData.userName;
-        this.model.data.modified_by_id = this.session.authData.userId;
-        this.model.data.modified_by_name = this.session.authData.userName;
-        this.model.data.date_entered = new Date();
-        this.model.data.date_modified = new Date();
+
+        // set the new model data
+        let modelData: any = {};
+        modelData.parent_type = this.parent.module;
+        modelData.parent_id = this.parent.data.id;
+        modelData.parent_name = this.parent.data.name;
+        modelData.isNew = true;
+        modelData.assigned_user_id = this.session.authData.userId;
+        modelData.assigned_user_name = this.session.authData.userName;
+        modelData.modified_by_id = this.session.authData.userId;
+        modelData.modified_by_name = this.session.authData.userName;
+        modelData.date_entered = new Date();
+        modelData.date_modified = new Date();
+        this.model.setFields(modelData);
+
         this.model.startEdit();
     }
 
     /**
      * if it is allowed: go to edit mode
      */
-    private setViewData() {
+    public setViewData() {
         this.view.setEditMode();
         this.view.isEditable = true;
     }
@@ -123,10 +116,12 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
             this.sending = true;
-            this.model.setField('type', 'out');
-            this.model.setField('to_be_sent', '1');
-            this.model.setField('from_addr', this.model.data.from_addr_name);
-            this.model.setField('to_addrs', this.model.data.to_addrs_names);
+            this.model.setFields({
+                type: 'out',
+                to_be_sent: '1',
+                from_addr: this.model.getField('from_addr_name'),
+                to_addrs: this.model.getField('to_addrs_names')
+            });
 
             this.model.save().subscribe(
                 success => {

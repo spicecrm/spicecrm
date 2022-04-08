@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -34,27 +22,27 @@ declare var _;
  */
 @Component({
     selector: 'object-table',
-    templateUrl: './src/objectcomponents/templates/objecttable.html'
+    templateUrl: '../templates/objecttable.html'
 })
 export class ObjectTable implements OnInit {
     @Input() public fields = [];
     @Input() public objects = [];
     @Input() public selected_objects: any = [];
 
-    @Input("fieldset_id") private fieldset_id: string;
-    @Input("module") private module: string;
+    @Input("fieldset_id") public fieldset_id: string;
+    @Input("module") public module: string;
 
     @Output('selected_objectsChange') public selected_objects$ = new EventEmitter();
     @Input('max-selections') public max_selections = 0;
     @Output('select') public select$ = new EventEmitter();
-    private selectable = false;
-    private multiselect = false;
+    public selectable = false;
+    public multiselect = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        // @Attribute("fieldset_id") private fieldset_id: string,
-        // @Attribute("module") private module: string,
+        public language: language,
+        public metadata: metadata,
+        // @Attribute("fieldset_id") public fieldset_id: string,
+        // @Attribute("module") public module: string,
         @Attribute("selectable") selectable: string,
         @Attribute("multiselect") multiselect: string,
     ) {
@@ -114,7 +102,7 @@ export class ObjectTable implements OnInit {
         }
     }
 
-    private isObjectSelected(object) {
+    public isObjectSelected(object) {
         if (this.findSelectedObject(object)) {
             return true;
         } else {
@@ -122,11 +110,11 @@ export class ObjectTable implements OnInit {
         }
     }
 
-    private areAllObjectsSelected() {
+    public areAllObjectsSelected() {
         return this.selected_objects.length == this.objects.length;
     }
 
-    private findSelectedObject(object) {
+    public findSelectedObject(object) {
         return this.selected_objects.find(e => e.id == object.id);
     }
 

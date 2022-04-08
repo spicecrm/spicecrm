@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -31,13 +19,13 @@ declare var _;
 
 @Component({
     selector: 'field-html-editor',
-    templateUrl: './src/objectfields/templates/fieldhtmleditor.html',
+    templateUrl: '../templates/fieldhtmleditor.html',
     styles: [
-        ':host >>> .mce-ico{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-text{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-btn button{font-size: 12px; color: #54698d;}',
-        ':host >>> .mce-tinymce{border-radius: 4px}',
-        ':host >>> .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
+        ':host  .mce-ico{font-size: 12px; color: #54698d;}',
+        ':host  .mce-text{font-size: 12px; color: #54698d;}',
+        ':host  .mce-btn button{font-size: 12px; color: #54698d;}',
+        ':host  .mce-tinymce{border-radius: 4px}',
+        ':host  .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
     ]
 })
 export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnInit {
@@ -141,7 +129,7 @@ export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnI
     @Output() public contentchange: EventEmitter<any> = new EventEmitter<any>();
     @Output() public stylesheetIdChange: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor( private metadata: metadata, private footer: footer, private configurationService: configurationService, private modal: modal ) {
+    constructor( public metadata: metadata, public footer: footer, public configurationService: configurationService, public modal: modal ) {
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
 

@@ -31,6 +31,7 @@ namespace SpiceCRM\includes\SpiceDemoData;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Class SpiceDemoDataGenerator
@@ -93,7 +94,7 @@ class SpiceDemoDataGenerator
             $seed->save();
 
             $seed->load_relationship('accounts');
-            $account = $db->fetchByAssoc($db->query("SELECT id FROM accounts WHERE billing_address_country = '$seed->primary_address_country' ORDER BY RAND() LIMIT 1"));
+            $account = $db->fetchByAssoc($db->limitQuery("SELECT id FROM accounts WHERE billing_address_country = '$seed->primary_address_country' ORDER BY RAND()", 0, 1));
             $seed->accounts->add($account['id']);
         }
     }
@@ -173,7 +174,7 @@ class SpiceDemoDataGenerator
 
             // relate to random account
             $seed->load_relationship('accounts');
-            $account = $db->fetchByAssoc($db->query("SELECT id, name FROM accounts WHERE deleted=0 ORDER BY RAND() LIMIT 1"));
+            $account = $db->fetchByAssoc($db->limitQuery("SELECT id, name FROM accounts WHERE deleted=0 ORDER BY RAND()", 0, 1));
 
             // save the bean
             $seed->name = $account['name'];
@@ -189,7 +190,7 @@ class SpiceDemoDataGenerator
      */
     private function makeOpportunities(){
         $opportunities = [];
-        $appListStrings = return_app_list_strings_language('en_us');
+        $appListStrings = SpiceUtils::returnAppListStringsLanguage('en_us');
         for($i=0; $i < 50; $i++){
             $opportunity = [
                 'amount' => round(mt_rand(25000, 150000), -3),

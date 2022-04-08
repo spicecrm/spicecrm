@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Calendar\api\handlers;
 
@@ -7,6 +8,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\KREST\handlers\ModuleHandler;
 
 class CalendarRestHandler
 {
@@ -37,20 +39,20 @@ class CalendarRestHandler
         $db = DBManagerFactory::getInstance();
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
-        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId);
+        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, $params['searchTerm']);
     }
 
     public function getUsersCalendar(string $userId, array $params): array {
         $db = DBManagerFactory::getInstance();
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
-        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, '', json_decode($params['users']));
+        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, $params['searchTerm'], json_decode($params['users']));
     }
 
     public function getCalendars(): array {
         $db = DBManagerFactory::getInstance();
         $retArray = [];
-        $calendars = "SELECT id, name, icon FROM sysuicalendars WHERE `default` = 1";
+        $calendars = "SELECT id, name, icon FROM sysuicalendars WHERE is_default = 1";
         $calendars = $db->query($calendars);
 
         while($calendar = $db->fetchByAssoc($calendars)) {
@@ -66,10 +68,10 @@ class CalendarRestHandler
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
         $calendarId = $db->quote($calendarId);
-        $krestModuleHandler = new KRESTModuleHandler();
+        $krestModuleHandler = new ModuleHandler();
         $calendars = "SELECT citems.* FROM sysuicalendaritems as citems ";
         $calendars .= "LEFT JOIN sysuicalendars ON citems.calendar_id = sysuicalendars.id ";
-        $calendars .= "WHERE sysuicalendars.default = 1 AND citems.calendar_id = '$calendarId'";
+        $calendars .= "WHERE sysuicalendars.is_default = 1 AND citems.calendar_id = '$calendarId'";
         $calendars = $db->query($calendars);
 
         while ($calendar = $db->fetchByAssoc($calendars)) {

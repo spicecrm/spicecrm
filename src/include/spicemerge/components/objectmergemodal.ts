@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -27,7 +15,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'object-merge-modal',
-    templateUrl: './src/include/spicemerge/templates/objectmergemodal.html',
+    templateUrl: '../templates/objectmergemodal.html',
     providers: [model, modellist, objectmerge]
 })
 export class ObjectMergeModal implements OnInit {
@@ -35,24 +23,24 @@ export class ObjectMergeModal implements OnInit {
     /**
      * a list of models to be merged
      */
-    @Input() private mergemodels: any[] = [];
+    @Input() public mergemodels: any[] = [];
 
     /**
      * the current merge step
      */
-    private currentMergeStep: number = 0;
+    public currentMergeStep: number = 0;
 
     /**
      * the merge steps available
      */
-    private mergeSteps: string[] = ['records', 'fields', 'execute'];
+    public mergeSteps: string[] = ['records', 'fields', 'execute'];
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
-    constructor(private broadcast: broadcast, private router: Router, private metadata: metadata, private objectmerge: objectmerge, @SkipSelf() private parentmodel: model, private model: model, private modellist: modellist, private backend: backend, private modal: modal) {
+    constructor(public broadcast: broadcast, public router: Router, public metadata: metadata, public objectmerge: objectmerge, @SkipSelf() public parentmodel: model, public model: model, public modellist: modellist, public backend: backend, public modal: modal) {
 
     }
 
@@ -71,7 +59,7 @@ export class ObjectMergeModal implements OnInit {
         // if we have a parentmodel id add this as the master
         if (this.parentmodel.id) {
             this.model.id = this.parentmodel.id;
-            this.model.data = this.parentmodel.data;
+            this.model.setData(this.parentmodel.data, false);
 
             // set the master id
             this.objectmerge.masterId = this.model.id;
@@ -81,10 +69,10 @@ export class ObjectMergeModal implements OnInit {
             this.objectmerge.allowSwitchMaster = this.parentmodel.checkAccess('delete');
 
             // select the current model and add to the list
-            this.model.data.selected = true;
+            this.model.setField('selected', true);
 
             // just to be sure
-            this.model.data.id = this.model.id;
+            // this.model.data.id = this.model.id;
 
             // push the record
             this.modellist.listData.list.push(this.model.data);
@@ -117,18 +105,18 @@ export class ObjectMergeModal implements OnInit {
     /**
      * closes the modal
      */
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
     /**
      *
      */
-    private getCurrentStep() {
+    public getCurrentStep() {
         return this.mergeSteps[this.currentMergeStep];
     }
 
-    private nextStep() {
+    public nextStep() {
         if (this.currentMergeStep < this.mergeSteps.length - 1) {
             switch (this.currentMergeStep) {
                 default:
@@ -209,7 +197,7 @@ export class ObjectMergeModal implements OnInit {
         }
     }
 
-    private prevStep() {
+    public prevStep() {
         if (this.currentMergeStep > 0) {
             this.currentMergeStep--;
         }

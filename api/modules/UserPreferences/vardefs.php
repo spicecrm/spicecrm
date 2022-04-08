@@ -33,8 +33,9 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-$GLOBALS['dictionary']['UserPreference'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['UserPreference'] = [
     'table' => 'user_preferences',
     'fields' => [
         'id' =>
@@ -105,9 +106,3 @@ $GLOBALS['dictionary']['UserPreference'] = [
         ['name' =>'idx_userprefnamecatdel', 'type'=>'index', 'fields'=>['assigned_user_id','category', 'deleted']],
     ]
 ];
- 
-
-
-
-//// cn: bug 12036 - $dictionary['x'] for SugarBean::createRelationshipMeta() from upgrades
-//$dictionary['UserPreference'] = $GLOBALS['dictionary']['UserPreference'];

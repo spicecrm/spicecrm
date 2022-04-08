@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['SpiceImportTemplate'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['SpiceImportTemplate'] = [
     'table' => 'spiceimporttemplates',
     'comment' => 'SpiceImportTemplates Module',
     'duplicate_merge' =>  false,

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -51,11 +39,18 @@ export interface UploadResponse {
 
 @Injectable()
 export class systemrichtextservice {
-    public  savedSelection: Range | null;
+    public savedSelection: Range | null;
     public selectedText: string;
+    public selectedHtml: string;
     public uploadUrl: string;
 
-    constructor(@Inject(DOCUMENT) private _document: Document) {
+    /**
+     * to help encoding/decoding html
+     */
+    public dummyHtmlElement: HTMLElement;
+
+    constructor(@Inject(DOCUMENT) public _document: Document) {
+        this.dummyHtmlElement = document.createElement('div');
     }
 
     /**
@@ -74,14 +69,19 @@ export class systemrichtextservice {
     /**
      * Create URL link
      * @param url string from UI prompt
+     * @param text string from UI prompt
+     * @param attributes object with html attributes
      */
-    public createLink(url: string) {
-        if (!url.includes("http")) {
-            this._document.execCommand('createlink', false, url);
-        } else {
-            const newUrl = '<a href="' + url + '" target="_blank">' + this.selectedText + '</a>';
-            this.insertHtml(newUrl);
+    public createLink( url: string, text: string, attributes: {} = {} )
+    {
+        if ( !text ) text = url;
+        let blankTarget = !url.includes('http');
+        let attributesString = '';
+        for( const prop in attributes ) {
+            attributesString += ( ' ' + prop + '="'+this.encodeHTMLEntities( attributes[prop] ) + '"' );
         }
+        const html = '<a href="' + url + '"' + ( blankTarget ? ' target="_blank"':'' ) + attributesString + '>' + text + '</a>';
+        this.insertHtml(html);
     }
 
     /**
@@ -123,7 +123,7 @@ export class systemrichtextservice {
      * Create raw HTML
      * @param html HTML string
      */
-    private insertHtml(html: string): void {
+    public insertHtml(html: string): void {
 
         const isHTMLInserted = this._document.execCommand('insertHTML', false, html);
 
@@ -143,6 +143,10 @@ export class systemrichtextservice {
             if (sel.getRangeAt && sel.rangeCount) {
                 this.savedSelection = sel.getRangeAt(0);
                 this.selectedText = sel.toString();
+                // Get HTML of saved selection:
+                let dummyDiv = document.createElement('div');
+                dummyDiv.appendChild( this.savedSelection.cloneContents() );
+                this.selectedHtml = dummyDiv.innerHTML;
             }
         } else if (this._document.getSelection && this._document.createRange) {
             this.savedSelection = document.createRange();
@@ -173,7 +177,7 @@ export class systemrichtextservice {
     }
 
     /** check any slection is made or not */
-    private checkSelection(): any {
+    public checkSelection(): any {
 
         const slectedText = this.savedSelection.toString();
 
@@ -232,7 +236,7 @@ export class systemrichtextservice {
      * clear the document/window user selection
      * @private
      */
-    private clearSelection() {
+    public clearSelection() {
 
         this.savedSelection = undefined;
 
@@ -248,7 +252,7 @@ export class systemrichtextservice {
      * @param editorContainer
      * @protected
      */
-    protected resetRangeBoundaries(editorContainer) {
+    public resetRangeBoundaries(editorContainer) {
         if (!this.savedSelection) return;
         if (!editorContainer.contains(this.savedSelection.startContainer)) {
             this.savedSelection.setStart(editorContainer, 0);
@@ -265,7 +269,7 @@ export class systemrichtextservice {
      * @param beforeElement
      * @protected
      */
-    protected insertElementForNode(element: HTMLElement, target: HTMLElement, beforeElement?: HTMLElement) {
+    public insertElementForNode(element: HTMLElement, target: HTMLElement, beforeElement?: HTMLElement) {
 
         if (this.savedSelection) {
             this.savedSelection.deleteContents();
@@ -284,7 +288,7 @@ export class systemrichtextservice {
      * @param editorContainer
      * @protected
      */
-    protected getRangeCurrentTarget(startContainer: Node, editorContainer: HTMLElement): HTMLElement {
+    public getRangeCurrentTarget(startContainer: Node, editorContainer: HTMLElement): HTMLElement {
 
         let currentTarget = startContainer as HTMLElement;
 
@@ -304,4 +308,15 @@ export class systemrichtextservice {
         const newTag = '<' + tagName + ' class="' + customClass.class + '">' + this.selectedText + '</' + tagName + '>';
         this.insertHtml(newTag);
     }
+
+    public decodeHTMLEntities(text) {
+        this.dummyHtmlElement.innerHTML = text;
+        return this.dummyHtmlElement.innerText;
+    }
+
+    public encodeHTMLEntities(text) {
+        this.dummyHtmlElement.innerText = text;
+        return this.dummyHtmlElement.innerHTML;
+    }
+
 }

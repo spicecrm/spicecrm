@@ -145,13 +145,10 @@ class CampaignTracker extends SugarBean {
             $this->campaign_name=$row['name'];
         }
 
-        if (!class_exists('Administration')) {
+        $massmailerConfig = SpiceConfig::getInstance()->get('massemailer');
 
-        }
-        $admin= BeanFactory::getBean('Administration');
-        $admin->retrieveSettings('massemailer'); //retrieve all admin settings.
-        if (isset($admin->settings['massemailer_tracking_entities_location_type']) and $admin->settings['massemailer_tracking_entities_location_type']=='2'  and isset($admin->settings['massemailer_tracking_entities_location']) ) {
-            $this->message_url=$admin->settings['massemailer_tracking_entities_location'];
+        if (isset($massmailerConfig['massemailer_tracking_entities_location_type']) && $massmailerConfig['massemailer_tracking_entities_location_type']=='2'  and isset($massmailerConfig['massemailer_tracking_entities_location']) ) {
+            $this->message_url=$massmailerConfig['massemailer_tracking_entities_location'];
         } else {
             $this->message_url= SpiceConfig::getInstance()->config['site_url'];
         }
@@ -162,4 +159,4 @@ class CampaignTracker extends SugarBean {
         }
     }
 }
-?>
+

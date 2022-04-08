@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -41,7 +29,7 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-filter-panel-filter-item',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilteritem.html',
+    templateUrl: '../templates/objectlistviewfilterpanelfilteritem.html',
     animations: [
         trigger('animatepopover', [
             transition(':enter', [
@@ -56,22 +44,22 @@ declare var _: any;
     ]
 })
 export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilterExpression implements OnDestroy, AfterViewInit {
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
 
     /**
      * boolean if the popover is open
      */
-    private showPopover: boolean = false;
+    public showPopover: boolean = false;
 
     /**
      * helper listener to close the popup when a click happens outside
      */
-    private clickListener: any = null;
+    public clickListener: any = null;
 
     /**
      * list of fieldtypes that shoudl not be allowed for filtering
      */
-    private excludedFieldtypes: string[] = ['link', 'relate', 'email'];
+    public excludedFieldtypes: string[] = ['link', 'relate', 'email'];
 
     /**
      * an emitter to indicate that the current item should be deleted by the user
@@ -82,10 +70,10 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         public backend: backend,
         public language: language,
         public metadata: metadata,
-        private elementRef: ElementRef,
-        private modellist: modellist,
-        private renderer: Renderer2,
-        private userpreferences: userpreferences
+        public elementRef: ElementRef,
+        public modellist: modellist,
+        public renderer: Renderer2,
+        public userpreferences: userpreferences
     ) {
         super(backend, language, metadata);
 
@@ -123,14 +111,14 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * show the popover
      */
-    private onClick() {
+    public onClick() {
         this.openPopover();
     }
 
     /**
      * opens the popover
      */
-    private openPopover() {
+    public openPopover() {
         if (!this.showPopover) {
             this.showPopover = true;
             // this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -138,7 +126,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         }
     }
 
-    private onFocus(event) {
+    public onFocus(event) {
         window.setTimeout(() => {
             event.target.blur();
         }, 250);
@@ -147,7 +135,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * closes the popover
      */
-    private closePopover() {
+    public closePopover() {
         this.showPopover = false;
     }
 
@@ -156,7 +144,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
      *
      * @param event
      */
-    private onDocumentClick(event: MouseEvent): void {
+    public onDocumentClick(event: MouseEvent): void {
         if (this.showPopover) {
             if (!this.elementRef.nativeElement.contains(event.target)) {
                 this.showPopover = false;
@@ -168,7 +156,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * positions the popover properly
      */
-    private getPopoverStyle() {
+    public getPopoverStyle() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
         return {
@@ -181,14 +169,14 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
     /**
      * display the name oif the field used for the filter resp the labe that it is a new filter
      */
-    private getDisplayName() {
+    public getDisplayName() {
         return this.field ? this.language.getFieldDisplayName(this.modellist.module, this.field) : this.language.getLabel('LBL_NEW_FILTER');
     }
 
     /**
      * emits that the filter shopudl be deleted
      */
-    private deleteFilter() {
+    public deleteFilter() {
         this.deleteItem.emit(true);
     }
 
@@ -197,7 +185,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
      *
      * @param value
      */
-    private interpretvalue(value) {
+    public interpretvalue(value) {
         try {
             let operator = this.operators[this.operatortype].find(item => item.operator == this.operator);
             switch (operator.value1) {

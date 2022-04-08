@@ -1,16 +1,4 @@
 /*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
-/*
 SpiceUI 2021.01.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
@@ -120,39 +108,39 @@ export class timeline {
      * checks if a reload is initiated
      * @private
      */
-    private initial = true;
+    public initial = true;
     /**
      * indicates how many module records have been found
      * @private
      */
-    private totalModuleRecords = 0;
+    public totalModuleRecords = 0;
     /**
      * indicates how many audit records have already been loaded
      * @private
      */
-    private loadedAuditRecords = 0;
+    public loadedAuditRecords = 0;
     /**
      * indicates how many audit records have been found
      * @private
      */
-    private totalAuditRecords = 0;
+    public totalAuditRecords = 0;
     /**
      * indicates how many audit records have already been loaded
      * @private
      */
-    private loadedModuleRecords = 0;
+    public loadedModuleRecords = 0;
     /**
      * indicates if searching for module records is disabled
      * @private
      */
-    private moduleSearch = true;
+    public moduleSearch = true;
     /**
      * indicates if searching for audit records is disabled
      * @private
      */
-    private auditSearch: any = true;
+    public auditSearch: any = true;
 
-    constructor(private modelutilities: modelutilities, private backend: backend, private metadata: metadata, private broadcast: broadcast, private model: model) {
+    constructor(public modelutilities: modelutilities, public backend: backend, public metadata: metadata, public broadcast: broadcast, public model: model) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
@@ -305,7 +293,7 @@ export class timeline {
      *
      * @param message the broadcast message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         let messageType = message.messagetype.split('.');
         if (messageType[0] === 'model') {
             // handle the message type
@@ -347,10 +335,10 @@ export class timeline {
      * @param records
      * @private
      */
-    private addRecords(records: moduleRecord[] | auditRecord[], silent = false) {
+    public addRecords(records: moduleRecord[] | auditRecord[], silent = false) {
         if (this.totalAuditRecords === this.loadedAuditRecords && this.totalModuleRecords === this.loadedModuleRecords && this.searchTerm === '' && this.filters.own === '' && this.filters.objectfilters.indexOf('Modules') >= 0) {
 
-            if (this.timeRangeStart.isAfter(this.parent.data.date_entered)) {
+            if (this.timeRangeStart.isAfter(this.parent.getField('date_entered'))) {
 
                 let origin = this.parent.data;
 
@@ -365,7 +353,7 @@ export class timeline {
 
     }
 
-    private getBody(response, initial) {
+    public getBody(response, initial) {
         if (initial) {
             this.totalModuleRecords = response.counts.totalModules;
             this.totalAuditRecords = response.counts.totalAudits;

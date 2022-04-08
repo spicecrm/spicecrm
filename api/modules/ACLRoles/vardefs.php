@@ -33,11 +33,12 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-
-global $dictionary;
-$dictionary['ACLRole'] = ['table' => 'acl_roles', 'comment' => 'ACL Role definition'
-                               ,'fields' => [
+SpiceDictionaryHandler::getInstance()->dictionary['ACLRole'] = [
+    'table' => 'acl_roles',
+    'comment' => 'ACL Role definition',
+    'fields' => [
   'id' => 
   [
     'name' => 'id',
@@ -137,7 +138,3 @@ $dictionary['ACLRole'] = ['table' => 'acl_roles', 'comment' => 'ACL Role definit
     ]
 
 ];
-
- 
-
-?>

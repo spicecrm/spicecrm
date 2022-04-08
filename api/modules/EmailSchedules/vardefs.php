@@ -1,9 +1,8 @@
 <?php
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-global $dictionary;
-$dictionary['EmailSchedule'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['EmailSchedule'] = [
     'table' => 'emailschedules',
     'comment' => 'Email Schedules Module',
     'audited' =>  true,

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleUsers
  */
@@ -21,22 +9,22 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: "user-roles-add-modal",
-    templateUrl: "./src/modules/users/templates/userrolesaddmodal.html"
+    templateUrl: "../templates/userrolesaddmodal.html"
 })
 export class UserRolesAddModal {
 
     @Input() public user_id = '';
     @Input() public noneUserRoles: any[] = [];
-    private sysuirole_id = '';
-    private self: any;
-    private response: Observable<object> = null;
-    private responseSubject: Subject<any> = null;
+    public sysuirole_id = '';
+    public self: any;
+    public response: Observable<object> = null;
+    public responseSubject: Subject<any> = null;
 
 
     constructor(
-        private language: language,
-        private toast: toast,
-        private backend: backend
+        public language: language,
+        public toast: toast,
+        public backend: backend
     ) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
@@ -58,25 +46,25 @@ export class UserRolesAddModal {
         return customRoles;
     }
 
-    private setRole(id) {
+    public setRole(id) {
         this.sysuirole_id = id;
     }
 
-    private cancel() {
+    public cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private onModalEscX() {
+    public onModalEscX() {
         this.cancel();
     }
 
-    private canSubmit(): boolean {
+    public canSubmit(): boolean {
         return this.sysuirole_id.length > 0;
     }
 
-    private add() {
+    public add() {
         this.backend.postRequest(`configuration/spiceui/core/roles/${this.sysuirole_id}/${this.user_id}/new`)
             .subscribe(
                 res => {

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -37,7 +25,7 @@ import {skip} from "rxjs/operators";
  */
 @Component({
     selector: 'object-list',
-    templateUrl: './src/objectcomponents/templates/objectlist.html',
+    templateUrl: '../templates/objectlist.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
@@ -54,7 +42,7 @@ export class ObjectList implements OnDestroy, OnInit {
     /**
      * Show drag handle and provide drag&drop functionality.
      */
-    @Input() private dragAndDrop = false;
+    @Input() public dragAndDrop = false;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -170,7 +158,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @param index
      * @param item
      */
-    protected trackbyfn(index, item) {
+    public trackbyfn(index, item) {
         return item.id;
     }
 
@@ -180,7 +168,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * call to get the list data
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         this.loadComponentConfig();
 
@@ -214,7 +202,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         this.cdRef.detectChanges();
         if (newType.listcomponent != 'ObjectList') return;
         this.chooseFields();
@@ -225,7 +213,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * load the component config and set the disable autoload value from the model list service if undefined
      * @private
      */
-    private loadComponentConfig() {
+    public loadComponentConfig() {
         this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         if ('disableAutoloadListAll' in this.componentconfig) return;
         this.componentconfig.disableAutoloadListAll = this.modellist.disableAutoloadListAll;
@@ -235,7 +223,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * trigger get list data on the service if autoload is not disabled and the list type is not "all" or reset the list data
      * @private
      */
-    private getListData() {
+    public getListData() {
         if (this.modellist.currentList.id != 'all' || !this.componentconfig?.disableAutoloadListAll) {
             this.modellist.getListData().subscribe(() =>
                 this.cdRef.detectChanges()
@@ -248,7 +236,7 @@ export class ObjectList implements OnDestroy, OnInit {
     /**
      * opens the modal allowing the user to choose and select the display fields when no field defs are defined and no current list fields are defined
      */
-    private chooseFields() {
+    public chooseFields() {
         if (this.modellist.isCustomList() && this.modellist.listfields.length == 0 && this.modellist.getFieldDefs()?.length == 0 && this.modellist.checkAccess('edit')) {
             this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
         }

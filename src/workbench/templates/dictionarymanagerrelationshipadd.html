@@ -1,0 +1,47 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ADD_RELATIONSHIP"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-p-around--small">
+            <system-input-radio name="relationshiptype" [(ngModel)]="relationshipType" value="one-to-many">
+                <system-label label="LBL_ONE_TO_MANY"></system-label>
+            </system-input-radio>
+            <system-input-radio name="relationshiptype" [(ngModel)]="relationshipType" value="many-to-one">
+                <system-label label="LBL_MANY_TO_ONE"></system-label>
+            </system-input-radio>
+            <system-input-radio name="relationshiptype" [(ngModel)]="relationshipType" value="many-to-many">
+                <system-label label="LBL_MANY_TO_MANY"></system-label>
+            </system-input-radio>
+            <system-input-radio name="relationshiptype" [(ngModel)]="relationshipType" value="parent">
+                <system-label label="LBL_PARENT"></system-label>
+            </system-input-radio>
+        </div>
+        <div class="slds-form-element__control slds-p-around--xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DICTIONARYDEFINITION"></system-label></label>
+            <div class="slds-select_container">
+                <select class="slds-size--1-of-2" [(ngModel)]="related_id" class="slds-select">
+                    <option *ngFor="let dictionarydefinition of related_ids" [value]="dictionarydefinition.id">{{dictionarymanager.getDictionaryDefinitionName(dictionarydefinition.id)}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-form-element__control slds-p-around--xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="scope">
+                    <option *ngIf="dictionarymanager.changescope == 'global'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                    <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                </select>
+            </div>
+        </div>
+
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="!related_id" (click)="add()">
+            <system-label label="LBL_ADD"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

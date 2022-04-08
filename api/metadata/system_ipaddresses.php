@@ -1,6 +1,7 @@
 <?php
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-$dictionary['ipaddresses'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['ipaddresses'] = [
     'table' => 'ipaddresses',
     'fields' => [
         'id' => [

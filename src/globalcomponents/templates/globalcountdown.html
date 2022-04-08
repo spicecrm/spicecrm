@@ -1,0 +1,9 @@
+<div *ngIf="timeleft && visible" class="slds-grid--vertical slds-text-body--small slds-p-horizontal--small slds-m-left--small slds-border--left">
+    <div>{{event}}</div>
+    <div class="slds-grid">
+        <div class="slds-p-right--xxx-small">{{timeleft.daysToDday}}d</div>
+        <div class="slds-p-right--xxx-small">{{timeleft.hoursToDday}}h</div>
+        <div class="slds-p-right--xxx-small">{{timeleft.minutesToDday}}m</div>
+        <div>{{timeleft.secondsToDday}}s</div>
+    </div>
+</div>

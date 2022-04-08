@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['EventRegistration'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
     'table' => 'eventregistrations',
     'comment' => 'EventRegistrations Module',
     'audited' => false,

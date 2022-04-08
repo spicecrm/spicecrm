@@ -38,10 +38,13 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 
@@ -299,6 +302,20 @@ abstract class DBManager
 		return $this;
 	}
 
+    /**
+     * returns database stats
+     * to be if supported implemented in the DB driver
+     *
+     * @return array
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $statsArray = [];
+
+        return ['size' => $dbSize, 'count' => $dbCount, 'table' => $statsArray];
+    }
+
 	/**
 	 * Checks for error happening in the database
 	 *
@@ -407,11 +424,11 @@ protected function checkQuery($sql, $object_name = false)
 	else
 		return false;
 
-	if (!empty($object_name) && !empty($GLOBALS['dictionary'][$object_name]))
-		$indices = $GLOBALS['dictionary'][$object_name]['indices'];
+	if (!empty($object_name) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$object_name]))
+		$indices = SpiceDictionaryHandler::getInstance()->dictionary[$object_name]['indices'];
 
 	if (empty($indices)) {
-		foreach ( $GLOBALS['dictionary'] as $current ) {
+		foreach (SpiceDictionaryHandler::getInstance()->dictionary as $current) {
 			if ($current['table'] == $table){
 				$indices = $current['indices'];
 				break;
@@ -506,10 +523,8 @@ protected function checkQuery($sql, $object_name = false)
      */
 	public function insertQuery($table, array $data, $execute = true)
     {
-        global $dictionary;
-
         // find the dictionary table
-        foreach($dictionary as $dictionaryName => $dictionaryDefs){
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if($dictionaryDefs['table'] == $table){
                 return $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
             }
@@ -619,7 +634,7 @@ protected function checkQuery($sql, $object_name = false)
 
 			if(isset($data[$field])) {
 				// clean the incoming value..
-				$val = from_html($data[$field]);
+				$val = DBUtils::fromHtml($data[$field]);
 			} else {
 				if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
 					$val = $fieldDef['default'];
@@ -840,10 +855,9 @@ protected function checkQuery($sql, $object_name = false)
 		if($tablename == 'does_not_exist' || $tablename == '')
 			return '';
 
-		global $dictionary;
 		$engine=null;
-		if (isset($dictionary[$bean->getObjectName()]['engine']) && !empty($dictionary[$bean->getObjectName()]['engine']) )
-			$engine = $dictionary[$bean->getObjectName()]['engine'];
+		if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine']) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine']) )
+			$engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
 
 		return $this->repairTableParams($tablename, $fielddefs,$new_index,$execute,$engine);
 	}
@@ -867,11 +881,10 @@ protected function checkQuery($sql, $object_name = false)
         if($tablename == 'does_not_exist' || $tablename == '')
             return '';
 
-        global $dictionary;
         $engine=null;
-        if (isset($dictionary['audit']['engine']) && !empty($dictionary['audit']['engine']) )
-            $engine = $dictionary['audit']['engine'];
-
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine']) && !empty(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine']) ) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'];
+        }
         return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute, $engine);
     }
 
@@ -1557,15 +1570,15 @@ protected function checkQuery($sql, $object_name = false)
 							if(isset($type) && $type=='int') {
 // CR1000452
 //								if(!empty($custom_fields[$fieldDef['name']]))
-//									$cstm_values[$fieldDef['name']] = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(from_html($val));
+//									$cstm_values[$fieldDef['name']] = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val));
 //								else
-									$values[$fieldDef['name']] = DBManagerFactory::getInstance()->quote(from_html($val));
+									$values[$fieldDef['name']] = DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val));
 							} else {
 // CR1000452
 //								if(!empty($custom_fields[$fieldDef['name']]))
-//									$cstm_values[$fieldDef['name']] = "'".\SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(from_html($val))."'";
+//									$cstm_values[$fieldDef['name']] = "'".\SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val))."'";
 //								else
-									$values[$fieldDef['name']] = "'". DBManagerFactory::getInstance()->quote(from_html($val))."'";
+									$values[$fieldDef['name']] = "'". DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val))."'";
 							}
 						}
 						if(!$built_columns){
@@ -1672,7 +1685,7 @@ protected function checkQuery($sql, $object_name = false)
 	public function countQuery()
 	{
 		if (self::$queryLimit != 0 && ++self::$queryCount > self::$queryLimit
-			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !is_admin(AuthenticationController::getInstance()->getCurrentUser()))) {
+			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !SpiceUtils::isAdmin(AuthenticationController::getInstance()->getCurrentUser()))) {
             $resourceManager = ResourceManager::getInstance();
             $resourceManager->notifyObservers('ERR_QUERY_LIMIT');
 		}
@@ -1686,7 +1699,7 @@ protected function checkQuery($sql, $object_name = false)
      */
 	protected function quoteInternal($string)
 	{
-		return from_html($string);
+		return DBUtils::fromHtml($string);
 	}
 
 	/**
@@ -1810,7 +1823,7 @@ protected function checkQuery($sql, $object_name = false)
 	{
 		LoggerManager::getLogger()->info("Fetch One: |$sql|");
 		$this->checkConnection();
-		$queryresult = $this->query($sql, $dieOnError, $msg);
+		$queryresult = $this->limitQuery($sql, 0, 1, $dieOnError, $msg);
 		$this->checkError($msg.' Fetch One Failed:' . $sql, $dieOnError);
 
 		if (!$queryresult) return false;
@@ -2107,7 +2120,7 @@ protected function checkQuery($sql, $object_name = false)
     		if($fieldDef['name'] == 'deleted' && empty($bean->deleted)) continue;
 
     		if(isset($bean->$field)) {
-    			$val = from_html($bean->$field);
+    			$val = DBUtils::fromHtml($bean->$field);
     		} else {
     			continue;
     		}
@@ -2970,15 +2983,14 @@ protected function checkQuery($sql, $object_name = false)
      */
 	protected function auditSQL(SugarBean $bean, $changes)
 	{
-        global $dictionary;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $sql = "INSERT INTO " . $bean->get_audit_table_name();
         //get field defs for the audit table.
         require('metadata/audit_templateMetaData.php');
-        $fieldDefs = $dictionary['audit']['fields'];
+        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
 
         $values = [];
-        $values['id'] = $this->massageValue(create_guid(), $fieldDefs['id']);
+        $values['id'] = $this->massageValue(SpiceUtils::createGuid(), $fieldDefs['id']);
         // $values['transactionid']= LoggerManager::getLogger()->getTransactionId();
         $values['parent_id'] = $this->massageValue($bean->id, $fieldDefs['parent_id']);
         $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);
@@ -4145,6 +4157,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	abstract public function getGuidSQL();
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string

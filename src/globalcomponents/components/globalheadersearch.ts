@@ -1,22 +1,10 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
 import {
     Component,
-    ElementRef,
-    Renderer2,
+    ElementRef, HostListener,
+    Renderer2, ViewChild, ViewContainerRef,
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
@@ -25,18 +13,28 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'global-header-search',
-    templateUrl: './src/globalcomponents/templates/globalheadersearch.html',
+    templateUrl: '../templates/globalheadersearch.html',
     providers: [fts]
 })
 export class GlobalHeaderSearch {
-    private showRecent: boolean = false;
-    private searchTimeOut: any = undefined;
-    private searchTerm: string = '';
-    private searchTermUntrimmed: string = '';
-    private clickListener: any;
-    public _searchmodule: string = 'all';
-    private searchresults: any[] = [];
 
+    @ViewChild('searchfield', {read: ViewContainerRef, static: false}) public serachfield: ViewContainerRef;
+
+    public showRecent: boolean = false;
+    public searchTimeOut: any = undefined;
+    public searchTerm: string = '';
+    public searchTermUntrimmed: string = '';
+    public clickListener: any;
+    public _searchmodule: string = 'all';
+    public searchresults: any[] = [];
+
+    /**
+     * add a control-space listener to open the quick launcher
+     * @param event
+     */
+    @HostListener('document:keydown.control.s')quickLaunch(event: KeyboardEvent) {
+        this.serachfield.element.nativeElement.focus();
+    }
 
     get searchmodule() {
         return this._searchmodule;
@@ -63,19 +61,19 @@ export class GlobalHeaderSearch {
         return window.innerWidth >= 768;
     }
 
-    private onFocus() {
+    public onFocus() {
         this.showRecent = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private closePopup() {
+    public closePopup() {
         this.clickListener();
         this.showRecent = false;
         this.searchTerm = '';
         this.searchTermUntrimmed = '';
     }
 
-    private doSearch() {
+    public doSearch() {
         this.searchTerm = this.searchTermUntrimmed.trim();
         if (this.searchTerm.length && this.searchTerm !== this.fts.searchTerm) {
             // start the search
@@ -83,7 +81,7 @@ export class GlobalHeaderSearch {
         }
     }
 
-    private executeSearch() {
+    public executeSearch() {
         let searchmodules = [];
         if (this.showModuleSelector && this._searchmodule != 'all') searchmodules.push(this._searchmodule);
 
@@ -103,7 +101,7 @@ export class GlobalHeaderSearch {
         // this.broadcast.broadcastMessage('fts.search', this.searchTerm);
     }
 
-    private clearSearchTerm() {
+    public clearSearchTerm() {
         // cancel any ongoing search
         if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
@@ -113,7 +111,7 @@ export class GlobalHeaderSearch {
         this.fts.searchTerm = '';
     }
 
-    private search(_e) {
+    public search(_e) {
         // make sure the popup is open
         this.showRecent = true;
 
@@ -155,7 +153,7 @@ export class GlobalHeaderSearch {
      * @param searchTerm
      * @private
      */
-    private searchTermsValid(searchTerm) {
+    public searchTermsValid(searchTerm) {
         let config = this.configuration.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
         let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
@@ -170,7 +168,7 @@ export class GlobalHeaderSearch {
         }
     }
 
-    private selected(event) {
+    public selected(event) {
         this.showRecent = false;
         this.clearSearchTerm();
     }

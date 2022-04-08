@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AdminComponentsModule
  */
@@ -26,26 +14,26 @@ declare var _: any;
 
 @Component({
     selector: '[administration-login-restriction-ip-addresses-row]',
-    templateUrl: './src/admincomponents/templates/administrationloginrestrictionipaddressesrow.html'
+    templateUrl: '../templates/administrationloginrestrictionipaddressesrow.html'
 })
 export class AdministrationLoginRestrictionIpAddressesRow {
 
-    @Input() private ipAddress: any;
-    @Output() private editing = new EventEmitter<boolean>();
-    @Input() private otherEditing: boolean;
+    @Input() public ipAddress: any;
+    @Output() public editing = new EventEmitter<boolean>();
+    @Input() public otherEditing: boolean;
 
-    private isEditing = false;
-    private backup: string;
+    public isEditing = false;
+    public backup: string;
 
-    constructor(private backend: backend, private toast: toast, private language: language ) { }
+    constructor(public backend: backend, public toast: toast, public language: language ) { }
 
-    private editDescription() {
+    public editDescription() {
         this.backup = this.ipAddress.description;
         this.isEditing = true;
         this.editing.emit(true);
     }
 
-    private save() {
+    public save() {
         this.isEditing = false;
         this.backend.putRequest('authentication/ipAddress/'+this.ipAddress.address, null, { description: this.ipAddress.description })
             .pipe(take(1))
@@ -61,7 +49,7 @@ export class AdministrationLoginRestrictionIpAddressesRow {
             });
     }
 
-    private cancel() {
+    public cancel() {
         this.isEditing = false;
         this.editing.emit(false);
         this.ipAddress.description = this.backup;

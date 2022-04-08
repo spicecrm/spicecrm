@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -20,6 +8,8 @@ import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Observable, Subject} from 'rxjs';
+import {modelutilities} from "./modelutilities.service";
+import {model} from "./model.service";
 
 /**
  * @ignore
@@ -30,16 +20,33 @@ declare var moment: any;
 @Injectable()
 export class reminder {
 
+    /**
+     * an array with the dat on teh current reminders
+     */
     public reminders: any[] = [];
+
+    /**
+     * indicates that he model is laoded
+     */
     public loaded: boolean = false;
-    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * emit when the data is changed
+     */
+    public changed$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
-    constructor(private backend: backend, private broadcast: broadcast, private configuration: configurationService, private session: session) {
+    constructor(
+        public backend: backend,
+        public broadcast: broadcast,
+        public configuration: configurationService,
+        public session: session,
+        public modelutilities: modelutilities
+    ){
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         switch (message.messagetype) {
             case "loader.completed":
                 if (message.messagedata == 'loadUserDataStep2') {
@@ -51,16 +58,18 @@ export class reminder {
                         this.reminders.push(reminder);
                     }
                     this.loaded = true;
-                    this.loaded$.emit(true);
+
+                    // emit that we have changes
+                    this.changed$.emit(true);
                 }
                 break;
             case 'model.save':
-                this.reminders.some((item, index) => {
-                    if (item.module_name === message.messagedata.module && item.item_id == message.messagedata.id) {
-                        this.reminders[index].item_summary = message.messagedata.data.summary_text;
+                    let reminderIndex = this.reminders.findIndex(r => r.module_name == message.messagedata.module && r.item_id == message.messagedata.id);
+                    if (reminderIndex >= 0) {
+                        this.reminders[reminderIndex].item_summary = message.messagedata.data.summary_text;
+                        this.reminders[reminderIndex].data = message.messagedata.data;
                         return true;
                     }
-                });
                 break;
         }
     }
@@ -76,7 +85,7 @@ export class reminder {
         return reminderDate;
     }
 
-    public getReminders() {
+    public getReminders(module) {
         let retArr = [];
         for (let reminder of this.reminders) {
             if (reminder.module_name === module) {
@@ -90,17 +99,39 @@ export class reminder {
         return retArr;
     }
 
-    public setReminder(model, reminderDate) {
+    /**
+     * sets a reminder. If one is set updates it accordingly
+     *
+     * @param model
+     * @param reminderDate
+     */
+    public setReminder(model: model, reminderDate) {
         this.backend.postRequest('common/spicereminders/' + model.module + '/' + model.id + '/' + reminderDate.format('YYYY-MM-DD')).subscribe((fav: any) => {
-            this.reminders.splice(0, 0, {
-                item_id: model.id,
-                module_name: model.module,
-                item_summary: model.data.summary_text,
-                reminder_date: reminderDate
-            });
+            let i = this.reminders.findIndex(r => r.item_id == model.id && r.module_name == model.module);
+            if(i >= 0){
+                this.reminders[i].reminder_date = reminderDate;
+                this.reminders[i].data = model.backendData;
+            } else {
+                this.reminders.splice(0, 0, {
+                    item_id: model.id,
+                    module_name: model.module,
+                    item_summary: model.data.summary_text,
+                    reminder_date: reminderDate,
+                    data: model.backendData
+                });
+            }
+
+            // emit that we have changes
+            this.changed$.emit(true);
         });
     }
 
+    /**
+     * deletes a reminder
+     *
+     * @param module
+     * @param id
+     */
     public deleteReminder(module, id): Observable<any> {
         let retSubject = new Subject<any>();
         this.backend.deleteRequest('common/spicereminders/' + module + '/' + id).subscribe(fav => {
@@ -112,6 +143,9 @@ export class reminder {
             });
             retSubject.next(true);
             retSubject.complete();
+
+            // emit that we have changes
+            this.changed$.emit(true);
         });
         return retSubject.asObservable();
     }

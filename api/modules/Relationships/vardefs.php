@@ -33,8 +33,9 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-global $dictionary;
-$dictionary['Relationship'] =[
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['Relationship'] =[
 	'table' => 'relationships',
 	'fields' => [
 		'id' => [
@@ -172,4 +173,3 @@ $dictionary['Relationship'] =[
 	    ['name' =>'idx_relationship_rhs_module', 'type' =>'index', 'fields'=>['rhs_module']], 
 	]
 ];
-

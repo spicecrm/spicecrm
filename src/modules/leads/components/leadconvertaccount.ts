@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleLeads
  */
@@ -30,30 +18,30 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: "lead-convert-account",
-    templateUrl: "./src/modules/leads/templates/leadconvertaccount.html",
+    templateUrl: "../templates/leadconvertaccount.html",
     providers: [view, model]
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * the content conatiner the componentset for the account edit is rendered in
      */
-    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
     /**
      * emits the model that has been created
      */
-    @Output() private account: EventEmitter<model> = new EventEmitter<model>();
+    @Output() public account: EventEmitter<model> = new EventEmitter<model>();
 
 
     /**
      * the component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * references to the components rendered in the view
      */
-    private componentRefs: any = [];
+    public componentRefs: any = [];
 
     /**
      * the account selected if there is one
@@ -64,10 +52,10 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * internal value for the checkbox allowing the user to select if he wants to link the lead to an account or not
      */
-    private _linktoaccount: boolean = true;
+    public _linktoaccount: boolean = true;
 
 
-    constructor(private view: view, private metadata: metadata, @SkipSelf() private lead: model, private model: model, private modelutilities: modelutilities, private fts: fts, private language: language) {
+    constructor(public view: view, public metadata: metadata, @SkipSelf() public lead: model, public model: model, public modelutilities: modelutilities, public fts: fts, public language: language) {
 
     }
 
@@ -142,7 +130,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * builds the container and renders the data
      */
-    private buildContainer() {
+    public buildContainer() {
         // Close any already open dialogs
         for (let component of this.componentRefs) {
             component.destroy();
@@ -162,12 +150,12 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
      *
      * @param accountdata
      */
-    private selectAccount(accountdata) {
+    public selectAccount(accountdata) {
         this.selectedAccount = accountdata;
 
         this.model.id = accountdata.id;
         this.model.isNew = false;
-        this.model.data = this.model.utils.backendModel2spice('Accounts', accountdata);
+        this.model.setData(accountdata);
         this.lead.setFields({
             account_id: this.model.id,
             account_linked_name: this.model.getField('name')
@@ -179,7 +167,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
      * then the user unlinks the account
      */
-    private unlinkAccount() {
+    public unlinkAccount() {
         this.selectedAccount = undefined;
 
         this.buildContainer();

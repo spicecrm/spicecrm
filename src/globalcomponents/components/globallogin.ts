@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
@@ -37,48 +25,48 @@ declare var _: any;
  */
 @Component({
     selector: 'global-login',
-    templateUrl: './src/globalcomponents/templates/globallogin.html',
+    templateUrl: '../templates/globallogin.html',
     host: {
         '(window:resize)': 'handleResize()'
     }
 })
 export class GlobalLogin {
-    private promptUser: boolean = false;
+   public promptUser: boolean = false;
 
     /**
      * the username
      */
-    private username: string = '';
+   public username: string = '';
 
     /**
      * the password
      */
-    private password: string = '';
+   public password: string = '';
 
     /**
      * variable for the selected language
      */
-    private _selectedlanguage: string = '';
+   public _selectedlanguage: string = '';
 
     /**
      * the selected site if multiple sites are available
      */
-    private selectedsite: string = '';
+   public selectedsite: string = '';
 
     // the last selected language .. loaded from the cookie
     // ToDo: should be changed to local store
-    private lastSelectedLanguage: string = null;
+   public lastSelectedLanguage: string = null;
 
     /**
      * determine if the forgotten password is open or not
      */
-    private showForgotPass: boolean = false;
+   public showForgotPass: boolean = false;
 
     /**
      * variable to hold if per config the extenral side bar shoudl be shown
      * ToDo: move to separate component
      */
-    private externalSidebarUrl: SafeResourceUrl = null;
+   public externalSidebarUrl: SafeResourceUrl = null;
 
 
     /**
@@ -86,31 +74,31 @@ export class GlobalLogin {
      *
      * @private
      */
-    private messageId: string;
+   public messageId: string;
 
     /**
      * indicator to show the new password dialog
      *
      * @private
      */
-    private renewpassword: boolean = false;
+   public renewpassword: boolean = false;
 
     /**
      * inidcates that we are in the login process
      *
      * @private
      */
-    private loggingIn: boolean = false;
+   public loggingIn: boolean = false;
 
-    constructor(private loginService: loginService,
-                private http: HttpClient,
-                private configuration: configurationService,
-                private session: session,
-                private toast: toast,
-                private language: language,
-                private broadcast: broadcast,
-                private sanitizer: DomSanitizer,
-                private changeDetectorRef: ChangeDetectorRef
+    constructor(public loginService: loginService,
+               public http: HttpClient,
+               public configuration: configurationService,
+               public session: session,
+               public toast: toast,
+               public language: language,
+               public broadcast: broadcast,
+               public sanitizer: DomSanitizer,
+               public changeDetectorRef: ChangeDetectorRef
     ) {
         if (sessionStorage['OAuth-Token']) {
             if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
@@ -149,14 +137,14 @@ export class GlobalLogin {
     /**
      * registerd to the resize event that handles if the news feed shoudl be shown or not
      */
-    private handleResize() {
+   public handleResize() {
         this.changeDetectorRef.detectChanges();
     }
 
     /**
      * triggers the actual login itself
      */
-    private login(token?, issuer?) {
+   public login(token?: {issuer: string, accessToken: string}) {
 
         if (token || (this.username && this.password)) {
             // clear the current messageid if one is set
@@ -171,8 +159,8 @@ export class GlobalLogin {
             if(token) {
                 this.loginService.authData.userName = null;
                 this.loginService.authData.password = null;
-                this.loginService.oauthToken = token;
-                this.loginService.oauthIssuer = issuer;
+                this.loginService.oauthToken = token.accessToken;
+                this.loginService.oauthIssuer = token.issuer;
             } else {
                 this.loginService.authData.userName = this.username;
                 this.loginService.authData.password = this.password;
@@ -236,7 +224,7 @@ export class GlobalLogin {
     /**
      * returns the available languages for the chosen backend system
      */
-    private getLanguages() {
+   public getLanguages() {
         let langArray = [];
 
         if (this.configuration.data.languages) {
@@ -265,7 +253,7 @@ export class GlobalLogin {
         return this.configuration.sites;
     }
 
-    private getBackendUrls() {
+   public getBackendUrls() {
         if (this.configuration.data.backendUrls) {
             return this.configuration.data.backendUrls;
         } else {
@@ -278,14 +266,14 @@ export class GlobalLogin {
      *
      * @param event
      */
-    private setSite(event) {
+   public setSite(event) {
         this.configuration.setSiteID(event.srcElement.value);
     }
 
     /**
      * toggles the forgotten password screen elements
      */
-    private showForgotPassword() {
+   public showForgotPassword() {
         if (this.showForgotPass) {
             this.showForgotPass = false;
         } else {

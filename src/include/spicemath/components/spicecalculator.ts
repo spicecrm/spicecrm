@@ -1,16 +1,4 @@
 /*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
-/*
 SpiceUI 2021.01.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
@@ -46,7 +34,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'spice-calculator',
-    templateUrl: './src/include/spicemath/templates/spicecalculator.html',
+    templateUrl: '../templates/spicecalculator.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
@@ -109,11 +97,11 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      * holds the height adjusted fontSize for the subDisplay
      */
-    private fontSizeSub: string = '300%';
+    public fontSizeSub: string = '300%';
     /**
      * holds the height adjusted fontSize for the mainDisplay
      */
-    private fontSizeMain: string = '250%';
+    public fontSizeMain: string = '250%';
     /**
      * holds the current animationState for historySlide
      */
@@ -141,11 +129,11 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      *holds the MainDisplay Parent-element
      */
-    @ViewChild('mainDisParent') private mainDis1: ElementRef;
+    @ViewChild('mainDisParent') public mainDis1: ElementRef;
     /**
      *holds the MainDisplay-Element
      */
-    @ViewChild('mainDis2') private mainDis2: ElementRef;
+    @ViewChild('mainDis2') public mainDis2: ElementRef;
     /**
      *holds the subDisplay Parent-Element
      */
@@ -153,11 +141,11 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      *holds the SubDisplay-Element
      */
-    @ViewChild('subDis2') private subDis2: ElementRef;
+    @ViewChild('subDis2') public subDis2: ElementRef;
     /**
      * check if a negate sign has been placed
      */
-    private negateCheck: boolean = false;
+    public negateCheck: boolean = false;
     /**
      * check if history slides from the top or from the right
      */
@@ -165,11 +153,11 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      * check if something was calculated
      */
-    private check: boolean = false;
+    public check: boolean = false;
     /**
      * check if a operator has been placed
      */
-    private opCheck: boolean = false;
+    public opCheck: boolean = false;
     /**
      * check if calculator element is selected
      */
@@ -177,23 +165,23 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      * holds the position of the operator
      */
-    private opPosition: number;
+    public opPosition: number;
     /**
      * check if a dot has been placed
      */
-    private dotCheck: boolean = false;
+    public dotCheck: boolean = false;
     /**
      * keeps track of how many Numbers the current input has
      */
-    private numCount: number = 0;
+    public numCount: number = 0;
     /**
      * holds the Thousands-Separator that the user has set
      */
-    private readonly separator: string;
+    public readonly separator: string;
 
-    constructor(private cdRef: ChangeDetectorRef,
-                private userPreferences: userpreferences,
-                private el: ElementRef,) {
+    constructor(public cdRef: ChangeDetectorRef,
+                public userPreferences: userpreferences,
+                public el: ElementRef,) {
         this.decimalSeparator = this.userPreferences.toUse.dec_sep ?? '.';
         this.separator = (this.decimalSeparator === ',') ? '.' : ',';
     }
@@ -725,7 +713,7 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      * adjusts the fontSize to display-height
      */
-    private handleFontSize() {
+    public handleFontSize() {
         const fontSizeSub: number = parseFloat(this.fontSizeSub.slice(0, -1));
 
         if (this.subDis2.nativeElement.getBoundingClientRect().height !== 0 && this.subDis2.nativeElement.getBoundingClientRect().height < this.subDis1.nativeElement.getBoundingClientRect().height * 0.9) {
@@ -766,7 +754,7 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      * adds the current calculation to the history
      */
-    private addToHistory(): void {
+    public addToHistory(): void {
 
         this.history.unshift({
             'value': this.value,
@@ -814,7 +802,7 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      * sets Thousands- and Decimal-Separators depending on User preferences
      */
-    private setSeparators(number: string): string {
+    public setSeparators(number: string): string {
 
         // blocks separation if number is 'Infinity' or 'Undefined Result'
         if (number.search(/Infinity/) !== -1 || number === 'Undefined Result') return number;
@@ -855,7 +843,7 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
     /**
      * checks if the calculation has calculated to many zeros and cuts them out
      */
-    private checkZeros(number: string): string {
+    public checkZeros(number: string): string {
         if (number.indexOf(this.decimalSeparator) !== -1) {
 
             const preComDigits = number.substring(0, number.indexOf(this.decimalSeparator));

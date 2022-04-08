@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AdminComponentsModule
  */
@@ -20,24 +8,25 @@ import {backend} from '../../services/backend.service';
 import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
 import {helper} from "../../services/helper.service";
-import set = Reflect.set;
+import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 
 @Component({
     selector: '[administration-ftsstatus]',
-    templateUrl: './src/admincomponents/templates/administrationftsstatus.html'
+    templateUrl: '../templates/administrationftsstatus.html',
+    providers: [ftsconfiguration]
 })
 export class AdministrationFTSStatus {
 
     /**
      * holds the stats and status retrieved from teh backend
      */
-    private version: any = {};
+    public version: any = {};
 
     /**
      * holds the stats and status retrieved from teh backend
      */
-    private stats: any = {
+    public stats: any = {
         docs: 0,
         size: 0
     };
@@ -45,21 +34,22 @@ export class AdministrationFTSStatus {
     /**
      * indicates that we are loading the stats
      */
-    private loading: boolean = false;
+    public loading: boolean = false;
 
     /**
      * holds the information on all teh indices
      */
-    private indices: any[] = [];
+    public indices: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private modal: modal,
-        private backend: backend,
-        private helper: helper,
-        private toast: toast,
-        private injector: Injector
+        public metadata: metadata,
+        public language: language,
+        public modal: modal,
+        public backend: backend,
+        public helper: helper,
+        public toast: toast,
+        public ftsconfiguration: ftsconfiguration,
+        public injector: Injector
     ) {
         this.loadstatus();
     }
@@ -67,7 +57,7 @@ export class AdministrationFTSStatus {
     /**
      * gets the status details from teh backend
      */
-    private loadstatus() {
+    public loadstatus() {
 
         // set to loading
         this.loading = true;
@@ -79,24 +69,34 @@ export class AdministrationFTSStatus {
             response => {
                 this.version = response.version;
 
-                this.stats.docs = 0; // initialize
-                // catch when no fts index is set yet
-                if(response.stats._all.total.docs && response.stats._all.total.docs.count) {
-                    this.stats.docs = response.stats._all.total.docs.count;
-                }
+                // initialize
+                this.stats.tdocs = 0;
+                this.stats.pdocs = 0;
+                this.stats.tsize = 0;
+                this.stats.psize = 0;
 
-                this.stats.size = 0;
-                // catch when no fts index is set yet
-                if(response.stats._all.total.store && response.stats._all.total.store.size_in_bytes) {
-                    this.stats.size = this.helper.humanFileSize(response.stats._all.total.store.size_in_bytes);
+                if ( response.stats?._all ) {
+                    // catch when no fts index is set yet
+                    if( response.stats._all.total.docs && response.stats._all.total.docs.count ) {
+                        this.stats.tdocs = response.stats._all.total.docs.count;
+                        this.stats.pdocs = response.stats._all.primaries.docs.count;
+                    }
+                    // catch when no fts index is set yet
+                    if ( response.stats._all.total?.store && response.stats._all.total.store.size_in_bytes ) {
+                        this.stats.tsize = this.helper.humanFileSize( response.stats._all.total.store.size_in_bytes );
+                        this.stats.psize = this.helper.humanFileSize( response.stats._all.primaries.store.size_in_bytes );
+                    }
                 }
-
 
                 for (let index in response.stats.indices) {
                     this.indices.push({
                         name: index,
-                        docs: response.stats.indices[index].total.docs.count,
-                        size: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
+                        pdocs: response.stats.indices[index].primaries.docs.count,
+                        psize: this.helper.humanFileSize(response.stats.indices[index].primaries.store.size_in_bytes),
+                        tdocs: response.stats.indices[index].total.docs.count,
+                        tsize: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
+                        stored: response.stats.indexed[index].count,
+                        unindexed: response.stats.indexed[index].unindexed,
                         blocked: (response.settings && response.settings[index] && response.settings[index].settings.index.blocks?.read_only_allow_delete) ? true : false
                     });
                 }
@@ -118,9 +118,8 @@ export class AdministrationFTSStatus {
      * unlocks the complete index from a lock entry
      * @private
      */
-    private unlock() {
+    public unlock() {
         this.backend.putRequest('admin/elastic/unblock').subscribe(resp => {
-            console.log(resp);
             this.loadstatus();
         });
     }
@@ -133,6 +132,20 @@ export class AdministrationFTSStatus {
         return this.indices.find(i => i.blocked) ? true : false;
     }
 
+
+
+    /**
+     * initialize the full index
+     */
+    public initialize() {
+        this.modal.confirm('Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!', 'Initialize')
+            .subscribe(res => {
+                    if (res) {
+                        this.ftsconfiguration.executeAction('init');
+                    }
+                }
+            );
+    }
 
 }
 

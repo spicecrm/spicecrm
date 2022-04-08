@@ -33,14 +33,13 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 /**
  * Class for separate storage of Email texts
  */
-global $dictionary;
 if(file_exists('custom/metadata/emails_beansMetaData.php')) {
   require_once('custom/metadata/emails_beansMetaData.php');
 } else {
   require_once('metadata/emails_beansMetaData.php');
 }
-$dictionary['EmailText'] = $dictionary['emails_text'];
+SpiceDictionaryHandler::getInstance()->dictionary['EmailText'] = SpiceDictionaryHandler::getInstance()->dictionary['emails_text'];

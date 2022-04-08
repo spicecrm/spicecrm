@@ -32,6 +32,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 use Sugar_Smarty;
 
 class SpiceFTSCreator {
@@ -40,11 +41,6 @@ class SpiceFTSCreator {
 
     public function __construct() {
 
-    }
-
-    public function displayDefaultConfForm(){
-        $sm = new Sugar_Smarty();
-        return $sm->display("modules/Administration/templates/FTSDefault.tpl");
     }
 
 
@@ -86,7 +82,7 @@ class SpiceFTSCreator {
         //get listview defs
         global $listViewDefs;
         $useVardefs = false;
-        $path = get_custom_file_if_exists("modules/".$module."/metadata/listviewdefs.php");
+        $path = SpiceUtils::getCustomFileIfExists("modules/".$module."/metadata/listviewdefs.php");
         if(file_exists($path)) {
             require_once $path;
         }
@@ -101,8 +97,8 @@ class SpiceFTSCreator {
         if($bean){
             foreach($bean->field_name_map as $fieldname => $field){
                 if( (in_array(strtoupper($field['name']), $listkeys) && !isset($field['usage'])) || $useVardefs){
-                    $id = create_guid();
-                    $fieldid = create_guid();
+                    $id          = SpiceUtils::createGuid();
+                    $fieldid     = SpiceUtils::createGuid();
                     $ftsfields[] = [
                         'id' => $id,
                         'fieldid' => $fieldid,

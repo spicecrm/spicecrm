@@ -1,0 +1,21 @@
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1>
+            <system-label label="LBL_IMPERSONATED_EWS"></system-label>
+        </h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-1">
+                <label class="slds-truncate slds-form-element__label">
+                    <system-label label="LBL_USER_NAME"></system-label>
+                </label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.user_name"
+                       class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                <system-label label="LBL_TEST_CONNECTION"></system-label>
+            </button>
+        </div>
+    </div>
+</div>

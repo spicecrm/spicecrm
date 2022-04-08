@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -25,14 +13,14 @@ declare var _;
  */
 @Component({
     selector: 'system-prompt',
-    templateUrl: './src/systemcomponents/templates/systemprompt.html'
+    templateUrl: '../templates/systemprompt.html'
 })
 export class SystemPrompt implements OnInit, AfterViewInit {
 
     /**
      * the type of prompt
      */
-    @Input() public type: 'info'|'input'|'input_date'|'confirm';
+    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm';
 
     /**
      * the text that is rendered in the popup
@@ -60,7 +48,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * an array of options .. if sent rather than an input in the type input a select option is rendered
      */
-    @Input() public options: Array<{value: string, display: string}>;
+    @Input() public options: {value: string, display: string}[];
 
     /**
      * if true display the input options as radio group
@@ -70,39 +58,44 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * the observabkle for the answer
      */
-    private answer: Observable<boolean> = null;
+    public answer: Observable<boolean> = null;
 
     /**
      * the subject for the answer
      */
-    private answerSubject: Subject<any> = null;
+    public answerSubject: Subject<any> = null;
+
+    /**
+     * an optional regex to match the input against
+     */
+    public regex: string;
 
     /**
      * reference to self
      */
-    private self: any;
+    public self: any;
 
     /**
      * reference to the cancel button .. allows focussing when the modal is rendered
      */
-    @ViewChild('cancelButton', {static: false}) private cancelButton;
+    @ViewChild('cancelButton', {static: false}) public cancelButton;
 
     /**
      * reference to the ok button .. allows focussing when the modal is rendered
      */
-    @ViewChild('okButton', {static: false}) private okButton;
+    @ViewChild('okButton', {static: false}) public okButton;
 
     /**
      * reference to the input field .. allows focussing when the modal is rendered
      */
-    @ViewChild('inputField', {static: false}) private inputField;
+    @ViewChild('inputField', {static: false}) public inputField;
 
     /**
      * reference to the select field .. allows focussing when the modal is rendered
      */
-    @ViewChild('selectField', {static: false}) private selectField;
+    @ViewChild('selectField', {static: false}) public selectField;
 
-    constructor( private language: language ) {
+    constructor( public language: language ) {
         this.answerSubject = new Subject<any>();
         this.answer = this.answerSubject.asObservable();
         this.radioGroupName = _.uniqueId('system-prompt-group-name-');
@@ -122,6 +115,24 @@ export class SystemPrompt implements OnInit, AfterViewInit {
             if ( this.inputField ) this.inputField.nativeElement.focus();
             else if ( this.selectField ) this.selectField.nativeElement.focus();
         }
+    }
+
+    /**
+     * checks that ok is enabled
+     */
+    get canSubmit(){
+        // only check for input and input data
+        if(!this.type.startsWith('input')) return true;
+
+        // value needs to be set
+        if (!this.value ) return false;
+
+        if(this.regex){
+            let reg = new RegExp(this.regex);
+            return reg.test(String(this.value));
+        }
+
+        return true;
     }
 
     /**

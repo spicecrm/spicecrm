@@ -1,9 +1,9 @@
 <?php
 /* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Task'] = ['table' => 'tasks',
+
+SpiceDictionaryHandler::getInstance()->dictionary['Task'] = ['table' => 'tasks',
     'unified_search'   => true,
     'full_text_search' => true,
     'audited' => true,
@@ -369,9 +369,8 @@ $dictionary['Task'] = ['table' => 'tasks',
 
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if (file_exists("modules/ServiceTickets")) {
-    $dictionary['Task']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Task']['fields']['servicetickets'] = [
         'name'         => 'servicetickets',
         'type'         => 'link',
         'relationship' => 'servicetickets_tasks',
@@ -382,7 +381,7 @@ if (file_exists("modules/ServiceTickets")) {
     ];
 }
 if (file_exists("extensions/modules/ServiceOrders")) {
-    $dictionary['Task']['fields']['serviceorders'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Task']['fields']['serviceorders'] = [
         'name'         => 'serviceorders',
         'type'         => 'link',
         'relationship' => 'serviceorders_tasks',

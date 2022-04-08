@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceFTSManager\schedulerjobtasks;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 class SpiceFTSManagerSchedulerJobTasks
 {
@@ -12,8 +13,13 @@ class SpiceFTSManagerSchedulerJobTasks
      * Clean sysftslogs
      */
     public function cleanSysFTSLogs(): bool {
-        $defaultInterval = "14 DAY";
-        $q = "DELETE FROM sysftslog WHERE date_created < DATE_SUB(now(), INTERVAL ".(isset(SpiceConfig::getInstance()->config['fts']['log_clean_interval']) && !empty(SpiceConfig::getInstance()->config['fts']['clean_interval']) ? SpiceConfig::getInstance()->config['fts']['log_clean_interval'] : $defaultInterval).")";
+        // calculate date time in php to have a cross database conform SQL quer
+        $defaultInterval = "P14D"; // 14 days
+        $timeDate = TimeDate::getInstance()->getNow();
+        $timeDate->sub(new DateInterval((isset(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) ? SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval'] : $defaultInterval)));
+        $calculatedDate = TimeDate::getInstance()->asDb($timeDate);
+
+        $q = "DELETE FROM sysftslog WHERE date_created < '{$calculatedDate}'";
         DBManagerFactory::getInstance()->query($q);
         return true;
     }

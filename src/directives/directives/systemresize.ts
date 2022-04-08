@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module DirectivesModule
  */
@@ -38,22 +26,22 @@ export class SystemResizeDirective implements OnDestroy {
     /**
      * the emitter with the name of the directive emitting the dimensions if they changed
      */
-    @Output('system-resize') private resizeemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output('system-resize') public resizeemitter: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the widht of the element when mouse went down
      */
-    private elementWidth: any;
+    public elementWidth: any;
 
     /**
      * the hwight of teh element when the mouse was down
      */
-    private elementHeight: any;
+    public elementHeight: any;
 
     /**
      * a listener to all mouseup events. Need to listen on document since in case of limited horiz or vertical resize the event might no occur in the element
      */
-    private mouseListener: any;
+    public mouseListener: any;
 
     constructor(
         public elementRef: ElementRef,
@@ -72,7 +60,7 @@ export class SystemResizeDirective implements OnDestroy {
      * @param event
      */
     @HostListener('mousedown', ['$event'])
-    private onMouseDown(event) {
+    public onMouseDown(event) {
         // get the current dimensions
         let rect = this.elementRef.nativeElement.getClientRects()[0];
         this.elementWidth = rect.width;
@@ -88,7 +76,7 @@ export class SystemResizeDirective implements OnDestroy {
     /**
      * react to the mouse up event
      */
-    private onMouseup() {
+    public onMouseup() {
         if (!this.elementWidth || !this.elementWidth) return;
         let currentrect = this.elementRef.nativeElement.getClientRects()[0];
         if ((this.elementWidth && currentrect.width != this.elementWidth) || (this.elementHeight && currentrect.height != this.elementHeight)) {

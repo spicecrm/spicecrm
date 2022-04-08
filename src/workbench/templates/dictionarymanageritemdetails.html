@@ -1,0 +1,79 @@
+<div class="slds-text-heading--small slds-p-around--x-small slds-theme--shade"><system-label label="LBL_ITEM_DETAILS"></system-label></div>
+<div *ngIf="dictionarymanager.currentDictionaryItem; else SelectItem" system-to-bottom>
+    <div class="slds-p-around--x-small">
+        <div class="slds-grid">
+            <div class="slds-size--1-of-2 slds-form-element slds-m-around--xxx-small">
+                <div class="slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                    <input type="text" disabled class="slds-input" [(ngModel)]="dictionaryitem.name"/>
+                </div>
+            </div>
+            <div class="slds-size--1-of-4 slds-form-element slds-m-around--xxx-small">
+                <div *ngIf="dictionaryitem.sysdomaindefinition_id" class="slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_DOMAIN"></system-label></label>
+                    <input type="text" disabled class="slds-input" [ngModel]="dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)"/>
+                </div>
+                <div *ngIf="dictionaryitem.sysdictionary_ref_id" class="slds-form-element__control" class="slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_TEMPLATE"></system-label></label>
+                    <input type="text" disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)"/>
+                </div>
+            </div>
+            <div class="slds-size--1-of-4 slds-form-element__control slds-m-around--xxx-small">
+                <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select disabled class="slds-select" [(ngModel)]="dictionaryitem.scope">
+                        <option value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngIf="dictionaryitem.sysdomaindefinition_id">
+            <div>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_LABEL"></system-label>
+                </label>
+                <system-input-label [(ngModel)]="dictionaryitem.label"></system-input-label>
+            </div>
+            <div class="slds-grid slds-p-vertical--xx-small">
+                <div class="slds-size--1-of-2 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"></system-label></system-checkbox>
+                </div>
+                <div class="slds-size--1-of-2 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true"><system-label label="LBL_NON_DB"></system-label></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-vertical--xxx-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_COMMENT"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <textarea class="slds-textarea" [(ngModel)]="dictionaryitem.description"></textarea>
+                </div>
+            </div>
+        </ng-container>
+        <div class="slds-grid slds-m-vertical--xxx-small slds-gutters_direct-xx-small">
+            <div class="slds-col slds-size--1-of-2 slds-form-element">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_VERSION"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="dictionaryitem.version"/>
+                </div>
+            </div>
+            <div class="slds-col slds-size--1-of-2 slds-form-element">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_PACKAGE"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="dictionaryitem.package"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #SelectItem>
+    <div class="slds-align--absolute-center" system-to-bottom-noscroll>
+        select an item
+    </div>
+</ng-template>

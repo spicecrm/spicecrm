@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var isArray_1=require("./isArray");function isNumeric(r){return!isArray_1.isArray(r)&&0<=r-parseFloat(r)+1}exports.isNumeric=isNumeric;

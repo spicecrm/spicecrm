@@ -1,0 +1,30 @@
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_SENDGRID"></system-label></h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_DISPLAY_NAME"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.imap_pop3_display_name" class="slds-input ng-pristine ng-valid"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_REPLY_TO"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.reply_to"  class="slds-input ng-pristine ng-valid"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USER_NAME"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.imap_pop3_username" class="slds-input ng-pristine ng-valid"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_API_KEY"></system-label></label>
+                <system-input-password [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.api_key"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                <system-label label="LBL_SEND_TEST_EMAIL"></system-label>
+            </button>
+        </div>
+    </div>
+</div>

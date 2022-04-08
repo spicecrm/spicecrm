@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleCampaigns
  */
@@ -25,7 +13,7 @@ declare var moment: any;
 
 @Component({
     selector: 'campaigntask-mailerge-modal',
-    templateUrl: './src/modules/campaigns/templates/campaigntaskmailmergemodal.html'
+    templateUrl: '../templates/campaigntaskmailmergemodal.html'
 })
 export class CampaignTaskMailMergeModal {
 
@@ -33,20 +21,20 @@ export class CampaignTaskMailMergeModal {
      * reference to the modal itself
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the total number of records
      *
      * @private
      */
-    private totalCount: number = 0;
+    public totalCount: number = 0;
 
     /**
      * the starting number (starts at 1 .. calculated back to 0 indexed for the backend)
      * @private
      */
-    private start: number = 1;
+    public start: number = 1;
 
     /**
      * the number of pages to be generated
@@ -54,27 +42,35 @@ export class CampaignTaskMailMergeModal {
      *
      * @private
      */
-    private limit: number = 100;
+    public limit: number = 100;
 
-    private loading: boolean = false;
+    /**
+     * the count of inactive items from the target group
+     *
+     * @public
+     *
+     */
+    public inactiveCount: number = 0;
+
+    public loading: boolean = false;
 
     /**
      * the loaded pdf
      *
      * @private
      */
-    private pdf: any;
+    public pdf: any;
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
-    private blobUrl: any;
+    public blobUrl: any;
 
     constructor(
-        private language: language,
-        private model: model,
-        private backend: backend,
-        private modal: modal,
+        public language: language,
+        public model: model,
+        public backend: backend,
+        public modal: modal,
         public sanitizer: DomSanitizer,
     ) {
         this.getCount();
@@ -84,7 +80,7 @@ export class CampaignTaskMailMergeModal {
      * retrieves the number of records in the targetlsts to get an understanding of the nunber of pages that canbe generated
      * @private
      */
-    private getCount() {
+    public getCount() {
         this.backend.getRequest(`module/CampaignTasks/${this.model.id}/targetcount`).subscribe(
             res => {
                 this.totalCount = parseInt(res.count, 10);
@@ -104,16 +100,18 @@ export class CampaignTaskMailMergeModal {
     /**
      * backend call to render the template and return the content
      */
-    private rendertemplate() {
+    public rendertemplate() {
         this.blobUrl = null;
         this.loading = true;
         this.backend.getRequest(`module/CampaignTasks/${this.model.id}/mailmerge`, {
             start: this.start - 1,
             limit: this.limit
         }).subscribe(
-            pdf => {
-                this.pdf = pdf.content;
-                let blob = this.datatoBlob(atob(pdf.content));
+            results => {
+                this.pdf = results.content;
+                // send the inactiveCount to be displayed in front-end
+                this.inactiveCount = results.inactiveCount;
+                let blob = this.datatoBlob(atob(results.content));
                 this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                 this.loading = false;
             },
@@ -130,7 +128,7 @@ export class CampaignTaskMailMergeModal {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -153,9 +151,9 @@ export class CampaignTaskMailMergeModal {
     /**
      * download the pdf locally
      *
-     * @private
+     * @public
      */
-    private download() {
+    public download() {
         // generate a link element for the download
         let a = document.createElement("a");
         document.body.appendChild(a);
@@ -182,7 +180,7 @@ export class CampaignTaskMailMergeModal {
      * closes the modal
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

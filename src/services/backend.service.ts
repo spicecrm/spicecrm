@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * the backend service
  *
@@ -55,61 +43,61 @@ export class backend {
     /**
      *
      */
-    private autoLogout: any = {};
+    public autoLogout: any = {};
 
     /**
      * indicates that hthe user needs to relogin again
      *
      * @private
      */
-    private reLogin: boolean = false;
+    public reLogin: boolean = false;
 
     /**
      * indicates that we have been disconnected and are trying to reconnect
      *
      * @private
      */
-    private reConnecting: boolean = false;
+    public reConnecting: boolean = false;
 
     /**
      * indicates that any further request should be staged
      *
      * @private
      */
-    private stageRequests: boolean = false;
+    public stageRequests: boolean = false;
 
     /**
      * holds staged requests that had an error and shoudlbe later on reprocessed
      *
      * @private
      */
-    private stagedRequests: any[] = [];
+    public stagedRequests: any[] = [];
 
-    private httpErrorsToReport = [];
-    private httpErrorReporting = false;
-    private httpErrorReportingRetryTime = 10000; // 10 seconds
+    public httpErrorsToReport = [];
+    public httpErrorReporting = false;
+    public httpErrorReportingRetryTime = 10000; // 10 seconds
 
     /**
      * @ignore
      */
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private sanitizer: DomSanitizer,
-        private configurationService: configurationService,
-        private session: session,
-        private metadata: metadata,
-        private router: Router,
-        private modelutilities: modelutilities,
-        private modalservice: modal,
-        private language: language,
+        public toast: toast,
+        public http: HttpClient,
+        public sanitizer: DomSanitizer,
+        public configurationService: configurationService,
+        public session: session,
+        public metadata: metadata,
+        public router: Router,
+        public modelutilities: modelutilities,
+        public modalservice: modal,
+        public language: language,
     ) {
     }
 
     /**
      * @ignore
      */
-    private getHeaders(): HttpHeaders {
+    public getHeaders(): HttpHeaders {
         let headers = this.session.getSessionHeader();
         headers = headers.set('Accept', 'application/json');
         return headers;
@@ -118,7 +106,7 @@ export class backend {
     /**
      * @ignore
      */
-    private prepareParams(params: object): HttpParams {
+    public prepareParams(params: object): HttpParams {
         let output = new HttpParams();
         if (params) {
             Object.keys(params).forEach((key: string) => {
@@ -470,8 +458,8 @@ export class backend {
         request_params: backendRequestParams,
         file_name: string = null,
         file_type: string = null
-    ): Observable<any> {
-        let sub = new Subject<any>();
+    ): Observable<void> {
+        let sub = new Subject<void>();
 
         this.getLinkToDownload(
             request_params.route,
@@ -581,7 +569,7 @@ export class backend {
      * @param data the data passed in
      * @param httpErrorReport a boolean flag that specifies if the error shoudl be logged on the backend. Defaults to true.
      */
-    private handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
+    public handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
             case 401:
                 // push the current request to the staged queue
@@ -643,7 +631,7 @@ export class backend {
      * @param responseSubject
      * @private
      */
-    private stageRequest(method, route, data, responseSubject) {
+    public stageRequest(method, route, data, responseSubject) {
         this.stagedRequests.push({
             method, route, data, responseSubject
         });
@@ -653,7 +641,7 @@ export class backend {
      * processes all staged requests that have not been processed
      * @private
      */
-    private processStagedRequests() {
+    public processStagedRequests() {
         // loop through staged requests and resubmit them
         for (let stagedRequest of this.stagedRequests) {
             switch (stagedRequest.method) {
@@ -690,7 +678,7 @@ export class backend {
      * @param method the method of the all (e.g. POST, GET, ...
      * @param data the data passed in
      */
-    private reportError(err: string, route: string, method: string, data: any): void {
+    public reportError(err: string, route: string, method: string, data: any): void {
         this.httpErrorsToReport.push({
             clientTime: (new Date()).toISOString(),
             clientInfo: {
@@ -714,7 +702,7 @@ export class backend {
      * a helper method to post the error to the backend
      * @ignore
      */
-    private errorsToBackend() {
+    public errorsToBackend() {
         if (this.httpErrorsToReport.length) {
             this.postRequest('system/httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
                 () => {
@@ -732,8 +720,8 @@ export class backend {
     /*
      * Model functions
      */
-    public get(module: string, id: string, trackAction: string = ''): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
+    public get(module: string, id: string, trackAction: string = ''): Observable<any> {
+        let responseSubject = new Subject<any>();
 
         let params: any = {};
         if (trackAction) {
@@ -860,11 +848,11 @@ export class backend {
     /*
      internal helper functions
      */
-    private backend2spice(module: string, field: string, value: any) {
+    public backend2spice(module: string, field: string, value: any) {
         return this.modelutilities.backend2spice(module, field, value);
     }
 
-    private spice2backend(module: string, field: string, value: any) {
+    public spice2backend(module: string, field: string, value: any) {
         return this.modelutilities.spice2backend(module, field, value);
     }
 

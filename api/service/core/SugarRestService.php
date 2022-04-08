@@ -1,6 +1,7 @@
 <?php
 
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 if(!defined('sugarEntry'))define('sugarEntry', true);
 /*********************************************************************************
@@ -61,7 +62,7 @@ class SugarRestService extends SugarWebService{
 	{
 		if(empty($name)) return 'SugarRest';
 
-		$name = clean_string($name, 'ALPHANUM');
+		$name = SpiceUtils::cleanString($name, 'ALPHANUM');
 		$type = '';
 		switch(strtolower($name)) {
 			case 'json':

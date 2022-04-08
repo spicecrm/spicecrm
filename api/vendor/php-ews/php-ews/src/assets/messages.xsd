@@ -1,4 +1,4 @@
-<xs:schema id="messages"
+﻿<xs:schema id="messages"
            elementFormDefault="qualified"
            xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
            xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"

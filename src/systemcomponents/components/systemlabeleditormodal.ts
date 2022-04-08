@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -24,7 +12,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: "system-label-editor-modal",
-    templateUrl: "./src/systemcomponents/templates/systemlabeleditormodal.html",
+    templateUrl: "../templates/systemlabeleditormodal.html",
 })
 export class SystemLabelEditorModal implements OnInit {
     /**
@@ -43,34 +31,34 @@ export class SystemLabelEditorModal implements OnInit {
      * holds the languages names
      * @private
      */
-    private languagesNames = {};
+    public languagesNames = {};
     /**
      * holds the untranslated languages
      * @private
      */
-    private untranslatedLanguages = [];
+    public untranslatedLanguages = [];
     /**
      * true while retrieving the label data
      * @private
      */
-    private isLoading: boolean = false;
+    public isLoading: boolean = false;
     /**
      * reference for this component to enable destroy
      * @private
      */
-    private self;
+    public self;
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
-        private toast: toast,
-        private modal: modal
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public utils: modelutilities,
+        public toast: toast,
+        public modal: modal
     ) {
     }
 
-    private _labelData = null;
+    public _labelData = null;
     /**
      * @return label data
      */
@@ -146,7 +134,7 @@ export class SystemLabelEditorModal implements OnInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
@@ -154,7 +142,7 @@ export class SystemLabelEditorModal implements OnInit {
      * retrieve label data
      * @private
      */
-    private retrieveLabelData() {
+    public retrieveLabelData() {
 
         this.isLoading = true;
 
@@ -189,7 +177,7 @@ export class SystemLabelEditorModal implements OnInit {
     /**
      * save label changes to database
      */
-    private save() {
+    public save() {
         this.close();
         this.backend.postRequest('configuration/syslanguages/labels', null, [this.labelData]).subscribe(
             () => {
@@ -205,7 +193,7 @@ export class SystemLabelEditorModal implements OnInit {
      * set missing languages
      * @private
      */
-    private setUntranslatedLanguages() {
+    public setUntranslatedLanguages() {
         this.untranslatedLanguages = !this.translations ? this.availableLanguages : this.availableLanguages
             .filter(lang => !this.translations.some(t => t.syslanguage == lang.language));
     }
@@ -214,7 +202,7 @@ export class SystemLabelEditorModal implements OnInit {
      * load the available languages
      * @private
      */
-    private loadAvailableLanguages() {
+    public loadAvailableLanguages() {
         this.availableLanguages = this.language.getAvialableLanguages();
         this.availableLanguages.forEach(lang => this.languagesNames[lang.language] = lang.text);
     }
@@ -223,7 +211,7 @@ export class SystemLabelEditorModal implements OnInit {
      * destroy the modal
      * @private
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 }

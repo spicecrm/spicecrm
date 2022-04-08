@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 import {AfterViewInit, Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {libloader} from '../../services/libloader.service';
@@ -19,7 +7,7 @@ declare var js_beautify: any;
 
 @Component({
     selector: 'administration-api-inspector-method-test',
-    templateUrl: './src/admincomponents/templates/administrationapiinspectormethodtest.html'
+    templateUrl: '../templates/administrationapiinspectormethodtest.html'
 })
 
 export class AdministrationApiInspectorMethodTest implements AfterViewInit {
@@ -29,21 +17,21 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      *
      * @private
      */
-    @ViewChild('modalcontent', {read: ViewContainerRef, static: true}) private modalcontent: ViewContainerRef;
+    @ViewChild('modalcontent', {read: ViewContainerRef, static: true}) public modalcontent: ViewContainerRef;
 
     /**
      * reference to the table to calculate the height
      *
      * @private
      */
-    @ViewChild('tabcontent', {read: ViewContainerRef, static: true}) private tabcontent: ViewContainerRef;
+    @ViewChild('tabcontent', {read: ViewContainerRef, static: true}) public tabcontent: ViewContainerRef;
 
     /**
      * reference to the modal itself
      *
      * @private
      */
-    private self: any;
+    public self: any;
 
     /**
      * the api endpoint as passed in fromt he test button
@@ -55,39 +43,39 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      *
      * @private
      */
-    private activetab: 'parameters' | 'request' | 'response' = 'parameters';
+    public activetab: 'parameters' | 'request' | 'response' = 'parameters';
 
     /**
      * set to true when we are executing a test
      *
      * @private
      */
-    private executing: boolean = false;
+    public executing: boolean = false;
 
     /**
      * content for the tab to ensure proper scrolling
      * @private
      */
-    private tabHeigth: number;
+    public tabHeigth: number;
 
     /**
      * the response from the call
      *
      * @private
      */
-    private response: any;
+    public response: any;
 
     /**
      * the parameter Collector passed to the paramaters component
      *
      * @private
      */
-    private parameterCollector: any = {};
+    public parameterCollector: any = {};
 
     constructor(
-        private backend: backend,
-        private libloader: libloader,
-        private apiInspector: administrationapiinspectorService
+        public backend: backend,
+        public libloader: libloader,
+        public apiInspector: administrationapiinspectorService
     ) {
         this.libloader.loadLib('jsonbeautify');
     }
@@ -115,7 +103,7 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      *
      * @private
      */
-    private test() {
+    public test() {
         this.executing = true;
         this.response = undefined;
         this.activetab = 'response';
@@ -148,7 +136,7 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      *
      * @private
      */
-    private checkParameters() {
+    public checkParameters() {
         return true;
     }
 
@@ -157,7 +145,7 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      *
      * @private
      */
-    private buildRoute() {
+    public buildRoute() {
         let parsedRoute = this.apiMethod.route.substring(1);
         let pathParameters = this.apiInspector.getMethodParameters(this.apiMethod.route, this.apiMethod.method, 'path');
         for (let pathParameter of pathParameters) {
@@ -171,7 +159,7 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      *
      * @private
      */
-    private buildParams() {
+    public buildParams() {
         let params: any = {};
         let requestParameters = this.apiInspector.getMethodParameters(this.apiMethod.route, this.apiMethod.method, 'query');
         for (let requestParameter of requestParameters) {
@@ -185,7 +173,7 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      *
      * @private
      */
-    private buildBody() {
+    public buildBody() {
         let body: any = {};
         let bodyParameters = this.apiInspector.getMethodParameters(this.apiMethod.route, this.apiMethod.method, 'body');
         for (let bodyParameter of bodyParameters) {
@@ -194,7 +182,7 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
         return body;
     }
 
-    private close() {
+    public close() {
         this.self.destroy();
     }
 }

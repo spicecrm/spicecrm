@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -23,39 +11,39 @@ import {timeline} from "../../services/timeline.service";
  */
 @Component({
     selector: 'object-timeline-filter',
-    templateUrl: './src/objectcomponents/templates/objecttimelinefilter.html'
+    templateUrl: '../templates/objecttimelinefilter.html'
 })
 export class ObjectTimelineFilter {
 
     /**
      * internal fag if the dropdown is open
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
 
     /**
      * @ignore
      *
      * internal listener for the click outsife of the div
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * internal array with the types and the names
      */
-    private moduleTypes: any[] = [];
+    public moduleTypes: any[] = [];
 
     /**
      * the filters set for the objects
      */
-    private objectfilters: string[] = [];
+    public objectfilters: string[] = [];
 
-    private ownerfilter;
+    public ownerfilter;
 
-    private onlyAuditObjects = false;
+    public onlyAuditObjects = false;
 
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language,
-                private metadata: metadata, private timeline: timeline) {
+    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language,
+                public metadata: metadata, public timeline: timeline) {
         this.setFromService();
     }
 
@@ -87,7 +75,7 @@ export class ObjectTimelineFilter {
     /**
      * get teh values from the service
      */
-    private setFromService() {
+    public setFromService() {
         this.objectfilters = JSON.parse(JSON.stringify(this.timeline.filters.objectfilters));
         this.ownerfilter = this.timeline.filters.own;
     }
@@ -95,7 +83,7 @@ export class ObjectTimelineFilter {
     /**
      * set the values to the service
      */
-    private setToService() {
+    public setToService() {
         this.timeline.filters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
         this.timeline.filters.own = this.ownerfilter;
         this.timeline.onlyAudits = this.onlyAuditObjects;
@@ -108,7 +96,7 @@ export class ObjectTimelineFilter {
      *
      * helper to toggle the dropdown open or closed
      */
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
@@ -128,7 +116,7 @@ export class ObjectTimelineFilter {
      * @param event
      * @param filter
      */
-    private setFilter(event, filter) {
+    public setFilter(event, filter) {
         event.preventDefault();
         if (filter == 'Modules') {
             let index = this.objectfilters.indexOf(filter);
@@ -166,7 +154,7 @@ export class ObjectTimelineFilter {
      *
      * @param filter the filter
      */
-    private getChecked(filter) {
+    public getChecked(filter) {
         if (filter == 'Modules') {
             return (this.objectfilters.length === 1 && this.objectfilters.indexOf('Modules') >= 0 || (this.objectfilters.length === 2 && this.objectfilters.indexOf('Modules') >= 0 && this.objectfilters.indexOf('auditLog') >= 0));
         } else if (filter == 'auditLog') {
@@ -183,7 +171,7 @@ export class ObjectTimelineFilter {
      *
      * @param apply if set to true the values are set to the service
      */
-    private closeDialog(apply) {
+    public closeDialog(apply) {
         if (this.clickListener) this.clickListener();
 
         if (apply) {

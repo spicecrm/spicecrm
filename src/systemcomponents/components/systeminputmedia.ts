@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -57,7 +45,7 @@ interface mediaMetaData {
 
 @Component({
     selector: "system-input-media",
-    templateUrl: "./src/systemcomponents/templates/systeminputmedia.html",
+    templateUrl: "../templates/systeminputmedia.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -71,13 +59,13 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * for the value accessor
      */
-    private onChange: (value: any) => void;
-    private onTouched: () => void;
+    public onChange: (value: any) => void;
+    public onTouched: () => void;
 
     /**
      * the height of the complete component in px
      */
-    @Input() private componentHeight = 500;
+    @Input() public componentHeight = 500;
 
     /**
      * Should image modifications (mirroring, resizing, rotating, cropping, ...) be allowed? Default is true.
@@ -85,29 +73,29 @@ export class SystemInputMedia implements OnDestroy {
      * @param val
      */
     @Input()
-    private set allowModifications(val: boolean) {
+    public set allowModifications(val: boolean) {
         this.allowMirroring = this.allowResizing = this.allowRotating = this.allowCropping = val;
     }
 
     /**
      * Should cropping be allowed?
      */
-    @Input() private allowCropping = true;
+    @Input() public allowCropping = true;
 
     /**
      * Should resizing be allowed?
      */
-    @Input() private allowResizing = true;
+    @Input() public allowResizing = true;
 
     /**
      * Should rotating be allowed?
      */
-    @Input() private allowRotating = true;
+    @Input() public allowRotating = true;
 
     /**
      * Should mirroring be allowed?
      */
-    @Input() private allowMirroring = true;
+    @Input() public allowMirroring = true;
 
     /**
      * The mime type (image/jpg, image/png, ...) of the image file when provided from outside.
@@ -121,62 +109,62 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The reference to the file input field.
      */
-    @ViewChild('fileselector', {static: false}) private fileSelector: ElementRef;
+    @ViewChild('fileselector', {static: false}) public fileSelector: ElementRef;
 
     /**
      * The reference to the image element.
      */
-    @ViewChild('imgelement', {static: false}) private imageElement: ElementRef;
+    @ViewChild('imgelement', {static: false}) public imageElement: ElementRef;
 
     /**
      * The reference to the bottom toolbar.
      */
-    @ViewChild('bottomtoolbar', {static: false}) private bottomToolbar: ElementRef;
+    @ViewChild('bottomtoolbar', {static: false}) public bottomToolbar: ElementRef;
 
     /**
      * The reference to the toolbar.
      */
-    @ViewChild('toolbar', {static: false}) private toolbar: ElementRef;
+    @ViewChild('toolbar', {static: false}) public toolbar: ElementRef;
 
     /**
      * The base64 encoded string of the image.
      */
-    private mediaBase64: SafeResourceUrl = null;
+    public mediaBase64: SafeResourceUrl = null;
 
     /**
      * The reference to the cropper object.
      */
-    private cropper: any = null;
+    public cropper: any = null;
 
     /**
      * The message code of the last toast in case of a file type error.
      */
-    private fileformatErrorMessageCode: string = null;
+    public fileformatErrorMessageCode: string = null;
 
     /**
      * The file delivered from the browser - via clipboard or file selection.
      */
-    private fileFromBrowser: File = null;
+    public fileFromBrowser: File = null;
 
     /**
      * Maximal image width set by the user. The value from the input field (string).
      */
-    private maxWidthInput = '';
+    public maxWidthInput = '';
 
     /**
      * Maximal image height set by the user. The value from the input field (string).
      */
-    private maxHeightInput = '';
+    public maxHeightInput = '';
 
     /**
      * Maximal image width set by the user.
      */
-    private _maxWidthByUser: number = null;
+    public _maxWidthByUser: number = null;
 
     /**
      * Maximal image height set by the user.
      */
-    private _maxHeightByUser: number = null;
+    public _maxHeightByUser: number = null;
 
     /**
      * Maximal allowed (by system) pixel width.
@@ -221,7 +209,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Is the current image cropped?
      */
-    private isCropped = false;
+    public isCropped = false;
 
     /**
      * Is the current image imported? From clipboard or from file system.
@@ -236,54 +224,54 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The internal value for the resize checkbox.
      */
-    private _doResizeByUser = false;
+    public _doResizeByUser = false;
 
     /**
      * Loading indicator. Used for pasting from clipboard.
      */
-    private isLoading = false;
+    public isLoading = false;
 
     /**
      * The method for unlisten allow pasting an image. This is the listener that catches the past event on the window
      */
-    private unlistenPasteEvent: any;
+    public unlistenPasteEvent: any;
 
     /**
      * The current x-mirror value of the image.
      */
-    private xMirrored = 1;
+    public xMirrored = 1;
 
     /**
      * The current y-mirror value of the image.
      */
-    private yMirrored = 1;
+    public yMirrored = 1;
 
     /**
      * The current rotation of the image.
      */
-    private currentRotation = 0;
+    public currentRotation = 0;
 
     /**
      * The compression level in case the image for a new jpeg compression the image as jpeg.
      */
-    private jpegCompressionLevel = 0.95;
+    public jpegCompressionLevel = 0.95;
 
     /**
      * Holds the data of the crop box from the last crop-end event.
      */
-    private lastCropBoxData = {};
+    public lastCropBoxData = {};
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private sanitizer: DomSanitizer,
-        private toast: toast,
-        private userprefs: userpreferences,
-        private componentElRef: ElementRef,
-        private renderer: Renderer2,
-        private http: HttpClient,
-        private cd: ChangeDetectorRef,
-        private libloader: libloader
+        public language: language,
+        public metadata: metadata,
+        public sanitizer: DomSanitizer,
+        public toast: toast,
+        public userprefs: userpreferences,
+        public componentElRef: ElementRef,
+        public renderer: Renderer2,
+        public http: HttpClient,
+        public cd: ChangeDetectorRef,
+        public libloader: libloader
     ) {
 
         this.resetMediaMetaData();
@@ -299,7 +287,7 @@ export class SystemInputMedia implements OnDestroy {
      * Handles the paste event.
      * @param e The clipboard event from the browser.
      */
-    private handlePaste(e) {
+    public handlePaste(e) {
 
         e.preventDefault();
         e.stopPropagation();
@@ -378,7 +366,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Resets the image meta data.
      */
-    private resetMediaMetaData() {
+    public resetMediaMetaData() {
         this.mediaMetaData = {
             mimetype: null,
             fileformat: null,
@@ -394,7 +382,7 @@ export class SystemInputMedia implements OnDestroy {
      * Does a given string look like an url?
      * @param string The string.
      */
-    private stringLooksLikeUrl(string): boolean {
+    public stringLooksLikeUrl(string): boolean {
         return /^(http|https|ftp|file):\/\//.test(string);
     }
 
@@ -412,11 +400,11 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Trigger the file selection dialog of the operating system / web browser and prompt the user to select an image.
      */
-    private triggerFileSelectionDialog(): void {
+    public triggerFileSelectionDialog(): void {
         this.fileSelector.nativeElement.dispatchEvent(new MouseEvent('click', {bubbles: true}));
     }
 
-    private getMediaFromFileSystem(): void {
+    public getMediaFromFileSystem(): void {
         let reader = new FileReader();
         reader.onloadend = e => {
             this.resetModificationStati();
@@ -431,22 +419,18 @@ export class SystemInputMedia implements OnDestroy {
      * All the stuff that has to be done after the image of the image tag has been loaded.
      * @param event
      */
-    private imageLoaded(event): void {
+    public imageLoaded(event): void {
 
         let image = this.imageElement.nativeElement;
 
-        this.libloader.loadLib('cropper').subscribe(
-            (next) => {
-                if (this.cropper) this.cropper.destroy();
-                this.cropper = new Cropper(image, {
-                    autoCrop: false,
-                    viewMode: 1,
-                    toggleDragModeOnDblclick: this.allowCropping,
-                    dragMode: this.allowCropping ? 'crop' : 'move'
-                });
-                this.cropper.crop();
-            }
-        );
+        if (this.cropper) this.cropper.destroy();
+        this.cropper = new Cropper(image, {
+            autoCrop: false,
+            viewMode: 1,
+            toggleDragModeOnDblclick: this.allowCropping,
+            dragMode: this.allowCropping ? 'crop' : 'move'
+        });
+        this.cropper.crop();
 
         image.addEventListener('ready', () => {
             if (this.cropper) {
@@ -480,7 +464,7 @@ export class SystemInputMedia implements OnDestroy {
      * The Handler when a file has been dropped.
      * @param droppedFiles
      */
-    private onDrop( droppedFiles ): void {
+    public onDrop( droppedFiles ): void {
         this.fileFromBrowser = droppedFiles[0];
         this.fileSelectedOrDropped();
     }
@@ -496,7 +480,7 @@ export class SystemInputMedia implements OnDestroy {
      * Get the file type from the mime type.
      * @param fileOrMimetype A file or a string with the mime type.
      */
-    private getFileformatFromMimetype(fileOrMimetype: File | string): string {
+    public getFileformatFromMimetype(fileOrMimetype: File | string): string {
         if ( fileOrMimetype === null ) return '';
         const mimetype = ( typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype );
         if ( typeof mimetype === 'string' && /^image\/\w+/.test(mimetype)) return mimetype.split('/').pop();
@@ -507,7 +491,7 @@ export class SystemInputMedia implements OnDestroy {
      * Check if the mimetype is allowed.
      * @param type The mimetype.
      */
-    private checkMimetype( type ): boolean {
+    public checkMimetype( type ): boolean {
         return type === 'image/jpeg' || type === 'image/png' || type === 'image/gif';
     }
 
@@ -515,7 +499,7 @@ export class SystemInputMedia implements OnDestroy {
      * Show an error toast in case the file is not an image file or the file type is not allowed.
      * @param type The (possibly not allowed) file type.
      */
-    private showFileNotAllowedError( mimetype: string | boolean ): void {
+    public showFileNotAllowedError( mimetype: string | boolean ): void {
         if (this.fileformatErrorMessageCode) this.toast.clearToast(this.fileformatErrorMessageCode);
         this.fileformatErrorMessageCode = this.toast.sendToast('Not an image file or file type ' + ( mimetype ? '"' + mimetype + '"' : '' ) + ' not supported.', 'error', null, false, this.fileformatErrorMessageCode);
     }
@@ -523,14 +507,14 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Remove the toast of the last file type error.
      */
-    private resetFileNotAllowedError() {
+    public resetFileNotAllowedError() {
         if (this.fileformatErrorMessageCode) this.toast.clearToast(this.fileformatErrorMessageCode);
     }
 
     /**
      * The handler when a file has been selected from the file selection window of the operating system / web browser.
      */
-    private fileSelectionChange(): boolean {
+    public fileSelectionChange(): boolean {
         if (this.fileSelector.nativeElement.files.length === 1) {
             this.fileFromBrowser = this.fileSelector.nativeElement.files[0];
             this.fileSelectedOrDropped();
@@ -542,7 +526,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The handler when a new file has been imported (dropped or selected).
      */
-    private fileSelectedOrDropped(): void {
+    public fileSelectedOrDropped(): void {
         this.resetFileNotAllowedError();
         if ( !this.checkMimetype( this.fileFromBrowser.type )) { // We only accept a file with these image extensions
             this.showFileNotAllowedError( this.getFileExtension( this.fileFromBrowser ));
@@ -560,14 +544,14 @@ export class SystemInputMedia implements OnDestroy {
      * Get the file name extension of a file.
      * @param file
      */
-    private getFileExtension(file: File): string {
+    public getFileExtension(file: File): string {
         return file.name.split('.').pop();
     }
 
     /**
      * removes the image, resets the base64 string and destroys the cropper instance
      */
-    private removeImage(): void {
+    public removeImage(): void {
         this.resetMediaMetaData();
 
         // if we have A CROPPER DESTROY IT AND SET TO UNDEFINED
@@ -606,21 +590,21 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * sets the cropper to move mode
      */
-    private setMoveMode() {
+    public setMoveMode() {
         this.cropper.setDragMode('move');
     }
 
     /**
      * sets the cropper to crop mode
      */
-    private setCropMode() {
+    public setCropMode() {
         this.cropper.setDragMode('crop');
     }
 
     /**
      * Removes the cropping frame.
      */
-    private removeCropping(): void {
+    public removeCropping(): void {
         this.cropper.clear();
         this.isCropped = false;
         this.lastCropBoxData = {};
@@ -631,28 +615,28 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Offer the possibility to resize the image? (button)
      */
-    private get canResize(): boolean {
+    public get canResize(): boolean {
         return this.allowResizing && this.cropper;
     }
 
     /**
      * Offer the possibility to mirror the image? (button)
      */
-    private get canMirror(): boolean {
+    public get canMirror(): boolean {
         return this.allowMirroring && this.cropper;
     }
 
     /**
      * Offer the possibility to rotate the image? (button)
      */
-    private get canRotate(): boolean {
+    public get canRotate(): boolean {
         return this.allowRotating && this.cropper;
     }
 
     /**
      * Handler if the user has changed the maximal height of the image.
      */
-    private maxHeightChanged(): void {
+    public maxHeightChanged(): void {
         let val: number|string;
         val = this.maxHeightInput.split( this.userprefs.toUse.num_grp_sep ).join('');
         val = parseInt( val, 10 );
@@ -664,7 +648,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Handler if the user has changed the maximal width of the image.
      */
-    private maxWidthChanged(): void {
+    public maxWidthChanged(): void {
         let val: number|string;
         val = this.maxWidthInput.split( this.userprefs.toUse.num_grp_sep ).join('');
         val = parseInt( val, 10 );
@@ -676,7 +660,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Effective value of maximal pixel height.
      */
-    private get maxHeight() {
+    public get maxHeight() {
         if ( this.maxHeightBySystem && this.maxHeightByUser ) return this.maxHeightBySystem < this.maxHeightByUser ? this.maxHeightBySystem : this.maxHeightByUser;
         return this.maxHeightBySystem ? this.maxHeightBySystem : this.maxHeightByUser ? this.maxHeightByUser : null;
     }
@@ -684,7 +668,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Effective value of maximal pixel width.
      */
-    private get maxWidth() {
+    public get maxWidth() {
         if ( this.maxWidthBySystem && this.maxWidthByUser ) return this.maxWidthBySystem < this.maxWidthByUser ? this.maxWidthBySystem : this.maxWidthByUser;
         return this.maxWidthBySystem ? this.maxWidthBySystem : this.maxWidthByUser ? this.maxWidthByUser : null;
     }
@@ -722,7 +706,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Calculates the size of the target image. Is to be written to object "metaData".
      */
-    private calcTargetSize(): void {
+    public calcTargetSize(): void {
         if ( !this.cropper ) return;
         let ratio = 1, height;
         let width = this.cropper.getData(true).width;
@@ -750,14 +734,14 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Zoom into the image.
      */
-    private zoomIn() {
+    public zoomIn() {
         this.cropper.zoom(0.1);
     }
 
     /**
      * Zoom out of the image.
      */
-    private zoomOut() {
+    public zoomOut() {
         this.cropper.zoom(-0.1);
     }
 
@@ -796,28 +780,28 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Is the image rotated?
      */
-    private get isRotated(): boolean {
+    public get isRotated(): boolean {
         return this.currentRotation !== 0;
     }
 
     /**
      * Is the image mirrored?
      */
-    private get isMirrored(): boolean {
+    public get isMirrored(): boolean {
         return this.xMirrored === -1 || this.yMirrored === -1;
     }
 
     /**
      * Is the image resized?
      */
-    private get isResized(): boolean {
+    public get isResized(): boolean {
         return this.mediaMetaData.width !== this.mediaMetaData.originalWidth || this.mediaMetaData.height !== this.mediaMetaData.originalHeight;
     }
 
     /**
      * Is the image edited? That means rotated or mirrored or cropped.
      */
-    private get isEdited(): boolean {
+    public get isEdited(): boolean {
         return this.isRotated || this.isMirrored || this.isCropped;
     }
 
@@ -828,7 +812,7 @@ export class SystemInputMedia implements OnDestroy {
         return this.isEdited || this.isImported || this.isResized;
     }
 
-    private emitChange() {
+    public emitChange() {
         this.mimetype.emit( this.mediaMetaData.mimetype );
         this.onChange( this.getImage() );
     }
@@ -836,7 +820,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Resets all the modification stati.
      */
-    private resetModificationStati(): void {
+    public resetModificationStati(): void {
         this.xMirrored = this.yMirrored = 1;
         this.currentRotation = 0;
         this.isCropped = false;
@@ -846,7 +830,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Handler when the user removes all modifications from the image (button).
      */
-    private removeModifications(): void {
+    public removeModifications(): void {
         this.cropper.rotateTo(0);
         this.cropper.scale(1, 1); // this.cropper.scale( this.xMirrored === -1 ? -1:1, this.yMirrored === -1 ? -1:1 );
         this.cropper.clear();
@@ -859,7 +843,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Is editing (cropping or rotating or mirroring) allowed?
      */
-    private get allowEditing(): boolean {
+    public get allowEditing(): boolean {
         return this.allowCropping || this.allowRotating || this.allowMirroring;
     }
 

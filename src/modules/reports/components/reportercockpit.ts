@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReports
  */
@@ -28,7 +16,7 @@ import {skip} from "rxjs/operators";
  */
 @Component({
     selector: 'reporter-cockpit',
-    templateUrl: './src/modules/reports/templates/reportercockpit.html'
+    templateUrl: '../templates/reportercockpit.html'
 })
 export class ReporterCockpit implements OnInit, OnDestroy {
 
@@ -42,13 +30,13 @@ export class ReporterCockpit implements OnInit, OnDestroy {
     /**
      * holds the cockpits returned from teh abckend in which reports are sorted in
      */
-    protected allFields: any[] = [];
+    public allFields: any[] = [];
 
-    constructor(private backend: backend,
-                private modellist: modellist,
-                private language: language,
-                private configuration: configurationService,
-                private metadata: metadata) {
+    constructor(public backend: backend,
+                public modellist: modellist,
+                public language: language,
+                public configuration: configurationService,
+                public metadata: metadata) {
     }
 
     /**
@@ -75,7 +63,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * call to get the list data
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         this.componentconfig = this.metadata.getComponentConfig('ReporterCockpit', this.modellist.module);
 
@@ -100,7 +88,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         if (newType.listcomponent != 'ReporterCockpit') return;
         this.modellist.reLoadList();
     }
@@ -109,7 +97,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
     /**
      * load reports categories from backend the get the list data by the service
      */
-    private loadCategories() {
+    public loadCategories() {
         const categories = this.configuration.getData('reportcategories');
         if (!categories) {
             this.backend.getRequest('module/KReports/categoriesmanager/categories').subscribe(categories => {
@@ -128,7 +116,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * @param categories
      * @private
      */
-    private setBuckets(categories) {
+    public setBuckets(categories) {
         this.modellist.buckets = {
             bucketfield: 'category_name',
             bucketitems: categories.map(category => ({
@@ -150,7 +138,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * load more items for single bucket
      * @param bucket
      */
-    private loadMore(bucket) {
+    public loadMore(bucket) {
         this.modellist.loadMoreBucketList(bucket);
     }
 
@@ -158,7 +146,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * @param categoryName: string
      * @return filtered list items by category
      */
-    private getCategoryReports(categoryName) {
+    public getCategoryReports(categoryName) {
         return this.modellist.listData.list.filter(item => item.category_name == categoryName);
     }
 }

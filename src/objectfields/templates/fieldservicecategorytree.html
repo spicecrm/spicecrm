@@ -1,0 +1,15 @@
+<div class="slds-listbox slds-listbox_vertical slds-dropdown_fluid slds-grid" role="listbox">
+    <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
+        <system-spinner></system-spinner>
+    </div>
+    <div *ngFor="let lvl of levels; let i = index" class="slds-col slds-size--1-of-{{maxlevels}}">
+        <div *ngFor="let cat of lvl" [ngClass]="{'slds-theme--shade': isCategorySelected(cat)}">
+            <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small" (mouseenter)="select(cat)">
+                <span *ngIf="cat.selectable == 0 && cat.categories" class="slds-truncate" style="cursor: default;"><system-label [label]="cat.name"></system-label></span>
+                <span *ngIf="cat.selectable == 1 || !cat.categories" (click)="choose(cat)" class="slds-truncate" style="cursor: pointer; text-decoration: underline;"><system-label [label]="cat.name"></system-label></span>
+                <system-utility-icon class="slds-m-left--small" *ngIf="cat.favorite == 1" [icon]="'favorite'" [size]="'xx-small'"></system-utility-icon>
+                <system-utility-icon class="slds-col--bump-left" *ngIf="cat.categories" [icon]="'chevronright'" [size]="'xx-small'"></system-utility-icon>
+            </div>
+        </div>
+    </div>
+</div>

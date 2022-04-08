@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleActivities
  */
@@ -31,21 +19,21 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 @Component({
     selector: 'activitytimeline-add-container',
-    templateUrl: './src/modules/activities/templates/activitytimelineaddcontainer.html'
+    templateUrl: '../templates/activitytimelineaddcontainer.html'
 })
 export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDestroy {
 
-    @ViewChildren('maintabs', {read: ViewContainerRef}) private maintabs: QueryList<any>;
-    @ViewChildren('moretabs', {read: ViewContainerRef}) private moretabs: QueryList<any>;
-    @ViewChild('moretab', {read: ViewContainerRef, static: false}) private moretab: ViewContainerRef;
+    @ViewChildren('maintabs', {read: ViewContainerRef}) public maintabs: QueryList<any>;
+    @ViewChildren('moretabs', {read: ViewContainerRef}) public moretabs: QueryList<any>;
+    @ViewChild('moretab', {read: ViewContainerRef, static: false}) public moretab: ViewContainerRef;
 
-    private currenttab: string = '';
-    private tabs: any[] = [];
-    private resizeListener: any;
-    private moreOpen: boolean = false;
-    private moreModules: string[] = [];
+    public currenttab: string = '';
+    public tabs: any[] = [];
+    public resizeListener: any;
+    public moreOpen: boolean = false;
+    public moreModules: string[] = [];
 
-    constructor(private model: model, private language: language, private activitiytimeline: activitiytimeline, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer2) {
+    constructor(public model: model, public language: language, public activitiytimeline: activitiytimeline, public metadata: metadata, public elementRef: ElementRef, public renderer: Renderer2) {
         this.resizeListener = this.renderer.listen('window', 'resize', e => {
             this.handleOverflow();
         });
@@ -58,7 +46,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
             let componentsetComponents = this.metadata.getComponentSetObjects(config.componentset);
             for (let componentsetComponent of componentsetComponents) {
                 // check if we have erdit right on the module
-                if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'edit')) {
+                if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'create')) {
                     this.tabs.push({
                         module: componentsetComponent.componentconfig.module,
                         component: componentsetComponent.component,
@@ -81,7 +69,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
         this.resizeListener();
     }
 
-    private handleOverflow() {
+    public handleOverflow() {
         this.moreModules = [];
         // make sure we set all to hidden
         this.maintabs.forEach(thisitem => {
@@ -130,11 +118,11 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     }
 
-    private setTab(object) {
+    public setTab(object) {
         this.currenttab = object;
     }
 
-    private checkTab(object) {
+    public checkTab(object) {
         return this.currenttab == object;
     }
 
@@ -142,11 +130,11 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
         return this.moreModules.indexOf(this.currenttab) >= 0;
     }
 
-    private tabClass(object) {
+    public tabClass(object) {
         return this.currenttab == object.module ? 'slds-show' : 'slds-hide';
     }
 
-    private toggleOpen() {
+    public toggleOpen() {
         this.moreOpen = !this.moreOpen;
     }
 }

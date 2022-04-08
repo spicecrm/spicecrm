@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleCalendar
  */
@@ -44,7 +32,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-month',
-    templateUrl: './src/modules/calendar/templates/calendarsheetmonth.html',
+    templateUrl: '../templates/calendarsheetmonth.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
@@ -55,62 +43,62 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * container reference for the main div
      */
-    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) private sheetContainer: ViewContainerRef;
+    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) public sheetContainer: ViewContainerRef;
     /**
      * the change date comes from the parent
      */
-    @Input() private setdate: any = {};
+    @Input() public setdate: any = {};
     /**
      * holds a boolean of google events visibility
      */
-    @Input() private googleIsVisible: boolean = true;
+    @Input() public googleIsVisible: boolean = true;
     /**
      * holds the month grid weeks and days
      */
-    private monthGrid: Array<Array<{ day: number, month: number, date: any, events: any[], visibleEventsCount: number }>> = [];
+    public monthGrid: Array<Array<{ day: number, month: number, date: any, events: any[], visibleEventsCount: number }>> = [];
     /**
      * holds the weeks indices to quick access the week index by number
      * @private
      */
-    private weeksIndices: { [key: number]: number } = {};
+    public weeksIndices: { [key: number]: number } = {};
     /**
      * holds the days indices to quick access the day index by number
      * @private
      */
-    private daysIndices: { [key: string]: number } = {};
+    public daysIndices: { [key: string]: number } = {};
     /**
      * holds the offset height of a grid day
      */
-    private offsetHeight: number = 20;
+    public offsetHeight: number = 20;
     /**
      * holds the owner events
      */
-    private ownerEvents: any[] = [];
+    public ownerEvents: any[] = [];
     /**
      * holds the users events
      */
-    private userEvents: any[] = [];
+    public userEvents: any[] = [];
     /**
      * holds the google events
      */
-    private googleEvents: any[] = [];
+    public googleEvents: any[] = [];
     /**
      * holds the resize listener
      */
-    private resizeListener: any;
+    public resizeListener: any;
     /**
      * subscription to handle unsubscribe
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private broadcast: broadcast,
-                private navigation: navigation,
-                private elementRef: ElementRef,
-                private backend: backend,
-                private renderer: Renderer2,
-                private cdRef: ChangeDetectorRef,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public broadcast: broadcast,
+                public navigation: navigation,
+                public elementRef: ElementRef,
+                public backend: backend,
+                public renderer: Renderer2,
+                public cdRef: ChangeDetectorRef,
+                public calendar: calendar) {
         this.buildSheetDays();
         this.subscribeToChanges();
     }
@@ -187,7 +175,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * subscribe to user calendar changes
      * subscribe to resize event to reset the events style
      */
-    private subscribeToChanges() {
+    public subscribeToChanges() {
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 if (calendar.id == 'owner') {
                     this.getOwnerEvents();
@@ -206,7 +194,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * set visible events count
      * @private
      */
-    private setVisibleEventsCount() {
+    public setVisibleEventsCount() {
 
         this.allEvents.forEach(event => {
 
@@ -214,7 +202,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
             event.visible = false;
 
-            const eventDaysCount = Math.ceil(event.end.diff(event.start, 'day', true));
+            const eventDaysCount = event.end.diff(event.start, 'day') + 1;
 
             Array.from({length: eventDaysCount}, (_, i) => moment(event.start).add(i, 'days'))
                 .forEach(eventDay => {
@@ -225,7 +213,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             if (!Array.isArray(event.illusions)) return;
 
             event.illusions.forEach(illusion => {
-                const eventDaysCount = Math.ceil(illusion.end.diff(illusion.start, 'day', true));
+                const eventDaysCount = illusion.end.diff(illusion.start, 'day') + 1;
 
                 Array.from({length: eventDaysCount}, (_, i) => moment(illusion.start).add(i, 'days'))
                     .forEach(eventDay => {
@@ -243,7 +231,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param item
      * @return item.id
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -254,14 +242,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param item
      * @return index
      */
-    private trackByFnDate(index, item) {
+    public trackByFnDate(index, item) {
         return index;
     }
 
     /**
      * build sheet days
      */
-    private buildSheetDays() {
+    public buildSheetDays() {
         this.sheetDays = [];
         let i = 0;
         let dayIndex = this.calendar.weekStartDay;
@@ -279,7 +267,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * load owner events from service and rearrange the multi events
      */
-    private getOwnerEvents() {
+    public getOwnerEvents() {
         this.ownerEvents = [];
         this.cleanGrid();
 
@@ -298,7 +286,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * load google events from service and rearrange the multi events
      */
-    private getGoogleEvents() {
+    public getGoogleEvents() {
         this.googleEvents = [];
         this.cleanGrid();
         if (!this.googleIsVisible || this.calendar.isMobileView) {
@@ -315,7 +303,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             });
     }
 
-    private getUserEvents(calendar) {
+    public getUserEvents(calendar) {
         this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
@@ -337,7 +325,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * load other user events from service and rearrange the multi events
      */
-    private getUsersEvents() {
+    public getUsersEvents() {
         this.userEvents = [];
         this.cleanGrid();
         if (this.calendar.isMobileView) {
@@ -358,7 +346,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * rebuild the grid to clean up the referenced events in the days
      * @private
      */
-    private cleanGrid() {
+    public cleanGrid() {
         this.buildGrid();
     }
 
@@ -367,7 +355,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * assign to each event an array of the week indices where the multi event was found.
      * filter out the invisible events which will be pushed to the more popover.
      */
-    private spreadEvents() {
+    public spreadEvents() {
 
         this.cleanGrid();
         this.allEvents.forEach(e => {
@@ -380,19 +368,32 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             .forEach(event => {
                 if (event.isMulti) {
 
-                    const eventDaysCount = Math.ceil(event.end.diff(event.start, 'day', true));
+                    const eventDaysCount = event.end.diff(event.start, 'day') + 1;
 
                     // define the day events
                     Array.from({length: eventDaysCount}, (_, i) => moment(event.start).add(i, 'days'))
                         .forEach(eventDay => {
                             const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
+
+                            if (!day) return;
+
                             if (isNaN(event.sequence)) {
                                 event.sequence = day.events.length;
                             }
                             day.events.push(event);
                             day.visibleEventsCount++;
                         });
-                    const eventWeeksCount = Math.ceil(event.end.diff(event.start, 'week', true));
+                    const gridLastWeek = this.monthGrid[this.monthGrid.length -1];
+                    let eventEnd = moment(event.end);
+                    let eventStart = moment(event.start);
+
+                    if (eventStart.isBefore(this.monthGrid[0][0].date)) {
+                        eventStart = this.monthGrid[0][0].date;
+                    }
+                    if (eventEnd.isAfter(gridLastWeek[gridLastWeek.length - 1].date)) {
+                        eventEnd = gridLastWeek[gridLastWeek.length - 1].date;
+                    }
+                    const eventWeeksCount = eventEnd.diff(eventStart, 'week') + 1;
 
                     if (eventWeeksCount < 2) return;
 
@@ -401,8 +402,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     }
 
                     // define the event weeks
-                    Array.from({length: eventWeeksCount}, (_, i) => moment(moment(event.start).day(this.calendar.weekstartday)).add(i, 'weeks'))
-                        .forEach(week => {
+                    Array.from({length: (eventWeeksCount - 1)}, (_, i) => moment(moment(event.start).day(this.calendar.weekstartday)).add(i + 1, 'weeks'))
+                        .forEach((week, index) => {
+
                             const illusionEvent = {...event};
                             illusionEvent.illusionStart = moment(week.day(this.calendar.weekStartDay));
                             illusionEvent.illusionEnd = illusionEvent.end.isAfter(week, 'weeks') ? moment(week.day(this.calendar.weekDaysCount)) : moment(event.end);
@@ -411,6 +413,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
                 } else {
                     const day = this.monthGrid[this.weeksIndices[event.start.week()]][this.daysIndices[`${event.start.month()}${event.start.date()}`]];
+
+                    if (!day) return;
+
                     event.sequence = day.events.length;
                     day.events.push(event);
                     day.visibleEventsCount++;
@@ -422,7 +427,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * navigate to day
      * @param sheetDay
      */
-    private gotoDay(sheetDay) {
+    public gotoDay(sheetDay) {
         let navigateDate = moment(this.setdate);
         navigateDate.month(sheetDay.month).date(sheetDay.day);
         this.calendar.gotToDayView(navigateDate);
@@ -432,7 +437,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param weekdayShort
      * @return day col style
      */
-    private getDayColStyle(weekdayShort) {
+    public getDayColStyle(weekdayShort) {
         let todayDay = new moment();
         let todayDayShort = todayDay.format('ddd');
         let calendarDate = this.calendar.calendarDate;
@@ -448,7 +453,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param day
      * @return day divider style
      */
-    private getDayDividerStyle(day) {
+    public getDayDividerStyle(day) {
         return {
             left: (this.sheetContainer.element.nativeElement.clientWidth / this.calendar.weekDaysCount * day) + 'px',
             top: '0px',
@@ -459,9 +464,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * build month grid
      */
-    private buildGrid() {
+    public buildGrid() {
 
         this.monthGrid = [];
+        this.weeksIndices = {};
+        this.daysIndices = {};
 
         const firstWeek = moment(this.setdate.format()).date(1).day(this.calendar.weekStartDay).format();
 
@@ -490,7 +497,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * check if the month is not the same as current
      * @param month
      */
-    private notThisMonth(month): boolean {
+    public notThisMonth(month): boolean {
         return month !== this.setdate.month();
     }
 
@@ -498,7 +505,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param week
      * @return week divider style
      */
-    private getWeekDividerStyle(week): any {
+    public getWeekDividerStyle(week): any {
         return {
             top: 'calc((100% / ' + this.monthGrid.length + ') * ' + week + ' )'
         };
@@ -510,7 +517,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param month
      * @return day style
      */
-    private getDayStyle(weekIndex, dayIndex, month): any {
+    public getDayStyle(weekIndex, dayIndex, month): any {
         return {
             'left': (this.sheetContainer.element.nativeElement.clientWidth / this.calendar.weekDaysCount * dayIndex) + 'px',
             'top': `calc((100% / ${this.monthGrid.length}) * ${weekIndex})`,
@@ -525,7 +532,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * set all events style
      */
-    private setEventsStyle() {
+    public setEventsStyle() {
         this.allEvents.forEach(event => {
 
             this.setEventStyle(event);
@@ -543,18 +550,20 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * set event style
      * @param event
      */
-    private setEventStyle(event) {
+    public setEventStyle(event) {
 
         if (event.sequence >= this.maxEventsPerDay) {
             event.style = {display: 'none'};
             return;
         }
-        const eventStart = event.illusionStart || event.start;
-        const eventEnd = event.illusionEnd || event.end;
+        const eventStart = moment(event.illusionStart || event.start);
+        const eventEnd = moment(event.illusionEnd || event.end);
         const weekI = this.weeksIndices[eventStart.week()];
         const startDate = eventStart.isBefore(this.monthGrid[weekI][0].date, 'days') ? this.monthGrid[weekI][0].date : eventStart;
         const endDate = eventEnd.isAfter(this.monthGrid[weekI][this.monthGrid[weekI].length - 1].date, 'days') ? this.monthGrid[weekI][this.monthGrid[weekI].length - 1].date : eventEnd;
-        const length = Math.ceil(endDate.diff(startDate, 'day', true));
+        // reset the start date
+        startDate.set({hour: 0, minute: 0, second: 0});
+        const length = endDate.diff(startDate, 'day') + 1;
         const sheetContainer = this.sheetContainer.element.nativeElement;
 
         if (!('style' in event)) {
@@ -575,7 +584,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param month
      * @return today style
      */
-    private isTodayStyle(day, month) {
+    public isTodayStyle(day, month) {
         let year = this.calendar.calendarDate.year();
         let today = new moment();
         let isToday = year === today.year() && today.month() === month && today.date() == day;

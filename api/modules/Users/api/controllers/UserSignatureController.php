@@ -6,6 +6,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class UserSignatureController{
 
@@ -31,7 +32,7 @@ class UserSignatureController{
         if ($signature)
             $db->query("UPDATE users_signatures SET signature = '{$signatures['signature']}', signature_html = '{$signatures['signature_html']}' WHERE user_id='{$signature['id']}'");
         else
-            $db->query("INSERT INTO users_signatures (id, deleted, user_id, signature, signatire_html) VALUES('" . create_guid() . "', 0, '{$args['id']}', '{$signatures['signature']}', '{$signatures['signature_html']}')");
+            $db->query("INSERT INTO users_signatures (id, deleted, user_id, signature, signatire_html) VALUES('" . SpiceUtils::createGuid() . "', 0, '{$args['id']}', '{$signatures['signature']}', '{$signatures['signature_html']}')");
 
         return $res->withJson(['status' => 'success']);
     }

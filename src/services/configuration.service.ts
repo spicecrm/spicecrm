@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -65,7 +53,7 @@ export class configurationService {
     /**
      * holds any app data the application can store with a given key
      */
-    private appdata: any = {};
+    public appdata: any = {};
 
     /**
      * emits when the systemparamaters have been laoded
@@ -77,13 +65,13 @@ export class configurationService {
      */
     public datachanged$: EventEmitter<string> = new EventEmitter<string>();
 
-    private locationHash: string;
+    public locationHash: string;
 
-    constructor(private http: HttpClient,
-                private session: session,
-                private broadcast: broadcast,
-                private title: Title,
-                private router: Router,) {
+    constructor(public http: HttpClient,
+                public session: session,
+                public broadcast: broadcast,
+                public title: Title,
+                public router: Router,) {
 
         // add a new behaviour subject
         this.loaded$ = new BehaviorSubject<boolean>(false);
@@ -169,7 +157,7 @@ export class configurationService {
      *
      * @param message the message received
      */
-    private handleLogout(message) {
+    public handleLogout(message) {
         if (message.messagetype == 'logout') {
             this.reset();
         }
@@ -405,7 +393,7 @@ export class configurationService {
     /**
      * sets the favicon
      */
-    private setFavIcon() {
+    public setFavIcon() {
         let icon = document.querySelectorAll("link[ rel ~= 'icon' i]")[0];
         if (icon) {
             let config = this.getCapabilityConfig('theme');

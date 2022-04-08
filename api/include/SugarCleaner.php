@@ -36,6 +36,8 @@
 
 namespace SpiceCRM\includes;
 
+use SpiceCRM\includes\utils\DBUtils;
+
 class SugarCleaner
 {
     /**
@@ -67,13 +69,13 @@ class SugarCleaner
         if(empty($html)) return $html;
 
         if($encoded) {
-            $html = from_html($html);
+            $html = DBUtils::fromHtml($html);
         }
 
         $cleanhtml = $html;
 
         if($encoded) {
-            $cleanhtml = to_html($cleanhtml);
+            $cleanhtml = DBUtils::toHtml($cleanhtml);
         }
         return $cleanhtml;
     }
@@ -81,10 +83,10 @@ class SugarCleaner
     static public function stripTags($string, $encoded = true)
     {
         if($encoded) {
-            $string = from_html($string);
+            $string = DBUtils::fromHtml($string);
         }
         $string = filter_var($string, FILTER_SANITIZE_STRIPPED, FILTER_FLAG_NO_ENCODE_QUOTES);
-        return $encoded?to_html($string):$string;
+        return $encoded ? DBUtils::toHtml($string) : $string;
     }
 }
 

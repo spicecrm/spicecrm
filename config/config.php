@@ -192,20 +192,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // get path to folder
 
                 $dir = dirname(__DIR__);
-                $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir . '/vendor/@angular'), RecursiveIteratorIterator::SELF_FIRST);
-                // loop results
-                foreach ($objects as $name => $object) {
-                    $pathinfo = pathinfo($object->getPathname());
-                    if (!is_dir($object->getPathname()) && $pathinfo['extension'] == 'js') {
-                        $file = file_get_contents($object->getPathname());
-                        preg_match("/\s\*\s@license\sAngular\sv(.*)/", $file, $matches, PREG_OFFSET_CAPTURE);
-                        $systemdetails['vendor']['angular'][] = [
-                            'name' => $pathinfo['filename'],
-                            'version' => $matches[1][0]
-                        ];
-                    }
-                }
-
 
                 // get lightening design version
                 // get path to folder
@@ -235,7 +221,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     if (!is_dir($object->getPathname()) && $pathinfo['extension'] == 'js') {
                         $file = file_get_contents($object->getPathname());
                         // find file header
-                        preg_match("@/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*\*/@", $file, $matches, PREG_OFFSET_CAPTURE);
+                        $matches = [];
+                        preg_match("@\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*\/@", $file, $matches, PREG_OFFSET_CAPTURE);
                         // check content of file header
                         $lines = preg_split('/\r\n|\r|\n/', $matches[0][0]);
 
@@ -318,6 +305,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 // delete the zip file
                 unlink($zipFileDir);
+                break;
+            case 'oauth2redirect':
+            case 'oauth2redirect.html':
+                echo "<html><body><script>var checks = [/[\?|&|#]code=/, /[\?|&|#]error=/];function isResponse(str) {if (!str) return false;for (var i = 0; i < checks.length; i++) {if (str.match(checks[i])) return true;}return false;}var message = isResponse(location.hash)? location.hash: location.search;if (window.parent && window.parent !== window) {window.parent.postMessage(message, location.origin);} else if (window.opener && window.opener !== window) {window.opener.postMessage(message, location.origin);}</script></body></html>";
                 break;
         }
         break;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <xs:schema id="types"
            elementFormDefault="qualified"
            xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"

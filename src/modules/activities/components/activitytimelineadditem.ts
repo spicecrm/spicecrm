@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleActivities
  */
@@ -34,7 +22,7 @@ declare var _: any;
  */
 @Component({
     selector: 'activitytimeline-add-item',
-    templateUrl: './src/modules/activities/templates/activitytimelineadditem.html',
+    templateUrl: '../templates/activitytimelineadditem.html',
     providers: [model, view]
 })
 export class ActivityTimelineAddItem implements OnInit, OnDestroy {
@@ -44,22 +32,22 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      *
      * the componentconfig that is added whent eh component is added
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * the fieldset for the header. Pulled from the componentnconfig for the component and the module
      */
-    private headerFieldSet: string = '';
+    public headerFieldSet: string = '';
 
     /**
      * the fieldset for the body. Pulled from the componentnconfig for the component and the module
      */
-    private bodyFieldSet: string = '';
+    public bodyFieldSet: string = '';
 
     /**
      * the position for the utility buttons (cancel, expand, dock)
      */
-    private utilityButtonsPosition: string = 'bottom';
+    public utilityButtonsPosition: string = 'bottom';
 
     /**
      * @ignore
@@ -85,7 +73,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      *
      * a handler to the parent subscription
      */
-    private parentSubscription: any;
+    public parentSubscription: any;
 
     constructor(public metadata: metadata, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef) {
     }
@@ -96,13 +84,14 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     public ngOnInit() {
         // initialize the model
         this.model.module = this.module;
+        this.model.initializeModel();
 
         // subscribe to the parent models data Observable
         // name is not necessarily loaded
         this.parentSubscription = this.activitiytimeline.parent.data$.subscribe(data => {
             // if we still have the same model .. update
-            if (data.id == this.model.data.parent_id) {
-                this.model.data.parent_name = data.summary_text;
+            if (data.id == this.model.getField('parent_id')) {
+                this.model.setField('parent_name', data.summary_text);
             }
         });
 
@@ -159,7 +148,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     /**
      * initializes the model when the item is expanded
      */
-    private initializeModule() {
+    public initializeModule() {
         this.model.module = this.module;
         // SPICEUI-2
         this.model.id = undefined;
@@ -170,7 +159,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     /**
      * the trigger when the header fieldset or any item therein in focused and the item is expanded
      */
-    private onHeaderClick() {
+    public onHeaderClick() {
         if (!this.isExpanded) {
             this.isExpanded = true;
             this.initializeModule();
@@ -183,14 +172,14 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     /**
      * checks if a GlobalDockedComposermodal is availabe for the module and thus the modal can be opened.
      */
-    private checkCanExpand() {
+    public checkCanExpand() {
         this.canExpand = !_.isEmpty(this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module));
     }
 
     /**
      * expands the item and renders it in a modal undocking it from the activity tiemline container
      */
-    private expand() {
+    public expand() {
         this.dockedComposer.addComposer(this.model.module, this.model, true);
         // this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
         this.isExpanded = false;
@@ -201,14 +190,14 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     /**
      * checks if a GlobalDockedComposermodal is availabe for the module and thus the modal can be opened.
      */
-    private checkCanDock() {
+    public checkCanDock() {
         this.canDock = !_.isEmpty(this.metadata.getComponentConfig('GlobalDockedComposer', this.model.module));
     }
 
     /**
      * docks the model to the docked composer and removes it from the activity timeline container
      */
-    private dock() {
+    public dock() {
         this.dockedComposer.addComposer(this.model.module, this.model);
         this.isExpanded = false;
         this.initializeModule();
@@ -217,7 +206,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     /**
      * cancels and collapses the container
      */
-    private cancel() {
+    public cancel() {
         this.model.cancelEdit();
         this.isExpanded = false;
         this.initializeModule();

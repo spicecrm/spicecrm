@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Folders\api\controllers;
 
 use SpiceCRM\data\BeanFactory;

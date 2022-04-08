@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
@@ -33,36 +21,36 @@ import {take} from "rxjs/operators";
 
 @Component({
     selector: 'global-navigation-compact',
-    templateUrl: './src/globalcomponents/templates/globalnavigationcompact.html',
+    templateUrl: '../templates/globalnavigationcompact.html',
     providers: [model]
 })
 export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
-    @ViewChild('containermiddle', {read: ViewContainerRef, static: true}) private containermiddle: ViewContainerRef;
-    @ViewChild('containerbottom', {read: ViewContainerRef, static: true}) private containerbottom: ViewContainerRef;
-    @ViewChild('menucontainer', {read: ViewContainerRef, static: true}) private menucontainer: ViewContainerRef;
+    @ViewChild('containermiddle', {read: ViewContainerRef, static: true})public containermiddle: ViewContainerRef;
+    @ViewChild('containerbottom', {read: ViewContainerRef, static: true})public containerbottom: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: true})public menucontainer: ViewContainerRef;
 
-    private showmenu: boolean = false;
+   public showmenu: boolean = false;
     public menuitems: any[] = [];
     public activeItem: string = '';
     public activeItemMenu: any[] = [];
-    private activeItemMenucomponents: any[] = [];
-    private subscriptions: Subscription = new Subscription();
+   public activeItemMenucomponents: any[] = [];
+   public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private loginService: loginService,
-        private navigation: navigation,
-        private favorite: favorite,
-        private model: model,
-        private recent: recent,
-        private session: session,
-        private modal: modal,
-        private cdr: ChangeDetectorRef,
-        private broadcast: broadcast,
-        private router: Router) {
+       public metadata: metadata,
+       public language: language,
+       public loginService: loginService,
+       public navigation: navigation,
+       public favorite: favorite,
+       public model: model,
+       public recent: recent,
+       public session: session,
+       public modal: modal,
+       public cdr: ChangeDetectorRef,
+       public broadcast: broadcast,
+       public router: Router) {
 
         // get the menu items
         this.buildMenuItems();
@@ -122,7 +110,7 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
         this.cdr.detectChanges();
     }
 
-    private handleMessage(message) {
+   public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':
@@ -131,12 +119,12 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
         }
     }
 
-    private navigateTo(module) {
+   public navigateTo(module) {
         this.router.navigate(['/module/' + module]);
         this.showmenu = false;
     }
 
-    private buildMenuItems() {
+   public buildMenuItems() {
         this.menuitems = [];
 
         let modules = this.metadata.getRoleModules(true);
@@ -145,7 +133,7 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
         }
     }
 
-    private buildModuleMenuItems() {
+   public buildModuleMenuItems() {
 
         this.activeItem = this.navigation.activeModule;
 
@@ -159,32 +147,32 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
         }
     }
 
-    private showAppLauncher() {
+   public showAppLauncher() {
         this.showmenu = false;
         this.modal.openModal('GlobalAppLauncherDialog');
     }
 
-    private getAvialableLanguages() {
+   public getAvialableLanguages() {
         return this.language.getAvialableLanguages(true);
     }
 
-    private toggleMenu() {
+   public toggleMenu() {
         this.showmenu = !this.showmenu;
     }
 
-    private closeMenu() {
+   public closeMenu() {
         this.showmenu = false;
     }
 
-    private logout() {
+   public logout() {
         this.loginService.logout();
     }
 
-    private trackByFn(index, item) {
+   public trackByFn(index, item) {
         return item.id;
     }
 
-    private buildActiveItemMenu() {
+   public buildActiveItemMenu() {
         for (let menuitem of this.activeItemMenu) {
             switch (menuitem.action) {
                 case 'NEW':
@@ -208,7 +196,7 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
         }
     }
 
-    private destroyActiveItemMenu() {
+   public destroyActiveItemMenu() {
         for (let component of this.activeItemMenucomponents) {
             component.destroy();
         }

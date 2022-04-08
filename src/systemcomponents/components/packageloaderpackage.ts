@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -21,6 +9,7 @@ import {language} from '../../services/language.service';
 import {configurationService} from '../../services/configuration.service';
 import {loader} from '../../services/loader.service';
 import {broadcast} from '../../services/broadcast.service';
+import {modal} from "../../services/modal.service";
 
 /**
  * @ignore
@@ -29,24 +18,25 @@ declare var _;
 
 @Component({
     selector: 'package-loader-package',
-    templateUrl: './src/systemcomponents/templates/packageloaderpackage.html',
+    templateUrl: '../templates/packageloaderpackage.html',
 })
 export class PackageLoaderPackage implements OnInit {
 
-    @Input() private package: any;
-    @Input() private packages: any[] = [];
-    @Input() private repository: any;
-    private extensions: any[] = [];
-    private requiredpackages: any[] = [];
-    // private disabled: boolean = true;
-    private loading: string = '';
+    @Input() public package: any;
+    @Input() public packages: any[] = [];
+    @Input() public repository: any;
+    public extensions: any[] = [];
+    public requiredpackages: any[] = [];
+    // public disabled: boolean = true;
+    public loading: string = '';
 
     constructor(
-        private language: language,
-        protected backend: backend,
-        private configurationService: configurationService,
-        private loader: loader,
-        private broadcast: broadcast
+        public language: language,
+        public backend: backend,
+        public configurationService: configurationService,
+        public loader: loader,
+        public modal: modal,
+        public broadcast: broadcast
     ) {
 
     }
@@ -87,7 +77,7 @@ export class PackageLoaderPackage implements OnInit {
         }
     }
 
-    private loadPackage(packagename) {
+    public loadPackage(packagename) {
         this.loading = 'package';
         this.backend.getRequest('configuration/packages/package/' + packagename + this.repositoryaddurl).subscribe(
             response => {
@@ -99,11 +89,37 @@ export class PackageLoaderPackage implements OnInit {
                 });
             },
             error => {
+                this.executeDB();
                 this.loading = '';
             });
     }
 
-    private deletePackage(packagename) {
+    /**
+     * calls the backend repair method that delivers the sql string, injects it in the modal
+     */
+    public executeDB() {
+
+        this.modal.confirm('MSG_PACKAGE_REPAIR_DB', 'LBL_REPAIR_DATABASE', 'error').subscribe(answer => {
+
+            if (!answer) return;
+
+            const loadingModal = this.modal.await(this.language.getLabel('LBL_PROCESSING'));
+
+            this.backend.getRequest('admin/repair/sql').subscribe(result => {
+                loadingModal.next(true);
+                loadingModal.complete();
+                if(result) {
+                    this.modal.openModal('AdministrationDictRepairModal', true).subscribe(modal => {
+                        modal.instance.sql = result.sql;
+                        modal.instance.wholeSQL = result.wholeSQL;
+                    });
+                }
+            });
+        });
+    }
+
+
+    public deletePackage(packagename) {
         this.loading = 'package';
         this.backend.deleteRequest('configuration/packages/package/' + packagename).subscribe(response => {
             this.loading = 'configuration';

@@ -39,6 +39,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 
 require_once('modules/ACLActions/actiondefs.php');
@@ -149,7 +150,7 @@ class ACLAction extends SugarBean
     static function AccessName($access){
         global $ACLActionAccessLevels;
         if(isset($ACLActionAccessLevels[$access])){
-            return translate($ACLActionAccessLevels[$access]['label'], 'ACLActions');
+            return SpiceUtils::translate($ACLActionAccessLevels[$access]['label'], 'ACLActions');
         }
         return false;
 
@@ -451,7 +452,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
         foreach($categories as $cat_name=>$category){
             foreach($category as $type_name=>$type){
                 foreach($type as $act_name=>$action){
-                    $names[$act_name] = translate($ACLActions[$type_name]['actions'][$act_name]['label'], 'ACLActions');
+                    $names[$act_name] = SpiceUtils::translate($ACLActions[$type_name]['actions'][$act_name]['label'], 'ACLActions');
                     $categories[$cat_name][$type_name][$act_name]['accessColor'] = ACLAction::AccessColor($action['aclaccess']);
                     if($type_name== 'module'){
 
@@ -475,7 +476,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
             }
         }
 
-        if(!is_admin($current_user)){
+        if(!SpiceUtils::isAdmin($current_user)){
             foreach($disabled as $cat_name){
                 unset($categories[$cat_name]);
             }

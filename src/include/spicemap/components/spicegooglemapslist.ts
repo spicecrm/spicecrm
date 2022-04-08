@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpiceMap
  */
@@ -29,7 +17,7 @@ import {ListTypeI} from "../../../services/interfaces.service";
  */
 @Component({
     selector: 'spice-google-maps-list',
-    templateUrl: './src/include/spicemap/templates/spicegooglemapslist.html',
+    templateUrl: '../templates/spicegooglemapslist.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
@@ -66,11 +54,11 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * map options will be passed to the spice google maps
      */
-    protected mapOptions: MapOptionsI = {};
+    public mapOptions: MapOptionsI = {};
     /**
      * List of records to be displayed on the map as markers
      */
-    protected records: RecordI[] = [];
+    public records: RecordI[] = [];
 
     constructor(
         public language: language,
@@ -268,7 +256,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * subscribe to map focus from the focus field and set focused record id
      */
-    private subscribeToBroadcastMessages() {
+    public subscribeToBroadcastMessages() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(msg => {
                 this.handleBroadcastMessage(msg);
@@ -279,7 +267,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * set map options from component config
      */
-    private setMapOptionsFromComponentConfig() {
+    public setMapOptionsFromComponentConfig() {
         this.mapOptions = {
             showCluster: this.componentconfig.showCluster,
             markerWithModelPopover: this.componentconfig.markerWithModelPopover,
@@ -292,7 +280,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * set the latitude longitude fields names from module defs
      */
-    private setLatLngFieldsNames() {
+    public setLatLngFieldsNames() {
         const moduleDefs = this.metadata.getModuleDefs(this.modelList.module);
         if (!!moduleDefs && !!moduleDefs.ftsgeo) {
             this.lngName = moduleDefs.ftsgeo.longitude_field;
@@ -303,7 +291,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * set fixed circle data from the model list current list filter defs
      */
-    private setFixedCircle() {
+    public setFixedCircle() {
         const geoFilter = this.modelList.getFilterDefs().geography;
 
         if (!geoFilter || !this.verifyLatLng(geoFilter) || !geoFilter.radius || isNaN(geoFilter.radius)) {
@@ -326,7 +314,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * subscribe to model list type and data reloaded changes to reset records
      */
-    private subscribeToModelListChanges() {
+    public subscribeToModelListChanges() {
         this.subscriptions.add(this.modelList.listType$.subscribe(newType => {
             this.handleListTypeChange(newType);
         }));
@@ -341,7 +329,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * @param newType
      * @private
      */
-    private handleListTypeChange(newType: ListTypeI) {
+    public handleListTypeChange(newType: ListTypeI) {
         if (newType.listcomponent != 'SpiceGoogleMapsList') return;
         this.setRecords();
     }
@@ -349,14 +337,14 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * load more records
      */
-    private loadMore() {
+    public loadMore() {
         this.modelList.loadMoreList();
     }
 
     /**
      * toggle search around to draw/remove the circle on the map
      */
-    private toggleSearchAround() {
+    public toggleSearchAround() {
         this.searchAroundActive = !this.searchAroundActive;
         if (!this.searchAroundActive) {
             this.mapOptions.circle = undefined;
@@ -380,7 +368,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * set editing radius to true
      */
-    private startRadiusEditing(silent?: boolean) {
+    public startRadiusEditing(silent?: boolean) {
         this.editingRadius = true;
         this.mapOptions.circle.editable = true;
         this.mapOptions.circle.draggable = true;
@@ -393,7 +381,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * set editing radius to false
      */
-    private cancelEditingRadius() {
+    public cancelEditingRadius() {
         this.editingRadius = false;
         this.mapOptions.circle.editable = false;
         this.mapOptions.circle.draggable = false;
@@ -404,7 +392,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * call confirm circle changes and stop editing radius
      */
-    private confirmRadiusInput() {
+    public confirmRadiusInput() {
         this.cancelEditingRadius();
         this.setMapOptionChanged('circleRadius');
     }

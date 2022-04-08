@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -30,7 +18,7 @@ import {mediafiles} from '../../../services/mediafiles.service';
  */
 @Component({
     selector: 'media-files-tile',
-    templateUrl: './src/modules/mediafiles/templates/mediafilestile.html',
+    templateUrl: '../templates/mediafilestile.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [mediafiles, model, view]
 })
@@ -39,24 +27,24 @@ export class MediaFilesTile implements OnInit {
     /**
      * the data for the model
      */
-    @Input() private data: any;
+    @Input() public data: any;
 
     /**
      * if this is rendered as a select box
      */
-    @Input() private selectbox: boolean = false;
+    @Input() public selectbox: boolean = false;
 
     /**
      * the fieldset to be rendered
      */
-    private fieldset: string;
+    public fieldset: string;
 
     /**
      * the actionset to be rendered
      */
-    private actionset: string;
+    public actionset: string;
 
-    constructor( private metadata: metadata, private model: model, private view: view, private sanitizer: DomSanitizer, private modal: modal, private mediafiles: mediafiles ) {
+    constructor( public metadata: metadata, public model: model, public view: view, public sanitizer: DomSanitizer, public modal: modal, public mediafiles: mediafiles ) {
         // load the config
         this.getConfig();
     }
@@ -72,7 +60,7 @@ export class MediaFilesTile implements OnInit {
     /**
      * sets the view properties
      */
-    private initializeView() {
+    public initializeView() {
         this.view.isEditable = false;
         this.view.displayLabels = false;
 
@@ -84,7 +72,7 @@ export class MediaFilesTile implements OnInit {
     /**
      * loads the config for the component
      */
-    private getConfig() {
+    public getConfig() {
         let config = this.metadata.getComponentConfig('MediaFilesTile', 'MediaFiles');
 
         this.fieldset = config.fieldset;
@@ -94,10 +82,10 @@ export class MediaFilesTile implements OnInit {
     /**
      * loads the model from teh data
      */
-    private initializeModel() {
+    public initializeModel() {
         this.model.module = 'MediaFiles';
         this.model.id = this.data.id;
-        this.model.data = this.model.utils.backendModel2spice('MediaFiles', this.data);
+        this.model.setData(this.data);
     }
 
     /**
@@ -114,7 +102,7 @@ export class MediaFilesTile implements OnInit {
     /**
      * Show the image with maximal size in a modal window.
      */
-    private expand() {
+    public expand() {
         this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
             modalref.instance.imgname = this.model.getFieldValue('name');
             modalref.instance.imgtype = this.model.getFieldValue('filetype');

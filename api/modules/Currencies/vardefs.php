@@ -33,8 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-global $dictionary;
-$dictionary['Currency'] = ['table' => 'currencies',
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['Currency'] = [
+    'table' => 'currencies',
 	'comment' => 'Currencies allow Sugar to store and display monetary values in various denominations'
                                ,'fields' => [
   'id' =>
@@ -139,5 +141,3 @@ $dictionary['Currency'] = ['table' => 'currencies',
     ]
 
 ];
-
-

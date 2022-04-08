@@ -10,8 +10,9 @@
  *
  * You can contact us at info@kreporter.org
  * ****************************************************************************** */
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-$dictionary['kreportschedulers'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['kreportschedulers'] = [
 	'table' => 'kreportschedulers',
         'fields' => [
            'id' => [

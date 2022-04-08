@@ -35,6 +35,7 @@
 ********************************************************************************/
 
 /*
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 $metadatahandle = @opendir('./metadata');
 while (false !== ($metadatafile = readdir($metadatahandle))) {
     if (preg_match('/\.php$/', $metadatafile)) {
@@ -60,7 +61,7 @@ if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')
 // BEGIN CR1000108 vardefs to db
 if(isset(\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
     require_once 'include/SpiceDictionaryVardefs/SpiceDictionaryVardefs.php';
-    SpiceCRM\includes\SpiceDictionaryVardefs\SpiceDictionaryVardefs::loadDictionaries($dictionary, 'metadata');
+    SpiceCRM\includes\SpiceDictionaryVardefs\SpiceDictionaryVardefs::loadDictionaries(SpiceDictionaryHandler::getInstance()->dictionary, 'metadata');
 }
 // END
 */

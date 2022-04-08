@@ -30,9 +30,12 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\utils\SpiceUtils;
+
 class SpiceFTSRESTManager
 {
 
@@ -95,7 +98,7 @@ class SpiceFTSRESTManager
             if(!function_exists('create_date')) require_once 'include/utils.php';
             $job = BeanFactory::newBean('SchedulerJobs');
             $job->name = (!empty($mod_strings['LBL_OOTB_FTS_INDEX']) ? $mod_strings['LBL_OOTB_FTS_INDEX'] : "SpiceCRM Full Text Indexing");
-            $job->date_time_start = create_date(date('Y'),date('n'),date('d')) . ' ' . create_time(0,0,1);
+            $job->date_time_start = SpiceUtils::createDate(date('Y'),date('n'),date('d')) . ' ' . create_time(0,0,1);
             $job->job = "function::fullTextIndex";
             $job->job_interval = '*/1::*::*::*::*';
             $job->status = "Active";
@@ -273,7 +276,7 @@ class SpiceFTSRESTManager
                 if($cr) $cr->addDBEntry("sysfts", $record['id'], 'U', $module);
             }
         } else {
-            $newid = create_guid();
+            $newid = SpiceUtils::createGuid();
 
             $db->query("INSERT INTO sysfts (id, module, ftsfields, settings) VALUES('$newid', '$module', '" . json_encode($items['fields']) . "', '" . json_encode($items['settings']) . "')");
 
@@ -381,9 +384,9 @@ class SpiceFTSRESTManager
         $nodeModule = BeanFactory::getBean($module);
         if ($nodeModule) {
             $nodeModule->load_relationships();
-            // print_r($GLOBALS['dictionary']);//
+            // print_r(SpiceDictionaryHandler::getInstance()->dictionary);//
             // 2011-07-21 add audit table
-            if (isset($GLOBALS['dictionary'][$nodeModule->object_name]['audited']) && $GLOBALS['dictionary'] [$nodeModule->object_name]['audited'])
+            if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->object_name]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->object_name]['audited'])
                 $functionsArray[] = [
                     'path' => /* ($requester != '' ? $requester. '#': '') . */
                         'audit:' . $module . ':audit',
@@ -421,7 +424,7 @@ class SpiceFTSRESTManager
                         $returnArray[] = [
                             'path' => /* ($requester != '' ? $requester. '#': '') . */
                                 'link:' . $module . ':' . $field_name,
-                            'module' => ((translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (translate($field_defs
+                            'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                             ['vname'], $module))),
                             'bean' => $nodeModule->$field_name->focus->object_name,
                             'leaf' => false
@@ -430,7 +433,7 @@ class SpiceFTSRESTManager
                         $returnArray[] = [
                             'path' => /*  ($requester != '' ? $requester. '#': '') . */
                                 'link:' . $module . ':' . $field_name,
-                            'module' => translate($field_defs['module'], $module),
+                            'module' => SpiceUtils::translate($field_defs['module'], $module),
                             'bean' => $nodeModule->$field_name->focus->object_name,
                             'leaf' => false
                         ];
@@ -452,7 +455,7 @@ class SpiceFTSRESTManager
                     if (isset($field_defs['vname']))
                         $returnArray [] = [
                             'path' => 'relate:' . $module . ':' . $field_name,
-                            'module' => ((translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (translate($field_defs
+                            'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                             ['vname'], $module))),
                             'bean' => $field_defs['module'],
                             'leaf' => false
@@ -460,7 +463,7 @@ class SpiceFTSRESTManager
                     elseif (isset($field_defs['module']))
                         $returnArray[] = [
                             'path' => 'relate:' . $module . ':' . $field_name,
-                            'module' => translate($field_defs['module'], $module),
+                            'module' => SpiceUtils::translate($field_defs['module'], $module),
                             'bean' => $field_defs['module'],
                             'leaf' => false
                         ];
@@ -506,7 +509,7 @@ class SpiceFTSRESTManager
                         // 2011-10-15 if the kreporttype is set return it
                         //'type' => ($field_defs['type'] == 'kreporter') ? $field_defs['kreporttype'] :  $field_defs['type'],
                         'type' => (isset($field_defs['kreporttype'])) ? $field_defs['kreporttype'] : $field_defs['type'],
-                        'text' => (translate($field_defs['vname'], $module) != '') ? translate($field_defs['vname'], $module) : $field_defs['name'],
+                        'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                         'leaf' => true,
                         'options' => $field_defs['options']
                     ];

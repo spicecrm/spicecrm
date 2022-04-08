@@ -91,13 +91,13 @@ class EmailSchedule extends SugarBean
 
     /**
      * retrieve, then send queued emails, log them as sent
-     * called from _AddJobsHere.php
      * @return bool
      */
     public function sendQueuedEmails()
     {
         $openEmailSchedules = $this->db->query("SELECT id from emailschedules WHERE email_schedule_status = 'open' AND deleted = 0 ORDER by date_modified DESC");
         while ($openEmailSchedule = $this->db->fetchByAssoc($openEmailSchedules)) {
+            $this->updateEmailScheduleStatus($openEmailSchedule['id'], 'processing');
             $status = $this->sendEmailScheduleEmails($openEmailSchedule['id']);
             $this->updateEmailScheduleStatus($openEmailSchedule['id'], $status);
         }
@@ -111,7 +111,7 @@ class EmailSchedule extends SugarBean
      */
     private function sendEmailScheduleEmails($emailScheduleId)
     {
-        $queuedEmails = $this->db->query("SELECT bean_module, bean_id, id from emailschedules_beans WHERE emailschedule_status = 'queued' AND emailschedule_id = '$emailScheduleId' AND deleted = 0 ORDER by date_modified DESC limit 250");
+        $queuedEmails = $this->db->limitQuery("SELECT bean_module, bean_id, id from emailschedules_beans WHERE emailschedule_status = 'queued' AND emailschedule_id = '$emailScheduleId' AND deleted = 0 ORDER by date_modified DESC", 0, 250);
         $status = 'done';
 
         while ($queuedEmail = $this->db->fetchByAssoc($queuedEmails)) {
@@ -120,7 +120,10 @@ class EmailSchedule extends SugarBean
             if (empty($seed)) {
                 $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
                 $status = 'record_not_loaded';
-            } else {
+            } else if($seed->is_inactive) {
+                $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');
+                $status = 'record_inactive';
+            }else {
                 $email = $this->sendEmail($seed, $emailScheduleId, true);
                 if ($email == false) {
                     $this->updateEmailScheduleBeanStatus($queuedEmail['id'], 'error');

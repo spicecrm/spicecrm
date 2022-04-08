@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AdminComponentsModule
  */
@@ -85,30 +73,30 @@ export class administrationapiinspectorService {
      *
      * @private
      */
-    private _apiSubMethods: boolean = true;
+    public _apiSubMethods: boolean = true;
 
     /**
      * a filter string to search by
      */
-    private _apiFilter: string;
+    public _apiFilter: string;
 
     /**
      * filter variable for all unauthorized routes
      */
 
-    private _apiFilterUnauthorized: boolean = false;
+    public _apiFilterUnauthorized: boolean = false;
 
     /**
      * filter variable for all admin only routes
      */
 
-    private _apiFilterAdminOnly: boolean = false;
+    public _apiFilterAdminOnly: boolean = false;
 
     /**
      * filter variable for all admin only routes
      */
 
-    private _apiFilterValidatedOnly: boolean = false;
+    public _apiFilterValidatedOnly: boolean = false;
 
     /**
      * the current selected API
@@ -121,7 +109,7 @@ export class administrationapiinspectorService {
         public backend: backend,
         public toast: toast,
         public injector: Injector,
-        private modelutilities: modelutilities
+        public modelutilities: modelutilities
     ) {
         this.loadEndpoints();
     }
@@ -241,7 +229,7 @@ export class administrationapiinspectorService {
      * builds the tree and applies a filter if required
      * @private
      */
-    private buildTree() {
+    public buildTree() {
         // reset the methods
         this.apiMethods = [];
         // reset the api tree
@@ -283,7 +271,7 @@ export class administrationapiinspectorService {
      * @param route
      * @private
      */
-    private addRouteToTree(route) {
+    public addRouteToTree(route) {
         let parentID = this.getPartentId(route);
         let itemId = this.getRouteId(route);
 
@@ -303,7 +291,7 @@ export class administrationapiinspectorService {
      * @param route
      * @private
      */
-    private getPartentId(route: string) {
+    public getPartentId(route: string) {
         // spöits the route in pieces
         let routeItems = route.substring(1).split('/');
 
@@ -331,7 +319,7 @@ export class administrationapiinspectorService {
      * @param route
      * @private
      */
-    private getRouteId(route) {
+    public getRouteId(route) {
         return this.apiTree.find(a => a.route == route) ? this.apiTree.find(a => a.route == route).id : this.modelutilities.generateGuid();
     }
 
@@ -369,7 +357,7 @@ export class administrationapiinspectorService {
      *
      * @private
      */
-    private filterMethods() {
+    public filterMethods() {
         this.apiMethods = this.apiEndpoints.filter(e => this._apiSubMethods ? e.route.indexOf(this.selectedAPI.route) == 0 : e.route == this.selectedAPI.route);
     }
 

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
@@ -28,17 +16,17 @@ import {telephonyCallI} from "../../services/interfaces.service";
 
 @Component({
     selector: 'global-docked-composer-call',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposercall.html'
+    templateUrl: '../templates/globaldockedcomposercall.html'
 })
 export class GlobalDockedComposerCall {
 
-    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: true})public containercontent: ViewContainerRef;
 
     @Input() public calldata: telephonyCallI;
 
-    private isClosed: boolean = false;
+   public isClosed: boolean = false;
 
-    constructor(private backend: backend, private dockedComposer: dockedComposer, private telephony: telephony, private language: language, private ViewContainerRef: ViewContainerRef) {
+    constructor(public backend: backend,public dockedComposer: dockedComposer,public telephony: telephony,public language: language,public ViewContainerRef: ViewContainerRef) {
 
     }
 
@@ -61,21 +49,21 @@ export class GlobalDockedComposerCall {
     /**
      * close the composer and remove the call
      */
-    private closeComposer() {
+   public closeComposer() {
         this.telephony.removeCallById(this.calldata.id);
     }
 
     /**
      * end the call
      */
-    private endCall() {
+   public endCall() {
         this.telephony.terminateCall(this.calldata.id);
     }
 
     /**
      * toggles the closed state for the composer
      */
-    private toggleClosed() {
+   public toggleClosed() {
         this.isClosed = !this.isClosed;
     }
 

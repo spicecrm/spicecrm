@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module QuillEditorModule
  */
@@ -60,75 +48,75 @@ declare var Quill: any;
         }
     ],
     selector: 'quill-editor',
-    templateUrl: './src/include/quilleditor/templates/quilleditorcontainer.html'
+    templateUrl: '../templates/quilleditorcontainer.html'
 })
 export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy {
     /**
      * holds the simple mode boolean value to display some or all toolbar actions
      */
-    @Input() protected readonly simpleMode: boolean = false;
+    @Input() public readonly simpleMode: boolean = false;
     /**
      * holds the disabled value to handle the editor disabled
      */
-    @Input() protected readonly disabled: boolean = false;
+    @Input() public readonly disabled: boolean = false;
     /**
      * holds parent height number from parent
      */
-    @Input() protected readonly heightStyle: string = '300px';
+    @Input() public readonly heightStyle: string = '300px';
     /**
      * scrolling container to be passed to the editor
      */
-    @Input() private scrollingContainer?: HTMLElement | string | null;
+    @Input() public scrollingContainer?: HTMLElement | string | null;
     /**
      * to render the quill editor inside
      */
-    @ViewChild('editorContainer', {read: ViewContainerRef, static: false}) private editorContainer: ViewContainerRef;
+    @ViewChild('editorContainer', {read: ViewContainerRef, static: false}) public editorContainer: ViewContainerRef;
     /**
      * to read the quill toolbar and pass it to the editor
      */
-    @ViewChild('editorToolbar', {read: ViewContainerRef, static: false}) private editorToolbar: ViewContainerRef;
+    @ViewChild('editorToolbar', {read: ViewContainerRef, static: false}) public editorToolbar: ViewContainerRef;
     /**
      * to save the quill editor instance
      */
-    private quillEditor: any;
+    public quillEditor: any;
     /**
      * to save the local content value
      */
-    private content: any;
+    public content: any;
     /**
      * save text change handler function for editor
      */
-    private textChangeHandler: () => void;
+    public textChangeHandler: () => void;
     /**
      * save on touched function for ControlValueAccessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
     /**
      * save on change function for ControlValueAccessor
      */
-    private onChange: (modelValue: any) => void;
+    public onChange: (modelValue: any) => void;
     /**
      * save full screen on/off
      */
-    private isFullScreenOn: boolean = false;
+    public isFullScreenOn: boolean = false;
     /**
      * to help encoding/decoding html
      */
-    private textarea: HTMLElement;
+    public textarea: HTMLElement;
     /**
      * save the typing timeout
      */
-    private typingTimeout: any;
+    public typingTimeout: any;
 
     constructor(
-        private elementRef: ElementRef,
-        private domSanitizer: DomSanitizer,
-        @Inject(PLATFORM_ID) private platformId: any,
-        private renderer: Renderer2,
-        private modal: modal,
-        private libLoader: libloader,
-        private cdRef: ChangeDetectorRef,
-        private zone: NgZone
+        public elementRef: ElementRef,
+        public domSanitizer: DomSanitizer,
+        @Inject(PLATFORM_ID) public platformId: any,
+        public renderer: Renderer2,
+        public modal: modal,
+        public libLoader: libloader,
+        public cdRef: ChangeDetectorRef,
+        public zone: NgZone
     ) {
         this.textarea = document.createElement('textarea');
     }
@@ -226,7 +214,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
      * encode html value
      * @param value
      */
-    protected encodeHtml(value: string) {
+    public encodeHtml(value: string) {
         return value
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -237,7 +225,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
     /**
      * get clean html value by ensuring the encode/decode the code snippets
      */
-    private getCleanHtml() {
+    public getCleanHtml() {
         const regexp = /(?<=<pre class="ql-syntax" spellcheck="false">)[\s\S]*?(?=<\/pre>)/g;
         const match = regexp.exec(
             this.decodeHTMLEntities(this.content)
@@ -246,12 +234,12 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
         return this.content.replace(match.toString(), this.encodeHTMLEntities(match.toString()));
     }
 
-    private decodeHTMLEntities(text) {
+    public decodeHTMLEntities(text) {
         this.textarea.innerHTML = text;
         return this.textarea.innerText;
     }
 
-    private encodeHTMLEntities(text) {
+    public encodeHTMLEntities(text) {
         this.textarea.innerText = text;
         return this.textarea.innerHTML;
     }
@@ -259,7 +247,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
     /**
      * handle text changes to emit the value
      */
-    private registerTextChangeHandler() {
+    public registerTextChangeHandler() {
 
         this.textChangeHandler = () => {
 
@@ -280,7 +268,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
     /**
      * render the quill editor with the defined options and toolbar and pass the content
      */
-    private renderQuillEditor() {
+    public renderQuillEditor() {
         const modules: QuillModulesI = {
             toolbar: this.editorToolbar.element.nativeElement,
             imageResize: {
@@ -314,7 +302,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
     /**
      * open meidla file picker modal
      */
-    private openMediaFilePicker() {
+    public openMediaFilePicker() {
 
         this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
             componentRef.instance.answer.subscribe(image => {
@@ -343,7 +331,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
     /**
      * open source editor modal
      */
-    private openSourceEditor() {
+    public openSourceEditor() {
 
         this.modal.openModal('QuillSourceEditorModal').subscribe(componentRef => {
             componentRef.instance._html = this.content;
@@ -357,7 +345,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
     /**
      * cross browser toggle full screen mode
      */
-    private toggleFullScreen(elementRef) {
+    public toggleFullScreen(elementRef) {
 
         // define the full screen change handler
         document.onfullscreenchange = () => {

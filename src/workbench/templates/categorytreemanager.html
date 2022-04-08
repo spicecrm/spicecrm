@@ -1,0 +1,40 @@
+<workbench-header titlelabel="LBL_CATEGORY_TREES" icon="strategy">
+    <workbench-header-controls>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <label class="slds-form-element__label"><system-label label="LBL_TREE"></system-label></label>
+            <div class="slds-form-element__control slds-p-right--small" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="activeTree"  [disabled]="categoryTrees.length == 0 || this.isDirty">
+                        <option *ngFor="let tree of categoryTrees" [value]="tree.id">{{tree.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="isDirty" (click)="addTree()"><system-button-icon icon="add"></system-button-icon></button>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="!isDirty" (click)="revertChanges()"><system-button-icon icon="undo"></system-button-icon></button>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="!isDirty" (click)="save()"><system-button-icon icon="save"></system-button-icon></button>
+        </div>
+    </workbench-header-controls>
+</workbench-header>
+<div class="slds-p-around--small slds-theme--default" system-to-bottom-noscroll [system-overlay-loading-spinner]="loading">
+    <div class="slds-box--border slds-grid slds-height_full">
+        <div *ngFor="let selectedTreeNode of selectedTreeNodes; let i = index" style="min-height: 250px" class="slds-size--1-of-4 slds-is-relative slds-p-bottom--x-large" [ngClass]="{'slds-border--right': i < 3}">
+            <div style="height: calc(100% - 10px)" class="slds-scrollable--y">
+                <div class="slds-m-around--xx-small slds-p-around--xx-small slds-grid" [ngClass]="{'slds-theme--shade': selectedTreeNode == node.id}" *ngFor="let node of getNodes(i)" (click)="setSelectedNodeID(i, node.id)">
+                    <div class="slds-truncate" [ngClass]="getNodeStyle(node)" >{{node.node_name}} ({{node.node_key}})</div>
+                    <ng-container *ngIf="selectedTreeNode == node.id">
+                        <button class="slds-col--bump-left slds-button slds-button--icon" (click)="editNode(node)"><system-button-icon icon="edit"></system-button-icon></button>
+                        <button class="slds-button slds-button--icon" (click)="deleteNode(node)"><system-button-icon icon="delete"></system-button-icon></button>
+                    </ng-container>
+                    <button class="slds-col--bump-left slds-button slds-button--icon" (click)="node.favorite = !node.favorite"><system-button-icon [ngStyle]="{opacity: node.favorite ? 1 : 0.3}" icon="favorite"></system-button-icon></button>
+                    <button class="slds-button slds-button--icon" (click)="node.selectable = !node.selectable"><system-button-icon [ngStyle]="{opacity: node.selectable ? 1 : 0.3}" [icon]="node.selectable ? 'linked' : 'unlinked'"></system-button-icon></button>
+                    <button class="slds-button slds-button--icon"(click)="setSelectedNodeID(i, node.id)" [ngClass]="{'slds-hidden' : !hasChildren(node.id)}"><system-button-icon icon="chevronright"></system-button-icon></button>
+                </div>
+            </div>
+            <div class="slds-p-vertical--small slds-align--absolute-center">
+                <button [disabled]="!addEnabled(i)" (click)="addNode(i)" class="slds-button slds-button--icon">
+                    <system-button-icon icon="new"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

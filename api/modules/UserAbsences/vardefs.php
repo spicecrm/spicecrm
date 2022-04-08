@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['UserAbsence'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['UserAbsence'] = [
     'table' => 'userabsences',
     'comment' => 'UserAbsences Module',
     'audited' =>  false,

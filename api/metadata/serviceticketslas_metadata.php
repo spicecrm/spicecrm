@@ -3,7 +3,8 @@
  * moved to separate module
  */
 /*
-$dictionary['serviceticketslas'] = array(
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+SpiceDictionaryHandler::getInstance()->dictionary['serviceticketslas'] = array(
     'table' => 'serviceticketslas',
     'fields' => array(
         'id' => array(
@@ -41,7 +42,7 @@ $dictionary['serviceticketslas'] = array(
 */
 
 /*
-$dictionary['serviceticketslaworkinghours'] = array(
+SpiceDictionaryHandler::getInstance()->dictionary['serviceticketslaworkinghours'] = array(
     'table' => 'serviceticketslaworkinghours',
     'fields' => array(
         'id' => array(

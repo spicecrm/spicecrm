@@ -33,10 +33,12 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-global $dictionary;
-$dictionary['ACLAction'] = ['table' => 'acl_actions', 'comment' => 'Determine the allowable actions available to users'
-, 'fields' => [
+SpiceDictionaryHandler::getInstance()->dictionary['ACLAction'] = [
+    'table' => 'acl_actions',
+    'comment' => 'Determine the allowable actions available to users',
+    'fields' => [
         'id' =>
             [
                 'name' => 'id',

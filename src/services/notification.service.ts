@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -62,14 +50,14 @@ export class notification {
      */
     public newNotifications: NotificationI[] = [];
 
-    constructor(private backend: backend,
-                private broadcast: broadcast,
-                private configuration: configurationService,
-                private preferences: userpreferences,
-                private language: language,
-                private sanitizer: DomSanitizer,
-                private socket: socket,
-                private session: session) {
+    constructor(public backend: backend,
+                public broadcast: broadcast,
+                public configuration: configurationService,
+                public preferences: userpreferences,
+                public language: language,
+                public sanitizer: DomSanitizer,
+                public socket: socket,
+                public session: session) {
         this.initializeDesktopNotification().then(() =>
             this.loadNotifications()
         );
@@ -80,7 +68,7 @@ export class notification {
     /**
      * check if the notification api is supported by the browser and request permission if the user did not take action yet.
      */
-    protected initializeDesktopNotification() {
+    public initializeDesktopNotification() {
 
         if (!('Notification' in window)) {
 
@@ -178,7 +166,7 @@ export class notification {
      * load the notifications from the backend
      * @private
      */
-    private loadNotificationsFromBackend() {
+    public loadNotificationsFromBackend() {
 
         this.isLoading = true;
 
@@ -268,7 +256,7 @@ export class notification {
      * set the unread count
      * @private
      */
-    private setUnreadCount() {
+    public setUnreadCount() {
         this.unreadCount = this.unreadNotifications.length;
     }
 
@@ -277,7 +265,7 @@ export class notification {
      * @param data
      * @private
      */
-    private setInitialValues(data: { records: [], count: number }) {
+    public setInitialValues(data: { records: [], count: number }) {
 
         if (!data || !Array.isArray(data.records)) return;
 
@@ -291,10 +279,10 @@ export class notification {
     }
 
     /**
-     * initialize a socket connection and join the user private room
+     * initialize a socket connection and join the user public room
      * @private
      */
-    private initializeSocket() {
+    public initializeSocket() {
         this.socket.initializeNamespace('notifications').subscribe(e => this.handleSocketEvents(e));
         this.socket.joinRoom('notifications', this.session.authData.userId);
     }
@@ -304,7 +292,7 @@ export class notification {
      * @param n
      * @private
      */
-    private generateDesktopNotificationTitle(n: NotificationI): string {
+    public generateDesktopNotificationTitle(n: NotificationI): string {
         switch (n.notification_type) {
             case 'reminder':
                 return `${this.language.getLabel('LBL_REMINDER')} ${n.bean_name}\n${n.notification_date}`;
@@ -321,7 +309,7 @@ export class notification {
      * subscribe to broadcast message to initialize/disconnect a socket client
      * @private
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.broadcast.message$.subscribe(data => {
             if (data.messagetype === 'login') {
                 this.initializeSocket();
@@ -337,7 +325,7 @@ export class notification {
      * @param event
      * @private
      */
-    private handleSocketEvents(event: SocketEventI) {
+    public handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'new':
                 // push only if we also have event data
@@ -353,7 +341,7 @@ export class notification {
      * @private
      * @param n
      */
-    private parseNotification(n: NotificationI) {
+    public parseNotification(n: NotificationI) {
         const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
         const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
         let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);

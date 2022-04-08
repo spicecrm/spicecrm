@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\EmailTemplates;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
@@ -70,13 +71,13 @@ class EmailTemplate extends SugarBean {
     function parse( $bean, $additionalValues = null ){
         global $app_list_strings, $current_language;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $app_list_strings = return_app_list_strings_language($this->language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
         $retArray = [
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues ),
             # 'body_html' => '<style>'.$this->getStyle().'</style>'.$this->parseField('body_html', $bean, $additionalValues ),
-            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues ),
+            'body_html' => '<head><style>'.$this->getStyle().'</style></head>'.$this->parseHTMLTextField('body_html', $bean, $additionalValues ),
         ];
         $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
 
@@ -95,7 +96,8 @@ class EmailTemplate extends SugarBean {
     {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
-        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language, $additionalValues );
+        $templateCompiler->additionalValues = $additionalValues;
+        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language );
         return $text;
     }
 

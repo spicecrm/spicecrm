@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\schedulerjobtasks;
 
 use SpiceCRM\data\BeanFactory;
@@ -10,6 +12,9 @@ class MailboxesSchedulerJobTasks
      * fetchEmails
      */
     public function fetchEmails(): bool {
+
+        set_time_limit(1200);
+
         $mailboxes = BeanFactory::getBean('Mailboxes')
             ->get_full_list(
                 'mailboxes.name',

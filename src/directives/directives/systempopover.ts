@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module DirectivesModule
  */
@@ -28,14 +16,14 @@ export class SystemPopOverDirective implements OnDestroy {
     /**
      * reference to the component that is rendered as popover
      */
-    private popoverCmp = null;
+    public popoverCmp = null;
 
     /**
      * a timeout that is initalized when the user hovers over the component
      */
-    private showPopoverTimeout: any = {};
+    public showPopoverTimeout: any = {};
 
-    private _popoverSettings: any = {
+    public _popoverSettings: any = {
         injector: {},
         componentset: {},
         component: ''
@@ -60,9 +48,9 @@ export class SystemPopOverDirective implements OnDestroy {
     }
 
     constructor(
-        private metadata: metadata,
-        private footer: footer,
-        private elementRef: ElementRef
+        public metadata: metadata,
+        public footer: footer,
+        public elementRef: ElementRef
     ) {
 
     }
@@ -71,7 +59,7 @@ export class SystemPopOverDirective implements OnDestroy {
      * listens to the mouseenter event on the host and if the mouse enters starts the timeout to render the popover
      */
     @HostListener('mouseenter')
-    private onMouseOver() {
+    public onMouseOver() {
         this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
     }
 
@@ -79,7 +67,7 @@ export class SystemPopOverDirective implements OnDestroy {
      * catches when the user leaves the host element and either stops the timeout or closes the popover
      */
     @HostListener('mouseleave')
-    private onMouseOut() {
+    public onMouseOut() {
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
         }
@@ -92,7 +80,7 @@ export class SystemPopOverDirective implements OnDestroy {
     /**
      * renders the popover
      */
-    private renderPopover() {
+    public renderPopover() {
         this.metadata.addComponent('SystemPopover', this.footer.footercontainer, this._popoverSettings.injector).subscribe(
             popover => {
                 popover.instance.parentElementRef = this.elementRef;

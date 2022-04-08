@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -29,14 +17,14 @@ export class modal {
     /**
      * keeps an array of modals that are currently open
      */
-    private modalsArray: any[] = [];
+    public modalsArray: any[] = [];
 
     /**
      * keeps an array of the objects rendered as modals
      */
-    private modalsObject = {};
+    public modalsObject = {};
 
-    constructor(private metadata: metadata, private footer: footer, private toast: toast, private language: language) {
+    constructor(public metadata: metadata, public footer: footer, public toast: toast, public language: language) {
         window.addEventListener("keyup", (event) => {
             if (event.keyCode === 27 && this.modalsArray.length) {
                 event.stopImmediatePropagation();
@@ -94,7 +82,7 @@ export class modal {
      *
      * @param componentName the name of the component hat was intended to be rendered in the modal
      */
-    private sendError(componentName) {
+    public sendError(componentName) {
         this.toast.sendToast('Component "' + componentName + '" not found.', "error", "Misconfiguration on the system as the component should have been opened in a modal but is not avilable. Please contact your system administrator.");
     }
 
@@ -177,7 +165,7 @@ export class modal {
      * @param options options to be presented to the user
      * @param optionsAsRadio
      */
-    public prompt(type: 'info' | 'input' | 'input_date' | 'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: Array<{ value: string, display: string }> = null, optionsAsRadio?: boolean): Observable<any> {
+    public prompt(type: 'info'|'input'|'input_text'|'input_date'|'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: { value: string, display: string}[] = null, optionsAsRadio?: boolean, regex?: string): Observable<any> {
         let responseSubject = new Subject();
         this.openModal("SystemPrompt").subscribe(component => {
             component.instance.type = type;
@@ -186,6 +174,7 @@ export class modal {
             component.instance.theme = theme;
             component.instance.value = defaultvalue;
             component.instance.options = options;
+            component.instance.regex = regex;
             component.instance.optionsAsRadio = optionsAsRadio;
             component.instance.answer.subscribe(answervalue => {
                 responseSubject.next(answervalue); // return the answer

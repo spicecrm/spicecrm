@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -25,7 +13,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: "system-input-module",
-    templateUrl: "./src/systemcomponents/templates/systeminputmodule.html",
+    templateUrl: "../templates/systeminputmodule.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -39,37 +27,42 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     /**
      * input to disable the input
      */
-    @Input() private disabled = false;
+    @Input() public disabled = false;
 
     /**
      * if set to true also the tecnical name will be displayed
      */
-    @Input() private displaytechnicalname: boolean = true;
+    @Input() public displaytechnicalname: boolean = true;
 
     /**
      * for generic selections show an '*' as option
      */
-    @Input() private displayAsterisk: boolean = false;
+    @Input() public displayAsterisk: boolean = false;
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
-    private subscription: Subscription = new Subscription();
+    /**
+     * holds all subscriptions
+     *
+     * @private
+     */
+    public subscription: Subscription = new Subscription();
     /**
      * holds the companycoded
      */
-    private _module: string;
+    public _module: string;
 
     /**
      * the available companycodes
      */
-    private _modules: any[] = [];
+    public _modules: any[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private configuration: configurationService
+        public language: language,
+        public metadata: metadata,
+        public configuration: configurationService
     ) {
         this._modules = this.metadata.getModules();
         this.sortModules();
@@ -84,8 +77,12 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    private sortModules() {
-        this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+    public sortModules() {
+        if(this.displaytechnicalname){
+            this._modules.sort((a, b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1);
+        } else {
+            this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+        }
     }
 
     /**

@@ -33,11 +33,12 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-global $dictionary;
-$dictionary['CampaignTracker'] = ['table' => 'campaign_trkrs',
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['CampaignTracker'] = [
+    'table' => 'campaign_trkrs',
 	'comment' => 'Maintains the Tracker URLs used in campaign emails',
-          
-'fields' => [
+    'fields' => [
     'id' => [
         'name' => 'id',
         'vname' => 'LBL_ID',
@@ -153,4 +154,3 @@ $dictionary['CampaignTracker'] = ['table' => 'campaign_trkrs',
       ['name' => 'campaign_tracker_key_idx', 'type'=>'index', 'fields'=> ['tracker_key']],
     ]
 ];
-?>

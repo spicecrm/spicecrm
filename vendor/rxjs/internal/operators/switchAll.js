@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var switchMap_1=require("./switchMap"),identity_1=require("../util/identity");function switchAll(){return switchMap_1.switchMap(identity_1.identity)}exports.switchAll=switchAll;

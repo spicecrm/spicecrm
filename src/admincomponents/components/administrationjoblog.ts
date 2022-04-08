@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AdminComponentsModule
  */
@@ -34,7 +22,7 @@ declare var moment;
  */
 @Component({
     selector: 'administration-job-log',
-    templateUrl: './src/admincomponents/templates/administrationjoblog.html',
+    templateUrl: '../templates/administrationjoblog.html',
     animations: [
         trigger('animateicon', [
             state('open', style({ transform: 'scale(1, 1)'})),
@@ -64,27 +52,27 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
     /**
      * holds the job log entries
      */
-    public jobLogs: Array<{ id, name, schedulerjob_id, schedulerjobtask_id, message, rel_id, rel_module, resolution, executed_on, resolutionClass? }> = [];
+    public jobLogs: { id, name, schedulerjob_id, schedulerjobtask_id, message, rel_id, rel_module, resolution: 'failed' | 'done', executed_on, resolutionClass? }[] = [];
     /**
      * ture if we are loading from backend
      * @private
      */
-    private isLoading = false;
+    public isLoading = false;
     /**
      * true if we are reloading the entries from backend
      * @private
      */
-    private isReloading = false;
+    public isReloading = false;
     /**
      * holds a subscription to enable unsubscribe
      * @private
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
     /**
      * total limit of the loaded entries
      * @private
      */
-    private totalLimit: number = 10;
+    public totalLimit: number = 10;
     /**
      * total count of the log entries
      */
@@ -124,7 +112,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * @param text
      * @param resolution
      */
-    public openMessageInModal(text: string, resolution: 'failed' | 'done') {
+    public openMessageInModal(text: string, resolution: any) {
         const theme = resolution == 'failed' ? 'error' : 'success';
         this.modal.info(text, this.language.getLabel('LBL_MESSAGE'), theme);
     }
@@ -136,7 +124,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * @param item
      * @return item.id
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
@@ -144,7 +132,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * subscribe to job actions to reload the list
      * @private
      */
-    private subscribeToJobActions() {
+    public subscribeToJobActions() {
         this.subscription = this.broadcast.message$.subscribe(res => {
             if (res.messagetype == 'job.run') {
                 this.reloadData();
@@ -156,7 +144,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * load the log entries from backend
      * @private
      */
-    private getData() {
+    public getData() {
         let params = {
             offset: 0,
             limit: 10
@@ -177,7 +165,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * get more log entries
      * @private
      */
-    private getMoreData() {
+    public getMoreData() {
         let params = {
             sort: {
                 sortfield: 'executed_on',
@@ -203,7 +191,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * reload the log entries
      * @private
      */
-    private reloadData() {
+    public reloadData() {
 
         if (this.isLoading) return;
         this.jobLogs = [];
@@ -228,7 +216,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * @param list
      * @private
      */
-    private mapList(list: any[]) {
+    public mapList(list: any[]) {
         return list.map(i => {
             i.executed_on = moment(moment.utc(i.executed_on)).tz(this.userpreferences.toUse.timezone)
                 .format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
@@ -241,14 +229,14 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * sort the list by the execution date
      * @private
      */
-    private sortList() {
+    public sortList() {
         this.jobLogs.sort((a, b) => a.executed_on < b.executed_on ? 1 : a.executed_on > b.executed_on ? -1 : 0);
     }
 
     /**
      * toggle expanding the card
      */
-    private toggleExpand(e: MouseEvent) {
+    public toggleExpand(e: MouseEvent) {
         e.stopPropagation();
         this.expanded = !this.expanded;
     }

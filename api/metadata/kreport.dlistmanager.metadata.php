@@ -11,8 +11,9 @@
  *
  * You can contact us at info@kreporter.org
  * ****************************************************************************** */
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-$dictionary['KReportDLists'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['KReportDLists'] = [
     'table' => 'kreportdlists',
     'fields' => [
         'id' => [
@@ -41,4 +42,3 @@ $dictionary['KReportDLists'] = [
         ['name' => 'kreportdlistspk', 'type' => 'primary', 'fields' => ['id']],
     ],
 ];
-

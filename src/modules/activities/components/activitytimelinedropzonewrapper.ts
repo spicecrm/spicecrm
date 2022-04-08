@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleActivities
  */
@@ -25,26 +13,26 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'activity-timeline-drop-zone-wrapper',
-    templateUrl: './src/modules/activities/templates/activitytimelinedropzonewrapper.html',
+    templateUrl: '../templates/activitytimelinedropzonewrapper.html',
     viewProviders: [model]
 })
 export class ActivityTimelineDropZoneWrapper {
 
-    private uploadData: any = {
+    public uploadData: any = {
         fileName: '',
         fileIcon: {},
         uploading: false,
         progress: undefined
     };
 
-    constructor(private language: language,
-                private toast: toast,
-                private configurationService: configurationService,
-                private activitiytimeline: activitiytimeline,
-                private noteModel: model,
-                @SkipSelf() private model: model,
-                private session: session,
-                private helper: helper) {
+    constructor(public language: language,
+                public toast: toast,
+                public configurationService: configurationService,
+                public activitiytimeline: activitiytimeline,
+                public noteModel: model,
+                @SkipSelf() public model: model,
+                public session: session,
+                public helper: helper) {
     }
 
     /**
@@ -68,7 +56,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param files
     * @return void
     */
-    private handleDroppedFiles(files: FileList) {
+    public handleDroppedFiles(files: FileList) {
         let msgFiles = [];
         let noteFiles = [];
         for (let file in files) {
@@ -116,7 +104,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param files
     * @return Observable
     */
-    private uploadFiles(files, moduleName, moduleId): Observable<any> {
+    public uploadFiles(files, moduleName, moduleId): Observable<any> {
         if (files.length === 0) {
             return;
         }
@@ -192,7 +180,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param file
     * @return Observable
     */
-    private readFile(file): Observable<any> {
+    public readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader: any = new FileReader();
         reader.file = file;
@@ -214,7 +202,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param fileName
     * @param fileType
     */
-    private setFileIcon(fileName, fileType) {
+    public setFileIcon(fileName, fileType) {
         if (fileType == this.uploadData.fileIcon.fileType) return;
         let icon = this.helper.determineFileIcon(fileType);
         if (icon == 'unknown') {
@@ -239,7 +227,7 @@ export class ActivityTimelineDropZoneWrapper {
     * create a new instance of the model service and pass it to the add note handler
     * @param files
     */
-    private addNotesFromFiles(files) {
+    public addNotesFromFiles(files) {
         this.addNewNote(files);
     }
 
@@ -249,7 +237,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param files
     * @param currentIndex
     */
-    private addNewNote(files, currentIndex = 0) {
+    public addNewNote(files, currentIndex = 0) {
 
         // prepare the note
         this.noteModel.reset();
@@ -301,7 +289,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param file
     * @return boolean
     */
-    private fileSizeExceeded(file) {
+    public fileSizeExceeded(file) {
         return this.maxSize && file.size > this.maxSize;
     }
 }

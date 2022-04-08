@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Observable_1=require("../Observable"),from_1=require("./from"),empty_1=require("./empty");function defer(t){return new Observable_1.Observable(function(r){var e;try{e=t()}catch(e){return void r.error(e)}return(e?from_1.from(e):empty_1.empty()).subscribe(r)})}exports.defer=defer;

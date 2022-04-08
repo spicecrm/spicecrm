@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -30,7 +18,7 @@ import {relateFilter} from "../../services/interfaces.service";
  */
 @Component({
     selector: 'object-modal-module-lookup',
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
+    templateUrl: '../templates/objectmodalmodulelookup.html',
     providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
@@ -38,8 +26,8 @@ import {relateFilter} from "../../services/interfaces.service";
 })
 export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild(ObjectModalModuleLookupHeader) private headercontent: ObjectModalModuleLookupHeader;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) public tablecontent: ViewContainerRef;
+    @ViewChild(ObjectModalModuleLookupHeader) public headercontent: ObjectModalModuleLookupHeader;
 
     /**
      * the search term entered
@@ -69,23 +57,23 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * a relate filter for the modellist
      */
-    @Input() private relatefilter: relateFilter;
+    @Input() public relatefilter: relateFilter;
 
 
     /**
      * a collection of subscriptions to be cancelled once the component is destroyed
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * emits when an item is selected and which items are selected
      */
-    @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * emits the used search term
      */
-    @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout) {
         // subscribe to changes of the listtype
@@ -95,7 +83,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * get the style for the content so the table can scroll with fixed header
      */
-    private contentStyle() {
+    public contentStyle() {
         if(this.headercontent) {
             let headerRect = this.headercontent.element.nativeElement.getBoundingClientRect();
 
@@ -146,7 +134,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * handle the change of listtype
      */
-    private switchListtype() {
+    public switchListtype() {
         /**
         if (this.modellist.module) {
             this.modellist.reLoadList();
@@ -156,7 +144,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * tigger the search
      */
-    private doSearch() {
+    public doSearch() {
         this.modellist.searchTerm = this.searchTerm;
         this.modellist.getListData();
     }
@@ -165,7 +153,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * scroll event handler for the infinite scrolling in the window
      * @param e
      */
-    private onScroll(e) {
+    public onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.modellist.loadMoreList();
@@ -175,7 +163,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     /**
      * closes the popup
      */
-    private closePopup() {
+    public closePopup() {
         this.usedSearchTerm.emit(this.modellist.searchTerm);
         this.self.destroy();
     }

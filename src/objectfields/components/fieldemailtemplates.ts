@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -27,12 +15,12 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'field-email-templates',
-    templateUrl: './src/objectfields/templates/fieldemailtemplates.html'
+    templateUrl: '../templates/fieldemailtemplates.html'
 })
 export class fieldEmailTemplates extends fieldGeneric implements OnInit {
 
-    private isLoaded: boolean = false;
-    private availableTemplates: any[] = [];
+    public isLoaded: boolean = false;
+    public availableTemplates: any[] = [];
 
     constructor(
         public model: model,
@@ -40,9 +28,9 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private modal: modal,
-        private configuration: configurationService
+        public backend: backend,
+        public modal: modal,
+        public configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
@@ -64,7 +52,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
     }
 
-    private getValue() {
+    public getValue() {
         for (let template of this.availableTemplates) {
             if (template.id == this.value) {
                 return template.name;
@@ -109,27 +97,33 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
      *
      * @param event
      */
-    private chooseTemplate(event) {
+    public chooseTemplate(event) {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
                 this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
                     // nur überschreiben wenn nicht bereits ein subject angegeben wurde.
-                    if (!this.model.data[this.subjectField]) {
+                    if (!this.model.getField(this.subjectField)) {
                         this.model.setField(this.subjectField, data.subject);
                     }
-                    // Check if element with class "spicecrm_quote" should kept on the bottom (it is for the email-reply)
-                    if(this.addtocurrentquote) {
 
-                        // create a new document to manage the current html string (body)
-                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
-                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
-                        let selectedEle = virtualDocument.querySelectorAll(".spicecrm_quote");
+                    // create a new document to manage the current html string (body)
+                    let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
+                    virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
 
-                        // keep the html with the class "spicecrm_quote" and set the template
-                        this.model.setField(this.bodyField, data.body_html + selectedEle[0].outerHTML);
-                    } else {
-                        this.model.setField(this.bodyField, data.body_html);
-                    }
+                    let selectedEleTemp = virtualDocument.querySelectorAll("div[spicecrm_temp_quote]");
+                    let selectedEleSign = virtualDocument.querySelectorAll("div[data-signature]");
+                    let selectedEleReply = virtualDocument.querySelectorAll("div[spicecrm_reply_quote]");
+
+                    selectedEleTemp[0]?.parentNode.removeChild(selectedEleTemp[0]);
+
+                    let newBody = [
+                        '<div class="spicecrm_temp_quote">' + data.body_html + '</div>',
+                        selectedEleSign[0]?.outerHTML,
+                        selectedEleReply[0]?.outerHTML
+                    ].join("<p><br></p>");
+
+                    this.model.setField(this.bodyField, newBody);
+
                     modalRef.instance.self.destroy();
                 });
             });

@@ -48,7 +48,7 @@ class SpiceUIModulesController
      * @throws \Exception
      *
      */
-    function getModules()
+    static function getModules()
     {
         global $modInvisList;
         $globalModuleList = SpiceModules::getInstance()->getModuleList();
@@ -132,11 +132,13 @@ class SpiceUIModulesController
                         'favorites' => $module['favorites'],
                         'listtypes' => $listArray,
                         'acl' => $aclArray,
+                        'acl_fieldcontrol' => SpiceACL::getInstance()->getFieldAccess($module['module'], 'create'),
                         'acl_multipleusers' => $module['acl_multipleusers'],
                         'ftsactivities' => SpiceFTSActivityHandler::checkActivities($module['module']),
                         'ftsgeo' => SpiceFTSHandler::checkGeo($module['module']),
                         'ftsaggregates' => $ftsBeanHandler->getAggregates(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
+                        'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module'])
                     ];
                 }
             }

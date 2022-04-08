@@ -1,19 +1,7 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -28,7 +16,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'object-action-output-bean-modal',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodal.html',
+    templateUrl: '../templates/objectactionoutputbeanmodal.html',
     providers: [view, outputModalService],
     animations: [
         trigger('slideInOut', [
@@ -55,6 +43,11 @@ export class ObjectActionOutputBeanModal {
      */
         // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
     @ViewChild(ObjectActionOutputBeanModalEmailContent) public emailContent: ObjectActionOutputBeanModalEmailContent;
+
+    /**
+     * emit the action to the container
+     */
+    @Output() public actionemitter = new EventEmitter<{close: boolean, name: string}>();
 
     public modalTitle: string;
     public forcedFormat: 'html' | 'pdf';
@@ -84,17 +77,17 @@ export class ObjectActionOutputBeanModal {
     /**
      * the selected template
      */
-    private _selected_template = null;
+    public _selected_template = null;
 
     /**
      * the selected output format
      */
-    private _selected_format: 'html' | 'pdf' = 'pdf';
+    public _selected_format: 'html' | 'pdf' = 'pdf';
 
     /**
      * the response of the compiler
      */
-    private compiled_selected_template: string = '';
+    public compiled_selected_template: string = '';
 
     /**
      * flag is the oputput is loading
@@ -120,7 +113,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * flag to show the email-content
      */
-    private showsendemail: boolean = false;
+    public showsendemail: boolean = false;
 
     /**
      * expanded email-content flag
@@ -173,7 +166,7 @@ export class ObjectActionOutputBeanModal {
      * If there is no button text given from outside, use the default text
      * Set the output format in case it is given from outside
      */
-    private setModalData() {
+    public setModalData() {
         if (!this.modalTitle) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
         if (!this.buttonText) this.buttonText = this.language.getLabel(this.noDownload ? 'LBL_OK' : 'LBL_DOWNLOAD');
         if (this.forcedFormat) this._selected_format = this.forcedFormat;
@@ -182,7 +175,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * see if we have a relate to an output template
      */
-    private setSelectedTemplate() {
+    public setSelectedTemplate() {
         let fields = this.metadata.getModuleFields(this.model.module);
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
@@ -222,7 +215,7 @@ export class ObjectActionOutputBeanModal {
     /**
      * backend call to render the template and return the content
      */
-    private rendertemplate() {
+    public rendertemplate() {
         this.loading_output = true;
 
         this.blobUrl = null;
@@ -295,7 +288,7 @@ export class ObjectActionOutputBeanModal {
             a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
 
             // genereate a filename
-            a.download = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
+            a.download = this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format;
 
             // start download and then remove the element from the document again
             a.click();
@@ -320,7 +313,7 @@ export class ObjectActionOutputBeanModal {
      * @param contentType the type
      * @param sliceSize optional parameter to change performance
      */
-    private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -355,11 +348,11 @@ export class ObjectActionOutputBeanModal {
     /**
      * set the filelist for the email attachment panel and reset the email-content
      */
-    private setEmailAttachmentData() {
+    public setEmailAttachmentData() {
         if(this.emailInitialized) {
             this.filelist = [{
                 size: this.contentForHandBack.length,
-                name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+                name: this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format,
                 type: "application/" + this.selected_format,
                 filecontent: this.contentForHandBack
             }];
@@ -377,6 +370,12 @@ export class ObjectActionOutputBeanModal {
      * call the child method that will send the mail
      */
     public sendEmail() {
+        // saving letter before sending email - solution for Letters module where the letter id is not set
+        if(this.model.module == 'Letters') {
+            this.backend.postRequest(`module/Letters/${this.model.id}/marksent/${this.selected_template.id}`, null, this.model.data).subscribe(res => {
+                this.actionemitter.emit({close: true, name: 'sent'})});
+        }
+
         this.emailContent.sendEmail();
     }
 

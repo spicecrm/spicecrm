@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleMailboxes
  */
@@ -35,40 +23,40 @@ import {toast} from "../../../services/toast.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-manager-email-details",
-    templateUrl: "./src/modules/mailboxes/templates/mailboxmanageremaildetails.html",
+    templateUrl: "../templates/mailboxmanageremaildetails.html",
 })
 export class MailboxmanagerEmailDetails implements OnDestroy {
 
     /**
      * the reference to the content container
      */
-    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) private detailscontent: ViewContainerRef;
+    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) public detailscontent: ViewContainerRef;
 
     /**
      * the components rendered in the container
      */
-    private containerComponents: any[] = [];
+    public containerComponents: any[] = [];
 
     /**
      * the fieldset for further details
      */
-    private fieldset: string = '';
+    public fieldset: string = '';
 
     /**
      * keep the subscription and unsubscribe when the component is destroyed
      */
-    private mailboxSubscription: any;
+    public mailboxSubscription: any;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private mailboxesEmails: mailboxesEmails,
-        private backend: backend,
-        private toast: toast,
-        private view: view,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public mailboxesEmails: mailboxesEmails,
+        public backend: backend,
+        public toast: toast,
+        public view: view,
+        public modal: modal,
+        public injector: Injector
     ) {
         // subscribe to the event when a message is selected
         this.mailboxSubscription = this.mailboxesEmails.activeMessage$.subscribe(email => {
@@ -93,7 +81,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @param email
      */
-    private loadEmail(email) {
+    public loadEmail(email) {
 
         // set the module to the model
         if (this.mailboxesEmails.activeMailBox) {
@@ -129,14 +117,14 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     /**
      * destroy the container
      */
-    private destroyContainer() {
+    public destroyContainer() {
         for (let containerComponent of this.containerComponents) {
             containerComponent.destroy();
         }
         this.containerComponents = [];
     }
 
-    private handleAction(event) {
+    public handleAction(event) {
         switch (event) {
             // is needed for the emailtoobject component and its behavior to link a relation after save so it needs to reloaded in order to show new related records...
             case 'save':
@@ -148,7 +136,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     /**
      * builds the container, destroying all prev components and then rendering the new ones
      */
-    private buildContainer() {
+    public buildContainer() {
 
         this.destroyContainer();
 
@@ -194,21 +182,21 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     /**
      * set the email to closed
      */
-    private completeMail() {
+    public completeMail() {
         this.setOpenness('user_closed');
     }
 
     /**
      * marks the email as unread
      */
-    private markUnread() {
+    public markUnread() {
         this.setStatus('unread');
     }
 
     /**
      * reopens a closed email
      */
-    private reopen() {
+    public reopen() {
         this.setOpenness('open');
     }
 
@@ -256,7 +244,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @private
      */
-    private reply() {
+    public reply() {
         this.modal.openModal('EmailReplyModal', true, this.injector);
     }
 
@@ -265,7 +253,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @private
      */
-    private forward() {
+    public forward() {
         this.modal.openModal('EmailForwardModal', true, this.injector);
     }
 
@@ -274,7 +262,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      *
      * @private
      */
-    private delete() {
+    public delete() {
         this.model.delete();
     }
 

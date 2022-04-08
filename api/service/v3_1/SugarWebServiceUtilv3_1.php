@@ -36,8 +36,10 @@
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\Trackers\TrackerManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -110,20 +112,6 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 
 
     /**
-     * Examine the application to determine which modules have been enabled..
-     *
-     * @param array $availModules An array of all the modules the user already has access to.
-     * @return array Modules enabled within the application.
-     */
-    function get_visible_modules($availModules)
-    {
-        require_once("modules/MySettings/TabController.php");
-        $controller = new TabController();
-        $tabs = $controller->get_tabs_system();
-        return $this->getModulesFromList($tabs[0], $availModules);
-    }
-
-    /**
      * Generate unifed search fields for a particular module even if the module does not participate in the unified search.
      *
      * @param string $moduleName
@@ -131,7 +119,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
      */
     function generateUnifiedSearchFields($moduleName)
     {
-        global $beanList, $beanFiles, $dictionary;
+        global $beanList, $beanFiles;
 
         if(!isset($beanList[$moduleName]))
             return [];
@@ -159,8 +147,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
             require "modules/{$moduleName}/metadata/SearchFields.php" ;
 
         $fields = [];
-        foreach ( $dictionary [ $beanName ][ 'fields' ] as $field => $def )
-        {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['fields'] as $field => $def) {
             if (strpos($field,'email') !== false)
                 $field = 'email' ;
 
@@ -177,13 +164,13 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
         //If no fields with the unified flag have been set then lets add a default field.
         if( empty($fields) )
         {
-            if( isset($dictionary[$beanName]['fields']['name']) && isset($searchFields[$moduleName]['name'])  )
+            if( isset(SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['fields']['name']) && isset($searchFields[$moduleName]['name'])  )
                 $fields['name'] = $searchFields[$moduleName]['name'];
             else
             {
-                if( isset($dictionary[$beanName]['fields']['first_name']) && isset($searchFields[$moduleName]['first_name']) )
+                if( isset(SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['fields']['first_name']) && isset($searchFields[$moduleName]['first_name']) )
                     $fields['first_name'] = $searchFields[$moduleName]['first_name'];
-                if( isset($dictionary[$beanName]['fields']['last_name']) && isset($searchFields[$moduleName]['last_name'])  )
+                if( isset(SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['fields']['last_name']) && isset($searchFields[$moduleName]['last_name'])  )
                     $fields['last_name'] = $searchFields[$moduleName]['last_name'];
             }
         }
@@ -236,7 +223,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 				    $var['options'] = 'checkbox_dom';
 
 				if(isset($var['options'])){
-					$options_dom = translate($var['options'], $value->module_dir);
+					$options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
 					if(!is_array($options_dom)) $options_dom = [];
 					foreach($options_dom as $key=>$oneOption)
 						$options_ret[$key] = $this->get_name_value($key,$oneOption);
@@ -259,7 +246,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 					$link_fields[$var['name']] = $entry;
 	            } else {
 		            if($translate) {
-		            	$entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+		            	$entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
 		            } else {
 		            	$entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
 		            }
@@ -454,7 +441,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 	    if($current_user == null)
 	       $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-	    if( is_admin($current_user) )
+	    if( SpiceUtils::isAdmin($current_user) )
 	         return 99;
 
 	    if(!isset($_SESSION['ACL'][$current_user->id][$module]['fields'][$field])){

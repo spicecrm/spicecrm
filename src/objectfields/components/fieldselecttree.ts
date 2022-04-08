@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -29,17 +17,17 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'select-tree',
-    templateUrl: './src/objectfields/templates/fieldselecttree.html'
+    templateUrl: '../templates/fieldselecttree.html'
 })
 export class fieldSelectTree extends fieldGeneric {
-    private fields = [];
+    public fields = [];
 
-    private show_tree: boolean = false;
-    private show_search: boolean = false;
-    private search: string;
-    private sel_fields = [];
+    public show_tree: boolean = false;
+    public show_search: boolean = false;
+    public search: string;
+    public sel_fields = [];
 
-    private clickListener: any;
+    public clickListener: any;
 
 
     constructor(
@@ -48,9 +36,9 @@ export class fieldSelectTree extends fieldGeneric {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private backend: backend,
-        private config: configurationService,
-        private elementRef: ElementRef,
+        public backend: backend,
+        public config: configurationService,
+        public elementRef: ElementRef,
         public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);
@@ -85,10 +73,10 @@ export class fieldSelectTree extends fieldGeneric {
     get display_value() {
         let txt = '';
         for(let field_keyname of this.fields) {
-            if (this.model.data[field_keyname]) {
+            if (this.model.getField(field_keyname)) {
                 let field_name = "";
                 for(let key in this.sel_fields) {
-                    if(this.sel_fields[key].keyname === this.model.data[field_keyname]) {
+                    if(this.sel_fields[key].keyname === this.model.getField(field_keyname)) {
                         field_name = this.sel_fields[key].name;
                     }
                 }
@@ -142,9 +130,11 @@ export class fieldSelectTree extends fieldGeneric {
 
     public unchooseSelField() {
 
-        for(let i = 0; i < this.fields.length; i++) {
-            this.model.data[this.fields[i]] = '';
+        let modelFields: any = {};
+        for(let field of this.fields){
+            modelFields[field] = '';
         }
+        this.model.setFields(modelFields);
     }
 
     public onClick(event: MouseEvent): void {

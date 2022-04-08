@@ -1,8 +1,9 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['AccountKPI'] = [
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+SpiceDictionaryHandler::getInstance()->dictionary['AccountKPI'] = [
     'table' => 'accountkpis',
     'fields' => [
         'account_id' => [

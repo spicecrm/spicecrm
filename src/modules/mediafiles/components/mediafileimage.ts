@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleMediaFiles
  */
@@ -19,7 +7,7 @@ import { modal } from '../../../services/modal.service';
 
 @Component({
     selector: 'media-file-image',
-    templateUrl: './src/modules/mediafiles/templates/mediafileimage.html',
+    templateUrl: '../templates/mediafileimage.html',
     providers: [ mediafiles ],
     styles: [
         'img:hover { cursor: pointer; }'
@@ -107,31 +95,31 @@ export class MediaFileImage implements OnChanges {
     /**
      * The url for the image tag.
      */
-    private imageUrl: any;
+    public imageUrl: any;
 
     /**
      * CSS width and height of the image element (pixel).
      */
-    private dimensions = { width: undefined, height: undefined };
+    public dimensions = { width: undefined, height: undefined };
 
     /**
      * For ngOnChanges, indicator for first change.
      */
-    private isFirstChange = true;
+    public isFirstChange = true;
 
     /**
      * Holds the initial value of "variant" (the component does not accept later changes of the input value "variant").
      */
-    private variantStatic: string;
+    public variantStatic: string;
 
     /**
      * Holds the (last) media id to notice possible change of it.
      */
-    private lastMediaId = '';
+    public lastMediaId = '';
 
-    private withFrameHeight = true;
+    public withFrameHeight = true;
 
-    constructor( private mediafiles: mediafiles, private elRef: ElementRef, private modal: modal ) {}
+    constructor( public mediafiles: mediafiles, public elRef: ElementRef, public modal: modal ) {}
 
     public ngOnChanges() {
 
@@ -171,7 +159,7 @@ export class MediaFileImage implements OnChanges {
     /**
      * Retrieve and show the image/thumbnail.
      */
-    private showImage(): void {
+    public showImage(): void {
         let sizes4variant;
         switch ( this.variantStatic ) {
             case 'mw':
@@ -224,7 +212,7 @@ export class MediaFileImage implements OnChanges {
     /**
      * Get the netto height of the parent element, less the border width and the padding.
      */
-    private getWidthOfParent() {
+    public getWidthOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).width.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingLeft.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingRight.replace( /px$/, '' ))
@@ -235,14 +223,14 @@ export class MediaFileImage implements OnChanges {
     /**
      * Determine the maximal width of the image. Depending on the width of the parent.
      */
-    private determineMaxWidthOfImage() {
+    public determineMaxWidthOfImage() {
         return Math.round( this.getWidthOfParent() );
     }
 
     /**
      * Get the netto height of the parent element, less the border width and the padding.
      */
-    private getHeightOfParent() {
+    public getHeightOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).height.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingTop.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingBottom.replace( /px$/, '' ))
@@ -253,11 +241,11 @@ export class MediaFileImage implements OnChanges {
     /**
      * Determine the maximal height of the image, depending on the height of the parent.
      */
-    private determineMaxHeightOfImage() {
+    public determineMaxHeightOfImage() {
         return Math.round( this.getHeightOfParent() );
     }
 
-    private openImagePreview() {
+    public openImagePreview() {
         this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
             this.mediafiles.getImageBase64( this.media_id ).subscribe( data => {
                 modalref.instance.imgtype = data.filetype;

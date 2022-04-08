@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -17,9 +5,9 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-modal-content',
-    templateUrl: './src/systemcomponents/templates/systemmodalcontent.html',
+    templateUrl: '../templates/systemmodalcontent.html',
     host: {
-        '[class]': 'this.contentclass',
+        '[class]': 'this.contentclass'
     },
     styles: [':host {position:relative}']
 })
@@ -28,12 +16,21 @@ export class SystemModalContent {
     /**
      * sets the margin for the content
      */
-    @Input() private margin: 'large'|'medium'|'small'|'x-small'|'xx-small'|'xxx-small'|'none' = 'medium';
+    @Input() public margin: 'large'|'medium'|'small'|'x-small'|'xx-small'|'xxx-small'|'none' = 'medium';
 
     /**
      * if set to true the modal will consume as muchheight as possible
      */
-    @Input() private grow: boolean = false;
+    @Input() public grow: boolean = false;
+    /**
+     * if set to true the the modal is scrollable
+     */
+    @Input() public scrollable: boolean = true;
+
+    /**
+     * if set to true the modal will consume as muchheight as possible
+     */
+    @Input() private overflowVisible: boolean = false;
 
     /**
      * an attribute that can be set and does not require the value true passed in
@@ -48,9 +45,28 @@ export class SystemModalContent {
     }
 
     /**
+     * an attribute that can be set and does not require the value true passed in
+     * @param value
+     */
+    @Input('system-modal-overvlow-visible') set inputOverflowVisible(value) {
+        if (value === false) {
+            this.overflowVisible = false;
+        } else {
+            this.overflowVisible = true;
+        }
+    }
+
+    /**
+     * returns the overvlos visible style if set
+     */
+    get modalStyle(){
+        return this.overflowVisible ? {overflow: 'visible'} : {};
+    }
+
+    /**
      * returs the margin class and the groth for the modal
      */
     get contentclass() {
-        return 'slds-modal__content' + ( this.grow ? ' slds-grow':'' );
+        return 'slds-modal__content' + ( this.grow ? ' slds-grow':'' ) + (!this.scrollable ? ' slds-scrollable--none' : '');
     }
 }

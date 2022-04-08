@@ -11,8 +11,9 @@
  *
  * You can contact us at info@kreporter.org
  * ****************************************************************************** */
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-$dictionary['KReportCategory'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['KReportCategory'] = [
     'table' => 'kreportcategories',
     'fields' => [
         'id' => [
@@ -161,4 +162,3 @@ $dictionary['KReportCategory'] = [
         ['name' => 'idx_is_admin', 'type' => 'index', 'fields' => ['is_admin_only', 'deleted']],
     ],
 ];
-

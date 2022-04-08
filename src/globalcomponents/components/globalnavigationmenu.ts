@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
@@ -22,7 +10,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-navigation-menu',
-    templateUrl: './src/globalcomponents/templates/globalnavigationmenu.html',
+    templateUrl: '../templates/globalnavigationmenu.html',
     host: {
         '(window:resize)': 'handleResize()'
     }
@@ -31,50 +19,50 @@ export class GlobalNavigationMenu implements AfterViewInit {
     /**
      * a reference to the container with the menu items
      */
-    @ViewChild('menucontainer', {read: ViewContainerRef, static: true}) private menucontainer: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: true})public menucontainer: ViewContainerRef;
 
     /**
      * a referenmce to the container with the m,ore items
      */
-    @ViewChild('morecontainer', {read: ViewContainerRef, static: true}) private morecontainer: ViewContainerRef;
+    @ViewChild('morecontainer', {read: ViewContainerRef, static: true})public morecontainer: ViewContainerRef;
 
     /**
      * the refgerence to the more item once the more component has been rendered
      */
-    private moreComponentRef: any = undefined;
+   public moreComponentRef: any = undefined;
 
     /**
      * the menu items derived from the role
      */
-    private menuItems: any[] = [];
+   public menuItems: any[] = [];
 
     /**
      * the rendered menu items
      */
-    private renderedItems: any[] = [];
+   public renderedItems: any[] = [];
 
     /**
      * the rendered more items
      */
-    private moreItems: any[] = [];
+   public moreItems: any[] = [];
 
     /**
      * inidcvates that an item is moved to the active state
      */
-    private movingActive: boolean = false;
+   public movingActive: boolean = false;
 
     /**
      * indicates that we are in teh rendering and calculation process
      */
-    private rendering: boolean = false;
+   public rendering: boolean = false;
 
 
     /**
      * timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
      */
-    private resizeTimeOut: any = undefined;
+   public resizeTimeOut: any = undefined;
 
-    constructor(private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
+    constructor(public metadata: metadata,public elementRef: ElementRef,public broadcast: broadcast,public navigation: navigation) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -90,7 +78,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         this.renderMenu();
     }
 
-    private buildMenuItems() {
+   public buildMenuItems() {
         this.menuItems = [];
 
         let modules = this.metadata.getRoleModules(true);
@@ -99,14 +87,14 @@ export class GlobalNavigationMenu implements AfterViewInit {
         }
     }
 
-    private handleResize() {
+   public handleResize() {
         this.buildMenuItems();
 
         if (this.resizeTimeOut) window.clearTimeout(this.resizeTimeOut);
         this.resizeTimeOut = window.setTimeout(() => this.renderMenu(), 250);
     }
 
-    private checkActiveModule(): boolean {
+   public checkActiveModule(): boolean {
         if (this.movingActive || this.rendering) return false;
 
         let activeIndex = this.menuItems.indexOf(this.navigation.activeModule);
@@ -139,7 +127,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         return true;
     }
 
-    private destroyMenu() {
+   public destroyMenu() {
         for (let item of this.renderedItems) {
             item.componentRef.destroy();
         }
@@ -151,7 +139,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
 
     }
 
-    private renderMenu() {
+   public renderMenu() {
         // destroy the current menu
         this.destroyMenu();
 
@@ -160,7 +148,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         this.addMenuItem(this.menuItems[0], this.menuItems[0]);
     }
 
-    private addMenuItem(module, name) {
+   public addMenuItem(module, name) {
         this.metadata.addComponentDirect('GlobalNavigationMenuItem', this.menucontainer).subscribe(componentRef => {
             componentRef.instance.item = {
                 module,
@@ -174,7 +162,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         });
     }
 
-    private addMoreItem() {
+   public addMoreItem() {
         // check if we have a more item .. if yes destroy it
         this.destroyMoreItem();
 
@@ -196,14 +184,14 @@ export class GlobalNavigationMenu implements AfterViewInit {
         });
     }
 
-    private destroyMoreItem() {
+   public destroyMoreItem() {
         if (this.moreComponentRef) {
             this.moreComponentRef.componentRef.destroy();
             this.moreComponentRef = undefined;
         }
     }
 
-    private getRenderedWidth() {
+   public getRenderedWidth() {
         let renderedWidth = 0;
         for (let item of this.renderedItems) {
             renderedWidth += item.width;
@@ -212,7 +200,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         return renderedWidth;
     }
 
-    private handleMessage(message) {
+   public handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':

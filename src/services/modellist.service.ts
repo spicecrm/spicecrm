@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -193,21 +181,21 @@ export class modellist implements OnDestroy {
      * holds the embedded by component name
      * @private
      */
-    private embeddedByComponent: string;
+    public embeddedByComponent: string;
     /**
      * holds the default value for disable autoload boolean from the spice config
      */
     public disableAutoloadListAll: boolean = false;
 
     constructor(
-        private broadcast: broadcast,
-        private backend: backend,
+        public broadcast: broadcast,
+        public backend: backend,
         public metadata: metadata,
-        private language: language,
-        private userpreferences: userpreferences,
-        private session: session,
-        private configuration: configurationService,
-        private toast: toast
+        public language: language,
+        public userpreferences: userpreferences,
+        public session: session,
+        public configuration: configurationService,
+        public toast: toast
     ) {
         this.setDisableAutoloadListAll();
         this.subscribeToBroadcast();
@@ -219,7 +207,7 @@ export class modellist implements OnDestroy {
      * subscribe to broadcast service
      * @private
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.serviceSubscriptions.add(
             this.broadcast.message$.subscribe(message => {
                 this.handleMessage(message);
@@ -231,7 +219,7 @@ export class modellist implements OnDestroy {
      * set the default value for dsiabled autoload boolean from the spice config
      * @private
      */
-    private setDisableAutoloadListAll() {
+    public setDisableAutoloadListAll() {
         this.disableAutoloadListAll = !!this.configuration.getCapabilityConfig('module').disableAutoloadListAll;
     }
 
@@ -268,7 +256,7 @@ export class modellist implements OnDestroy {
      * loads the module aggregates
      * @private
      */
-    private loadModuleAggregates() {
+    public loadModuleAggregates() {
         this.moduleAggregates = [];
         for (let moduleAggregate of this.metadata.getModuleAggregates(this.module)) {
             this.moduleAggregates.push({...moduleAggregate});
@@ -449,7 +437,7 @@ export class modellist implements OnDestroy {
      *
      * @param listType
      */
-    private listTypeExists(listType: string) {
+    public listTypeExists(listType: string) {
         return !!this.getListTypes().find(lt => lt.id == listType);
     }
 
@@ -514,7 +502,7 @@ export class modellist implements OnDestroy {
     /**
      * build the listfields based on the listtype
      */
-    private determineListFields() {
+    public determineListFields() {
         this._listfields = [];
 
         // check if we have fielddefs
@@ -760,7 +748,7 @@ export class modellist implements OnDestroy {
         this.emitListTypeComponentChange();
     }
 
-    private emitListTypeComponentChange() {
+    public emitListTypeComponentChange() {
         this.listTypeComponent$.next(this.currentList.listcomponent);
     }
 
@@ -828,7 +816,7 @@ export class modellist implements OnDestroy {
      * emit the current list type change
      * @private
      */
-    private emitListTypeChange() {
+    public emitListTypeChange() {
         this.listType$.next(this.currentList);
     }
 
@@ -910,12 +898,12 @@ export class modellist implements OnDestroy {
      * generate the standard lists
      * @private
      */
-    private generateStandardLists() {
+    public generateStandardLists() {
         this.standardLists = [
             {
                 id: 'all',
                 global: '1',
-                name: `${this.language.getLabel('LBL_ALL')} ${this.language.getModuleName(this.module)}`,
+                name: `${this.language.getModuleCombinedLabel('LBL_ALL', this.module)}`,
                 listcomponent: 'ObjectList'
             }
         ];
@@ -925,7 +913,7 @@ export class modellist implements OnDestroy {
             this.standardLists.push({
                 id: 'owner',
                 global: '1',
-                name: `${this.language.getLabel('LBL_MY')} ${this.language.getModuleName(this.module)}`,
+                name: `${this.language.getModuleCombinedLabel('LBL_MY', this.module)}`,
                 listcomponent: 'ObjectList'
             });
         }
@@ -1335,8 +1323,8 @@ export class modellist implements OnDestroy {
      * @param to the to status
      * @param bucketamountfields from optionala from value, added in the safe subscribe method to get the old value from the backup data so the update is done properly
      */
-    // private updateBuckets(from, to, valuefrom?, valueto?) {
-    private updateBuckets(from, to, bucketamountfields = []) {
+    // public updateBuckets(from, to, valuefrom?, valueto?) {
+    public updateBuckets(from, to, bucketamountfields = []) {
         // reduce from buckets
         let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
         frombucket.items--;
@@ -1365,7 +1353,7 @@ export class modellist implements OnDestroy {
      * @param from
      * @param bucketamountfields
      */
-    private removeItemFromBucket(from, bucketamountfields = []) {
+    public removeItemFromBucket(from, bucketamountfields = []) {
         // reduce from buckets
         let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
         frombucket.items--;

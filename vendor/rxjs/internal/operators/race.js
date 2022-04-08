@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var isArray_1=require("../util/isArray"),race_1=require("../observable/race");function race(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];return function(r){return 1===e.length&&isArray_1.isArray(e[0])&&(e=e[0]),r.lift.call(race_1.race.apply(void 0,[r].concat(e)))}}exports.race=race;

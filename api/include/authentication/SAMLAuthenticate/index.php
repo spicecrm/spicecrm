@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\includes\authentication\SAMLAuthenticate;
 
-
 use SamlAuthRequest;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 * Copyright (c) 2010, OneLogin, Inc.
@@ -32,7 +32,7 @@ use SamlAuthRequest;
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 require_once('modules/Users/authentication/SAMLAuthenticate/lib/onelogin/saml.php');
-require(get_custom_file_if_exists('modules/Users/authentication/SAMLAuthenticate/settings.php'));
+require(SpiceUtils::getCustomFileIfExists('modules/Users/authentication/SAMLAuthenticate/settings.php'));
 
 $authrequest = new SamlAuthRequest($settings);
 $url = $authrequest->create();

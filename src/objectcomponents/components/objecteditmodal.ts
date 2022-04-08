@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -33,27 +21,27 @@ import {navigationtab} from "../../services/navigationtab.service";
  * renders a modal window to add or edit an object record
  */
 @Component({
-    templateUrl: './src/objectcomponents/templates/objecteditmodal.html',
+    templateUrl: '../templates/objecteditmodal.html',
     providers: [view, modalwindow]
 })
 export class ObjectEditModal implements OnInit {
     /**
      * a reference to the modal content to have a reference to scrolling
      */
-    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) private modalContent: ViewContainerRef;
+    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) public modalContent: ViewContainerRef;
     /**
      * the componentconfig that gets passed in when the modal is created
      */
-    private componentconfig: any;
+    public componentconfig: any;
     /**
      * the actionset items to be rendered in the modal
      */
-    private actionSetItems: any = [];
+    public actionSetItems: any = [];
 
     /**
      * ToDo: add documentation what we need this for
      */
-    private actionSubject: Subject<any> = new Subject<any>();
+    public actionSubject: Subject<any> = new Subject<any>();
 
     /**
      * this emits the data ... is referenced from the modal save button that handles this
@@ -61,42 +49,36 @@ export class ObjectEditModal implements OnInit {
     public action$: Observable<any> = new Observable<any>();
 
     /**
-     * set to true (default) to have the modal check for duplicates
-     * ToDo: implement this as config paramater
-     */
-    private doDuplicateCheck: boolean = true;
-
-    /**
      * local copy of the dfuplicates from the model
      */
-    private duplicates: any[] = [];
+    public duplicates: any[] = [];
 
     /**
      * indicates if the user has chosen to display duplicates.
      */
-    private showDuplicates: boolean = false;
+    public showDuplicates: boolean = false;
 
     /**
      * set if the known duplicates table should be shown
      */
-    private showDuplicatesTable: boolean = false;
+    public showDuplicatesTable: boolean = false;
 
     @Input() public preventGoingToRecord = false;
 
     /**
      * a reference to the modal itself so the modal cann close itself
      */
-    private self: any = {};
+    public self: any = {};
 
     constructor(
-        private router: Router,
-        private language: language,
-        private model: model,
-        private view: view,
-        private metadata: metadata,
-        private modal: modal,
-        private modalwindow: modalwindow,
-        @Optional() private navigationtab: navigationtab,
+        public router: Router,
+        public language: language,
+        public model: model,
+        public view: view,
+        public metadata: metadata,
+        public modal: modal,
+        public modalwindow: modalwindow,
+        @Optional() public navigationtab: navigationtab,
     ) {
         // view is editable
         this.view.isEditable = true;
@@ -129,7 +111,7 @@ export class ObjectEditModal implements OnInit {
         return this.componentconfig.actionset;
     }
 
-    private closeModal() {
+    public closeModal() {
         // cancel Edit
         this.model.cancelEdit();
 
@@ -160,7 +142,7 @@ export class ObjectEditModal implements OnInit {
      *
      * @param event
      */
-    private handleAction(event) {
+    public handleAction(event) {
         switch (event) {
             case 'savegodetail':
                 this.actionSubject.next(event);
@@ -181,7 +163,7 @@ export class ObjectEditModal implements OnInit {
      * returns if the duplicate check iss enabled for the module. Used for the visiblity of he duplicates button in the view
      */
     get duplicateCheckEnabled() {
-        return this.metadata.getModuleDuplicatecheck(this.model.module);
+        return this.model.isNew && this.metadata.getModuleDuplicatecheck(this.model.module);
     }
 
 }

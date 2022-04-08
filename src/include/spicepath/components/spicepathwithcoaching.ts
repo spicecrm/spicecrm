@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpicePath
  */
@@ -34,7 +22,7 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: "spice-path-with-coaching",
-    templateUrl: "./src/include/spicepath/templates/spicepathwithcoaching.html",
+    templateUrl: "../templates/spicepathwithcoaching.html",
     animations: [
         trigger('displaycoaching', [
             transition(':enter', [
@@ -64,21 +52,21 @@ export class SpicePathWithCoaching {
     /**
      * determines if the coaching is visible or not
      */
-    private coachingVisible: boolean = false;
+    public coachingVisible: boolean = false;
 
     /**
      * holds the current active stage if the user clicks on another stage
      */
-    private activeStage: string;
+    public activeStage: string;
 
     /**
      * holds current results for the checks
      */
-    private beanStagesChecksResults: any[];
+    public beanStagesChecksResults: any[];
 
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
-    constructor(private configuration: configurationService, private model: model, private language: language, private backend: backend, private metadata: metadata) {
+    constructor(public configuration: configurationService, public model: model, public language: language, public backend: backend, public metadata: metadata) {
         this.componentconfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
         if (this.componentconfig && this.componentconfig.coachingVisible) {
             this.coachingVisible = this.componentconfig.coachingVisible;
@@ -125,14 +113,14 @@ export class SpicePathWithCoaching {
         return this.model.getField(this.statusfield);
     }
 
-    private toggleCoaching() {
+    public toggleCoaching() {
         this.coachingVisible = !this.coachingVisible;
     }
 
     /**
      * event handler when the active stage is set in the path component
      */
-    private setActiveStage(stage) {
+    public setActiveStage(stage) {
         this.activeStage = stage;
     }
 

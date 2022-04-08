@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -23,11 +11,11 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-enummulti',
-    templateUrl: './src/objectfields/templates/fieldenummulti.html'
+    templateUrl: '../templates/fieldenummulti.html'
 })
 export class fieldEnumMulti extends fieldGeneric implements OnInit {
-    private options: any[] = [];
-    private selectedValues: any[] = [];
+    public options: any[] = [];
+    public selectedValues: any[] = [];
 
     constructor(
         public model: model,
@@ -35,13 +23,13 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
+        public elementRef: ElementRef,
         public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);
     }
 
-    private showSelect: boolean = false;
+    public showSelect: boolean = false;
     clickListener: any;
 
     public ngOnInit() {
@@ -53,7 +41,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
     }
 
 
-    private getValue(): string {
+    public getValue(): string {
         let retarray: any[] = [];
         for(let selval of this.selectedValues){
             retarray.push(this.options[selval]);
@@ -61,7 +49,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         return retarray.join(', ');
     }
 
-    private getValues(){
+    public getValues(){
         let retArray = [];
 
         let values = this.getValueArray();
@@ -84,15 +72,15 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         return retArray;
     }
 
-    private getValueArray(): any[] {
+    public getValueArray(): any[] {
         try {
-            return this.model.data[this.fieldname].substring(1, this.model.data[this.fieldname].length - 1).split('^,^');
+            return this.model.getField(this.fieldname).substring(1, this.model.getField(this.fieldname).length - 1).split('^,^');
         } catch (e) {
             return [];
         }
     }
 
-    private buildOptions() {
+    public buildOptions() {
         // reset the options
         this.options = [];
         this.selectedValues = this.getValueArray();

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpicePath
  */
@@ -28,27 +16,27 @@ declare var _: any;
  */
 @Component({
     selector: "spice-path-track",
-    templateUrl: "./src/include/spicepath/templates/spicepathtrack.html",
+    templateUrl: "../templates/spicepathtrack.html",
 })
 export class SpicePathTrack implements OnInit{
 
     /**
      * holds the current active stage if the user clicks on another stage
      */
-    private activeStage: string;
+    public activeStage: string;
 
-    private beanGuideStatus: 'open' | 'won' | 'lost' = 'open';
+    public beanGuideStatus: 'open' | 'won' | 'lost' = 'open';
 
-    private _stages: any[] = [];
+    public _stages: any[] = [];
 
-    private _modelstage: string;
+    public _modelstage: string;
 
     /**
      * emits the curetn stage
      */
-    @Output() private activeStage$: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public activeStage$: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private configuration: configurationService, private model: model, private language: language) {
+    constructor(public configuration: configurationService, public model: model, public language: language) {
 
     }
 
@@ -68,7 +56,7 @@ export class SpicePathTrack implements OnInit{
     /**
      * builds the stages .. also grouped by the stage_bucket
      */
-    private buildstages() {
+    public buildstages() {
         let retArray = [];
         let stages = this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.model.module].stages : [];
 
@@ -124,7 +112,7 @@ export class SpicePathTrack implements OnInit{
      *
      * @param currentstage the stage to be evaluated for which the class is queried.
      */
-    private stageClass(currentstage) {
+    public stageClass(currentstage) {
 
         let itemstati = [];
 
@@ -173,7 +161,7 @@ export class SpicePathTrack implements OnInit{
      *
      * @param stage the selected stage
      */
-    private setActiveStage(stage) {
+    public setActiveStage(stage) {
         // only allow if status is open
         // if(this.beanGuideStatus != 'open') return;
 
@@ -190,7 +178,7 @@ export class SpicePathTrack implements OnInit{
      *
      * @param stagedata
      */
-    private getStageLabel(stagedata) {
+    public getStageLabel(stagedata) {
         if (stagedata.stage_label) {
             return this.language.getLabel(stagedata.stage_label);
         } else {

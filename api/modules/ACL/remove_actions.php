@@ -36,10 +36,11 @@
 
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 global $current_user; //todo-uebelmar check via regex
 $actionarr = ACLAction::getDefaultActions();
-if(is_admin($current_user)){
+if(SpiceUtils::isAdmin($current_user)){
 	$foundOne = false;
 	foreach ($actionarr as $actionobj) {
 	    $beanClass = SpiceModules::getInstance()->getBeanClassForModule($actionobj->category);

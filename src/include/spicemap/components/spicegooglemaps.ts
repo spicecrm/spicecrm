@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpiceMap
  */
@@ -52,7 +40,7 @@ declare var MarkerClusterer: any;
  */
 @Component({
     selector: 'spice-google-maps',
-    templateUrl: './src/include/spicemap/templates/spicegooglemaps.html',
+    templateUrl: '../templates/spicegooglemaps.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -60,102 +48,102 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * map options
      */
-    @Input() protected options: MapOptionsI;
+    @Input() public options: MapOptionsI;
     /**
      * List of records to be displayed on the map as markers
      */
-    @Input() protected records: RecordI[] = [];
+    @Input() public records: RecordI[] = [];
     /**
      * used for the focused marker to be highlighted on the map
      */
-    @Input() protected focusedRecordId: string;
+    @Input() public focusedRecordId: string;
     /**
      * routes array to be rendered on the map by the direction service
      */
-    @Input() protected routes: [RoutePointI[]?] = [];
+    @Input() public routes: [RoutePointI[]?] = [];
     /**
      * emit the radius of the search circle
      */
-    @Output() protected radiusChange = new EventEmitter<number>();
+    @Output() public radiusChange = new EventEmitter<number>();
     /**
      * emit the radius of the search circle
      */
-    @Output() protected centerChange = new EventEmitter<MapCenterI>();
+    @Output() public centerChange = new EventEmitter<MapCenterI>();
     /**
      * emit the result of the direction service on click event
      */
-    @Output() protected directionChange = new EventEmitter<DirectionResultI>();
+    @Output() public directionChange = new EventEmitter<DirectionResultI>();
     /**
      * emit when the map is fully loaded and ready for zooming or panning
      */
-    @Output() protected mapIdleChange = new EventEmitter<boolean>();
+    @Output() public mapIdleChange = new EventEmitter<boolean>();
     /**
      * google.maps.Circle instance of the circle drawn on the map
      */
-    protected fixedCircle: any;
+    public fixedCircle: any;
     /**
      * view container reference of the div element where the map should be rendered
      */
-    @ViewChild('mapContainer', {read: ViewContainerRef, static: false}) private mapContainer: ViewContainerRef;
+    @ViewChild('mapContainer', {read: ViewContainerRef, static: false}) public mapContainer: ViewContainerRef;
     /**
      * google.maps.Map instance of the rendered map
      */
-    private map: any;
+    public map: any;
     /**
      * google.maps.Circle instance of the circle drawn on the map
      */
-    private circle: any;
+    public circle: any;
     /**
      * popover component reference
      */
-    private popoverComponentRef = null;
+    public popoverComponentRef = null;
     /**
      * google.maps.LatLngBounds instance to fit the map zoom and position to markers or the defined center
      */
-    private mapBounds: any;
+    public mapBounds: any;
     /**
      * google.maps.Marker[] all rendered markers on the map
      */
-    private markers: any[] = [];
+    public markers: any[] = [];
     /**
      * google.maps.Marker the rendered marker for my location
      */
-    private myLocationMarker: any;
+    public myLocationMarker: any;
     /**
      * MarkerClusterer instance to group markers on a narrow distance between markers
      */
-    private markerCluster: any;
+    public markerCluster: any;
     /**
      * event listener for the center control rendered on the map
      */
-    private centerControlListener: any;
+    public centerControlListener: any;
     /**
      * google.maps.DirectionsService instance to calculate distance and duration between markers
      */
-    private directionsService: any;
+    public directionsService: any;
     /**
      * google.maps.DirectionsRenderer[] array instance to render the routes on the map
      */
-    private directionsRenderers: any[] = [];
+    public directionsRenderers: any[] = [];
     /**
      * google.maps.Marker to save the focused marker to be removed on changes
      */
-    private focusedMarker: any;
+    public focusedMarker: any;
     /**
      * to ensure that the map is ready to handle panning and drawing actions
      */
-    private isMapIdled: boolean = false;
+    public isMapIdled: boolean = false;
 
     constructor(
-        private language: language,
-        private model: model,
-        private libLoader: libloader,
-        private footer: footer,
-        private metadata: metadata,
-        private renderer: Renderer2,
-        private zone: NgZone,
-        private injector: Injector,
-        private toast: toast
+        public language: language,
+        public model: model,
+        public libLoader: libloader,
+        public footer: footer,
+        public metadata: metadata,
+        public renderer: Renderer2,
+        public zone: NgZone,
+        public injector: Injector,
+        public toast: toast
     ) {
     }
 
@@ -209,7 +197,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * convert distance to string with the unit on measure
      * @param distance
      */
-    protected convertDistanceToString(distance: number) {
+    public convertDistanceToString(distance: number) {
 
         if (this.options.unitSystem == 'IMPERIAL') {
             const feetDistance = distance * 3.2808;
@@ -230,7 +218,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * generate marker color
      * @param color
      */
-    protected generateMarkerColor(color: string) {
+    public generateMarkerColor(color: string) {
         return {
             path: `M 0,0 L -43.3,-75 A 50 50 1 1 1 43.30,-75 L 0,0 z`,
             strokeColor: '#fff',
@@ -249,7 +237,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * create google maps circle with the given options
      * set the circle listeners
      */
-    protected createCircle(isFixed?: boolean) {
+    public createCircle(isFixed?: boolean) {
 
         if (!(window as any).google) return;
 
@@ -285,7 +273,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * check if the geo object latitude and longitude are correct
      * @param latLng
      */
-    protected verifyLatLng(latLng: { lat: number, lng: number }) {
+    public verifyLatLng(latLng: { lat: number, lng: number }) {
         return !!latLng.lng && !isNaN(latLng.lng) && !!latLng.lat && !isNaN(latLng.lat);
     }
 
@@ -294,7 +282,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * @param optionsCircle
      * @param isFixed
      */
-    private generateCircleOptions(optionsCircle: MapCircleI, isFixed?: boolean) {
+    public generateCircleOptions(optionsCircle: MapCircleI, isFixed?: boolean) {
 
         let radius = (optionsCircle.radius || 5) * 1000;
         const percentage = optionsCircle.radiusPercentage || 80;
@@ -321,7 +309,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * set radius from map dimensions
      * @param percentage
      */
-    private setRadiusFromMapDimensions(percentage: number) {
+    public setRadiusFromMapDimensions(percentage: number) {
 
         const spherical = google.maps.geometry.spherical,
             cor1 = this.map.getBounds().getNorthEast(),
@@ -342,7 +330,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * set the focused marker color and recenter the map
      */
-    private setFocusedMarker() {
+    public setFocusedMarker() {
 
         this.clearFocusedMarker();
 
@@ -373,7 +361,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * clear focused marker from map if there is no focus or reset the icon if the focus changed
      */
-    private clearFocusedMarker() {
+    public clearFocusedMarker() {
 
         if (!this.focusedMarker) return;
 
@@ -392,7 +380,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * handle the option changes to adjust the map view and clear the disabled elements from the map
      */
-    private handleOptionsChange() {
+    public handleOptionsChange() {
 
         if (!this.options.fixedCircle) {
             this.removeFixedCircle();
@@ -438,7 +426,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * define start, destination and waypoints for each route
      * call renderRoute on each passed route
      */
-    private renderRoutes() {
+    public renderRoutes() {
 
         this.removeCircle();
         this.removeFixedCircle();
@@ -467,7 +455,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * create a direction renderer instance and render the route on the map
      * calculate the direction data and emit it
      */
-    private renderRoute(start, destination, waypoints) {
+    public renderRoute(start, destination, waypoints) {
         this.directionsService.route(
             {
                 origin: start,
@@ -502,7 +490,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * clear the direction routes from the map
      */
-    private clearRoutes() {
+    public clearRoutes() {
         if (this.directionsRenderers.length == 0) return;
         this.directionsRenderers.forEach(renderer => renderer.setMap(null));
         this.directionsRenderers = [];
@@ -511,7 +499,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * remove re-center controll listener
      */
-    private removeReCenterControlListener() {
+    public removeReCenterControlListener() {
         if (!!this.centerControlListener) {
             this.centerControlListener();
             this.centerControlListener = null;
@@ -522,7 +510,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * load google maps library and call renderMap method
      * load cluster library and set the marker clusterer if the direction service is inactive
      */
-    private loadNecessaryLibraries() {
+    public loadNecessaryLibraries() {
         this.libLoader.loadLib('maps.googleapis').subscribe(() => {
             this.zone.runOutsideAngular(() => this.renderMap());
             this.libLoader.loadLib('MarkerClustererPlus')
@@ -540,7 +528,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * define re-center action and render it on the map
      * set map markers from records
      */
-    private renderMap() {
+    public renderMap() {
 
         this.map = new google.maps.Map(
             this.mapContainer.element.nativeElement,
@@ -594,7 +582,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * set current location marker
      */
-    private setCurrentLocationMarker() {
+    public setCurrentLocationMarker() {
 
         this.clearMyLocationMarker();
 
@@ -625,7 +613,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * clear my location marker from the map
      */
-    private clearMyLocationMarker() {
+    public clearMyLocationMarker() {
         if (!this.myLocationMarker) return;
         this.myLocationMarker.setMap(null);
         google.maps.event.clearInstanceListeners(this.myLocationMarker);
@@ -637,7 +625,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * add click event listener to the control to either fit the map bounds or reset the map to the center
      * append the re-center control to the map controls
      */
-    private defineReCenterControl() {
+    public defineReCenterControl() {
 
         const controlDiv = document.createElement('div');
         controlDiv.title = this.language.getLabel('LBL_RE_CENTER');
@@ -659,7 +647,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * fit the map bounds with less zoom if we have only one marker
      */
-    private fitMapBounds() {
+    public fitMapBounds() {
         this.map.setOptions({maxZoom: 14});
 
         this.map.fitBounds(this.mapBounds);
@@ -670,7 +658,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * initialize MarkerClusterer and add markers to it
      */
-    private setMarkerCluster() {
+    public setMarkerCluster() {
 
         if (!(window as any).MarkerClusterer || this.markers.length == 0 || this.routes.length > 0) return;
         this.removeMarkerClusterMarkers();
@@ -686,7 +674,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * remove the marker cluster markers
      */
-    private removeMarkerClusterMarkers() {
+    public removeMarkerClusterMarkers() {
         if (!this.markerCluster) return;
         this.markerCluster.clearMarkers();
     }
@@ -694,7 +682,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * call create circle with fixed flag
      */
-    private createFixedCircle() {
+    public createFixedCircle() {
         this.zone.runOutsideAngular(() =>
             this.createCircle(true)
         );
@@ -704,7 +692,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * add radius change listener to reset the circle radius and emit it
      * add center change listener to reset the circle center and emit it
      */
-    private setCircleListeners() {
+    public setCircleListeners() {
 
         this.circle.addListener('radius_changed', () => {
             this.zone.run(() =>
@@ -732,7 +720,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * reverse geo code to address
      */
-    private reverseGeoCode(latLng: { lat: number, lng: number }) {
+    public reverseGeoCode(latLng: { lat: number, lng: number }) {
 
         let geoCoder = new google.maps.Geocoder();
 
@@ -753,14 +741,14 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * removes the drawn fixed circle from the map
      */
-    private removeFixedCircle() {
+    public removeFixedCircle() {
         this.removeCircle('fixedCircle');
     }
 
     /**
      * removes the drawn circle from the map
      */
-    private removeCircle(circleKeyName: string = 'circle') {
+    public removeCircle(circleKeyName: string = 'circle') {
 
         if (!this[circleKeyName]) return;
 
@@ -774,7 +762,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * remove marker cluster markers
      * remove markers from the map
      */
-    private clearMarkers() {
+    public clearMarkers() {
 
         this.removeMarkerClusterMarkers();
         this.markers.forEach(marker => {
@@ -800,7 +788,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * set marker cluster if it is active and the direction service is inactive
      * if the center is not set, fit the map bounds to all rendered markers
      */
-    private setMarkers() {
+    public setMarkers() {
         if (!this.map) return;
 
         this.mapBounds = new google.maps.LatLngBounds();
@@ -847,7 +835,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * calculate Direction object from direction result
      * @param routes: DirectionResult
      */
-    private calculateDirectionData(routes): DirectionResultI {
+    public calculateDirectionData(routes): DirectionResultI {
         let distance = {value: 0, text: ''};
         let duration = 0;
         routes.forEach(route => {
@@ -870,7 +858,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * close the marker popover
      */
-    private closePopover() {
+    public closePopover() {
         if (!!this.popoverComponentRef) {
             this.zone.run(() =>
                 this.popoverComponentRef.instance.closePopover(true)
@@ -883,7 +871,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * render ObjectModelPopover and pass the necessary data
      * set local popover component reference
      */
-    private renderPopover(id: string, module: string, markerClickEvent) {
+    public renderPopover(id: string, module: string, markerClickEvent) {
 
         this.closePopover();
 

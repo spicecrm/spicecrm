@@ -1,45 +1,14 @@
 <?php
-/*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\database;
 
 use SpiceCRM\data\SugarBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 /*********************************************************************************
  * Description: This file handles the Data base functionality for the application.
@@ -125,6 +94,7 @@ class MysqliManager extends DBManager
         'short'    => 'smallint',
         'varchar'  => 'varchar',
         'text'     => 'text',
+        'json'     => 'longtext',
         'shorttext'=> 'text',
         'longtext' => 'longtext',
         'date'     => 'date',
@@ -173,6 +143,32 @@ class MysqliManager extends DBManager
         'row_count' => 'mysqli_num_rows',
         'affected_row_count' => 'mysqli_affected_rows',
     ];
+
+    /**
+     * get the stats
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getStats(){
+        $dbSize = 0;
+        $dbCount = 0;
+        $tablesArray = [];
+        $tables = $this->query("SHOW TABLE STATUS");
+        while ($table = $this->fetchByAssoc($tables)) {
+
+            $recordCount = $this->fetchByAssoc($this->query("SELECT count(*) records FROM {$table['Name']}"));
+
+            $tablesArray[] = [
+                'name' => $table['Name'],
+                'records' => (int)$recordCount['records'],
+                'size' => $table['Data_length'] + $table['Index_length']
+            ];
+            $dbCount += (int)$recordCount['records'];
+            $dbSize += (int)$table['Data_length'] + (int)$table['Index_length'];
+        }
+        return ['size' => $dbSize, 'count' => $dbCount, 'tables' => $tablesArray];
+    }
 
     /**
      * @see MysqlManager::query()
@@ -615,7 +611,7 @@ class MysqliManager extends DBManager
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
 
-        if(!empty($GLOBALS['sugar_config']['check_query'])){
+        if(!empty(SpiceConfig::getInstance()->config['check_query'])){
             $this->checkQuery($sql);
         }
         if(!$execute) {
@@ -654,7 +650,7 @@ class MysqliManager extends DBManager
         foreach($badQuery as $table=>$data ){
             if(!empty($data)){
                 $warning = ' Table:' . $table . ' Data:' . $data;
-                if(!empty($GLOBALS['sugar_config']['check_query_log'])){
+                if(!empty(SpiceConfig::getInstance()->config['check_query_log'])){
                     LoggerManager::getLogger()->fatal($sql);
                     LoggerManager::getLogger()->fatal('CHECK QUERY:' .$warning);
                 }
@@ -881,7 +877,7 @@ class MysqliManager extends DBManager
             case 'add_time':
                 return "DATE_ADD($string, INTERVAL + CONCAT({$additional_parameters[0]}, ':', {$additional_parameters[1]}) HOUR_MINUTE)";
             case 'add_tz_offset' :
-                $getUserUTCOffset = $GLOBALS['timedate']->getUserUTCOffset();
+                $getUserUTCOffset = TimeDate::getInstance()->getUserUTCOffset();
                 $operation = $getUserUTCOffset < 0 ? '-' : '+';
                 return $string . ' ' . $operation . ' INTERVAL ' . abs($getUserUTCOffset) . ' MINUTE';
             case 'avg':
@@ -910,10 +906,9 @@ class MysqliManager extends DBManager
 
     protected function getEngine($bean)
     {
-        global $dictionary;
         $engine = null;
-        if (isset($dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = $dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
         }
         return $engine;
     }
@@ -1198,6 +1193,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @deprecated
      * Runs a query and returns a single row
      *
      * @param  string   $sql        SQL Statement to execute
@@ -1206,14 +1202,14 @@ class MysqliManager extends DBManager
      * @param  bool     $suppress   Message to log if error occurs
      * @return array    single row from the query
      */
-    public function fetchOne($sql, $dieOnError = false, $msg = '', $suppress = false)
-    {
-        if(stripos($sql, ' LIMIT ') === false) {
-            // little optimization to just fetch one row
-            $sql .= " LIMIT 0,1";
-        }
-        return parent::fetchOne($sql, $dieOnError, $msg, $suppress);
-    }
+//    public function fetchOne($sql, $dieOnError = false, $msg = '', $suppress = false)
+//    {
+//        if(stripos($sql, ' LIMIT ') === false) {
+//            // little optimization to just fetch one row
+//            $sql .= " LIMIT 0,1";
+//        }
+//        return parent::fetchOne($sql, $dieOnError, $msg, $suppress);
+//    }
 
     /**
      * @see DBManager::full_text_indexing_installed()
@@ -1443,6 +1439,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string

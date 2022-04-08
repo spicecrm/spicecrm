@@ -1,6 +1,7 @@
 <?php
 
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\utils\DBUtils;
 
 if(!defined('sugarEntry'))define('sugarEntry', true);
 /*********************************************************************************
@@ -76,7 +77,7 @@ class SugarRestSerialize extends SugarRest{
 			$this->fault($er);
 		}else{
 			$method = $_REQUEST['method'];
-			$data = unserialize(from_html($data));
+			$data = unserialize(DBUtils::fromHtml($data));
 			if(!is_array($data))$data = [$data];
 			LoggerManager::getLogger()->info('End: SugarRestSerialize->serve');
 			return call_user_func_array([$this->implementation, $method],$data);

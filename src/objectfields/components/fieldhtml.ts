@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -30,24 +18,24 @@ declare var _;
 
 @Component({
     selector: 'field-html',
-    templateUrl: './src/objectfields/templates/fieldhtml.html',
+    templateUrl: '../templates/fieldhtml.html',
 })
 export class fieldHtml extends fieldGeneric {
-    private stylesheetField: string = '';
-    private useStylesheets: boolean;
-    private useStylesheetSwitcher: boolean;
-    private stylesheets: any[];
-    private stylesheetToUse: string = '';
-    private _sanitizedValue;
-    private fullValue_cached: string; // the cached full html code to prevent "flickering" of the iframe (change detection)
-    private fullValue: string = '';
+    public stylesheetField: string = '';
+    public useStylesheets: boolean;
+    public useStylesheetSwitcher: boolean;
+    public stylesheets: any[];
+    public stylesheetToUse: string = '';
+    public _sanitizedValue;
+    public fullValue_cached: string; // the cached full html code to prevent "flickering" of the iframe (change detection)
+    public fullValue: string = '';
 
-    @ViewChild('printframe', {read: ViewContainerRef, static: true}) private printframe: ViewContainerRef;
+    @ViewChild('printframe', {read: ViewContainerRef, static: true}) public printframe: ViewContainerRef;
 
     constructor(
         public model: model,
         public view: view,
-        public language: language, public metadata: metadata, public router: Router, private zone: NgZone, public sanitized: DomSanitizer, private modal: modal) {
+        public language: language, public metadata: metadata, public router: Router, public zone: NgZone, public sanitized: DomSanitizer, public modal: modal) {
         super(model, view, language, metadata, router);
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
@@ -71,8 +59,8 @@ export class fieldHtml extends fieldGeneric {
     }
 
     get styleTag() {
-        return ( this.useStylesheets && !_.isEmpty( this.model.data[this.stylesheetField] )) ?
-            '<style>' + this.metadata.getHtmlStylesheetCode( this.model.data[this.stylesheetField] ) + '</style>' : '';
+        return ( this.useStylesheets && !_.isEmpty( this.model.getField(this.stylesheetField) )) ?
+            '<style>' + this.metadata.getHtmlStylesheetCode( this.model.getField(this.stylesheetField) ) + '</style>' : '';
     }
 
     /**
@@ -84,10 +72,11 @@ export class fieldHtml extends fieldGeneric {
     {
         if(this.value)
         {
-            if(this.value.includes('</html>'))
+            if(this.value.includes('</html>')) {
                 this.fullValue = this.value;
-            else
+            } else {
                 this.fullValue = `<html><head>${this.styleTag}</head><body class="spice">${this.value}</body></html>`;
+            }
         }
 
         // if value changed, generate sanitized html value
@@ -99,8 +88,8 @@ export class fieldHtml extends fieldGeneric {
     }
 
     get stylesheetId(): string {
-        if (!_.isEmpty(this.model.data[this.stylesheetField])) {
-            return this.model.data[this.stylesheetField];
+        if (!_.isEmpty(this.model.getField(this.stylesheetField))) {
+            return this.model.getField(this.stylesheetField);
         }
         return this.stylesheetId = this.stylesheetToUse;
     }
@@ -115,7 +104,7 @@ export class fieldHtml extends fieldGeneric {
         return this.fieldconfig.asiframe || !_.isEmpty(this.fieldconfig.stylesheetId) || !_.isEmpty(this.stylesheetField) ? true : false;
     }
 
-    private updateField(newVal) {
+    public updateField(newVal) {
         // set the model
         this.value = newVal;
 
@@ -123,13 +112,13 @@ export class fieldHtml extends fieldGeneric {
         this.zone.run(() => { 1; });
     }
 
-    private updateStylesheet(stylesheetId) {
+    public updateStylesheet(stylesheetId) {
         if (!_.isEmpty(this.stylesheetField) && _.isString(stylesheetId)) {
             this.model.setField(this.stylesheetField, stylesheetId);
         }
     }
 
-    private expand() {
+    public expand() {
         this.modal.openModal('SystemTinyMCEModal', false).subscribe(componentRef => {
             componentRef.instance.title = this.getLabel();
             componentRef.instance.content = this.value;
@@ -140,13 +129,13 @@ export class fieldHtml extends fieldGeneric {
         });
     }
 
-    private eventHandler(event) {
+    public eventHandler(event) {
         this.value = event.srcElement.innerHTML;
         // console.log(event);
     }
 
     // Code from fieldlabel.ts
-    private getLabel() {
+    public getLabel() {
         if (this.fieldconfig.label) {
             if (this.fieldconfig.label.indexOf(':') > 0) {
                 let fielddetails = this.fieldconfig.label.split(':');
@@ -163,7 +152,7 @@ export class fieldHtml extends fieldGeneric {
      * removed .. this does in this way not make sense
      */
     /*
-    private print() {
+    public print() {
         this.printframe.element.nativeElement.contentWindow.print();
     }
    */

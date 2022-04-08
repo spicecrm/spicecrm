@@ -37,6 +37,7 @@
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 require_once('include/utils/array_utils.php');
 require_once('include/utils/sugar_file_utils.php');
@@ -172,7 +173,7 @@ function mkdir_recursive($path, $check_is_parent_dir = false)
     //make variables with file paths
     $pathcmp = $path = rtrim(clean_path($path), '/');
     $basecmp =$base = rtrim(clean_path(getcwd()), '/');
-    if(is_windows()) {
+    if (SpiceUtils::isWindows()) {
         //make path variable lower case for comparison in windows
         $pathcmp = strtolower($path);
         $basecmp = strtolower($base);
@@ -193,7 +194,7 @@ function mkdir_recursive($path, $check_is_parent_dir = false)
         $base = '/';
         array_shift($dirStructure);
     }
-    if(is_windows()) {
+    if (SpiceUtils::isWindows()) {
         if(strlen($dirStructure[0]) == 2 && $dirStructure[0][1] == ':') {
             /* C: prefix */
             $base = array_shift($dirStructure)."\\";

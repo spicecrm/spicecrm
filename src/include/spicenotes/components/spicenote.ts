@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpiceNotes
  */
@@ -31,46 +19,46 @@ declare var moment: any;
  */
 @Component({
     selector: 'spice-note',
-    templateUrl: './src/include/spicenotes/templates/spicenote.html'
+    templateUrl: '../templates/spicenote.html'
 })
 export class SpiceNote {
 
     /**
      * the note in the for loop
      */
-    @Input() private note: any = {};
+    @Input() public note: any = {};
 
-    private isEditing: boolean = false;
+    public isEditing: boolean = false;
 
-    @Output() private deleteNote: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public deleteNote: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * @ignore
      *
      * @param objectnote
      */
-    constructor(public sanitized: DomSanitizer, private session: session, private backend: backend, private model: model) {
+    constructor(public sanitized: DomSanitizer, public session: session, public backend: backend, public model: model) {
 
     }
 
     /**
      * get the timestamp and vonverts into a relative one
      */
-    private getNoteTimeFromNow() {
+    public getNoteTimeFromNow() {
         return moment(this.note.date).fromNow();
     }
 
     /**
      * delete the note
      */
-    private delete() {
+    public delete() {
         this.deleteNote.emit();
     }
 
     /**
      * save the note
      */
-    private saveNote() {
+    public saveNote() {
         this.isEditing = false;
         this.backend.postRequest(`module/${this.model.module}/${this.model.id}/note/${this.note.id}`, {}, {text: this.note.text, global: !this.note.global});
     }
@@ -78,7 +66,7 @@ export class SpiceNote {
     /**
      * edit the note
      */
-    private edit() {
+    public edit() {
         this.isEditing = true;
     }
 
@@ -89,7 +77,7 @@ export class SpiceNote {
         return this.sanitized.bypassSecurityTrustHtml(this.note.text);
     }
 
-    private hideDeleteButton() {
+    public hideDeleteButton() {
         if (this.note.user_id != this.session.authData.userId && !this.session.authData.admin) {
             return true;
         }
@@ -99,14 +87,14 @@ export class SpiceNote {
     /**
      * tgggle a note privat or global
      */
-    private togglePrivate() {
+    public togglePrivate() {
         this.note.global = !this.note.global;
     }
 
     /**
-     * returns the proper icon for a private vs global note
+     * returns the proper icon for a public vs global note
      */
-    private getPrivateIcon() {
+    public getPrivateIcon() {
         if (this.note.global) {
             return 'unlock';
         } else {

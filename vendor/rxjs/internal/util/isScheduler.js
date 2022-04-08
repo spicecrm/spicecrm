@@ -1,1 +1,0 @@
-"use strict";function isScheduler(e){return e&&"function"==typeof e.schedule}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isScheduler=isScheduler;

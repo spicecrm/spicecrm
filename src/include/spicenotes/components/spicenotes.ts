@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpiceNotes
  */
@@ -25,34 +13,34 @@ import {broadcast} from '../../../services/broadcast.service';
 declare var moment: any;
 
 /**
- * handles the spicenotes on the object allowing users to add quick notes (private or global visible)
+ * handles the spicenotes on the object allowing users to add quick notes (public or global visible)
  */
 @Component({
-    templateUrl: './src/include/spicenotes/templates/spicenotes.html'
+    templateUrl: '../templates/spicenotes.html'
 })
 export class SpiceNotes implements OnInit {
 
     /**
      * vraible for th ebingind to the new note when the user enters on e
      */
-    private newNote: string = '';
+    public newNote: string = '';
 
     /**
      * keep track if the textarea is active (focused)
      */
-    private _active = false;
+    public _active = false;
 
     /**
-     * indicator that the new note is considered private and not global so only visible to the user who created it or admins
+     * indicator that the new note is considered public and not global so only visible to the user who created it or admins
      */
-    private isPrivate: boolean = false;
+    public isPrivate: boolean = false;
 
     /**
      * the list of notes
      */
     public notes: any = [];
 
-    constructor(private model: model, private language: language, private session: session, private backend: backend, private broadcast: broadcast) {
+    constructor(public model: model, public language: language, public session: session, public backend: backend, public broadcast: broadcast) {
 
     }
 
@@ -104,7 +92,7 @@ export class SpiceNotes implements OnInit {
         });
     }
 
-    private broadcastCount(){
+    public broadcastCount(){
         this.broadcast.broadcastMessage('spicenotes.loaded', {module: this.model.module, id: this.model.id, spicenotescount: this.notes.length});
 
     }
@@ -112,23 +100,23 @@ export class SpiceNotes implements OnInit {
     /**
      * resets the note when the user cancels
      */
-    private clearNote() {
+    public clearNote() {
         this.newNote = '';
-        this.isPrivate = false;
+        this.isPrivate = true;
     }
 
 
     /**
      * tgggle a note privat or global
      */
-    private togglePrivate() {
+    public togglePrivate() {
         this.isPrivate = !this.isPrivate;
     }
 
     /**
-     * returns the proper icon for a private vs global note
+     * returns the proper icon for a public vs global note
      */
-    private getPrivateIcon() {
+    public getPrivateIcon() {
         if (this.isPrivate) {
             return 'lock';
         } else {
@@ -153,14 +141,14 @@ export class SpiceNotes implements OnInit {
     /**
      * triggered when the textarea gets the focus
      */
-    private onFocus() {
+    public onFocus() {
         this._active = true;
     }
 
     /**
      * triggered when the textarea has a blur event
      */
-    private onBlur() {
+    public onBlur() {
         this._active = false;
     }
 

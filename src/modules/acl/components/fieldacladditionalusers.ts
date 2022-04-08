@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleACLTerritories
  */
@@ -26,15 +14,15 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a field to add secondary territories
  */
 @Component({
-    templateUrl: './src/modules/acl/templates/fieldacladditionalusers.html',
+    templateUrl: '../templates/fieldacladditionalusers.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
 export class fieldACLAdditionalUsers extends fieldGeneric {
 
-    private clickListener: any;
+    public clickListener: any;
 
-    private lookupSearchOpen: boolean = false;
-    private lookupSearchTerm: string = '';
+    public lookupSearchOpen: boolean = false;
+    public lookupSearchTerm: string = '';
 
     constructor(public model: model,
                 public view: view,
@@ -64,7 +52,7 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         this.model.setField('spiceacl_additional_users', JSON.stringify(value));
     }
 
-    private addItem(item) {
+    public addItem(item) {
         let users = this.users;
         let index = users.findIndex(user => user.id == item.id);
         if (index == -1) {
@@ -88,14 +76,14 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         }
     }
 
-    private closePopups() {
+    public closePopups() {
         this.lookupSearchOpen = false;
         this.lookupSearchTerm = '';
 
         this.clickListener();
     }
 
-    private removeItem(userid) {
+    public removeItem(userid) {
         let users = this.users;
         let index = users.findIndex(user => user.id == userid);
         if (index >= 0) {
@@ -106,21 +94,21 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         this.users = users;
     }
 
-    private onFocus() {
+    public onFocus() {
         this.openSearchDropDown();
     }
 
-    private onFieldClick() {
+    public onFieldClick() {
         this.openSearchDropDown();
     }
 
-    private openSearchDropDown() {
+    public openSearchDropDown() {
         // this.getRecent();
         this.lookupSearchOpen = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private parentSearchStyle() {
+    public parentSearchStyle() {
         if (this.lookupSearchOpen) {
             return {
                 display: 'block'
@@ -128,7 +116,7 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         }
     }
 
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
             selectModal.instance.module = 'Users';
             selectModal.instance.multiselect = false;

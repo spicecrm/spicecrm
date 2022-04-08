@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -27,18 +15,18 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-parent',
-    templateUrl: './src/objectfields/templates/fieldparent.html'
+    templateUrl: '../templates/fieldparent.html'
 })
 export class fieldParent extends fieldGeneric implements OnInit {
-    private clickListener: any;
+    public clickListener: any;
 
-    private parentTypeSelectOpen: boolean = false;
-    private parentSearchOpen: boolean = false;
-    private parentSearchTerm: string = '';
+    public parentTypeSelectOpen: boolean = false;
+    public parentSearchOpen: boolean = false;
+    public parentSearchTerm: string = '';
 
-    private recentItems: any[] = [];
+    public recentItems: any[] = [];
 
-    private parentTypes: string[] = [];
+    public parentTypes: string[] = [];
 
     constructor(
         public model: model,
@@ -47,9 +35,9 @@ export class fieldParent extends fieldGeneric implements OnInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        private modal: modal
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public modal: modal
     ) {
         super(model, view, language, metadata, router);
 
@@ -78,29 +66,28 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     get displayModuleIcon() {
-        return this.fieldconfig.hidemoduleicon ? false : true;
+        return !this.fieldconfig.hidemoduleicon;
     }
 
     public ngOnInit() {
         // determine the valid types
         this.determineParentTypes();
-
         // initialize the parenttype
-        if (!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
-            this.model.data[this.parentTypeField] = this.parentTypes[0];
-        }
+      if (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '') {
+            this.model.setField(this.parentTypeField, this.parentTypes[0]);
+       }
+
     }
 
     /**
      * get the valid parent types from the metadata or the field config
      */
-    private determineParentTypes() {
+    public determineParentTypes() {
         let parenttypes = [];
-
-        if(this.field_defs.parent_modules){
-            parenttypes = this.field_defs.parent_modules;
-        } else if (this.fieldconfig.parenttypes) {
+        if (this.fieldconfig.parenttypes) {
             parenttypes = this.fieldconfig.parenttypes.replace(/\s/g, '').split(',');
+        } else if(this.field_defs.parent_modules){
+            parenttypes = this.field_defs.parent_modules;
         }
 
         parenttypes.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
@@ -108,7 +95,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.parentTypes = parenttypes;
     }
 
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         if (message.messagedata.reference) {
             switch (message.messagetype) {
                 case 'model.save':
@@ -117,8 +104,10 @@ export class fieldParent extends fieldGeneric implements OnInit {
                         this.parentSearchTerm = '';
 
                         // set the model
-                        this.model.data[this.parentIdField] = message.messagedata.data.id;
-                        this.model.data[this.fieldname] = message.messagedata.data.summary_text;
+                        let modelFields: any = {};
+                        modelFields[this.parentIdField] = message.messagedata.data.id;
+                        modelFields[this.fieldname] = message.messagedata.data.summary_text;
+                        this.model.setFields(modelFields, true);
                     }
                     break;
             }
@@ -132,8 +121,8 @@ export class fieldParent extends fieldGeneric implements OnInit {
         }
     }
 
-    private closePopups() {
-        if (this.model.data[this.parentIdField]) {
+    public closePopups() {
+        if (this.model.getField(this.parentIdField)) {
             this.parentSearchTerm = '';
         }
 
@@ -143,24 +132,24 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.clickListener();
     }
 
-    private setParent(parent) {
+    public setParent(parent) {
         this.model.setField(this.fieldname, parent.text);
         this.model.setField(this.parentIdField, parent.id);
     }
 
-    private toggleParentTypeSelect() {
+    public toggleParentTypeSelect() {
         this.parentTypeSelectOpen = !this.parentTypeSelectOpen;
         this.parentSearchOpen = false;
     }
 
-    private setParentType(parentType) {
+    public setParentType(parentType) {
         this.parentSearchTerm = '';
 
         this.model.setField(this.parentTypeField, parentType);
         this.parentTypeSelectOpen = false;
     }
 
-    private clearParent() {
+    public clearParent() {
         if (this.fieldconfig.promptondelete) {
             this.modal.confirm(
                 this.language.getLabelFormatted('LBL_PROMPT_DELETE_RELATIONSHIP', [this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig)], 'long'),
@@ -175,24 +164,24 @@ export class fieldParent extends fieldGeneric implements OnInit {
         }
     }
 
-    private removeRelated() {
+    public removeRelated() {
         this.model.setField(this.fieldname, '');
         this.model.setField(this.parentIdField, '');
     }
 
-    private openParentTypes() {
+    public openParentTypes() {
         this.parentTypeSelectOpen = true;
         this.parentSearchOpen = false;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private onFocusParent() {
+    public onFocusParent() {
         this.parentTypeSelectOpen = false;
         this.parentSearchOpen = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private searchWithModal() {
+    public searchWithModal() {
         this.parentSearchOpen = false;
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.parentType;

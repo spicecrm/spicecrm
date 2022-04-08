@@ -10,6 +10,7 @@ namespace SpiceCRM\modules\KReports;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class KReportRenderer
 {
@@ -28,7 +29,7 @@ class KReportRenderer
         // 2014-02-25 .. set teh default system currency .. otherwise sugar might take the default users currency
         if (empty($record [$fieldid . '_curid']))
             $record [$fieldid . '_curid'] = '-99';
-        return currency_format_number($record[$fieldid], ['currency_id' => $record [$fieldid . '_curid'], 'currency_symbol' => true]);
+        return SpiceUtils::currencyFormatNumber($record[$fieldid], ['currency_id' => $record [$fieldid . '_curid'], 'currency_symbol' => true]);
     }
 
     public static function kcurrencyintRenderer($fieldid, $record)
@@ -38,7 +39,7 @@ class KReportRenderer
         // 2014-02-25 .. set teh default system currency .. otherwise sugar might take the default users currency
         if (empty($record [$fieldid . '_curid']))
             $record [$fieldid . '_curid'] = '-99';
-        return currency_format_number($record[$fieldid], ['round' => 0, 'decimals'=> 0, 'currency_id' => $record [$fieldid . '_curid'], 'currency_symbol' => true]);
+        return SpiceUtils::currencyFormatNumber($record[$fieldid], ['round' => 0, 'decimals'=> 0, 'currency_id' => $record [$fieldid . '_curid'], 'currency_symbol' => true]);
     }
 
     public function kenumRenderer($fieldid, $record)
@@ -111,27 +112,27 @@ class KReportRenderer
     public static function knumberRenderer($fieldid, $record)
     {
         return round($record[$fieldid], 2);
-//        return format_number($record[$fieldid], \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_currency_significant_digits'));
+//        return SpiceUtils::formatNumber($record[$fieldid], \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_currency_significant_digits'));
     }
 
     public static function kintRenderer($fieldid, $record)
     {
 
 //        return round($record[$fieldid]);
-        return format_number($record[$fieldid], 0, 0);
+        return SpiceUtils::formatNumber($record[$fieldid], 0, 0);
     }
 
     public static function kdateRenderer($fieldid, $record)
     {
         $timedate = TimeDate::getInstance();
         // 2013-10-03 no Date TZ Conversion Bug#504
-        return ($record[$fieldid] != '' ? $timedate->to_display_date($record[$fieldid], false) : '');
+        return ($record[$fieldid] != '' ? $timedate->asUserDate($timedate->fromDbDate($record[$fieldid])) : '');
     }
 
     public static function kdatetimeRenderer($fieldid, $record)
     {
         $timedate = TimeDate::getInstance();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         return ($record[$fieldid] != '' ? $db->fromConvert($record[$fieldid], 'datetime') : '');
     }
 

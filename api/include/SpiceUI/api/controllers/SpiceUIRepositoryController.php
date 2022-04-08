@@ -93,7 +93,7 @@ class SpiceUIRepositoryController
         $db = DBManagerFactory::getInstance();
 
         $return = [];
-        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.rank ASC";
+        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.libsequence ASC";
         $res = $db->query($sql);
         while($row = $db->fetchByAssoc($res))
         {

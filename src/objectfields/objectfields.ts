@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -23,114 +11,117 @@ import {metadata} from '../services/metadata.service';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../directives/directives";
 
-import /*embed*/ {fieldGeneric} from './components/fieldgeneric';
-import /*embed*/ {fieldSet} from './components/fieldset';
-import /*embed*/ {field} from './components/field';
-import /*embed*/ {fieldBlank} from './components/fieldblank';
-import /*embed*/ {fieldLabel} from './components/fieldlabel';
-import /*embed*/ {fieldLabelPopover} from './components/fieldlabelpopover';
-import /*embed*/ {fieldContainer} from './components/fieldcontainer';
-import /*embed*/ {fieldGenericDisplay} from './components/fieldgenericdisplay';
-import /*embed*/ {fieldText} from './components/fieldtext';
-import /*embed*/ {fieldNumber} from './components/fieldnumber';
-import /*embed*/ {fieldHtml} from './components/fieldhtml';
-import /*embed*/ {fieldHtmlEditor} from './components/fieldhtmleditor';
-import /*embed*/ {fieldWYSIWYGEditor} from './components/fieldwysiwygeditor';
-import /*embed*/ {fieldFloat} from './components/fieldfloat';
-import /*embed*/ {fieldCurrency} from './components/fieldcurrency';
-import /*embed*/ {fieldWeightedAmount} from './components/fieldweightedamount';
-import /*embed*/ {fieldTotalAmount} from './components/fieldtotalamount';
-import /*embed*/ {fieldEnum} from './components/fieldenum';
-import /*embed*/ {fieldLanguage} from './components/fieldlanguage';
-import /*embed*/ {fieldEmailTo} from './components/fieldemailto';
-import /*embed*/ {fieldEmailTemplates} from './components/fieldemailtemplates';
-import /*embed*/ {fieldTextMessageTemplates} from './components/fieldtextmessagetemplates';
-import /*embed*/ {fieldMailRelais} from './components/fieldmailrelais';
-import /*embed*/ {fieldMultienum} from './components/fieldmultienum';
-import /*embed*/ {fieldGroupedEnum} from './components/fieldgroupedenum';
-import /*embed*/ {fieldMultienumCheckBox} from './components/fieldmultienumcheckbox';
-import /*embed*/ {fieldMultipleEnumDropdown} from './components/fieldmultipleenumdropdown';
-import /*embed*/ {fieldEnumAlternate} from './components/fieldenumalternate';
-import /*embed*/ {fieldEnumRadio} from './components/fieldenumradio';
-import /*embed*/ {fieldBool} from './components/fieldbool';
-import /*embed*/ {fieldBoolLabelAligned} from './components/fieldboollabelaligned';
-import /*embed*/ {fieldParent} from './components/fieldparent';
-import /*embed*/ {fieldModuleFilter} from './components/fieldmodulefilter';
-import /*embed*/ {fieldRelate} from './components/fieldrelate';
-import /*embed*/ {fieldRelateList} from './components/fieldrelatelist';
-import /*embed*/ {fieldModifiedBy} from './components/fieldmodifiedby';
-import /*embed*/ {fieldLookup} from './components/fieldlookup';
-import /*embed*/ {fieldDate} from './components/fielddate';
-import /*embed*/ {fieldTime} from './components/fieldtime';
-import /*embed*/ {fieldDateTime} from './components/fielddatetime';
-import /*embed*/ {fieldDateTimeDuration} from './components/fielddatetimeduration';
-import /*embed*/ {fieldDuration} from './components/fieldduration';
-import /*embed*/ {fieldDateTimeSpan} from './components/fielddatetimespan';
-import /*embed*/ {fieldDateSpan} from './components/fielddatespan';
-import /*embed*/ {fieldAddress} from './components/fieldaddress';
-import /*embed*/ {fieldFullName} from './components/fieldfullname';
-import /*embed*/ {fieldTitle} from './components/fieldtitle';
-import /*embed*/ {fieldFile} from './components/fieldfile';
-import /*embed*/ {fieldUrl} from './components/fieldurl';
-import /*embed*/ {fieldEmail} from './components/fieldemail';
-import /*embed*/ {fieldEmailAddresses} from './components/fieldemailaddresses';
-import /*embed*/ {fieldEmailEmailAddressStatus} from './components/fieldemailemailaddressstatus';
-import /*embed*/ {fieldEmailEmailAddress} from './components/fieldemailemailaddress';
-import /*embed*/ {fieldEmailRecipients} from './components/fieldemailrecipients';
-import /*embed*/ {fieldEmailRecipientsShort} from './components/fieldemailrecipientsshort';
-import /*embed*/ {fieldCurrencies} from './components/fieldcurrencies';
-import /*embed*/ {fieldCompanies} from './components/fieldcompanies';
-import /*embed*/ {fieldVat} from './components/fieldvat';
-import /*embed*/ {fieldBarcode} from './components/fieldbarcode';
-import /*embed*/ {fieldBarcodeRenderer} from './components/fieldbarcoderenderer';
-import /*embed*/ {fieldRating} from './components/fieldrating';
-import /*embed*/ {fieldLookupRecent} from './components/fieldlookuprecent';
-import /*embed*/ {fieldLookupRecentItem} from './components/fieldlookuprecentitem';
-import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
-import /*embed*/ {fieldLookupSearchItem} from './components/fieldlookupsearchitem';
-import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
-import /*embed*/ {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
-import /*embed*/ {FieldMessagesComponent} from "./components/fieldmessages";
-import /*embed*/ {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
-import /*embed*/ {FieldSignatureComponent} from "./components/fieldsignature";
-import /*embed*/ {fieldServiceCategories,} from "./components/fieldcategories";
-import /*embed*/ {fieldServiceCategoryTree} from "./components/fieldcategorytree";
-import /*embed*/ {fieldServiceCategorySearch} from "./components/fieldcategorysearch";
-import /*embed*/ {fieldWorklog} from "./components/fieldworklog";
-import /*embed*/ {FieldModelInfoComponent} from "./components/fieldmodelinfo";
-import /*embed*/ {FieldEnumModulesComponent} from "./components/fieldenummodules";
-import /*embed*/ {fieldGDPR} from "./components/fieldgdpr";
-import /*embed*/ {fieldSelectTree,} from "./components/fieldselecttree";
-import /*embed*/ {fieldSelectTreeSearch} from "./components/fieldselecttreesearch";
-import /*embed*/ {fieldSelectTreeTree} from "./components/fieldselecttreetree";
-import /*embed*/ {fieldColorEnum} from "./components/fieldcolorenum";
-import /*embed*/ {fieldBase64} from "./components/fieldbase64";
-import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
-import /*embed*/ {fieldModuleIcon} from "./components/fieldmoduleicon";
-import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
-import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
-import /*embed*/ {fieldPhoneAsterisk} from "./components/fieldphoneasterisk";
-import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
-import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
-import /*embed*/ {fieldTextID} from "./components/fieldtextid";
-import /*embed*/ {fieldBackendMethod} from "./components/fieldbackendmethod";
-import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
-import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
-import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
-import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
-import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
-import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
-import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestionnaireevaluation';
-import /*embed*/ {fieldTags} from './components/fieldtags';
-import /*embed*/ {fieldParentDetails} from './components/fieldparentdetails';
-import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
-import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
-import /*embed*/ {fieldPhone} from "./components/fieldphone";
-import /*embed*/ {fieldActionset} from "./components/fieldactionset";
-import /*embed*/ {fieldSlider} from "./components/fieldslider";
-import /*embed*/ {fieldImage} from './components/fieldimage';
-import /*embed*/ {fieldCompound} from './components/fieldcompound';
-import /*embed*/ {fieldIconCondition} from './components/fieldiconcondition';
+import {fieldGeneric} from './components/fieldgeneric';
+import {fieldSet} from './components/fieldset';
+import {field} from './components/field';
+import {fieldBlank} from './components/fieldblank';
+import {fieldLabel} from './components/fieldlabel';
+import {fieldLabelPopover} from './components/fieldlabelpopover';
+import {fieldContainer} from './components/fieldcontainer';
+import {fieldGenericDisplay} from './components/fieldgenericdisplay';
+import {fieldText} from './components/fieldtext';
+import {fieldNumber} from './components/fieldnumber';
+import {fieldHtml} from './components/fieldhtml';
+import {fieldHtmlEditor} from './components/fieldhtmleditor';
+import {fieldWYSIWYGEditor} from './components/fieldwysiwygeditor';
+import {fieldFloat} from './components/fieldfloat';
+import {fieldCurrency} from './components/fieldcurrency';
+import {fieldWeightedAmount} from './components/fieldweightedamount';
+import {fieldTotalAmount} from './components/fieldtotalamount';
+import {fieldEnum} from './components/fieldenum';
+import {fieldLanguage} from './components/fieldlanguage';
+import {fieldEmailTo} from './components/fieldemailto';
+import {fieldEmailTemplates} from './components/fieldemailtemplates';
+import {fieldTextMessageTemplates} from './components/fieldtextmessagetemplates';
+import {fieldMultienum} from './components/fieldmultienum';
+import {fieldGroupedEnum} from './components/fieldgroupedenum';
+import {fieldMultienumCheckBox} from './components/fieldmultienumcheckbox';
+import {fieldMultipleEnumDropdown} from './components/fieldmultipleenumdropdown';
+import {fieldEnumAlternate} from './components/fieldenumalternate';
+import {fieldEnumRadio} from './components/fieldenumradio';
+import {fieldBool} from './components/fieldbool';
+import {fieldBoolLabelAligned} from './components/fieldboollabelaligned';
+import {fieldParent} from './components/fieldparent';
+import {fieldModuleFilter} from './components/fieldmodulefilter';
+import {fieldRelate} from './components/fieldrelate';
+import {fieldRelateList} from './components/fieldrelatelist';
+import {fieldModifiedBy} from './components/fieldmodifiedby';
+import {fieldLookup} from './components/fieldlookup';
+import {fieldDate} from './components/fielddate';
+import {fieldTime} from './components/fieldtime';
+import {fieldDateTime} from './components/fielddatetime';
+import {fieldDateTimeDuration} from './components/fielddatetimeduration';
+import {fieldDuration} from './components/fieldduration';
+import {fieldDateTimeSpan} from './components/fielddatetimespan';
+import {fieldDateSpan} from './components/fielddatespan';
+import {fieldAddress} from './components/fieldaddress';
+import {fieldFullName} from './components/fieldfullname';
+import {fieldTitle} from './components/fieldtitle';
+import {fieldFile} from './components/fieldfile';
+import {fieldUrl} from './components/fieldurl';
+import {fieldEmail} from './components/fieldemail';
+import {fieldEmailAddresses} from './components/fieldemailaddresses';
+import {fieldEmailEmailAddressStatus} from './components/fieldemailemailaddressstatus';
+import {fieldEmailEmailAddress} from './components/fieldemailemailaddress';
+import {fieldEmailRecipients} from './components/fieldemailrecipients';
+import {fieldEmailRecipientsShort} from './components/fieldemailrecipientsshort';
+import {fieldCurrencies} from './components/fieldcurrencies';
+import {fieldCompanies} from './components/fieldcompanies';
+import {fieldVat} from './components/fieldvat';
+import {fieldBarcode} from './components/fieldbarcode';
+import {fieldBarcodeRenderer} from './components/fieldbarcoderenderer';
+import {fieldRating} from './components/fieldrating';
+import {fieldLookupRecent} from './components/fieldlookuprecent';
+import {fieldLookupRecentItem} from './components/fieldlookuprecentitem';
+import {fieldLookupSearch} from './components/fieldlookupsearch';
+import {fieldLookupSearchItem} from './components/fieldlookupsearchitem';
+import {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
+import {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
+import {FieldMessagesComponent} from "./components/fieldmessages";
+import {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
+import {FieldSignatureComponent} from "./components/fieldsignature";
+import {fieldCategories} from "./components/fieldcategories";
+import /*embed*/ {fieldCategoriesTree} from "./components/fieldcategoriestree";
+import /*embed*/ {fieldServiceCategories,} from "./components/fieldservicecategories";
+import {fieldServiceCategoryTree} from "./components/fieldservicecategorytree";
+import {fieldServiceCategorySearch} from "./components/fieldservicecategorysearch";
+import {fieldWorklog} from "./components/fieldworklog";
+import {FieldModelInfoComponent} from "./components/fieldmodelinfo";
+import {FieldEnumModulesComponent} from "./components/fieldenummodules";
+import {fieldGDPR} from "./components/fieldgdpr";
+import {fieldSelectTree,} from "./components/fieldselecttree";
+import {fieldSelectTreeSearch} from "./components/fieldselecttreesearch";
+import {fieldSelectTreeTree} from "./components/fieldselecttreetree";
+import {fieldColorEnum} from "./components/fieldcolorenum";
+import {fieldBase64} from "./components/fieldbase64";
+import {fieldNotAuthorized} from "./components/fieldnotauthorized";
+import {fieldModuleIcon} from "./components/fieldmoduleicon";
+import {fieldRichText} from "./components/fieldrichtext";
+import {fieldEnumMulti} from "./components/fieldenummulti";
+import {fieldCronInterval} from "./components/fieldcroninterval";
+import {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
+import {fieldTextID} from "./components/fieldtextid";
+import {fieldBackendMethod} from "./components/fieldbackendmethod";
+import {fieldSystemLabel} from "./components/fieldsystemlabel";
+import {fieldTimeDifference} from "./components/fieldtimedifference";
+import {fieldIconPopover} from "./components/fieldiconpopover";
+import {fieldStylesheetID} from "./components/fieldstylesheetid";
+import {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
+import {fieldQuantity} from "./components/fieldquantity";
+import {fieldQuestionnaireEvaluation} from './components/fieldquestionnaireevaluation';
+import {fieldTags} from './components/fieldtags';
+import {fieldParentDetails} from './components/fieldparentdetails';
+import {fieldRelatedDetails} from './components/fieldrelateddetails';
+import {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
+import {fieldPhone} from "./components/fieldphone";
+import {fieldActionset} from "./components/fieldactionset";
+import {fieldSlider} from "./components/fieldslider";
+import {fieldImage} from './components/fieldimage';
+import {fieldCompound} from './components/fieldcompound';
+import {fieldIconCondition} from './components/fieldiconcondition';
+import {fieldIndicator} from './components/fieldindicator';
+import {fieldEmailRecipientsInput} from './components/fieldemailrecipientsinput';
+import {fieldJson} from "./components/fieldjson";
 
 /**
  * @ignore
@@ -174,7 +165,6 @@ declare var _: any;
         fieldEmailTo,
         fieldEmailTemplates,
         fieldTextMessageTemplates,
-        fieldMailRelais,
         fieldMultienum,
         fieldGroupedEnum,
         fieldMultienumCheckBox,
@@ -220,6 +210,8 @@ declare var _: any;
         FieldMessagesComponent,
         FieldModuleLookupComponent,
         FieldSignatureComponent,
+        fieldCategories,
+        fieldCategoriesTree,
         fieldServiceCategories,
         fieldServiceCategoryTree,
         fieldServiceCategorySearch,
@@ -236,7 +228,6 @@ declare var _: any;
         fieldModuleIcon,
         fieldRichText,
         fieldEnumMulti,
-        fieldPhoneAsterisk,
         fieldCronInterval,
         fieldGooglePlacesSearch,
         fieldTextID,
@@ -258,7 +249,10 @@ declare var _: any;
         fieldActionset,
         fieldSlider,
         fieldCompound,
-        fieldIconCondition
+        fieldIconCondition,
+        fieldIndicator,
+        fieldEmailRecipientsInput,
+        fieldJson
     ],
     exports: [
         fieldSet,
@@ -276,6 +270,9 @@ declare var _: any;
         fieldLookupSearch,
         fieldLookupSearchAdd,
         fieldTags,
+        fieldCategories,
+        fieldCategoriesTree,
+        fieldEmailRecipientsInput
     ]
 })
 export class ObjectFields {}

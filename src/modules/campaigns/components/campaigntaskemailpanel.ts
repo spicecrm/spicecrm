@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleCampaigns
  */
@@ -25,46 +13,46 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'campaign-task-email-panel',
-    templateUrl: './src/modules/campaigns/templates/campaigntaskemailpanel.html'
+    templateUrl: '../templates/campaigntaskemailpanel.html'
 })
 export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
     /**
      * holds the component config set from the workbench
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
     /**
      * holds the active tab value
      */
-    private activeTab: 'details' | 'preview' = 'details';
+    public activeTab: 'details' | 'preview' = 'details';
     /**
      * holds the email body html value
      */
-    private emailBody: string;
+    public emailBody: string;
     /**
      * holds the mailbox id value
      */
-    private mailboxId: string;
+    public mailboxId: string;
     /**
      * holds the mailbox data
      */
-    private mailboxData: {header: string, footer: string, stylesheet: string};
+    public mailboxData: {header: string, footer: string, stylesheet: string};
     /**
      * holds the sanitized html value
      */
-    private sanitizedHTML: SafeHtml;
+    public sanitizedHTML: SafeHtml;
     /**
      * holds a subscription to be unsubscribed on destroy
      */
-    private subscription = new Subscription();
+    public subscription = new Subscription();
 
-    constructor(private language: language,
-                private model: model,
-                private injector: Injector,
-                private view: view,
-                private sanitizer: DomSanitizer,
-                private backend: backend,
-                private metadata: metadata,
-                private modal: modal) {
+    constructor(public language: language,
+                public model: model,
+                public injector: Injector,
+                public view: view,
+                public sanitizer: DomSanitizer,
+                public backend: backend,
+                public metadata: metadata,
+                public modal: modal) {
     }
 
     /**
@@ -95,7 +83,7 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
      * @param body
      * @param mailboxData
      */
-    protected buildHtmlDom(body: string, mailboxData: {header: string, footer: string, stylesheet: string}): string {
+    public buildHtmlDom(body: string, mailboxData: {header: string, footer: string, stylesheet: string}): string {
         return `<html lang="en">
                     <head>
                         <style>${mailboxData.stylesheet}</style>
@@ -111,7 +99,7 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
     /**
      * set the email body and the mailbox id to compare the changes from model
      */
-    private setInitialValues() {
+    public setInitialValues() {
         this.emailBody = this.model.getField('email_body');
         this.mailboxId = this.model.getField('mailbox_id');
     }
@@ -119,7 +107,7 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
     /**
      * subscribe to model changes to trigger rebuild the html dom
      */
-    private subscribeToModelChanges() {
+    public subscribeToModelChanges() {
         this.subscription.add(
             this.model.data$.subscribe(res => {
                 if (res.mailbox_id !== this.mailboxId) {
@@ -138,7 +126,7 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
     /**
      * open lookup modal to select an email template to be copied to the body
      */
-    private copyFromTemplate() {
+    public copyFromTemplate() {
         this.modal.openModal('ObjectModalModuleLookup', true, this.injector)
             .subscribe(selectModal => {
                 selectModal.instance.module = 'EmailTemplates';
@@ -156,14 +144,14 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
     /**
      * set the activeTab
      */
-    private setActiveTab(tab) {
+    public setActiveTab(tab) {
         this.activeTab = tab;
     }
 
     /**
      * concatenate the mailbox html with the body with the stylesheet content and sanitize the html
      */
-    private setSanitizedHTMLValue() {
+    public setSanitizedHTMLValue() {
 
         if (!this.mailboxId) {
 
@@ -181,7 +169,7 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
      * load the mailbox data for the preview dom
      * @private
      */
-    private loadMailboxData() {
+    public loadMailboxData() {
 
         if (!this.mailboxId) return;
 

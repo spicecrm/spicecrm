@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -32,7 +20,7 @@ import { backend } from '../../../services/backend.service';
 
 @Component( {
     selector: 'field-media-file-image',
-    templateUrl: './src/modules/mediafiles/templates/fieldmediafileimage.html',
+    templateUrl: '../templates/fieldmediafileimage.html',
     providers: [ mediafiles ],
 })
 export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
@@ -40,55 +28,55 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Pixel size of the thumbnail.
      */
-    private thumbSize: number;
+    public thumbSize: number;
 
     /**
      * Holz function for unsubscribing from click listener.
      */
-    private unsubscribeClickListener: any;
+    public unsubscribeClickListener: any;
 
     /**
      * The base64 encoded url of the image.
      */
-    private imageUrl: string;
+    public imageUrl: string;
 
     /**
      * The base64 encoded url of the enlarged image.
      */
-    private imageUrlEnlarged: string;
+    public imageUrlEnlarged: string;
 
     /**
      * Is the image currently enlarged? (PopOver)
      */
-    private enlarged = false;
+    public enlarged = false;
 
     /**
      * Is the field empty?
      */
-    private fieldIsEmpty = true;
+    public fieldIsEmpty = true;
 
     /**
      * Holds the last value of the field, to detect change.
      */
-    private lastValue = '';
+    public lastValue = '';
 
     /**
      * Pixel height of the field.
      */
-    private height = '';
+    public height = '';
 
-    @ViewChild('buttonToEnlargement', {static: true}) private buttonToEnlargement: ElementRef;
-    @ViewChild('buttonToPicker', {static: true}) private buttonToPicker: ElementRef;
+    @ViewChild('buttonToEnlargement', {static: true}) public buttonToEnlargement: ElementRef;
+    @ViewChild('buttonToPicker', {static: true}) public buttonToPicker: ElementRef;
 
     /**
      * The pixel size of 1 rem.
      */
-    private size1rem: number;
+    public size1rem: number;
 
     /**
      * The pixel width of the parent element.
      */
-    private widthOfParent: number;
+    public widthOfParent: number;
 
     constructor(
         public model: model,
@@ -96,11 +84,11 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        private mediafiles: mediafiles,
-        private backend: backend ,
-        private elRef: ElementRef
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public mediafiles: mediafiles,
+        public backend: backend ,
+        public elRef: ElementRef
     ) {
         super( model, view, language, metadata, router );
     }
@@ -122,12 +110,12 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Stuff to do, when the model has been loaded.
      */
-    private afterLoadingModel(): void {
-        this.lastValue = this.model.data[this.fieldname];
+    public afterLoadingModel(): void {
+        this.lastValue = this.model.getField(this.fieldname);
         this.loadImages();
         this.model.data$.subscribe( () => {
-            if ( this.model.data[this.fieldname] !== this.lastValue ) {
-                this.lastValue = this.model.data[this.fieldname];
+            if ( this.model.getField(this.fieldname) !== this.lastValue ) {
+                this.lastValue = this.model.getField(this.fieldname);
                 this.loadImages();
             }
         });
@@ -145,7 +133,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Show enlarged variant of the image.
      */
-    private openEnlarged(): void {
+    public openEnlarged(): void {
         this.unsubscribeClickListener = this.renderer.listen( 'document', 'click', ( event ) => this.onClick( event ) );
         this.enlarged = true;
     }
@@ -153,7 +141,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Close enlarged variant of the image.
      */
-    private closeEnlarged(): void {
+    public closeEnlarged(): void {
         this.enlarged = false;
         if ( this.buttonToEnlargement ) this.buttonToEnlargement.nativeElement.focus();
         this.unsubscribeClickListener();
@@ -162,18 +150,18 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Load the image/thumbnails from the backend with the proper size.
      */
-    private loadImages(): void {
-        if ( this.model.data[this.fieldname] ) {
+    public loadImages(): void {
+        if ( this.model.getField(this.fieldname) ) {
             this.fieldIsEmpty = false;
             if ( this.fieldconfig.format === 'button' ) {
-                this.mediafiles.getImageVariant( this.model.data[this.fieldname], 'th/' + this.thumbSize ).subscribe( url => {
+                this.mediafiles.getImageVariant( this.model.getField(this.fieldname), 'th/' + this.thumbSize ).subscribe( url => {
                     this.imageUrl = url;
                 } );
-                this.mediafiles.getImageVariant( this.model.data[this.fieldname], 'th/200' ).subscribe( url => {
+                this.mediafiles.getImageVariant( this.model.getField(this.fieldname), 'th/200' ).subscribe( url => {
                     this.imageUrlEnlarged = url;
                 } );
             } else { // format === 'image'
-                this.mediafiles.getImageVariant( this.model.data[this.fieldname], 'mw/' + this.determineWidthOfImage() ).subscribe( url => {
+                this.mediafiles.getImageVariant( this.model.getField(this.fieldname), 'mw/' + this.determineWidthOfImage() ).subscribe( url => {
                     this.imageUrl = url;
                 });
             }
@@ -183,7 +171,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Removes the image in case it is a button image.
      */
-    private clearField4button(): void {
+    public clearField4button(): void {
         this.imageUrl = this.imageUrlEnlarged = this.value = '';
         this.enlarged = false;
         if ( this.buttonToPicker ) this.buttonToPicker.nativeElement.focus();
@@ -193,15 +181,16 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Removes the image in case it is a real image (not a button image).
      */
-    private clearField4image(): void {
-        this.imageUrl = this.model.data[this.fieldname] = '';
+    public clearField4image(): void {
+        this.imageUrl = '';
+        this.model.setField(this.fieldname, '');
         this.fieldIsEmpty = true;
     }
 
     /**
      * Get the image from the user.
      */
-    private getImage(): void {
+    public getImage(): void {
 
         this.mediafiles.getMediaFile( this.fieldconfig.noImagePicker || false, this.fieldconfig.noMetaData || false, this.fieldconfig.category ).subscribe( (answer) => {
             if ( answer ) {
@@ -214,21 +203,21 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Edit the existing image. ToDo!
      */
-    private editImage(): void {
+    public editImage(): void {
         1;
     }
 
     /**
      * Determine the pixel size of 1 rem.
      */
-    private getSize1rem(): number {
+    public getSize1rem(): number {
         return Math.ceil( Number( getComputedStyle( document.documentElement,null ).fontSize.replace( /px$/, '' )));
     }
 
     /**
      * Determine the pixel width of the parent element (less any padding).
      */
-    private getWidthOfParent(): number {
+    public getWidthOfParent(): number {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement.parentElement, null ).width.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement.parentElement, null ).paddingLeft.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement.parentElement, null ).paddingRight.replace( /px$/, '' ));
@@ -237,11 +226,11 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     /**
      * Determine the maximal pixel width of the image, using the width of the parent element.
      */
-    private determineWidthOfImage(): number {
+    public determineWidthOfImage(): number {
         return Math.round( this.widthOfParent );
     }
 
-    private get imageStyle() {
+    public get imageStyle() {
         return { height: this.height };
     }
 

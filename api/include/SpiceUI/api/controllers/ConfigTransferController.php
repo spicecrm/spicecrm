@@ -11,6 +11,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
 
 class ConfigTransferController
 {
@@ -183,6 +185,8 @@ class ConfigTransferController
     static function importToTables( Request $req, Response $res, $args ): Response
     {
         $db = DBManagerFactory::getInstance();
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $nowDb = TimeDate::getInstance()->nowDb();
 
         if ( !AuthenticationController::getInstance()->getCurrentUser()->is_admin ) throw new ForbiddenException('Forbidden to transfer configuration data for non-admins.');
 
@@ -220,6 +224,17 @@ class ConfigTransferController
                     $db->deleteAll($tablename);
                     foreach ( $rows as $k2 => $v2 ) {
                         $vals = (array)$v2;
+                        unset( $vals['date_indexed'] ); // The new records are not yet fts indexed, so no time stamp should be entered.
+                        if ( empty( $params['keepAssignedUser'] )) $vals['assigned_user_id'] = $currentUser->id;
+                        # If keepEnteredModifiedInfo is not explicitly set,
+                        # set the timestamps date_entered and date_modified to now
+                        # and set the user that entered and modified to the current user:
+                        if ( empty( $params['keepEnteredModifiedInfo'] )) {
+                            $vals['date_entered'] = $nowDb;
+                            $vals['date_modified'] = $nowDb;
+                            $vals['modified_user_id'] = $currentUser->id;
+                            $vals['created_by'] = $currentUser->id;
+                        }
                         $db->upsertQuery($tablename, ["id" => $vals["id"]], $vals);
                         $numberLinesInserted++;
                     }

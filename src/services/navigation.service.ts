@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -118,7 +106,7 @@ export class navigation {
     /**
      * determines the navigatioon paradigm if set to tabbed or simple
      */
-    private enforcednavigationparadigm: boolean = false;
+    public enforcednavigationparadigm: boolean = false;
 
     /**
      * the current active module ...
@@ -133,7 +121,7 @@ export class navigation {
     public activeModule$: EventEmitter<string>;
 
 
-    private modelsEditing: any[] = [];
+    public modelsEditing: any[] = [];
 
     /**
      * The array where all existing models are registered.
@@ -144,7 +132,7 @@ export class navigation {
      * A counter to give every registered model a unique id.
      * This id is needed to unregister a model.
      */
-    private modelregisterCounter = 0;
+    public modelregisterCounter = 0;
 
     /**
      * the current active Route
@@ -195,21 +183,21 @@ export class navigation {
      * holds the various subscriptions
      * @private
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
-        private title: Title,
-        private session: session,
-        private modal: modal,
-        private language: language,
-        private broadcast: broadcast,
-        private configurationService: configurationService,
-        private metadata: metadata,
-        private helper: helper,
-        private socket: socket,
-        private backend: backend,
-        private userpreferences: userpreferences,
-        private router: Router
+        public title: Title,
+        public session: session,
+        public modal: modal,
+        public language: language,
+        public broadcast: broadcast,
+        public configurationService: configurationService,
+        public metadata: metadata,
+        public helper: helper,
+        public socket: socket,
+        public backend: backend,
+        public userpreferences: userpreferences,
+        public router: Router
     ) {
         this.activeModule$ = new EventEmitter<string>();
 
@@ -233,7 +221,7 @@ export class navigation {
         this.setTabTitle();
     }
 
-    private setSessionData() {
+    public setSessionData() {
         this.session.setSessionData('navigation', {main: this.maintab, tabs: this.objectTabs});
     }
 
@@ -292,7 +280,7 @@ export class navigation {
         this.setSessionData();
     }
 
-    private setTabActive(tab) {
+    public setTabActive(tab) {
         tab.active = true;
 
 
@@ -347,7 +335,7 @@ export class navigation {
         this.title.setTitle(this.systemName + " / " + (summaryText !== "" ? summaryText : activemodule));
     }
 
-    private get systemName() {
+    public get systemName() {
         return this.configurationService.systemName;
     }
 
@@ -366,7 +354,7 @@ export class navigation {
      * sets the model name if the current bean is in focus and the bean is saved
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         switch (message.messagetype) {
             case "loader.completed":
                 // once the laoder completed set the paradigm
@@ -451,14 +439,14 @@ export class navigation {
      * @param event
      * @private
      */
-    private handleSocketEvents(event: SocketEventI) {
+    public handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
                 if (event.data.sessionId != Md5.hashStr(this.session.authData.sessionId) && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
                     this.backend.get(event.data.module, event.data.id).subscribe(modelData => {
                         let models = this.modelregister.filter(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing);
                         for (let model of models) {
-                            model.model.data = {...modelData};
+                            model.model.setData({...modelData}, false);
                             model.model.data$.next(model.model.data);
                         }
 
@@ -579,7 +567,7 @@ export class navigation {
      *
      * @param tabId
      */
-    private parentTabId(tabId) {
+    public parentTabId(tabId) {
         // if we are on main no parenttab id can be found
         if (tabId == 'main') return null;
 
@@ -593,7 +581,7 @@ export class navigation {
      * @param objectTab
      * @param routeData
      */
-    private matchPath(objectTab, routeData) {
+    public matchPath(objectTab, routeData) {
         // check one .. path are the same
         if (objectTab.path.replace('tab/:tabid/', '') == routeData.path) return true;
 
@@ -617,7 +605,7 @@ export class navigation {
      *
      * @param segments
      */
-    private buildUrl(segments: UrlSegment[]): string {
+    public buildUrl(segments: UrlSegment[]): string {
         let url = '';
 
         segments.forEach(segment => {
@@ -635,7 +623,7 @@ export class navigation {
      * @param objectparams
      * @param routeparams
      */
-    private matchRouteParams(objecttab: objectTab, routeparams: any): boolean {
+    public matchRouteParams(objecttab: objectTab, routeparams: any): boolean {
         if (_.isEqual(objecttab.params, routeparams)) return true;
 
         // if not check if the object has a tabid and that matches the objecttab
@@ -741,7 +729,7 @@ export class navigation {
         this.setTabTitle();
     }
 
-    private setTabTitle() {
+    public setTabTitle() {
         // sets the browser title
         let tab = this.getTabById(this.activeTab);
 
@@ -816,7 +804,7 @@ export class navigation {
     /**
      * checks if the main tab has changes. if yes propmts teh user and returns the response as boolean as observable
      */
-    private mainTabChangeCheck(): Observable<boolean> {
+    public mainTabChangeCheck(): Observable<boolean> {
         if (this.anyDirtyModel('main')) {
             let retSubject = new Subject<boolean>();
             this.modal.confirm(this.language.getLabel('MSG_NAVIGATIONSTOP', '', 'long'), this.language.getLabel('MSG_NAVIGATIONSTOP')).subscribe(retval => {
@@ -859,7 +847,7 @@ export class navigation {
      *
      * @param tabid
      */
-    private unsetObjectTab(tabid) {
+    public unsetObjectTab(tabid) {
         let index = this.objectTabs.findIndex(tab => tab.id == tabid);
         if (index >= 0) {
 
@@ -923,7 +911,7 @@ export class navigation {
 // tslint:disable-next-line:max-classes-per-file
 @Injectable()
 export class canNavigateAway implements CanActivate {
-    constructor(private navigation: navigation, private modal: modal, private language: language) {
+    constructor(public navigation: navigation, public modal: modal, public language: language) {
     }
 
     public canActivate(route, state): Observable<boolean> {

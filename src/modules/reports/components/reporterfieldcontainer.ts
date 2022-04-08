@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReports
  */
@@ -21,7 +9,7 @@ declare var _: any;
 
 @Component({
     selector: 'reporter-field-container',
-    templateUrl: './src/modules/reports/templates/reporterfieldcontainer.html',
+    templateUrl: '../templates/reporterfieldcontainer.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldContainer implements OnInit {
@@ -29,33 +17,33 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * the record from the reporter
      */
-    @Input() private record: any = {};
+    @Input() public record: any = {};
 
     /**
      * alternative value passed in direct
      */
-    @Input() private value: string = '';
+    @Input() public value: string = '';
     /**
      * report field
      */
-    @Input() private field: any = {};
+    @Input() public field: any = {};
 
     /**
      * the module for the link
      */
-    private recordModule: string;
+    public recordModule: string;
 
     /**
      * the id for the link
      */
-    private recordId: string;
+    public recordId: string;
 
     /**
      * the field type to be rendered
      */
-    private fieldType;
+    public fieldType;
 
-    constructor(private metadata: metadata) {
+    constructor(public metadata: metadata) {
 
     }
 
@@ -77,7 +65,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * initializes the record if a value is passed in but no record is present
      */
-    private initializeRecord() {
+    public initializeRecord() {
         // if we have a value an no record ... create the record
         if (this.value && _.isEmpty(this.record)) {
             this.record = {};
@@ -89,7 +77,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * builds the info for the link if we have one
      */
-    private buildLinkInfo() {
+    public buildLinkInfo() {
         if (this.field.link == 'yes' && this.record) {
             // route to the proper module
             // check if a link info is set
@@ -171,7 +159,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * determines the field type and the component to be rendered for this
      */
-    private determineFieldType() {
+    public determineFieldType() {
         if (this.field.component) {
             this.fieldType = this.field.component;
         } else {

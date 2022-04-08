@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -34,7 +22,7 @@ export class libloader {
     /**
      * holds the packages as defined in the database are loaded
      */
-    private loadedLibs: lib[] = [];
+    public loadedLibs: lib[] = [];
 
     /**
      * ToDo: implement the handler here
@@ -42,14 +30,14 @@ export class libloader {
      * an event emitter for the libs .. emits when a specific lib has been loaded
      * this is useful if the same li b is loading twice
      */
-    private loadedLibs$: EventEmitter<object> = new EventEmitter<object>();
+    public loadedLibs$: EventEmitter<object> = new EventEmitter<object>();
 
     /**
      * holds all scripts thar are loaded riect alreads
      */
-    private loadedDirect: string[] = [];
+    public loadedDirect: string[] = [];
 
-    constructor(private configuration: configurationService) {
+    constructor(public configuration: configurationService) {
     }
 
     /**
@@ -79,7 +67,7 @@ export class libloader {
                     cnt++;
                     // console.log("completed...", cnt == observables.length);
                     if (cnt == observables.length) {
-                        sub.next();
+                        sub.next(true);
                         sub.complete();
                     }
                 },
@@ -142,25 +130,24 @@ export class libloader {
      *
      * @param scripts
      */
-    private async loadScriptsDirect(scripts): Promise<any> {
-        let sub = new Subject();
-        let loadedcount = 0;
-        for (let lib of scripts) {
-            await this.loadScriptDirect(lib.src).then(
-                success => {
-                    loadedcount++;
-                    if (loadedcount == scripts.length) {
-                        sub.next({script: name, loaded: true, status: "Loaded"});
-                        sub.complete();
+    public async loadScriptsDirect(scripts): Promise<any> {
+
+        return new Promise(async (next, error) => {
+            let loadedcount = 0;
+            for (let lib of scripts) {
+                await this.loadScriptDirect(lib.src).then(
+                    success => {
+                        loadedcount++;
+                        if (loadedcount == scripts.length) {
+                            next({script: lib.name, loaded: true, status: "Loaded"});
+                        }
+                    },
+                    err => {
+                        error({script: lib.name, loaded: false, status: "error"});
                     }
-                },
-                error => {
-                    sub.error({script: name, loaded: false, status: "error"});
-                    sub.complete();
-                }
-            );
-        }
-        return sub.toPromise();
+                );
+            }
+        });
     }
 
     /**
@@ -194,43 +181,39 @@ export class libloader {
      *
      * @param src the source to be loaded
      */
-    private async loadScriptDirect(src: string): Promise<boolean> {
+    public async loadScriptDirect(src: string): Promise<boolean> {
         if (this.loadedDirect.indexOf(src) != -1) {
-            return of(true).toPromise();
+            return Promise.resolve(true);
         } else {
-            let sub = new Subject<boolean>();
-            // create the elemnt as script or stylesheet
-            let element: any = {};
-            if (src.endsWith('.css')) {
-                element = document.createElement("link");
-                element.rel = "stylesheet";
-                element.href = src;
-            } else {
-                element = document.createElement("script");
-                element.type = "text/javascript";
-                element.src = src;
-            }
+            return new Promise((next, error) => {
+                let element: any = {};
+                if (src.endsWith('.css')) {
+                    element = document.createElement("link");
+                    element.rel = "stylesheet";
+                    element.href = src;
+                } else {
+                    element = document.createElement("script");
+                    element.type = "text/javascript";
+                    element.src = src;
+                }
 
-            if (element.readyState) {  // IE
-                element.onreadystatechange = () => {
-                    if (element.readyState === "loaded" || element.readyState === "complete") {
-                        element.onreadystatechange = null;
-                        sub.next(true);
-                        sub.complete();
-                    }
+                if (element.readyState) {  // IE
+                    element.onreadystatechange = () => {
+                        if (element.readyState === "loaded" || element.readyState === "complete") {
+                            element.onreadystatechange = null;
+                            next(true);
+                        }
+                    };
+                } else {  // Others
+                    element.onload = () => {
+                        next(true);
+                    };
+                }
+                element.onerror = (err: any) => {
+                    error(false);
                 };
-            } else {  // Others
-                element.onload = () => {
-                    sub.next(true);
-                    sub.complete();
-                };
-            }
-            element.onerror = (error: any) => {
-                sub.error(false);
-                sub.complete();
-            };
-            document.getElementsByTagName("head")[0].appendChild(element);
-            return sub.toPromise();
+                document.getElementsByTagName("head")[0].appendChild(element);
+            })
         }
     }
 
@@ -239,7 +222,7 @@ export class libloader {
      *
      * @param name the name of the lib package
      */
-    private isLibLoaded(name): boolean {
+    public isLibLoaded(name): boolean {
         return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loaded') ? true : false;
     }
 
@@ -248,7 +231,7 @@ export class libloader {
      *
      * @param name the name of the lib package
      */
-    private isLibLoading(name): boolean {
+    public isLibLoading(name): boolean {
         return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loading') ? true : false;
     }
 }

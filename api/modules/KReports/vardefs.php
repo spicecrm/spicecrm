@@ -1,9 +1,9 @@
 <?php
 /***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['KReport'] = ['table' => 'kreports',
+
+SpiceDictionaryHandler::getInstance()->dictionary['KReport'] = ['table' => 'kreports',
     'fields' => [
         'report_module' => [
             'name' => 'report_module',
@@ -128,4 +128,5 @@ $dictionary['KReport'] = ['table' => 'kreports',
     ],
     'optimistic_locking' => true,
 ];
-    VardefManager::createVardef('KReports', 'KReport', ['default', 'assignable']);
+
+VardefManager::createVardef('KReports', 'KReport', ['default', 'assignable']);

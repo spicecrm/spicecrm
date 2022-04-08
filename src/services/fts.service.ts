@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -63,16 +51,17 @@ export class fts {
     public buckets: any = {};
 
     public moduleSearchresults: any[] = [];
-    private lastSearchParams: any = {};
+    public lastSearchParams: any = {};
 
     public gloablSearchResults: any = {};
 
     constructor(
-        private backend: backend,
-        private configurationService: configurationService,
-        private session: session,
-        private modelutilities: modelutilities,
-        private metadata: metadata,
+        public backend: backend,
+        public configurationService: configurationService,
+        public session: session,
+        public modelutilities: modelutilities,
+        public metadata: metadata,
+        private language: language
     ) {
         this.getSearchModules();
     }
@@ -82,7 +71,7 @@ export class fts {
         return this.searchModules.filter(module => this.metadata.checkModuleAcl(module, 'list'));
     }
 
-    private transformHits(hits) {
+    public transformHits(hits) {
         let retArray = [];
         for (let hit of hits) {
             retArray.push(this.tranformHit(hit));
@@ -90,7 +79,7 @@ export class fts {
         return retArray;
     }
 
-    private tranformHit(hit) {
+    public tranformHit(hit) {
         // transform the fields
         for (let field in hit._source) {
             if (hit._source.hasOwnProperty(field) && typeof (hit._source[field]) == 'string') {
@@ -280,7 +269,7 @@ export class fts {
     }
 
     public getSearchModules() {
-        this.searchModules = this.metadata.getGlobalSearchModules();
+        this.searchModules = this.metadata.getGlobalSearchModules().sort((a,b) => this.language.getModuleName(a).localeCompare(this.language.getModuleName(b)));
 
         /*
         this.backend.getRequest('fts/searchmodules')

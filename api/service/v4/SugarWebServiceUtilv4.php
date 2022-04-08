@@ -36,6 +36,8 @@
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\utils\SecurityUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 require_once('service/v3_1/SugarWebServiceUtilv3_1.php');
@@ -153,7 +155,7 @@ class SugarWebServiceUtilv4 extends SugarWebServiceUtilv3_1
 				    $var['options'] = 'checkbox_dom';
 
 				if(isset($var['options'])){
-					$options_dom = translate($var['options'], $value->module_dir);
+					$options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
 					if(!is_array($options_dom)) $options_dom = [];
 					foreach($options_dom as $key=>$oneOption)
 						$options_ret[$key] = $this->get_name_value($key,$oneOption);
@@ -176,7 +178,7 @@ class SugarWebServiceUtilv4 extends SugarWebServiceUtilv3_1
 					$link_fields[$var['name']] = $entry;
 	            } else {
 		            if($translate) {
-		            	$entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+		            	$entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
 		            } else {
 		            	$entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
 		            }
@@ -265,13 +267,11 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
 		$ret_values = [];
 
-		$class_name = $beanList[$module_name];
-		require_once($beanFiles[$class_name]);
 		$ids = [];
 		$count = 1;
 		$total = sizeof($name_value_lists);
 		foreach($name_value_lists as $name_value_list){
-			$seed = new $class_name();
+			$seed = BeanFactory::getBean($module_name);
 
 			$seed->update_vcal = false;
 			foreach($name_value_list as $name => $value){
@@ -426,6 +426,9 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
               $session = $this->checkOAuthAccess($errorObject);
           }
           if(!$session) return false;
+
+
+
           return parent::checkSessionAndModuleAccess($session, $login_error_key, $module_name, $access_level, $module_access_level_error_key, $errorObject);
     }
 
@@ -460,7 +463,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		// TODO: handle role
 		// handle session
 		$_SESSION['is_valid_session']= true;
-		$_SESSION['ip_address'] = query_client_ip();
+		$_SESSION['ip_address'] = SecurityUtils::queryClientIp();
 		$_SESSION['user_id'] = $current_user->id;
 		$_SESSION['type'] = 'user';
 		$_SESSION['authenticated_user_id'] = $current_user->id;

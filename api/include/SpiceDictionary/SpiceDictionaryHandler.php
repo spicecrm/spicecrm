@@ -5,16 +5,19 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
-class SpiceDictionaryHandler
+class SpiceDictionaryHandler extends SpiceSingleton
 {
+    public $dictionary = [];
+
     /**
      * loads the metadata files
      */
     public static function loadMetaDataFiles() {
         $metaDataDirectories = ['metadata', 'extensions/metadata', 'custom/metadata'];
-        global $dictionary;
+
         foreach ($metaDataDirectories as $metaDataDirectory) {
             self::loadMetaDataFilesFromDir($metaDataDirectory);
         }
@@ -30,7 +33,6 @@ class SpiceDictionaryHandler
      * @param string $directory
      */
     private static function loadMetaDataFilesFromDir(string $directory): void {
-        global $dictionary;
         if ($metaDataHandle = @opendir('./' . $directory)) {
             while (false !== ($metaDataFile = readdir($metaDataHandle))) {
                 if (preg_match('/\.php$/', $metaDataFile)) {
@@ -43,10 +45,9 @@ class SpiceDictionaryHandler
     /**
      * loads the dictionary Definitions of type metadata from the database
      */
-    static function loadMetaDataDefinitions(){
-        global $dictionary;
+    public static function loadMetaDataDefinitions() {
         if(isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
-            SpiceDictionaryVardefs::loadDictionaries($dictionary, 'metadata');
+            SpiceDictionaryVardefs::loadDictionaries(SpiceDictionaryHandler::getInstance()->dictionary, 'metadata');
         }
     }
 
@@ -579,16 +580,32 @@ class SpiceDictionaryHandler
                 case 'c':
                     unset($domainfieldvalidationvalue['scope']);
                     $db->upsertQuery('syscustomdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxvalue']);
+                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
                     break;
                 default:
                     unset($domainfieldvalidationvalue['scope']);
                     $db->upsertQuery('sysdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxvalue']);
+                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
                     break;
             }
         }
     }
 
+    /**
+     * Returns table names that have a certain content type set in the vardefs.
+     *
+     * @param string $contentType
+     * @return array
+     */
+    public function getAllTablesOfType(string $contentType): array {
+        $tables = [];
 
+        foreach ($this->dictionary as $item) {
+            if (strtolower($item['contenttype']) == strtolower($contentType)) {
+                $tables[] = $item['table'];
+            }
+        }
+
+        return $tables;
+    }
 }

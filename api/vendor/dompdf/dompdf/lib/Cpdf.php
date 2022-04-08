@@ -4804,7 +4804,8 @@ EOT;
         if ($convert_encoding) {
             $cf = $this->currentFont;
             if (isset($this->fonts[$cf]) && $this->fonts[$cf]['isUnicode']) {
-                $text = $this->utf8toUtf16BE($text, $bom);
+                $text =  mb_convert_encoding($text, "UTF-16BE", "utf-8");
+                //$text = $this->utf8toUtf16BE($text, $bom);
             } else {
                 //$text = html_entity_decode($text, ENT_QUOTES);
                 $text = mb_convert_encoding($text, self::$targetEncoding, 'UTF-8');
@@ -5156,7 +5157,13 @@ EOT;
         if ($current_font['isUnicode']) {
             // for Unicode, use the code points array to calculate width rather
             // than just the string itself
-            $unicode = $this->utf8toCodePointsArray($text);
+            //$unicode = $this->utf8toCodePointsArray($text);
+            $utf32  = mb_convert_encoding( $text, 'UTF-32', 'UTF-8' );
+            $length = mb_strlen( $utf32, 'UTF-32' );
+            $unicode = [];
+            for( $i = 0; $i < $length; ++$i ) {
+                $unicode[] = hexdec(bin2hex(mb_substr($utf32, $i, 1, 'UTF-32')));
+            }
 
             foreach ($unicode as $char) {
                 // check if we have to replace character

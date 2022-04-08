@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -30,26 +18,26 @@ import {modal} from './modal.service';
 @Injectable()
 export class mediafiles {
 
-    private categoriesLoaded: boolean = false;
+    public categoriesLoaded: boolean = false;
     public categories: object = {};
     public categoriesSorted = [];
 
     constructor(
-        private sanitizer: DomSanitizer,
-        private http: HttpClient,
-        private backend: backend,
-        private configurationService: configurationService,
-        private session: session,
-        private metadata: metadata,
-        private footer: footer,
-        private toast: toast,
-        private language: language,
-        private modalservice: modal,
+        public sanitizer: DomSanitizer,
+        public http: HttpClient,
+        public backend: backend,
+        public configurationService: configurationService,
+        public session: session,
+        public metadata: metadata,
+        public footer: footer,
+        public toast: toast,
+        public language: language,
+        public modalservice: modal,
     ) {
     }
 
 
-    private _getImage(mediaId: string, variant: string = '') {
+    public _getImage(mediaId: string, variant: string = '') {
         let responseSubject = new Subject<any>();
         // { 'If-None-Match': '1234567890'  }
         this.backend.getRawRequest('module/MediaFiles/' + mediaId + '/file' + (variant != '' ? '/' : '') + variant, {}, null, {}).subscribe((response: any) => {
@@ -60,7 +48,7 @@ export class mediafiles {
         return responseSubject.asObservable();
     }
 
-    private _getImageBase64(mediaId: string) {
+    public _getImageBase64(mediaId: string) {
         let responseSubject = new Subject<any>();
         // { 'If-None-Match': '1234567890'  }
         this.backend.getRequest('module/MediaFiles/' + mediaId + '/base64').subscribe((response: any) => {
@@ -160,7 +148,7 @@ export class mediafiles {
         return retSubject.asObservable();
     }
 
-    private pickMediaFile(): Observable<any> {
+    public pickMediaFile(): Observable<any> {
         let retSubject = new Subject();
         this.modalservice.openModal('MediaFilePicker').subscribe(picker => {
             picker.instance.answer.subscribe(answer => {
@@ -172,7 +160,7 @@ export class mediafiles {
     }
 
     // todo: acceptFileTypes
-    private uploadMediaFile(acceptFileTypes: string[], noMetaData = false, category: string): Observable<any> {
+    public uploadMediaFile(acceptFileTypes: string[], noMetaData = false, category: string): Observable<any> {
         let retSubject = new Subject();
         this.modalservice.openModal('MediaFileUploader').subscribe(uploader => {
             uploader.instance.acceptFileTypes = acceptFileTypes;
@@ -189,12 +177,12 @@ export class mediafiles {
     /* Code for Media Categories */
 
     /*
-    private makeFullName(category: any) {
+    public makeFullName(category: any) {
         if (category.parent === null) return (category.fullName = category.name);
         else return (category.fullName = this.makeFullName(category.parent) + ' > ' + category.name);
     }
 
-    private setFullName(category: any) {
+    public setFullName(category: any) {
         if (category.fullName) return;
         else category.fullName = this.makeFullName(category);
     }
@@ -245,7 +233,7 @@ export class mediafiles {
         else return this.isChild(category, this.categories[needleID]);
     }
 
-    private isChild(possibleParent, possibleChild) {
+    public isChild(possibleParent, possibleChild) {
         if (!possibleChild.parent) return false;
         if (possibleParent.id === possibleChild.parent_id) return true;
         else return this.isChild(possibleParent, possibleChild.parent);

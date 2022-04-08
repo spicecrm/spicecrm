@@ -1,0 +1,43 @@
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_MAILGUN"></system-label></h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_DISPLAY_NAME"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.imap_pop3_display_name" class="slds-input"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_DOMAIN"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.domain" class="slds-input ng-pristine" [disabled]="!view.isEditMode()"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USER_NAME"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.imap_pop3_username" class="slds-input" [disabled]="!view.isEditMode()"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_REPLY_TO"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.reply_to" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_REGION"></system-label></label>
+                <select type="text"  [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.region"  class="slds-select">
+                    <option value="eu"><system-label label="LBL_EU"></system-label></option>
+                    <option value="us"><system-label label="LBL_USA"></system-label></option>
+                </select>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_API_KEY"></system-label></label>
+                <system-input-password  [(ngModel)]="model.data.settings.api_key" [disabled]="!view.isEditMode()"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                <system-label label="LBL_TEST_CONNECTION"></system-label>
+            </button>
+        </div>
+    </div>
+</div>

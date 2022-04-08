@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -27,7 +15,7 @@ declare var _;
  */
 @Component({
     selector: 'system-checkbox-group-checkbox',
-    templateUrl: './src/systemcomponents/templates/systemcheckboxgroupcheckbox.html',
+    templateUrl: '../templates/systemcheckboxgroupcheckbox.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
@@ -35,7 +23,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
     @Input() public value: any;
     @Input() public disabled = false;
 
-    constructor(@Host() private systemCheckboxGroup: SystemCheckboxGroup, private cdRef: ChangeDetectorRef) {
+    constructor(@Host() public systemCheckboxGroup: SystemCheckboxGroup, public cdRef: ChangeDetectorRef) {
         // subscribe to parent value emitter
         this.systemCheckboxGroup.valueEmitter.subscribe(() =>
             this.setCheckedValueFromGroup()
@@ -46,7 +34,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * holds the checked boolean
      * @private
      */
-    private _checked = false;
+    public _checked = false;
     /**
      * @return checkbox checked value
      */
@@ -90,7 +78,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * set checked value from parent group value
      * @private
      */
-    private setCheckedValueFromGroup() {
+    public setCheckedValueFromGroup() {
         this._checked = (this.systemCheckboxGroup.value || []).indexOf(this.value) > -1;
         this.cdRef.detectChanges();
     }
@@ -99,7 +87,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * set the group value on the parent
      * @private
      */
-    private setGroupValue() {
+    public setGroupValue() {
         if (!this.checked && this.systemCheckboxGroup.value.indexOf(this.value) > -1) {
             this.systemCheckboxGroup.value = this.systemCheckboxGroup.value.filter(e => e != this.value);
         } else if (this.checked && this.systemCheckboxGroup.value.indexOf(this.value) == -1) {

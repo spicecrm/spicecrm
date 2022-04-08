@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleMailboxes
  */
@@ -18,12 +6,12 @@ import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {navigationtab} from '../../../services/navigationtab.service';
 import {mailboxesEmails} from '../services/mailboxesemail.service';
-import {ActivatedRoute} from '@angular/router';
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'mailbox-manager-header',
-    templateUrl: './src/modules/mailboxes/templates/mailboxmanagerheader.html',
+    templateUrl: '../templates/mailboxmanagerheader.html',
 })
 export class MailboxManagerHeader implements OnInit {
 
@@ -32,16 +20,71 @@ export class MailboxManagerHeader implements OnInit {
         {value: 'verticalSplit', icon: 'side_list', title: 'LBL_VERTICAL_SPLIT'},
         {value: 'horizontalSplit', icon: 'inspector_panel', title: 'LBL_HORIZONTAL_SPLIT'},
     ];
+    /**
+     * indicates if the entered searchterms would provoke any error
+     * dues to the min and max engram restrictions and thus
+     * would certainly not find any results
+     * @private
+     */
+    public searchTermError: boolean = false;
+    /**
+     * indicates that emaisl are being fetched in the background
+     */
+    public isFetching: boolean = false;
+    /**
+     * the search timeout triggered by the keyup in the search box
+     */
+    public searchTimeOut: any;
+
+    constructor(
+        public language: language,
+        public mailboxesEmails: mailboxesEmails,
+        public metadata: metadata,
+        public navigationtab: navigationtab,
+        public configuration: configurationService,
+    ) {
+
+        // load default settings for the openness selection and the unread only flag
+        let componentconfig = this.metadata.getComponentConfig('MailboxManagerHeader');
+
+        // set the default open setting
+        this.emailopenness = componentconfig.selectionstatus ? componentconfig.selectionstatus : '';
+
+        // set teh default unread status
+        this.mailboxesEmails.unreadonly = componentconfig.unreadonly ? componentconfig.unreadonly : false;
+    }
 
     /**
      * the selected mailbox
      */
-    private _mailbox: string;
+    public _mailbox: string;
 
     /**
-     * indicates that emaisl are being fetched in the background
+     * a simple getter for the mailbox
      */
-    private isFetching: boolean = false;
+    get mailbox() {
+        return this._mailbox;
+    }
+
+    /**
+     * a setter for the mailbox that also trigers the reload
+     *
+     * @param mailbox
+     */
+    set mailbox(mailbox) {
+        this._mailbox = mailbox;
+        if (mailbox) {
+            this.mailboxesEmails.activeMailBox = this.mailboxesEmails.mailboxes.find(mb => mb.id == mailbox);
+            this.mailboxesEmails.loadMessages();
+
+            this.navigationtab.setTabInfo({
+                displayname: this.mailboxesEmails.activeMailBox.name,
+                displaymodule: 'Mailboxes'
+            });
+        } else {
+            this.mailboxesEmails.activeMailBox = {};
+        }
+    }
 
     /**
      * a getter for the openness
@@ -64,32 +107,33 @@ export class MailboxManagerHeader implements OnInit {
      * general if the buttons on top are enabled
      */
     get buttonenabled() {
-        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading && !this.isFetching ? true : false;
+        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading && !this.isFetching;
     }
 
+    get searchTerm(): string {
+        return this.mailboxesEmails.searchTerm;
+    }
 
-    constructor(
-        private language: language,
-        private mailboxesEmails: mailboxesEmails,
-        private metadata: metadata,
-        private navigationtab: navigationtab,
-    ) {
-
-        // load default settings for the openness selection and the unread only flag
-        let componentconfig = this.metadata.getComponentConfig('MailboxManagerHeader');
-
-        // set the default open setting
-        this.emailopenness = componentconfig.selectionstatus ? componentconfig.selectionstatus : '';
-
-        // set teh default unread status
-        this.mailboxesEmails.unreadonly = componentconfig.unreadonly ? componentconfig.unreadonly : false;
+    set searchTerm(value: string) {
+        if (value != this.mailboxesEmails.searchTerm) {
+            this.mailboxesEmails.searchTerm = value;
+            if (value == '' || this.searchTermsValid(value)) {
+                this.searchTermError = false;
+                this.reloadList();
+            } else {
+                // if we have a timeout set .. clear it
+                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+                // set the error
+                this.searchTermError = true;
+            }
+        }
     }
 
     /**
      * initialize
      */
     public ngOnInit() {
-        if(this.navigationtab.activeRoute.params.id) {
+        if (this.navigationtab.activeRoute.params.id) {
             // catch an event from mailboxesEmails service once the mailboxes are actually loaded
             this.mailboxesEmails.mailboxesLoaded$.subscribe(
                 (loaded) => {
@@ -102,40 +146,39 @@ export class MailboxManagerHeader implements OnInit {
     }
 
     /**
-     * a simple getter for the mailbox
+     * clears the searchterm
      */
-    get mailbox() {
-        return this._mailbox;
+    public clearSearchTerm() {
+        this.mailboxesEmails.searchTerm = undefined;
+        this.reloadList();
     }
 
     /**
-     * a setter for the mailbox that also trigers the reload
+     * checks if we have the proper length of searchterms
      *
-     * @param mailbox
+     * @param searchTerm
+     * @private
      */
-    set mailbox(mailbox) {
-        this._mailbox = mailbox;
-        if (mailbox) {
-            this.mailboxesEmails.activeMailBox = this.mailboxesEmails.mailboxes.find(mb => mb.id == mailbox);
-            this.mailboxesEmails.loadMessages();
-
-            this.navigationtab.setTabInfo({displayname: this.mailboxesEmails.activeMailBox.name, displaymodule:'Mailboxes'});
-        } else {
-            this.mailboxesEmails.activeMailBox = {};
-        }
+    public searchTermsValid(searchTerm) {
+        let config = this.configuration.getCapabilityConfig('search');
+        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
+        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
+        let items = searchTerm.split(' ');
+        return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
     }
 
     /**
      * reloads the emails list
      */
-    private reloadList() {
-        this.mailboxesEmails.loadMessages();
+    public reloadList() {
+        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+        this.searchTimeOut = window.setTimeout(() => this.mailboxesEmails.loadMessages(), 1000);
     }
 
     /**
      * fetches emails in teh backend
      */
-    private fetchEmails() {
+    public fetchEmails() {
         this.isFetching = true;
         this.mailboxesEmails.fetchEmails().subscribe(
             success => {

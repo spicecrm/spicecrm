@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -30,15 +18,15 @@ declare var SignaturePad: any;
  */
 @Component({
     selector: 'field-signature',
-    templateUrl: './src/objectfields/templates/fieldsignature.html'
+    templateUrl: '../templates/fieldsignature.html'
 })
 export class FieldSignatureComponent extends fieldGeneric implements AfterViewInit {
-    @ViewChild('canvas', {static: true}) private canvas: ElementRef;
-    private pad: any;
+    @ViewChild('canvas', {static: true}) public canvas: ElementRef;
+    public pad: any;
 
-    private display_name_field: string;
-    private signature_height: number = 200;
-    private signature_width: number = 400;
+    public display_name_field: string;
+    public signature_height: number = 200;
+    public signature_width: number = 400;
 
     constructor(
         public model: model,
@@ -97,7 +85,7 @@ export class FieldSignatureComponent extends fieldGeneric implements AfterViewIn
         }
     }
 
-    private undo() {
+    public undo() {
         let data = this.pad.toData();
         if (data) {
             data.pop(); // remove the last dot or line
@@ -106,12 +94,12 @@ export class FieldSignatureComponent extends fieldGeneric implements AfterViewIn
         }
     }
 
-    private clear() {
+    public clear() {
         this.pad.clear();
         this.convert();
     }
 
-    private convert() {
+    public convert() {
         let data = this.pad.toDataURL('image/jpeg');
         let parts = data.split("base64,"); // split to only save the part with the base64 coded image...
         if (this.pad.isEmpty()) {

@@ -39,6 +39,7 @@ use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\includes\SpiceUI\SpiceUILoader;
 
@@ -58,24 +59,9 @@ class SpiceLanguageLoader{
      * @throws Exception
      */
     public function loadLanguage($language){
-        // $route = "referencelanguage";
         $package = '*';
-
         $route = implode("/", [$this->routebase, $language, $package, '*']);
-
-        $results = $this->loadDefaultConf($route, ['route' => $this->routebase, 'languages' => $language], false);
-        //BEGIN CR1000150: set \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['syslanguages']['spiceuisource'] to 'db'
-        if($results['success']){
-            if(!class_exists('Configurator', false)){
-                require_once 'modules/Configurator/Configurator.php';
-            }
-            $configurator = new Configurator();
-            $configurator->loadConfig();
-            $configurator->config['syslanguages']['spiceuisource'] = 'db';
-            $configurator->saveConfig();
-        }
-        //END
-        return $results;
+        return $this->loadDefaultConf($route, ['route' => $this->routebase, 'languages' => $language], false);;
     }
 
     /**
@@ -165,7 +151,7 @@ class SpiceLanguageLoader{
             }
             //insert command translation
             $entryT = [
-                'id' => create_guid(),
+                'id' => SpiceUtils::createGuid(),
                 'syslanguagelabel_id' => $decodeData['id'],
                 'syslanguage' => $decodeData['syslanguage'],
                 'translation_default' => $decodeData['translation_default'],
@@ -207,9 +193,9 @@ class SpiceLanguageLoader{
                     $syslangs[$languages[$i]]['system_language'] = 1;
                 } else{
                     //try to find a language name
-                    $appForLang = return_app_list_strings_language($languages[$i]);
+                    $appForLang = SpiceUtils::returnAppListStringsLanguage($languages[$i]);
                     $lang = [
-                        'id' => create_guid(),
+                        'id' => SpiceUtils::createGuid(),
                         'language_code' => $languages[$i],
                         'language_name' => (!empty($appForLang['language_pack_name']) ? $appForLang['language_pack_name'] : $languages[$i]),
                         'sort_sequence' => $i+1,

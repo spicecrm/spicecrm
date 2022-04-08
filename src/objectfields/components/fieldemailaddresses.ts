@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -29,7 +17,7 @@ declare var _;
  */
 @Component({
     selector: 'field-email-addresses',
-    templateUrl: './src/objectfields/templates/fieldemailaddresses.html'
+    templateUrl: '../templates/fieldemailaddresses.html'
 })
 export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     /**
@@ -155,7 +143,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * subscribe to model.loaded broadcast message
      * @private
      */
-    private subscribeToDataChange() {
+    public subscribeToDataChange() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(msg => {
                 if (msg.messagetype != 'model.loaded') return;
@@ -177,7 +165,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @param emailAddress
      * @private
      */
-    private setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
         if (emailAddress?.invalid_email == 1 || emailAddress?.email_address == this.model.getField('email1')) {
             return;
         }
@@ -188,7 +176,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * subscribe to mode change to initialize a new email address if needed
      * @private
      */
-    private subscribeToModeChange() {
+    public subscribeToModeChange() {
         this.subscriptions.add(
             this.view.mode$.subscribe(() => this.initialize())
         );
@@ -199,7 +187,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set field status and can add value
      * @private
      */
-    private initialize() {
+    public initialize() {
 
         const email_addresses = this.model.getRelatedRecords('email_addresses');
         this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
@@ -224,7 +212,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set can add boolean
      * @private
      */
-    private setEmailAddressesField() {
+    public setEmailAddressesField() {
 
         this.pushNewEmailAddress();
 
@@ -259,7 +247,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * handle setting/clearing the field message for invalid status
      * @private
      */
-    private handleFieldInvalid() {
+    public handleFieldInvalid() {
         if (((this.emailAddresses.length == 1 && !!this.emailAddresses[0].email_address) || this.emailAddresses.length > 1) && this.emailAddresses.some(e => e.invalid_email == 1)) {
             this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
         } else {
@@ -274,7 +262,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set can add boolean if all email addresses are valid and we are not in single mode
      * @private
      */
-    private setCanAdd() {
+    public setCanAdd() {
         this.canAdd = !this.fieldconfig.singleMode ?
             !this.emailAddresses.some(emailAddress => emailAddress.invalid_email == 1) : this.emailAddresses.length == 0;
     }
@@ -284,7 +272,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @return any[]
      * @private
      */
-    private getUniqueCleanEmailAddresses(): {deletedIds, unique} {
+    public getUniqueCleanEmailAddresses(): {deletedIds, unique} {
 
         const unique = [];
         const deletedIds = this.emailAddresses.filter(emailAddress => !emailAddress.email_address).map(e => e.id);

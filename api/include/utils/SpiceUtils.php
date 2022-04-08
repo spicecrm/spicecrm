@@ -453,11 +453,15 @@ class SpiceUtils
     /**
      * This function will take a string that has tokens like {0}, {1} and will replace
      * those tokens with the args provided
-     * @param    $format string to format
+     * @param    $format string or null to format
      * @param    $args args to replace
      * @return array|string|string[] $result a formatted string
      */
-    public static function stringFormat(string $format, $args) {
+    public static function stringFormat($format, $args) {
+        if(empty($format)){
+            return '';
+        }
+
         $result = $format;
 
         /** Bug47277 fix.
@@ -724,9 +728,9 @@ class SpiceUtils
             $attemptCounter++;
             $key = self::generateShortUrlKey(6);
             $guid = SpiceUtils::createGuid();
-            $result = $db->query(sprintf(
-                'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" ) LIMIT 1',
-                $guid, $key, $route, $active, $key));
+            $result = $db->limitQuery(sprintf(
+                'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" )',
+                $guid, $key, $route, $active, $key), 0, 1);
         } while ($db->getAffectedRowCount($result) === 0 and $attemptCounter < $maxAttempts);
 
         if ($attemptCounter === $maxAttempts) {
@@ -744,14 +748,14 @@ class SpiceUtils
      * @return string The generated key.
      */
     public static function generateShortUrlKey($length = 6): string {
-        // chars to select from (without specific characters to prevent confusion when reading and retyping the password)
+        // chars to select from (without specific characters to prevent confusion when reading and retyping the key)
         $LOWERCASE = 'abcdefghijkmnopqrstuvwxyz'; // without "l"!
         $NUMBER = '23456789'; // without "0" and "1"!
         $UPPERCASE = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // without "O" and "I"!
         $charBKT = $UPPERCASE . $LOWERCASE . $NUMBER;
 
         $key = '';
-        for ($i = 0; $i < $length; $i++) {  // loop and create password
+        for ($i = 0; $i < $length; $i++) {  // loop and create key
             $key = $key . substr($charBKT, rand() % strlen($charBKT), 1);
         }
         return $key;
@@ -1135,7 +1139,7 @@ class SpiceUtils
      * @param string $language specific language to load
      * @return array lang strings
      */
-    public static function returnAppListStringsLanguage($language, $scope = 'all'): ?array {
+    public static function returnAppListStringsLanguage($language = 'en_us', $scope = 'all'): ?array {
         global $app_list_strings;
 
         $cache_key = 'app_list_strings.' . $language;
@@ -1286,5 +1290,23 @@ class SpiceUtils
             $string = self::removeInvalidCharacter($subString);
         }
         return $string;
+    }
+
+
+    public static function br2nl($str) {
+        $regex = "#<[^>]+br.+?>#i";
+        preg_match_all($regex, $str, $matches);
+
+        foreach ($matches[0] as $match) {
+            $str = str_replace($match, "<br>", $str);
+        }
+
+        $brs = array('<br>', '<br/>', '<br />');
+        $str = str_replace("\r\n", "\n", $str); // make from windows-returns, *nix-returns
+        $str = str_replace("\n\r", "\n", $str); // make from windows-returns, *nix-returns
+        $str = str_replace("\r", "\n", $str); // make from windows-returns, *nix-returns
+        $str = str_ireplace($brs, "\n", $str); // to retrieve it
+
+        return $str;
     }
 }

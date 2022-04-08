@@ -1,24 +1,13 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
-import {Component, Input, Renderer2, ElementRef} from '@angular/core';
+import {Component, Input, Renderer2, ElementRef, OnDestroy} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {reminder} from '../../services/reminder.service';
 import {language} from '../../services/language.service';
 import {userpreferences} from '../../services/userpreferences.service';
+import {Subscription} from "rxjs";
 
 /**
 * @ignore
@@ -27,37 +16,54 @@ declare var moment: any;
 
 @Component({
     selector: 'object-reminder-button',
-    templateUrl: './src/objectcomponents/templates/objectreminderbutton.html'
+    templateUrl: '../templates/objectreminderbutton.html'
 })
-export class ObjectReminderButton {
+export class ObjectReminderButton implements OnDestroy{
 
-    private showDialog: boolean = false;
-    private reminderDate: Date = new moment();
-    private hasReminder: boolean = false;
-    private clickListener: any;
+    public showDialog: boolean = false;
+    public reminderDate: Date = new moment();
+    public hasReminder: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private renderer: Renderer2, private elementRef: ElementRef, private reminder: reminder, private userpreferences: userpreferences) {
+    /**
+     * a listner that subscribes to document clicks top close the popover
+     */
+    public clickListener: any;
 
-        if (!this.reminder.loaded) {
-            this.reminder.loaded$.subscribe(loaded => {
+    /**
+     * subscriptions for this component
+     * @private
+     */
+    private subscriptions: Subscription = new Subscription();
+
+    constructor(public language: language, public metadata: metadata, public model: model, public renderer: Renderer2, public elementRef: ElementRef, public reminder: reminder, public userpreferences: userpreferences) {
+
+        // subscribe to model changes
+        this.subscriptions.add(
+            this.reminder.changed$.subscribe(loaded => {
                 this.loadReminder();
-            });
-        }
+            })
+        );
 
         // oad in any case
         this.loadReminder();
 
     }
 
-    private loadReminder() {
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    public loadReminder() {
         let hasReminder = this.reminder.getReminder(this.model.module, this.model.id);
         if (hasReminder !== false) {
             this.hasReminder = true;
             this.reminderDate = new moment(hasReminder);
+        } else {
+            this.hasReminder = false;
         }
     }
 
-    private toggleDatePicker() {
+    public toggleDatePicker() {
         this.showDialog = !this.showDialog;
 
         // toggle the listener
@@ -79,19 +85,19 @@ export class ObjectReminderButton {
         return this.model.isEditing;
     }
 
-    private clearReminder() {
+    public clearReminder() {
         this.reminder.deleteReminder(this.model.module, this.model.id);
         this.hasReminder = false;
     }
 
-    private setReminder(event) {
+    public setReminder(event) {
         this.showDialog = false;
         this.hasReminder = true;
         this.reminderDate = new moment(event);
         this.reminder.setReminder(this.model, this.reminderDate);
     }
 
-    private getReminderDate() {
+    public getReminderDate() {
         // let date = new moment(this.reminderDate);
         return this.reminderDate.format(this.userpreferences.getDateFormat());
     }

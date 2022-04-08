@@ -1,0 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    <div style="overflow-wrap:break-word; white-space: pre-wrap;">{{value}}</div>
+</field-generic-display>

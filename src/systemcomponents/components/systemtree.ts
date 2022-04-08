@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -21,7 +9,7 @@ declare var _: any;
 
 @Component({
     selector: "system-tree",
-    templateUrl: "./src/systemcomponents/templates/systemtree.html",
+    templateUrl: "../templates/systemtree.html",
     styles: ['.cdk-drag-animating {transition: none}']
 })
 
@@ -74,9 +62,9 @@ export class SystemTree implements OnChanges {
     @Output() public onTreeDrop: EventEmitter<any> = new EventEmitter<any>();
 
     public tree: any[] = [];
-    private dragPosition: any;
-    private isDragging: boolean = false;
-    private treeConfig: any = {
+    public dragPosition: any;
+    public isDragging: boolean = false;
+    public treeConfig: any = {
         draggable: false,
         canadd: false,
         expandall: false,
@@ -121,7 +109,7 @@ export class SystemTree implements OnChanges {
     * @add treeItem recursively
     * @set hasChildren
     */
-    private buildTree() {
+    public buildTree() {
         this.tree = [];
         this.sortBySequence();
         this.addTreeItem();
@@ -136,7 +124,7 @@ export class SystemTree implements OnChanges {
     * @reset sourceList
     * @sort by parent_sequence
     */
-    private sortBySequence() {
+    public sortBySequence() {
         this.sourceList.sort((a, b) => a.name && b.name ? a.name > b.name ? 1 : -1 : 0);
         let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
         this.sourceList = [];
@@ -165,7 +153,7 @@ export class SystemTree implements OnChanges {
     *   hasChildren: boolean
     * }
     */
-    private addTreeItem(parentId = '', level = 1) {
+    public addTreeItem(parentId = '', level = 1) {
         for (let item of this.sourceList) {
             if (!item.parent_id && parentId == '' || item.parent_id == parentId) {
                 if (!item.systemTreeDefs) {
@@ -186,7 +174,7 @@ export class SystemTree implements OnChanges {
     /*
     * @set hasChildren for each tree item from the sourceList
     */
-    private setHasChildren() {
+    public setHasChildren() {
         this.tree.forEach(item => {
             item.systemTreeDefs.hasChildren = this.sourceList.some(i => i.parent_id == item.id);
         });
@@ -205,7 +193,7 @@ export class SystemTree implements OnChanges {
     * @reset dragPosition
     * @emit object: {itemWithNewParent, itemsWithNewSequence} by @output onTreeDrop
     */
-    private handleDrop(dragEvent: CdkDragDrop<any>) {
+    public handleDrop(dragEvent: CdkDragDrop<any>) {
         this.isDragging = false;
         if (!this.dragPosition) return;
         let oldParentId = dragEvent.item.data.parent_id;
@@ -273,7 +261,7 @@ export class SystemTree implements OnChanges {
     * @param value
     * @set isDragging
     */
-    private setIsDragging(value) {
+    public setIsDragging(value) {
         this.isDragging = value;
     }
 
@@ -281,7 +269,7 @@ export class SystemTree implements OnChanges {
     * @param pos: null | object = {id: string, position: 'before' | 'item' | 'after'}
     * @set dragPosition
     */
-    private handleDragPosition(pos) {
+    public handleDragPosition(pos) {
         this.dragPosition = pos;
     }
 
@@ -290,7 +278,7 @@ export class SystemTree implements OnChanges {
     * @set item.systemTreeDefs.expanded
     * @build tree
     */
-    private handleExpand(id) {
+    public handleExpand(id) {
         this.sourceList.some(item => {
             if (item.id == id) {
                 item.systemTreeDefs.expanded = !item.systemTreeDefs.expanded;
@@ -308,7 +296,7 @@ export class SystemTree implements OnChanges {
     * @handle? expand
     * @emit id by @output selectedItemChange
     */
-    private handleClick(id) {
+    public handleClick(id) {
         this.tree.some(item => {
             if (item.id == id) {
                 if (item.systemTreeDefs && item.systemTreeDefs.clickable) {
@@ -337,7 +325,7 @@ export class SystemTree implements OnChanges {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 }

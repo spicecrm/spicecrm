@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -24,7 +12,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'object-action-mail-modal',
-    templateUrl: './src/objectcomponents/templates/objectactionmailmodal.html',
+    templateUrl: '../templates/objectactionmailmodal.html',
     providers: [view, model]
 })
 export class ObjectActionMailModal implements OnInit {
@@ -42,27 +30,27 @@ export class ObjectActionMailModal implements OnInit {
     /**
      * inidcates that we are sending
      */
-    private sending: boolean = false;
+    public sending: boolean = false;
 
     /**
      * the title for the modal window to be displayed
      */
-    @Input() private titlelabel: string = 'LBL_BEANTOMAIL';
+    @Input() public titlelabel: string = 'LBL_BEANTOMAIL';
 
     /**
      * an event emitter when the email ahs been sent and the modal window will destroy itself
      */
-    @Output() private mailsent: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public mailsent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    private fieldset: string;
+    public fieldset: string;
 
-    constructor(private language: language,
-                private metadata: metadata,
-                private model: model,
-                private view: view,
-                private backend: backend,
-                private prefs: userpreferences,
-                private modal: modal) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public model: model,
+                public view: view,
+                public backend: backend,
+                public prefs: userpreferences,
+                public modal: modal) {
 
         // initialize the model and the view
         this.model.module = 'Emails';
@@ -98,7 +86,7 @@ export class ObjectActionMailModal implements OnInit {
     /**
      * sets the data from the parent
      */
-    private setParentData() {
+    public setParentData() {
         this.model.setField('parent_type', this.parent.module);
         this.model.setField('parent_id', this.parent.id);
         this.model.setField('parent_name', this.parent.data.summary_text);
@@ -107,22 +95,25 @@ export class ObjectActionMailModal implements OnInit {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * send the email
      */
-    private sendEmail() {
+    public sendEmail() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
             this.sending = true;
-            this.model.setField('type', 'out');
-            this.model.setField('to_be_sent', '1');
-            this.model.setField('from_addr', this.model.data.from_addr_name);
-            this.model.setField('to_addrs', this.model.data.to_addrs_names);
+
+            this.model.setFields({
+                type: 'out',
+                to_be_sent: '1',
+                from_addr: this.model.getField('from_addr_name'),
+                to_addrs: this.model.getField('to_addrs_names')
+            });
 
             this.model.save().subscribe(
                 success => {

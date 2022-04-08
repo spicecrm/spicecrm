@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -30,7 +18,7 @@ declare var moment;
  */
 @Component({
     selector: 'field-cron-interval',
-    templateUrl: './src/objectfields/templates/fieldcroninterval.html'
+    templateUrl: '../templates/fieldcroninterval.html'
 })
 export class fieldCronInterval extends fieldGeneric {
     /**
@@ -61,7 +49,7 @@ export class fieldCronInterval extends fieldGeneric {
      * holds the every labels for display value
      * @private
      */
-    private everyLabels = {
+    public everyLabels = {
         minutes: 'LBL_MINUTE{s}',
         hours: 'LBL_HOUR{s}',
         days: 'LBL_DAY{s}',
@@ -74,7 +62,7 @@ export class fieldCronInterval extends fieldGeneric {
      * holds the recurrence labels for display value
      * @private
      */
-    private recurrenceLabels = {
+    public recurrenceLabels = {
         daily: 'LBL_DAILY',
         weekly: 'LBL_WEEKLY',
         monthly: 'LBL_MONTHLY',
@@ -85,7 +73,7 @@ export class fieldCronInterval extends fieldGeneric {
     constructor(public model: model,
                 public view: view,
                 public language: language,
-                private userPreferences: userpreferences,
+                public userPreferences: userpreferences,
                 public metadata: metadata,
                 public router: Router) {
         super(model, view, language, metadata, router);
@@ -157,7 +145,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the default recurrence every at value
      * @private
      */
-    private setDefaultRecurrenceEveryAtValue() {
+    public setDefaultRecurrenceEveryAtValue() {
 
         switch (this.expression.recurrence) {
             case 'daily':
@@ -179,7 +167,7 @@ export class fieldCronInterval extends fieldGeneric {
      * subscribe to language changes to reset the labels
      * @private
      */
-    private subscribeToLanguageChanges() {
+    public subscribeToLanguageChanges() {
         this.subscriptions.add(
             this.language.currentlanguage$.subscribe(() => {
                 this.setSelectOptionsFromMoment();
@@ -192,7 +180,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the weekdays from moment
      * @private
      */
-    private setSelectOptionsFromMoment() {
+    public setSelectOptionsFromMoment() {
         this.weekdays = moment.weekdays();
         this.months = moment.months();
     }
@@ -201,7 +189,7 @@ export class fieldCronInterval extends fieldGeneric {
      * subscribe to field changes to set the local value
      * @private
      */
-    private subscribeToFieldChanges() {
+    public subscribeToFieldChanges() {
         this.subscriptions.add(
             this.model.observeFieldChanges(this.fieldname).subscribe(val =>
                 this.setLocalValue(val)
@@ -218,7 +206,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the field value from the local value
      * @private
      */
-    private setFieldValue() {
+    public setFieldValue() {
 
         this.resetExpressionProperties();
 
@@ -245,7 +233,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the expression values from the custom input values
      * @private
      */
-    private setCustomExpression() {
+    public setCustomExpression() {
 
         if (isNaN(this.expression.everyQuantity) && this.expression.every != 'weekdays') {
             return;
@@ -306,7 +294,7 @@ export class fieldCronInterval extends fieldGeneric {
      * reset the expression properties to *
      * @private
      */
-    private resetExpressionProperties() {
+    public resetExpressionProperties() {
         this.expression.minutes = '*';
         this.expression.hours = '*';
         this.expression.monthDay = '*';
@@ -318,7 +306,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the expression properties by the recurrence unit
      * @private
      */
-    private setExpressionByRecurrenceUnit() {
+    public setExpressionByRecurrenceUnit() {
 
         switch (this.expression.recurrence) {
             case 'daily':
@@ -353,7 +341,7 @@ export class fieldCronInterval extends fieldGeneric {
      * initialize the value if the model is new
      * @private
      */
-    private initializeValue() {
+    public initializeValue() {
         if (!this.model.isNew) return;
         this.value = '*::*::*::*::*';
     }
@@ -362,7 +350,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the local cron expression value from the field value
      * @private
      */
-    private setLocalValue(val: string) {
+    public setLocalValue(val: string) {
         if (!val || val == this.expression?.stringValue) return;
         const valArray = val.split('::');
         if (valArray.length != 5) return;
@@ -376,7 +364,7 @@ export class fieldCronInterval extends fieldGeneric {
      * @param val
      * @private
      */
-    private parseExpressionFromString(val: string) {
+    public parseExpressionFromString(val: string) {
 
         if (!!this.expression) {
             this.expression.every = undefined;
@@ -407,7 +395,7 @@ export class fieldCronInterval extends fieldGeneric {
      * @param val
      * @private
      */
-    private setRecurrenceAtFromInput(val: string) {
+    public setRecurrenceAtFromInput(val: string) {
 
         const isDaily = !isNaN(+(this.expression.minutes + this.expression.hours)) && val.endsWith('::*::*::*');
         const isWeekly = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.weekDay)) && this.expression.month == '*' && this.expression.monthDay == '*';
@@ -443,7 +431,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set every value from the expression used in set local value
      * @private
      */
-    private setEveryValueFromExpression() {
+    public setEveryValueFromExpression() {
 
         const min = this.expression.minutes;
         const hour = this.expression.hours;
@@ -495,7 +483,7 @@ export class fieldCronInterval extends fieldGeneric {
      * set the display value
      * @private
      */
-    private setDisplayValue() {
+    public setDisplayValue() {
 
         if (this.expression.recurrence == 'cron') {
             return this.expression.displayValue = this.expression.stringValue;

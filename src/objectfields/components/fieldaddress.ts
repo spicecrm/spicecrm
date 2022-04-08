@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -30,21 +18,21 @@ import {backend} from "../../services/backend.service";
  */
 @Component({
     selector: 'field-address',
-    templateUrl: './src/objectfields/templates/fieldaddress.html'
+    templateUrl: '../templates/fieldaddress.html'
 })
 export class fieldAddress extends fieldGeneric {
 
     /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
-    private strict: boolean = false;
+    public strict: boolean = false;
 
     public config_address_format: any = {};
 
     /**
      * a fallback address format in case none is specified
      */
-    private addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
+    public addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
 
     constructor(
         public model: model,
@@ -172,7 +160,7 @@ export class fieldAddress extends fieldGeneric {
     /**
      * getter for the field label if the form is rendered as subform
      */
-    private getAddressLabel() {
+    public getAddressLabel() {
         return this.language.getLabel(this.fieldconfig.label);
     }
 
@@ -181,7 +169,7 @@ export class fieldAddress extends fieldGeneric {
      *
      * @param field
      */
-    private fieldName(field) {
+    public fieldName(field) {
         return this.addresskey + 'address_' + field;
     }
 
@@ -189,7 +177,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the street
      */
     get street() {
-        return this.model.data[this.addresskey + 'address_street'];
+        return this.model.getField(this.addresskey + 'address_street');
     }
 
     /**
@@ -205,7 +193,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the street
      */
     get street_number() {
-        return this.model.data[this.addresskey + 'address_street_number'];
+        return this.model.getField(this.addresskey + 'address_street_number');
     }
 
     /**
@@ -222,7 +210,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the street
      */
     get street_number_suffix() {
-        return this.model.data[this.addresskey + 'address_street_number_suffix'];
+        return this.model.getField(this.addresskey + 'address_street_number_suffix');
     }
 
     /**
@@ -239,7 +227,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the attn field
      */
     get attn() {
-        return this.model.data[this.addresskey + 'address_attn'];
+        return this.model.getField(this.addresskey + 'address_attn');
     }
 
     /**
@@ -254,7 +242,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the city field
      */
     get city() {
-        return this.model.data[this.addresskey + 'address_city'];
+        return this.model.getField(this.addresskey + 'address_city');
     }
 
     /**
@@ -279,14 +267,14 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the city field
      */
     get district() {
-        return this.model.data[this.addresskey + 'address_district'];
+        return this.model.getField(this.addresskey + 'address_district');
     }
 
     /**
      * a getter for the postalcode
      */
     get postalcode() {
-        return this.model.data[this.addresskey + 'address_postalcode'];
+        return this.model.getField(this.addresskey + 'address_postalcode');
     }
 
     /**
@@ -302,7 +290,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the state
      */
     get state() {
-        return this.model.data[this.addresskey + 'address_state'];
+        return this.model.getField(this.addresskey + 'address_state');
     }
 
     /**
@@ -318,7 +306,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the country
      */
     get country() {
-        return this.model.data[this.addresskey + 'address_country'];
+        return this.model.getField(this.addresskey + 'address_country');
     }
 
     /**
@@ -334,7 +322,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the latitude
      */
     get latitude() {
-        return this.model.data[this.addresskey + 'address_latitude'];
+        return this.model.getField(this.addresskey + 'address_latitude');
     }
 
     /**
@@ -350,7 +338,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the longitude
      */
     get longitude() {
-        return this.model.data[this.addresskey + 'address_longitude'];
+        return this.model.getField(this.addresskey + 'address_longitude');
     }
 
     /**

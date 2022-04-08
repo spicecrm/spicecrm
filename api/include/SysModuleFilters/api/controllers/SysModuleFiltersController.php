@@ -59,11 +59,14 @@ class SysModuleFiltersController
         $this->checkAdmin();
 
         $filters = [];
-        $filtersObj = "SELECT 'global' As `scope`, fltrs.* FROM sysmodulefilters fltrs  WHERE fltrs.module = '{$args['module']}' UNION ";
-        $filtersObj .= "SELECT 'custom' As `scope`, cfltrs.* FROM syscustommodulefilters cfltrs  WHERE cfltrs.module = '{$args['module']}'";
+        $filtersObj = "SELECT 'global' filterscope, fltrs.* FROM sysmodulefilters fltrs  WHERE fltrs.module = '{$args['module']}' UNION ";
+        $filtersObj .= "SELECT 'custom' filterscope, cfltrs.* FROM syscustommodulefilters cfltrs  WHERE cfltrs.module = '{$args['module']}'";
         $filtersObj = $db->query($filtersObj);
-        while ($filter = $db->fetchByAssoc($filtersObj))
+        while ($filter = $db->fetchByAssoc($filtersObj)) {
+            $filter['scope'] = $filter['filterscope'];
+            unset($filter['filterscope']);
             $filters[] = $filter;
+        }
 
         return $res->withJson($filters);
     }

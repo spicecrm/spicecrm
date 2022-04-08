@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -47,7 +35,7 @@ export class activitiytimeline {
     /**
      * subscriptions to be called to destroy in the destructor
      */
-    private serviceSubscriptions: any[] = [];
+    public serviceSubscriptions: any[] = [];
 
     /**
      * an object for filters to be applied
@@ -74,15 +62,9 @@ export class activitiytimeline {
     public modules: activityTimeLineModules[] = ['Activities', 'History'];
 
     /**
-     * the modules to be loaded
-     * ToDo: replace this .. shoudl no longer be needed but be determined by the backend. Eventually we can load this in teh componentconfig
-     */
-    private timelineModules: string[] = ['Calls', 'Meetings', 'Tasks', 'Emails', 'Notes'];
-
-    /**
      * for sorting in new activities .. shoudl be replaced and triggered by the filter objects int he backend to keep it flexible
      */
-    private activeStates: string[] = ['Planned', 'In Progress', 'Not Started', 'Pending Input'];
+    public activeStates: string[] = ['Planned', 'In Progress', 'Not Started', 'Pending Input'];
 
     /**
      * list fo teh objects the filter can be applied to if selöected from the Database
@@ -95,7 +77,7 @@ export class activitiytimeline {
      * the sort dates ..
      * ToDo: not nice to handle it that way .. shoudl be done on the backend
      */
-    private sortDates: any = {
+    public sortDates: any = {
         Calls: 'date_start',
         Meetings: 'date_start',
         Tasks: 'date_due',
@@ -140,7 +122,7 @@ export class activitiytimeline {
      */
     public openness$: BehaviorSubject<boolean>;
 
-    constructor(private metadata: metadata, private backend: backend, private modelutilities: modelutilities, private configurationService: configurationService, private session: session, private broadcast: broadcast) {
+    constructor(public metadata: metadata, public backend: backend, public modelutilities: modelutilities, public configurationService: configurationService, public session: session, public broadcast: broadcast) {
         this.serviceSubscriptions.push(this.broadcast.message$.subscribe(message => this.handleMessage(message)));
 
         // create the behavious Subject
@@ -176,7 +158,7 @@ export class activitiytimeline {
         }
     }
 
-    private getAggregateObjects(module) {
+    public getAggregateObjects(module) {
         try {
             let aggModules = [];
             for (let aggregate of this.activities[module].aggregates.module) {
@@ -204,7 +186,7 @@ export class activitiytimeline {
      *
      * @param message the broadcast message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         let messageType = message.messagetype.split('.');
         if (messageType[0] === 'model') {
             // handle the message type
@@ -223,20 +205,10 @@ export class activitiytimeline {
                     break;
                 case 'delete':
                     let deleted = false;
-                    if (this.timelineModules.indexOf(message.messagedata.module) >= 0) {
-                        for (let module of this.modules) {
-                            this.activities[module].list.some((item, index) => {
-                                if (item.module === message.messagedata.module, item.id === message.messagedata.id) {
-                                    // remove the item
-                                    this.activities[module].list.splice(index, 1);
-                                    // reload silently
-                                    this.getTimeLineData(module, true);
-                                    // set that we deleted
-                                    deleted = true;
-                                    return true;
-                                }
-                            });
-                            if (deleted) return;
+                    for (let module of this.modules) {
+                        let itemIndex = this.activities[module].list.findIndex(i => i.module == message.messagedata.module && i.id == message.messagedata.id);
+                        if(itemIndex >= 0){
+                            this.activities[module].list.splice(itemIndex, 1);
                         }
                     }
                     break;
@@ -440,7 +412,7 @@ export class activitiytimeline {
      * resets the data for a n object
      * @param module the module to reset the data for
      */
-    private resetListData(module: activityTimeLineModules) {
+    public resetListData(module: activityTimeLineModules) {
         this.activities[module] = {
             loading: false,
             loadingmore: false,

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleDashboard
  */
@@ -24,23 +12,23 @@ import {HttpClient} from "@angular/common/http";
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/modules/dashboard/templates/dashboardweatherdashlet.html',
+    templateUrl: '../templates/dashboardweatherdashlet.html',
 })
 export class DashboardWeatherDashlet implements OnInit {
 
-    private sortedDays: any[] = undefined;
-    private cityName: string = undefined;
-    private daytoshow: any[] = undefined;
-    private dayHourToShow: any = undefined;
-    private todayOnly: boolean = false; // can be assigned in the componentconfig
-    private forecastCity: string = 'Vienna'; // can be assigned in the componentconfig
-    private apiId: string = 'ba76af382fdb47888b5a080d6c7122b5'; // can be assigned in the componentconfig
-    private isLoading: boolean = false;
+    public sortedDays: any[] = undefined;
+    public cityName: string = undefined;
+    public daytoshow: any[] = undefined;
+    public dayHourToShow: any = undefined;
+    public todayOnly: boolean = false; // can be assigned in the componentconfig
+    public forecastCity: string = 'Vienna'; // can be assigned in the componentconfig
+    public apiId: string = 'ba76af382fdb47888b5a080d6c7122b5'; // can be assigned in the componentconfig
+    public isLoading: boolean = false;
 
     constructor(
-        private http: HttpClient,
-        private language: language,
-        private metadata: metadata,
+        public http: HttpClient,
+        public language: language,
+        public metadata: metadata,
     ) {
     }
 
@@ -92,7 +80,7 @@ export class DashboardWeatherDashlet implements OnInit {
         this.todayOnly = componentConfig.hasOwnProperty('todayonly') ? componentConfig.todayonly : false;
     }
 
-    private getForecastData(reqParams) {
+    public getForecastData(reqParams) {
 
         this.isLoading = true;
         this.http.get('proxy/?useurl=' + btoa(`http://api.openweathermap.org/data/2.5/forecast?${reqParams}&APPID=${this.apiId}`))
@@ -109,7 +97,7 @@ export class DashboardWeatherDashlet implements OnInit {
         this.isLoading = false;
     }
 
-    private resortDays(list) {
+    public resortDays(list) {
         if (list) {
             let daysArray = [];
             let dayTimesArray = [];
@@ -132,19 +120,19 @@ export class DashboardWeatherDashlet implements OnInit {
         }
     }
 
-    private setDayToShow(day) {
+    public setDayToShow(day) {
         this.dayToShow = day;
     }
 
-    private setDayHourToShow(dayHour) {
+    public setDayHourToShow(dayHour) {
         this.dayHourToShow = dayHour;
     }
 
-    private getHour(dt) {
+    public getHour(dt) {
         return moment.unix(dt).format('H') + ':00';
     }
 
-    private getDayName(dt, short = false) {
+    public getDayName(dt, short = false) {
         let dayIndex = new Date(dt * 1000).getDay();
         if (short) {
             return moment.weekdaysShort(dayIndex);
@@ -152,21 +140,21 @@ export class DashboardWeatherDashlet implements OnInit {
         return moment.weekdays(dayIndex);
     }
 
-    private getTemperature(temp) {
+    public getTemperature(temp) {
         return Math.round(parseInt(temp, 10) - 273.15);
     }
 
-    private getWind(wind) {
+    public getWind(wind) {
         return Math.round(wind.speed * 3.6);
 
     }
 
-    private getWeatherIconUrl(icon) {
-        // private return `http://openweathermap.org/img/w/${icon}.png`;
+    public getWeatherIconUrl(icon) {
+        // public return `http://openweathermap.org/img/w/${icon}.png`;
         return 'proxy/?useurl=' + btoa(`http://openweathermap.org/img/w/${icon}.png`);
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 

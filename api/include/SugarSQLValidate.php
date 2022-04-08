@@ -85,7 +85,7 @@ class SugarSQLValidate
 		    return false;
 		}
         // verify SELECT didn't change
-        if(count($parsed["SELECT"]) != 1 || $parsed["SELECT"][0] !== ['expr_type' => 'colref','alias' => '`dummy`', 'base_expr' => 'dummy', 'sub_tree' => false]) {
+        if(count($parsed["SELECT"]) != 1 || $parsed["SELECT"][0] !== ['expr_type' => 'colref','alias' => 'dummy', 'base_expr' => 'dummy', 'sub_tree' => false]) {
             LoggerManager::getLogger()->debug("validation failed SELECT");
             return false;
         }

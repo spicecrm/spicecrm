@@ -1,42 +1,30 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
 import {
-    Component, ElementRef, ViewChild, ChangeDetectorRef
+    Component
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {footer} from '../../services/footer.service';
 import {language} from "../../services/language.service";
-import {modal} from '../../services/modal.service';
+import {toast} from "../../services/toast.service";
+
 
 /**
  * renders a list of tags int eh object page header and allows editing and management of the tags
  */
 @Component({
     selector: 'object-page-header-tags',
-    templateUrl: './src/objectcomponents/templates/objectpageheadertags.html'
+    templateUrl: '../templates/objectpageheadertags.html'
 })
 export class ObjectPageHeaderTags {
 
     /**
      * indicates if we are editing
      */
-    private isEditing: boolean = false;
+    public isEditing: boolean = false;
 
-    constructor(private model: model, private metadata: metadata, private language: language) {
+    constructor(public model: model, public metadata: metadata, public language: language, public toast: toast) {
     }
 
     /**
@@ -64,7 +52,7 @@ export class ObjectPageHeaderTags {
     /**
      * switch to editing mode
      */
-    private editTags() {
+    public editTags() {
         this.isEditing = true;
         this.model.startEdit();
         /*
@@ -77,7 +65,7 @@ export class ObjectPageHeaderTags {
     /**
      * cancels the editing process
      */
-    private cancelEdit() {
+    public cancelEdit() {
         this.isEditing = false;
         this.model.cancelEdit();
     }
@@ -85,12 +73,12 @@ export class ObjectPageHeaderTags {
     /**
      * saves the changes
      */
-    private saveTags() {
+    public saveTags() {
         this.model.save();
         this.isEditing = false;
     }
 
-    private removeByIndex(index) {
+    public removeByIndex(index) {
         let tags = this.objecttags;
         tags.splice(index, 1);
         this.model.setField('tags', JSON.stringify(tags));
@@ -101,9 +89,17 @@ export class ObjectPageHeaderTags {
      *
      * @param tag the tag
      */
-    private addTag(tag) {
-        let tags = this.objecttags;
-        tags.push(tag);
+    public addTag(tag) {
+        // convert array tags to lower case for easier check
+        let tags = this.objecttags.map(tagV => tagV.toLowerCase());
+        // check if tag exists in array
+        if(tags.includes(tag.toLowerCase())) {
+            this.toast.sendToast(this.language.getLabel('LBL_TAG_EXISTS', '', 'short'), 'warning');
+            return;
+        } else {
+            this.objecttags.indexOf(tag);
+            tags.push(tag)
+        }
         this.model.setField('tags', JSON.stringify(tags));
     }
 }

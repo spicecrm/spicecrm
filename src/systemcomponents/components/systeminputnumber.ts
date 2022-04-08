@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -19,7 +7,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: 'system-input-number',
-    templateUrl: './src/systemcomponents/templates/systeminputnumber.html',
+    templateUrl: '../templates/systeminputnumber.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -33,45 +21,45 @@ export class SystemInputNumber implements ControlValueAccessor {
     /**
      * the max this field is set to
      */
-    @Input() private max: number;
+    @Input() public max: number;
 
     /**
      * the min value this field is set to
      *
      * @private
      */
-    @Input() private min: number;
-    @Input() private precision: number;
-    @Input() private onlyField = false; // Display only the html input field, not the surrounding html
-    @Input() private placeholder: string; // HTML attribute
+    @Input() public min: number;
+    @Input() public precision: number;
+    @Input() public onlyField = false; // Display only the html input field, not the surrounding html
+    @Input() public placeholder: string; // HTML attribute
 
     /**
      * to disable the field
      *
      * @private
      */
-    @Input() private disabled = false; // HTML attribute
+    @Input() public disabled = false; // HTML attribute
 
-    @Input() private size: number; // HTML attribute
+    @Input() public size: number; // HTML attribute
 
     /**
      * if set to true the valu eis emitted as number. Otherwise it is emitted as formatted string
      * @private
      */
-    @Input() private asNumber: boolean = false; // HTML attribute
+    @Input() public asNumber: boolean = false; // HTML attribute
 
     /**
      * the internal held value as text as it is set and displayed in the field
      * @private
      */
-    private textValue: string = '';
+    public textValue: string = '';
 
     /**
      * the last known text value needed for comparison
      *
      * @private
      */
-    private lastTextValue: string = '';
+    public lastTextValue: string = '';
 
     constructor(public userpreferences: userpreferences) {
     }
@@ -92,9 +80,9 @@ export class SystemInputNumber implements ControlValueAccessor {
         this.lastTextValue = this.textValue;
     }
 
-    private onChange(val: string|number): void {}
+    public onChange(val: string|number): void {}
 
-    private onTouched(): void {}
+    public onTouched(): void {}
 
     // ControlValueAccessor Interface <<
 
@@ -102,7 +90,7 @@ export class SystemInputNumber implements ControlValueAccessor {
      * Actions to do when the HTML input field changed.
      * @param event The DOM event
      */
-    private fieldChanged(event) {
+    public fieldChanged(event) {
         this.textValue = typeof (this.textValue) != 'number' ? this.getValSanitized(this.textValue) : this.textValue;
         // Only submit the (new) value if the sanitized value has actually changed:
         if (this.textValue !== this.lastTextValue) {
@@ -119,7 +107,7 @@ export class SystemInputNumber implements ControlValueAccessor {
      * Takes a string that should be a number, removes group seperators, cuts to specific decimal places, limit it to min and max - and returns it as string (in case it is a valid number).
      * @param textValue The text value to sanitize.
      */
-    private getValSanitized(textValue: string): string {
+    public getValSanitized(textValue: string): string {
         let pref = this.userpreferences.toUse;
         let defSigDigits = this.precision === undefined ? pref.default_currency_significant_digits : this.precision;
         let numberValue: any = this.textValue.split(pref.num_grp_sep).join('');
@@ -130,7 +118,7 @@ export class SystemInputNumber implements ControlValueAccessor {
         return this.getValAsText(numberValue);
     }
 
-    private getNumberFromText(textValue: string): number {
+    public getNumberFromText(textValue: string): number {
         let pref = this.userpreferences.toUse;
         let defSigDigits = this.precision === undefined ? pref.default_currency_significant_digits : this.precision;
         let numberValue: any = this.textValue.split(pref.num_grp_sep).join('');
@@ -139,7 +127,7 @@ export class SystemInputNumber implements ControlValueAccessor {
         return numberValue;
     }
 
-    private getValAsText(numValue) {
+    public getValAsText(numValue) {
         if (numValue === undefined) {
             return '';
         }

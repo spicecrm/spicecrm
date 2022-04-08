@@ -1,0 +1,24 @@
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_A1"></system-label></h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-3 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USERNAME"></system-label></label>
+                <system-input-password [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.a1_username"></system-input-password>
+            </div>
+            <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PASSWORD"></system-label></label>
+                <system-input-password [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.a1_password"></system-input-password>
+            </div>
+            <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SENDER"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.a1_sender" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                <system-label label="LBL_SEND_TEST_SMS"></system-label>
+            </button>
+        </div>
+    </div>
+</div>

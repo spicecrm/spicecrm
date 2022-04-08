@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpicePageBuilder
  */
@@ -24,30 +12,30 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
  */
 @Component({
     selector: 'spice-page-builder-element-column',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementcolumn.html',
+    templateUrl: '../templates/spicepagebuilderelementcolumn.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
      * containers to be rendered
      */
-    @Input() protected readonly column: ColumnI;
+    @Input() public readonly column: ColumnI;
     /**
      * holds the drag entered value
      */
-    private dragEntered: boolean = false;
+    public dragEntered: boolean = false;
     /**
      * read drop list dom element to be added to the group
      */
-    @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
+    @ViewChild('dropList', {read: CdkDropList, static: false}) public dropList: CdkDropList;
     /**
      * hold the style object for the element
      */
-    private style = {};
+    public style = {};
 
-    constructor(private spicePageBuilderService: SpicePageBuilderService,
-                private modal: modal,
-                private cdRef: ChangeDetectorRef) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService,
+                public modal: modal,
+                public cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -68,19 +56,19 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * @param item
      * @return index
      */
-    protected trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /** Predicate method that only allows sections to be dropped into a list. */
-    protected contentPredicate(item: CdkDrag) {
+    public contentPredicate(item: CdkDrag) {
         return item.data.tagName != 'section';
     }
 
     /**
      * generate body style object
      */
-    private generateStyle() {
+    public generateStyle() {
         this.style = {
             'background-color': this.column.attributes['background-color'],
             'border': this.column.attributes.border,
@@ -99,7 +87,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * push the dropped item to the container array
      * @param event
      */
-    private onDrop(event: CdkDragDrop<any>) {
+    public onDrop(event: CdkDragDrop<any>) {
 
         if (event.previousContainer != event.container) {
             // remove placeholder element
@@ -145,7 +133,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * emit drag exited to parent
      * @param event
      */
-    private onDragExit(event: CdkDragExit) {
+    public onDragExit(event: CdkDragExit) {
         this.dragEntered = false;
     }
 
@@ -153,7 +141,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * remove placeholder element if exists
      * @param event
      */
-    private onDragEnter(event: CdkDragEnter) {
+    public onDragEnter(event: CdkDragEnter) {
         this.dragEntered = true;
     }
 
@@ -161,7 +149,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * delete the content element from the column
      * @param element
      */
-    private onContentDelete(element) {
+    public onContentDelete(element) {
         this.column.children = this.column.children.filter(item => item != element);
     }
 }

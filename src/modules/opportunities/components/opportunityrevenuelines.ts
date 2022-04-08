@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleOpportunities
  */
@@ -35,26 +23,26 @@ declare var moment: any;
  */
 @Component({
     selector: 'opportunity-revenue-lines',
-    templateUrl: "./src/modules/opportunities/templates/opportunityrevenuelines.html"
+    templateUrl: "../templates/opportunityrevenuelines.html"
 })
 export class OpportunityRevenueLines implements OnInit {
 
     /**
      * an array with the revenue lines
      */
-    private revenueLines: any[] = [];
+    public revenueLines: any[] = [];
 
     /**
      * keep the opportunity close date so we can track changes and f the date changes update the rampup or recognition plan
      */
-    private closeDate: any;
+    public closeDate: any;
 
     /**
      * the total amount of the opportunity
      */
-    private totalAmount: any;
+    public totalAmount: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view, private modal: modal, private changeDetectorRef: ChangeDetectorRef, private viewContainerRef: ViewContainerRef) {
+    constructor(public language: language, public metadata: metadata, public model: model, public view: view, public modal: modal, public changeDetectorRef: ChangeDetectorRef, public viewContainerRef: ViewContainerRef) {
         this.model.data$.subscribe(data => {
             // reload the revenue lines
             this.loadRevenueLines();
@@ -95,7 +83,7 @@ export class OpportunityRevenueLines implements OnInit {
     /**
      * load the revenue line items from the model and validates teh model setting the message on the field
      */
-    private loadRevenueLines() {
+    public loadRevenueLines() {
         this.revenueLines = [];
         let lines = this.model.getRelatedRecords('opportunityrevenuelines');
         for (let line of lines) {
@@ -105,7 +93,7 @@ export class OpportunityRevenueLines implements OnInit {
         this.sortRevenueLines();
     }
 
-    private checkConsistency() {
+    public checkConsistency() {
         if (this.view.isEditMode()) {
             let oppamount = this.model.getField('amount');
             switch (this.model.getFieldValue('opportunityrevenuesplit')) {
@@ -146,7 +134,7 @@ export class OpportunityRevenueLines implements OnInit {
      *
      * if confirmed by the user moves the dates bby the same diff as the opp date has been moved
      */
-    private checkCloseDate() {
+    public checkCloseDate() {
         if (this.closeDate) {
             if (this.model.getFieldValue('opportunityrevenuesplit') != 'none' && !this.model.getFieldValue('date_closed').isSame(this.closeDate, 'day')) {
                 this.modal.confirm(this.language.getLabel('MSG_UPDATE_CHANGED_DATE', null, "long"), this.language.getLabel('MSG_UPDATE_CHANGED_DATE'), 'shade').subscribe(response => {
@@ -172,7 +160,7 @@ export class OpportunityRevenueLines implements OnInit {
      *
      * If confirmed by the user updates the amounts equally
      */
-    private checkAmount() {
+    public checkAmount() {
         if (this.totalAmount) {
             if (this.model.getFieldValue('opportunityrevenuesplit') != 'none' && this.model.getFieldValue('amount') != this.totalAmount) {
                 this.modal.confirm(this.language.getLabel('MSG_UPDATE_CHANGED_AMOUNT', null, "long"), this.language.getLabel('MSG_UPDATE_CHANGED_AMOUNT'), 'shade').subscribe(response => {
@@ -201,7 +189,7 @@ export class OpportunityRevenueLines implements OnInit {
     /**
      * sorts the lines by date
      */
-    private sortRevenueLines() {
+    public sortRevenueLines() {
         this.revenueLines.sort((a, b) => {
             return new moment(a.revenue_date).isBefore(new moment(b.revenue_date)) ? -1 : 1;
         });
@@ -222,7 +210,7 @@ export class OpportunityRevenueLines implements OnInit {
     /**
      * triggered when the line item updates to reload and revalidate
      */
-    private revalidate() {
+    public revalidate() {
         this.loadRevenueLines();
         this.checkConsistency();
     }
@@ -237,7 +225,7 @@ export class OpportunityRevenueLines implements OnInit {
     /**
      * renders a modal to initalize the revenue lines
      */
-    private initalizeLines() {
+    public initalizeLines() {
         this.modal.openModal('OpportunityRevenueLinesCreator', true, this.viewContainerRef.injector).subscribe(componenref => {
             componenref.instance.generatorResult.subscribe(result => {
                 this.model.setField('opportunityrevenuesplit', result.opportunityrevenuesplit);
@@ -251,7 +239,7 @@ export class OpportunityRevenueLines implements OnInit {
     /**
      * adds a revenue line
      */
-    private addLine() {
+    public addLine() {
 
         let newRecord = {
             id: this.model.utils.generateGuid(),
@@ -270,7 +258,7 @@ export class OpportunityRevenueLines implements OnInit {
      *
      * @param itemid the guid of the split line
      */
-    private deleteLine(lineId) {
+    public deleteLine(lineId) {
         let i = 0;
         this.revenueLines.some(line => {
             if (line.id == lineId) {

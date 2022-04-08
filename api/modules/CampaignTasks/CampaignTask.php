@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -67,9 +69,9 @@ class CampaignTask extends SugarBean
         $current_date = $this->db->now();
         $guidSQL = $this->db->getGuidSQL();
 
-        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted";
+        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified";
         $insert_query .= ') ';
-        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0 ";
+        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0, $current_date";
         $insert_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
         $insert_query .= " INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id";
         $insert_query .= " WHERE plc.campaigntask_id='$thisId'";
@@ -87,8 +89,8 @@ class CampaignTask extends SugarBean
         while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
             $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
             $seed = BeanFactory::getBean($row['module']);
-            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted)";
-            $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0";
+            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified)";
+            $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date";
             $insert_query .= " FROM {$seed->table_name}";
             $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->table_name}.id) AND $where";
             $this->db->query($insert_query);
@@ -193,7 +195,11 @@ class CampaignTask extends SugarBean
 
             // load the bean and send the email
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
-            if($seed){
+            if($seed && $seed->is_inactive) {
+                $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
+                $campaignLog->activity_type = 'inactive';
+                $campaignLog->save();
+            } else if($seed) {
                 $email = $this->sendEmail($seed, true);
                 if($email == false){
                     $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
@@ -326,9 +332,9 @@ class CampaignTask extends SugarBean
      * @param int $limit
      * @return array
      */
-    private function getProspectBeans($start = 0, $limit = 100){
+    public function getProspectBeans($start = 0, $limit = 100){
         $beans = [];
-        $select_query = "SELECT plp.related_id id, plp.related_type module ";
+        $select_query = "SELECT plp.related_id id, max(plp.related_type) module ";
         $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
         $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
         $select_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
@@ -360,22 +366,31 @@ class CampaignTask extends SugarBean
     /**
      * produces a mailmerge PDF for the campaign
      *
-     * @return string
+     * @return array
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
     public function mailMerge($start = 0, $limit = 100){
 
         $html = '';
+        $inactiveCount = 0;
         foreach ($this->getProspectBeans($start, $limit) as $prospectBean){
-            /** @var OutputTemplate $outputTemplate */
-            $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
 
-            $style = $outputTemplate->getStyle();
-            $header = html_entity_decode( $outputTemplate->header);
-            $footer = html_entity_decode( $outputTemplate->footer);
+            // exclude inactive items from generated pdf
+            if($prospectBean->is_inactive == 1) {
+                $inactiveCount += 1;
+            }
+            // generate pdf only with active items
+            else {
+                /** @var OutputTemplate $outputTemplate */
+                $outputTemplate = BeanFactory::getBean('OutputTemplates', $this->output_template_id);
 
-            $html .= $outputTemplate->translateBody($prospectBean, true);
-            $html .= '<div style="page-break-after: always;"></div>';
+                $style = $outputTemplate->getStyle();
+                $header = html_entity_decode( $outputTemplate->header);
+                $footer = html_entity_decode( $outputTemplate->footer);
+
+                $html .= $outputTemplate->translateBody($prospectBean, true);
+                $html .= '<div style="page-break-after: always;"></div>';
+            }
         }
         $html = "<html><head><style>$style</style></head><body><header>$header</header><footer>$footer</footer><main>$html</main></body></html>";
 
@@ -384,8 +399,9 @@ class CampaignTask extends SugarBean
         $pdfHandler = new $class($outputTemplate);
 
         $pdfHandler->process($html);
-        return $pdfHandler->__toString();
+
+        // return the pdf and the inactiveCount
+        $res = ['pdfcontent' => $pdfHandler->__toString(), 'inactiveCount' => $inactiveCount];
+        return $res;
     }
-
-
 }

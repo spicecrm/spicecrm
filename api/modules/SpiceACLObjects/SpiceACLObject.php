@@ -1,31 +1,6 @@
 <?php
-/*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\SpiceACLObjects;
 
 use SpiceCRM\data\BeanFactory;
@@ -84,14 +59,14 @@ class SpiceACLObject extends SugarBean
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
-        if (is_admin($current_user)) {
+        if (SpiceUtils::isAdmin($current_user)) {
             foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
                 $seed = BeanFactory::getBean($module);
                 if ($seed && method_exists($seed, 'bean_implements') && $seed->bean_implements('ACL')) {
                     $typeRecord = $this->db->fetchByAssoc($this->db->query("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE module = '$module' AND acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE module = '$module' AND acl = 1"));
                     if (!$typeRecord) {
                         /*
-                        $newId = create_guid();
+                        $newId = SpiceUtils::createGuid();
                         $this->db->query("INSERT INTO spiceacltypes (id, module, status) VALUES('$newId', '$module', 'd')");
                         $typeRecords[] = [
                             'id' => $newId,
@@ -218,7 +193,6 @@ class SpiceACLObject extends SugarBean
     */
     public function getUserACLObjects($module = null)
     {
-        global  $timedate;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
@@ -257,6 +231,7 @@ class SpiceACLObject extends SugarBean
 
                 // get the actions
                 $objectActions = $db->query("SELECT spiceaclaction_id FROM spiceaclobjectactions WHERE spiceaclobject_id='{$aclobject['id']}'");
+                $this->authObjects[$aclobject['id']]['objectactions'] = [];
                 while ($objectAction = $db->fetchByAssoc($objectActions))
                     $this->authObjects[$aclobject['id']]['objectactions'][] = $objectAction['spiceaclaction_id'];
 
@@ -294,14 +269,14 @@ class SpiceACLObject extends SugarBean
     /*
      * function t check if an object matches a bean
      */
-    public function matchBean2Object($bean, $activity = '', $objectData)
+    public function matchBean2Object($bean, $activity = '', $objectData = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $territory = BeanFactory::getBean('SpiceACLTerritories');
 
         // check the activity .. if it is noit found .. cointinue
-        if ($activity != '' && $this->matchObject2Activity($activity, $objectData) === false)
+        if (!empty($activity) && $this->matchObject2Activity($activity, $objectData) === false)
             return false;
 
         // check the obejctfield values if this profile qualifies
@@ -338,7 +313,7 @@ class SpiceACLObject extends SugarBean
 
         // check the obejctfield values if this profile qualifies
         if (!$this->checkBeanObjectFieldAccess($bean, $objectData['objectelementvalues']))
-            return [];
+            return false;
 
         // workaround for module Users (table has no assigned_user_id field)
         // simulate assigned_user_id by allocating id
@@ -350,11 +325,11 @@ class SpiceACLObject extends SugarBean
         if ((($objectData['spiceaclowner'] && !$objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsOwner($bean)) ||
             ((!$objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsCreator($bean)) ||
             (($objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && (!SpiceACLUsers::checkCurrentUserIsOwner($bean) || !SpiceACLUsers::checkCurrentUserIsCreator($bean))))
-            return [];
+            return false;
 
         // check that the territory matches
         if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id']))
-            return [];
+            return false;
 
         return $objectData['objectactions'];
     }
@@ -439,6 +414,7 @@ class SpiceACLObject extends SugarBean
         $fieldvalues = $this->db->query("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
         while ($fieldvalue = $this->db->fetchByAssoc($fieldvalues)) {
             switch ($fieldvalue['operator']) {
+                // equal =
                 case 'EQ':
                     $filters['must'][] = [
                         'term' => [
@@ -446,20 +422,23 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // is not empty
                 case 'ISNEMPTY':
                     $filters['must'][] = [
-                        'exits' => [
+                        'exists' => [
                             'field' => $fieldvalue['name']
                         ]
                     ];
                     break;
+                // is empty
                 case 'ISEMPTY':
                     $filters['must_not'][] = [
-                        'exits' => [
+                        'exists' => [
                             'field' => $fieldvalue['name']
                         ]
                     ];
                     break;
+                    // current user field
                 case 'CU':
                     if (!empty($fieldvalue['value1'])) {
                         $filters['must'][] = [
@@ -469,6 +448,7 @@ class SpiceACLObject extends SugarBean
                         ];
                     }
                     break;
+                    // not equal
                 case 'NE':
                     $filters['must_not'][] = [
                         'term' => [
@@ -476,6 +456,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // like
                 case 'LK':
                     $filters['must'][] = [
                         'wildcard' => [
@@ -483,6 +464,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // starts with
                 case 'SW':
                     $filters['must'][] = [
                         'wildcard' => [
@@ -490,6 +472,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                // starts not with
                 case 'SN':
                     $filters['must_not'][] = [
                         'wildcard' => [
@@ -497,9 +480,13 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // greater
                 case 'GT':
+                    // greater equal
                 case 'GTE':
+                    // less
                 case 'LT':
+                    // less equal
                 case 'LTE':
                     $filters['must'][] = [
                         'range' => [
@@ -509,6 +496,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // in
                 case 'IN':
                     $valArray = explode(',', $fieldvalue['value1']);
                     foreach ($valArray as $valIndex => $valValue)
@@ -519,6 +507,7 @@ class SpiceACLObject extends SugarBean
                         ]
                     ];
                     break;
+                    // not in
                 case 'NI':
                     $valArray = explode(',', $fieldvalue['value1']);
                     foreach ($valArray as $valIndex => $valValue)
@@ -595,10 +584,10 @@ class SpiceACLObject extends SugarBean
                     $whereClauses[] = "$table_name.{$fieldvalue['name']} = '{$fieldvalue['value1']}'";
                     break;
                 case 'ISEMPTY':
-                    $whereClauses[] = "($table_name.{$fieldvalue['name']} = '' OR $table_name.{$fieldvalue['name']} IS NULL";
+                    $whereClauses[] = "($table_name.{$fieldvalue['name']} = '' OR $table_name.{$fieldvalue['name']} IS NULL)";
                     break;
                 case 'ISNEMPTY':
-                    $whereClauses[] = "($table_name.{$fieldvalue['name']} != '' AND $table_name.{$fieldvalue['name']} IS NOT NULL";
+                    $whereClauses[] = "($table_name.{$fieldvalue['name']} != '' AND $table_name.{$fieldvalue['name']} IS NOT NULL)";
                     break;
                 case 'CU':
                     if (!empty($fieldvalue['value1'])) {
@@ -658,7 +647,6 @@ class SpiceACLObject extends SugarBean
                 }
             }
         }
-
 
         return implode(' AND ', $whereClauses) ?: '1=1';
     }
@@ -762,6 +750,7 @@ class SpiceACLObject extends SugarBean
                     };
                     break;
                 case 'ig':
+                case 'ignore': //BWC
                 case '':
                     $authObjectAccess = true;
                     break;

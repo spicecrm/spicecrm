@@ -45,6 +45,7 @@
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\ProspectLists\ProspectList;
 
 /**
@@ -293,7 +294,7 @@ function write_mail_merge_log_entry($campaign_id,$pl_row) {
     if ($count==0) {
         $data=[];
 
-        $data['id']="'" . create_guid() . "'";
+        $data['id']="'" . SpiceUtils::createGuid() . "'";
         $data['campaign_id']="'" . DBManagerFactory::getInstance()->quote($campaign_id) . "'";
         $data['target_tracker_key']="'" . DBManagerFactory::getInstance()->quote($pl_row['id']) . "'";
         $data['target_id']="'" .  DBManagerFactory::getInstance()->quote($pl_row['related_id']) . "'";
@@ -360,7 +361,7 @@ function write_mail_merge_log_entry($campaign_id,$pl_row) {
                 //process if this is not a duplicate campaign log entry
                 if(empty($row)){
                     //create campaign tracker id and retrieve related bio bean
-                     $tracker_id = create_guid();
+                     $tracker_id = SpiceUtils::createGuid();
                      $rel_bean->retrieve($id);
 
                     //create new campaign log record.

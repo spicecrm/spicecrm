@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['CompanyFiscalPeriod'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['CompanyFiscalPeriod'] = [
     'table' => 'companyfiscalperiods',
     'comment' => 'CompanyFiscalPeriods Module',
     'audited' =>  false,

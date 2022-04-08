@@ -41,7 +41,7 @@ class SpiceDictionaryDomainLoader
                 $validationsArray[$valname]['validationvalues'][] = [
                     'enumvalue' => $domainvalue['enumvalue'],
                     'minvalue' => $domainvalue['minvalue'],
-                    'maxvalue' => $domainvalue['maxvalue'],
+                    'maxval' => $domainvalue['maxval'],
                     'label' => $domainvalue['label'],
                     'sequence' => $domainvalue['sequence']
                 ];

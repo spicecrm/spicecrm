@@ -1,24 +1,12 @@
-<!--
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
--->
-
 <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small" [ngClass]="{'slds-p-right--x-small': notificationService.unreadCount > 0}">
-    <div (click)="toggleOpenPopover(); $event.stopPropagation()" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
+    <div (click)="toggleOpenPopover();" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
         <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
     </div>
     <div *ngIf="notificationService.unreadCount > 0" style="top:-5px; right:0px;" class="slds-notification-badge slds-incoming-notification slds-show-notification">
         {{notificationService.unreadCount}}
     </div>
 </div>
-<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; right: 35px; max-height: calc(100vh - 55px);">
+<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; max-height: calc(100vh - 55px);" [ngStyle]="popoverStyle">
     <div class="slds-grid slds-border--bottom">
         <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
             <h2 class="slds-text-heading_small">
@@ -57,10 +45,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         <div *ngIf="notificationService.isLoading" class="slds-align--absolute-center slds-p-around--small">
             <system-spinner></system-spinner>
         </div>
-        <div class="slds-grid slds-grid--align-center slds-has-divider--top slds-p-around--xx-small">
-            <a (click)="showAllNotifications()" class="slds-text-link">
-                <system-label label="LBL_SHOW_ALL"></system-label>
-            </a>
+        <div class="slds-has-divider--top slds-p-around--x-small slds-size--1-of-1 slds-align--absolute-center">
+            <ul class="slds-list_horizontal slds-has-dividers_right slds-has-block-links">
+                <li class="slds-item">
+                    <a (click)="showAllNotifications()" class="slds-text-link">
+                        <system-label label="LBL_SHOW_ALL"></system-label>
+                    </a>
+                </li>
+                <li *ngIf="hasSubscriptions" class="slds-item">
+                    <a (click)="manageSubscriptions()" class="slds-text-link">
+                        <system-label label="LBL_MANAGE_MODEL_SUBSCRIPTIONS"></system-label>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
     <ng-template #showSettingsContainer>
@@ -77,7 +74,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     </span>
                 </div>
             </ng-template>
-
         </div>
     </ng-template>
 </section>

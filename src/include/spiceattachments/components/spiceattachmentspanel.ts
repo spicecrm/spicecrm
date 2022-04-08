@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleSpiceAttachments
  */
@@ -30,6 +18,7 @@ import {
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
+import {view} from "../../../services/view.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
@@ -45,7 +34,7 @@ declare var moment: any;
  * if the parent provides the service the parent is also responsible for the laoding of atatchments
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentspanel.html',
+    templateUrl: '../templates/spiceattachmentspanel.html',
     providers: [modelattachments]
 })
 export class SpiceAttachmentsPanel implements AfterViewInit {
@@ -53,7 +42,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     /**
      * the fileupload elelent
      */
-    @ViewChild("fileupload", {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
+    @ViewChild("fileupload", {read: ViewContainerRef, static: false}) public fileupload: ViewContainerRef;
 
     /**
      * an object array with base64 files that shoudl be loaded when the panel initializes itself
@@ -63,14 +52,14 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     /**
      * emits when the attachments are loaded
      */
-    @Output() private attachmentsLoaded: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public attachmentsLoaded: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * @ignore
      *
      * passed in component config
      */
-    private componentconfig: {
+    public componentconfig: {
         systemCateogryId?: string,
         requiredmodelstate?: string,
         disableupload?: boolean
@@ -87,7 +76,19 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * @param metadata
      * @param modalservice
      */
-    constructor(private _modelattachments: modelattachments, @Optional() @SkipSelf() private parentmodelattachments: modelattachments, private language: language, private modal: modal, private model: model, private renderer: Renderer2, private toast: toast, private metadata: metadata, private modalservice: modal, private injector: Injector) {
+    constructor(
+        public _modelattachments: modelattachments,
+        @Optional() @SkipSelf() public parentmodelattachments: modelattachments,
+        public language: language,
+        public modal: modal,
+        public model: model,
+        @Optional() public view: view,
+        public renderer: Renderer2,
+        public toast: toast,
+        public metadata: metadata,
+        public modalservice: modal,
+        public injector: Injector
+    ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
     }
@@ -110,13 +111,13 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * returns if the model is editing
      */
     get editing() {
-        return this.model.isEditing;
+        return this.model.isEditing && (!this.view || this.view.isEditable);
     }
 
     /**
      * initializes the model attachments service and loads the attachments
      */
-    private loadFiles() {
+    public loadFiles() {
         this.modelattachments.getAttachments(this.componentconfig.systemCateogryId).subscribe(loaded => {
             this.attachmentsLoaded.emit(true);
             this.loadInputFiles();
@@ -126,7 +127,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     /**
      * loads files that are to be added dynamically in the call from a compoinent adding a base64 file
      */
-    private loadInputFiles() {
+    public loadInputFiles() {
         this.modelattachments.uploadAttachmentsBase64FromArray(this.uploadfiles);
     }
 
@@ -164,7 +165,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      *
      * @param event
      */
-    private preventdefault(event: any) {
+    public preventdefault(event: any) {
         if ((event.dataTransfer.items.length >= 1 && this.hasOneItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
@@ -179,7 +180,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      *
      * @param items the items from the event
      */
-    private hasOneItemsFile(items) {
+    public hasOneItemsFile(items) {
         for (let item of items) {
             if (item.kind == 'file') {
                 return true;
@@ -194,7 +195,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      *
      * @param event the drop event
      */
-    private onDrop(event: any) {
+    public onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
         if (files && files.length >= 1) {
@@ -207,7 +208,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      *
      * @param event the drop event
      */
-    private fileDrop(files) {
+    public fileDrop(files) {
         if (files && files.length >= 1) {
             this.doupload(files);
         }
@@ -216,7 +217,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     /**
      * triggers a file upload. From the select button firing the hidden file upload input
      */
-    private selectFile() {
+    public selectFile() {
         let event = new MouseEvent("click", {bubbles: true});
         this.fileupload.element.nativeElement.dispatchEvent(event);
     }
@@ -224,7 +225,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     /**
      * does the upload oif the files
      */
-    private uploadFile() {
+    public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         this.doupload(files);
     }
@@ -234,14 +235,14 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      *
      * @param files an array with files
      */
-    private doupload(files) {
+    public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId);
     }
 
     /**
      * opens the add Image modal
      */
-    private addImage() {
+    public addImage() {
         this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector);
     }
 

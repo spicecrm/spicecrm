@@ -7,11 +7,14 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\UploadStream;
@@ -43,20 +46,8 @@ class AdminController
 
         $dbSize = 0;
         $dbCount = 0;
-        $stats = $db->query("SHOW TABLE STATUS");
-        while ($stat = $db->fetchByAssoc($stats)) {
-
-            $recordCount = $db->fetchByAssoc($db->query("SELECT count(*) records FROM {$stat['Name']}"));
-
-            $statsArray['database'][] = [
-                'name' => $stat['Name'],
-                'records' => (int)$recordCount['records'],
-                'size' => $stat['Data_length'] + $stat['Index_length']
-            ];
-            $dbCount += (int)$recordCount['records'];
-            $dbSize += (int)$stat['Data_length'] + (int)$stat['Index_length'];
-        }
-
+        $dbStats = $db->getStats();
+        $statsArray['database'] = $dbStats['tables'];
         // get the fts stats
         $statsArray['elastic'] = SpiceFTSHandler::getInstance()->getStats();
 
@@ -65,7 +56,7 @@ class AdminController
         $params = $req->getQueryParams();
         if ($params['summary']) {
             return $res->withJson([
-                'database' => ['size' => $dbSize, 'count' => $dbCount],
+                'database' => ['size' => $dbStats['size'], 'count' => $dbStats['count']],
                 'uploadfiles' => $statsArray['uploadfiles'],
                 'elastic' => ['size' => $statsArray['elastic']['_all']['total']['store']['size_in_bytes'], 'count' => $statsArray['elastic']['_all']['total']['docs']['count']],
                 'users' => $db->fetchByAssoc($db->fetchByAssoc("SELECT count(id) usercount FROM users WHERE status='Active'"))['usercount']
@@ -136,12 +127,7 @@ class AdminController
      * @throws ForbiddenException
      */
     public function writeGeneralSettings(Request $req, Response $res, array $args): Response {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-
-        if (!$current_user->is_admin) {
-            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
-        }
 
         $diffArray = [];
 
@@ -153,14 +139,13 @@ class AdminController
                 switch ($itemname) {
                     case 'name':
                         SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
-                        $query = "UPDATE config SET value = '$itemvalue' WHERE categroy = 'system' AND name = '$itemname'";
+                        $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
                         $db->query($query);
                         break;
                     default:
                         SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
                         $diffArray[$itemname] = $itemvalue;
                 }
-
             }
 
             // handle advanced settings
@@ -187,14 +172,13 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
         if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
             SpiceDictionaryVardefs::loadDictionaries();
             // save cache to DB
-            foreach ($dictionary as $dict) {
+            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -214,7 +198,7 @@ class AdminController
             }
         }
 
-        foreach ($dictionary as $meta) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
             $tablename = $meta['table'];
@@ -241,14 +225,13 @@ class AdminController
      * @throws \Exception
      */
     public function buildSQLArray(Request $req, Response $res, array $args): Response {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
         if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
             SpiceDictionaryVardefs::loadDictionaries();
             // save cache to DB
-            foreach ($dictionary as $dict) {
+            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -269,7 +252,7 @@ class AdminController
             }
         }
 
-        foreach ($dictionary as $meta) {
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
             $tablename = $meta['table'];
@@ -397,7 +380,6 @@ class AdminController
      */
     public function rebuildRelationships()
     {
-//        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
         $this->rebuildDictionaryRelationships();
@@ -409,7 +391,7 @@ class AdminController
 //            foreach ($GLOBALS['moduleList'] as $module) {
 //                $focus = BeanFactory::getBean($module);
 //                if (!$focus) continue;
-//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => $dictionary[$focus->object_name]], $focus->module_dir);
+//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => SpiceDictionaryHandler::getInstance()->dictionary[$focus->object_name]], $focus->module_dir);
 //            }
 //
 //            // rebuild the metadata relationships as well
@@ -441,10 +423,9 @@ class AdminController
      */
     private function rebuildMetadataRelationships()
     {
-        global $dictionary;
         $db = DBManagerFactory::getInstance();
 
-        $rel_dictionary = $dictionary;
+        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
         foreach ($rel_dictionary as $rel_name => $rel_data) {
             $table = isset($rel_data ['table']) ? $rel_data ['table'] : "";
             SugarBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
@@ -468,7 +449,7 @@ class AdminController
             if($lang['system_language']){
                 $language = $lang['language_code'];
                 $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-                $appListStrings[$language][] = return_app_list_strings_language($language);
+                $appListStrings[$language][] = SpiceUtils::returnAppListStringsLanguage($language);
                 $appLang[$language][] = $this->loadLanguage($language);
             }
         }
@@ -518,6 +499,8 @@ class AdminController
     {
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $extension = "<?php \n //WARNING: The contents of this file are auto-generated\n";
+            $extension.= "use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;\n";
+            $extension.= "use SpiceCRM\includes\SugarObjects\VardefManager;\n";
             $extpath = "modules/$module/$path";
             $module_install = 'custom/Extension/' . $extpath;
             $shouldSave = false;
@@ -533,7 +516,7 @@ class AdminController
                         } else {
                             $file = file_get_contents($module_install . '/' . $entry);
                             LoggerManager::getLogger()->debug(get_class($this) . "->merge_files(): found {$module_install}{$entry}");
-                            $extension .= "\n" . str_replace(['<?php', '?>', '<?PHP', '<?'], ['', '', '', ''], $file);
+                            $extension .= "\n" . str_replace(['<?php', '?>', '<?PHP', '<?', 'use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;', 'use SpiceCRM\includes\SugarObjects\VardefManager;'], ['', '', '', '', '', ''], $file);
                         }
                     }
                 }
@@ -546,9 +529,9 @@ class AdminController
 
             if ($shouldSave) {
                 if (!file_exists("custom/$extpath")) {
-                    mkdir_recursive("custom/$extpath", true);
+                    FileUtils::mkdirRecursive("custom/$extpath", true);
                 }
-                $out = sugar_fopen("custom/$extpath/$name", 'w');
+                $out = SpiceFileUtils::spiceFopen("custom/$extpath/$name", 'w');
                 fwrite($out, $extension);
                 fclose($out);
             } else {
@@ -579,9 +562,9 @@ class AdminController
         $extension .= "\n?>";
         if ($shouldSave) {
             if (!file_exists("custom/$extpath")) {
-                mkdir_recursive("custom/$extpath", true);
+                FileUtils::mkdirRecursive("custom/$extpath", true);
             }
-            $out = sugar_fopen("custom/$extpath/$name", 'w');
+            $out = SpiceFileUtils::spiceFopen("custom/$extpath/$name", 'w');
             fwrite($out, $extension);
             fclose($out);
         } else {

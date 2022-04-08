@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module Admin Inspector Module
  */
@@ -25,7 +13,7 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: '[administration-gdpr-retention-manager]',
-    templateUrl: './src/admincomponents/templates/administrationgdprretentionmanager.html'
+    templateUrl: '../templates/administrationgdprretentionmanager.html'
 })
 
 export class AdministrationGDPRRetentionManager implements OnInit {
@@ -35,40 +23,40 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      *
      * @private
      */
-    private policies: any[] = [];
+    public policies: any[] = [];
 
     /**
      * the current selected policy index
      * @private
      */
-    private selectedPolicyIndex: number;
+    public selectedPolicyIndex: number;
 
     /**
      * indicates when we are loading
      * @private
      */
-    private isloading: boolean = false;
+    public isloading: boolean = false;
 
     /**
      * the results
      * @private
      */
-    private results: any;
+    public results: any;
 
     /**
      * indicates if we are initialized
      *
      * @private
      */
-    private initialized: boolean = false;
+    public initialized: boolean = false;
 
     constructor(
-        private toast: toast,
-        private modal: modal,
-        private modelutilities: modelutilities,
-        private backend: backend,
-        private router: Router,
-        private injector: Injector
+        public toast: toast,
+        public modal: modal,
+        public modelutilities: modelutilities,
+        public backend: backend,
+        public router: Router,
+        public injector: Injector
     ) {
         this.initializeResults();
     }
@@ -82,7 +70,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      * @param index
      * @private
      */
-    private selectPolicyByIndex(index) {
+    public selectPolicyByIndex(index) {
         if (!this.isloading && this.selectedPolicyIndex != index) {
             this.selectedPolicyIndex = index;
             this.initializeResults();
@@ -101,7 +89,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      *
      * @private
      */
-    private initializeResults() {
+    public initializeResults() {
         this.results = {
             list: [],
             module: '',
@@ -114,7 +102,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      *
      * @private
      */
-    private loadPolicies() {
+    public loadPolicies() {
         this.backend.getRequest('admin/gdprmanager/retentionpolicies').subscribe(
             policies => {
                 this.policies = policies;
@@ -129,7 +117,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      * @param policy
      * @private
      */
-    private toggleStatus(policy) {
+    public toggleStatus(policy) {
         if (policy.id) {
             policy.active = !policy.active;
             this.backend.postRequest(`admin/gdprmanager/retentionpolicies/${policy.id}/activate/${policy.active ? 1 : 0}`);
@@ -141,18 +129,18 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      *
      * @private
      */
-    private save() {
+    public save() {
         // if we have no id generate one
         let newPolicy = this.modelutilities.generateGuid();
         // post the record
-        let await = this.modal.await('LBL_SAVING');
+        let loading = this.modal.await('LBL_SAVING');
         this.backend.postRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id ? this.selectedPolicy.id : newPolicy}`, {}, this.selectedPolicy).subscribe(
             () => {
                 if (!this.selectedPolicy.id) this.selectedPolicy.id = newPolicy;
-                await.emit(true);
+                loading.emit(true);
             },
             () => {
-                await.emit(true);
+                loading.emit(true);
             }
         )
     }
@@ -162,7 +150,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      *
      * @private
      */
-    private getResults() {
+    public getResults() {
         this.isloading = true;
         this.results.list = [];
         this.backend.getRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id}/results`).subscribe(
@@ -181,7 +169,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      *
      * @private
      */
-    private loadmore() {
+    public loadmore() {
         if (!this.isloading && this.results.total > this.results.list.length) {
             this.isloading = true;
             this.backend.getRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id}/results`, {start: this.results.list.length}).subscribe(
@@ -203,7 +191,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      * @param e
      * @private
      */
-    private openRecord(id, e: MouseEvent) {
+    public openRecord(id, e: MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
         this.router.navigate([`module/${this.results.module}/${id}`]);
@@ -215,19 +203,19 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      * @param index
      * @private
      */
-    private deleteByIndex(index) {
+    public deleteByIndex(index) {
         this.modal.confirm('LBL_DELETE_RECORD', 'LBL_DELETE_RECORD').subscribe(
             res => {
                 if (res) {
                     if (this.selectedPolicy.id) {
-                        let await = this.modal.await('LBL_DELETING');
+                        let loading = this.modal.await('LBL_DELETING');
                         this.backend.deleteRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id}`).subscribe(
                             res => {
                                 this.deletePolicy(index);
-                                await.emit(true);
+                                loading.emit(true);
                             },
                             () => {
-                                await.emit(true);
+                                loading.emit(true);
                             }
                         )
                     } else {
@@ -239,7 +227,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
         );
     }
 
-    private deletePolicy(index) {
+    public deletePolicy(index) {
         if (this.selectedPolicyIndex == index) this.selectedPolicyIndex = undefined;
         this.policies.splice(index, 1);
     }
@@ -249,7 +237,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      *
      * @private
      */
-    private addPolicy() {
+    public addPolicy() {
         this.modal.input('LBL_POLICY_NAME', 'LBL_POLICY_NAME').subscribe(
             val => {
                 if (val) {

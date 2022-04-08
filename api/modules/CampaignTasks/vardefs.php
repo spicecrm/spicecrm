@@ -1,10 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-global $dictionary;
-$dictionary['CampaignTask'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
     'table' => 'campaigntasks',
     'comment' => 'CampaignTasks Module',
     'audited' => true,
@@ -258,6 +257,13 @@ $dictionary['CampaignTask'] = [
             'module' => 'ServiceFeedbacks',
             'relationship' => 'servicefeedbacks_campaigntasks',
             'link_type' => 'one',
+            'source' => 'non-db'
+        ],
+        'emailtrackingactions' => [
+            'name' => 'emailtrackingactions',
+            'type' => 'link',
+            'module' => 'EmailTrackingActions',
+            'relationship' => 'campaigntask_emailtrackingactions',
             'source' => 'non-db'
         ]
     ],

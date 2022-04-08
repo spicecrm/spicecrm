@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SpiceImporterModule
  */
@@ -30,27 +18,27 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
 declare var _: any;
 
 @Component({
-    templateUrl: './src/include/spiceimporter/templates/spiceimporter.html',
+    templateUrl: '../templates/spiceimporter.html',
     providers: [model, SpiceImporterService]
 })
 export class SpiceImporter implements OnInit {
-    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) private contentcontainer: ViewContainerRef;
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) public contentcontainer: ViewContainerRef;
 
-    private importSteps: any[] = ['select', 'map', 'fixed', 'check', 'result'];
-    private templatename: string;
-    private importAction: string = 'new';
-    private processing: boolean = false;
-    private modelFields: any[] = undefined;
-    private requiredModelFields: any[] = undefined;
+    public importSteps: any[] = ['select', 'map', 'fixed', 'check', 'result'];
+    public templatename: string;
+    public importAction: string = 'new';
+    public processing: boolean = false;
+    public modelFields: any[] = undefined;
+    public requiredModelFields: any[] = undefined;
 
-    constructor(private spiceImporter: SpiceImporterService,
-                private language: language,
-                private metadata: metadata,
-                private model: model,
-                private navigationtab: navigationtab,
-                private router: Router,
-                private backend: backend,
-                private toast: toast) {
+    constructor(public spiceImporter: SpiceImporterService,
+                public language: language,
+                public metadata: metadata,
+                public model: model,
+                public navigationtab: navigationtab,
+                public router: Router,
+                public backend: backend,
+                public toast: toast) {
 
         // get the bean details
         this.model.module = this.navigationtab.activeRoute.params.module;
@@ -88,7 +76,7 @@ export class SpiceImporter implements OnInit {
 
     }
 
-    private getModuleFields() {
+    public getModuleFields() {
         if (this.model.module !== '') {
             this.modelFields = [];
             let fields = this.metadata.getModuleFields(this.model.module);
@@ -112,7 +100,7 @@ export class SpiceImporter implements OnInit {
         this.requiredModelFields = this.modelFields.filter(field => field.name != 'id' && field.required);
     }
 
-    private setImportAction(action) {
+    public setImportAction(action) {
         this.importAction = action;
         let index;
 
@@ -130,16 +118,16 @@ export class SpiceImporter implements OnInit {
         }
     }
 
-    private getCurrentStep() {
+    public getCurrentStep() {
         return this.language.getLabel(this.spiceImporter.importStepsText[this.spiceImporter.currentImportStep]);
 
     }
 
-    private gotoModule() {
+    public gotoModule() {
         this.router.navigate(['/module/' + this.model.module]);
     }
 
-    private getContainerStyle() {
+    public getContainerStyle() {
         let rect = this.contentcontainer.element.nativeElement.getBoundingClientRect();
         return {
             'height': 'calc(100vh - ' + rect.top + 'px)',
@@ -148,7 +136,7 @@ export class SpiceImporter implements OnInit {
     }
 
 
-    private getStepClass(convertStep) {
+    public getStepClass(convertStep) {
         let thisIndex = this.importSteps.indexOf(convertStep);
         if (thisIndex == this.spiceImporter.currentImportStep) {
             return 'slds-is-active';
@@ -158,19 +146,19 @@ export class SpiceImporter implements OnInit {
         }
     }
 
-    private getStepComplete(convertStep) {
+    public getStepComplete(convertStep) {
         let thisIndex = this.importSteps.indexOf(convertStep);
         return thisIndex < this.spiceImporter.currentImportStep;
 
     }
 
-    private getProgressBarWidth() {
+    public getProgressBarWidth() {
         return {
             width: (this.spiceImporter.currentImportStep / (this.importSteps.length - 1) * 100) + '%'
         };
     }
 
-    private nextStep() {
+    public nextStep() {
         switch (this.spiceImporter.currentImportStep) {
             case 0:
                 if (this.spiceImporter.fileName === '') {
@@ -235,7 +223,7 @@ export class SpiceImporter implements OnInit {
         }
     }
 
-    private checkRequiredMapped() {
+    public checkRequiredMapped() {
         let invertedFileMapping = _.invert(this.spiceImporter.fileMapping),
             foundFieldsCount = 0,
             fixedFields = {};
@@ -258,33 +246,33 @@ export class SpiceImporter implements OnInit {
         return this.requiredModelFields.length == foundFieldsCount;
     }
 
-    private prevStep() {
+    public prevStep() {
         if (this.spiceImporter.currentImportStep > 0) {
             this.spiceImporter.currentImportStep--;
         }
     }
 
-    private showNext() {
+    public showNext() {
 
         return this.spiceImporter.currentImportStep < this.importSteps.length - 2;
 
 
     }
 
-    private showImport() {
+    public showImport() {
 
         return this.spiceImporter.currentImportStep == this.importSteps.length - 2;
 
 
     }
 
-    private showExit() {
+    public showExit() {
         return this.spiceImporter.currentImportStep == this.importSteps.length - 1;
 
 
     }
 
-    private import() {
+    public import() {
 
         let preparedObjectImport = this.prepareObjectImport();
 
@@ -313,7 +301,7 @@ export class SpiceImporter implements OnInit {
         });
     }
 
-    private prepareObjectImport() {
+    public prepareObjectImport() {
 
         let objectImport = _.pick(this.spiceImporter,
             'fileName',

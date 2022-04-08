@@ -1,26 +1,16 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
-import {Observable, of, Subject} from "rxjs";
+import {from, Observable, of, Subject, throwError} from "rxjs";
 import {
     Compiler,
+    ComponentFactory,
     ComponentFactoryResolver,
+    ComponentRef,
     EventEmitter,
     Injectable,
     Injector,
-    NgModuleFactoryLoader
+    ViewContainerRef
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {CanActivate, CanDeactivate, Router} from "@angular/router";
@@ -28,15 +18,11 @@ import {LocationStrategy} from "@angular/common";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
-import {SpiceInstaller} from "../include/spiceinstaller/components/spiceinstaller";
+import {SystemComponentContainer} from "../systemcomponents/components/systemcomponentcontainer";
+import {map} from "rxjs/operators";
+import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
+import {SystemComponentMissing} from "../systemcomponents/components/systemcomponentmissing";
 
-// for the dynamic routes
-// import {loginCheck} from "../services/login.service";
-
-declare var System: any;
-declare var SystemJS: any;
-declare var SystemDynamicRouteContainer: any;
-declare var SystemNavigationCollector: any;
 declare var _;
 
 @Injectable()
@@ -45,19 +31,18 @@ export class metadata {
     /**
      * hols the module defs returned from teh backend. This has all teh necesary info on the module itself
      */
-    private componentFactories: any = {};
-    private role: string = "";
+    public componentFactories: any = {};
+    public role: string = "";
 
     constructor(
-        private NgModuleFactoryLoader: NgModuleFactoryLoader,
-        private http: HttpClient,
-        private session: session,
-        private configuration: configurationService,
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private router: Router,
-        private broadcast: broadcast,
-        private compiler: Compiler,
-        private Injector: Injector
+        public http: HttpClient,
+        public session: session,
+        public configuration: configurationService,
+        public componentFactoryResolver: ComponentFactoryResolver,
+        public router: Router,
+        public broadcast: broadcast,
+        public compiler: Compiler,
+        public Injector: Injector
     ) {
         this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
     }
@@ -75,7 +60,7 @@ export class metadata {
         return this.configuration.getData('componentmoduleconfigs');
     }
 
-    get moduleDirectory() {
+    get moduleDirectory(): {[key: string]: {id: string, module: string, path: string, factories?: any[]}} {
         let module = {
             SpiceInstaller: {
                 id: "766AADDE-FB86-4F9C-9939-9A7B03288CAE",
@@ -160,40 +145,25 @@ export class metadata {
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
      */
     public addRoutes() {
-        System.import("app/systemcomponents/systemcomponents")
-            .then((fileContents: any) => {
-                return fileContents.SystemComponents;
-            })
-            .then((type: any) => {
-                this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                    componentfactory.componentFactories.some(factory => {
-                        // if (factory.componentType.name === "SystemDynamicRouteContainer") {
-                        if (factory.componentType.name === "SystemNavigationCollector") {
-                            for (let route of this.routes) {
-                                this.router.config.unshift({
-                                    path: route.path,
-                                    component: factory.componentType,
-                                    canActivate: [aclCheck]
-                                    // canDeactivate: [noBack]
-                                });
 
-                                // add the same for the tabbed browser
-                                this.router.config.unshift({
-                                    path: 'tab/:tabid/' + route.path,
-                                    component: factory.componentType,
-                                    canActivate: [aclCheck]
-                                    // canDeactivate: [noBack]
-                                });
-                            }
-                            return true;
-                        }
-                    });
-                });
+        this.routes.forEach(route => {
+            this.router.config.unshift({
+                path: route.path,
+                component: SystemNavigationCollector,
+                canActivate: [aclCheck]
             });
+
+            // add the same for the tabbed browser
+            this.router.config.unshift({
+                path: 'tab/:tabid/' + route.path,
+                component: SystemNavigationCollector,
+                canActivate: [aclCheck]
+            });
+        });
     }
 
     /*
-    private addRoute(path: string, component: string) {
+    public addRoute(path: string, component: string) {
         let module = this.componentDirectory[component].module;
 
         System.import(this.moduleDirectory[module].path)
@@ -223,69 +193,28 @@ export class metadata {
      *
      * no system container is rendered. This is faster but can cause that the sequence is mixed up
      */
-    public addComponentDirect(component: string, viewChild: any, injector?: Injector): Observable<any> {
-        let retSubject = new Subject();
+    public addComponentDirect(component: string, vcr: ViewContainerRef, injector?: Injector): Observable<ComponentRef<any>> {
 
-        if (!this.componentDirectory[component]) {
-            System.import("app/systemcomponents/systemcomponents")
-                .then((fileContents: any) => {
-                    return fileContents.SystemComponents;
-                })
-                .then((type: any) => {
-                    this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                        componentfactory.componentFactories.some(factory => {
-                            if (factory.componentType.name === "SystemComponentMissing") {
-                                let componentRef = viewChild.createComponent(factory, undefined, injector);
-                                componentRef.instance.component = component;
-                                retSubject.next(componentRef);
-                                retSubject.complete();
-                                return true;
-                            }
-                        });
-                    });
-                });
-        } else {
-            if (this.componentDirectory[component].module) {
-                let module = this.componentDirectory[component].module;
-                try {
-                    System.import(this.moduleDirectory[module].path)
-                        .then((fileContents: any) => {
-                            return fileContents[this.moduleDirectory[module].module];
-                        })
-                        .then((type: any) => {
-                            this.moduleDirectory[module].factories = {};
-                            this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                                let foundComp = componentfactory.componentFactories.find(factory => factory.componentType.name === component);
-                                if (foundComp) {
-                                    let componentRef = viewChild.createComponent(foundComp, undefined, injector);
-                                    componentRef.instance.self = componentRef;
-                                    retSubject.next(componentRef);
-                                    retSubject.complete();
-                                } else {
-                                    retSubject.error("Cannot find a factory for component " + component);
-                                    retSubject.complete();
-                                }
-                            });
-                        });
-                } catch (e) {
-                    retSubject.error(e);
-                    retSubject.complete();
-                }
-            } else {
-                System.import(this.componentDirectory[component].path)
-                    .then((fileContents: any) => {
-                        return fileContents[component];
-                    })
-                    .then((componentcreated: any) => {
-                        let factory = this.componentFactoryResolver.resolveComponentFactory(componentcreated);
-                        let componentRef = viewChild.createComponent(factory, undefined, injector);
-                        componentRef.instance.self = componentRef;
-                        retSubject.next(componentRef);
-                        retSubject.complete();
-                    });
-            }
+        const renderError = this.hasRenderError(component, vcr);
+
+        if (renderError) {
+            return throwError(() => new Error(renderError));
         }
-        return retSubject.asObservable();
+
+        const resSubject = new Subject<ComponentRef<any>>();
+
+        const module = this.componentDirectory[component].module;
+        const moduleMetadata = {
+            name: this.moduleDirectory[module].module,
+            path: this.moduleDirectory[module].path.replace('app/', '')
+        };
+        this.renderComponent(moduleMetadata, component, vcr, [], injector).subscribe(componentRef => {
+            componentRef.instance.self = componentRef;
+            resSubject.next(componentRef);
+            resSubject.complete();
+        });
+
+        return resSubject.asObservable();
     }
 
     public checkComponent(component: string) {
@@ -296,114 +225,142 @@ export class metadata {
         }
     }
 
+    /**
+     * import the component file and return the factory
+     * @private
+     * @param moduleMetadata
+     */
+    public async importModule(moduleMetadata: { name: string, path: string }): Promise<any> {
+
+        return import(
+            /*
+               webpackInclude: /^\.(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$|(\\|\/)(addcomponents|admincomponents|globalcomponents|objectcomponents|objectfields|portalcomponents|systemcomponents|workbench)(\\|\/)[^\\|\/]+?$|(\\|\/)(modules|include|custom)(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$/
+             */
+            `src/${moduleMetadata.path}.ts`)
+            .then(m => m[moduleMetadata.name]);
+    }
+
+    /**
+     * load component factory from module or from cached factories
+     * @param moduleMetadata
+     * @param componentName
+     * @private
+     */
+    public loadComponentFactory(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentFactory<any>> {
+
+        if (this.componentFactories[moduleMetadata.name]) {
+            return from(
+                Promise.resolve(this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName))
+            );
+        }
+
+        return from(
+            this.importModule(moduleMetadata))
+            .pipe(
+                map(moduleFactory => {
+                    this.componentFactories[moduleMetadata.name] = this.compiler.compileModuleAndAllComponentsSync(moduleFactory).componentFactories;
+                    return this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName);
+
+                }));
+    }
+
+    /**
+     * render the component to the view
+     * @param moduleMetadata
+     * @param componentName
+     * @param vcr
+     * @param data
+     * @param injector
+     * @private
+     */
+    public renderComponent(moduleMetadata: { name: string, path: string }, componentName: string, vcr: ViewContainerRef, data?: { property: string, value: any }[], injector?: Injector): Observable<ComponentRef<any>> {
+
+        return this.loadComponentFactory(moduleMetadata, componentName)
+            .pipe(
+                map(componentFactory => {
+
+                    // const componentContainerFactory = this.componentFactoryResolver.resolveComponentFactory(componentFactory.componentType);
+                    const componentRef = vcr.createComponent(componentFactory, undefined, injector);
+
+                    // pass data to the component instance
+                    data.forEach(e => componentRef.instance[e.property] = e.value);
+
+                    componentRef.changeDetectorRef.markForCheck();
+                    return componentRef;
+                })
+            );
+
+    }
+
+    /**
+     * return the possible rendering error and render the system component missing it is a misconfiguration
+     * @param ComponentName
+     * @param vcr
+     * @private
+     */
+    public hasRenderError(ComponentName: string, vcr: ViewContainerRef): string {
+        if (!vcr) {
+            return 'ViewContainerRef was passed is undefined';
+        }
+
+        if (!this.componentDirectory[ComponentName] || !this.componentDirectory[ComponentName].module) {
+
+            const systemComponentMissingFactory = this.componentFactoryResolver.resolveComponentFactory(SystemComponentMissing);
+            const systemComponentMissing = vcr.createComponent(systemComponentMissingFactory);
+            systemComponentMissing.instance.component = ComponentName;
+
+            return `misconfiguration for component ${ComponentName} in object repository`;
+        }
+
+        return undefined;
+    }
+
+    /**
+     * load the system component container
+     * @param component
+     * @param vcr
+     * @param injector
+     * @return ViewContainerRef of SystemComponentContainer
+     * @private
+     */
+    public loadComponentContainer(component: string, vcr: ViewContainerRef, injector: Injector): ComponentRef<SystemComponentContainer> {
+
+        const systemComponentContainerFactory = this.componentFactoryResolver.resolveComponentFactory(SystemComponentContainer);
+        const systemComponentContainer = vcr.createComponent(systemComponentContainerFactory, undefined, injector);
+
+        systemComponentContainer.instance.containerComponent = component;
+
+        return systemComponentContainer;
+    }
+
     /*
      * add a Component dynamically, by placing a container element wrapper first and inside the component itself
      */
-    public addComponent(component: string, viewChild: any, injector?: Injector): Observable<any> {
-        let retSubject = new Subject();
+    public addComponent(component: string, vcr: ViewContainerRef, injector?: Injector): Observable<ComponentRef<any>> {
 
-        if (viewChild == undefined) {
-            console.log('viewchild not defined');
-            return;
+        const renderError = this.hasRenderError(component, vcr);
+
+        if (renderError) {
+            return throwError(() => new Error(renderError));
         }
 
-        // if the component is missing...
-        if (!this.componentDirectory[component]) {
-            SystemJS.import("app/systemcomponents/systemcomponents")
-                .then((fileContents: any) => {
-                    return fileContents.SystemComponents;
-                })
-                .then((type: any) => {
-                    this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                        componentfactory.componentFactories.some(factory => {
-                            if (factory.componentType.name === "SystemComponentMissing") {
-                                let componentRef = viewChild.createComponent(factory, undefined, injector);
-                                componentRef.instance.component = component;
+        const resSubject = new Subject<ComponentRef<any>>();
 
-                                // make sure we mark the component for change detection
-                                componentRef.changeDetectorRef.markForCheck();
+        const componentContainer = this.loadComponentContainer(component, vcr, injector);
 
-                                retSubject.next(componentRef);
-                                retSubject.complete();
-                                return true;
-                            }
-                        });
-                    });
-                });
-        } else {
-            // add SystemComponentContainer first
-            SystemJS.import("app/systemcomponents/systemcomponents")
-                .then((fileContents: any) => {
-                    return fileContents.SystemComponents;
-                })
-                .then((type: any) => {
-                    this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                        let cmp_factory = componentfactory.componentFactories.find((e) => e.componentType.name === "SystemComponentContainer");
+        componentContainer.instance.containerRef.subscribe(vcr => {
+            componentContainer.changeDetectorRef.detectChanges();
+            this.addComponentDirect(component, vcr).subscribe(componentRef => {
+                resSubject.next(componentRef);
+                resSubject.complete();
+            })
+        });
 
-                        let componentRef = viewChild.createComponent(cmp_factory, undefined, injector);
+        componentContainer.instance.loaded = true;
+        componentContainer.changeDetectorRef.detectChanges();
+        componentContainer.changeDetectorRef.markForCheck();
 
-                        // add the info ybout the component being added
-                        componentRef.instance.containerComponent = component;
-
-                        // make sure we mark the component for change detection
-                        componentRef.changeDetectorRef.markForCheck();
-
-                        // add the component itself...
-                        componentRef.instance.containerRef.subscribe(subref => {
-                            // load by module...
-                            if (this.componentDirectory[component].module) {
-                                let module = this.componentDirectory[component].module;
-
-                                SystemJS.import(this.moduleDirectory[module].path)
-                                    .then((fileContents: any) => {
-                                        return fileContents[this.moduleDirectory[module].module];
-                                    })
-                                    .then((subtype: any) => {
-                                        this.moduleDirectory[module].factories = {};
-                                        this.compiler.compileModuleAndAllComponentsAsync(subtype).then(subComponentfactory => {
-                                            cmp_factory = subComponentfactory.componentFactories.find((e) => e.componentType.name === component);
-                                            if (!cmp_factory) {
-                                                console.error("Cannot find a factory for component " + component);
-                                                return false;
-                                            }
-
-                                            let selfComponentRef = subref.createComponent(cmp_factory);
-
-                                            // set self on the added component
-                                            selfComponentRef.instance.self = componentRef;
-
-                                            // make sure we mark the component for change detection
-                                            selfComponentRef.changeDetectorRef.markForCheck();
-
-                                            retSubject.next(selfComponentRef);
-                                            retSubject.complete();
-                                            componentRef.instance.loaded = true;
-
-                                            return true;
-                                        });
-                                    });
-
-                            } else {
-                                // kinda deprecated... don"t use path anymore...
-                                System.import(this.componentDirectory[component].path)
-                                    .then((fileContents: any) => {
-                                        return fileContents[component];
-                                    })
-                                    .then((componentcreated: any) => {
-                                        let factory = this.componentFactoryResolver.resolveComponentFactory(componentcreated);
-                                        let componentRef = viewChild.createComponent(factory, undefined, injector);
-                                        componentRef.instance.self = componentRef;
-                                        retSubject.next(componentRef);
-                                        retSubject.complete();
-                                    });
-                            }
-                        });
-                        return true;
-                    });
-                });
-
-        }
-        return retSubject.asObservable();
+        return resSubject.asObservable();
     }
 
     /*
@@ -719,6 +676,19 @@ export class metadata {
      */
     public getModuleDuplicatecheck(module) {
         try {
+            return this.moduleDefs[module].duplicatecheck === "1" || this.moduleDefs[module].duplicatecheck === "2";
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
+     * returns for a given modulename if the duplicate check is active for the module
+     *
+     * @param module the name of the module
+     */
+    public getModuleDuplicatecheckOnChange(module) {
+        try {
             return this.moduleDefs[module].duplicatecheck === "1";
         } catch (e) {
             return false;
@@ -748,6 +718,21 @@ export class metadata {
 
         for (let module in this.moduleDefs) {
             if (this.moduleDefs[module].ftsglobalsearch) {
+                modules.push(module);
+            }
+        }
+
+        return modules;
+    }
+
+    /**
+     * returns the phone search modules
+     */
+    public getPhoneSearchModules() {
+        let modules = [];
+
+        for (let module in this.moduleDefs) {
+            if (this.moduleDefs[module].ftsphonesearch) {
                 modules.push(module);
             }
         }
@@ -1353,7 +1338,7 @@ export class metadata {
      * @param from
      * @param to
      */
-    public getCopyRules(from: string, to: string): Array<{ fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: object }> {
+    public getCopyRules(from: string, to: string): { fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: object }[] {
         const copyRules = this.copyrules[from] && this.copyrules[from][to] ? this.copyrules[from][to] : [];
 
         copyRules.forEach(copyRule => {
@@ -1461,12 +1446,12 @@ export class metadata {
      */
 
     public loadLibs(...scripts: string[]): Observable<any> {
-        let observables: Array<Observable<any>> = [];
+        let observables: Observable<any>[] = [];
         scripts.forEach((script) => {
             observables.push(this.loadLib(script));
         });
 
-        let sub = new Subject();
+        let sub = new Subject<void>();
         let cnt = 0;
         for (let o of observables) {
             o.subscribe(
@@ -1548,7 +1533,7 @@ export class metadata {
     /**
      * message handler for workbench updates
      */
-    private handleMessage(message) {
+    public handleMessage(message) {
         switch (message.messagetype) {
             case "loader.completed":
                 if (message.messagedata == 'loadRepository') {
@@ -1601,7 +1586,7 @@ export class metadata {
      * @param {string} name
      * @returns {Observable<object>}
      */
-    private loadLib(name: string): Observable<any> {
+    public loadLib(name: string): Observable<any> {
         let sub = new Subject<any>();
 
         // error if not found... (but how?)
@@ -1651,7 +1636,7 @@ export class metadata {
         return sub.asObservable();
     }
 
-    private loadScript(script) {
+    public loadScript(script) {
         let sub = new Subject<object>();
 
         script.loading = true;
@@ -1701,7 +1686,7 @@ export class metadata {
         return sub.asObservable();
     }
 
-    private isLibLoading(name): boolean {
+    public isLibLoading(name): boolean {
         if (this.scripts[name]) {
             for (let lib of this.scripts[name]) {
                 if (lib.loading) {
@@ -1714,7 +1699,7 @@ export class metadata {
         return false;
     }
 
-    private htmlStylesToObjects(stylesheetId) {
+    public htmlStylesToObjects(stylesheetId) {
         for (let format of this.htmlStyleData.stylesheets[stylesheetId].formats) {
             let styles;
             if (!_.isEmpty(format.styles)) {
@@ -1735,9 +1720,10 @@ export class metadata {
 }
 
 
+// tslint:disable-next-line:max-classes-per-file
 @Injectable()
 export class aclCheck implements CanActivate {
-    constructor(private metadata: metadata, private router: Router, private session: session, private configurationService: configurationService) {
+    constructor(public metadata: metadata, public router: Router, public session: session, public configurationService: configurationService) {
     }
 
     public canActivate(route, state) {
@@ -1769,12 +1755,13 @@ export class aclCheck implements CanActivate {
 }
 
 
+// tslint:disable-next-line:max-classes-per-file
 @Injectable()
 export class noBack implements CanDeactivate<any> {
 
     public navigatingBack: boolean = false;
 
-    constructor(private location: LocationStrategy, private broadcast: broadcast) {
+    constructor(public location: LocationStrategy, public broadcast: broadcast) {
         // catch the popstate event
         this.location.onPopState(() => {
             this.navigatingBack = true;

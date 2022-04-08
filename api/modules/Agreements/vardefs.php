@@ -1,10 +1,9 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-global $dictionary;
-
-$dictionary['Agreement'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
     'table' => 'agreements',
     'fields' => [
         'valid_from' => [

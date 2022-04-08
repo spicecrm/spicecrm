@@ -1,0 +1,82 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
+  "version": 1,
+  "newProjectRoot": "src",
+  "projects": {
+    "core": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "outputPath": "dev",
+            "index": "index-dev.html",
+            "main": "src/spiceui.ts",
+            "tsConfig": "tsconfig.json",
+            "aot": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "styles": [
+              "vendor/sldassets/styles/salesforce-lightning-design-system.min.css",
+              "assets/css/spicecrm.css",
+              "node_modules/cropperjs/dist/cropper.min.css",
+              "node_modules/croppie/croppie.css"
+            ],
+            "scripts": [
+              "node_modules/zone.js/dist/zone.min.js",
+              "node_modules/underscore/underscore-min.js",
+              "node_modules/moment/min/moment.min.js",
+              "node_modules/moment/min/locales.min.js",
+              "node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
+              "node_modules/socket.io-client/dist/socket.io.min.js",
+              "node_modules/libphonenumber-js/bundle/libphonenumber-js.min.js",
+              "node_modules/cropperjs/dist/cropper.min.js",
+              "node_modules/croppie/croppie.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "customWebpackConfig": {
+                "path": "./webpack.config.js",
+                "mergeRules": {
+                  "externals": "replace"
+                }
+              },
+              "index": "",
+              "outputPath": "app",
+              "fileReplacements": [
+                {
+                  "replace": "environments/environment.ts",
+                  "with": "environments/environment.prod.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "none",
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "core:build",
+            "port": 3333,
+            "proxyConfig": "proxy.conf.js"
+          }
+        }
+      }
+    }
+},
+  "defaultProject": "core"
+}

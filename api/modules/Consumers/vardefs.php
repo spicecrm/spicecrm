@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Consumer'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
     'table' => 'consumers',
     'comment' => 'Consumers Module',
     'audited' => true,
@@ -247,7 +247,16 @@ $dictionary['Consumer'] = [
             'module' => 'Inquiries',
             'relationship' => 'consumer_inquiries',
             'source' => 'non-db'
-        ]
+        ],
+        'letters' => [
+            'name' => 'letters',
+            'type' => 'link',
+            'relationship' => 'consumer_letters',
+            'source' => 'non-db',
+            'module' => 'Letters',
+            'bean_name' => 'Letter',
+            'vname' => 'LBL_LETTERS',
+        ],
     ],
     'relationships' => [
         'consumers_email_addresses' => [
@@ -327,9 +336,8 @@ $dictionary['Consumer'] = [
     ]
 ];
 //avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if (file_exists('extensions/modules/SalesVouchers')){
-    $dictionary['Consumer']['fields']['salesvouchers'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['salesvouchers'] = [
         'name'         => 'salesvouchers',
         'type'         => 'link',
         'relationship' => 'consumer_salesvouchers',
@@ -339,7 +347,7 @@ if (file_exists('extensions/modules/SalesVouchers')){
     ];
 }
 if (file_exists("modules/ServiceTickets")) {
-    $dictionary['Consumer']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
         'relationship' => 'servicetickets_consumers',

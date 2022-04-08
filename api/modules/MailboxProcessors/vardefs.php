@@ -1,9 +1,10 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 //dictionary global variable => class name als key
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['MailboxProcessor'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['MailboxProcessor'] = [
     'table' => 'mailbox_processors',
     'comment' => 'Mailbox Processor Module',
     'audited' =>  true,
@@ -72,8 +73,8 @@ $dictionary['MailboxProcessor'] = [
     ],
     'relationships' => [],
     'indices' => [
-        [
-            'name'   => 'idx_mailbox_processors_mailboxid',
+        'idx_mbx_processors_mailboxid' => [
+            'name'   => 'idx_mbx_processors_mailboxid',
             'type'   => 'index',
             'fields' => ['mailbox_id'],
         ],

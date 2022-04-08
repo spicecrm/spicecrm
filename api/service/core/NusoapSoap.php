@@ -6,40 +6,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 if (!defined('sugarEntry')) define('sugarEntry', true);
-/*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 require('service/core/SugarSoapService.php');
 require('vendor/nusoap/nusoap.php');
@@ -105,8 +72,8 @@ abstract class NusoapSoap extends SugarSoapService
         ob_start();
         $this->server->service($GLOBALS['HTTP_RAW_POST_DATA']);
         $this->generateLogEntry();
-        $this->writeLog();
         $this->updateLogEntry();
+        $this->writeLog();
         $this->in_service = false;
         ob_end_flush();
         flush();
@@ -217,13 +184,16 @@ abstract class NusoapSoap extends SugarSoapService
         $this->logEntry->session_id = session_id();
         $this->logEntry->transaction_id = $GLOBALS['transactionID'];
         $this->logEntry->direction = \SpiceCRM\includes\Middleware\LoggerMiddleware::DIRECTION_INBOUND;
+
+        $this->logging = true;
     }
 
     private function writeLog()
     {
-        $db = DBManagerFactory::getInstance('spicelogger');
+        $db = DBManagerFactory::getInstance();
         $this->logging = false;
-        if ($db->tableExists('sysapilogconfig')) {
+        $spice_config = \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config;
+        if ($spice_config['system']['no_table_exists_check'] === true || $db->tableExists('sysapilogconfig')) {
             // check if this request has to be logged by some rules...
             $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE 
               (route = '{$this->logEntry->route}' OR route = '*' OR route LIKE '%{$this->logEntry->route}%') AND
@@ -250,10 +220,10 @@ abstract class NusoapSoap extends SugarSoapService
             $this->logEntry->http_status_code = $this->extractHttpCode($this->server->outgoing_headers[0]);
             $this->logEntry->response_headers = $this->buildResponseHeader();
             $this->logEntry->runtime = (microtime(true) - $this->startingTime) * 1000;
-            $this->logEntry->response_body = $this->server->responseSOAP;
+            $this->logEntry->response_body = $this->server->responseSOAP ?: $this->server->response;
 
             // update the log...
-            $result = DBManagerFactory::getInstance('spicelogger')->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array)$this->logEntry);
+            $result = DBManagerFactory::getInstance()->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array)$this->logEntry);
         }
     }
 

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AdminComponentsModule
  */
@@ -28,27 +16,27 @@ declare var _: any;
 
 @Component({
     selector: 'administration-login-restriction-ip-addresses',
-    templateUrl: './src/admincomponents/templates/administrationloginrestrictionipaddresses.html'
+    templateUrl: '../templates/administrationloginrestrictionipaddresses.html'
 })
 export class AdministrationLoginRestrictionIpAddresses implements OnInit {
 
-    @Input() private color: string;
-    @Input() private siblingComponent: AdministrationLoginRestrictionIpAddresses;
+    @Input() public color: string;
+    @Input() public siblingComponent: AdministrationLoginRestrictionIpAddresses;
 
-    @ViewChild('table', {static: true}) private table: ElementRef;
+    @ViewChild('table', {static: true}) public table: ElementRef;
 
-    private altColor: string;
-    private ipAddresses = [];
-    private isLoading = false;
-    private isAltering = false;
-    private isAdding = false;
-    private newAddress = '';
-    private newDescription = '';
-    private addressError = '';
+    public altColor: string;
+    public ipAddresses = [];
+    public isLoading = false;
+    public isAltering = false;
+    public isAdding = false;
+    public newAddress = '';
+    public newDescription = '';
+    public addressError = '';
 
-    constructor(private backend: backend, private modal: modal, private toast: toast, private metadata: metadata, private language: language ) { }
+    constructor(public backend: backend, public modal: modal, public toast: toast, public metadata: metadata, public language: language ) { }
 
-    private get isEditing(): boolean {
+    public get isEditing(): boolean {
         return this.isAltering || this.isAdding;
     }
 
@@ -57,7 +45,7 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         this.loadIpAddresses();
     }
 
-    private loadIpAddresses() {
+    public loadIpAddresses() {
         this.isLoading = true;
         this.backend.getRequest('authentication/ipAddresses/'+this.color)
             .pipe(take(1))
@@ -71,12 +59,12 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
             });
     }
 
-    private sortIpAddresses() {
+    public sortIpAddresses() {
         this.ipAddresses = this.ipAddresses.sort((a, b) => this.compareIpAddresses( a, b ));
         this.ipAddresses = this.ipAddresses.sort((a, b) => this.compareIpAddresses( a, b ));
     }
 
-    private compareIpAddresses( a, b ) {
+    public compareIpAddresses( a, b ) {
         const num1 = Number(a.address.split(".").map((num) => (`000${num}`).slice(-3) ).join(""));
         const num2 = Number(b.address.split(".").map((num) => (`000${num}`).slice(-3) ).join(""));
         return num1-num2;
@@ -121,7 +109,7 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         }
     }
 
-    private moveIpAddresses() {
+    public moveIpAddresses() {
         let addressesToMove = [];
         let registeredToRemove: number[] = [];
         this.ipAddresses.forEach( (item, i) => { if ( item.selected ) addressesToMove.push( i ); });
@@ -162,19 +150,19 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         }
     }
 
-    private _removeFromList( registeredToRemove: number[] ): void {
+    public _removeFromList( registeredToRemove: number[] ): void {
         registeredToRemove = registeredToRemove.sort( (a, b) => a - b );
         for ( let i = registeredToRemove.length - 1; i >= 0; i-- ) {
             this.ipAddresses.splice( registeredToRemove[i], 1 );
         }
     }
 
-    private get checkboxesUsed(): boolean {
+    public get checkboxesUsed(): boolean {
         for ( let item of this.ipAddresses ) if ( item?.selected ) return true;
         return false;
     }
 
-    private saveNewAddress() {
+    public saveNewAddress() {
         this.checkAddressInput();
         if ( this.addressError ) return;
         this.isLoading = true;
@@ -196,7 +184,7 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
             });
     }
 
-    private checkAddressInput() {
+    public checkAddressInput() {
         if ( !this.newAddress.length ) this.addressError = 'Missing.';
         else {
             this.newAddress = this.sanitizeIpAddress( this.newAddress );
@@ -206,14 +194,14 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         }
     }
 
-    private sanitizeIpAddress( ipAddress: string ): string {
+    public sanitizeIpAddress( ipAddress: string ): string {
         ipAddress = ipAddress.replace(/\s+/g, '');
         let octets = ipAddress.split('.');
         octets.forEach( (octet,i) => { octets[i] = octet.replace(/^0+(?!$)/,''); });
         return octets.join('.');
     }
 
-    private checkIpAddress( ipAddress: string ): boolean {
+    public checkIpAddress( ipAddress: string ): boolean {
         let octets = ipAddress.split('.');
         if ( octets.length !== 4 ) return false;
         return !octets.some( octet => {
@@ -223,7 +211,7 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         });
     }
 
-    private ipAddressIsListed( ipAddress: string ): boolean {
+    public ipAddressIsListed( ipAddress: string ): boolean {
         if ( this.ipAddresses.some( item => {
             if ( item.address === ipAddress ) return true;
         }) === true ) return true;
@@ -233,13 +221,13 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         return false;
     }
 
-    private startAdding() {
+    public startAdding() {
         this.isAdding = true;
         this.addressError = '';
         this.table.nativeElement.scrollTop = 0;
     }
 
-    private cancelNewAddress() {
+    public cancelNewAddress() {
         this.isAdding = false;
         this.newAddress = '';
         this.newDescription = '';

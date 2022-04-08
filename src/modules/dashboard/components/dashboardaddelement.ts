@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleDashboard
  */
@@ -20,25 +8,25 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'dashboard-add-element',
-    templateUrl: './src/modules/dashboard/templates/dashboardaddelement.html'
+    templateUrl: '../templates/dashboardaddelement.html'
 })
 export class DashboardAddElement {
 
     public self: any = {};
     public kreports: any[] = [];
-    private dashboarddashlets: any[] = [];
-    private dashletName: string = '';
-    private searchKey: string = '';
-    private dashlettype: string = 'Generic';
-    private dashletModule: string = '*';
-    private isLoading: boolean = false;
-    private canLoadMore: boolean = true;
-    private loadLimit: number = 40;
-    private addDashlet: EventEmitter<any> = new EventEmitter<any>();
-    private searchTimeout: any;
-    private modules = [];
+    public dashboarddashlets: any[] = [];
+    public dashletName: string = '';
+    public searchKey: string = '';
+    public dashlettype: string = 'Generic';
+    public dashletModule: string = '*';
+    public isLoading: boolean = false;
+    public canLoadMore: boolean = true;
+    public loadLimit: number = 40;
+    public addDashlet: EventEmitter<any> = new EventEmitter<any>();
+    public searchTimeout: any;
+    public modules = [];
 
-    constructor(private language: language, private metadata: metadata, private backend: backend) {
+    constructor(public language: language, public metadata: metadata, public backend: backend) {
     }
 
     get kReports() {
@@ -72,24 +60,24 @@ export class DashboardAddElement {
         this.modules = this.metadata.getModules().sort();
     }
 
-    private resetValues() {
+    public resetValues() {
         this.dashletModule = '*';
         this.searchKey = '';
         this.canLoadMore = true;
     }
 
-    private search() {
+    public search() {
         if (this.dashletType !== 'Generic') {
             if (this.searchTimeout) window.clearTimeout(this.searchTimeout);
             this.searchTimeout = window.setTimeout(() => this.getKReports(), 600);
         }
     }
 
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
-    private getDashlets() {
+    public getDashlets() {
         this.isLoading = true;
         this.dashboarddashlets = [];
         this.backend.getRequest('module/Dashboards/dashlets')
@@ -99,7 +87,7 @@ export class DashboardAddElement {
             });
     }
 
-    private getKReports() {
+    public getKReports() {
         this.isLoading = true;
         this.kreports = [];
         let params = {
@@ -114,7 +102,7 @@ export class DashboardAddElement {
             });
     }
 
-    private getMoreKReports() {
+    public getMoreKReports() {
         if (!this.canLoadMore || this.isLoading) return;
         this.isLoading = true;
         let params = {
@@ -129,21 +117,21 @@ export class DashboardAddElement {
             });
     }
 
-    private getIcon(icon) {
+    public getIcon(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[1] : icon;
     }
 
-    private getSprite(icon) {
+    public getSprite(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[0] : 'standard';
     }
 
-    private onScroll(scrollElement) {
+    public onScroll(scrollElement) {
         if (scrollElement.scrollTop + scrollElement.clientHeight >= scrollElement.scrollHeight) {
             this.getMoreKReports();
         }
     }
 
-    private add(dashlet) {
+    public add(dashlet) {
         if (!dashlet) return;
         let name = this.dashletName;
         let component = '';
@@ -192,7 +180,7 @@ export class DashboardAddElement {
         this.self.destroy();
     }
 
-    private close() {
+    public close() {
         this.addDashlet.emit(false);
         this.self.destroy();
     }

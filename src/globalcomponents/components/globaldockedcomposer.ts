@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
@@ -31,7 +19,7 @@ declare var _: any;
 
 @Component({
     selector: 'global-docked-composer',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposer.html',
+    templateUrl: '../templates/globaldockedcomposer.html',
     providers: [model, view]
 })
 export class GlobalDockedComposer implements OnInit {
@@ -39,7 +27,7 @@ export class GlobalDockedComposer implements OnInit {
     /**
      * refernce to the container content
      */
-    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: true})public containercontent: ViewContainerRef;
 
     @Input() public composerdata: any = {};
     @Input() public composerindex: number;
@@ -49,16 +37,16 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private isClosed: boolean = false;
+   public isClosed: boolean = false;
 
     /**
      * the actionset to be rendered in teh composer
      *
      * @private
      */
-    private actionset: string;
+   public actionset: string;
 
-    constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, private model: model, private view: view, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+    constructor(public metadata: metadata,public dockedComposer: dockedComposer,public language: language,public model: model,public view: view,public modal: modal,public ViewContainerRef: ViewContainerRef) {
         // set the view to editable and to editmode
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -76,7 +64,7 @@ export class GlobalDockedComposer implements OnInit {
         this.model.id = this.composerdata.id;
 
         if (this.composerdata.model.data) {
-            this.model.data = this.composerdata.model.data;
+            this.model.setData(this.composerdata.model.data, false);
         } else {
             this.model.initializeModel();
         }
@@ -114,7 +102,7 @@ export class GlobalDockedComposer implements OnInit {
      * Eiter displays the modal name if set or the module name
      */
     get displayLabel() {
-        return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
+        return this.model.getField('name') ? this.model.getField('name') : this.language.getModuleName(this.model.module, true);
     }
 
     /**
@@ -122,7 +110,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private toggleClosed() {
+   public toggleClosed() {
         this.isClosed = !this.isClosed;
     }
 
@@ -145,7 +133,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private expand() {
+   public expand() {
         this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
     }
 
@@ -155,7 +143,7 @@ export class GlobalDockedComposer implements OnInit {
      * @param action
      * @private
      */
-    private handleaction(action) {
+   public handleaction(action) {
         switch (action) {
             case 'savegodetail':
                 this.model.goDetail();
@@ -171,7 +159,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private promptClose() {
+   public promptClose() {
         this.modal.prompt('confirm', this.language.getLabel('MSG_CANCEL', '', 'long'), this.language.getLabel('MSG_CANCEL')).subscribe(answer => {
             if (answer) {
                 this.closeComposer();
@@ -185,7 +173,7 @@ export class GlobalDockedComposer implements OnInit {
      *
      * @private
      */
-    private closeComposer() {
+   public closeComposer() {
         for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
             if (this.dockedComposer.composers[i].id === this.composerdata.id) {
                 this.dockedComposer.composers.splice(i, 1);

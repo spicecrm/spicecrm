@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AdminComponentsModule
  */
@@ -22,7 +10,7 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 @Component({
     selector: 'administration-ftsmanager-fields-add',
-    templateUrl: './src/admincomponents/templates/administrationftsmanagerfieldsadd.html'
+    templateUrl: '../templates/administrationftsmanagerfieldsadd.html'
 })
 export class AdministrationFTSManagerFieldsAdd {
 
@@ -30,21 +18,21 @@ export class AdministrationFTSManagerFieldsAdd {
     public self: any = {};
     public fields: any[] = [];
     public dragPlaceHolderNode: Node;
-    private filterKey: string;
+    public filterKey: string;
     /**
      * array with the fields for the module of the current selected node
      */
     public nodefields: any[] = [];
-    private path: any[] = [];
+    public path: any[] = [];
     /**
      * holds the path to the current selected tree node
      */
-    private nodePath: string = '';
+    public nodePath: string = '';
 
-    constructor(private metadata: metadata,
-                private language: language,
-                private ftsconfiguration: ftsconfiguration,
-                private backend: backend) {
+    constructor(public metadata: metadata,
+                public language: language,
+                public ftsconfiguration: ftsconfiguration,
+                public backend: backend) {
     }
 
     get filteredNodeFields() {
@@ -62,7 +50,7 @@ export class AdministrationFTSManagerFieldsAdd {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
@@ -71,7 +59,7 @@ export class AdministrationFTSManagerFieldsAdd {
      *
      * @param eventData
      */
-    private itemSelected(eventData) {
+    public itemSelected(eventData) {
         window.setTimeout(()=> this.nodePath = eventData.path);
         this.getModuleFields(eventData.module);
     }
@@ -81,7 +69,7 @@ export class AdministrationFTSManagerFieldsAdd {
      *
      * @param module the module
      */
-    private getModuleFields(module) {
+    public getModuleFields(module) {
         this.nodefields = [];
 
         this.backend.getRequest('dictionary/browser/' + module + '/fields').subscribe(items => {
@@ -90,7 +78,7 @@ export class AdministrationFTSManagerFieldsAdd {
     }
 
 
-    private dropExited(e) {
+    public dropExited(e) {
         let tr = document.createElement('tr');
         let td = document.createElement('td');
         td.colSpan = 10;
@@ -104,11 +92,11 @@ export class AdministrationFTSManagerFieldsAdd {
         }
     }
 
-    private dropEntered(e) {
+    public dropEntered(e) {
         this.removePlaceHolderElement(e.container.element.nativeElement);
     }
 
-    private removePlaceHolderElement(containerElement) {
+    public removePlaceHolderElement(containerElement) {
         if (this.dragPlaceHolderNode) {
             containerElement.removeChild(this.dragPlaceHolderNode);
             this.dragPlaceHolderNode = undefined;
@@ -121,7 +109,7 @@ export class AdministrationFTSManagerFieldsAdd {
      * @param i
      * @param item
      */
-    private trackByFn(i, item) {
+    public trackByFn(i, item) {
         return item.id;
     }
 }

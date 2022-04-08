@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -39,7 +27,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'object-modal-module-lookup-header',
-    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookupheader.html',
+    templateUrl: '../templates/objectmodalmodulelookupheader.html',
 })
 export class ObjectModalModuleLookupHeader {
 
@@ -62,14 +50,14 @@ export class ObjectModalModuleLookupHeader {
     /**
      * a guid to kill the autocomplete
      */
-    private autoCompleteKiller: string;
+    public autoCompleteKiller: string;
 
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * emits the used search term
      */
-    @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public language: language, public modellist: modellist, public modelutilities: modelutilities, public metadata: metadata, public element: ElementRef) {
 
@@ -119,7 +107,7 @@ export class ObjectModalModuleLookupHeader {
     /**
      * tigger the search
      */
-    private doSearch() {
+    public doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
         this.modellist.getListData();
@@ -130,7 +118,7 @@ export class ObjectModalModuleLookupHeader {
      *
      * @param _e
      */
-    private triggerSearch(_e) {
+    public triggerSearch(_e) {
         if (this.searchTerm === this.searchTermOld) return;
         // handle the key pressed
         switch (_e.key) {

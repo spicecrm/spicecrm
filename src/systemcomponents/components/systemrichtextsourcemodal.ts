@@ -1,46 +1,57 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Inject,
+    Injector,
+    OnDestroy,
+    OnInit,
+    Optional,
+    Renderer2,
+    ViewChild
+} from '@angular/core';
 import {language} from '../../services/language.service';
 import {libloader} from '../../services/libloader.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import { model } from '../../services/model.service';
+import { take } from 'rxjs/operators';
+import { systemrichtextservice } from '../services/systemrichtext.service';
+import { modal } from '../../services/modal.service';
+import { DOCUMENT } from '@angular/common';
 
 declare var html_beautify: any;
+declare var _: any;
 
 @Component({
     selector: "system-richtext-sourcemodal",
-    templateUrl: "./src/systemcomponents/templates/systemrichtextsourcemodal.html",
+    templateUrl: "../templates/systemrichtextsourcemodal.html",
+    providers: [ systemrichtextservice ]
 })
-export class SystemRichTextSourceModal implements OnInit {
+export class SystemRichTextSourceModal implements OnInit, OnDestroy {
 
     public self: any = {};
     public _html: string = '';
     public searchtext: string = '';
-    private foundIndices: number[] = [];
-    private currentIndex: number = -1;
-    private html: EventEmitter<string> = new EventEmitter<string>();
-
-    private beautifyenabled: boolean = false;
+    public foundIndices: number[] = [];
+    public currentIndex: number = -1;
+    public html: EventEmitter<string> = new EventEmitter<string>();
+    public isUserInsideEditor = false;
+    public editorId = _.uniqueId();
+    public eventListener: any[] = [];
+    public beautifyenabled: boolean = false;
 
     @ViewChild('sourceeditor', {static: true}) public sourceEditor: any;
 
-    constructor(public language: language, public renderer: Renderer2, public sanitized: DomSanitizer, private libloader: libloader) {
+    constructor(
+        public language: language, public renderer: Renderer2, public sanitized: DomSanitizer,
+        public libloader: libloader, public injector: Injector, @Optional() public model: model,
+        public modal: modal, public editorService: systemrichtextservice, @Inject(DOCUMENT) public _document: any ) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
         });
+
     }
 
     get nextDisabled() {
@@ -66,16 +77,21 @@ export class SystemRichTextSourceModal implements OnInit {
 
     public ngOnInit() {
         this.renderer.setProperty(this.sourceEditor.nativeElement, 'innerText', this._html);
+        this.eventListener.push( this.renderer.listen('document', 'click', () => this.isUserInsideEditor = this.testIsUserInsideEditor() ));
+        this.eventListener.push( this.renderer.listen('document', 'keyup', () => {
+            this.isUserInsideEditor = this.testIsUserInsideEditor();
+            return true;
+        }));
     }
 
-    private keyUp(e): void {
+    public keyUp(e): void {
         if (e.which == 13 || e.keyCode == 13 && this.searchText.length > 0) {
             this.currentIndex = 0;
             this.selectFoundText();
         }
     }
 
-    private findTextIndices(searchText: string, text: string): void {
+    public findTextIndices(searchText: string, text: string): void {
         this.foundIndices = [];
         searchText = searchText.toLowerCase();
         let startIndex = 0;
@@ -91,7 +107,7 @@ export class SystemRichTextSourceModal implements OnInit {
         }
     }
 
-    private getTextNodesIn(node: Node): any[] {
+    public getTextNodesIn(node: Node): any[] {
         let textNodes = [];
         let isTextNode = node.nodeType == 3;
         if (isTextNode) {
@@ -106,7 +122,7 @@ export class SystemRichTextSourceModal implements OnInit {
         return textNodes;
     }
 
-    private selectFoundText(): void {
+    public selectFoundText(): void {
         let sourceEditor = this.sourceEditor.nativeElement;
 
         if (document.createRange && window.getSelection) {
@@ -143,7 +159,7 @@ export class SystemRichTextSourceModal implements OnInit {
         }
     }
 
-    private beautify() {
+    public beautify() {
         this.renderer.setProperty(this.sourceEditor.nativeElement, 'innerText', html_beautify(this.sourceEditor.nativeElement.innerText, {
             indent_size: 4,
             indent_char:  " ",
@@ -167,26 +183,76 @@ export class SystemRichTextSourceModal implements OnInit {
         }));
     }
 
-    private nextResult() {
+    public nextResult() {
         if (this.currentIndex < this.foundIndices.length) {
             this.currentIndex++;
             this.selectFoundText();
         }
     }
 
-    private previewResult() {
+    public previewResult() {
         if (this.currentIndex > 0) {
             this.currentIndex--;
             this.selectFoundText();
         }
     }
 
-    private onContentChange(html) {
+    public onContentChange(html) {
         this._html = html;
     }
 
-    private close() {
+    public close() {
         this.html.emit(this._html);
         this.self.destroy();
     }
+
+    /**
+     * Should the TemplateVariableHelper be offered, the button enabled?
+     */
+    public get useTemplateVariableHelper() {
+        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
+    }
+
+    /**
+     * Open the modal with the TemplateVariableHelper
+     */
+    public openTemplateVariableHelper() {
+        this.editorService.saveSelection();
+        this.modal.openModal('OutputTemplatesVariableHelper', null, this.injector )
+            .pipe(take(1))
+            .subscribe(modal => {
+                modal.instance.response
+                    .pipe(take(1))
+                    .subscribe( text => {
+                        this.focusEditor();
+                        this.editorService.restoreSelection();
+                        this._document.execCommand('insertText', false, '{'+text+'}' );
+                    });
+            });
+    }
+
+    public focusEditor() {
+        this.sourceEditor.nativeElement.focus();
+    }
+
+    /**
+     * Determine if the user "is" currently inside the editor.
+     */
+    public testIsUserInsideEditor(): boolean {
+        if ( window.getSelection ) {
+            let userSelection = window.getSelection();
+            let a: any = userSelection.focusNode;
+            while( a && a.id !== this.editorId && a.parentNode ) a = a.parentNode;
+            return a?.id === this.editorId;
+        } else return false;
+    }
+
+    public ngOnDestroy() {
+        this.eventListener.forEach( item => item() );
+    }
+
+    public onModalEscX() {
+        this.close();
+    }
+
 }

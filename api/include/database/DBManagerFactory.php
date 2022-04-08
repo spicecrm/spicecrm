@@ -136,6 +136,22 @@ class DBManagerFactory
     }
 
     /**
+     * disconnects a specific db instance
+     *
+     * @param $instanceName
+     * @return false|void
+     */
+    public static function disconnectInstance($instanceName)
+    {
+        if (!isset(self::$instances[self::$instanceName])) {
+            return false;
+        }
+        self::$instances[self::$instanceName]->disconnect();
+        unset (self::$instances[self::$instanceName]);
+
+    }
+
+    /**
      * switch an instance to a new db name
      *
      * @param $dbName

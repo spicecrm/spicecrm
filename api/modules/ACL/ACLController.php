@@ -37,6 +37,7 @@
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -53,7 +54,7 @@ class ACLController {
 
         global $aclModuleList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if (is_admin($current_user)) return;
+        if (SpiceUtils::isAdmin($current_user)) return;
         $actions = ACLAction::getUserActions($current_user->id, false);
 
         $compList = [];
@@ -125,7 +126,7 @@ class ACLController {
     {
         global $aclModuleList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if (is_admin(AuthenticationController::getInstance()->getCurrentUser())) return [];
+        if (SpiceUtils::isAdmin(AuthenticationController::getInstance()->getCurrentUser())) return [];
         $actions = ACLAction::getUserActions($current_user->id, false);
         $disabled = [];
         $compList = [];
@@ -192,7 +193,7 @@ class ACLController {
             return true;
 
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if (is_admin($current_user)) return true;
+        if (SpiceUtils::isAdmin($current_user)) return true;
         //calendar is a special case since it has 3 modules in it (calls, meetings, tasks)
 
         if ($category == 'Calendar') {
@@ -237,7 +238,7 @@ class ACLController {
     public function requireOwner($category, $value, $type = 'module')
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if (is_admin($current_user)) return false;
+        if (SpiceUtils::isAdmin($current_user)) return false;
         return ACLAction::userNeedsOwnership($current_user->id, $category, $value, $type);
 	}
 
@@ -274,8 +275,8 @@ class ACLController {
 	}
 
 	function displayNoAccess($redirect_home = false){
-		echo '<script>function set_focus(){}</script><p class="error">' . translate('LBL_NO_ACCESS', 'ACL') . '</p>';
-		if($redirect_home)echo translate('LBL_REDIRECT_TO_HOME', 'ACL') . ' <span id="seconds_left">3</span> ' . translate('LBL_SECONDS', 'ACL') . '<script> function redirect_countdown(left){document.getElementById("seconds_left").innerHTML = left; if(left == 0){document.location.href = "index.php";}else{left--; setTimeout("redirect_countdown("+ left+")", 1000)}};setTimeout("redirect_countdown(3)", 1000)</script>';
+		echo '<script>function set_focus(){}</script><p class="error">' . SpiceUtils::translate('LBL_NO_ACCESS', 'ACL') . '</p>';
+		if($redirect_home)echo SpiceUtils::translate('LBL_REDIRECT_TO_HOME', 'ACL') . ' <span id="seconds_left">3</span> ' . SpiceUtils::translate('LBL_SECONDS', 'ACL') . '<script> function redirect_countdown(left){document.getElementById("seconds_left").innerHTML = left; if(left == 0){document.location.href = "index.php";}else{left--; setTimeout("redirect_countdown("+ left+")", 1000)}};setTimeout("redirect_countdown(3)", 1000)</script>';
 	}
 
     /**

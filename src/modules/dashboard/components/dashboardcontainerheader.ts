@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleDashboard
  */
@@ -31,21 +19,21 @@ declare var _;
  */
 @Component({
     selector: 'dashboard-container-header',
-    templateUrl: './src/modules/dashboard/templates/dashboardcontainerheader.html'
+    templateUrl: '../templates/dashboardcontainerheader.html'
 })
 export class DashboardContainerHeader {
 
-    @Input() private showdashboardselector: boolean = false;
-    @Output() private showselect: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() public showdashboardselector: boolean = false;
+    @Output() public showselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private dashboardlayout: dashboardlayout,
-                private language: language,
-                private userpreferences: userpreferences,
-                private metadata: metadata,
-                private modal: modal,
-                private backend: backend,
-                private view: view,
-                private model: model) {
+    constructor(public dashboardlayout: dashboardlayout,
+                public language: language,
+                public userpreferences: userpreferences,
+                public metadata: metadata,
+                public modal: modal,
+                public backend: backend,
+                public view: view,
+                public model: model) {
     }
 
     /**
@@ -73,7 +61,7 @@ export class DashboardContainerHeader {
      * toggle editing the content
      * @private
      */
-    private toggleEditContent() {
+    public toggleEditContent() {
         if (this.view.isEditMode()) {
             this.cancel();
         } else {
@@ -89,7 +77,7 @@ export class DashboardContainerHeader {
      * toggle setting the home dashboard to user preferences
      * @private
      */
-    private toggleHomeDashboard() {
+    public toggleHomeDashboard() {
         this.userpreferences.setPreference('home_dashboard', this.isHomeDashboard ? '' : this.model.id, true);
     }
 
@@ -97,7 +85,7 @@ export class DashboardContainerHeader {
      * open edit modal
      * @private
      */
-    private editModal() {
+    public editModal() {
         this.model.edit();
     }
 
@@ -105,7 +93,7 @@ export class DashboardContainerHeader {
      * set dashboard deleted flag to true
      * @private
      */
-    private deleteDashboard() {
+    public deleteDashboard() {
         this.modal.confirmDeleteRecord().subscribe(answer => {
             if (!answer) return;
             this.model.delete().subscribe(() => {
@@ -120,7 +108,7 @@ export class DashboardContainerHeader {
      * show dashboards panel
      * @private
      */
-    private showpanel() {
+    public showpanel() {
         this.showselect.emit(true);
     }
 
@@ -128,7 +116,7 @@ export class DashboardContainerHeader {
      * save dashboard components
      * @private
      */
-    private saveComponents() {
+    public saveComponents() {
         this.backend.postRequest('module/Dashboards/' + this.model.id + '/components', {}, this.dashboardlayout.dashboardElements)
             .subscribe(()=> {
                 this.view.setViewMode();
@@ -140,7 +128,7 @@ export class DashboardContainerHeader {
      * cancel editing dashboard
      * @private
      */
-    private cancel() {
+    public cancel() {
         this.view.setViewMode();
         this.model.cancelEdit();
         this.dashboardlayout.dashboardElements = this.model.getField('components');

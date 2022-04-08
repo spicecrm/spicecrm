@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module services
  */
@@ -74,14 +62,14 @@ export class userpreferences {
     public preferences$: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
-        private backend: backend,
-        private toast: toast,
-        private configuration: configurationService,
-        private language: language,
-        private broadcast: broadcast,
-        private modalservice: modal,
-        private session: session,
-        private metadata: metadata
+        public backend: backend,
+        public toast: toast,
+        public configuration: configurationService,
+        public language: language,
+        public broadcast: broadcast,
+        public modalservice: modal,
+        public session: session,
+        public metadata: metadata
     ) {
         this.toUse = this.preferences.global;
         // this.retrievePrefsFromConfigService();
@@ -92,7 +80,7 @@ export class userpreferences {
         });
     }
 
-    private retrievePrefsFromConfigService() {
+    public retrievePrefsFromConfigService() {
         let prefs = this.configuration.getData('globaluserpreferences');
         this.preferences.global = _.extendOwn(this.preferences.global, prefs);
         this.unchangedPreferences.global = _.clone(prefs);
@@ -134,7 +122,7 @@ export class userpreferences {
     // Completes the global preferences with default values.
     // This case shouldn´t happen, the global preferences of a user should always be set (by the user).
     // Just in case it´s not and to ensure proper work of the UI:
-    private completePreferencesWithDefaults() {
+    public completePreferencesWithDefaults() {
         let uncomplete = false;
         _.each(this.defaults, (value, key) => {
             if (typeof this.preferences.global[key] === 'string') {
@@ -250,7 +238,7 @@ export class userpreferences {
         }
     }
 
-    private loadFormats(): Observable<any> {
+    public loadFormats(): Observable<any> {
         let retSubject: Subject<boolean> = new Subject<boolean>();
 
         this.formats.nameFormats.length = 0;
@@ -268,7 +256,7 @@ export class userpreferences {
         return retSubject.asObservable();
     }
 
-    private translateNameFormat(format: string): string {
+    public translateNameFormat(format: string): string {
         let translation = '';
         for (let i = 0; i < format.length; i++) {
             switch (format.charAt(i)) {
@@ -328,7 +316,7 @@ export class userpreferences {
         return moment.utc(d).format(this.getDateFormat()) + ' ' + moment.utc(d).format(this.getTimeFormat());
     }
 
-    private askForMissingPreferences() {
+    public askForMissingPreferences() {
 
         // Which important user preferences are not set?
         let namesOfMissingPrefs = this.getNamesOfMissingImportantPrefs();
@@ -353,7 +341,7 @@ export class userpreferences {
         });
     }
 
-    private getNamesOfMissingImportantPrefs(): string[] {
+    public getNamesOfMissingImportantPrefs(): string[] {
         let missing = [];
         for (let name of ['timezone', 'datef', 'timef']) {
             if (!this.unchangedPreferences.global[name]) missing.push(name);

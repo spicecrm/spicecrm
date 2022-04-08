@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -32,7 +20,7 @@ import {model} from "../../services/model.service";
  */
 @Component({
     selector: "global-navigation-menu-item-action-container",
-    templateUrl: "./src/globalcomponents/templates/globalnavigationmenuitemactioncontainer.html"
+    templateUrl: "../templates/globalnavigationmenuitemactioncontainer.html"
 })
 export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
 
@@ -40,7 +28,7 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
     /**
      * a viewcontainer ref to the container itself so the action set item can render the component from the config in this element
      */
-    @ViewChild("actioncontainer", {read: ViewContainerRef, static: true}) private actioncontainer: ViewContainerRef;
+    @ViewChild("actioncontainer", {read: ViewContainerRef, static: true})public actioncontainer: ViewContainerRef;
 
     /**
      * an Input parameter with the action item from the actionset items defined in the metadata
@@ -55,26 +43,26 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
     /**
      * a reference to the individual component that was rendered in the conatinerrf as part of the actionset item config
      */
-    private componentref: any;
+   public componentref: any;
 
     /**
      * defines standrd actions and their compoenntes that can be used in actionset items
      */
-    private standardActions = {
+   public standardActions = {
         NEW: "GlobalNavigationMenuItemActionNew",
         ROUTE: "GlobalNavigationMenuItemActionRoute"
     };
     /**
      * @ignore
      */
-    private stable: boolean = false;
+   public stable: boolean = false;
 
     /**
      * @ignore
      */
-    private stableSub: any;
+   public stableSub: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
+    constructor(public language: language,public metadata: metadata,public model: model,public ngZone: NgZone,public cdr: ChangeDetectorRef) {
     }
 
     /**
@@ -99,7 +87,7 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
      * getter for the hidden state of the embedded component
      */
     get hidden() {
-        if (this.stable && this.componentref) {
+        if (this.componentref) {
             return this.componentref.instance.hidden ? true : false;
         } else {
             return true;

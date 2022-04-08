@@ -33,11 +33,10 @@
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
  ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-global $dictionary;
-$dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
+SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
     'comment' => 'Leads are persons of interest early in a sales cycle', 'fields' => [
         'converted' =>
             [
@@ -697,4 +696,3 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
 
 VardefManager::createVardef('Leads', 'Lead', ['default', 'assignable',
     'person']);
-

@@ -1,9 +1,9 @@
 <?php
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['MediaCategory'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['MediaCategory'] = [
     'table' => 'mediacategories',
     'fields' => [
         'parent_id' => [

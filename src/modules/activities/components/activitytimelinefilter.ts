@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleActivities
  */
@@ -25,45 +13,45 @@ import {activitiytimeline, activityTimelineOwnerfilter} from '../../../services/
  */
 @Component({
     selector: 'activity-timeline-filter',
-    templateUrl: './src/modules/activities/templates/activitytimelinefilter.html'
+    templateUrl: '../templates/activitytimelinefilter.html'
 })
 export class ActivityTimelineFilter {
 
     /**
      * internal fag if the dropdown is open
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
 
     /**
      * @ignore
      *
      * internal listener for the click outsife of the div
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * internal array with the types and the names
      */
-    private activityTypes: any[] = [];
+    public activityTypes: any[] = [];
 
     /**
      * the filters set for the objects
      */
-    private objectfilters: any[] = [];
+    public objectfilters: any[] = [];
 
     /**
      * the owner filter set
      */
-    private ownerfilter: activityTimelineOwnerfilter = '';
+    public ownerfilter: activityTimelineOwnerfilter = '';
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private metadata: metadata, private activitiytimeline: activitiytimeline) {
+    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language, public metadata: metadata, public activitiytimeline: activitiytimeline) {
         this.setFromService();
     }
 
     /**
      * get teh values from the service
      */
-    private setFromService() {
+    public setFromService() {
         this.objectfilters = JSON.parse(JSON.stringify(this.activitiytimeline.filters.objectfilters));
         this.ownerfilter = this.activitiytimeline.filters.own;
     }
@@ -71,7 +59,7 @@ export class ActivityTimelineFilter {
     /**
      * set the values to the service
      */
-    private setToService() {
+    public setToService() {
         this.activitiytimeline.filters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
         this.activitiytimeline.filters.own = this.ownerfilter;
 
@@ -83,7 +71,7 @@ export class ActivityTimelineFilter {
      *
      * helper to toggle the dropdown open or closed
      */
-    private toggleOpen(e: MouseEvent) {
+    public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
@@ -118,7 +106,7 @@ export class ActivityTimelineFilter {
     /**
      * builds the types
      */
-    private buildTypes() {
+    public buildTypes() {
         this.activityTypes = [];
 
         for (let activityObject of this.activitiytimeline.filterObjects) {
@@ -146,7 +134,7 @@ export class ActivityTimelineFilter {
      * @param event
      * @param filter
      */
-    private setFilter(event, filter) {
+    public setFilter(event, filter) {
         event.preventDefault();
         if (filter == 'all') {
             this.objectfilters = [];
@@ -167,7 +155,7 @@ export class ActivityTimelineFilter {
      *
      * @param filter the filter
      */
-    private getChecked(filter) {
+    public getChecked(filter) {
         if (filter == 'all') {
             return this.objectfilters.length == 0 ? true : false;
         } else {
@@ -182,7 +170,7 @@ export class ActivityTimelineFilter {
      *
      * @param apply if set to true the values are set to the service
      */
-    private closeDialog(apply) {
+    public closeDialog(apply) {
         if (this.clickListener) this.clickListener();
 
         if (apply) {

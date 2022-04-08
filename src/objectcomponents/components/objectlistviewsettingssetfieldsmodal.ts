@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -26,31 +14,31 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-settings-setfields-modal',
-    templateUrl: './src/objectcomponents/templates/objectlistviewsettingssetfieldsmodal.html'
+    templateUrl: '../templates/objectlistviewsettingssetfieldsmodal.html'
 })
 export class ObjectListViewSettingsSetfieldsModal {
 
     /**
      * reference to self to be able to close the modal
      */
-    private self: any = {};
+    public self: any = {};
 
     /**
      * the listfields that are currently selected
      * cloned from the modellist service
      */
-    private listFields: any[] = [];
+    public listFields: any[] = [];
 
     /**
      * the remaining available fields
      */
-    private availableFields: any[] = [];
+    public availableFields: any[] = [];
 
     /**
      * the list fo selected fields
      */
-    private selectedAvailableFields: any[] = [];
-    private selectedListFields: any[] = [];
+    public selectedAvailableFields: any[] = [];
+    public selectedListFields: any[] = [];
 
     /**
      * load the modal and initlaize the fields from the modellist vs the ones available
@@ -59,7 +47,7 @@ export class ObjectListViewSettingsSetfieldsModal {
      * @param language
      * @param modellist
      */
-    constructor(private metadata: metadata, private language: language, private modellist: modellist) {
+    constructor(public metadata: metadata, public language: language, public modellist: modellist) {
 
         // get the listfields from the service
         this.listFields = _.clone(this.modellist.listfields);
@@ -86,7 +74,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /**
      * sorts the available fields
      */
-    private sortAvailableFields() {
+    public sortAvailableFields() {
         this.availableFields = this.availableFields.sort((a, b) => {
             return this.language.getFieldDisplayName(this.modellist.module, a.field, a.fieldconfig).toLowerCase() > this.language.getFieldDisplayName(this.modellist.module, b.field, b.fieldconfig).toLowerCase() ? 1 : -1;
         });
@@ -95,21 +83,21 @@ export class ObjectListViewSettingsSetfieldsModal {
     /**
      * close the modal
      */
-    private close(): void {
+    public close(): void {
         this.self.destroy();
     }
 
     /**
      * check if we can save (at least one fields needs to be selected
      */
-    private canSet(): boolean {
+    public canSet(): boolean {
         return this.listFields.length > 0;
     }
 
     /**
      * save the fieldsettings
      */
-    private set(): void {
+    public set(): void {
         if (this.canSet()) {
             this.modellist.listfields = this.listFields;
             this.close();
@@ -129,7 +117,7 @@ export class ObjectListViewSettingsSetfieldsModal {
      *
      * @param event
      */
-    private onFieldDrop(event) {
+    public onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }
@@ -137,7 +125,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /*
      select the field whenc lciked int he container
      */
-    private selectField(container, fieldid) {
+    public selectField(container, fieldid) {
         switch (container) {
             case 'available':
                 this.selectedAvailableFields = [fieldid];
@@ -151,7 +139,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /*
      function to set the aria-selected attr on a field
      */
-    private isSelected(container, field) {
+    public isSelected(container, field) {
         switch (container) {
             case 'available':
                 if (this.selectedAvailableFields.indexOf(field) >= 0) {
@@ -171,7 +159,7 @@ export class ObjectListViewSettingsSetfieldsModal {
     /*
      move selected field to the othe container
      */
-    private moveFields(fromContainer) {
+    public moveFields(fromContainer) {
         switch (fromContainer) {
             case 'available':
                 this.selectedAvailableFields.forEach((item) => {

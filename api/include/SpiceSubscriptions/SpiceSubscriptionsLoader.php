@@ -1,10 +1,12 @@
 <?php
 namespace SpiceCRM\includes\SpiceSubscriptions;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\KREST\handlers\ModuleHandler;
 
 class SpiceSubscriptionsLoader
 {
@@ -17,12 +19,26 @@ class SpiceSubscriptionsLoader
     public function loadSubscriptions(): array {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
+        $moduleHandler = new ModuleHandler();
 
         $subscriptions = [];
 
         $sql = "SELECT * FROM spicesubscriptions WHERE user_id='{$currentUser->id}'";
         $query = $db->query($sql);
         while ($row = $db->fetchRow($query)) {
+            // check that the bean exists
+            $seed = BeanFactory::getBean($row['bean_module'], $row['bean_id'], ['relationships' => false]);
+
+            // in case bean cannot be found remove subscription
+            if(!$seed){
+                $this->deleteSubscription($row['bean_module'], $row['bean_id']);
+                continue;
+            }
+
+            // map the bean
+            $row['data'] = $moduleHandler->mapBean($seed, false);
+
+            // add to the result
             $subscriptions[$row['bean_id']] = $row;
         }
 

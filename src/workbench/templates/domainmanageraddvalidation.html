@@ -1,0 +1,45 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_VALIDATION"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--3-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+                <system-input-text [(ngModel)]="fieldvalidation.name"></system-input-text>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="fieldvalidation.scope">
+                        <option value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-large-size--1-of-2 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="fieldvalidation.validation_type">
+                        <option value="enum">enum</option>
+                        <option value="range">range</option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                <system-input-text [(ngModel)]="fieldvalidation.package"></system-input-text>
+            </div>
+            <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                <system-input-text [(ngModel)]="fieldvalidation.version"></system-input-text>
+            </div>
+        </div>
+        <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
+        <system-richtext-editor [(ngModel)]="fieldvalidation.description"></system-richtext-editor>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+    </system-modal-footer>
+</system-modal>

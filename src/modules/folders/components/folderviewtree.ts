@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import {take} from 'rxjs/operators';
 import {backend} from '../../../services/backend.service';
@@ -26,19 +14,19 @@ declare var _: any;
 
 @Component({
     selector: "folder-view-tree",
-    templateUrl: "./src/modules/folders/templates/folderviewtree.html"
+    templateUrl: "../templates/folderviewtree.html"
 })
 
 export class FolderViewTree implements OnInit {
 
-    @Output() private folderId = new EventEmitter();
+    @Output() public folderId = new EventEmitter();
 
-    private _selectedItem: string = null;
+    public _selectedItem: string = null;
 
     /*
     * selectedItem: string
     */
-    private set selectedItem( val: string ) {
+    public set selectedItem( val: string ) {
         this.folderId.emit(val);
         if ( val === this._selectedItem ) return;
         this._selectedItem = val;
@@ -49,7 +37,7 @@ export class FolderViewTree implements OnInit {
     /*
     * selectedItem: string
     */
-    private get selectedItem(): string {
+    public get selectedItem(): string {
         return this._selectedItem;
     }
 
@@ -71,14 +59,14 @@ export class FolderViewTree implements OnInit {
      */
     public sourceList: any[] = [];
 
-    private itemRelations: any[] = [];
+    public itemRelations: any[] = [];
 
-    private isLoading = true;
+    public isLoading = true;
 
-    private showTree = true;
+    public showTree = true;
 
-    constructor( private backend: backend, private modellist: modellist, private language: language,
-                 private toast: toast, private modal: modal , private modelutilies: modelutilities, private helper: helper, private model: model ) {}
+    constructor( public backend: backend, public modellist: modellist, public language: language,
+                 public toast: toast, public modal: modal , public modelutilies: modelutilities, public helper: helper, public model: model ) {}
 
     /*
     * getting all folders from database
@@ -99,7 +87,7 @@ export class FolderViewTree implements OnInit {
     /*
     * building relations between parent and child folder
     * */
-    private buildItemRelations() {
+    public buildItemRelations() {
         this.itemRelations = [];
         let indexes = {};
         this.sourceList.forEach( ( item, i ) => indexes[item.id] = i );
@@ -117,7 +105,7 @@ export class FolderViewTree implements OnInit {
     * @add treeItem recursively
     * @set hasChildren
     */
-    private buildTree() {
+    public buildTree() {
         this.tree = [];
         this.sortSourceList();
         this.addTreeItem();
@@ -133,7 +121,7 @@ export class FolderViewTree implements OnInit {
     * @reset sourceList
     * @sort by parent_sequence
     */
-    private sortSourceList() {
+    public sortSourceList() {
         this.language.sortObjects( this.sourceList, 'name');
     }
 
@@ -153,7 +141,7 @@ export class FolderViewTree implements OnInit {
     *   hasChildren: boolean
     * }
     */
-    private addTreeItem(parentId = '', level = 1) {
+    public addTreeItem(parentId = '', level = 1) {
         for (let item of this.sourceList) {
             if (!item.parent_id && parentId == '' || item.parent_id == parentId) {
                 if (!item.systemTreeDefs) {
@@ -173,7 +161,7 @@ export class FolderViewTree implements OnInit {
     /*
     * @set hasChildren for each tree item from the sourceList
     */
-    private setHasChildren() {
+    public setHasChildren() {
         this.tree.forEach(item => {
             item.systemTreeDefs.hasChildren = this.sourceList.some(i => i.parent_id == item.id);
         });
@@ -184,7 +172,7 @@ export class FolderViewTree implements OnInit {
     * @set item.systemTreeDefs.expanded
     * @build tree
     */
-    private handleExpand(id) {
+    public handleExpand(id) {
         this.sourceList.some(item => {
             if (item.id == id) {
                 item.systemTreeDefs.expanded = !item.systemTreeDefs.expanded;
@@ -202,7 +190,7 @@ export class FolderViewTree implements OnInit {
     * @handle? expand
     * @emit id by @output selectedItemChange
     */
-    private handleClick(id) {
+    public handleClick(id) {
         this.tree.some(item => {
             if (item.id === id) {
                 if ( !item.systemTreeDefs?.isSelected ) {
@@ -223,7 +211,7 @@ export class FolderViewTree implements OnInit {
     /*
     * unselect folder
     * */
-    private unselectActiveTreeItem() {
+    public unselectActiveTreeItem() {
         this.tree.some( item => {
             if( item.systemTreeDefs?.isSelected ) {
                 item.systemTreeDefs.isSelected = false;
@@ -235,7 +223,7 @@ export class FolderViewTree implements OnInit {
     /*
     * check folder id and setting aggregate for it
     * */
-    private setAggregate( folderId ) {
+    public setAggregate( folderId ) {
         if ( !folderId ) folderId = '#not#set#';
         let aggdata = this.helper.encodeBase64('{"key":"'+folderId+'","displayName":"'+folderId+'"}');
         if ( !this.modellist.checkAggregate('folder_id', aggdata )) {
@@ -264,7 +252,7 @@ export class FolderViewTree implements OnInit {
     /*
     * remove all aggregates filters
     * */
-    private removeAllAggregates() {
+    public removeAllAggregates() {
         this.modellist.removeAggregatesOfField('folder_id');
         this.modellist.reLoadList();
     }
@@ -276,14 +264,14 @@ export class FolderViewTree implements OnInit {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.id;
     }
 
     /*
     * add new parent folder with backend request
     * */
-    private addFolder( parentId: string = null, index: number = null ): void {
+    public addFolder( parentId: string = null, index: number = null ): void {
         this.modal.prompt('input', null, 'Folder Name')
             .pipe(take(1))
             .subscribe(folderName => {
@@ -313,7 +301,7 @@ export class FolderViewTree implements OnInit {
     /*
     * delete folder from tree, when it's a parent folder also all children folders
     * */
-    private removeFolderFromList( id: string ) {
+    public removeFolderFromList( id: string ) {
         let itemsToDelete: any[] = [];
         this.sourceList.find( ( item, i ) => {
            if ( item.id === id ) {
@@ -331,7 +319,7 @@ export class FolderViewTree implements OnInit {
     /*
     * deleting all child folders
     * */
-    private deleteItemsRecursive( index, toDelete: number[] ) {
+    public deleteItemsRecursive( index, toDelete: number[] ) {
         toDelete.push(index);
         this.itemRelations[index].childs.forEach( item => this.deleteItemsRecursive( item, toDelete ));
     }
@@ -339,7 +327,7 @@ export class FolderViewTree implements OnInit {
     /*
     * select all documents that don't have any folder
     * */
-    private selectOutsideFolders() {
+    public selectOutsideFolders() {
         this.selectedItem = '';
         this.unselectActiveTreeItem();
     }
@@ -347,7 +335,7 @@ export class FolderViewTree implements OnInit {
    /*
    * backend request, that save new folder for particular document by drag and drop
    * */
-    private drop( documentData, folderItem ) {
+    public drop( documentData, folderItem ) {
         this.backend.postRequest('module/Documents/'+documentData.item.data.id, {}, {folder_id:folderItem.id}).subscribe( response => {
             // Reload list, but before give elastic a chance with a little bit of timeout:
             window.setTimeout( () => this.modellist.reLoadList(true), 500 );

@@ -1,4 +1,4 @@
-/*! Lightning Design System 2.15.8 */
+/*! Lightning Design System 2.16.2 */
 @charset "UTF-8";
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 html{
@@ -3485,6 +3485,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #54698d);
 }
 
+.slds-icon-standard-change-request{
+  background-color:var(--sds-c-icon-color-background, #0b827c);
+}
+
 .slds-icon-standard-carousel{
   background-color:var(--sds-c-icon-color-background, #6bbd6e);
 }
@@ -3503,6 +3507,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-segments{
   background-color:var(--sds-c-icon-color-background, #f28b00);
+}
+
+.slds-icon-standard-account-info{
+  background-color:var(--sds-c-icon-color-background, #7f8de1);
 }
 
 .slds-icon-standard-goals{
@@ -3593,6 +3601,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #f88962);
 }
 
+.slds-icon-standard-person-language{
+  background-color:var(--sds-c-icon-color-background, #0eb58a);
+}
+
 .slds-icon-standard-apex{
   background-color:var(--sds-c-icon-color-background, #54698d);
 }
@@ -3635,6 +3647,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-settings{
   background-color:var(--sds-c-icon-color-background, #04844b);
+}
+
+.slds-icon-standard-network-contract{
+  background-color:var(--sds-c-icon-color-background, #6ec06e);
 }
 
 .slds-icon-standard-product-item{
@@ -3683,6 +3699,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-service-territory-location{
   background-color:var(--sds-c-icon-color-background, #7e8be4);
+}
+
+.slds-icon-standard-qualifications{
+  background-color:var(--sds-c-icon-color-background, #04844b);
 }
 
 .slds-icon-standard-entitlement-policy{
@@ -3797,6 +3817,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #1589ee);
 }
 
+.slds-icon-standard-budget{
+  background-color:var(--sds-c-icon-color-background, #107cad);
+}
+
 .slds-icon-standard-past-chat{
   background-color:var(--sds-c-icon-color-background, #f88960);
 }
@@ -3867,6 +3891,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-letterhead{
   background-color:var(--sds-c-icon-color-background, #3c97dd);
+}
+
+.slds-icon-standard-promotions-workspace{
+  background-color:var(--sds-c-icon-color-background, #04844b);
 }
 
 .slds-icon-standard-email-chatter{
@@ -3973,6 +4001,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #54698d);
 }
 
+.slds-icon-standard-identifier{
+  background-color:var(--sds-c-icon-color-background, #f88962);
+}
+
 .slds-icon-standard-cms{
   background-color:var(--sds-c-icon-color-background, #88c651);
 }
@@ -4049,6 +4081,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #969492);
 }
 
+.slds-icon-standard-product-consumed-state{
+  background-color:var(--sds-c-icon-color-background, #06a59a);
+}
+
 .slds-icon-standard-unmatched{
   background-color:var(--sds-c-icon-color-background, #62b7ed);
 }
@@ -4078,7 +4114,7 @@ a.slds-button--inverse:focus{
 }
 
 .slds-icon-standard-asset-warranty{
-  background-color:var(--sds-c-icon-color-background, #54698d);
+  background-color:var(--sds-c-icon-color-background, #107cad);
 }
 
 .slds-icon-standard-resource-capacity{
@@ -4169,6 +4205,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #7e8be4);
 }
 
+.slds-icon-standard-product-transfer-state{
+  background-color:var(--sds-c-icon-color-background, #e3734f);
+}
+
 .slds-icon-standard-entitlement{
   background-color:var(--sds-c-icon-color-background, #7e8be4);
 }
@@ -4197,6 +4237,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #7f8de1);
 }
 
+.slds-icon-standard-coupon-codes{
+  background-color:var(--sds-c-icon-color-background, #04844b);
+}
+
 .slds-icon-standard-assignment{
   background-color:var(--sds-c-icon-color-background, #ff9a3c);
 }
@@ -4207,6 +4251,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-task2{
   background-color:var(--sds-c-icon-color-background, #4bc076);
+}
+
+.slds-icon-standard-patient-medication-dosage{
+  background-color:var(--sds-c-icon-color-background, #34becd);
 }
 
 .slds-icon-standard-code-playground{
@@ -4297,6 +4345,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #34becd);
 }
 
+.slds-icon-standard-medication{
+  background-color:var(--sds-c-icon-color-background, #4ac076);
+}
+
 .slds-icon-standard-reward{
   background-color:var(--sds-c-icon-color-background, #e9696e);
 }
@@ -4365,6 +4417,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #9274df);
 }
 
+.slds-icon-standard-code-set{
+  background-color:var(--sds-c-icon-color-background, #0079bc);
+}
+
 .slds-icon-standard-case{
   background-color:var(--sds-c-icon-color-background, #f2cf5b);
 }
@@ -4375,6 +4431,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-record{
   background-color:var(--sds-c-icon-color-background, #7dc37d);
+}
+
+.slds-icon-standard-code-set-bundle{
+  background-color:var(--sds-c-icon-color-background, #0079bc);
 }
 
 .slds-icon-standard-queue{
@@ -4421,6 +4481,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #00afa0);
 }
 
+.slds-icon-standard-incident{
+  background-color:var(--sds-c-icon-color-background, #ba0517);
+}
+
 .slds-icon-standard-contract{
   background-color:var(--sds-c-icon-color-background, #6ec06e);
 }
@@ -4453,6 +4517,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #ff9a3c);
 }
 
+.slds-icon-standard-discounts{
+  background-color:var(--sds-c-icon-color-background, #04844b);
+}
+
 .slds-icon-standard-work-order-item{
   background-color:var(--sds-c-icon-color-background, #33a8dc);
 }
@@ -4470,7 +4538,7 @@ a.slds-button--inverse:focus{
 }
 
 .slds-icon-standard-serialized-product-transaction{
-  background-color:var(--sds-c-icon-color-background, #2a739e);
+  background-color:var(--sds-c-icon-color-background, #1589ee);
 }
 
 .slds-icon-standard-shift-pattern{
@@ -4518,7 +4586,7 @@ a.slds-button--inverse:focus{
 }
 
 .slds-icon-standard-serialized-product{
-  background-color:var(--sds-c-icon-color-background, #2a739e);
+  background-color:var(--sds-c-icon-color-background, #1589ee);
 }
 
 .slds-icon-standard-report{
@@ -4583,6 +4651,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-data-integration-hub{
   background-color:var(--sds-c-icon-color-background, #2a739e);
+}
+
+.slds-icon-standard-person-name{
+  background-color:var(--sds-c-icon-color-background, #7f8de1);
 }
 
 .slds-icon-standard-work-plan-template-entry{
@@ -4801,6 +4873,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #7e8be4);
 }
 
+.slds-icon-standard-budget-allocation{
+  background-color:var(--sds-c-icon-color-background, #107cad);
+}
+
 .slds-icon-standard-record-signature-task{
   background-color:var(--sds-c-icon-color-background, #eb7092);
 }
@@ -4858,7 +4934,7 @@ a.slds-button--inverse:focus{
 }
 
 .slds-icon-standard-product-transfer{
-  background-color:var(--sds-c-icon-color-background, #f88962);
+  background-color:var(--sds-c-icon-color-background, #e3734f);
 }
 
 .slds-icon-standard-instore-locations{
@@ -4947,6 +5023,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-decision{
   background-color:var(--sds-c-icon-color-background, #ff9a3c);
+}
+
+.slds-icon-standard-promotion-segments{
+  background-color:var(--sds-c-icon-color-background, #04844b);
 }
 
 .slds-icon-standard-duration-downscale{
@@ -5113,6 +5193,10 @@ a.slds-button--inverse:focus{
   background-color:var(--sds-c-icon-color-background, #b781d3);
 }
 
+.slds-icon-standard-problem{
+  background-color:var(--sds-c-icon-color-background, #fe9339);
+}
+
 .slds-icon-standard-stage-collection{
   background-color:var(--sds-c-icon-color-background, #ff9a3c);
 }
@@ -5143,6 +5227,10 @@ a.slds-button--inverse:focus{
 
 .slds-icon-standard-work-step-template{
   background-color:var(--sds-c-icon-color-background, #449488);
+}
+
+.slds-icon-standard-medication-statement{
+  background-color:var(--sds-c-icon-color-background, #1589ee);
 }
 .slds-icon{
   width:2rem;
@@ -6786,7 +6874,6 @@ a.slds-button--inverse:focus{
   fill:#b0adab;
 }
 .slds-input{
-  display:inline-block;
   padding-top:0;
   padding-right:var(--sds-c-input-spacing-horizontal-end, 1rem);
   padding-bottom:0;
@@ -6802,6 +6889,7 @@ a.slds-button--inverse:focus{
           box-shadow:var(--sds-c-input-shadow);
   -webkit-transition:border 0.1s linear, background-color 0.1s linear;
   transition:border 0.1s linear, background-color 0.1s linear;
+  display:inline-block;
 }
 .slds-input:focus, .slds-input:active{
   /*! @css-var-fallback border-color */
@@ -6865,6 +6953,44 @@ a.slds-button--inverse:focus{
 .slds-input_height, .slds-input--height{
   min-height:calc(1.875rem + (1px * 2));
 }
+.slds-input_faux{
+  padding-top:0;
+  padding-right:var(--sds-c-input-spacing-horizontal-end, 1rem);
+  padding-bottom:0;
+  padding-left:var(--sds-c-input-spacing-horizontal-start, 0.75rem);
+  width:100%;
+  min-height:calc(1.875rem + (1px * 2));
+  line-height:1.875rem;
+  border:1px solid var(--sds-c-input-color-border, #dddbda);
+  border-radius:var(--sds-c-input-radius-border, 0.25rem);
+  background-color:var(--sds-c-input-color-background, white);
+  color:var(--sds-c-input-text-color);
+  -webkit-box-shadow:var(--sds-c-input-shadow);
+          box-shadow:var(--sds-c-input-shadow);
+  -webkit-transition:border 0.1s linear, background-color 0.1s linear;
+  transition:border 0.1s linear, background-color 0.1s linear;
+  display:-webkit-inline-box;
+  display:-ms-inline-flexbox;
+  display:inline-flex;
+  -webkit-box-flex:1;
+      -ms-flex:1 1 auto;
+          flex:1 1 auto;
+  text-align:left;
+}
+.slds-input_faux.slds-is-disabled{
+  background-color:#ecebea;
+  border-color:#c9c7c5;
+  color:#3e3e3c;
+  cursor:not-allowed;
+  -webkit-user-select:none;
+     -moz-user-select:none;
+      -ms-user-select:none;
+          user-select:none;
+}
+.slds-input_faux.slds-is-disabled:focus, .slds-input_faux.slds-is-disabled:active{
+  -webkit-box-shadow:none;
+          box-shadow:none;
+}
 .slds-input_borders{
   /*! @css-var-fallback padding-right */
   padding-right:0.75rem;
@@ -6891,8 +7017,10 @@ a.slds-button--inverse:focus{
   left:0.75rem;
 }
 .slds-input-has-icon_left .slds-input,
+.slds-input-has-icon_left .slds-input_faux,
 .slds-input-has-icon_left .slds-input_bare,
 .slds-input-has-icon_left .slds-input--bare, .slds-input-has-icon--left .slds-input,
+.slds-input-has-icon--left .slds-input_faux,
 .slds-input-has-icon--left .slds-input_bare,
 .slds-input-has-icon--left .slds-input--bare{
   /*! @css-var-fallback padding-left */
@@ -6902,8 +7030,10 @@ a.slds-button--inverse:focus{
   right:0.75rem;
 }
 .slds-input-has-icon_right .slds-input,
+.slds-input-has-icon_right .slds-input_faux,
 .slds-input-has-icon_right .slds-input_bare,
 .slds-input-has-icon_right .slds-input--bare, .slds-input-has-icon--right .slds-input,
+.slds-input-has-icon--right .slds-input_faux,
 .slds-input-has-icon--right .slds-input_bare,
 .slds-input-has-icon--right .slds-input--bare{
   /*! @css-var-fallback padding-right */
@@ -6922,8 +7052,10 @@ a.slds-button--inverse:focus{
   right:0.75rem;
 }
 .slds-input-has-icon_left-right .slds-input,
+.slds-input-has-icon_left-right .slds-input_faux,
 .slds-input-has-icon_left-right .slds-input_bare,
 .slds-input-has-icon_left-right .slds-input--bare, .slds-input-has-icon--left-right .slds-input,
+.slds-input-has-icon--left-right .slds-input_faux,
 .slds-input-has-icon--left-right .slds-input_bare,
 .slds-input-has-icon--left-right .slds-input--bare{
   /*! @css-var-fallback padding-left */
@@ -6932,6 +7064,7 @@ a.slds-button--inverse:focus{
   padding-right:2rem;
 }
 .slds-input-has-icon_group-right .slds-input,
+.slds-input-has-icon_group-right .slds-input_faux,
 .slds-input-has-icon_group-right .slds-input_bare,
 .slds-input-has-icon_group-right .slds-input--bare{
   /*! @css-var-fallback padding-right */
@@ -8479,6 +8612,11 @@ a.slds-button--inverse:focus{
 .slds-form_stacked .slds-form-element_horizontal .slds-input-has-icon_left-right .slds-input__icon_left{
     left:calc(33% + 0.75rem);
   }
+}
+.slds-form-element_horizontal .slds-form-element__help,
+.slds-form_horizontal .slds-form-element .slds-form-element__help,
+.slds-form_stacked .slds-form-element_horizontal .slds-form-element__help{
+  margin-left:33%;
 }
 .slds-form-element_compound .slds-form-element__row{
   display:-webkit-box;
@@ -11068,6 +11206,10 @@ input[readonly][role=combobox][disabled]{
 [class*=slds-input-has-icon--left] .slds-combobox__input.slds-combobox__input-value{
   padding-left:2.25rem;
 }
+
+.slds-input_faux:not(.slds-combobox__input-value){
+  color:#706e6b;
+}
 .slds-combobox__input-entity-icon{
   width:1.25rem;
   height:1.25rem;
@@ -11412,6 +11554,10 @@ input[readonly][role=combobox][disabled]{
 .slds-disabled-text{
   color:#dddbda;
 }
+
+.slds-datepicker td:hover:not(.slds-disabled-text) > .slds-day, .slds-datepicker td:focus:not(.slds-disabled-text) > .slds-day, .slds-datepicker td.slds-is-today > .slds-day{
+  cursor:pointer;
+}
 .slds-datepicker{
   padding:0;
   font-size:0.75rem;
@@ -11439,7 +11585,7 @@ input[readonly][role=combobox][disabled]{
   border-radius:50%;
   margin:auto;
 }
-.slds-datepicker tbody > tr > td:hover:not(.slds-disabled-text) > .slds-day, .slds-datepicker tbody > tr > td:focus:not(.slds-disabled-text) > .slds-day, .slds-datepicker tbody > tr > td.slds-is-today > .slds-day{
+.slds-datepicker tbody > tr > td:hover > .slds-day, .slds-datepicker tbody > tr > td:focus > .slds-day, .slds-datepicker tbody > tr > td.slds-is-today > .slds-day{
   cursor:pointer;
 }
 .slds-datepicker tbody > tr > td.slds-is-today > .slds-day{
@@ -11451,6 +11597,9 @@ input[readonly][role=combobox][disabled]{
 .slds-datepicker tbody > tr > td:focus > .slds-day{
   -webkit-box-shadow:#0176d3 0 0 0 1px inset;
           box-shadow:#0176d3 0 0 0 1px inset;
+}
+.slds-datepicker tbody > tr > td:hover > .slds-day{
+  background-color:#f3f2f2;
 }
 .slds-datepicker tbody > tr > td.slds-is-selected > .slds-day{
   background:#0176d3;
@@ -17061,6 +17210,14 @@ input[readonly][role=combobox][disabled]{
             transform:translateX(0);
   }
 }
+.slds-split-view__list-item-action[aria-selected=true]{
+  -webkit-box-shadow:inset 4px 0 0 #0176d3;
+          box-shadow:inset 4px 0 0 #0176d3;
+}
+.slds-split-view__list-item-action[aria-selected=true]:focus{
+  -webkit-box-shadow:inset 4px 0 0 #0176d3, inset 0 0 0 1px #0176d3;
+          box-shadow:inset 4px 0 0 #0176d3, inset 0 0 0 1px #0176d3;
+}
 .slds-split-view_container{
   position:relative;
   display:-webkit-box;
@@ -17146,11 +17303,11 @@ input[readonly][role=combobox][disabled]{
   -webkit-box-shadow:inset 0 0 0 1px #1b96ff;
           box-shadow:inset 0 0 0 1px #1b96ff;
 }
-.slds-split-view__list-item-action[aria-selected=true]{
+.slds-split-view__list-item-action[aria-current=page]{
   -webkit-box-shadow:inset 4px 0 0 #0176d3;
           box-shadow:inset 4px 0 0 #0176d3;
 }
-.slds-split-view__list-item-action[aria-selected=true]:focus{
+.slds-split-view__list-item-action[aria-current=page]:focus{
   -webkit-box-shadow:inset 4px 0 0 #0176d3, inset 0 0 0 1px #0176d3;
           box-shadow:inset 4px 0 0 #0176d3, inset 0 0 0 1px #0176d3;
 }
@@ -18197,6 +18354,8 @@ input[readonly][role=combobox][disabled]{
 .slds-notify_alert a[disabled],
 .slds-notify--alert a[disabled]{
   color:rgba(255, 255, 255, 0.15);
+}
+.slds-notify{
 }
 .slds-alert_warning{
   background-color:#fe9339;

@@ -1,43 +1,14 @@
 <?php
-/*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -68,8 +39,8 @@ function get_field_list($value, $translate=true){
 			if(!empty($var['required'])) {
 				$required = 1;
 			}
-			if(isset($var['options'])){
-				$options_dom = translate($var['options'], $value->module_dir);
+			if (isset($var['options'])) {
+				$options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
 				if(!is_array($options_dom)) $options_dom = [];
 				foreach($options_dom as $key=>$oneOption)
 					$options_ret[] = get_name_value($key,$oneOption);
@@ -83,7 +54,7 @@ function get_field_list($value, $translate=true){
             $entry['name'] = $var['name'];
             $entry['type'] = $var['type'];
             if($translate) {
-            $entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+            $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
             } else {
             $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
             }
@@ -128,7 +99,7 @@ function get_field_list($value, $translate=true){
             $entry['name'] = $var['name'];
             $entry['type'] = $var['type'];
             if($translate) {
-            $entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+            $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
             } else {
             $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
             }
@@ -177,7 +148,7 @@ function new_get_field_list($value, $translate=true) {
 				$required = 1;
 			}
 			if(isset($var['options'])){
-				$options_dom = translate($var['options'], $value->module_dir);
+				$options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
 				if(!is_array($options_dom)) $options_dom = [];
 				foreach($options_dom as $key=>$oneOption)
 					$options_ret[] = get_name_value($key,$oneOption);
@@ -197,7 +168,7 @@ function new_get_field_list($value, $translate=true) {
 				$link_fields[$var['name']] = $entry;
             } else {
 	            if($translate) {
-	            	$entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+	            	$entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
 	            } else {
 	            	$entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
 	            }
@@ -294,7 +265,7 @@ function get_name_value($field,$value){
 function get_user_module_list($user){
 	global $app_list_strings, $current_language, $beanList, $beanFiles;
 
-	$app_list_strings = return_app_list_strings_language($current_language);
+	$app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 	$modules = query_module_access_list($user);
     SpiceACL::getInstance()->filterModuleList($modules, false);
 	global $modInvisList;
@@ -339,7 +310,7 @@ function check_modules_access($user, $module_name, $action='write'){
 	}
     if(isset($_SESSION['avail_modules'][$module_name])){
 		if($action == 'write' && $_SESSION['avail_modules'][$module_name] == 'read_only'){
-			if(is_admin($user))return true;
+			if(SpiceUtils::isAdmin($user))return true;
 			return false;
 		}elseif($action == 'write' && strcmp(strtolower($module_name), 'users') == 0 && !$user->isAdminForModule($module_name)){
             //rrs bug: 46000 - If the client is trying to write to the Users module and is not an admin then we need to stop them
@@ -388,7 +359,7 @@ function get_name_value_list($value, $returnDomValue = false){
 				}
 				elseif(strcmp($type, 'currency') == 0){
 					$params = ['currency_symbol' => false];
-					$val = currency_format_number($val, $params);
+					$val = SpiceUtils::currencyFormatNumber($val, $params);
 				}
 
 				$list[$var['name']] = get_name_value($var['name'], $val);
@@ -416,7 +387,7 @@ function filter_fields($value, $fields) {
 			}
 		} // if
         // No valid field should be caught by this quoting.
-		$filterFields[] = getValidDBName($field);
+		$filterFields[] = DBUtils::getValidDBName($field);
 	} // foreach
 	return $filterFields;
 } // fn
@@ -519,7 +490,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	if($module == 'Users' && $value->id != $current_user->id){
 		$value->user_hash = '';
 	}
-	$value = clean_sensitive_data($value->field_defs, $value);
+	$value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
 	return ['id'=>$value->id,
 				'module_name'=> $module,
 				'name_value_list'=>get_name_value_list_for_fields($value, $fields)
@@ -575,7 +546,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	if($module == 'Users' && $bean->id != $current_user->id){
 		$bean->user_hash = '';
 	}
-	$bean = clean_sensitive_data($value->field_defs, $bean);
+	$bean = SpiceUtils::cleanSensitiveData($value->field_defs, $bean);
 
 	if (empty($link_name_to_value_fields_array) || !is_array($link_name_to_value_fields_array)) {
 		return [];
@@ -792,7 +763,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 	if($module == 'Users' && $value->id != $current_user->id){
 		$value->user_hash = '';
 	}
-	$value = clean_sensitive_data($value->field_defs, $value);
+	$value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
 	return ['id'=>$value->id,
 				'module_name'=> $module,
 				'name_value_list'=>get_name_value_list($value, $returnDomValue)
@@ -891,8 +862,8 @@ function filter_return_list(&$output_list, $select_fields, $module_name){
 function login_success(){
 	global $current_language,  $app_strings, $app_list_strings;
 	$current_language = SpiceConfig::getInstance()->config['default_language'];
-	$app_strings = return_application_language($current_language);
-	$app_list_strings = return_app_list_strings_language($current_language);
+	$app_strings = SpiceUtils::returnApplicationLanguage($current_language);
+	$app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 }
 
 
@@ -1055,9 +1026,9 @@ function is_server_version_greater($left, $right){
 }
 
 function getFile( $zip_file, $file_in_zip ){
-    $base_upgrade_dir = sugar_cached("/upgrades");
+    $base_upgrade_dir = SpiceFileUtils::spiceCached("/upgrades");
     $base_tmp_upgrade_dir   = "$base_upgrade_dir/temp";
-    $my_zip_dir = mk_temp_dir( $base_tmp_upgrade_dir );
+    $my_zip_dir = FileUtils::mkTempDir($base_tmp_upgrade_dir);
     unzip_file( $zip_file, $file_in_zip, $my_zip_dir );
     return( "$my_zip_dir/$file_in_zip" );
 }
@@ -1078,6 +1049,7 @@ function get_decoded($object){
 }
 
 /**
+ * @deprecated
  * decrypt a string use the TripleDES algorithm. This meant to be
  * modified if the end user chooses a different algorithm
  *
@@ -1088,12 +1060,12 @@ function get_decoded($object){
 function decrypt_string($string){
 	if(function_exists('mcrypt_cbc')){
 
-		$focus = BeanFactory::getBean('Administration');
-		$focus->retrieveSettings();
+//		$focus = BeanFactory::getBean('Administration');
+//		$focus->retrieveSettings();
 		$key = '';
-		if(!empty($focus->settings['ldap_enc_key'])){
-			$key = $focus->settings['ldap_enc_key'];
-		}
+//		if(!empty($focus->settings['ldap_enc_key'])){
+//			$key = $focus->settings['ldap_enc_key'];
+//		}
 		if(empty($key))
 			return $string;
 		$buffer = $string;

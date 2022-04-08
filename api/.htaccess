@@ -19,6 +19,10 @@ RewriteCond %{REQUEST_URI} ^(.*)soap(.*)$
 RewriteRule ^ service/v4_1/soap.php [QSA,L]
 #RewriteRule ^ soap.php [QSA,L]
 
+RewriteCond %{REQUEST_URI} ^(.*)install(.*)$ [OR]
+RewriteCond %{REQUEST_URI} ^(.*)install(\.php)$
+RewriteRule ^ include/SpiceInstaller/install.php [QSA,L]
+
 RewriteCond %{REQUEST_URI} !^(.*)KREST(.*)$
 RewriteRule ^ index.php [QSA,L]
 

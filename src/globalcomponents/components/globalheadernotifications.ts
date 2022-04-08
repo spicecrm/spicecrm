@@ -1,21 +1,11 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module GlobalComponents
  */
 import {ChangeDetectorRef, Component, ElementRef, Renderer2} from '@angular/core';
 import {notification} from "../../services/notification.service";
 import {userpreferences} from "../../services/userpreferences.service";
+import {modal} from "../../services/modal.service";
+import {subscription} from "../../services/subscription.service";
 import {Router} from "@angular/router";
 
 /**
@@ -23,31 +13,38 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'global-header-notifications',
-    templateUrl: './src/globalcomponents/templates/globalheadernotifications.html'
+    templateUrl: '../templates/globalheadernotifications.html'
 })
 export class GlobalHeaderNotifications {
     /**
      * if true show the notifications popover
      * @private
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
     /**
      * if true the show settings button clicked
      * @private
      */
-    private showSettings: boolean = false;
+    public showSettings: boolean = false;
     /**
      * holds the click listener function to enable remove
      * @private
      */
-    private clickListener: () => void;
+    public clickListener: () => void;
+
+    /**
+     * the distance from the right frame for the popover
+     */
+    public right: number = 0;
 
     constructor(public notificationService: notification,
-                private elementRef: ElementRef,
+                public elementRef: ElementRef,
+                public modal: modal,
+                public subscription: subscription,
                 public userPreferences: userpreferences,
-                private cdRef: ChangeDetectorRef,
-                private router: Router,
-                private renderer: Renderer2) {
+                public cdRef: ChangeDetectorRef,
+                public router: Router,
+                public renderer: Renderer2) {
     }
 
     /**
@@ -83,6 +80,11 @@ export class GlobalHeaderNotifications {
      * toggle open popover and handle closing the popover when the click is outside the container
      */
     public toggleOpenPopover() {
+        // get the right position
+        let rect = this.elementRef.nativeElement.getBoundingClientRect();
+        this.right = window.innerWidth - rect.right + (rect.left - rect.right) / 2 - 3;
+
+        // toggle open
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.showSettings = false;
@@ -93,6 +95,15 @@ export class GlobalHeaderNotifications {
             });
         } else if (this.clickListener) {
             this.clickListener();
+        }
+    }
+
+    /**
+     * returns the right margin
+     */
+    get popoverStyle(){
+        return {
+            right: this.right + 'px'
         }
     }
 
@@ -127,7 +138,7 @@ export class GlobalHeaderNotifications {
      * @param value
      * @private
      */
-    private setDisplayDesktopNotification(value: boolean) {
+    public setDisplayDesktopNotification(value: boolean) {
 
         if (this.desktopNotificationsStatus === 'default') {
 
@@ -148,5 +159,20 @@ export class GlobalHeaderNotifications {
     public showAllNotifications() {
         this.closePopover();
         this.router.navigate(['notifications']);
+    }
+
+    /**
+     * a getter to see if the user has subscriptions
+     */
+    get hasSubscriptions(){
+        return this.subscription.subscriptions.length > 0;
+    }
+
+    /**
+     * opens the modal for the users subscriptions
+     */
+    public manageSubscriptions(){
+        this.closePopover();
+        this.modal.openModal('GlobalSubscriptionsManager')
     }
 }

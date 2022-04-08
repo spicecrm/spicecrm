@@ -1,9 +1,11 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 //dictionary global variable => class name als key
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['CostCenter'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['CostCenter'] = [
     'table' => 'costcenters',
     'comment' => 'Cost Center Module',
     'audited' =>  true,
@@ -56,5 +58,3 @@ $dictionary['CostCenter'] = [
 ];
 // default (Basic) fields & assignable (implements->assigned fields)
 VardefManager::createVardef('CostCenters', 'CostCenter', ['default', 'assignable']);
-
-

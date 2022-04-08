@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReports
  */
@@ -33,28 +21,28 @@ declare var google: any;
  */
 @Component({
     selector: 'reporter-detail-visualization-googlecharts',
-    templateUrl: './src/modules/reports/templates/reporterdetailvisualizationgooglecharts.html',
+    templateUrl: '../templates/reporterdetailvisualizationgooglecharts.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, OnDestroy {
     /**
      * save the visualization data
      */
-    private vizdata: any = {};
+    public vizdata: any = {};
     /**
      * save the google chart wrapper instance
      */
-    private wrapper: any = undefined;
+    public wrapper: any = undefined;
     /**
      * save the resize event listener
      */
-    private resizeHandler: any = {};
+    public resizeHandler: any = {};
 
-    constructor(private renderer: Renderer2,
-                private elementRef: ElementRef,
-                private metadata: metadata,
-                private zone: NgZone,
-                private libloader: libloader) {
+    constructor(public renderer: Renderer2,
+                public elementRef: ElementRef,
+                public metadata: metadata,
+                public zone: NgZone,
+                public libloader: libloader) {
 
         // listen to resize event to redraw the chart
         this.resizeHandler = this.renderer.listen('window', 'resize', () => this.onResize());
@@ -71,7 +59,7 @@ export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, O
     /**
      * load google chart library and pass the report data to it
      */
-    private loadGoogleChart() {
+    public loadGoogleChart() {
         if (!this.vizdata.data.options.height) {
             this.vizdata.data.options.height = this.elementRef.nativeElement.height;
         }
@@ -98,7 +86,7 @@ export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, O
     /**
      * callback function for google to draw the chart
      */
-    private drawchart() {
+    public drawchart() {
         this.wrapper = new google.visualization.ChartWrapper(this.vizdata.data);
         this.wrapper.draw();
     }
@@ -106,7 +94,7 @@ export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, O
     /**
      * redraw the chart on resize
      */
-    private onResize() {
+    public onResize() {
         if (this.wrapper) {
             this.zone.runOutsideAngular(() => {
                 this.wrapper.draw();

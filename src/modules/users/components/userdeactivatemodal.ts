@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleUsers
  */
@@ -21,7 +9,7 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: "./src/modules/users/templates/userdeactivatemodal.html"
+    templateUrl: "../templates/userdeactivatemodal.html"
 })
 
 export class UserDeactivateModal {
@@ -29,41 +17,41 @@ export class UserDeactivateModal {
     /**
      * reference to the modal itself
      */
-    private self: any;
+    public self: any;
 
     /**
      * all objects linked to the assigned user
      */
-    private objects: any[] = [];
+    public objects: any[] = [];
 
     /**
      * inidcator that we are loading elements for the user
      */
-    private loading = true;
+    public loading = true;
 
     /**
      * boolean to indicate that teh records shopudl be reassigned
      */
-    private reassignRecords: boolean = false;
+    public reassignRecords: boolean = false;
 
     /**
      * the total number of records to be reassigned
      */
-    private totalrecords: number = 0;
+    public totalrecords: number = 0;
 
     /**
      * the userid to reassign the records to
      */
-    private newuserid: string = '';
+    public newuserid: string = '';
 
-    constructor(private model: model, private modal: modal, private language: language, private backend: backend, private toast: toast) {
+    constructor(public model: model, public modal: modal, public language: language, public backend: backend, public toast: toast) {
         this.getUserObjects();
     }
 
     /**
      * get objects assigned to the current user
      */
-    private getUserObjects() {
+    public getUserObjects() {
         this.backend.getRequest(`module/Users/${this.model.id}/deactivate`).subscribe(
             res => {
                 for (let moduleid in res) {
@@ -103,7 +91,7 @@ export class UserDeactivateModal {
         return true;
     }
 
-    private deactivate() {
+    public deactivate() {
         let modules = [];
 
         // define an empty body. If newuserid is set create the body
@@ -134,7 +122,7 @@ export class UserDeactivateModal {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

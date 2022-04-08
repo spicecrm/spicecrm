@@ -1,0 +1,62 @@
+<system-modal>
+    <system-modal-header (close)="close()">Add Domain Field</system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--3-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+                <system-input-text [(ngModel)]="domainfield.name"></system-input-text>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="domainfield.scope">
+                        <option value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DBTYPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="domainfield.dbtype">
+                        <option *ngFor="let dbtype of domainmanager.dbtypes" [value]="dbtype">{{dbtype}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-horizontal--xxx-small">
+                <label class="slds-form-element__label"><system-label label="LBL_LENGTH"></system-label></label>
+                <system-input-text [(ngModel)]="domainfield.len"></system-input-text>
+            </div>
+            <div class="slds-large-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_REQUIRED"></system-label></label>
+                <system-checkbox [asinteger]="true" [(ngModel)]="domainfield.required"></system-checkbox>
+            </div>
+            <div class="slds-large-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="domainfield.fieldtype">
+                        <option *ngFor="let fieldtype of domainmanager.fieldtypes" [value]="fieldtype">{{fieldtype}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-size--1-of-2 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                <system-input-text [(ngModel)]="domainfield.package"></system-input-text>
+            </div>
+            <div class="slds-size--1-of-2 slds-p-left--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                <system-input-text [(ngModel)]="domainfield.version"></system-input-text>
+            </div>
+        </div>
+        <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
+        <system-richtext-editor [(ngModel)]="domainfield.description"></system-richtext-editor>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label> </button>
+        <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label> </button>
+    </system-modal-footer>
+</system-modal>

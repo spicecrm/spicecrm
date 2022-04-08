@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleUsers
  */
@@ -31,7 +19,7 @@ import {helper} from '../../../services/helper.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: "./src/modules/users/templates/useraddmodal.html",
+    templateUrl: "../templates/useraddmodal.html",
     providers: [model, view]
 })
 export class UserAddModal implements OnInit {
@@ -39,33 +27,33 @@ export class UserAddModal implements OnInit {
     public self: any;
     public informationFieldset: any[] = [];
     public profileFieldset: any[] = [];
-    private response: Observable<object> = null;
-    private responseSubject: Subject<any> = null;
+    public response: Observable<object> = null;
+    public responseSubject: Subject<any> = null;
 
-    private password: string;
-    private repeatPassword: string;
-    private pwdCheck: RegExp = new RegExp("//");
-    private userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
-    private pwdGuideline: string;
-    private autogenerate: boolean = false;
-    private sendByEmail: boolean = false;
-    private forceReset: boolean = true;
-    private showPassword: boolean = false;
-    private saveTriggered: boolean = false;
-    private canSendByEmail: boolean = true;
+    public password: string;
+    public repeatPassword: string;
+    public pwdCheck: RegExp = new RegExp("//");
+    public userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
+    public pwdGuideline: string;
+    public autogenerate: boolean = false;
+    public sendByEmail: boolean = false;
+    public forceReset: boolean = true;
+    public showPassword: boolean = false;
+    public saveTriggered: boolean = false;
+    public canSendByEmail: boolean = true;
 
     constructor(
-        private language: language,
-        private model: model,
-        @SkipSelf() private parent: model,
-        private modelutilities: modelutilities,
-        private toast: toast,
-        private backend: backend,
-        private view: view,
-        private cdr: ChangeDetectorRef,
-        private metadata: metadata,
-        private configuration: configurationService,
-        private helper: helper
+        public language: language,
+        public model: model,
+        @SkipSelf() public parent: model,
+        public modelutilities: modelutilities,
+        public toast: toast,
+        public backend: backend,
+        public view: view,
+        public cdr: ChangeDetectorRef,
+        public metadata: metadata,
+        public configuration: configurationService,
+        public helper: helper
     ) {
         this.model.module = "Users";
         this.view.isEditable = true;
@@ -160,24 +148,26 @@ export class UserAddModal implements OnInit {
 
     public ngOnInit() {
         this.model.initialize(this.parent);
-        this.model.data.UserType = "RegularUser";
-        this.model.data.status = "Active";
+        this.model.setFields({
+            UserType: "RegularUser",
+            status: "Active",
+        })
         this.getFieldSets();
         this.getPassInfo();
     }
 
-    private getFieldSets() {
+    public getFieldSets() {
         let conf = this.metadata.getComponentConfig("UserAddModal", "Users");
         this.profileFieldset = conf && conf.profile ? conf.profile : this.profileFieldset;
         this.informationFieldset = conf && conf.information ? conf.information : this.informationFieldset;
     }
 
 
-    private toggleShowPassword() {
+    public toggleShowPassword() {
         this.showPassword = !this.showPassword;
     }
 
-    private getPassInfo() {
+    public getPassInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheck = new RegExp(extConf.regex);
 
@@ -192,7 +182,7 @@ export class UserAddModal implements OnInit {
 
     }
 
-    private copyPassword() {
+    public copyPassword() {
         let selBox = document.createElement('textarea');
         selBox.style.position = 'fixed';
         selBox.style.left = '0';
@@ -208,19 +198,22 @@ export class UserAddModal implements OnInit {
         document.body.removeChild(selBox);
     }
 
-    private cancel() {
+    public cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    private save(goDetail: boolean = false) {
+    public save(goDetail: boolean = false) {
         this.saveTriggered = true;
         if (this.hasError) {
             return;
         }
-        this.model.data.system_generated_password = this.autoGenerate;
-        this.model.data.pwd_last_changed = new moment();
+
+        this.model.setFields({
+            system_generated_password: this.autoGenerate,
+            pwd_last_changed: new moment()
+        });
         let saveData = this.modelutilities.spiceModel2backend("Users", this.model.data);
 
         this.backend.postRequest("module/Users/" + this.model.id, {}, JSON.stringify(saveData))
@@ -231,7 +224,7 @@ export class UserAddModal implements OnInit {
                             response[fieldName] = this.modelutilities.backend2spice("Users", fieldName, response[fieldName]);
                         }
                     }
-                    this.model.data = response;
+                    this.model.setData(response);
                     this.model.endEdit();
                     this.savePassword(goDetail);
                 },
@@ -243,7 +236,7 @@ export class UserAddModal implements OnInit {
                 });
     }
 
-    private savePassword(goDetail) {
+    public savePassword(goDetail) {
         let body = {
             newPassword: this.password,
             forceReset: this.forceReset,

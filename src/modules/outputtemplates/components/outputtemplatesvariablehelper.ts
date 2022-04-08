@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleOutputTemplates
  */
@@ -21,96 +9,96 @@ import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 
 @Component({
-    templateUrl: './src/modules/outputtemplates/templates/outputtemplatesvariablehelper.html'
+    templateUrl: '../templates/outputtemplatesvariablehelper.html'
 })
 export class OutputTemplatesVariableHelper implements OnInit {
 
     /**
      * reference to the modal component
      */
-    private self: any;
+    public self: any;
 
     /**
      * event emitter for the response
      */
-    @Output() private response: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public response: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * The model of the template the whole thing belongs to (email template or output template or ...)
      */
-    private templateModel: model;
+    public templateModel: model;
 
     /**
      * The list of the 3 on top offered modules (bean, template, current user).
      */
-    private offeredModules: any[] = [];
+    public offeredModules: any[] = [];
 
     /**
      * The active (selected) module off the on top offered modules.
      */
-    private activeModule: string; // 'bean'|'current_user'|'template';
+    public activeModule: string; // 'bean'|'current_user'|'template';
 
     /**
      * Holds all the fields of the modules.
      */
-    private moduleFields: any[] = [];
+    public moduleFields: any[] = [];
 
     /**
      * List of all system template functions (pipe and non-pipe).
      */
-    private allFunctions: any;
+    public allFunctions: any;
 
     /**
      * The System Template Functions offered for selection by user, either pipe or non-pipe.
      */
-    private offeredFunctions: any;
+    public offeredFunctions: any;
 
     /**
      * Filter value to narrow down the offered fields the user is looking for.
      */
-    private fieldFilter = '';
+    public fieldFilter = '';
 
     /**
      * Are the fields of the just selected module currently loading?
      */
-    private isLoadingModuleFields = false;
+    public isLoadingModuleFields = false;
 
     /**
      * Are the system template functions currently loading?
      */
-    private isLoadingFunctions = false;
+    public isLoadingFunctions = false;
 
     /**
      * The path of modules the system tree delivered.
      */
-    private modulePathFromTree = '';
+    public modulePathFromTree = '';
 
     /**
      * The result of the function selection.
      */
-    private functionResult = '';
+    public functionResult = '';
 
     /**
      * The result of the module field selection.
      */
-    private fieldResult = '';
+    public fieldResult = '';
 
     /**
      * Holds the history of selected system template functions. So the user can do a step-by-step recovery.
      */
-    private functionHistory: any[] = [];
+    public functionHistory: any[] = [];
 
     /**
      * Is there a template (EmailTemplate or OutputTemplate) in the base?
      */
-    private hasTemplate = false;
+    public hasTemplate = false;
 
     /**
      * The params of the actual (last selected) function.
      */
-    private actualFunctionParams = [];
+    public actualFunctionParams = [];
 
-    constructor( public language: language, public metadata: metadata, private backend: backend, private cdr: ChangeDetectorRef, @Optional() private model: model ) { }
+    constructor( public language: language, public metadata: metadata, public backend: backend, public cdr: ChangeDetectorRef, @Optional() public model: model ) { }
 
     public ngOnInit(): void {
 
@@ -168,7 +156,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * Loads all system template functions from the backend.
      * Divides them into pipe and non-pipe functions.
      */
-    private loadFunctions(): void {
+    public loadFunctions(): void {
         this.isLoadingFunctions = true;
         this.backend.getRequest('module/OutputTemplates/templateFunctions')
             .pipe(take(1))
@@ -185,7 +173,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * Either the pipe or the non-pipe functions have to be offered for selection,
      * depends on whether a field or function has already been selected or nothing.
      */
-    private buildOfferedFunctions(): void {
+    public buildOfferedFunctions(): void {
         if ( this.fieldResult || this.functionResult ) this.offeredFunctions = this.allFunctions.pipe;
         else this.offeredFunctions = this.allFunctions.noPipe;
     }
@@ -193,21 +181,21 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Close the modal.
      */
-    private close(): void {
+    public close(): void {
         this.self.destroy();
     }
 
     /**
      * Cancel button clicked.
      */
-    private cancel(): void {
+    public cancel(): void {
         this.close();
     }
 
     /**
      * Escape or X from the modal.
      */
-    private onModalEscX(): void {
+    public onModalEscX(): void {
         this.cancel();
     }
 
@@ -216,7 +204,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * Submit (to the rich text editor) the field name (with its path) and the selected function names,
      * joined by a pipe symbol. At last close the modal.
      */
-    private submit(): void {
+    public submit(): void {
         let back;
         if ( !this.fieldResult && !this.functionResultWithParams ) back = '';
         if ( !this.fieldResult && this.functionResultWithParams ) back = 'func.'+this.functionResultWithParams;
@@ -231,7 +219,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Loads the fields for a given module.
      */
-    private getModuleFields( forModule, rootModule ) {
+    public getModuleFields( forModule, rootModule ) {
         this.moduleFields[rootModule] = [];
         this.isLoadingModuleFields = true;
         this.cdr.detectChanges();
@@ -246,7 +234,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Narrow down the fields according the filter value.
      */
-    private getFilteredFields( fields ): [] {
+    public getFilteredFields( fields ): any[] {
         return !this.fieldFilter ? fields : fields
             .filter(nodeFiled => {
                 return nodeFiled.name.toLowerCase().includes(this.fieldFilter.toLowerCase()) ||
@@ -257,21 +245,21 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Track changes for items in the iterable.
      */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return index;
     }
 
     /**
      * One of the 3 module tabs has beed clicked.
      */
-    private setActiveModuleTab( templateObjectName ): void {
+    public setActiveModuleTab( templateObjectName ): void {
         this.activeModule = templateObjectName;
     }
 
     /**
      * An item of the module tree has been selected.
      */
-    private treeItemSelected( data, rootModule ): void {
+    public treeItemSelected( data, rootModule ): void {
         this.modulePathFromTree = data.path;
         this.getModuleFields(data.module, rootModule);
     }
@@ -279,7 +267,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Undoes the last selection of a system template function.
      */
-    private functionUndo(): void {
+    public functionUndo(): void {
         if ( this.functionHistory.length ) {
             let popped = this.functionHistory.pop();
             this.functionResult = popped.result;
@@ -291,7 +279,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Paranthesis for the param in the result?
      */
-    private isTypeString( type: string ): boolean {
+    public isTypeString( type: string ): boolean {
         switch( type ) {
             case 'string':
             case 'color': return true;
@@ -302,7 +290,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * Getter for the function result string incl. the parameters (seperated by ':').
      */
-    private get functionResultWithParams() {
+    public get functionResultWithParams() {
         let result = this.functionResult;
         this.actualFunctionParams.forEach( item => {
             result += ':';
@@ -317,7 +305,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * Fills the field with the function result.
      * And updates the offered functions (because now the pipe functions have to be displayed).
      */
-    private functionSelected( func ): void {
+    public functionSelected( func ): void {
         this.functionHistory.push({
             result: this.functionResult,
             params: this.actualFunctionParams
@@ -333,7 +321,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * Fills the field with the field result.
      * And updates the offered functions (because now the pipe functions have to be displayed).
      */
-    private fieldSelected( field: string ): void {
+    public fieldSelected( field: string ): void {
         let parts = this.modulePathFromTree.split(/::/);
         let simplePath = []; // The elements for the path with the syntax the template compiler needs.
         for ( let i = 1; i < parts.length; i++ ) {
@@ -360,7 +348,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * Clears the field with the field result.
      * And updates the offered functions (because now the non-pipe functions have to be displayed).
      */
-    private clearFieldResult() {
+    public clearFieldResult() {
         this.fieldResult = '';
         this.buildOfferedFunctions();
     }

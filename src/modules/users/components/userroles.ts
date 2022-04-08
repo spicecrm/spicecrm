@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleUsers
  */
@@ -31,26 +19,26 @@ declare var _: any;
  */
 @Component({
     selector: "user-roles",
-    templateUrl: "./src/modules/users/templates/userroles.html"
+    templateUrl: "../templates/userroles.html"
 })
 export class UserRoles {
 
-    private userRoles: any[] = [];
-    private noneUserRoles: any[] = [];
-    private componentId: string;
+    public userRoles: any[] = [];
+    public noneUserRoles: any[] = [];
+    public componentId: string;
 
     /**
      * inidcates that the roles are being laoded
      */
-    private loading: boolean = true;
+    public loading: boolean = true;
 
     constructor(
-        private backend: backend,
-        private toast: toast,
-        private modal: modal,
-        private model: model,
-        private session: session,
-        private language: language) {
+        public backend: backend,
+        public toast: toast,
+        public modal: modal,
+        public model: model,
+        public session: session,
+        public language: language) {
 
         this.componentId = _.uniqueId();
 
@@ -68,8 +56,9 @@ export class UserRoles {
 
             this.noneUserRoles = res.allRoles.filter(role => {
                 for (let userRole of this.userRoles) {
-                    if (role.id == userRole.id)
+                    if (role.id == userRole.id) {
                         return false;
+                    }
                 }
                 return true;
             });
@@ -87,7 +76,7 @@ export class UserRoles {
      *
      * @param roles
      */
-    private sortRoles( roles ): any[] {
+    public sortRoles( roles ): any[] {
         if(roles) {
             return roles.sort((a, b) => {
                 return this.language.getLabel(a.label).localeCompare(this.language.getLabel(b.label));
@@ -101,10 +90,10 @@ export class UserRoles {
      *
      * @param event
      */
-    private addRole(event) {
+    public addRole(event) {
         if (this.session.authData.admin) {
             this.modal.openModal("UserRolesAddModal").subscribe(addModalRef => {
-                addModalRef.instance.user_id = this.model.data.id;
+                addModalRef.instance.user_id = this.model.id;
                 addModalRef.instance.noneUserRoles = this.noneUserRoles;
                 addModalRef.instance.response.subscribe(res => {
                     if (res && typeof res === "object") {
@@ -129,14 +118,14 @@ export class UserRoles {
      * @param roleId
      * @param isDefaultRole
      */
-    private deleteRole(roleIndex, roleId, isDefaultRole) {
+    public deleteRole(roleIndex, roleId, isDefaultRole) {
         if (this.session.authData.admin && !isDefaultRole) {
             this.modal.confirm(
                 this.language.getLabel("MSG_DELETE_RECORD", "", "long"),
                 this.language.getLabel("MSG_DELETE_RECORD"))
                 .subscribe((answer) => {
                     if (answer) {
-                        this.backend.deleteRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.data.id}`)
+                        this.backend.deleteRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.id}`)
                             .subscribe(
                                 res => {
                                     if (res.status == "error") {
@@ -160,13 +149,13 @@ export class UserRoles {
      *
      * @param roleId
      */
-    private setDefaultRole(roleId) {
+    public setDefaultRole(roleId) {
         if (this.session.authData.admin) {
             this.userRoles.every(role => {
                 (role.id == roleId) ? role.defaultrole = "1" : role.defaultrole = "0";
                 return true;
             });
-            this.backend.postRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.data.id}/default`);
+            this.backend.postRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.id}/default`);
         }
     }
 }

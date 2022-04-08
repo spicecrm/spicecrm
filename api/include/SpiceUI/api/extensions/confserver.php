@@ -39,7 +39,6 @@ $RESTManager = RESTManager::getInstance();
  * restrict routes to authenticated users and only if the system acts as repository
  * also enable general unautohrized access if system is public repository
  */
-#global $sugar_config;
 //todo clarify ... do we need this if? should we add a auth middleware?
 if((SpiceConfig::getInstance()->config['configrepository']['public'] !== true) || SpiceConfig::getInstance()->config['configrepository']['enabled'] !== true) return;
 

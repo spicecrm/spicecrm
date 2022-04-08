@@ -22,11 +22,13 @@ class SpiceNumberRanges
      */
     public static function getNextNumber($range)
     {
-        $db = DBManagerFactory::getInstance();
-
-        $numberRange = $db->fetchByAssoc($db->query(sprintf('SELECT * FROM sysnumberranges WHERE id = "%s"', $db->quote($range))));
+        $db = DBManagerFactory::getInstance('numberrange');
+        $db->transactionStart();
+        $numberRange = $db->fetchByAssoc($db->query(sprintf("SELECT * FROM sysnumberranges WHERE id = '%s' FOR UPDATE", $db->quote($range))));
         if (!$numberRange) {
             LoggerManager::getLogger()->error('Number range (ID: ' . $range . ' not found');
+            $db->transactionRollback();
+            DBManagerFactory::disconnectInstance('numberrange');
             return false;
         }
 
@@ -37,11 +39,16 @@ class SpiceNumberRanges
         # Does the next created number exceed the maximum?
         if ($nextNumber > $numberRange['range_to']) {
             LoggerManager::getLogger()->error('Created next number (' . $nextNumber . ') exceeds the maxium (' . $numberRange['range_to'] . ') of number range (ID: ' . $range . ').');
+            $db->transactionRollback();
+            DBManagerFactory::disconnectInstance('numberrange');
             return false; # Why?! We still have a valid number. Only one, but at least one.
         }
 
-        # Note the next number to be used in the database:
+        // Note the next number to be used in the database:
+        // update and commit the query so we release the log and then disconnect
         $db->query("UPDATE sysnumberranges SET next_number='$nextNumber' WHERE id='$range'");
+        $db->transactionCommit();
+        DBManagerFactory::disconnectInstance('numberrange');
 
         $number = $numberRange['next_number'] ?: $numberRange['range_from'];
 
@@ -66,10 +73,12 @@ class SpiceNumberRanges
      */
     public static function getNextNumberForField($module, $field)
     {
-        $db = DBManagerFactory::getInstance();
-
-        $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field'"));
+        $db = DBManagerFactory::getInstance('numberrange');
+        $db->transactionStart();
+        $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field' FOR UPDATE"));
         if (!$numberRange) {
+            $db->transactionRollback();
+            DBManagerFactory::disconnectInstance('numberrange');
             LoggerManager::getLogger()->error('Number range (module: ' . $module . ', field: ' . $field . ' not found.');
             return false;
         }
@@ -80,11 +89,16 @@ class SpiceNumberRanges
 
         # Does the created number exceed the maximum?
         if ($nextNumber > $numberRange['range_to']) {
+            $db->transactionRollback();
+            DBManagerFactory::disconnectInstance('numberrange');
             LoggerManager::getLogger()->error('Created next number (' . $nextNumber . ') exceeds the maxium (' . $numberRange['range_to'] . ') of number range (module: ' . $module . ', field: ' . $field . ').');
             return false; # Why?! We still have a valid number. Only one, but at least one.
         }
 
+        // update and commit the query so we release the log and then disconnect
         $db->query("UPDATE sysnumberranges SET next_number = '$nextNumber' WHERE id = '{$numberRange['id']}'");
+        $db->transactionCommit();
+        DBManagerFactory::disconnectInstance('numberrange');
 
         $number = $numberRange['next_number'] ?: $numberRange['range_from'];
 

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -25,19 +13,19 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-lookup',
-    templateUrl: './src/objectfields/templates/fieldlookup.html'
+    templateUrl: '../templates/fieldlookup.html'
 })
 export class fieldLookup extends fieldGeneric implements OnInit {
 
     /**
      * listens to the click
      */
-    private clickListener: any;
+    public clickListener: any;
 
     /**
      * the links that can be selected with the lookup
      */
-    private lookuplinks = [];
+    public lookuplinks = [];
 
     /**
      * the index of the type of lookup (index of the aray above
@@ -47,22 +35,22 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /**
      * indicate tha the typoe selector is open
      */
-    private lookuplinkSelectOpen: boolean = false;
+    public lookuplinkSelectOpen: boolean = false;
 
     /**
      * indicates that the search box is open
      */
-    private lookupSearchOpen: boolean = false;
+    public lookupSearchOpen: boolean = false;
 
     /**
      * the uiser search term
      */
-    private lookupSearchTerm: string = '';
+    public lookupSearchTerm: string = '';
 
     /**
      * the pills to be displayed. Loaded initially and then handled by the field itself
      */
-    private pills: any[] = [];
+    public pills: any[] = [];
 
     constructor(public model: model,
                 public view: view,
@@ -105,7 +93,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /**
      * is only needed when no definition by this.fieldconfig.lookuplinks
      */
-    private getLookupmodules(): string[] {
+    public getLookupmodules(): string[] {
         let modules: string[];
         if (this.fieldconfig.lookupmodules) modules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
         if (!modules) modules = ['Contacts', 'Users'];  // default, when no modules (and no links) are defined in this.fieldconfig.lookuplinks
@@ -117,7 +105,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
      *
      * fallback to the metadata
      */
-    private getLookuplinks(): any[] {
+    public getLookuplinks(): any[] {
         let linknames: string[];
         if (this.fieldconfig.lookuplinks) linknames = this.fieldconfig.lookuplinks.replace(/\s/g, '').split(',');
         if (!linknames) {  // fallback
@@ -134,7 +122,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /**
      * initially loads the pills .. also listens to model chanmges (noit fired bny the field
      */
-    private setPills() {
+    public setPills() {
         for (let lookuplink of this.lookuplinks) {
             if (this.model.data[lookuplink.name] && this.model.data[lookuplink.name].beans) {
                 //  if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
@@ -167,7 +155,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
      *
      * @param item
      */
-    private addItem(item) {
+    public addItem(item) {
         if (!this.model.data[this.lookuplinks[this.lookupType].name]) this.model.data[this.lookuplinks[this.lookupType].name] = {beans: {}};
 
         this.model.data[this.lookuplinks[this.lookupType].name].beans[item.id] = {
@@ -188,7 +176,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
      *
      * @param message
      */
-    private handleMessage(message: any) {
+    public handleMessage(message: any) {
         if (message.messagedata.reference) {
             switch (message.messagetype) {
                 case 'model.save':
@@ -218,7 +206,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /**
      * closes all open dropdowns
      */
-    private closePopups() {
+    public closePopups() {
         this.lookupSearchOpen = false;
         this.lookuplinkSelectOpen = false;
 
@@ -228,7 +216,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /**
      * opens or closes the type selector
      */
-    private toggleLookupTypeSelect() {
+    public toggleLookupTypeSelect() {
         this.lookuplinkSelectOpen = !this.lookuplinkSelectOpen;
         this.lookupSearchOpen = false;
     }
@@ -238,7 +226,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
      *
      * @param lookupType the index in the array
      */
-    private setLookupType(lookupType) {
+    public setLookupType(lookupType) {
         this.lookupSearchTerm = '';
         this.lookupType = lookupType;
         this.lookuplinkSelectOpen = false;
@@ -248,7 +236,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
      * removes on of the pills linked
      * @param item the pill item
      */
-    private removeItem(item) {
+    public removeItem(item) {
         if (!this.model.data[item.link].beans_relations_to_delete) this.model.data[item.link].beans_relations_to_delete = {};
         this.model.data[item.link].beans_relations_to_delete[item.id] = item;
         delete (this.model.data[item.link].beans[item.id]);
@@ -261,7 +249,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /**
      * opens the search dropdown when the input gets the focus
      */
-    private onFocus() {
+    public onFocus() {
         this.openSearchDropDown();
     }
 
@@ -269,7 +257,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /*
     * opens the search dropdown
      */
-    private openSearchDropDown() {
+    public openSearchDropDown() {
         // this.getRecent();
         this.lookuplinkSelectOpen = false;
         this.lookupSearchOpen = true;
@@ -279,7 +267,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     /**
      * opens the separate search modal
      */
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
             selectModal.instance.module = this.lookuplinks[this.lookupType].module;
             selectModal.instance.multiselect = false;
@@ -298,7 +286,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
      *
      * @param pill
      */
-    private pillid(pill) {
+    public pillid(pill) {
         return pill.id;
     }
 

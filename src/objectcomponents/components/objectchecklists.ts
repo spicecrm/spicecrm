@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -27,7 +15,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
  */
 @Component({
     selector: 'object-checklists',
-    templateUrl: './src/objectcomponents/templates/objectchecklists.html',
+    templateUrl: '../templates/objectchecklists.html',
     animations: [
         trigger('tabAnimation', [
             state('true', style({height: '*', opacity: 1})),
@@ -70,12 +58,12 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * holds subscriptions for unsubscribe
      * @private
      */
-    private subscriptions = new Subscription();
+    public subscriptions = new Subscription();
     /**
      * holds the field name of checklists for saving/loading the checklist data from model service
      * @private
      */
-    private fieldName: string = 'checklists';
+    public fieldName: string = 'checklists';
 
     public panelExpanded: boolean = true;
 
@@ -319,7 +307,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * set the field name of checklists to load/save the data to/from model service
      * @private
      */
-    private setFieldName() {
+    public setFieldName() {
         let fieldName = this.metadata.getComponentConfig('ObjectChecklists', this.model.module)?.fieldName;
         if (!!fieldName) this.fieldName = fieldName;
     }
@@ -328,7 +316,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * set the local value from the model data
      * @private
      */
-    private loadData() {
+    public loadData() {
         this.model.backend.get(this.model.module, this.model.id).subscribe(data => {
             if (!Array.isArray(data?.[this.fieldName])) return;
             this.checklists = data[this.fieldName];
@@ -338,7 +326,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
     /**
      * handle drag and drop event
      */
-    private onDrop(event: CdkDragDrop<any>) {
+    public onDrop(event: CdkDragDrop<any>) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.container.data.indexOf(event.item.data), event.currentIndex);
         } else {

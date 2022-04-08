@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReports
  */
@@ -41,34 +29,34 @@ const REPORTERFILTERPANELANIMATIONS = [
  */
 @Component({
     selector: 'reporter-filter-panel',
-    templateUrl: './src/modules/reports/templates/reporterfilterpanel.html',
+    templateUrl: '../templates/reporterfilterpanel.html',
     animations: REPORTERFILTERPANELANIMATIONS
 })
 export class ReporterFilterPanel {
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
-    @ViewChild('savedFiltersContainer', {static: false}) private savedFiltersComponent;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;
+    @ViewChild('savedFiltersContainer', {static: false}) public savedFiltersComponent;
 
     /**
      * an event emitter that emits when the filter is applied
      */
-    @Output() private filterapplied: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public filterapplied: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the integration params
      */
-    @Input() private integrationparams: any = {};
+    @Input() public integrationparams: any = {};
 
-    private selectedFilterId: any;
-    private showPopover: boolean = false;
-    private filter: any = {};
+    public selectedFilterId: any;
+    public showPopover: boolean = false;
+    public filter: any = {};
 
-    constructor(private model: model,
-                private language: language,
-                private elementRef: ElementRef,
-                private toast: toast,
-                private backend: backend,
-                private session: session,
-                private reporterconfig: reporterconfig) {
+    constructor(public model: model,
+                public language: language,
+                public elementRef: ElementRef,
+                public toast: toast,
+                public backend: backend,
+                public session: session,
+                public reporterconfig: reporterconfig) {
 
     }
 
@@ -109,7 +97,7 @@ export class ReporterFilterPanel {
     /**
      * open new filter data popover
      */
-    private openPopover() {
+    public openPopover() {
         this.showPopover = true;
         this.initializeFilter();
     }
@@ -117,7 +105,7 @@ export class ReporterFilterPanel {
     /**
      * close popover and initialize new filter
      */
-    private closePopover() {
+    public closePopover() {
         this.showPopover = false;
         this.initializeFilter();
     }
@@ -125,7 +113,7 @@ export class ReporterFilterPanel {
     /**
      * initialize new filter
      */
-    private initializeFilter() {
+    public initializeFilter() {
         this.filter = {
             savedfilter_id: this.model.generateGuid(),
             name: '',
@@ -137,7 +125,7 @@ export class ReporterFilterPanel {
     /**
      * when the filter is to be applied
      */
-    private applyFilter() {
+    public applyFilter() {
         this.filterapplied.emit(true);
         this.reporterconfig.refresh();
     }
@@ -145,14 +133,14 @@ export class ReporterFilterPanel {
     /**
      * @param filterId
      */
-    private setSelectedFilterId(filterId) {
+    public setSelectedFilterId(filterId) {
         this.selectedFilterId = filterId;
     }
 
     /**
      * save the filter changes or create and save a new filter
      */
-    private handleSave() {
+    public handleSave() {
 
         if (!this.selectedFilterId) {
             return this.openPopover();
@@ -167,7 +155,7 @@ export class ReporterFilterPanel {
      * @param id: string
      * @param newFilter: object
      */
-    private saveFilter(id, newFilter?) {
+    public saveFilter(id, newFilter?) {
         let data = {
             selectedfilters: {...this.reporterconfig.userFilters}
         };
@@ -196,7 +184,7 @@ export class ReporterFilterPanel {
     /**
      * open popover to fill in new filter data
      */
-    private saveFilterAs() {
+    public saveFilterAs() {
         if (!this.selectedFilterId) return;
         this.openPopover();
     }
@@ -205,7 +193,7 @@ export class ReporterFilterPanel {
      * reset selectedFilterId and save the new filter
      * close the popover
      */
-    private confirmSave() {
+    public confirmSave() {
         this.selectedFilterId = undefined;
         this.saveFilter(this.filter.savedfilter_id, this.filter);
         this.closePopover();

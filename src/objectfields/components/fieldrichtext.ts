@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -26,12 +14,13 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
+import {lastValueFrom} from "rxjs";
 
 declare var _;
 
 @Component({
     selector: 'field-richtext',
-    templateUrl: './src/objectfields/templates/fieldrichtext.html',
+    templateUrl: '../templates/fieldrichtext.html',
 })
 export class fieldRichText extends fieldGeneric implements OnInit {
     /**
@@ -41,48 +30,48 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     /**
      * holds the available signatures
      */
-    public signatures: Array<{ label: string, content: string, id: string }> = [];
+    public signatures: { label: string, content: string, id: string }[] = [];
     /**
      * holds the spice page builder html code
      * @private
      */
-    private parsedHtml: SafeHtml = '';
+    public parsedHtml: SafeHtml = '';
     /**
      * holds the sanitized value for the iframe
      * @private
      */
-    private sanitizedValue: SafeHtml;
+    public sanitizedValue: SafeHtml;
     /**
      * the cached full html code to prevent "flickering" of the iframe (change detection)
      */
-    private fullValue_cached: string;
+    public fullValue_cached: string;
     /**
      * holds the full value for the iframe
      * @private
      */
-    private fullValue: string = '';
+    public fullValue: string = '';
     /**
      * holds the stylesheet field name
      * @private
      */
-    private stylesheetField: string = '';
+    public stylesheetField: string = '';
     /**
      * holds the stylesheet to be used in the iframe
      * @private
      */
-    private stylesheetToUse: string = '';
+    public stylesheetToUse: string = '';
     /**
      * holds a list of the saved stylesheets
      * @private
      */
-    private stylesheets: any[];
+    public stylesheets: any[];
     /**
      * when true use stylesheets in iframe
      * @private
      */
-    private useStylesheets: boolean;
+    public useStylesheets: boolean;
 
-    private signaturePreviousPosition: number = -1;
+    public signaturePosition: number = -1;
 
     constructor(public model: model,
                 public view: view,
@@ -117,8 +106,8 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * getter for the stylesheet id from the fiels
      */
     get stylesheetId(): string {
-        if (!_.isEmpty(this.model.data[this.stylesheetField])) {
-            return this.model.data[this.stylesheetField];
+        if (!_.isEmpty(this.model.getField(this.stylesheetField))) {
+            return this.model.getField(this.stylesheetField);
         }
         return this.stylesheetId = this.stylesheetToUse;
     }
@@ -153,15 +142,26 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     /**
      * call to load the initial values
      */
-    public async ngOnInit() {
+    public ngOnInit() {
         this.setStylesheetField();
         this.setStylesheetsToUse();
         this.setHtmlValue();
-        if (!!this.fieldconfig?.useSignature) {
-            await this.loadMailboxSignature();
-            this.loadUserSignature();
-        }
         this.modelChangesSubscriber();
+        if (!!this.fieldconfig?.useSignature) {
+            this.selectedSignatureId = this.model.getFieldValue("signature");
+            this.loadUserSignature();
+            this.loadMailboxSignature(this.model.getField('mailbox_id'), true);
+        }
+    }
+
+    /**
+     * signature changed (if mailbox -> load signature)
+     */
+    public changeSignature() {
+        if(this.selectedSignatureId == 'mailbox') {
+            this.loadMailboxSignature(this.model.getField('mailbox_id'), true);
+        }
+        this.renderSelectedSignature();
     }
 
     /**
@@ -169,20 +169,38 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     public renderSelectedSignature() {
 
-        this.clearSignature();
+        if (!this.value) this.value = '';
+
+        const tempElement: HTMLElement = document.createElement('div');
+        tempElement.innerHTML = this.value;
+
+        let selectedEleSign = tempElement.querySelectorAll("div[data-signature]");
+        let selectedEleReply = tempElement.querySelectorAll("div[spicecrm_reply_quote]");
+
+
+        // keep text till signature or reply (find index position)
+        this.signaturePosition = tempElement.innerHTML.indexOf(selectedEleReply[0]?.outerHTML);
+        if(selectedEleSign.length > 0) {
+            this.signaturePosition = tempElement.innerHTML.indexOf(selectedEleSign[0]?.outerHTML);
+        }
+
+        // remove signature from value
+        selectedEleSign[0]?.parentNode.removeChild(selectedEleSign[0]);
+        this.value = tempElement.innerHTML;
+
+        // set signature to non-db field (keep it after expanding)
+        this.model.setField("signature", this.selectedSignatureId);
 
         if (!this.selectedSignatureId) return;
 
-        if (!this.value) this.value = '';
-
         const signature = this.signatures.find(s => s.id == this.selectedSignatureId);
-        const html = `<div data-signature="" style="margin: 10px 0">${signature.content}</div>`;
+        const html = `<div data-signature="" class="data-signature" style="margin: 10px 0">${signature.content}</div>`;
 
-        if (this.signaturePreviousPosition > -1) {
-            this.value = `${this.value.slice(0, this.signaturePreviousPosition)} ${html} ${this.value.slice(html.length + this.signaturePreviousPosition)}`;
-        } else {
-            this.value = `<p><br></p> ${html} ${this.value}`;
-        }
+        this.value = [
+            this.value.slice(0, this.signaturePosition),
+            html,
+            selectedEleReply[0]?.outerHTML
+        ].join('<p><br></p>');
     }
 
     /**
@@ -194,7 +212,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         this.cdRef.detectChanges();
     }
 
-    protected encodeHtml(value) {
+    public encodeHtml(value) {
         return String(value)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -207,29 +225,31 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * push the signature option
      * @private
      */
-    private loadMailboxSignature(): Promise<any> | void {
+    public loadMailboxSignature(mailboxId, render): Promise<any> | void {
 
         if (!this.isEditMode()) return;
 
-        const mailboxId = this.model.getField('mailbox_id');
         if (!mailboxId) return;
 
         const signatureContent: string = this.configurationService.getData('mailbox_signature_' + mailboxId);
         if (!signatureContent) {
-            return this.backend.get('Mailboxes', mailboxId)
-                .toPromise()
+            return lastValueFrom(this.backend.get('Mailboxes', mailboxId))
                 .then((data: any) => {
-                    if (!data.email_signature) return;
+                    // if (!data.email_signature) return;
                     this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
 
-                    this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
-                    this.selectedSignatureId = mailboxId;
-                    this.renderSelectedSignature();
+                    this.addSignature('mailbox', data.email_signature, 'LBL_MAILBOX_SIGNATURE');
+
+                    if(render) {
+                        this.renderSelectedSignature();
+                    }
                 });
         } else {
-            this.addSignature(mailboxId, signatureContent, 'LBL_MAILBOX');
-            this.selectedSignatureId = mailboxId;
-            this.renderSelectedSignature();
+            this.addSignature('mailbox', signatureContent, 'LBL_MAILBOX');
+
+            if(render) {
+                this.renderSelectedSignature();
+            }
         }
     }
 
@@ -237,7 +257,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * push the signature data to the signature array
      * @private
      */
-    private addSignature(id: string, content: string, label: string) {
+    public addSignature(id: string, content: string, label: string) {
         const existingSignature = this.signatures.find(s => s.id == id);
         if (!existingSignature) {
             this.signatures.push({id, content, label});
@@ -250,7 +270,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * load the user signatures from the backend
      * @private
      */
-    private loadUserSignature() {
+    public loadUserSignature() {
 
         if (!this.isEditMode()) return;
 
@@ -258,39 +278,16 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         if (!userSignatures) return;
         const noMailboxSignature = this.signatures.length == 0;
         this.addSignature('user', userSignatures, 'LBL_MY_SIGNATURE');
-        if (noMailboxSignature) {
-            this.selectedSignatureId = 'user';
-            this.renderSelectedSignature();
-        }
     }
 
-    /**
-     * clear the signature from the body
-     * @private
-     */
-    private clearSignature() {
-
-        if (!this.value) return;
-
-        const tempElement: HTMLElement = document.createElement('div');
-        tempElement.innerHTML = this.value;
-
-        Array.from(tempElement.querySelectorAll('div[data-signature]'))
-            .forEach(el => {
-                this.signaturePreviousPosition = tempElement.innerHTML.indexOf(el.outerHTML);
-                el.parentNode.removeChild(el);
-            });
-        this.value = tempElement.innerHTML;
-    }
-
-    private setStylesheetField() {
+    public setStylesheetField() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
             this.stylesheetField = fieldDefs.stylesheet_id_field;
         }
     }
 
-    private setStylesheetsToUse() {
+    public setStylesheetsToUse() {
         this.useStylesheets = !_.isEmpty(this.stylesheetField) && !_.isEmpty(this.stylesheets);
         if (this.useStylesheets) {
             if (this.stylesheets.length === 1) {
@@ -308,7 +305,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should only be rebuild on change
      * @returns {any}
      */
-    private setSanitizedValue() {
+    public setSanitizedValue() {
         if (this.value) {
             if (this.value.includes('</html>')) {
                 this.fullValue = this.value;
@@ -326,18 +323,18 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         return this.sanitizedValue;
     }
 
-    private modelChangesSubscriber() {
+    public modelChangesSubscriber() {
         this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe(value => {
             this.setHtmlValue();
         }));
         this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe(mailboxId => {
-            if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
-                this.loadMailboxSignature();
+            if (this.fieldconfig?.useSignature && !!mailboxId && this.model.getField('signature') == 'mailbox') {
+                this.loadMailboxSignature(mailboxId, true);
             }
         }));
     }
 
-    private setHtmlValue() {
+    public setHtmlValue() {
         let regexp = /<code>[\s\S]*?<\/code>/g;
         let match = regexp.exec(this.value);
         while (match != null) {
@@ -351,16 +348,16 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         this.setSanitizedValue();
     }
 
-    private save(content) {
+    public save(content) {
         let toSave = {
-            date_modified: this.model.data.date_modified,
+            date_modified: this.model.getField('date_modified'),
             [this.fieldname]: content
         };
         this.backend.save(this.model.module, this.model.id, toSave)
             .subscribe(
                 (res: any) => {
                     this.model.endEdit();
-                    this.model.data.date_modified = res.date_modified;
+                    this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
                     this.model.startEdit();
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");

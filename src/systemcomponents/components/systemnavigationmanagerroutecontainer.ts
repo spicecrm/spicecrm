@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -39,7 +27,7 @@ declare var _: any;
  */
 @Component({
     selector: 'system-navigation-manager-route-container',
-    templateUrl: './src/systemcomponents/templates/systemnavigationmanagerroutecontainer.html',
+    templateUrl: '../templates/systemnavigationmanagerroutecontainer.html',
     providers: [navigationtab]
 })
 export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy {
@@ -47,44 +35,44 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
     /**
      * the tab object
      */
-    @Input() private object: objectTab;
+    @Input() public object: objectTab;
 
     /**
      * the tabid
      */
-    @Input() private tabid: string;
+    @Input() public tabid: string;
 
     /**
      * the id of the parenttab if this is a subtab
      */
-    @Input() private parentttabid: string;
+    @Input() public parentttabid: string;
 
     /**
      * inidcates if the tab is loaded
      */
-    private loaded = false;
+    public loaded = false;
 
     /**
      * the component from the dynamic route to be rendered
      */
-    private routercomponent: string;
+    public routercomponent: string;
 
     /**
      * internally held rendere path
      */
-    private renderedPath: string;
+    public renderedPath: string;
 
     /**
      * internally held rendered component
      */
-    private rendererParams: string;
+    public rendererParams: string;
 
     /**
      * holds component subscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private language: language, private router: Router, private broadcast: broadcast, @SkipSelf() private navigation: navigation, private navigationtab: navigationtab, private changeDetectorRef: ChangeDetectorRef) {
+    constructor(public metadata: metadata, public language: language, public router: Router, public broadcast: broadcast, @SkipSelf() public navigation: navigation, public navigationtab: navigationtab, public changeDetectorRef: ChangeDetectorRef) {
         this.changeDetectorRef.detach();
 
         // add  subscription to the nav service
@@ -156,7 +144,7 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
     /**
      * set the parent tab id to the navigation tab service
      */
-    private setParentTabId() {
+    public setParentTabId() {
         // pass on the tab id if we are not on main, the navigation is subtabbed and the object allows for subtabs
         if (this.tabid != 'main' && this.navigation.navigationparadigm == 'subtabbed' && this.object.enablesubtabs) {
             this.navigationtab.tabid = this.parentttabid ? this.parentttabid : this.tabid;

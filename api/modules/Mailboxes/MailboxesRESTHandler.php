@@ -1,4 +1,5 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Mailboxes;
 
@@ -251,8 +252,8 @@ class MailboxesRESTHandler {
     private function emailBeanPairExists($email_id, $bean_id) {
         $db = DBManagerFactory::getInstance();
 
-        $query = "SELECT 1 FROM emails_beans WHERE email_id = '" . $email_id . "' AND bean_id = '" . $bean_id . "' LIMIT 1";
-        $result = $db->query($query);
+        $query = "SELECT 1 FROM emails_beans WHERE email_id = '" . $email_id . "' AND bean_id = '" . $bean_id . "'";
+        $result = $db->limitQuery($query, 0, 1);
         return $result->num_rows !== 0;
 
     }

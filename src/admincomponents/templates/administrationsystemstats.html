@@ -1,15 +1,3 @@
-<!--
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
--->
-
 <ng-container *ngIf="loaded; else loading">
     <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
         <h2 class="slds-text-heading_medium">System and Storage Statistics Summary</h2>
@@ -23,7 +11,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                 <th scope="col">
                     Object
                 </th>
-                <th scope="col">
+                <th class="slds-text-align--right slds-p-horizontal--xx-small" scope="col">
                     Records
                 </th>
                 <th scope="col">
@@ -37,7 +25,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     <div class="slds-truncate" >Database</div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{totaldbrecords}}</div>
+                    <div class="slds-truncate slds-text-align--right"><system-display-number system-display-number-nodigits [number]="totaldbrecords" ></system-display-number></div>
                 </td>
                 <td>
                     <div class="slds-truncate" >{{humanReadableSize(totaldbsize)}}</div>
@@ -48,10 +36,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     <div class="slds-truncate" >Elasticsearch</div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{totalelasticrecords}}</div>
+                    <div class="slds-truncate slds-text-align--right" ><system-display-number system-display-number-nodigits [number]="totalelasticrecords('primaries')" ></system-display-number> / <system-display-number system-display-number-nodigits [number]="totalelasticrecords('total')" ></system-display-number></div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{humanReadableSize(totalelasticsize)}}</div>
+                    <div class="slds-truncate" >{{humanReadableSize(totalelasticsize('primaries'))}} / {{humanReadableSize(totalelasticsize('total'))}}</div>
                 </td>
             </tr>
             <tr>
@@ -59,7 +47,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     <div class="slds-truncate" >Uploadfiles</div>
                 </td>
                 <td>
-                    <div class="slds-truncate" >{{uploadcount}}</div>
+                    <div class="slds-truncate slds-text-align--right" ><system-display-number system-display-number-nodigits [number]="uploadcount" ></system-display-number></div>
                 </td>
                 <td>
                     <div class="slds-truncate" >{{humanReadableSize(uploadsize)}}</div>
@@ -89,13 +77,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                         <div class="slds-truncate" (click)="sortby('name', false)">Table</div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate" (click)="sortby('records')">Records</div>
+                        <div class="slds-truncate slds-p-horizontal--xx-small slds-text-align--right" (click)="sortby('records')">Records</div>
                     </th>
                     <th scope="col">
                         <div class="slds-truncate" (click)="sortby('size')">Size</div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate">indexed Records</div>
+                        <div class="slds-truncate slds-p-horizontal--xx-small slds-text-align--right">indexed Records</div>
                     </th>
                     <th scope="col">
                         <div class="slds-truncate">Index Size</div>
@@ -108,16 +96,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                         <div class="slds-truncate" >{{table.name}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate" >{{table.records}}</div>
+                        <div class="slds-truncate slds-text-align--right"><system-display-number [number]="table.records" system-display-number-nodigits></system-display-number></div>
                     </td>
                     <td>
                         <div class="slds-truncate" >{{humanReadableSize(table.size)}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate" >{{ftsDocumentCount(table.name)}}</div>
+                        <div class="slds-truncate slds-text-align--right"><ng-container *ngIf="ftsDocumentCount(table.name, 'primaries')"><system-display-number [number]="ftsDocumentCount(table.name, 'primaries')" system-display-number-nodigits></system-display-number> / <system-display-number [number]="ftsDocumentCount(table.name, 'total')" system-display-number-nodigits></system-display-number></ng-container></div>
                     </td>
                     <td>
-                        <div class="slds-truncate" >{{ftsIndexSize(table.name)}}</div>
+                        <div class="slds-truncate" ><ng-container *ngIf="ftsIndexSize(table.name, 'primaries')">{{ftsIndexSize(table.name, 'primaries')}} / {{ftsIndexSize(table.name, 'total')}}</ng-container></div>
                     </td>
                 </tr>
             </tbody>

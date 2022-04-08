@@ -39,6 +39,7 @@ namespace SpiceCRM\includes;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 
 /**
  * @internal
@@ -64,7 +65,7 @@ class UploadStream
                 self::$upload_dir = "upload";
             }
             if (!file_exists(self::$upload_dir)) {
-                sugar_mkdir(self::$upload_dir, 0755, true);
+                SpiceFileUtils::spiceMkdir(self::$upload_dir, 0755, true);
             }
         }
         return self::$upload_dir;
@@ -112,7 +113,7 @@ class UploadStream
     {
         $path = self::path($path);
         if (!is_dir($path)) {
-            return sugar_mkdir($path, 0755, true);
+            return SpiceFileUtils::spiceMkdir($path, 0755, true);
         }
         return true;
     }

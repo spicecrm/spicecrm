@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReports
  */
@@ -56,7 +44,7 @@ const REPORTERDETAILVIEWANIMATIONS = [
  */
 @Component({
     selector: 'reporter-detilview',
-    templateUrl: './src/modules/reports/templates/reporterdetailview.html',
+    templateUrl: '../templates/reporterdetailview.html',
     providers: [view, model, reporterconfig],
     animations: REPORTERDETAILVIEWANIMATIONS,
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -68,50 +56,50 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     @ViewChild('presentationContainer', {
         read: ViewContainerRef,
         static: true
-    }) private presentationContainer: ViewContainerRef;
+    }) public presentationContainer: ViewContainerRef;
     /**
      * container reference of the presentation component
      */
-    private presentationComponentRef: any = undefined;
+    public presentationComponentRef: any = undefined;
     /**
      * set to true if the report should show the visualization
      */
-    private hasVisualization: boolean = false;
+    public hasVisualization: boolean = false;
 
     /**
      * the height of the visualization container
      */
-    private visualizationHeight: number = 0;
+    public visualizationHeight: number = 0;
 
     /**
      * where conditions will be passed to the children
      */
-    private whereConditions: any = {};
+    public whereConditions: any = {};
     /**
      * integration parms will be passed to the action buttons
      */
-    private integrationParams: any = {};
+    public integrationParams: any = {};
     /**
      * show/hide filter panel
      */
-    private showFilters: boolean = false;
+    public showFilters: boolean = false;
     /**
      * to save observable subscriptions for unsubscribe purpose
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private broadcast: broadcast,
-                private language: language,
-                private metadata: metadata,
-                private injector: Injector,
-                private model: model,
-                private backend: backend,
-                private activatedRoute: ActivatedRoute,
-                private navigationtab: navigationtab,
-                private router: Router,
-                private reporterconfig: reporterconfig,
-                private cdRef: ChangeDetectorRef,
-                private view: view) {
+    constructor(public broadcast: broadcast,
+                public language: language,
+                public metadata: metadata,
+                public injector: Injector,
+                public model: model,
+                public backend: backend,
+                public activatedRoute: ActivatedRoute,
+                public navigationtab: navigationtab,
+                public router: Router,
+                public reporterconfig: reporterconfig,
+                public cdRef: ChangeDetectorRef,
+                public view: view) {
 
         this.subscribeToBroadcast();
     }
@@ -140,7 +128,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
      * subscribe to broadcast message and refresh the results if the model match
      * and reset the views
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(msg => {
                 if (msg.messagetype == 'model.save' && msg.messagedata.module == this.model.module && msg.messagedata.id == this.model.id) {
@@ -161,7 +149,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * set the navigation paradigm
      */
-    private setNavigationTabInfos(displayName) {
+    public setNavigationTabInfos(displayName) {
         this.navigationtab.setTabInfo({
             displayname: displayName,
             displaymodule: this.model.module
@@ -174,7 +162,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
      * reset the integration params
      * set the hasVisualization to true and set the height of the visualization component
      */
-    private setModelData() {
+    public setModelData() {
         this.model.module = this.navigationtab.activeRoute.params.module;
         this.model.id = this.navigationtab.activeRoute.params.id;
 
@@ -198,7 +186,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * set the integration params
      */
-    private setIntegrationParams(integrationParams) {
+    public setIntegrationParams(integrationParams) {
         this.integrationParams = undefined;
         if (!(!!integrationParams)) return;
         this.integrationParams = integrationParams;
@@ -208,7 +196,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
      * set the visualization properties
      * @param visualizationParams
      */
-    private setVisualizationProperties(visualizationParams) {
+    public setVisualizationProperties(visualizationParams) {
         this.hasVisualization = false;
         if (!(!!visualizationParams)) return;
 
@@ -221,7 +209,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * render the presentation component
      */
-    private renderPresentation(presentationParams) {
+    public renderPresentation(presentationParams) {
 
         if (this.presentationComponentRef) {
             this.presentationComponentRef.destroy();
@@ -260,14 +248,14 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /*
      * toggle showing the filter panel
      */
-    private toggleFilters(event) {
+    public toggleFilters(event) {
         this.showFilters = event;
     }
 
     /**
      * when the filters are saved hide the panel
      */
-    private filterApplied() {
+    public filterApplied() {
         this.showFilters = false;
     }
 }

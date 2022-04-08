@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -22,7 +10,7 @@ declare var moment: any;
 
 @Component({
     selector: 'system-input-date-picker',
-    templateUrl: './src/systemcomponents/templates/systeminputdatepicker.html',
+    templateUrl: '../templates/systeminputdatepicker.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: 'slds-datepicker'
@@ -36,49 +24,55 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     /*
     * @input setDate: moment
     */
-    @Input() private setDate: any;
+    @Input() public setDate: any;
     /*
     * @input dual: boolean
     */
-    @Input() private dual: boolean = false;
+    @Input() public dual: boolean = false;
     /*
     * @input minDate: moment
     */
-    @Input() private minDate: any;
+    @Input() public minDate: any;
     /*
     * @input maxDate: moment
     */
-    @Input() private maxDate: any;
+    @Input() public maxDate: any;
     /*
     * @input weekStartDay: number
     */
-    @Input() private weekStartDay: number = 0;
+    @Input() public weekStartDay: number = 0;
     /*
     * @input showTodayButton: boolean
     */
-    @Input() private showTodayButton: boolean = true;
+    @Input() public showTodayButton: boolean = true;
     /*
     * @output datePicked: moment
     */
-    @Output() private datePicked: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public datePicked: EventEmitter<any> = new EventEmitter<any>();
+    public curDate: any = new moment();
+    public secondDate: any = new moment();
 
-    private curDate: any = new moment();
-    private secondDate: any = new moment();
-
-    constructor(private language: language, private userPreferences: userpreferences) {
+    constructor(public language: language, public userPreferences: userpreferences) {
         let preferences = this.userPreferences.unchangedPreferences.global;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
     }
 
-    get currentYear(): any {
-        return {
-            id: this.curDate.year(),
-            name: this.curDate.year()
-        };
+    public _currentYear: { id: string, name: string, group?: string };
+
+    /**
+     * return the current year
+     */
+    get currentYear(): { id: string, name: string } {
+        return this._currentYear;
     }
 
-    set currentYear(value) {
-        this.curDate.year(value.length ? value : value.name);
+    /**
+     * set the current year and rebuild the grid
+     * @param value
+     */
+    set currentYear(value: { id: string, name: string }) {
+        this._currentYear = value;
+        this.curDate.year(value.name);
         this.buildGrids();
     }
 
@@ -131,7 +125,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @buildYearsList
     * @buildGrids
     */
-    private initializeGrid() {
+    public initializeGrid() {
         if (this.setDate) {
             this.curDate = new moment(this.setDate);
             this.secondDate = new moment(this.setDate);
@@ -148,7 +142,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @build yearsList
     * @set yearsList
     */
-    private buildYearsList() {
+    public buildYearsList() {
         this.yearsList = new Array(11).fill('').map((e, i) => {
             let year = i - 5 + +this.curDate.year();
             return {id: year.toString(), name: year.toString()};
@@ -159,7 +153,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param dayIndex: number
     * @return weekdayLong: string
     */
-    private weekdayLong(dayIndex) {
+    public weekdayLong(dayIndex) {
         let lang = this.language.currentlanguage.substring(0, 2);
         moment.locale(lang);
         return moment.weekdays(dayIndex + this.weekStartDay);
@@ -170,7 +164,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param date: moment
     * @return boolean
     */
-    private disabled(date) {
+    public disabled(date) {
         if (!date) return false;
         if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
 
@@ -186,7 +180,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param date: moment
     * @return boolean
     */
-    private isToday(date) {
+    public isToday(date) {
         if (!date) return false;
         let today = new moment();
         return today.isSame(date, 'year') && today.isSame(date, 'month') && today.isSame(date, 'day');
@@ -197,7 +191,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param date: moment
     * @return boolean
     */
-    private isCurrent(date) {
+    public isCurrent(date) {
         if (!date) return false;
         return this.setDate && this.setDate.isSame(date, 'year') && this.setDate.isSame(date, 'month') && this.setDate.isSame(date, 'day');
     }
@@ -207,7 +201,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @subtract? 1 month to secondDate
     * @buildGrids
     */
-    private prevMonth(e: MouseEvent) {
+    public prevMonth(e: MouseEvent) {
         e.stopPropagation();
         this.curDate.subtract(1, 'months');
         if (this.dual) this.secondDate.subtract(1, 'months');
@@ -219,7 +213,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @add? 1 month to secondDate
     * @buildGrids
     */
-    private nextMonth(e: MouseEvent) {
+    public nextMonth(e: MouseEvent) {
         e.stopPropagation();
         this.curDate.add(1, 'months');
         if (this.dual) this.secondDate.add(1, 'months');
@@ -230,7 +224,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @set curDate to today
     * @buildGrids
     */
-    private goToday(e: MouseEvent) {
+    public goToday(e: MouseEvent) {
         e.stopPropagation();
         this.curDate = new moment();
         this.buildGrids();
@@ -240,7 +234,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param date
     * @emit newDate: moment by datePicked
     */
-    private pickDate(date) {
+    public pickDate(date) {
         if (!date) return;
         let newDate = new moment(date.format());
 
@@ -259,7 +253,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @reset currentGrid
     * @reset secondGrid
     */
-    private buildGrids() {
+    public buildGrids() {
         this.currentGrid = [];
         this.secondGrid = [];
 
@@ -275,7 +269,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param grid: any[]
     * @param date: moment
     */
-    private buildGridWeeks(grid, date) {
+    public buildGridWeeks(grid, date) {
         let fdom = new moment(date);
         // move to first day of month
         fdom.date(1);

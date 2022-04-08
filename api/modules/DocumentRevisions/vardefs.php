@@ -33,10 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['DocumentRevision'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
     'table' => 'document_revisions',
     'audited' => true,
     'fields' => [

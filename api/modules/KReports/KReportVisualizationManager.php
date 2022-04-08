@@ -1,6 +1,7 @@
 <?php
 /***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\KReports\KReportPluginManager;
 
 class KReportVisualizationManager {
@@ -56,7 +57,7 @@ class KReportVisualizationManager {
     }
 
     public function generateLayout($thisLayout, $height) {
-        $layoutGuid = create_guid();
+        $layoutGuid = SpiceUtils::createGuid();
 
         //$layoutString = '<script type="text/javascript" src="modules/KReports/javascript/kreportsvisualizationmanager.js"></script>';
         // write the registry
@@ -156,7 +157,7 @@ class KReportVisualizationManager {
                                 die('pluginError');
                         }
 
-                        $this->itemData[$thisElement]['divID'] = 'vis' . ($thisData[$thisData['plugin']]['uid'] != '' ? $thisData[$thisData['plugin']]['uid'] : 'gc' . create_guid());
+                        $this->itemData[$thisElement]['divID'] = 'vis' . ($thisData[$thisData['plugin']]['uid'] != '' ? $thisData[$thisData['plugin']]['uid'] : 'gc' . SpiceUtils::createGuid());
                         $this->itemData[$thisElement]['addDivData'] =  $this->headerData[$thisData['plugin']]['object']->getAddVizDiv($this->itemData[$thisElement]['divID']);
                         
                         if ($thisData[$thisData['plugin']]['uid'] != '')

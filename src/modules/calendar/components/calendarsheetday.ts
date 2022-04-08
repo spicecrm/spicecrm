@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleCalendar
  */
@@ -44,7 +32,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-day',
-    templateUrl: './src/modules/calendar/templates/calendarsheetday.html',
+    templateUrl: '../templates/calendarsheetday.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -52,72 +40,72 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * container reference for the main div
      */
-    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) protected sheetContainer: ViewContainerRef;
+    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) public sheetContainer: ViewContainerRef;
     /**
      * children reference of the drop targets
      */
-    @ViewChildren(CalendarSheetDropTarget) protected dropTargets: QueryList<CalendarSheetDropTarget>;
+    @ViewChildren(CalendarSheetDropTarget) public dropTargets: QueryList<CalendarSheetDropTarget>;
     /**
      * day text container class to be set for day text when the calendar is used as dashlet
      */
-    private dayTextContainerClass: string = '';
+    public dayTextContainerClass: string = '';
     /**
      * holds the day text class
      */
-    private dayTextClass: string = 'slds-text-body--regular';
+    public dayTextClass: string = 'slds-text-body--regular';
     /**
      * holds the date text class
      */
-    private dateTextClass: string = 'slds-text-heading--large';
+    public dateTextClass: string = 'slds-text-heading--large';
     /**
      * holds the sheet hours
      */
-    protected sheetHours: any[] = [];
+    public sheetHours: any[] = [];
     /**
      * holds the owner multi events
      */
-    protected ownerMultiEvents: any[] = [];
+    public ownerMultiEvents: any[] = [];
     /**
      * holds the google multi events
      */
-    protected googleMultiEvents: any[] = [];
+    public googleMultiEvents: any[] = [];
     /**
      * the change date comes from the parent
      */
-    @Input() private setdate: any = {};
+    @Input() public setdate: any = {};
     /**
      * holds a boolean of google events visibility
      */
-    @Input() private googleIsVisible: boolean = true;
+    @Input() public googleIsVisible: boolean = true;
     /**
      * holds the owner events
      */
-    private ownerEvents: any[] = [];
+    public ownerEvents: any[] = [];
     /**
      * holds the users events
      */
-    private userEvents: any[] = [];
+    public userEvents: any[] = [];
     /**
      * holds the users multi events
      */
-    private userMultiEvents: any[] = [];
+    public userMultiEvents: any[] = [];
     /**
      * holds the google events
      */
-    private googleEvents: any[] = [];
+    public googleEvents: any[] = [];
     /**
      * holds the resize listener
      */
-    private resizeListener: any;
+    public resizeListener: any;
     /**
      * subscription to handle unsubscribe
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
-    constructor(private language: language,
-                private cdRef: ChangeDetectorRef,
-                private renderer: Renderer2,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public cdRef: ChangeDetectorRef,
+                public renderer: Renderer2,
+                public calendar: calendar) {
         this.buildHours();
         this.subscribeToChanges();
     }
@@ -126,18 +114,18 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * subscribe to user calendar changes
      * subscribe to resize event to reset the events style
      */
-    private subscribeToChanges() {
+    public subscribeToChanges() {
         this.subscription.add(
             this.calendar.layoutChange$.subscribe(() => {
                 this.setEventsStyle();
             })
         );
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-            if (calendar.id == 'owner') {
-                this.getOwnerEvents();
-            } else {
-                this.getUserEvents(calendar);
-            }
+                if (calendar.id == 'owner') {
+                    this.getOwnerEvents();
+                } else {
+                    this.getUserEvents(calendar);
+                }
             })
         );
         this.resizeListener = this.renderer.listen('window', 'resize', () =>
@@ -233,7 +221,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param item
      * @return item.id
      */
-    private trackByItemFn(index, item) {
+    public trackByItemFn(index, item) {
         return item.id;
     }
 
@@ -244,7 +232,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param item
      * @return index
      */
-    private trackByIndexFn(index, item) {
+    public trackByIndexFn(index, item) {
         return index;
     }
 
@@ -253,7 +241,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param events
      * @return events
      */
-    private correctHours(events) {
+    public correctHours(events) {
         events.forEach(event => {
             if (!event.isMulti) {
                 let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
@@ -272,7 +260,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * load owner events from service and rearrange the multi events
      */
-    private getOwnerEvents() {
+    public getOwnerEvents() {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
 
@@ -293,7 +281,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * load google events from service and rearrange the multi events
      */
-    private getGoogleEvents() {
+    public getGoogleEvents() {
         this.googleEvents = [];
         this.googleMultiEvents = [];
         if (!this.googleIsVisible || this.calendar.isMobileView) {
@@ -315,7 +303,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * load other user events from service and rearrange the multi events
      */
-    private getUserEvents(calendar) {
+    public getUserEvents(calendar) {
         this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
@@ -346,7 +334,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * load other users events from service and rearrange the multi events
      */
-    private getUsersEvents() {
+    public getUsersEvents() {
         this.userEvents = [];
         this.userMultiEvents = [];
         if (this.calendar.isMobileView) {
@@ -374,7 +362,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * filter the out of range events or the absence events
      * @param events
      */
-    private filterEvents(events): any {
+    public filterEvents(events): any {
         return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour || ('absence' == event.type));
     }
 
@@ -383,7 +371,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param type
      * @return date format
      */
-    private displayDate(type) {
+    public displayDate(type) {
         switch (type) {
             case 'day':
                 return this.setdate.format('ddd');
@@ -395,7 +383,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * build sheet hours
      */
-    private buildHours() {
+    public buildHours() {
         this.sheetHours = [];
         let i = this.calendar.startHour;
         while (i <= this.calendar.endHour) {
@@ -407,7 +395,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * set all events style
      */
-    private setEventsStyle() {
+    public setEventsStyle() {
         this.allEvents.forEach(event => {
                 const startMinutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
                 const endMinutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
@@ -428,7 +416,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param dragEvent: CdkDragEnd
      * call calendar.onEventDrop and pass the dropTargets reference for this sheet
      */
-    private onEventDrop(dragEvent: CdkDragEnd) {
+    public onEventDrop(dragEvent: CdkDragEnd) {
         this.calendar.onEventDrop(dragEvent, this.dropTargets);
     }
 }

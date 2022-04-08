@@ -1,0 +1,62 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_INDEX"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+                <system-input-text [(ngModel)]="index.name"></system-input-text>
+            </div>
+            <div class="slds-large-size--1-of-2 slds-p-left--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="index.indextype">
+                        <option value="primary">primary</option>
+                        <option value="index">index</option>
+                        <option value="unique">unique</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="index.scope">
+                        <option *ngIf="dictionarymanager.changescope == 'global'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                <system-input-text [(ngModel)]="index.package"></system-input-text>
+            </div>
+            <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                <system-input-text [(ngModel)]="index.version"></system-input-text>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-2">
+                <span class="slds-form-element__label"><system-label label="LBL_AVAILABLE_ITEMS"></system-label></span>
+                <div class="slds-picklist slds-picklist__options slds-size--1-of-1" style="height: 50vh" cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableDictionaryItems" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
+                    <div *ngFor="let domain of availableDictionaryItems" cdkDrag [cdkDragData]="domain" class="slds-drag--preview slds-picklist__item">
+                        <span class="slds-truncate">{{domain.name}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-left--x-small slds-size--1-of-2">
+                <span class="slds-form-element__label"><system-label label="LBL_INDEX_ITEMS"></system-label></span>
+                <div class="slds-picklist slds-picklist__options slds-size--1-of-1 cdk-drag" style="height: 50vh" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="indexDictionaryItems" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
+                    <div *ngFor="let domain of indexDictionaryItems" cdkDrag [cdkDragData]="domain" class="slds-drag--preview slds-picklist__item">
+                        <span class="slds-truncate">{{domain.name}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+    </system-modal-footer>
+</system-modal>

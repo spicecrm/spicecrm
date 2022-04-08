@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -35,23 +23,23 @@ declare var moment: any;
 
 @Component({
     selector: "system-input-tags",
-    templateUrl: "./src/systemcomponents/templates/systeminputtags.html"
+    templateUrl: "../templates/systeminputtags.html"
 })
 export class SystemInputTags {
 
-    @Output() private tagemitter: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public tagemitter: EventEmitter<string> = new EventEmitter<string>();
 
     // for the dropdown
-    private querystring: string = '';
-    private querytimeout: any = undefined;
-    private matchedtags: string[] = [];
-    private matchedtagindex: number;
+    public querystring: string = '';
+    public querytimeout: any = undefined;
+    public matchedtags: string[] = [];
+    public matchedtagindex: number;
 
-    constructor(private elementref: ElementRef,
-                private renderer: Renderer2,
-                private userpreferences: userpreferences,
-                private backend: backend,
-                private language: language) {
+    constructor(public elementref: ElementRef,
+                public renderer: Renderer2,
+                public userpreferences: userpreferences,
+                public backend: backend,
+                public language: language) {
     }
 
     get isOpen(): boolean {
@@ -59,7 +47,7 @@ export class SystemInputTags {
     }
 
 
-    private search(_e) {
+    public search(_e) {
         // handle the key pressed
         switch (_e.key) {
             case 'ArrowDown':
@@ -77,7 +65,7 @@ export class SystemInputTags {
         }
     }
 
-    private doSearch() {
+    public doSearch() {
         /*
         this.backend.getRequest('SpiceTags/' + btoa(this.querystring.trim())).subscribe(tags => {
             this.matchedtags = tags;
@@ -94,7 +82,7 @@ export class SystemInputTags {
         });
     }
 
-    private addTag(tag){
+    public addTag(tag){
         if (this.querytimeout) window.clearTimeout(this.querytimeout);
         this.matchedtags = [];
 

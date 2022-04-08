@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleActivities
  */
@@ -40,7 +28,7 @@ declare var _: any;
  */
 @Component({
     selector: 'activitytimeline-item',
-    templateUrl: './src/modules/activities/templates/activitytimelineitem.html',
+    templateUrl: '../templates/activitytimelineitem.html',
     providers: [model, modelattachments, view],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -49,32 +37,32 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     /**
      * the activity data passed in the component
      */
-    @Input() private activity: any = {};
+    @Input() public activity: any = {};
 
     /**
      * if set to truie a toolset is shown
      */
-    @Input() private showtoolset: boolean = true;
+    @Input() public showtoolset: boolean = true;
 
     /**
      * the fieldset that is rendered in teh form if the item is expandad
      */
-    private formFieldSet: string = '';
+    public formFieldSet: string = '';
 
     /**
      * the fieldset used in the main header line
      */
-    private headerFieldSet: string;
+    public headerFieldSet: string;
 
     /**
      * the fieldset used in teh subline
      */
-    private subheaderFieldSet: string;
+    public subheaderFieldSet: string;
 
     /**
      * indicates if the
      */
-    private isopen: boolean = false;
+    public isopen: boolean = false;
 
     /**
      * the componmentconfig passed in
@@ -84,14 +72,24 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     /**
      * the module to be displayed
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * holds all subsriptions for the component
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private model: model, private modelattachments: modelattachments, private metadata: metadata, private view: view, private userpreferences: userpreferences, private session: session, private language: language, @Optional() private activitiytimeline: activitiytimeline, private cdref: ChangeDetectorRef) {
+    constructor(
+        public model: model,
+        public modelattachments: modelattachments,
+        public metadata: metadata,
+        public view: view,
+        public userpreferences: userpreferences,
+        public session: session,
+        public language: language,
+        @Optional() public activitiytimeline: activitiytimeline,
+        public cdref: ChangeDetectorRef
+    ) {
         this.view.isEditable = false;
         this.view.displayLabels = true;
 
@@ -105,7 +103,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      */
     public ngOnInit() {
         this.model.id = this.activity.id;
-        this.model.data = this.activity.data;
+        this.model.setData(this.activity.data);
         this.model.module = this.activity.module;
 
         // initiate the model attachment
@@ -177,7 +175,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     /**
      * fired when the attcahments are laoded to trigger the change detection
      */
-    private attachmentsloaded() {
+    public attachmentsloaded() {
         this.cdref.detectChanges();
     }
 
@@ -252,16 +250,25 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
     }
 
     /**
+     * run change detection after the action fired
+     *
+     * @param action
+     */
+    public handleAction(action) {
+        this.cdref.detectChanges();
+    }
+
+    /**
      * navigate to the records
      */
-    private goDetail() {
+    public goDetail() {
         if (this.enableDetail) this.model.goDetail();
     }
 
     /**
      * toggles the state between expanded and collapsed
      */
-    private toggleexpand() {
+    public toggleexpand() {
         this.isopen = !this.isopen;
 
         // if expanded and not laoded yet load the atachments

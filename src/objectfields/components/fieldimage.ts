@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -35,7 +23,7 @@ import { SystemInputMedia } from '../../systemcomponents/components/systeminputm
 
 @Component( {
     selector: 'field-image',
-    templateUrl: './src/objectfields/templates/fieldimage.html',
+    templateUrl: '../templates/fieldimage.html',
 })
 export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
 
@@ -47,11 +35,11 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     /**
      * Field is empty?
      */
-    private get fieldIsEmpty() {
+    public get fieldIsEmpty() {
         return !this.value;
     }
 
-    private height = '';
+    public height = '';
 
     constructor(
         public model: model,
@@ -59,13 +47,13 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        private backend: backend ,
-        private elRef: ElementRef,
-        private changeDetRef: ChangeDetectorRef,
-        private modalservice: modal,
-        private sanitizer: DomSanitizer
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public backend: backend ,
+        public elRef: ElementRef,
+        public changeDetRef: ChangeDetectorRef,
+        public modalservice: modal,
+        public sanitizer: DomSanitizer
     ) {
         super( model, view, language, metadata, router );
     }
@@ -85,21 +73,21 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     /**
      * CSS style for the component.
      */
-    private get style() {
+    public get style() {
         return { height: this.height };
     }
 
     /**
      * Delete the existing image.
      */
-    private deleteImage(): void {
+    public deleteImage(): void {
         this.value = '';
     }
 
     /**
      * Import an image or edit the existing image.
      */
-    private editImage( droppedFiles: FileList = null ): void {
+    public editImage( droppedFiles: FileList = null ): void {
         this.modalservice.openModal('SystemImageModal').subscribe( modalRef => {
 
             if ( this.field_defs.maxWidth ) modalRef.instance.maxWidth = this.field_defs.maxWidth;
@@ -124,7 +112,7 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
      * The Handler when a file has been dropped.
      * @param dropEvent
      */
-    private onDrop( droppedFiles ): void {
+    public onDrop( droppedFiles ): void {
         this.view.setEditMode();
         this.editImage( droppedFiles );
     }

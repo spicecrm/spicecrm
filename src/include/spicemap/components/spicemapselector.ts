@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module AddComponentsModule
  */
@@ -31,18 +19,18 @@ declare var google: any;
 
 @Component({
     selector: 'spice-map-selector',
-    templateUrl: './src/include/spicemap/templates/spicemapselector.html'
+    templateUrl: '../templates/spicemapselector.html'
 })
 export class SpiceMapSelector implements AfterViewInit {
     /**
      * elementref to the map element so the rendered vor the map can be attached
      */
-    @ViewChild('mapelement', {read: ViewContainerRef, static: true}) private mapelement: ViewContainerRef;
+    @ViewChild('mapelement', {read: ViewContainerRef, static: true}) public mapelement: ViewContainerRef;
 
     /**
      * the header input element so we can calculate the proper height for the map element that goiogle maps can render in properly
      */
-    @ViewChild('headerinput', {read: ViewContainerRef, static: true}) private headerinput: ViewContainerRef;
+    @ViewChild('headerinput', {read: ViewContainerRef, static: true}) public headerinput: ViewContainerRef;
 
     /**
      * reference to self as the modal window
@@ -52,48 +40,48 @@ export class SpiceMapSelector implements AfterViewInit {
     /**
      * reference to the map object
      */
-    private map: any = {};
+    public map: any = {};
 
     /**
      * reference to the circle object drawn on the map
      */
-    private circle: any = {};
+    public circle: any = {};
 
     /**
      * the current set latitude
      */
-    private lat: any;
+    public lat: any;
 
     /**
      * he current set longitude
      */
-    private lng: any;
+    public lng: any;
 
     /**
      * the internal held radius
      */
-    private _radius = 10;
+    public _radius = 10;
 
     /**
      * the reverse geocoded address
      */
-    private address: string;
+    public address: string;
 
     /**
      * the searchterm in the window
      */
-    private searchterm: string = '';
+    public searchterm: string = '';
 
     /**
      * the emitter emitting the results
      */
-    private geoSearchemitter: EventEmitter<any> = new EventEmitter<any>();
+    public geoSearchemitter: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
-        private zone: NgZone,
-        private language: language,
-        private metadata: metadata,
-        private libloader: libloader
+        public zone: NgZone,
+        public language: language,
+        public metadata: metadata,
+        public libloader: libloader
     ) {
 
     }
@@ -128,7 +116,7 @@ export class SpiceMapSelector implements AfterViewInit {
         );
     }
 
-    private renderMap() {
+    public renderMap() {
 
         // set the initial center
         let center = {
@@ -177,7 +165,7 @@ export class SpiceMapSelector implements AfterViewInit {
     /**
      * reverse gecode the current address to get
      */
-    private reverseGeoCode() {
+    public reverseGeoCode() {
         let geoCoder = new google.maps.Geocoder();
         geoCoder.geocode({location: {lat: this.lat, lng: this.lng}}, (results, status) => {
             this.address = results[0].formatted_address;
@@ -187,14 +175,14 @@ export class SpiceMapSelector implements AfterViewInit {
     /**
      * close the modal window
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 
     /**
      * set the data
      */
-    private set() {
+    public set() {
         this.geoSearchemitter.emit({
             radius: this._radius,
             lat: this.lat,
@@ -207,7 +195,7 @@ export class SpiceMapSelector implements AfterViewInit {
     /**
      * clear the search value
      */
-    private clear() {
+    public clear() {
         this.geoSearchemitter.emit(false);
         this.close();
     }
@@ -217,7 +205,7 @@ export class SpiceMapSelector implements AfterViewInit {
      *
      * @param details the details on the address
      */
-    private setDetails(details) {
+    public setDetails(details) {
         // set the geocodes and address
         this.lat = details.address.latitude;
         this.lng = details.address.longitude;

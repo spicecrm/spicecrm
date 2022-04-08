@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -26,49 +14,49 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: '[object-list-header]',
-    templateUrl: './src/objectcomponents/templates/objectlistheader.html',
+    templateUrl: '../templates/objectlistheader.html',
     providers: [view]
 })
 export class ObjectListHeader implements OnDestroy{
 
-    @ViewChildren(SystemResizeDirective) private resizeElements: QueryList<SystemResizeDirective>;
+    @ViewChildren(SystemResizeDirective) public resizeElements: QueryList<SystemResizeDirective>;
 
     /**
      * a relaod timeout .. set when the sort is changed to reacxt to subsequent changes and not relaod immediately
      */
-    private reloadTimeOut: number;
+    public reloadTimeOut: number;
 
     /**
      * an action set ot be applied to the list actions
      */
-    @Input() private actionset: string = '';
+    @Input() public actionset: string = '';
 
     /**
      * show the select column as first column
      */
-    @Input() private showSelectColumn: boolean = true;
+    @Input() public showSelectColumn: boolean = true;
 
     /**
      * show the number column as first column
      */
-    @Input() private showRowNumber: boolean = false;
+    @Input() public showRowNumber: boolean = false;
 
     /**
      * show the number column as first column
      */
-    @Input() private showDragHandle: boolean = false;
+    @Input() public showDragHandle: boolean = false;
 
     /**
      * display the row action menu or hide the column
      */
-    @Input() private showRowActionMenu: boolean = true;
+    @Input() public showRowActionMenu: boolean = true;
 
     /**
      * keep all suibscriptions
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private modellist: modellist, private language: language, private view: view, private elementRef: ElementRef, private layout: layout, private cdref: ChangeDetectorRef) {
+    constructor(public modellist: modellist, public language: language, public view: view, public elementRef: ElementRef, public layout: layout, public cdref: ChangeDetectorRef) {
         this.view.labels = 'short';
 
         // register to listfield changes
@@ -107,7 +95,7 @@ export class ObjectListHeader implements OnDestroy{
      * return the column width if set
      * @param columnId
      */
-    private columnWidth(columnId?) {
+    public columnWidth(columnId?) {
         let listfield = this.listfields.find(lf => lf.id == columnId);
         return listfield.width ? listfield.width + '%' : (100 / this.listfields.length) + '%';
     }
@@ -117,7 +105,7 @@ export class ObjectListHeader implements OnDestroy{
      *
      * @param field the field from the fieldset
      */
-    private isSortable(field): boolean {
+    public isSortable(field): boolean {
         if (field.fieldconfig.sortable === true) {
             return true;
         } else {
@@ -130,7 +118,7 @@ export class ObjectListHeader implements OnDestroy{
      *
      * @param field the field from the fieldset
      */
-    private setSortField(field): void {
+    public setSortField(field): void {
         if (this.isSortable(field)) {
             this.modellist.setSortField(field.field);
             if (this.reloadTimeOut) window.clearTimeout(this.reloadTimeOut);
@@ -138,7 +126,7 @@ export class ObjectListHeader implements OnDestroy{
         }
     }
 
-    private onresize(e) {
+    public onresize(e) {
         let elementWidths = {};
         let totalwidth = 0;
 

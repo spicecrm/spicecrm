@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleContacts
  */
@@ -24,13 +12,13 @@ import { take } from 'rxjs/operators';
 
 @Component({
     selector: "contact-portal-details",
-    templateUrl: "./src/modules/contacts/templates/contactportaldetails.html"
+    templateUrl: "../templates/contactportaldetails.html"
 })
 export class ContactPortalDetails implements OnInit {
 
-    private loaded: boolean = false;
+    public loaded: boolean = false;
 
-    private user = {
+    public user = {
         active: false,
         id: '',
         aclRole: '',
@@ -41,29 +29,29 @@ export class ContactPortalDetails implements OnInit {
         setDateTimePrefsWithSystemDefaults: true
     };
 
-    private pwdGuideline = '';
+    public pwdGuideline = '';
 
     /**
      * a regex for the password check that is built from the password requirements
      * @private
      */
-    private pwdCheckRegex: RegExp = new RegExp("//");
+    public pwdCheckRegex: RegExp = new RegExp("//");
 
 
-    private aclRoles = []; // empty array means: no acl roles, new acl system is used
-    private aclProfiles = []; // empty array means: no acl profiles, old acl system is used
-    private portalRoles = [];
-    private defaultPortalUserProfile: string;
-    private self: any = undefined;
+    public aclRoles = []; // empty array means: no acl roles, new acl system is used
+    public aclProfiles = []; // empty array means: no acl profiles, old acl system is used
+    public portalRoles = [];
+    public defaultPortalUserProfile: string;
+    public self: any = undefined;
 
-    private usernameAlreadyExists = false;
-    private usernameTesting = false;
+    public usernameAlreadyExists = false;
+    public usernameTesting = false;
 
-    private lastToast;
+    public lastToast;
 
-    private isSaving = false;
+    public isSaving = false;
 
-    constructor( private language: language, private backend: backend, private metadata: metadata, private model: model, private toast: toast, private configuration: configurationService ) { }
+    constructor( public language: language, public backend: backend, public metadata: metadata, public model: model, public toast: toast, public configuration: configurationService ) { }
 
     public ngOnInit() {
 
@@ -107,7 +95,7 @@ export class ContactPortalDetails implements OnInit {
                 this.user.name = userdata.user.username;
                 this.loaded = true;
             } else {
-                this.user.name = this.model.data.email1 ? this.model.data.email1 : this.model.data.email_address_private;
+                this.user.name = this.model.getField('email1') ? this.model.getField('email1') : this.model.getField('email_address_private');
                 this.testUsername();
                 if ( this.aclProfiles.length === 1 ) this.user.aclProfile = this.aclProfiles[0].id;
                 else if ( this.defaultPortalUserProfile ) this.user.aclProfile = this.defaultPortalUserProfile;
@@ -116,7 +104,7 @@ export class ContactPortalDetails implements OnInit {
         });
     }
 
-    private testUsername() {
+    public testUsername() {
         if ( this.user.name ) {
             this.usernameTesting = true;
             this.backend.getRequest('module/Contacts/'+this.model.id+'/testUsername', { username: this.user.name } )
@@ -135,7 +123,7 @@ export class ContactPortalDetails implements OnInit {
         return !this.user.password || this.pwdCheckRegex.test( this.user.password ) ? false : this.language.getLabel("MSG_PWD_NOT_LEGAL");
     }
 
-    private closeModal() {
+    public closeModal() {
         this.self.destroy();
     }
 
@@ -156,7 +144,7 @@ export class ContactPortalDetails implements OnInit {
         return true;
     }
 
-    private save() {
+    public save() {
         if ( this.canSave ) {
             this.isSaving = true;
             let body = {
@@ -200,7 +188,7 @@ export class ContactPortalDetails implements OnInit {
      *
      * @private
      */
-    private getInfo() {
+    public getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
         this.pwdCheckRegex = new RegExp(extConf.regex);
 

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var SubscriptionLog=function(e,i){void 0===i&&(i=Number.POSITIVE_INFINITY),this.subscribedFrame=e,this.unsubscribedFrame=i};exports.SubscriptionLog=SubscriptionLog;

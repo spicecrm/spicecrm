@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleReports
  */
@@ -38,7 +26,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'reporter-detail-presentation-standard',
-    templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandard.html',
+    templateUrl: '../templates/reporterdetailpresentationstandard.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
@@ -86,15 +74,15 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * holds the resize directive elements - table header
      */
-    @ViewChildren(SystemResizeDirective) protected resizeElements: QueryList<SystemResizeDirective>;
+    @ViewChildren(SystemResizeDirective) public resizeElements: QueryList<SystemResizeDirective>;
     /**
      * save the current page number for pagination
      */
-    private currentPage: number = 1;
+    public currentPage: number = 1;
     /**
      * holds any subscription
      */
-    private subscriptions = new Subscription();
+    public subscriptions = new Subscription();
 
     constructor(public language: language,
                 public model: model,
@@ -251,7 +239,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * set presentation fields from report metadata
      */
-    private setDisplayFields() {
+    public setDisplayFields() {
 
         this.displayFields = [];
         this.cdRef.detectChanges();
@@ -270,7 +258,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      * generate additional display classes for the header field
      * @param field
      */
-    private generateFieldDisplayClass(field) {
+    public generateFieldDisplayClass(field) {
         let classes = [];
 
         if (!!field.sort && field.sort != '-') {
@@ -303,7 +291,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      *
      * @param field
      */
-    private toggleSort(field) {
+    public toggleSort(field) {
         if (field.sort == 'sortable') {
             if (this.sortData.sortField == field.fieldid) {
                 if (this.sortData.sortDirection == 'asc') {
@@ -324,7 +312,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * handles the resize event and recalculates the width of the various columns
      */
-    private onresize() {
+    public onresize() {
         let elementWidths = {};
         let totalwidth = 0;
 
@@ -345,7 +333,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * saves the current layout
      */
-    private saveLayout() {
+    public saveLayout() {
         if (this.model.checkAccess('edit')) {
             let layoutdata = [];
             for (let field of this.model.getField('listfields').filter(field => field.display != 'hidden')) {
@@ -367,7 +355,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate tot he first page
      */
-    private firstPage() {
+    public firstPage() {
         this.currentPage = 1;
         this.getPresentation();
     }
@@ -375,7 +363,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate to the previous page
      */
-    private prevPage() {
+    public prevPage() {
         this.currentPage--;
         this.getPresentation();
     }
@@ -383,7 +371,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate to the next page
      */
-    private nextPage() {
+    public nextPage() {
         this.currentPage++;
         this.getPresentation();
     }
@@ -391,7 +379,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * navigate to the last page
      */
-    private lastPage() {
+    public lastPage() {
         this.currentPage = Math.ceil(this.presData.count / this.listEntries);
         this.getPresentation();
     }
@@ -399,7 +387,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * opens the select fields modal
      */
-    private selectFields() {
+    public selectFields() {
         this.modal.openModal('ReporterDetailSelectFieldsModal', true, this.injector).subscribe(modalref => {
             modalref.instance.presentationFields = this.presData.reportmetadata.fields;
             modalref.instance.dataChanged$.subscribe(res => {

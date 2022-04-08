@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectFields
  */
@@ -20,7 +8,7 @@ declare var _;
 
 @Component({
     selector: 'field-grouped-enum',
-    templateUrl: './src/objectfields/templates/fieldgroupedenum.html'
+    templateUrl: '../templates/fieldgroupedenum.html'
 })
 export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     /**
@@ -37,7 +25,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * holds the local value array
      * @private
      */
-    private localValue: { valueText: string, valueArray: string[], valueDisplay: string, valueGroups: object } = {
+    public localValue: { valueText: string, valueArray: string[], valueDisplay: string, valueGroups: object } = {
         valueText: '',
         valueArray: [],
         valueDisplay: '',
@@ -63,7 +51,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * set the columns class
      * @private
      */
-    private setColumnsClass() {
+    public setColumnsClass() {
         const columns = +this.fieldconfig.columns < 13 && +this.fieldconfig.columns > 0 ? this.fieldconfig.columns : '4';
         this.columnsClass = `slds-size--1-of-${columns}`;
 
@@ -73,7 +61,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     * rebuild the option groups on language change
     * @return void
     */
-    private subscribeToLanguage() {
+    public subscribeToLanguage() {
         this.subscriptions.add(
             this.language.currentlanguage$.subscribe(() =>
                 this.buildOptionGroups()
@@ -85,7 +73,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * set the local values
      * @private
      */
-    private setLocalValues(value: string) {
+    public setLocalValues(value: string) {
 
         if (!value) {
             return this.localValue = {valueText: '', valueArray: [], valueDisplay: '', valueGroups: {}};
@@ -112,7 +100,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * subscribe to model changes
      * @private
      */
-    private subscribeToModelChanges() {
+    public subscribeToModelChanges() {
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
                 if (this.localValue.valueText === data[this.fieldname]) return;
@@ -126,7 +114,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * @param valueArray
      * @private
      */
-    private setItemValue(valueArray) {
+    public setItemValue(valueArray) {
 
         const value = valueArray.map(item => `^${item}^`).join(',');
         this.setLocalValues(value);
@@ -139,7 +127,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * @param group
      * @private
      */
-    private setGroupValue(checked: boolean, group: { value: string, display: string, options: any[] }) {
+    public setGroupValue(checked: boolean, group: { value: string, display: string, options: any[] }) {
 
         let value = this.value;
 
@@ -162,7 +150,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     * @param item
     * @return index
     */
-    private trackByFn(index, item) {
+    public trackByFn(index, item) {
         return item.value;
     }
 
@@ -170,7 +158,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
      * build the checkbox groups their options
      * @private
      */
-    private buildOptionGroups() {
+    public buildOptionGroups() {
 
         this.groups = [];
 

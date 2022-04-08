@@ -1,8 +1,8 @@
 <?php
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Resource'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Resource'] = [
     'table' => 'resources',
     'audited' => true,
     'comments' => 'generic module for Ressoruces like Rooms, shared Equipment etc',
@@ -52,7 +52,5 @@ $dictionary['Resource'] = [
     ],
     'optimistic_lock' => true,
 ];
-
-
 
 VardefManager::createVardef('Resources', 'Resource', ['default', 'assignable']);

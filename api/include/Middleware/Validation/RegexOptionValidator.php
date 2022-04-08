@@ -13,7 +13,7 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
 class RegexOptionValidator extends OptionValidator
 {
     public function validateOption(): bool {
-        if (!preg_match($this->optionDefinition, $this->paramValue[ValidationMiddleware::VOPT_REGEX])) {
+        if (!preg_match($this->optionDefinition[ValidationMiddleware::VOPT_REGEX], $this->paramValue)) {
             throw new ValidationException(
                 "{$this->paramValue} does not match the allowed pattern.",
                 null,

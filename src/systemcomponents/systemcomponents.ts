@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -121,6 +109,7 @@ import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
+import /*embed*/ {SystemRichTextLink} from "./components/systemrichtextlink";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 import /*embed*/ {SystemRoleSelector} from "./components/systemroleselector";
 import /*embed*/ {SystemSection} from "./components/systemsection";
@@ -161,6 +150,7 @@ import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 import /*embed*/ {SystemInputFile} from './components/systeminputfile';
+import /*embed*/ {SystemInputFileContent} from './components/systeminputfilecontent';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -176,6 +166,8 @@ import /*embed*/ {SystemPreferencesPanel} from "./components/systempreferencespa
 import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferencespanelitem";
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
+import {SystemPDFContainer} from "./components/systempdfcontainer";
+import {SystemIframeModal} from "./components/systemiframemodal";
 
 @NgModule({
     imports: [
@@ -221,6 +213,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemGooglePlacesSearch,
         SystemIcon,
         SystemFileIcon,
+        SystemIframeModal,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -274,6 +267,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModuleGlobalPipe,
         SystemNumberSpinner,
         SystemObjectPreviewModal,
+        SystemPDFContainer,
         SystemInputModuleFilter,
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
@@ -288,6 +282,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPrompt,
         SystemRichTextEditor,
         SystemRichTextSourceModal,
+        SystemRichTextLink,
         SystemRoleSelector,
         SystemSection,
         SystemSelect,
@@ -326,7 +321,9 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemWrappedText
+
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -456,8 +453,10 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemModalHeaderEmpty,
-        SystemWrappedText
+        SystemWrappedText,
+        SystemPDFContainer
     ]
 })
 export class SystemComponents {}

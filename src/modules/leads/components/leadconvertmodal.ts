@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleLeads
  */
@@ -24,26 +12,26 @@ import {Observable, Subject} from "rxjs";
  */
 @Component({
     selector: 'lead-convert-modal',
-    templateUrl: './src/modules/leads/templates/leadconvertmodal.html'
+    templateUrl: '../templates/leadconvertmodal.html'
 })
 export class LeadConvertModal implements OnInit {
 
     /**
      * reference to the modal itsefl
      */
-    private self: any;
+    public self: any;
 
     /**
      * the actions to be performed
      */
-    @Input() private saveactions: any[] = [];
+    @Input() public saveactions: any[] = [];
 
     /**
      * an event emiter emitting when the conversion was completed
      */
-    @Output() private completed: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public completed: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private language: language) {
+    constructor(public language: language) {
 
     }
 
@@ -56,7 +44,7 @@ export class LeadConvertModal implements OnInit {
      *
      * @param status
      */
-    private getStatusIcon(status) {
+    public getStatusIcon(status) {
         switch (status) {
             case 'initial':
                 return 'clock';
@@ -68,7 +56,7 @@ export class LeadConvertModal implements OnInit {
     /**
      * processes the convert action recursively
      */
-    private processConvertActions() {
+    public processConvertActions() {
         let nextAction = '';
         this.saveactions.some(item => {
             if (item.status === 'initial') {
@@ -91,9 +79,9 @@ export class LeadConvertModal implements OnInit {
      *
      * @param item
      */
-    private processConvertAction(item) {
+    public processConvertAction(item) {
         item.model.save().subscribe(data => {
-            item.model.data = item.model.utils.backendModel2spice(item.model.module, data);
+            item.model.setData(data);
             this.completeConvertAction(item.action);
         });
     }
@@ -103,7 +91,7 @@ export class LeadConvertModal implements OnInit {
      *
      * @param action
      */
-    private completeConvertAction(action) {
+    public completeConvertAction(action) {
         this.saveactions.find(item => item.action === action).status = 'completed';
 
         // start the next step

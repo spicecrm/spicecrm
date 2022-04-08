@@ -33,10 +33,10 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Contact'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
     'table' => 'contacts',
     'audited' => true,
     'fields' =>
@@ -185,7 +185,7 @@ $dictionary['Contact'] = [
                 'name' => 'activity_status_date_modified',
                 'type' => 'datetime',
                 'source' => 'non-db',
-                'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODFIFIED',
+                'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
                 'comment' => 'non db field retrieved from the relationship to the meeting call etc'
             ],
             'activity_required' => [
@@ -700,6 +700,11 @@ $dictionary['Contact'] = [
             'name' => 'idx_cont_assigned',
             'type' => 'index',
             'fields' => ['assigned_user_id']
+        ],
+        [
+            'name' => 'idx__cont__portal_user_id__del',
+            'type' => 'index',
+            'fields' => ['portal_user_id','deleted']
         ]
 //	array(
 //		'name' => 'idx_cont_email1',
@@ -850,9 +855,8 @@ $dictionary['Contact'] = [
 
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-global $dictionary;
 if (file_exists("extensions/modules/SalesDocs")) {
-    $dictionary['Contact']['fields']['salesdocsop'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocsop'] = [
         'name' => 'salesdocsop',
         'type' => 'link',
         'vname' => 'LBL_SALESDOCSOP',
@@ -860,7 +864,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'module' => 'SalesDocs',
         'source' => 'non-db',
     ];
-    $dictionary['Contact']['fields']['salesdocsrp'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocsrp'] = [
         'name' => 'salesdocsrp',
         'type' => 'link',
         'vname' => 'LBL_SALESDOCSRP',
@@ -868,7 +872,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'module' => 'SalesDocs',
         'source' => 'non-db',
     ];
-    $dictionary['Contact']['fields']['salesdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocs'] = [
         'name' => 'salesdocs',
         'type' => 'link',
         'vname' => 'LBL_SALESDOCS',
@@ -878,7 +882,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
     ];
 }
 if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
-    $dictionary['Contact']['fields']['contactsonlineprofiles'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactsonlineprofiles'] = [
         'name' => 'contactsonlineprofiles',
         'type' => 'link',
         'vname' => 'LBL_CONTACTSONLINEPROFILES',
@@ -888,7 +892,7 @@ if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
     ];
 }
 if (file_exists("extensions/modules/ContactCCDetails")) {
-    $dictionary['Contact']['fields']['contactccdetails'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactccdetails'] = [
         'name' => 'contactccdetails',
         'vname' => 'LBL_CONTACTCCDETAILS_LINK',
         'type' => 'link',
@@ -902,7 +906,7 @@ if (file_exists("extensions/modules/ContactCCDetails")) {
     ];
 }
 if (file_exists("modules/Addresses")) {
-    $dictionary['Contact']['fields']['addresses'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['addresses'] = [
         'name' => 'addresses',
         'type' => 'link',
         'relationship' => 'contact_addresses',
@@ -913,7 +917,7 @@ if (file_exists("modules/Addresses")) {
     ];
 }
 if (file_exists("extensions/modules/ServiceOrders")) {
-    $dictionary['Contact']['fields']['serviceorders'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['serviceorders'] = [
         'name' => 'serviceorders',
         'type' => 'link',
         'relationship' => 'serviceorders_contacts',
@@ -924,7 +928,7 @@ if (file_exists("extensions/modules/ServiceOrders")) {
     ];
 }
 if (file_exists("modules/ServiceTickets")) {
-    $dictionary['Contact']['fields']['servicetickets'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
         'type' => 'link',
         'relationship' => 'servicetickets_contacts',
@@ -935,7 +939,7 @@ if (file_exists("modules/ServiceTickets")) {
     ];
 }
 if (file_exists("extensions/modules/ServiceCalls")) {
-    $dictionary['Contact']['fields']['servicecalls'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['servicecalls'] = [
         'name' => 'servicecalls',
         'type' => 'link',
         'relationship' => 'servicecalls_contacts',
@@ -947,7 +951,7 @@ if (file_exists("extensions/modules/ServiceCalls")) {
 }
 
 if (file_exists("extensions/modules/ServiceFeedbacks")) {
-    $dictionary['Contact']['fields']['servicefeedbacks'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['servicefeedbacks'] = [
         'name' => 'servicefeedbacks',
         'type' => 'link',
         'relationship' => 'servicefeedbacks_contacts',
@@ -960,7 +964,7 @@ if (file_exists("extensions/modules/ServiceFeedbacks")) {
 }
 // Not sure we need this at all.... commented for now
 //if (file_exists("extensions/modules/ServiceEquipments")) {
-//    $dictionary['Contact']['fields']['serviceequipments'] = array(
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['serviceequipments'] = array(
 //        'name' => 'serviceequipments',
 //        'type' => 'link',
 //        'relationship' => 'serviceequipments_contacts',
@@ -972,7 +976,7 @@ if (file_exists("extensions/modules/ServiceFeedbacks")) {
 //}
 
 if (file_exists('extensions/modules/SalesVouchers')) {
-    $dictionary['Contact']['fields']['salesvouchers'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesvouchers'] = [
         'name' => 'salesvouchers',
         'type' => 'link',
         'relationship' => 'contacts_salesvouchers',
@@ -982,7 +986,7 @@ if (file_exists('extensions/modules/SalesVouchers')) {
     ];
 }
 if (file_exists('extensions/modules/Potentials')) {
-    $dictionary['Contact']['fields']['potentials'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['potentials'] = [
         'name' => 'potentials',
         'type' => 'link',
         'relationship' => 'contacts_potentials',
@@ -994,9 +998,8 @@ if (file_exists('extensions/modules/Potentials')) {
 VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);
 
 // CR1000661
-global $dictionary;
 if(file_exists('extensions/modules/PartnerAgreements')) {
-    $dictionary['Contact']['fields']['partneragreements'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['partneragreements'] = [
         'name' => 'partneragreements',
         'vname' => 'LBL_PARTNERAGREEMENTS',
         'type' => 'link',
@@ -1005,7 +1008,7 @@ if(file_exists('extensions/modules/PartnerAgreements')) {
         'bean_name' => 'PartnerAgreement',
         'source' => 'non-db',
     ];
-    $dictionary['Contact']['fields']['partneragreement_role'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['partneragreement_role'] = [
         'name' => 'partneragreement_role',
         'vname' => 'LBL_ROLE',
         'type' => 'enum',
@@ -1013,7 +1016,7 @@ if(file_exists('extensions/modules/PartnerAgreements')) {
         'source' => 'non-db',
         'comment' => 'for relationship field partneragreement_role'
     ];
-    $dictionary['Contact']['fields']['propensity_to_partnership'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['propensity_to_partnership'] = [
         'name' => 'propensity_to_partnership',
         'vname' => 'LBL_PROPENSITY_TO_PARTNERSHIP',
         'type' => 'enum',

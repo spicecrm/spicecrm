@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ObjectComponents
  */
@@ -26,32 +14,32 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: "[object-related-list-item]",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedlistitem.html",
+    templateUrl: "../templates/objectrelatedlistitem.html",
     providers: [model, view]
 })
 export class ObjectRelatedListItem implements OnInit {
-    @Input() private listfields: any[] = [];
-    @Input() private listitem: any = {};
-    @Input() private module: string = "";
-    @Input() private editable: boolean = false;
-    @Input() private editcomponentset: string = "";
+    @Input() public listfields: any[] = [];
+    @Input() public listitem: any = {};
+    @Input() public module: string = "";
+    @Input() public editable: boolean = false;
+    @Input() public editcomponentset: string = "";
 
     /**
      * an oiptional list item actionset that can be passed through
      */
-    @Input() private listitemactionset: string;
+    @Input() public listitemactionset: string;
 
     /**
      * set to true to hide the actionset menu item being display
      */
-    @Input() private hideActions: boolean = false;
+    @Input() public hideActions: boolean = false;
 
-    private customEditActions: any[] = [];
-    private customActions: any[] = [];
-    private expanded: boolean = false;
+    public customEditActions: any[] = [];
+    public customActions: any[] = [];
+    public expanded: boolean = false;
     public componentconfig: any = {};
 
-    constructor(private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal) {
+    constructor(public metadata: metadata, public footer: footer, public model: model, public relatedmodels: relatedmodels, public view: view, public router: Router, public language: language, public layout: layout, public modalservice: modal) {
     }
 
     /**
@@ -65,7 +53,7 @@ export class ObjectRelatedListItem implements OnInit {
         // initialize the model
         this.model.module = this.module;
         this.model.id = this.listitem.id;
-        this.model.data = this.model.utils.backendModel2spice(this.module, this.listitem);
+        this.model.setData(this.listitem);
 
         // load the componentconfig from ObjectRelatedListItem ... if input itemactionset is not defined
         this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedListItem', this.model.module);
@@ -81,7 +69,7 @@ export class ObjectRelatedListItem implements OnInit {
     /**
      * go to the detail voie for the model
      */
-    private navigateDetail() {
+    public navigateDetail() {
         this.router.navigate(["/module/" + this.model.module + "/" + this.model.id]);
     }
 
@@ -92,7 +80,7 @@ export class ObjectRelatedListItem implements OnInit {
      *
      * @param action
      */
-    private handleAction(action) {
+    public handleAction(action) {
         switch (action) {
             case "canceledit":
                 this.model.cancelEdit();
@@ -102,7 +90,7 @@ export class ObjectRelatedListItem implements OnInit {
                 this.metadata.addComponentDirect("ObjectEditModalWReference", this.footer.footercontainer).subscribe(editModalRef => {
                     editModalRef.instance.model.module = this.module;
                     editModalRef.instance.model.id = this.model.id;
-                    editModalRef.instance.model.data = this.model.data;
+                    editModalRef.instance.model.setData(this.model.data, false);
 
                     if (this.editcomponentset && this.editcomponentset != "") {
                         editModalRef.instance.componentSet = this.editcomponentset;
@@ -141,7 +129,7 @@ export class ObjectRelatedListItem implements OnInit {
         }
     }
 
-    private toggleexpanded(e: MouseEvent) {
+    public toggleexpanded(e: MouseEvent) {
         e.stopPropagation();
         this.expanded = !this.expanded;
     }

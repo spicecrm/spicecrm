@@ -59,8 +59,6 @@ class Currency extends SugarBean
     public function __construct()
 	{
 		parent::__construct();
-		global $app_strings,  $locale;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$this->field_defs['hide'] = ['name'=>'hide', 'source'=>'non-db', 'type'=>'varchar','len'=>25];
 		$this->field_defs['unhide'] = ['name'=>'unhide', 'source'=>'non-db', 'type'=>'varchar','len'=>25];
 		$this->disable_row_level_security =true;

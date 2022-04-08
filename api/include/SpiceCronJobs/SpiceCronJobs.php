@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceCronJobs;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
@@ -19,6 +20,9 @@ class SpiceCronJobs
     {
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
+
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
 
         if (empty($jobId)) {
             $jobs = $this->loadJobs();

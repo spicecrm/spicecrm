@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -65,7 +65,7 @@ $app_list_strings = [
       'Reseller' => 'Reseller',
       'Other' => 'Pozostali',
     ],
-    'account_user_roles_dom' => [
+    'account_user_roles_dom' => [//TODO
         '' => '',
         'am' => 'Account Manager',
         'se' => 'Support Engineer',
@@ -104,7 +104,7 @@ $app_list_strings = [
         'revoked' => 'Odwolano',
         'cancel_requested' => 'Zażądano anulowania'
     ],
-
+    
     //e.g. en espa 'Apparel'=>'Ropa',
     'industry_dom' => [
       '' => '',
@@ -167,12 +167,12 @@ $app_list_strings = [
       'Investment' => 'Inwestycja',
       'Expected_Revenue' => 'Oczekiwany przychód',
       'Budget' => 'Budżet',
-
+        
     ],
    //Note:  do not translate opportunity_relationship_type_default_key
 //       it is the key for the default opportunity_relationship_type_dom value
    'opportunity_relationship_type_default_key' => 'Primary Decision Maker',
-   'opportunity_relationship_type_dom' =>
+   'opportunity_relationship_type_dom' => 
     [
       '' => '',
       'Primary Decision Maker' => 'Opiniodawca wstępny',
@@ -185,7 +185,7 @@ $app_list_strings = [
       'Project Manager' => 'Project Manager',
       'Other' => 'Inny',
     ],
-    'opportunity_urelationship_type_dom' =>
+    'opportunity_urelationship_type_dom' => //TODO
     [
         '' => '',
         'Account Manager' => 'Account Manager',
@@ -286,6 +286,7 @@ $app_list_strings = [
         '' => '',
         'Mr.' => 'Sz. Pan',
         'Ms.' => 'Sz. Pani',
+        'Mx.' => 'Sz.'
         //'Mrs.' => 'Sz. Pani',
         //'Dr.' => 'Dr',
         //'Prof.' => 'Prof.',
@@ -294,9 +295,15 @@ $app_list_strings = [
         '' => '',
         'Mr.' => 'Sz. Pan',
         'Ms.' => 'Sz. Pani',
+        'Mx.' => 'Sz.'
         // 'Mrs.' => 'Mrs.',
         // 'Dr.' => 'Dr.',
         //  'Prof.' => 'Prof.',
+    ],
+    'form_of_address_dom' => [
+        'formal' => 'Formalna',
+        'normal' => 'Normalna',
+        'friendly' => 'Przyjacielska'
     ],
     'gdpr_marketing_agreement_dom' => [
         '' => '',
@@ -305,7 +312,7 @@ $app_list_strings = [
     ],
     'uom_unit_dimensions_dom' => [
         '' => '',
-        'none' => 'none',
+        'none' => 'Brak',
         'weight' => 'Waga',
         'volume' => 'Objętość',
         'area' => 'Powierzchnia',
@@ -386,7 +393,7 @@ $app_list_strings = [
     ],
     //time is in seconds; the greater the time the longer it takes;
     'reminder_max_time' => 90000,
-    'reminder_time_options' => [
+    'reminder_time_options' => [ 
         -1 => 'Bez powiadomienia',
         60 => '1 minutę wcześniej',
         300 => '5 minut wcześniej',
@@ -401,14 +408,14 @@ $app_list_strings = [
     ],
 
     'task_priority_default' => 'Medium',
-    'task_priority_dom' =>
+    'task_priority_dom' => 
     [
         'High' => 'Wysoki',
         'Medium' => 'Średni',
         'Low' => 'Niski',
     ],
     'task_status_default' => 'Not Started',
-    'task_status_dom' =>
+    'task_status_dom' => 
     [
         'Not Started' => 'Nierozpoczęte',
         'In Progress' => 'W trakcie',
@@ -417,18 +424,18 @@ $app_list_strings = [
         'Deferred' => 'Odroczone',
     ],
     'meeting_status_default' => 'Planned',
-    'meeting_status_dom' =>
+    'meeting_status_dom' => 
     [
         'Planned' => 'Planowane',
         'Held' => 'Przeprowadzone',
         'Cancelled' => 'Anulowane',
         'Not Held' => 'Nieprzeprowadzone',
     ],
-    'extapi_meeting_password' =>
+    'extapi_meeting_password' => 
     [
         'WebEx' => 'WebEx',
     ],
-    'meeting_type_dom' =>
+    'meeting_type_dom' => 
     [
         'Other' => 'Inne',
         'Spice' => 'SpiceCRM',
@@ -442,12 +449,12 @@ $app_list_strings = [
         'Not Held' => 'Nieprzeprowadzona',
     ],
     'call_direction_default' => 'Outbound',
-    'call_direction_dom' =>
+    'call_direction_dom' => 
     [
         'Inbound' => 'Przychodząca',
         'Outbound' => 'Wychodząca',
     ],
-   'lead_status_dom' =>
+   'lead_status_dom' => 
     [
       '' => '',
       'New' => 'Nowy',
@@ -484,19 +491,20 @@ $app_list_strings = [
         'Duplicate' => 'Duplikat',
     ],
     'case_priority_default_key' => 'P2',
-    'case_priority_dom' =>
+    'case_priority_dom' => 
     [
         'P1' => 'Wysoki',
         'P2' => 'Średni',
         'P3' => 'Niski',
     ],
-    'user_type_dom' =>
+    'user_type_dom' => 
     [
         'RegularUser' => 'Zwykły użytkownik',
         'PortalUser' => 'Użytkownik portalu',
         'Administrator' => 'Administrator',
+        'APIuser' => 'Użytkownik API'
     ],
-    'user_status_dom' =>
+    'user_status_dom' => 
     [
         'Active' => 'Aktywny',
         'Inactive' => 'Nieaktywny',
@@ -512,13 +520,13 @@ $app_list_strings = [
         'Released' => 'Opublikowano',
         'Retired' => 'Zarchiwizowano',
     ],
-   'employee_status_dom' =>
+   'employee_status_dom' => 
     [
         'Active' => 'Aktywny',
         'Terminated' => 'Nie pracuje',
         'Leave of Absence' => 'Nieobecny',
     ],
-    'messenger_type_dom' =>
+    'messenger_type_dom' => 
     [
         '' => '',
         'MSN' => 'MSN',
@@ -531,7 +539,7 @@ $app_list_strings = [
         'Low' => 'Niski',
     ],
     'project_task_priority_default' => 'Medium',
-
+    
     'project_task_status_options' => [
         'Not Started' => 'Nierozpoczęte',
         'In Progress' => 'W realizacji',
@@ -570,6 +578,14 @@ $app_list_strings = [
         'Medium' => 'Średni',
         'Low' => 'Niski',
     ],
+    'projects_plannedactivity_status_dom' => [
+        'planned' => 'Planowane',
+        'released' => 'Wydane',
+        'active' => 'Aktywne',
+        'onhold' => 'Wstrzymane',
+        'completed' => 'Zakończone',
+        'cancelled' => 'Anulowane'
+    ],
     'projects_activity_status_dom' => [
         'created' => 'Utworzona',
         'settled' => 'Wykonana'
@@ -590,7 +606,6 @@ $app_list_strings = [
         'Sending' => 'Wysłana',
     ],
     'campaign_type_dom' => [
-        '' => '',
         'Event' => 'Wydarzenie',
         'Telesales' => 'Telesprzedaż',
         'Mail' => 'Poczta tradycyjna',
@@ -614,7 +629,7 @@ $app_list_strings = [
         'Television' => 'Telewizja',
         'NewsLetter' => 'Newsletter',
     ],
-    'newsletter_frequency_dom' =>
+    'newsletter_frequency_dom' => 
     [
         '' => '',
         'Weekly' => 'Tygodniowo',
@@ -706,6 +721,10 @@ $app_list_strings = [
         'unread' => 'Nieprzeczytany',
         'bounced' => 'Zwrot/Niedoręczeny'
     ],
+    'dom_letter_status' => [
+        'sent' => 'Wysłany',
+        'draft' => 'Szkic'
+    ],
     'dom_textmessage_status' => [
         'archived' => 'Zarchiwizowany',
         'closed' => 'Zamknięty',
@@ -746,18 +765,18 @@ $app_list_strings = [
         'leastBusy' => 'Najmniej zajęty',
     ],
     'jobtask_status_dom' => [
-        'active' => 'active',
-        'running' => 'running',
-        'on_hold' => 'on hold'
+        'active' => 'Aktywne',
+        'running' => 'W toku',
+        'on_hold' => 'Wstrzymane'
     ],
     'job_status_dom' =>
     [
         'Active' => 'Aktywny',
         'Inactive' => 'Nieaktywny',
-        'OnHold' => 'On hold',
-        'Running' => 'Running',
-    ],
-    'job_period_dom' =>
+        'OnHold' => 'Wstrzymany',
+        'Running' => 'W toku',
+    ], 
+    'job_period_dom' => 
     [
         'min' => 'Minuty',
         'hour' => 'Godziny',
@@ -787,7 +806,7 @@ $app_list_strings = [
         'nda' => 'Umowa o poufności (NDA)',
         'license' => 'Umowa licencyjna',
     ],
-    'document_revisionstatus_dom' => [
+    'document_revisionstatus_dom' => [//TODO
         'c' => 'created',
         'r' => 'released',
         'a' => 'archived',
@@ -815,7 +834,7 @@ $app_list_strings = [
         'Monthly' => 'Co miesiąc',
         'Yearly' => 'Co rok',
     ],
-
+        
     'repeat_intervals' => [
         '' => '',
         'Daily' => 'dni',
@@ -823,7 +842,7 @@ $app_list_strings = [
         'Monthly' => 'miesiąc(e)',
         'Yearly' => 'rok/lata',
     ],
-
+    
     'duration_dom' => [
         '' => 'Brak',
         '900' => '15 minut',
@@ -839,7 +858,7 @@ $app_list_strings = [
         '259200' => '3 dni',
         '604800' => '1 tydzień',
     ],
-
+    
  // deferred
     /*// QUEUES MODULE DOMs
     'queue_type_dom' => [
@@ -848,7 +867,7 @@ $app_list_strings = [
     ],
     */
 //prospect list type dom
-    'prospect_list_type_dom' =>
+    'prospect_list_type_dom' => 
     [
         'default' => 'Domyślny',
         'seed' => 'Recenzenci',
@@ -857,21 +876,21 @@ $app_list_strings = [
         'exempt' => 'Lista wykluczonych po ID',
         'test' => 'Test',
     ],
-
-    'email_settings_num_dom' =>
+    
+    'email_settings_num_dom' => 
     [
         '10' => '10',
         '20' => '20',
         '50' => '50'
     ],
-    'email_marketing_status_dom' =>
+    'email_marketing_status_dom' => 
     [
         '' => '',
         'active' => 'Aktywny',
         'inactive' => 'Nieaktywny'
     ],
-
-    'campainglog_activity_type_dom' =>
+    
+    'campainglog_activity_type_dom' => 
     [
         '' => '',
         'queued' => 'Zakolejkowane',
@@ -892,8 +911,8 @@ $app_list_strings = [
         'error' => 'Błąd',
         'noemail' => 'Brak adresu e-mail'
     ],
-
-    'campainglog_target_type_dom' =>
+    
+    'campainglog_target_type_dom' => 
     [
         'Contacts' => 'Kontakty',
         'Users' => 'Użytkownicy',
@@ -1047,7 +1066,11 @@ $app_list_strings = [
     'serviceorderitem_status_dom' => [
         'active' => 'Aktywny',
         'inactive' => 'Nieaktywny'
-    ]
+    ],
+    'apilog_direction_dom' => [
+        'I' => 'Przychodzce',
+        'O' => 'Wychodzące',
+    ],
 ];
 $app_list_strings['project_priority_default'] = 'Medium';
 $app_list_strings['project_priority_options'] = [
@@ -1365,7 +1388,7 @@ $app_list_strings['countries_dom'] = [
     'ZIMBABWE' => 'ZIMBABWE',
 ];
 
-$app_list_strings['charset_dom'] = [
+$app_list_strings['charset_dom'] = [ //TODO??
     'BIG-5' => 'BIG-5 (Taiwan and Hong Kong)',
     /*'CP866'     => 'CP866', // ms-dos Cyrillic */
     /*'CP949'     => 'CP949 (Microsoft Korean)', */
@@ -1524,7 +1547,7 @@ $app_list_strings['cruser_role_dom'] = [
 ];
 
 $app_list_strings['crstatus_dom'] = [
-    '-1' => 'backlog',
+    '-1' => 'Backlog',
     '0' => 'Utworzone',
     '1' => 'W toku',
     '2' => 'Testy jednostkowe',
@@ -1533,7 +1556,7 @@ $app_list_strings['crstatus_dom'] = [
     '5' => 'Anulowane/Odroczone' // was 4 before CR1000333
 ];
 
-$app_list_strings['crtype_dom'] = [
+$app_list_strings['crtype_dom'] = [//TODO
     '0' => 'Bug',
     '1' => 'Feature reuest',
     '2' => 'Change request',
@@ -1553,9 +1576,11 @@ $app_list_strings['emailschedule_status_dom'] = [
     'sent' => 'Wysłano',
 ];
 
-$app_list_strings['email_schedule_status_dom'] = [
+$app_list_strings['email_schedule_status_dom'] = [//TODO
     'open' => 'open',
     'done' => 'done',
+    'done_with_errors' => 'done with errors',
+    'record_not_loaded' => 'record not loaded',
 ];
 $app_list_strings['moduleList']['KReleasePackages'] = 'K Releasepackages';
 
@@ -1601,7 +1626,7 @@ $app_list_strings['mwstatus_dom'] = [
     'completed' => 'Ukończone'
 ];
 
-$app_list_strings['kdeploymentsystems_type_dom'] = [
+$app_list_strings['kdeploymentsystems_type_dom'] = [//TODO
     "repo" => "software repo",
     "ext" => "external",
     "dev" => "development",
@@ -1644,6 +1669,12 @@ $app_list_strings['projects_milestone_status_dom'] = [
 $app_list_strings['projects_activity_status_dom'] = [
     'created' => 'Utworzono',
     'billed' => 'Zafakturowano',
+];
+
+$app_list_strings['projects_activity_settlement_types_dom'] = [//TODO
+    'regular' => 'regular',
+    'goodwill' => 'goodwill',
+    'exclude' => 'exclude'
 ];
 
 //ProductAttributes
@@ -1713,11 +1744,11 @@ $app_list_strings['mailboxes_smtp_encryption_dom'] = [
 
 $app_strings = array_merge($app_strings, $addAppStrings);
 
-if (file_exists('extensions/modules/ServiceEquipments/ServiceEquipment.php')) {
+if (file_exists('modules/ServiceEquipments/ServiceEquipment.php')) {
     $app_list_strings['serviceequipment_status_dom'] = [
         'new' => 'Nowy',
-        'offsite' => 'Poza zakładem',
-        'onsite' => 'Na miejscu',
+        'onsite' => 'Zarezerwowany',
+        'offsite' => 'Odebrany',        
         'inactive' => 'Nieaktywny',
     ];
     $app_list_strings['maintenance_cycle_dom'] = [
@@ -1732,7 +1763,7 @@ if (file_exists('extensions/modules/ServiceEquipments/ServiceEquipment.php')) {
     ];
 }
 
-if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
+if (file_exists('modules/ServiceOrders/ServiceOrder.php')) {
     $app_list_strings['serviceorder_status_dom'] = [
         'new' => 'Nowe',
         'planned' => 'Planowane',
@@ -1784,7 +1815,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'Zagadnienia serwisowe';
 
 }
-if (file_exists('extensions/modules/ServiceFeedbacks/ServiceFeedback.php')) {
+if (file_exists('modules/ServiceFeedbacks/ServiceFeedback.php')) {
     $app_list_strings['service_satisfaction_scale_dom'] = [
         1 => '1 - brak satysfakcji',
         2 => '2',
@@ -1843,7 +1874,6 @@ $app_list_strings['languages'] = [
     'pl' => 'Polski',
 ];
 
-
 $app_list_strings['spiceaclobjects_types_dom'] = [
     '0' => 'Standardowy',
     '1' => 'Restrykcyjny (wszystko)',
@@ -1869,6 +1899,12 @@ $app_list_strings['product_status_dom'] = [
     'draft' => 'Szkic',
     'active' => 'Aktywny',
     'inactive' => 'Nieaktywny'
+];
+
+$app_list_strings['product_tax_categories_dom'] = [//TODO
+    '0' => 'tax free',
+    '1' => 'regular taxed',
+    '2' => 'reduced tax',
 ];
 
 $app_list_strings['textmessage_direction'] = [
@@ -1994,6 +2030,7 @@ $app_list_strings['vat_country_dom'] = [
 ];
 
 $app_list_strings['landingpage_content_type_dom'] = [
+    'gate' => 'Gate',
     'html' => 'HTML',
     'questionnaire' => 'Ankieta'
 ];
@@ -2029,4 +2066,41 @@ $app_list_strings['payments_type_dom'] = [
     'cash' => 'Gotówka',
     'ATM_card' => 'Karta płatnicza',
     'credit_card' => 'Karta kredytowa'
+];
+$app_list_strings['scheduler_callback_on_dom'] = [
+    'success' => 'Sukces',
+    'failure' => 'Porażka',
+];
+
+$app_list_strings['qualification_type_dom'] = [];
+
+$app_list_strings['qualification_sub_type_dom'] = [];
+
+$app_list_strings['relationship_type_dom'] = [
+    'mother' => 'Matka',
+    'father' => 'Ojciec',
+    'daughter' => 'Córka',
+    'son' => 'Syn',
+    'stepmother' => 'Macocha',
+    'stepfather' => 'Ojczym',
+    'brother' => 'Brat',
+    'sister' => 'Siostra',
+    'stepbrother' => 'Brat przyrodni',
+    'stepsister' => 'Siostra przyrodnia',
+    'aunt' => 'Ciotka',
+    'uncle' => 'Wuj',
+    'grandfather' => 'Dziadek',
+    'grandmother' => 'Babcia',
+    'female grandchild' => 'Wnuczka',
+    'male grandchild' => 'Wnuczek',
+    'female cousin' => 'Kuzynka',
+    'male cousin' => 'Kuzyn',
+    'acquaintance' => 'Znajomy',
+    'partner' => 'Partner',
+    'colleague' => 'Współpracownik'
+];
+
+$app_list_strings['bonuscard_extension_status_enum'] = [
+    'initial' => 'initial',//TODO
+    'sent' => 'sent'
 ];

@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module SystemComponents
  */
@@ -30,7 +18,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
     selector: "system-googleplaces-search",
-    templateUrl: "./src/systemcomponents/templates/systemgoogleplacessearch.html",
+    templateUrl: "../templates/systemgoogleplacessearch.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -52,55 +40,55 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * the event emitter that senbds out the address details
      */
-    @Output() private details: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public details: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * for the ValueAccessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * set to enabled: set in the construcutor if an api key is present
      */
-    private isenabled: boolean = false;
+    public isenabled: boolean = false;
 
     /**
      * the serachterm completed
      */
-    private autocompletesearchterm: string = '';
+    public autocompletesearchterm: string = '';
 
     /**
      * a timeoput for the field toi wait until the user did finish typing
      */
-    private autocompleteTimeout: any = undefined;
+    public autocompleteTimeout: any = undefined;
 
     /**
      * the sresults array from the search
      */
-    private autocompleteResults: any[] = [];
+    public autocompleteResults: any[] = [];
 
     /**
      * a listener for the dropdown with the results. enables to close the dropdown when clicked outside
      */
-    private autocompleteClickListener: any = undefined;
+    public autocompleteClickListener: any = undefined;
 
     /**
      * boolean helper to display the dropwodn
      */
-    private displayAutocompleteResults: boolean = false;
+    public displayAutocompleteResults: boolean = false;
 
     /**
      * indicates that a serach is running
      */
-    private isSearching: boolean = false;
+    public isSearching: boolean = false;
 
     /**
      * the bias to search by
      */
-    private locationbias: string = 'ipbias ';
+    public locationbias: string = 'ipbias ';
 
-    constructor(private language: language, private backend: backend, private configuration: configurationService, private elementref: ElementRef, private renderer: Renderer2) {
+    constructor(public language: language, public backend: backend, public configuration: configurationService, public elementref: ElementRef, public renderer: Renderer2) {
         let googleAPIConfig = this.configuration.getCapabilityConfig('google_api');
         if (googleAPIConfig.key && googleAPIConfig.key != '') {
             this.isenabled = true;
@@ -165,16 +153,16 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     }
 
     /**
-     * private function called with the blur event of teh inout field
+     * public function called with the blur event of teh inout field
      */
-    private updateModel() {
+    public updateModel() {
         this.onChange(this.autocompletesearchterm);
     }
 
     /**
      * opens the search results again if theer are any and the fields gets the focus again
      */
-    private onSearchFocus() {
+    public onSearchFocus() {
         if (this.autocompletesearchterm.length > 1 && this.autocompleteResults.length > 0) {
             this.openSearchResults();
         }
@@ -183,7 +171,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * opens the search results
      */
-    private openSearchResults() {
+    public openSearchResults() {
         this.displayAutocompleteResults = true;
         this.autocompleteClickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
@@ -202,7 +190,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * clsoes the search results dialog and destruicts the click listener
      */
-    private closeSearchResutls() {
+    public closeSearchResutls() {
         if (this.autocompleteClickListener) {
             this.autocompleteClickListener();
         }
@@ -213,7 +201,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     /**
      * starts the serach when the length is longer than 3 digits
      */
-    private doAutocomplete() {
+    public doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
             const searchTerm = encodeURIComponent(this.autocompletesearchterm);
@@ -242,7 +230,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
      *
      * @param placedetails
      */
-    private getDetails(placedetails) {
+    public getDetails(placedetails) {
         this.displayAutocompleteResults = false;
         this.autocompleteResults = []
 

@@ -33,10 +33,11 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['Campaign'] = ['audited' => true,
+
+SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
+    'audited' => true,
     'comment' => 'Campaigns are a series of operations undertaken to accomplish a purpose, usually acquiring leads',
     'table' => 'campaigns',
     'unified_search' => true,

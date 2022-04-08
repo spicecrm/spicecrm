@@ -4,6 +4,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 if (!defined('sugarEntry')) define('sugarEntry', true);
@@ -230,7 +231,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
         }
 
         //if($related_module == 'Meetings' || $related_module == 'Calls' || $related_module = 'Contacts'){
-        $query = string_format($query, ['m1']);
+        $query = SpiceUtils::stringFormat($query, ['m1']);
         //}
 
         require_once('soap/SoapRelationshipHelper.php');

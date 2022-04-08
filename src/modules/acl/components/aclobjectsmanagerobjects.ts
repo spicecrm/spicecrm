@@ -1,15 +1,3 @@
-/*
-SpiceUI 2018.10.001
-
-Copyright (c) 2016-present, aac services.k.s - All rights reserved.
-Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 /**
  * @module ModuleACL
  */
@@ -30,7 +18,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclobjects-manager-objects',
-    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobjects.html',
+    templateUrl: '../templates/aclobjectsmanagerobjects.html',
 })
 export class ACLObjectsManagerObjects {
 
@@ -46,7 +34,7 @@ export class ACLObjectsManagerObjects {
     @Output() public objectselected: EventEmitter<any> = new EventEmitter<any>();
     @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private language: language) {
+    constructor(public backend: backend, public modal: modal, public language: language) {
 
         this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
             this.acltypes = acltypes;
@@ -59,7 +47,7 @@ export class ACLObjectsManagerObjects {
 
     }
 
-    private keyUp(_e) {
+    public keyUp(_e) {
         switch (_e.key) {
             case 'Enter':
                 this.getObjects();
@@ -67,7 +55,7 @@ export class ACLObjectsManagerObjects {
         }
     }
 
-    private getObjects() {
+    public getObjects() {
         this.loading = true;
         this.aclobjects = [];
 
@@ -78,10 +66,7 @@ export class ACLObjectsManagerObjects {
 
         this.backend.getRequest('module/SpiceACLObjects', params).subscribe(aclobjects => {
             this.aclobjects = aclobjects;
-
-            this.aclobjects.sort((a, b) => {
-                return a.name > b.name ? 1 : -1;
-            });
+            this.aclobjects.sort((a, b) =>  a.name.localeCompare(b.name));
             this.loading = false;
         });
     }
@@ -93,11 +78,11 @@ export class ACLObjectsManagerObjects {
         };
     }
 
-    private getType(type) {
+    public getType(type) {
         return this.language.getFieldDisplayOptionValue('SpiceACLObjects', 'spiceaclobjecttype', type);
     }
 
-    private selectType(event) {
+    public selectType(event) {
         this.getObjects();
 
         // reset the selected object
@@ -108,7 +93,7 @@ export class ACLObjectsManagerObjects {
         this.typeselected.emit(this.activeTypeId);
     }
 
-    private addObject() {
+    public addObject() {
         this.modal.openModal('ACLObjectsManagerAddObjectModal').subscribe(modalRef => {
             modalRef.instance.sysmodule_id = this.activeTypeId;
             modalRef.instance.newObjectData.subscribe(modelData => {
@@ -124,7 +109,7 @@ export class ACLObjectsManagerObjects {
      * add default ACL objects to module
      * @private
      */
-    private addDefaultObjects() {
+    public addDefaultObjects() {
         if(this.aclobjects.length == 0 && this.activeTypeId) {
             this.loading = true;
 
@@ -144,7 +129,7 @@ export class ACLObjectsManagerObjects {
      * @param aclobject
      * @private
      */
-    private selectObject(aclobject) {
+    public selectObject(aclobject) {
         this.activeObjectId = aclobject.id;
         this.objectselected.emit(this.activeObjectId);
     }
@@ -154,7 +139,7 @@ export class ACLObjectsManagerObjects {
      * @param objectid
      * @private
      */
-    private activateObject(objectid) {
+    public activateObject(objectid) {
         this.backend.postRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
             this.aclobjects.some(object => {
                 if (object.id == objectid) {
@@ -170,7 +155,7 @@ export class ACLObjectsManagerObjects {
      * @param objectid
      * @private
      */
-    private deactivateObject(objectid) {
+    public deactivateObject(objectid) {
         this.backend.deleteRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
             this.aclobjects.some(object => {
                 if (object.id == objectid) {
