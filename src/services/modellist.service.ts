@@ -525,7 +525,7 @@ export class modellist implements OnDestroy {
                     sort: fielddef.sort,
                     width: fielddef.width
                 });
-            } else if (!fielddefs && listField.fieldconfig.default !== false) {
+            } else if (!fielddefs && !listField.fieldconfig.hidden) {
                 this._listfields.push({
                     id: listField.id,
                     field: listField.field,
