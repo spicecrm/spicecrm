@@ -78,6 +78,7 @@ class OAuth2Authenticate
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/x-www-form-urlencoded',
+                'Accept: application/json'
             ]
         ];
 
@@ -123,6 +124,7 @@ class OAuth2Authenticate
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
             CURLOPT_HTTPHEADER => [
+                'User-Agent: curl/7.64.1',
                 'Accept: application/json',
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $accessToken,
