@@ -22,7 +22,10 @@ class SysTrashCanRecoveryController{
      */
 
     public function getTrashedRecords(Request $req, Response $res, array $args): Response {
-        return $res->withJson(SysTrashCan::getRecords());
+        $params = $req->getQueryParams();
+        $limit = $params['limit'] ?? 50;
+        $offset = $params['offset'] ?? 0;
+        return $res->withJson(SysTrashCan::getRecords($offset, $limit, $params));
     }
 
     /**

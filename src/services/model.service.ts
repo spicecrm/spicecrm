@@ -770,6 +770,9 @@ export class model implements OnDestroy {
             case "set_value":
                 this.data[action.fieldname] = params;
                 return true;
+            case "set_value_from_field":
+                this.data[action.fieldname] = this.data[params];
+                return true;
             case "set_message":
                 if (params instanceof Object) {
                     this._messages.push(params);
