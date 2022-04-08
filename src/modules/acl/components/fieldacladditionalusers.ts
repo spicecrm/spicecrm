@@ -14,15 +14,15 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a field to add secondary territories
  */
 @Component({
-    templateUrl: './src/modules/acl/templates/fieldacladditionalusers.html',
+    templateUrl: '../templates/fieldacladditionalusers.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
 export class fieldACLAdditionalUsers extends fieldGeneric {
 
-    private clickListener: any;
+    public clickListener: any;
 
-    private lookupSearchOpen: boolean = false;
-    private lookupSearchTerm: string = '';
+    public lookupSearchOpen: boolean = false;
+    public lookupSearchTerm: string = '';
 
     constructor(public model: model,
                 public view: view,
@@ -52,7 +52,7 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         this.model.setField('spiceacl_additional_users', JSON.stringify(value));
     }
 
-    private addItem(item) {
+    public addItem(item) {
         let users = this.users;
         let index = users.findIndex(user => user.id == item.id);
         if (index == -1) {
@@ -76,14 +76,14 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         }
     }
 
-    private closePopups() {
+    public closePopups() {
         this.lookupSearchOpen = false;
         this.lookupSearchTerm = '';
 
         this.clickListener();
     }
 
-    private removeItem(userid) {
+    public removeItem(userid) {
         let users = this.users;
         let index = users.findIndex(user => user.id == userid);
         if (index >= 0) {
@@ -94,21 +94,21 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         this.users = users;
     }
 
-    private onFocus() {
+    public onFocus() {
         this.openSearchDropDown();
     }
 
-    private onFieldClick() {
+    public onFieldClick() {
         this.openSearchDropDown();
     }
 
-    private openSearchDropDown() {
+    public openSearchDropDown() {
         // this.getRecent();
         this.lookupSearchOpen = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private parentSearchStyle() {
+    public parentSearchStyle() {
         if (this.lookupSearchOpen) {
             return {
                 display: 'block'
@@ -116,7 +116,7 @@ export class fieldACLAdditionalUsers extends fieldGeneric {
         }
     }
 
-    private searchWithModal() {
+    public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
             selectModal.instance.module = 'Users';
             selectModal.instance.multiselect = false;

@@ -21,7 +21,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types',
-    templateUrl: './src/modules/acl/templates/acltypesmanagertypes.html',
+    templateUrl: '../templates/acltypesmanagertypes.html',
 })
 export class ACLTypesManagerTypes {
 
@@ -45,14 +45,14 @@ export class ACLTypesManagerTypes {
      *
      * @private
      */
-    private filter: string;
+    public filter: string;
 
     /**
      * an output when the type is selected
      */
     @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
         this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
             this.acltypes = acltypes;
 

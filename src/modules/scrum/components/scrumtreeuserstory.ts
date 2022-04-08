@@ -11,16 +11,16 @@ import {scrum} from '../services/scrum.service';
 
 @Component({
     selector: '[scrum-tree-userstory]',
-    templateUrl: './src/modules/scrum/templates/scrumtreeuserstory.html',
+    templateUrl: '../templates/scrumtreeuserstory.html',
     providers: [model],
     host:{
         '(click)': "selectUserStory($event)",
     }
 })
 export class ScrumTreeUserStory implements OnInit, OnDestroy {
-    @Input() private userstory: any = {};
+    @Input() public userstory: any = {};
 
-    constructor(private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrum) {}
+    constructor(public metadata: metadata, public model: model, public modellist: modellist, public scrum: scrum) {}
 
     /**
      * initialize model
@@ -29,7 +29,7 @@ export class ScrumTreeUserStory implements OnInit, OnDestroy {
         this.model.module = 'ScrumUserStories';
         this.model.initialize();
         this.model.id = this.userstory.id;
-        this.model.data = this.userstory;
+        this.model.setData(this.userstory);
     }
 
     /**
@@ -37,7 +37,7 @@ export class ScrumTreeUserStory implements OnInit, OnDestroy {
      * send the current object
      * @param e
      */
-    private selectUserStory(e) {
+    public selectUserStory(e) {
         e.stopPropagation();
         this.scrum.selectedObject = {id: this.userstory.id, type: 'ScrumUserStories'};
     }

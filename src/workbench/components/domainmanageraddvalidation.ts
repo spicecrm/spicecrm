@@ -11,23 +11,23 @@ import {domainmanager} from '../services/domainmanager.service';
  * a modal window to add a new validation to a domain field
  */
 @Component({
-    templateUrl: './src/workbench/templates/domainmanageraddvalidation.html'
+    templateUrl: '../templates/domainmanageraddvalidation.html'
 })
 export class DomainManagerAddValidation {
 
     /**
      * reference to the modal itself
      */
-    private self: any;
+    public self: any;
 
     /**
      *  an empty validation record
      */
-    private fieldvalidation: any = {
+    public fieldvalidation: any = {
         scope: 'g'
     };
 
-    constructor(private domainmanager: domainmanager, private modelutilities: modelutilities) {
+    constructor(public domainmanager: domainmanager, public modelutilities: modelutilities) {
 
     }
 
@@ -36,7 +36,7 @@ export class DomainManagerAddValidation {
      *
      * @param id
      */
-    private selectValidation(id) {
+    public selectValidation(id) {
         this.domainmanager.domainfields.find(f => f.id == this.domainmanager.currentDomainField).sysdomainfieldvalidation_id = id;
         this.close();
     }
@@ -44,7 +44,7 @@ export class DomainManagerAddValidation {
     /**
      * adds the validation, selects it and closes the modal
      */
-    private add() {
+    public add() {
         this.fieldvalidation.id = this.modelutilities.generateGuid();
         this.domainmanager.domainfieldvalidations.push(this.fieldvalidation);
         this.selectValidation(this.fieldvalidation.id);
@@ -53,7 +53,7 @@ export class DomainManagerAddValidation {
     /**
      * close the modal
      */
-    private close() {
+    public close() {
         this.self.destroy();
     }
 

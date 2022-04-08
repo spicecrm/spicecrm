@@ -10,18 +10,18 @@ import {helper} from "../../services/helper.service";
 
 @Component({
     selector: "[object-related-card-file]",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedcardfile.html"
+    templateUrl: "../templates/objectrelatedcardfile.html"
 })
 export class ObjectRelatedCardFile {
 
-    @Input() private file: any = {};
+    @Input() public file: any = {};
 
     /**
      * holds the big thumbnail value
      */
     @Input() public bigThumbnail: boolean = false;
 
-    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
+    constructor(public modelattachments: modelattachments, public userpreferences: userpreferences, public modal: modal, public toast: toast, public helper: helper, public injector: Injector) {
 
     }
 
@@ -43,13 +43,13 @@ export class ObjectRelatedCardFile {
         };
     }
 
-    private downloadFile() {
+    public downloadFile() {
         if (!this.uploading) {
             this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
         }
     }
 
-    private previewFile() {
+    public previewFile() {
         if (this.uploading) {
             this.toast.sendToast('upload still in progress', "info");
             return;

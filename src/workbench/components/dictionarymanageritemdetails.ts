@@ -14,13 +14,13 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
  */
 @Component({
     selector: 'dictionary-manager-item-details',
-    templateUrl: './src/workbench/templates/dictionarymanageritemdetails.html',
+    templateUrl: '../templates/dictionarymanageritemdetails.html',
 })
 export class DictionaryManagerItemDetails {
 
-    @Input() private dictionaryitem: DictionaryItem;
+    @Input() public dictionaryitem: DictionaryItem;
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language) {
 
     }
 

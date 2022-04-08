@@ -15,7 +15,7 @@ declare var _;
  */
 @Component({
     selector: 'spice-page-builder-element',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelement.html',
+    templateUrl: '../templates/spicepagebuilderelement.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElement implements OnInit {
@@ -41,7 +41,7 @@ export class SpicePageBuilderElement implements OnInit {
     /**
      * hold the style object for the element
      */
-    private style = {};
+    public style = {};
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -78,14 +78,14 @@ export class SpicePageBuilderElement implements OnInit {
      * set the hovered element level
      * @param value
      */
-    private setIsMouseIn(value) {
+    public setIsMouseIn(value) {
         this.spicePageBuilderService.isMouseIn = value ? 'content' : 'section';
     }
 
     /**
      * set the current editing element
      */
-    private edit() {
+    public edit() {
         this.modal.openModal('SpicePageBuilderEditor', true, this.injector).subscribe(modalRef => {
             modalRef.instance.element = JSON.parse(JSON.stringify(this.element));
             modalRef.instance.response.subscribe(res => {

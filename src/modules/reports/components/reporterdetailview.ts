@@ -44,7 +44,7 @@ const REPORTERDETAILVIEWANIMATIONS = [
  */
 @Component({
     selector: 'reporter-detilview',
-    templateUrl: './src/modules/reports/templates/reporterdetailview.html',
+    templateUrl: '../templates/reporterdetailview.html',
     providers: [view, model, reporterconfig],
     animations: REPORTERDETAILVIEWANIMATIONS,
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -56,50 +56,50 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     @ViewChild('presentationContainer', {
         read: ViewContainerRef,
         static: true
-    }) private presentationContainer: ViewContainerRef;
+    }) public presentationContainer: ViewContainerRef;
     /**
      * container reference of the presentation component
      */
-    private presentationComponentRef: any = undefined;
+    public presentationComponentRef: any = undefined;
     /**
      * set to true if the report should show the visualization
      */
-    private hasVisualization: boolean = false;
+    public hasVisualization: boolean = false;
 
     /**
      * the height of the visualization container
      */
-    private visualizationHeight: number = 0;
+    public visualizationHeight: number = 0;
 
     /**
      * where conditions will be passed to the children
      */
-    private whereConditions: any = {};
+    public whereConditions: any = {};
     /**
      * integration parms will be passed to the action buttons
      */
-    private integrationParams: any = {};
+    public integrationParams: any = {};
     /**
      * show/hide filter panel
      */
-    private showFilters: boolean = false;
+    public showFilters: boolean = false;
     /**
      * to save observable subscriptions for unsubscribe purpose
      */
-    private subscriptions: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
-    constructor(private broadcast: broadcast,
-                private language: language,
-                private metadata: metadata,
-                private injector: Injector,
-                private model: model,
-                private backend: backend,
-                private activatedRoute: ActivatedRoute,
-                private navigationtab: navigationtab,
-                private router: Router,
-                private reporterconfig: reporterconfig,
-                private cdRef: ChangeDetectorRef,
-                private view: view) {
+    constructor(public broadcast: broadcast,
+                public language: language,
+                public metadata: metadata,
+                public injector: Injector,
+                public model: model,
+                public backend: backend,
+                public activatedRoute: ActivatedRoute,
+                public navigationtab: navigationtab,
+                public router: Router,
+                public reporterconfig: reporterconfig,
+                public cdRef: ChangeDetectorRef,
+                public view: view) {
 
         this.subscribeToBroadcast();
     }
@@ -128,7 +128,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
      * subscribe to broadcast message and refresh the results if the model match
      * and reset the views
      */
-    private subscribeToBroadcast() {
+    public subscribeToBroadcast() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(msg => {
                 if (msg.messagetype == 'model.save' && msg.messagedata.module == this.model.module && msg.messagedata.id == this.model.id) {
@@ -149,7 +149,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * set the navigation paradigm
      */
-    private setNavigationTabInfos(displayName) {
+    public setNavigationTabInfos(displayName) {
         this.navigationtab.setTabInfo({
             displayname: displayName,
             displaymodule: this.model.module
@@ -162,7 +162,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
      * reset the integration params
      * set the hasVisualization to true and set the height of the visualization component
      */
-    private setModelData() {
+    public setModelData() {
         this.model.module = this.navigationtab.activeRoute.params.module;
         this.model.id = this.navigationtab.activeRoute.params.id;
 
@@ -186,7 +186,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * set the integration params
      */
-    private setIntegrationParams(integrationParams) {
+    public setIntegrationParams(integrationParams) {
         this.integrationParams = undefined;
         if (!(!!integrationParams)) return;
         this.integrationParams = integrationParams;
@@ -196,7 +196,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
      * set the visualization properties
      * @param visualizationParams
      */
-    private setVisualizationProperties(visualizationParams) {
+    public setVisualizationProperties(visualizationParams) {
         this.hasVisualization = false;
         if (!(!!visualizationParams)) return;
 
@@ -209,7 +209,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * render the presentation component
      */
-    private renderPresentation(presentationParams) {
+    public renderPresentation(presentationParams) {
 
         if (this.presentationComponentRef) {
             this.presentationComponentRef.destroy();
@@ -248,14 +248,14 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /*
      * toggle showing the filter panel
      */
-    private toggleFilters(event) {
+    public toggleFilters(event) {
         this.showFilters = event;
     }
 
     /**
      * when the filters are saved hide the panel
      */
-    private filterApplied() {
+    public filterApplied() {
         this.showFilters = false;
     }
 }

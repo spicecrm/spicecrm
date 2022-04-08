@@ -1,8 +1,9 @@
 <?php
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-global $dictionary;
-$dictionary['CompanyCode'] = [
+
+SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
     'table' => 'companycodes',
     'audited' => true,
     'fields' => [
@@ -235,5 +236,3 @@ $dictionary['CompanyCode'] = [
 ];
 
 VardefManager::createVardef('CompanyCodes', 'CompanyCode', ['default', 'assignable']);
-
-

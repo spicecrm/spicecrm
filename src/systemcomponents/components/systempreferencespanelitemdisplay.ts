@@ -9,7 +9,7 @@ import {view} from "../../services/view.service";
  */
 @Component({
     selector: "system-preferences-panel-item-display",
-    templateUrl: "./src/systemcomponents/templates/systempreferencespanelitemdisplay.html",
+    templateUrl: "../templates/systempreferencespanelitemdisplay.html",
     styles: [
             `.slds-button--icon {
             color: #eeeeee
@@ -21,6 +21,6 @@ import {view} from "../../services/view.service";
     ]
 })
 export class SystemPreferencesPanelItemDisplay {
-    constructor(private view: view) {
+    constructor(public view: view) {
     }
 }

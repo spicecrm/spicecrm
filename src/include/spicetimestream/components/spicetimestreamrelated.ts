@@ -18,7 +18,7 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-timestream',
-    templateUrl: './src/include/spicetimestream/templates/spicetimestreamrelated.html',
+    templateUrl: '../templates/spicetimestreamrelated.html',
     providers: [relatedmodels]
 })
 export class SpiceTimestreamRelated extends ObjectRelatedList {

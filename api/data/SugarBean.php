@@ -6,12 +6,15 @@ namespace SpiceCRM\data;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\EncryptionUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -308,10 +311,10 @@ class SugarBean
      */
     public function initialize_bean()
     {
-        global $dictionary;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         static $loaded_defs = [];
         $this->db = DBManagerFactory::getInstance();
+        $dictHandler = SpiceDictionaryHandler::getInstance();
         if (empty($this->module_name))
             $this->module_name = $this->module_dir;
         if ((false == $this->disable_vardefs && empty($loaded_defs[$this->object_name])) || !empty($GLOBALS['reload_vardefs'])) {
@@ -321,8 +324,8 @@ class SugarBean
             $this->call_custom_logic('create_vardefs');
 
             // build $this->column_fields from the field_defs if they exist
-            if (!empty($dictionary[$this->object_name]['fields'])) {
-                foreach ($dictionary[$this->object_name]['fields'] as $key => $value_array) {
+            if (!empty($dictHandler->dictionary[$this->object_name]['fields'])) {
+                foreach ($dictHandler->dictionary[$this->object_name]['fields'] as $key => $value_array) {
                     $column_fields[] = $key;
                     if (!empty($value_array['required']) && !empty($value_array['name'])) {
                         $this->required_fields[$value_array['name']] = 1;
@@ -339,11 +342,11 @@ class SugarBean
             if (empty($this->required_fields))
                 $this->required_fields = $this->_loadCachedArray($this->module_dir, $this->object_name, 'required_fields');
 
-            if (isset($GLOBALS['dictionary'][$this->object_name]) && !$this->disable_vardefs) {
-                $this->field_name_map = $dictionary[$this->object_name]['fields'];
-                $this->field_defs = $dictionary[$this->object_name]['fields'];
+            if (isset($dictHandler->dictionary[$this->object_name]) && !$this->disable_vardefs) {
+                $this->field_name_map = $dictHandler->dictionary[$this->object_name]['fields'];
+                $this->field_defs = $dictHandler->dictionary[$this->object_name]['fields'];
 
-                if (!empty($dictionary[$this->object_name]['optimistic_locking'])) {
+                if (!empty($dictHandler->dictionary[$this->object_name]['optimistic_locking'])) {
                     $this->optimistic_lock = true;
                 }
             }
@@ -352,13 +355,13 @@ class SugarBean
             $this->field_name_map = &$loaded_defs[$this->object_name]['field_name_map'];
             $this->field_defs = &$loaded_defs[$this->object_name]['field_defs'];
 
-            if (!empty($dictionary[$this->object_name]['optimistic_locking'])) {
+            if (!empty($dictHandler->dictionary[$this->object_name]['optimistic_locking'])) {
                 $this->optimistic_lock = true;
             }
         }
 
         if ($this->bean_implements('ACL') && !empty(AuthenticationController::getInstance()->getCurrentUser())) {
-            $this->acl_fields = (isset($dictionary[$this->object_name]['acl_fields']) && $dictionary[$this->object_name]['acl_fields'] === false) ? false : true;
+            $this->acl_fields = (isset($dictHandler->dictionary[$this->object_name]['acl_fields']) && $dictHandler->dictionary[$this->object_name]['acl_fields'] === false) ? false : true;
         }
         $this->populateDefaultValues();
     }
@@ -410,6 +413,7 @@ class SugarBean
         // only if the current user is an admin
         if (!$current_user->isAdmin()) return [];
 
+        $ret = [];
         $fields = $this->getFieldDefinitions();
         foreach ($fields as $field => $data) {
             $ret[$field] = $this->{$field};
@@ -616,8 +620,8 @@ class SugarBean
         if (isset($this->table_name)) {
             return $this->table_name;
         }
-        global $dictionary;
-        return $dictionary[$this->getObjectName()]['table'];
+
+        return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['table'];
     }
 
     /**
@@ -652,9 +656,8 @@ class SugarBean
      */
     function getIndices()
     {
-        global $dictionary;
-        if (isset($dictionary[$this->getObjectName()]['indices'])) {
-            return $dictionary[$this->getObjectName()]['indices'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'])) {
+            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'];
         }
         return [];
     }
@@ -767,21 +770,21 @@ class SugarBean
 
             //add custom/modules/[]modulename]/vardefs.php capability
             //ORIGINAL: if (file_exists($filename)) {
-            if (file_exists(($iscustom ? $filename : get_custom_file_if_exists($filename)))) {
+            if (file_exists(($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)))) {
                 include($filename);
                 // cn: bug 7679 - dictionary entries defined as $GLOBALS['name'] not found
-                if (empty($dictionary) || !empty($GLOBALS['dictionary'][$key])) {
-                    $dictionary = $GLOBALS['dictionary'];
+                if (empty($dictionary) || !empty(SpiceDictionaryHandler::getInstance()->dictionary[$key])) {
+                    $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
                 }
             } else {
-                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : get_custom_file_if_exists($filename)));
+                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)));
                 return;
             }
         }
 
         if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
             LoggerManager::getLogger()->fatal("createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
-            display_notice("meta data absent for table " . $tablename . " keyed to $key ");
+            SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
         } else {
             if (isset($dictionary[$key]['relationships'])) {
 
@@ -1116,12 +1119,10 @@ class SugarBean
      */
     function create_tables()
     {
-        global $dictionary;
-
         $key = $this->getObjectName();
-        if (!array_key_exists($key, $dictionary)) {
+        if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal("create_tables: Metadata for table " . $this->table_name . " does not exist");
-            display_notice("meta data absent for table " . $this->table_name . " keyed to $key ");
+            SpiceUtils::displayNotice("meta data absent for table " . $this->table_name . " keyed to $key ");
         } else {
             if (!$this->db->tableExists($this->table_name)) {
                 $this->db->createTable($this);
@@ -1164,9 +1165,8 @@ class SugarBean
      */
     function is_AuditEnabled()
     {
-        global $dictionary;
-        if (isset($dictionary[$this->getObjectName()]['audited'])) {
-            return $dictionary[$this->getObjectName()]['audited'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'])) {
+            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'];
         } else {
             return false;
         }
@@ -1185,7 +1185,7 @@ class SugarBean
         $records = [];
 
         // CR1000308
-        if (!$this->db->tableExists($this->get_audit_table_name())) {
+        if(!$this->is_AuditEnabled()){
             return $records;
         }
 
@@ -1231,7 +1231,6 @@ class SugarBean
      */
     function create_audit_table()
     {
-        global $dictionary;
         $table_name = $this->get_audit_table_name();
 
         require('metadata/audit_templateMetaData.php');
@@ -1242,8 +1241,8 @@ class SugarBean
             require($custom);
         }
 
-        $fieldDefs = $dictionary['audit']['fields'];
-        $indices = $dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1254,10 +1253,10 @@ class SugarBean
         }
 
         $engine = null;
-        if (isset($dictionary['audit']['engine'])) {
-            $engine = $dictionary['audit']['engine'];
-        } else if (isset($dictionary[$this->getObjectName()]['engine'])) {
-            $engine = $dictionary[$this->getObjectName()]['engine'];
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'];
+        } else if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'])) {
+            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'];
         }
 
         $this->db->createTableParams($table_name, $fieldDefs, $indices, $engine);
@@ -1271,8 +1270,6 @@ class SugarBean
      */
     function update_audit_table($execute = true)
     {
-
-        global $dictionary;
         $table_name = $this->get_audit_table_name();
 
         require('metadata/audit_templateMetaData.php');
@@ -1283,8 +1280,8 @@ class SugarBean
             require($custom);
         }
 
-        $fieldDefs = $dictionary['audit']['fields'];
-        $indices = $dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1302,9 +1299,8 @@ class SugarBean
      */
     function drop_tables()
     {
-        global $dictionary;
         $key = $this->getObjectName();
-        if (!array_key_exists($key, $dictionary)) {
+        if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal("drop_tables: Metadata for table " . $this->table_name . " does not exist");
             echo "meta data absent for table " . $this->table_name . "<br>\n";
         } else {
@@ -1503,13 +1499,13 @@ class SugarBean
     function encrpyt_before_save($value)
     {
         require_once("include/utils/encryption_utils.php");
-        return blowfishEncode($this->getEncryptKey(), $value);
+        return EncryptionUtils::blowfishEncode($this->getEncryptKey(), $value);
     }
 
     protected function getEncryptKey()
     {
         if (empty(self::$field_key)) {
-            self::$field_key = blowfishGetKey('encrypt_field');
+            self::$field_key = EncryptionUtils::blowfishGetKey('encrypt_field');
         }
         return self::$field_key;
     }
@@ -1780,7 +1776,7 @@ class SugarBean
      *
      * Internal function, do not override.
      */
-    private function process_order_by($order_by, $submodule = null, $suppress_table_name = false)
+    public function process_order_by($order_by, $submodule = null, $suppress_table_name = false)
     {
         if (empty($order_by))
             return $order_by;
@@ -2047,7 +2043,7 @@ class SugarBean
         if ($deleted)
             $query .= " AND $this->table_name.deleted=0";
         LoggerManager::getLogger()->debug("Retrieve $this->object_name : " . $query);
-        $result = $this->db->limitQuery($query, 0, 1, true, "Retrieving record by id $this->table_name:$id found ");
+        $result = $this->db->query($query, true, "Retrieving record by id $this->table_name:$id found ");
         if (empty($result)) {
             return null;
         }
@@ -2198,7 +2194,7 @@ class SugarBean
             case 'json':
                 break;
             default:
-                if ($encode) $fieldvalue = to_html($fieldvalue);
+                if ($encode) $fieldvalue = DBUtils::toHtml($fieldvalue);
                 if (!(isset($fieldDef['source']) && !in_array($fieldDef['source'], ['db', 'relate']) && !isset($fieldDef['dbType']))) {
                     $fieldvalue = $this->db->fromConvert($fieldvalue, $this->db->getFieldType($fieldDef));
                 }
@@ -2244,7 +2240,7 @@ class SugarBean
         if (empty($value))
             return $value; // no need to decrypt empty
         require_once("include/utils/encryption_utils.php");
-        return blowfishDecode($this->getEncryptKey(), $value);
+        return EncryptionUtils::blowfishDecode($this->getEncryptKey(), $value);
     }
 
     /**
@@ -2484,7 +2480,7 @@ class SugarBean
             }
         }
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         if (isset($_SESSION['show_deleted'])) {
             $this->mark_undeleted($id);
         } else {
@@ -2538,7 +2534,7 @@ class SugarBean
         $custom_logic_arguments['id'] = $id;
         $this->call_custom_logic("before_restore", $custom_logic_arguments);
 
-        $date_modified = $GLOBALS['timedate']->nowDb();
+        $date_modified = TimeDate::getInstance()->nowDb();
         $query = "UPDATE $this->table_name set deleted=0 , date_modified = '$date_modified' where id='$id'";
         $this->db->query($query, true, "Error marking record undeleted: ");
 
@@ -2882,7 +2878,7 @@ class SugarBean
         $where = '';
 
         // make sure there is a date modified
-        $date_modified = $this->db->convert("'" . $GLOBALS['timedate']->nowDb() . "'", 'datetime');
+        $date_modified = $this->db->convert("'" . TimeDate::getInstance()->nowDb() . "'", 'datetime');
 
         $row = null;
         if ($check_duplicates) {
@@ -2901,7 +2897,7 @@ class SugarBean
             if (isset($data_values)) {
                 $relate_values = array_merge($relate_values, $data_values);
             }
-            $query = "INSERT INTO $table (id, " . implode(',', array_keys($relate_values)) . ", date_modified) VALUES ('" . create_guid() . "', " . "'" . implode("', '", $relate_values) . "', " . $date_modified . ")";
+            $query = "INSERT INTO $table (id, " . implode(',', array_keys($relate_values)) . ", date_modified) VALUES ('" . SpiceUtils::createGuid() . "', " . "'" . implode("', '", $relate_values) . "', " . $date_modified . ")";
 
             $this->db->query($query, false, "Creating Relationship:" . $query);
         } else if ($do_update) {
@@ -3152,12 +3148,12 @@ class SugarBean
     public function cloneLinkedBean($linkName, &$oppositeBean)
     {
         $clone = clone $this;
-        $clone->id = create_guid();
+        $clone->id = SpiceUtils::createGuid();
         $GLOBALS['cloningData']['cloned'][] = ['module' => $clone->module_name, 'id' => $this->id, 'cloneId' => $clone->id, 'clone' => $clone];
         $clone->cloningData['count']++;
         $clone->new_with_id = true;
         $clone->update_date_entered = true;
-        $clone->date_entered = $GLOBALS['timedate']->nowDb();
+        $clone->date_entered = TimeDate::getInstance()->nowDb();
         $clone->onClone();
         $clone->save();
 

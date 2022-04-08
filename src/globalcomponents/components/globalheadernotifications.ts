@@ -4,6 +4,8 @@
 import {ChangeDetectorRef, Component, ElementRef, Renderer2} from '@angular/core';
 import {notification} from "../../services/notification.service";
 import {userpreferences} from "../../services/userpreferences.service";
+import {modal} from "../../services/modal.service";
+import {subscription} from "../../services/subscription.service";
 import {Router} from "@angular/router";
 
 /**
@@ -11,31 +13,38 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'global-header-notifications',
-    templateUrl: './src/globalcomponents/templates/globalheadernotifications.html'
+    templateUrl: '../templates/globalheadernotifications.html'
 })
 export class GlobalHeaderNotifications {
     /**
      * if true show the notifications popover
      * @private
      */
-    private isOpen: boolean = false;
+    public isOpen: boolean = false;
     /**
      * if true the show settings button clicked
      * @private
      */
-    private showSettings: boolean = false;
+    public showSettings: boolean = false;
     /**
      * holds the click listener function to enable remove
      * @private
      */
-    private clickListener: () => void;
+    public clickListener: () => void;
+
+    /**
+     * the distance from the right frame for the popover
+     */
+    public right: number = 0;
 
     constructor(public notificationService: notification,
-                private elementRef: ElementRef,
+                public elementRef: ElementRef,
+                public modal: modal,
+                public subscription: subscription,
                 public userPreferences: userpreferences,
-                private cdRef: ChangeDetectorRef,
-                private router: Router,
-                private renderer: Renderer2) {
+                public cdRef: ChangeDetectorRef,
+                public router: Router,
+                public renderer: Renderer2) {
     }
 
     /**
@@ -71,6 +80,11 @@ export class GlobalHeaderNotifications {
      * toggle open popover and handle closing the popover when the click is outside the container
      */
     public toggleOpenPopover() {
+        // get the right position
+        let rect = this.elementRef.nativeElement.getBoundingClientRect();
+        this.right = window.innerWidth - rect.right + (rect.left - rect.right) / 2 - 3;
+
+        // toggle open
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.showSettings = false;
@@ -81,6 +95,15 @@ export class GlobalHeaderNotifications {
             });
         } else if (this.clickListener) {
             this.clickListener();
+        }
+    }
+
+    /**
+     * returns the right margin
+     */
+    get popoverStyle(){
+        return {
+            right: this.right + 'px'
         }
     }
 
@@ -115,7 +138,7 @@ export class GlobalHeaderNotifications {
      * @param value
      * @private
      */
-    private setDisplayDesktopNotification(value: boolean) {
+    public setDisplayDesktopNotification(value: boolean) {
 
         if (this.desktopNotificationsStatus === 'default') {
 
@@ -136,5 +159,20 @@ export class GlobalHeaderNotifications {
     public showAllNotifications() {
         this.closePopover();
         this.router.navigate(['notifications']);
+    }
+
+    /**
+     * a getter to see if the user has subscriptions
+     */
+    get hasSubscriptions(){
+        return this.subscription.subscriptions.length > 0;
+    }
+
+    /**
+     * opens the modal for the users subscriptions
+     */
+    public manageSubscriptions(){
+        this.closePopover();
+        this.modal.openModal('GlobalSubscriptionsManager')
     }
 }

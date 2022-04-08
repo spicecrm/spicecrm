@@ -36,7 +36,6 @@
 
 namespace SpiceCRM\modules\Emails;
 
-
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
@@ -55,6 +54,7 @@ use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarCleaner;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 
@@ -163,6 +163,9 @@ class Email extends SugarBean
                 $this->from_addr = $this->from_addr_name;
             } elseif (empty($this->from_addr)) {
                 $this->from_addr = $mailbox->imap_pop3_username;
+            }
+            if (!empty($this->to_addrs)) {
+                $this->to_addrs = $this->cleanEmails($this->to_addrs);
             }
             if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
                 $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
@@ -556,7 +559,7 @@ class Email extends SugarBean
                 }
             }
         } else {
-            $emails = str_replace([",", ";"], "::", from_html($emails));
+            $emails = str_replace([",", ";"], "::", DBUtils::fromHtml($emails));
             $addrs = explode("::", $emails);
 
             foreach ($addrs as $addr) {
@@ -586,7 +589,7 @@ class Email extends SugarBean
         if(!$ret) return false;
 
         //$ret->raw_source = SugarCleaner::cleanHtml($ret->raw_source);
-        $ret->description = to_html($ret->description);
+        $ret->description = DBUtils::toHtml($ret->description);
         //$ret->description_html = SugarCleaner::cleanHtml($ret->description_html);
 
         // BEGIN CR1000307
@@ -599,6 +602,11 @@ class Email extends SugarBean
             }
         }
         // END
+
+        // check if the string we have is HTML (shoudl start with an <html> tag). if not we add a default style so the UI can display it properly
+        if(!str_starts_with($this->body, '<html')) {
+            $this->body = '<html><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style><body>'.$this->body.'</body></html>';
+        }
 
         $ret->retrieveEmailAddresses();
 
@@ -628,8 +636,13 @@ class Email extends SugarBean
             foreach ($attachments as $attachment) {
                 foreach ($matches[1] as $match) {
                     if (strpos($match, $attachment['filename']) !== false) {
-                        $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
-                        $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
+                        // catch exception so that error on getting attchments would not break fts indexing of the record
+                        try {
+                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
+                            $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
+                        } catch(Exception $e) {
+                            // do nothing
+                        }
                     }
                 }
             }
@@ -714,14 +727,36 @@ class Email extends SugarBean
     }
 
     /**
+     * generate a tracking pixel with blowfish hash and adds it to the email body
+     */
+    private function generateTrackingPixel() {
+        $key = '2fs5uhnjcnpxcpg9';
+        $method = 'blowfish';
+        $data = $this->_module .':'.$this->id;
+        $encrypted = openssl_encrypt($data, $method, $key);
+
+        $this->body .= '<img src="'.$this->tracking_url.base64_encode($encrypted) .'" height="1" width="1">';
+    }
+
+    /**
      * Send the Email
      *
      * @return mixed
      * @throws Exception
      */
-    public
-    function sendEmail()
+    public function sendEmail()
     {
+        /*prep for tracking pixel .. ToDo: complete this
+        $key = '2fs5uhnjcnpxcpg9';
+        $method = 'blowfish';
+        $data = $this->_module .':'.$this->id;
+        $encrypted = openssl_encrypt($data, $method, $key);
+
+        // $decrypted = openssl_decrypt($encrypted, $method, $key);
+
+        $this->body .= '<img src="https://softwarecheck.us3.list-manage.com/track/open.php?'.base64_encode($encrypted) .'" height="1" width="1">';
+        */
+
         if ($this->mailbox_id) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
         }
@@ -733,6 +768,10 @@ class Email extends SugarBean
             } catch (Exception $exception) {
                 throw $exception;
             }
+        }
+
+        if($mailbox->track_mailbox) {
+            $this->generateTrackingPixel();
         }
 
         $mailbox->initTransportHandler();
@@ -1004,6 +1043,7 @@ class Email extends SugarBean
 
     function addEmailAddress($type, $address)
     {
+        if (!$address) return null;
         $this->recipient_addresses[] = [
             'address_type' => $type,
             'email_address' => EmailAddress::cleanAddress($address)
@@ -1020,7 +1060,7 @@ class Email extends SugarBean
     {
         $db = DBManagerFactory::getInstance();
 
-        $query = "SELECT * FROM mailbox_processors WHERE mailbox_id='" . $this->mailbox_id . "' ORDER BY priority";
+        $query = "SELECT * FROM mailbox_processors WHERE mailbox_id='" . $this->mailbox_id . "' AND deleted=0 ORDER BY priority";
         $q = $db->query($query);
 
         while ($processor = $db->fetchByAssoc($q)) {
@@ -1317,9 +1357,15 @@ class Email extends SugarBean
     function findInlineImages(): DOMNodeList
     {
         $doc = new DOMDocument();
-        $doc->loadHTML($this->body);
+        // load html and use utf-8 encoding
+        $doc->loadHTML('<?xml encoding="utf-8"?>' . $this->body);
         $selector = new DOMXPath($doc);
 
-        return $selector->query("//img[contains(@src, 'data:image/png;base64,')]");
+        // query all inline images. some images include charset utf-8 in the src
+        return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
+    }
+
+    public function addDocumentAttachment($doc): void {
+        SpiceAttachments::saveDocumentAttachment('Emails', $this->id, $doc);
     }
 }

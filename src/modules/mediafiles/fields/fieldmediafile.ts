@@ -21,22 +21,22 @@ import { modal } from '../../../services/modal.service';
 
 @Component( {
     selector: 'field-media-file',
-    templateUrl: './src/modules/mediafiles/templates/fieldmediafile.html',
+    templateUrl: '../templates/fieldmediafile.html',
     providers: [ mediafiles ],
 })
 export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewInit {
 
-    private currentViewMode: string;
-    private imageUrlVariant: string;
-    private imageUrlOriginal: string;
-    private isLoadingVariant = false;
-    private isLoadingOriginal = false;
-    private widthOfImgFrame: number;
-    private heightOfImgFrame: number;
+    public currentViewMode: string;
+    public imageUrlVariant: string;
+    public imageUrlOriginal: string;
+    public isLoadingVariant = false;
+    public isLoadingOriginal = false;
+    public widthOfImgFrame: number;
+    public heightOfImgFrame: number;
 
-    private allowR: string;
+    public allowR: string;
 
-    @ViewChild('imgFrame', {static: false}) private imgFrame: ElementRef;
+    @ViewChild('imgFrame', {static: false}) public imgFrame: ElementRef;
 
     constructor(
         public model: model,
@@ -44,12 +44,12 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
         public language: language,
         public metadata: metadata,
         public router: Router,
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
-        private mediafiles: mediafiles,
-        private backend: backend ,
-        private elRef: ElementRef,
-        private modalservice: modal
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public mediafiles: mediafiles,
+        public backend: backend ,
+        public elRef: ElementRef,
+        public modalservice: modal
     ) {
         super( model, view, language, metadata, router );
     }
@@ -70,7 +70,7 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
         });
     }
 
-    private loadImageVariant(): void {
+    public loadImageVariant(): void {
         this.imageUrlVariant = '';
         if ( this.model.isNew ) return;
         this.isLoadingVariant = true;
@@ -80,7 +80,7 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
         });
     }
 
-    private loadImageOriginal(): void {
+    public loadImageOriginal(): void {
         this.imageUrlOriginal = '';
         if ( this.model.isNew ) return;
         this.isLoadingOriginal = true;
@@ -93,27 +93,27 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
             });
     }
 
-    private getWidthOfImgFrame(): number {
+    public getWidthOfImgFrame(): number {
         if ( !this.imgFrame ) return 0;
         return Math.ceil( Number( getComputedStyle( this.imgFrame.nativeElement, null ).width.replace( /px$/, '' )));
     }
 
-    private getHeightOfImgFrame(): number {
+    public getHeightOfImgFrame(): number {
         if ( !this.imgFrame ) return 0;
         return Math.ceil( Number( getComputedStyle( this.imgFrame.nativeElement, null ).height.replace( /px$/, '' )));
     }
 
-    private openLightbox() {
+    public openLightbox() {
         this.modalservice.openModal('SystemImagePreviewModal', true ).subscribe( modal => {
             modal.instance.imgname = this.model.getField('name');
             modal.instance.imgtype = this.model.getField('filetype');
-            this.mediafiles.getImage( this.model.data.id ).subscribe( url => {
+            this.mediafiles.getImage( this.model.id ).subscribe( url => {
                 modal.instance.imgsrc = url;
             });
         });
     }
 
-    private mediaChange( data ): void {
+    public mediaChange( data ): void {
         if ( data.isDirty ) {
             // console.log( 'mediaChange, dirty' );
             this.model.setField( this.fieldname, data.image );
@@ -134,10 +134,10 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
         return this.fieldconfig.fieldForName ? this.fieldconfig.fieldForName : 'name';
     }
 
-    private set fileformat( value ) {
+    public set fileformat( value ) {
         this.model.setField( this.fieldForFileformat, value );
     }
-    private get fileformat(): number {
+    public get fileformat(): number {
         return this.model.getField( this.fieldForFileformat );
     }
 

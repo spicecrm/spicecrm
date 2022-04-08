@@ -15,7 +15,7 @@ declare var moment: any;
  * displays a quicknote that is read in teh stream
  */
 @Component({
-    templateUrl: './src/include/spiceattachments/templates/spiceattachmentslist.html',
+    templateUrl: '../templates/spiceattachmentslist.html',
     providers: [modelattachments],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -26,7 +26,7 @@ export class SpiceAttachmentsList {
      *
      * passed in component config
      */
-    private componentconfig: any = {};
+    public componentconfig: any = {};
 
     /**
      * contructor sets the module and id for the laoder
@@ -34,7 +34,7 @@ export class SpiceAttachmentsList {
      * @param language
      * @param model
      */
-    constructor(private modelattachments: modelattachments, private language: language, private model: model, private cdRef: ChangeDetectorRef) {
+    constructor(public modelattachments: modelattachments, public language: language, public model: model, public cdRef: ChangeDetectorRef) {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }
@@ -43,7 +43,7 @@ export class SpiceAttachmentsList {
     /**
      * initializes the model attachments service and loads the attachments
      */
-    private loadFiles() {
+    public loadFiles() {
         this.modelattachments.getAttachments().subscribe(files => {
             this.cdRef.detectChanges();
         });
@@ -54,6 +54,23 @@ export class SpiceAttachmentsList {
      */
     public ngAfterViewInit() {
         setTimeout(() => this.loadFiles(), 10);
+    }
+
+    /**
+     * Component style according to the component config property "horizontal".
+     */
+    public getCompStyle() {
+        return {
+            marginRight: this.componentconfig.horizontal ? '-16px' : undefined,
+            marginBottom: this.componentconfig.horizontal ? '-8px' : undefined,
+        }
+    }
+
+    /**
+     * Item classes according to the component config property "horizontal".
+     */
+    public getItemClass() {
+        return this.componentconfig.horizontal ? 'slds-m-right_medium slds-m-bottom_x-small':'slds-size--1-of-1';
     }
 
 }

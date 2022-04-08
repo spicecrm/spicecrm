@@ -9,7 +9,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
  */
 @Component({
     selector: 'spice-page-builder-input-color',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderinputcolor.html',
+    templateUrl: '../templates/spicepagebuilderinputcolor.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
@@ -23,22 +23,22 @@ export class SpicePageBuilderInputColor implements ControlValueAccessor {
     /**
      * name of the style attribute
      */
-    @Input() private label: string = '';
+    @Input() public label: string = '';
     /**
      * holds the sides value
      */
-    private value: string = '';
+    public value: string = '';
 
     /**
      * save on touched function for ControlValueAccessor
      */
-    private onTouched: () => void;
+    public onTouched: () => void;
     /**
      * save on change function for ControlValueAccessor
      */
-    private onChange: (modelValue: any) => void;
+    public onChange: (modelValue: any) => void;
 
-    constructor(private cdRef: ChangeDetectorRef) {
+    constructor(public cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -73,7 +73,7 @@ export class SpicePageBuilderInputColor implements ControlValueAccessor {
     /**
      * emit color value
      */
-    private emitValue() {
+    public emitValue() {
         this.onChange(this.value);
     }
 }

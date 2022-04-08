@@ -9,17 +9,17 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'tasks-manager-tasks',
-    templateUrl: './src/modules/activities/templates/tasksmanagertasks.html',
+    templateUrl: '../templates/tasksmanagertasks.html',
 })
 export class TasksManagerTasks {
     /**
      * reference to the content used when the
      */
-    @Output() private taskselected: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public taskselected: EventEmitter<string> = new EventEmitter<string>();
 
-    private focus: string = '';
+    public focus: string = '';
 
-    constructor(private language: language, private modellist: modellist) {
+    constructor(public language: language, public modellist: modellist) {
 
     }
 
@@ -28,7 +28,7 @@ export class TasksManagerTasks {
      *
      * @param id
      */
-    private selectTask(id) {
+    public selectTask(id) {
         this.focus = id;
         this.taskselected.emit(id);
     }
@@ -36,7 +36,7 @@ export class TasksManagerTasks {
     /**
      * handle the screoll event when emitted from the tobottom directive
      */
-    private handleScroll() {
+    public handleScroll() {
         this.modellist.loadMoreList();
     }
 }

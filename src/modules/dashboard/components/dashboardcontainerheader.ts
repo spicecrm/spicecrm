@@ -19,21 +19,21 @@ declare var _;
  */
 @Component({
     selector: 'dashboard-container-header',
-    templateUrl: './src/modules/dashboard/templates/dashboardcontainerheader.html'
+    templateUrl: '../templates/dashboardcontainerheader.html'
 })
 export class DashboardContainerHeader {
 
-    @Input() private showdashboardselector: boolean = false;
-    @Output() private showselect: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() public showdashboardselector: boolean = false;
+    @Output() public showselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private dashboardlayout: dashboardlayout,
-                private language: language,
-                private userpreferences: userpreferences,
-                private metadata: metadata,
-                private modal: modal,
-                private backend: backend,
-                private view: view,
-                private model: model) {
+    constructor(public dashboardlayout: dashboardlayout,
+                public language: language,
+                public userpreferences: userpreferences,
+                public metadata: metadata,
+                public modal: modal,
+                public backend: backend,
+                public view: view,
+                public model: model) {
     }
 
     /**
@@ -61,7 +61,7 @@ export class DashboardContainerHeader {
      * toggle editing the content
      * @private
      */
-    private toggleEditContent() {
+    public toggleEditContent() {
         if (this.view.isEditMode()) {
             this.cancel();
         } else {
@@ -77,7 +77,7 @@ export class DashboardContainerHeader {
      * toggle setting the home dashboard to user preferences
      * @private
      */
-    private toggleHomeDashboard() {
+    public toggleHomeDashboard() {
         this.userpreferences.setPreference('home_dashboard', this.isHomeDashboard ? '' : this.model.id, true);
     }
 
@@ -85,7 +85,7 @@ export class DashboardContainerHeader {
      * open edit modal
      * @private
      */
-    private editModal() {
+    public editModal() {
         this.model.edit();
     }
 
@@ -93,7 +93,7 @@ export class DashboardContainerHeader {
      * set dashboard deleted flag to true
      * @private
      */
-    private deleteDashboard() {
+    public deleteDashboard() {
         this.modal.confirmDeleteRecord().subscribe(answer => {
             if (!answer) return;
             this.model.delete().subscribe(() => {
@@ -108,7 +108,7 @@ export class DashboardContainerHeader {
      * show dashboards panel
      * @private
      */
-    private showpanel() {
+    public showpanel() {
         this.showselect.emit(true);
     }
 
@@ -116,7 +116,7 @@ export class DashboardContainerHeader {
      * save dashboard components
      * @private
      */
-    private saveComponents() {
+    public saveComponents() {
         this.backend.postRequest('module/Dashboards/' + this.model.id + '/components', {}, this.dashboardlayout.dashboardElements)
             .subscribe(()=> {
                 this.view.setViewMode();
@@ -128,7 +128,7 @@ export class DashboardContainerHeader {
      * cancel editing dashboard
      * @private
      */
-    private cancel() {
+    public cancel() {
         this.view.setViewMode();
         this.model.cancelEdit();
         this.dashboardlayout.dashboardElements = this.model.getField('components');

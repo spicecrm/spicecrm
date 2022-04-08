@@ -10,16 +10,16 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: "mailboxes-transport-manager",
-    templateUrl: "./src/workbench/templates/mailboxestransportmanager.html",
+    templateUrl: "../templates/mailboxestransportmanager.html",
 })
 
 export class MailboxesTransportManager {
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private model: model,
-        private view: view,
-        private configuration: configurationService
+        public metadata: metadata,
+        public language: language,
+        public model: model,
+        public view: view,
+        public configuration: configurationService
     ) {
 
     }

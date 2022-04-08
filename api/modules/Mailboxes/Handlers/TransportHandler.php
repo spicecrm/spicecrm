@@ -1,4 +1,6 @@
 <?php
+/***** SPICE-HEADER-SPACEHOLDER *****/
+
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use SpiceCRM\modules\Emails\Email;

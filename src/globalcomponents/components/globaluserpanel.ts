@@ -20,35 +20,35 @@ declare var _: any;
  */
 @Component({
     selector: "global-user-panel",
-    templateUrl: "./src/globalcomponents/templates/globaluserpanel.html",
+    templateUrl: "../templates/globaluserpanel.html",
 })
 export class GlobaUserPanel {
 
     /**
      * emits that the popup shoudl be closed
      */
-    @Output() private closepopup: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output()public closepopup: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(
-        private loginService: loginService,
-        private session: session,
-        private router: Router,
-        private metadata: metadata,
-        private backend: backend,
-        private config: configurationService,
-        private modal: modal,
-        private userprefs: userpreferences,
-        private toast: toast,
-        private socket: socket
+       public loginService: loginService,
+       public session: session,
+       public router: Router,
+       public metadata: metadata,
+       public backend: backend,
+       public config: configurationService,
+       public modal: modal,
+       public userprefs: userpreferences,
+       public toast: toast,
+       public socket: socket
     ) {
 
     }
 
-    private logoff() {
+   public logoff() {
         this.loginService.logout();
     }
 
-    private changeImage() {
+   public changeImage() {
         this.modal.openModal("SystemUploadImage").subscribe(componentref => {
             componentref.instance.cropheight = 150;
             componentref.instance.cropwidth = 150;
@@ -99,7 +99,7 @@ export class GlobaUserPanel {
      *
      * @private
      */
-    private goDetails() {
+   public goDetails() {
         this.router.navigate(["/module/Users/" + this.session.authData.userId]);
         this.close();
     }
@@ -109,7 +109,7 @@ export class GlobaUserPanel {
      *
      * @private
      */
-    private changePassword() {
+   public changePassword() {
         if(this.canChangePassword) {
             this.modal.openModal("UserChangePasswordModal");
         }
@@ -128,7 +128,7 @@ export class GlobaUserPanel {
      * @param value
      * @private
      */
-    private set currentTz(value) {
+   public set currentTz(value) {
         if (this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value) return;
         this.userprefs.setPreference('timezone', value, true).subscribe((data: any) => {
             this.toast.sendToast('Timezone set successfully to "' + data.timezone + '".', 'success');
@@ -144,7 +144,7 @@ export class GlobaUserPanel {
      *
      * @private
      */
-    private get currentTz(): string {
+   public get currentTz(): string {
         if (this.userprefs.unchangedPreferences && this.userprefs.unchangedPreferences.global) {
             return this.userprefs.unchangedPreferences.global.timezone;
         } else {
@@ -155,7 +155,7 @@ export class GlobaUserPanel {
     /**
      * closes the popup
      */
-    private close() {
+   public close() {
         this.closepopup.emit(true);
     }
 

@@ -12,7 +12,7 @@ declare var moment: any;
 
 @Component({
     selector: 'system-filter-builder-expression-value',
-    templateUrl: './src/systemcomponents/templates/systemfilterbuilderfilterexpressionvalue.html',
+    templateUrl: '../templates/systemfilterbuilderfilterexpressionvalue.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -26,7 +26,7 @@ export class SystemFilterBuilderFilterExpressionValue implements ControlValueAcc
     /**
      * a reference to the value container
      */
-    // @ViewChild("valueContainer", {read: ViewContainerRef, static: false}) private valueContainer: ViewContainerRef;
+    // @ViewChild("valueContainer", {read: ViewContainerRef, static: false}) public valueContainer: ViewContainerRef;
 
     /**
      * the module we are attaching this filter to
@@ -42,18 +42,18 @@ export class SystemFilterBuilderFilterExpressionValue implements ControlValueAcc
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * the module we are attaching this filter to
      */
-    @Input() private valueType: string;
+    @Input() public valueType: string;
 
     /**
      * the value
      */
-    private _value: any;
+    public _value: any;
 
     constructor(
         public metadata: metadata,

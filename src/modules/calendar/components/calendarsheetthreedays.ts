@@ -14,22 +14,22 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-three-days',
-    templateUrl: './src/modules/calendar/templates/calendarsheetthreedays.html',
+    templateUrl: '../templates/calendarsheetthreedays.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetThreeDays extends CalendarSheetWeek implements OnInit {
     /**
      * day text container class to be set for day text when the calendar is used as dashlet
      */
-    private dayTextContainerClass: string = '';
+    public dayTextContainerClass: string = '';
     /**
      * holds the day text class
      */
-    private dayTextClass: string = 'slds-text-body--regular';
+    public dayTextClass: string = 'slds-text-body--regular';
     /**
      * holds the date text class
      */
-    private dateTextClass: string = 'slds-text-heading--large';
+    public dateTextClass: string = 'slds-text-heading--large';
     /**
      * @return startDate: moment
      */

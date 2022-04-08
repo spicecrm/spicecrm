@@ -8,16 +8,16 @@ import {
 
 @Component({
     selector: 'object-record-fieldset-field',
-    templateUrl: './src/objectcomponents/templates/objectrecordfieldsetfield.html'
+    templateUrl: '../templates/objectrecordfieldsetfield.html'
 })
 export class ObjectRecordFieldsetField {
 
-    @Input() private fieldsetitem: any;
-    @Input() private fieldpadding: string = 'x-small';
-    @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight';
+    @Input() public fieldsetitem: any;
+    @Input() public fieldpadding: string = 'x-small';
+    @Input() public fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight';
 
 
-    private showLabel(fieldConfig) {
+    public showLabel(fieldConfig) {
         if (fieldConfig.hidelabel === true) {
             return false;
         } else {

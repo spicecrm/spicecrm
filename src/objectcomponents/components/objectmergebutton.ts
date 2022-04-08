@@ -10,21 +10,21 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'object-merge-button',
-    templateUrl: './src/objectcomponents/templates/objectmergebutton.html'
+    templateUrl: '../templates/objectmergebutton.html'
 })
 export class ObjectMergeButton {
 
     /**
      * the models idefntified as duplicates
      */
-    @Input() private mergemodels: any[];
+    @Input() public mergemodels: any[];
 
     /**
      * an event emitter the panel can subscribe to
      */
-    @Output() private merged: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public merged: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private injector: Injector) {
+    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, public injector: Injector) {
 
     }
 
@@ -38,7 +38,7 @@ export class ObjectMergeButton {
     /**
      * execute the merge
      */
-    private doMerge() {
+    public doMerge() {
         this.modal.openModal('ObjectMergeModal', true, this.injector).subscribe(componentRef => {
             componentRef.instance.mergemodels = this.mergemodels;
         });

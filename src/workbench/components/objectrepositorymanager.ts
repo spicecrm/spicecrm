@@ -18,7 +18,7 @@ import {view} from "../../services/view.service";
  */
 @Pipe({name: 'objectrepositorymanagerfilter'})
 export class ObjectRepositoryManagerFilter {
-    private transform(values, filter) {
+    public transform(values, filter) {
         if (!filter) {
             return values;
         }
@@ -35,7 +35,7 @@ export class ObjectRepositoryManagerFilter {
 
 // tslint:disable-next-line:max-classes-per-file
 @Component({
-    templateUrl: './src/workbench/templates/objectrepositorymanager.html',
+    templateUrl: '../templates/objectrepositorymanager.html',
     providers: [view]
 })
 export class ObjectRepositoryManager {
@@ -44,16 +44,16 @@ export class ObjectRepositoryManager {
     public edit_mode: string = "custom";
     public change_request_required: boolean = false;
     public crNoneActive: boolean = false;
-    private moduleReposSelect: any[] = [];
-    private moduleRepos: any[] = [];
-    private modulereposselecteditem: any = {};
-    private objrepoList: any[] = [];
-    private configList: any = {};
-    private currentConfigArray: any[] = [];
-    private objectFilter: string = '';
+    public moduleReposSelect: any[] = [];
+    public moduleRepos: any[] = [];
+    public modulereposselecteditem: any = {};
+    public objrepoList: any[] = [];
+    public configList: any = {};
+    public currentConfigArray: any[] = [];
+    public objectFilter: string = '';
     public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
-    private newRepo: any = {};
-    private emptyRepo: any = {
+    public newRepo: any = {};
+    public emptyRepo: any = {
         component: "",
         componentconfig: "",
         description: "",
@@ -62,9 +62,9 @@ export class ObjectRepositoryManager {
         object: "",
         package: ""
     };
-    private currentModule: any = {};
-    private newModule: any = {};
-    private emptyModule: any = {
+    public currentModule: any = {};
+    public newModule: any = {};
+    public emptyModule: any = {
         id: "",
         module: "",
         path: "",
@@ -73,18 +73,18 @@ export class ObjectRepositoryManager {
         version: "",
         scope: "custom"
     };
-    private currentObjRepo: any = {};
+    public currentObjRepo: any = {};
 
     constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private modalservice: modal,
-        private modelutilities: modelutilities,
-        private modal: modal,
-        private toast: toast,
-        private configurationService: configurationService,
-        private view: view
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public modalservice: modal,
+        public modelutilities: modelutilities,
+        public modal: modal,
+        public toast: toast,
+        public configurationService: configurationService,
+        public view: view
     ) {
         // get module repos
         this.backend.getRequest('configuration/configurator/entries/sysuimodulerepository').subscribe(modules => {
@@ -171,7 +171,7 @@ export class ObjectRepositoryManager {
         this.currentObjRepo.deprecated = (this.currentObjRepo.deprecated == '1') ? '0' : '1';
     }
 
-    private checkMode() {
+    public checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required;
 
@@ -208,11 +208,11 @@ export class ObjectRepositoryManager {
         }
     }
 
-    private setNoneMode() {
+    public setNoneMode() {
         this.view.setViewMode();
     }
 
-    private setCustomMode() {
+    public setCustomMode() {
         if (this.currentModule.scope == "custom") {
             this.view.setEditMode();
         } else {
@@ -220,11 +220,11 @@ export class ObjectRepositoryManager {
         }
     }
 
-    private setAllMode() {
+    public setAllMode() {
         this.view.setEditMode();
     }
 
-    private clickObjRepo(cor) {
+    public clickObjRepo(cor) {
         this.currentObjRepo = cor;
         this.currentConfigArray = [];
         try {
@@ -254,20 +254,20 @@ export class ObjectRepositoryManager {
 
     }
 
-    private checkCurrentObjRepo(id) {
+    public checkCurrentObjRepo(id) {
         return this.currentObjRepo.id == id;
 
     }
 
-    private addConfig() {
+    public addConfig() {
         this.currentConfigArray.push({id: this.currentConfigArray.length + 1, name: "", type: ""});
     }
 
-    private deleteConfig(id) {
+    public deleteConfig(id) {
         this.currentConfigArray.splice(id, 1);
     }
 
-    private saveChanges() {
+    public saveChanges() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
 
             let configObject = {};
@@ -318,7 +318,7 @@ export class ObjectRepositoryManager {
         });
     }
 
-    private addObjRepo() {
+    public addObjRepo() {
         this.modalservice.openModal('ObjectRepositoryManagerAddRepo').subscribe(modal => {
 
             this.newRepo = {...this.emptyRepo};
@@ -349,7 +349,7 @@ export class ObjectRepositoryManager {
         });
     }
 
-    private addModalRepo(mode = 'add') {
+    public addModalRepo(mode = 'add') {
         this.modalservice.openModal('ObjectRepositoryManagerAddModule').subscribe(modal => {
             if (mode == 'edit') {
                 this.newModule = {...this.currentModule};
@@ -416,15 +416,15 @@ export class ObjectRepositoryManager {
         });
     }
 
-    private editModalRepo() {
+    public editModalRepo() {
         this.addModalRepo('edit');
     }
 
-    private exportRepoList() {
+    public exportRepoList() {
         this.modalservice.openModal('ObjectRepositoryExport');
     }
 
-    private getDeprecatedBool(dep) {
+    public getDeprecatedBool(dep) {
         return dep == '1';
     }
 

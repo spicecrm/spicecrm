@@ -12,7 +12,7 @@ import {backend} from "../../services/backend.service";
  */
 @Component({
     selector: "system-input-backend-method",
-    templateUrl: "./src/systemcomponents/templates/systeminputbackendmethod.html",
+    templateUrl: "../templates/systeminputbackendmethod.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -26,41 +26,41 @@ export class SystemInputBackendMethod implements ControlValueAccessor {
     /**
      * input to disable the input
      */
-    @Input() private disabled = false;
+    @Input() public disabled = false;
 
     // for the value accessor
-    private onChange: (value: string) => void;
-    private onTouched: () => void;
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     /**
      * holds the concatenated value
      */
-    private _value: string;
+    public _value: string;
 
     /**
      * the current class
      */
-    private _class: string = '';
+    public _class: string = '';
 
     /**
      * the current method
      */
-    private _method: string = '';
+    public _method: string = '';
 
     /**
      * wether the class exists or not
      */
-    private _classexists: boolean = false;
+    public _classexists: boolean = false;
 
     /**
      * holds the methods
      */
-    private _methods: string[] = [];
+    public _methods: string[] = [];
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private backend: backend
+        public language: language,
+        public metadata: metadata,
+        public backend: backend
     ) {
 
     }
@@ -108,7 +108,7 @@ export class SystemInputBackendMethod implements ControlValueAccessor {
     /**
      * checks wether the class is valid and if public methods exist
      */
-    private validateNamespace() {
+    public validateNamespace() {
         this.backend.getRequest('system/checkclass/' + btoa(this._class)).subscribe(res => {
             this._classexists = res.classexists;
             this._methods = res.methods;
@@ -118,7 +118,7 @@ export class SystemInputBackendMethod implements ControlValueAccessor {
     /**
      * splits the value
      */
-    private splitValue() {
+    public splitValue() {
         if (this._value) {
             let elements = this._value.split('->');
             this._class = elements[0];
@@ -127,7 +127,7 @@ export class SystemInputBackendMethod implements ControlValueAccessor {
         }
     }
 
-    private joinValue() {
+    public joinValue() {
         if(this._class != '') {
             this._value = this._class + '->' + this._method;
         } else {

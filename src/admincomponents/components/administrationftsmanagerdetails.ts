@@ -21,11 +21,11 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 @Component({
     selector: 'administration-ftsmanager-details',
-    templateUrl: './src/admincomponents/templates/administrationftsmanagerdetails.html'
+    templateUrl: '../templates/administrationftsmanagerdetails.html'
 })
 export class AdministrationFTSManagerDetails {
 
-    constructor(private metadata: metadata, private language: language, private ftsconfiguration: ftsconfiguration) {
+    constructor(public metadata: metadata, public language: language, public ftsconfiguration: ftsconfiguration) {
 
     }
 

@@ -6,7 +6,13 @@
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_ACTION"></system-label></label>
             <div class="slds-form-element__control">
-                <input type="text" class="slds-input" [(ngModel)]="action"/>
+                <input type="text" class="slds-input" maxlength="50" [(ngModel)]="action"/>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" maxlength="255" [(ngModel)]="description"/>
             </div>
         </div>
     </system-modal-content>

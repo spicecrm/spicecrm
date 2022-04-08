@@ -8,7 +8,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'object-page-header-detail-row',
-    templateUrl: './src/objectcomponents/templates/objectpageheaderdetailrow.html',
+    templateUrl: '../templates/objectpageheaderdetailrow.html',
     providers: [view]
 })
 export class ObjectPageHeaderDetailRow implements OnInit {
@@ -18,23 +18,23 @@ export class ObjectPageHeaderDetailRow implements OnInit {
      *
      * @private
      */
-    @Input() private fieldSet: string = '';
+    @Input() public fieldSet: string = '';
 
     /**
      * if the item should be collapsed
      *
      * @private
      */
-    @Input() private collapsed: boolean = true;
+    @Input() public collapsed: boolean = true;
 
     /**
      * the fields to be displayed
      *
      * @private
      */
-    private fields: any[] = [];
+    public fields: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private view: view) {
+    constructor(public metadata: metadata, public model: model, public view: view) {
 
     }
 
@@ -54,14 +54,14 @@ export class ObjectPageHeaderDetailRow implements OnInit {
      *
      * @private
      */
-    private getFields() {
+    public getFields() {
         let fieldsetFields = this.metadata.getFieldSetFields(this.fieldSet);
 
-        if (this.model.data && this.model.data.acl_fieldcontrol) {
+        if (this.model.acl_fieldcontrol) {
             let thisFieldsetFields = [];
             for (let fieldsetFieldIndex in fieldsetFields) {
                 if (this.metadata.hasField(this.model.module, fieldsetFields[fieldsetFieldIndex].field)) {
-                    if (!(this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] && this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] === '1')) {
+                    if (!(this.model.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] && this.model.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] === '1')) {
                         thisFieldsetFields.push(fieldsetFields[fieldsetFieldIndex]);
                     }
                 }
@@ -79,7 +79,7 @@ export class ObjectPageHeaderDetailRow implements OnInit {
      * @param field
      * @private
      */
-    private displayField(field): boolean {
+    public displayField(field): boolean {
         if (field.fieldconfig?.requiredmodelstate) {
             return this.model.checkModelState(field.fieldconfig.requiredmodelstate);
         }
@@ -90,7 +90,7 @@ export class ObjectPageHeaderDetailRow implements OnInit {
     /**
      * toggles the collapsed state
      */
-    private toggleCollapsed() {
+    public toggleCollapsed() {
         this.collapsed = !this.collapsed;
 
         // set the view label length
@@ -108,7 +108,7 @@ export class ObjectPageHeaderDetailRow implements OnInit {
      * short kabels if we are collapsed
      * @private
      */
-    private setLabelLength() {
+    public setLabelLength() {
         if (this.collapsed) {
             this.view.displayLabels = false;
             this.view.labels = 'short';
@@ -124,7 +124,7 @@ export class ObjectPageHeaderDetailRow implements OnInit {
      * @param fieldConfig
      * @private
      */
-    private showLabel(fieldConfig) {
+    public showLabel(fieldConfig) {
         if (fieldConfig.hidelabel === true) {
             return false;
         } else {

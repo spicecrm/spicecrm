@@ -44,15 +44,13 @@
 /**
  * Stub class to allow Link class easily use SugarEmailAddress
  */
-
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
-global $dictionary;
 
 /**
  * Core email_address table
  */
-$dictionary['EmailAddress'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
     'table' => 'email_addresses',
     'fields' => [
         'id' => [

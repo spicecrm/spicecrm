@@ -18,7 +18,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclobjects-manager-objects',
-    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobjects.html',
+    templateUrl: '../templates/aclobjectsmanagerobjects.html',
 })
 export class ACLObjectsManagerObjects {
 
@@ -34,7 +34,7 @@ export class ACLObjectsManagerObjects {
     @Output() public objectselected: EventEmitter<any> = new EventEmitter<any>();
     @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private modal: modal, private language: language) {
+    constructor(public backend: backend, public modal: modal, public language: language) {
 
         this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
             this.acltypes = acltypes;
@@ -47,7 +47,7 @@ export class ACLObjectsManagerObjects {
 
     }
 
-    private keyUp(_e) {
+    public keyUp(_e) {
         switch (_e.key) {
             case 'Enter':
                 this.getObjects();
@@ -55,7 +55,7 @@ export class ACLObjectsManagerObjects {
         }
     }
 
-    private getObjects() {
+    public getObjects() {
         this.loading = true;
         this.aclobjects = [];
 
@@ -66,10 +66,7 @@ export class ACLObjectsManagerObjects {
 
         this.backend.getRequest('module/SpiceACLObjects', params).subscribe(aclobjects => {
             this.aclobjects = aclobjects;
-
-            this.aclobjects.sort((a, b) => {
-                return a.name > b.name ? 1 : -1;
-            });
+            this.aclobjects.sort((a, b) =>  a.name.localeCompare(b.name));
             this.loading = false;
         });
     }
@@ -81,11 +78,11 @@ export class ACLObjectsManagerObjects {
         };
     }
 
-    private getType(type) {
+    public getType(type) {
         return this.language.getFieldDisplayOptionValue('SpiceACLObjects', 'spiceaclobjecttype', type);
     }
 
-    private selectType(event) {
+    public selectType(event) {
         this.getObjects();
 
         // reset the selected object
@@ -96,7 +93,7 @@ export class ACLObjectsManagerObjects {
         this.typeselected.emit(this.activeTypeId);
     }
 
-    private addObject() {
+    public addObject() {
         this.modal.openModal('ACLObjectsManagerAddObjectModal').subscribe(modalRef => {
             modalRef.instance.sysmodule_id = this.activeTypeId;
             modalRef.instance.newObjectData.subscribe(modelData => {
@@ -112,7 +109,7 @@ export class ACLObjectsManagerObjects {
      * add default ACL objects to module
      * @private
      */
-    private addDefaultObjects() {
+    public addDefaultObjects() {
         if(this.aclobjects.length == 0 && this.activeTypeId) {
             this.loading = true;
 
@@ -132,7 +129,7 @@ export class ACLObjectsManagerObjects {
      * @param aclobject
      * @private
      */
-    private selectObject(aclobject) {
+    public selectObject(aclobject) {
         this.activeObjectId = aclobject.id;
         this.objectselected.emit(this.activeObjectId);
     }
@@ -142,7 +139,7 @@ export class ACLObjectsManagerObjects {
      * @param objectid
      * @private
      */
-    private activateObject(objectid) {
+    public activateObject(objectid) {
         this.backend.postRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
             this.aclobjects.some(object => {
                 if (object.id == objectid) {
@@ -158,7 +155,7 @@ export class ACLObjectsManagerObjects {
      * @param objectid
      * @private
      */
-    private deactivateObject(objectid) {
+    public deactivateObject(objectid) {
         this.backend.deleteRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
             this.aclobjects.some(object => {
                 if (object.id == objectid) {

@@ -42,7 +42,7 @@ class SugarRelationshipFactory {
     public function getRelationship($relationshipName)
     {
         if (empty($this->relationships[$relationshipName])) {
-            LoggerManager::getLogger()->error("Unable to find relationship in ".__CLASS__." ".__FUNCTION__."() on line ".__LINE__." $relationshipName");
+            LoggerManager::getLogger()->debug("Unable to find relationship in ".__CLASS__." ".__FUNCTION__."() on line ".__LINE__." $relationshipName");
             return false;
         }
 

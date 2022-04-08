@@ -13,6 +13,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 // CR1000360
 
@@ -97,12 +98,12 @@ class Compiler
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
-        $this->app_list_strings = return_app_list_strings_language($lang); // get doms corresponding to template language
+        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
         $dom = new DOMDocument();
 
-        $html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
-        $dom->loadHTML('<?xml encoding="utf-8"?>' . $html );
+        #$html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
+        $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
 
         $dummy = $dom->getElementsByTagName('html');
         foreach( $this->parseDom( $dummy[0], ['bean' => $bean] ) as $newElement ){
@@ -134,7 +135,8 @@ class Compiler
                     // ToDo: check if there is not a nice way to do this
                     if(strip_tags($elementcontent) != $elementcontent) {
                         $elementdom = new DOMDocument();
-                        $elementhtml = preg_replace("/\n|\r|\t/", "", html_entity_decode($elementcontent, ENT_QUOTES));
+                        # $elementhtml = preg_replace("/\n|\r|\t/", "", html_entity_decode($elementcontent, ENT_QUOTES));
+                        $elementhtml = html_entity_decode($elementcontent, ENT_QUOTES);
                         $elementdom->loadHTML('<?xml encoding="utf-8"?><embedded>'.$elementhtml.'</embedded>');
                         $embeddednode = $elementdom->getElementsByTagName('embedded');
                         $elements[] = $this->createNewElement($embeddednode[0], $beans);
@@ -348,7 +350,8 @@ class Compiler
         if (count($parts) > 2) {
             $deepLinkedBeans = [];
             foreach ($linkedBeans as $linkedBean) {
-                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode('.', array_shift($parts)), $linkedBean));
+                array_shift($parts);
+                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode(".", $parts),$linkedBean) );
             }
             return $deepLinkedBeans;
         } else {
@@ -365,28 +368,36 @@ class Compiler
         // if we match none or more than one operator this cannot be true and return false
         //if(count($operators) != 1) return false;
 
-        $conditionparts = explode(' ', $condition);
+        $conditionparts = explode(' ', $condition, 3);
+
+        //parse pipe if passed in
+
+        $value = $this->handleSubstitution($conditionparts[0], $beans, true);
+
         switch ($conditionparts[1]) {
             case '>':
-                return $this->getValue($conditionparts[0], $beans, true) > trim($conditionparts[2], "'");
+                return $value > trim($conditionparts[2], "'");
                 break;
             case '>=':
-                return $this->getValue($conditionparts[0], $beans, true) >= trim($conditionparts[2], "'");
+                return $value >= trim($conditionparts[2], "'");
                 break;
             case '<':
-                return $this->getValue($conditionparts[0], $beans, true) < trim($conditionparts[2], "'");
+                return$value < trim($conditionparts[2], "'");
                 break;
             case '<=':
-                return $this->getValue($conditionparts[0], $beans, true) <= trim($conditionparts[2], "'");
+                return $value <= trim($conditionparts[2], "'");
                 break;
             case '===':
-                return $this->getValue($conditionparts[0], $beans, true) === trim($conditionparts[2], "'");
+                return $value === trim($conditionparts[2], "'");
                 break;
             case '==':
-                return $this->getValue($conditionparts[0], $beans, true) == trim($conditionparts[2], "'");
+                return $value == trim($conditionparts[2], "'");
                 break;
             case '!=':
-                return $this->getValue($conditionparts[0], $beans, true) != trim($conditionparts[2], "'");
+                return $value != trim($conditionparts[2], "'");
+                break;
+            case 'in':
+                return in_array( $value, explode( ",", trim($conditionparts[2], "'")));
                 break;
         }
         return false;
@@ -458,7 +469,7 @@ class Compiler
                             }
                             $value = implode(', ', $values);
                             // unencodeMultienum can't be used because of a different language...
-                            //$value = implode(', ', unencodeMultienum($obj->{$parts[$level]}));
+                            //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                         }
                         break;
                     default:
@@ -482,6 +493,8 @@ class Compiler
                 $obj = new System();
                 break;
             case 'value':
+                #var_dump($this->additionalValues);
+                #exit;
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
@@ -500,25 +513,25 @@ class Compiler
         return $obj ?: false;
     }
 
-    public function compileblock($txt, $beans = [], $lang = 'de_DE', array $additionalValues = null)
+    public function compileblock($txt, $beans = [], $lang = 'de_DE')
     {
         $resultText = '';
         $remainingText = $txt;
         while ( strlen( $remainingText )) {
 
             # Only normal text, without curly brackets?
-            if (preg_match('#^([^\{]+)$#', $remainingText, $matches)) {
+            if (preg_match('#^([^\{]+)$#s', $remainingText, $matches)) {
                 $resultText .= $matches[1];
                 break;
             }
 
             # Normal text preceding a curly bracket:
-            if ( preg_match('#^([^\{]+)(\{.*)$#', $remainingText, $matches)) {
+            if ( preg_match('#^([^\{]+)(\{.*)$#s', $remainingText, $matches)) {
                 $resultText .= $matches[1];
                 $remainingText = $matches[2];
             }
 
-            preg_match('#^\{([^\}]*)(.*)$#', $remainingText, $matches);
+            preg_match('#^\{([^\}]*)(.*)$#s', $remainingText, $matches);
             # No closing curly bracket? Cancel the parsing, all is normal text.
             if ( strlen($matches[1]) === 0 or !isset($matches[2][0])) {
                 $resultText .= $matches[0];
@@ -540,9 +553,9 @@ class Compiler
 
     }
 
-    function handleSubstitution( $string, $beans ) {
+    function handleSubstitution( $string, $beans, $raw = false ) {
         $items = preg_split('#\|#', $string );
-        $currentValue = $this->getValueForCompileblock( $items[0], $beans );
+        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw );
         for ( $i = 1; $i < count( $items ); $i++ ) {
             if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans )) === false ) break;
             $currentValue = $temp;
@@ -550,9 +563,9 @@ class Compiler
         return $currentValue;
     }
 
-    function getValueForCompileblock($m, $beans ) {
+    function getValueForCompileblock($m, $beans, $raw = false ) {
 
-        preg_match('#^([^:]+)(:(.*))?$#', $m, $matches );
+        preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
         $parts = explode('.', $matches[1] );
         $objectname = $parts[0];
@@ -573,7 +586,7 @@ class Compiler
          *          publisher = link -> load publisher ->
          *              name = attribute -> return value;
          */
-        $loopThroughParts = function ($obj, $level = 0) use (&$parts, &$loopThroughParts) {
+        $loopThroughParts = function ($obj, $level = 0, $raw = false) use (&$parts, &$loopThroughParts) {
 //            global $app_list_strings;
             $part = $parts[$level];
             if (is_callable([$obj, $part])) {
@@ -591,7 +604,7 @@ class Compiler
                     }
                     break;
                 case 'enum':
-                    $value = $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
+                    $value = $raw ? $obj->{$part} : $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
                     break;
                 case 'multienum':
                     $values = explode(',', $obj->{$part});
@@ -601,7 +614,7 @@ class Compiler
                     }
                     $value = implode(', ', $values);
                     // unencodeMultienum can't be used because of a different language...
-                    //$value = implode(', ', unencodeMultienum($obj->{$parts[$level]}));
+                    //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                     break;
                 case 'date':
                     if(!empty($obj->{$part})){
@@ -648,7 +661,7 @@ class Compiler
                     break;
                 case 'currency':
                     // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                    $value = currency_format_number($obj->{$part}, ['symbol_space' => true] );
+                    $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
                     break;
                 case 'html':
                     $value = html_entity_decode($obj->{$part});
@@ -660,14 +673,14 @@ class Compiler
                     break;
                 default:
                     // moved nl2br to only be added when non specific fields are parsed
-                    $value = nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                    $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
                     break;
                 }
             }
             return $value;
         };
 
-        $value = $loopThroughParts( $obj, 1);
+        $value = $loopThroughParts( $obj, 1, $raw);
 
         return $value;
     }
@@ -700,7 +713,7 @@ class Compiler
      * @return array
      */
     private static function parseParams( $string ) {
-        preg_match_all("/[^':]+|'(?:\\\\.|[^\\\\'])*'|:/", $string, $matches );
+        preg_match_all("/[^':]+|'(?:\\\\.|[^\\\\'])*'|:/s", $string, $matches );
         foreach ( $matches[0] as $k => $v ) {
             if ( $v === ':' ) continue;
             if ( $v[0] === "'" and $v[-1] === "'" ) {

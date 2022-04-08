@@ -15,7 +15,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-three-days-dashlet',
-    templateUrl: './src/modules/calendar/templates/calendarthreedaysdashlet.html',
+    templateUrl: '../templates/calendarthreedaysdashlet.html',
     providers: [calendar]
 })
 
@@ -23,15 +23,15 @@ export class CalendarThreeDaysDashlet {
     /**
      * reference of calendar content div
      */
-    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarContent: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) public calendarContent: ViewContainerRef;
     /**
      * holds the dashlet label
      */
-    private dashletLabel: any = null;
+    public dashletLabel: any = null;
 
-    constructor(private language: language,
-                private elementRef: ElementRef,
-                private calendar: calendar) {
+    constructor(public language: language,
+                public elementRef: ElementRef,
+                public calendar: calendar) {
         this.setCalendarType();
     }
 
@@ -54,7 +54,7 @@ export class CalendarThreeDaysDashlet {
     /**
      * set the calendar type and is dashlet value
      */
-    private setCalendarType() {
+    public setCalendarType() {
         this.calendar.isDashlet = true;
         this.calendar.sheetType = 'Three_Days';
         this.calendar.sheetHourHeight = 50;

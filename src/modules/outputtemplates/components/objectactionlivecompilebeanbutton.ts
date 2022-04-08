@@ -6,7 +6,7 @@ import {ObjectActionOutputBeanButton} from "./objectactionoutputbeanbutton";
 
 @Component({
     selector: 'object-action-live-compile-bean-button',
-    templateUrl: './src/modules/outputtemplates/templates/objectactionlivecompilebeanbutton.html'
+    templateUrl: '../templates/objectactionlivecompilebeanbutton.html'
 })
 export class ObjectActionLiveCompileBeanButton extends ObjectActionOutputBeanButton {
     /**

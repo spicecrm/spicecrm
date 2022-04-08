@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
 import {SystemInputMedia} from "../../../systemcomponents/components/systeminputmedia";
 
 @Component({
-    templateUrl: './src/modules/mediafiles/templates/fieldmediafilesimage.html',
+    templateUrl: '../templates/fieldmediafilesimage.html',
     providers: [mediafiles]
 })
 export class fieldMediaFilesImage extends fieldGeneric {
@@ -22,12 +22,12 @@ export class fieldMediaFilesImage extends fieldGeneric {
     /**
      * reference to the image upload component
      */
-    @ViewChild(SystemInputMedia) private systemInputMedia: SystemInputMedia;
+    @ViewChild(SystemInputMedia) public systemInputMedia: SystemInputMedia;
 
     /**
      * the base64 image string
      */
-    private _value: string;
+    public _value: string;
 
     constructor(
         public model: model,
@@ -83,7 +83,7 @@ export class fieldMediaFilesImage extends fieldGeneric {
     /**
      * if we have a model id and the model is not new try to laod the image
      */
-    private initialize() {
+    public initialize() {
         if (!this.model.isNew) {
             this.loadImage();
 
@@ -98,7 +98,7 @@ export class fieldMediaFilesImage extends fieldGeneric {
     /**
      * loads the image from the backend
      */
-    private loadImage() {
+    public loadImage() {
         this.mediafiles.getImageBase64(this.model.id).subscribe(image => {
             this._value = image.img;
         });

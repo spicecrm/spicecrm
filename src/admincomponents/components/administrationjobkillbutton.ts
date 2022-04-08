@@ -12,7 +12,7 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'administration-job-kill-button',
-    templateUrl: './src/admincomponents/templates/administrationjobkillbutton.html'
+    templateUrl: '../templates/administrationjobkillbutton.html'
 })
 export class AdministrationJobKillButton {
 
@@ -26,7 +26,7 @@ export class AdministrationJobKillButton {
      * @return bool disabled if the job is not running (has no process id)
      */
     get disabled(): boolean {
-        return !this.model.data.process_id;
+        return !this.model.getField('process_id');
     }
 
     /**

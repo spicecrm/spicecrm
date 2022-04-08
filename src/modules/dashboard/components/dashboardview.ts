@@ -12,21 +12,21 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'dashboard-view',
-    templateUrl: './src/modules/dashboard/templates/dashboardview.html',
+    templateUrl: '../templates/dashboardview.html',
     providers: [model, modellist, dashboardlayout, view]
 })
 export class DashboardView implements OnInit {
 
-    private panelwidth = 250;
-    private showpanel: boolean = false;
+    public panelwidth = 250;
+    public showpanel: boolean = false;
 
-    constructor(private navigation: navigation,
-                private language: language,
-                private dashboardlayout: dashboardlayout,
-                private userpreferences: userpreferences,
-                private model: model,
-                private view: view,
-                private modellist: modellist) {
+    constructor(public navigation: navigation,
+                public language: language,
+                public dashboardlayout: dashboardlayout,
+                public userpreferences: userpreferences,
+                public model: model,
+                public view: view,
+                public modellist: modellist) {
     }
 
     get ismobile() {
@@ -52,7 +52,7 @@ export class DashboardView implements OnInit {
         this.navigation.setActiveModule('Dashboards');
     }
 
-    private loadDashboards() {
+    public loadDashboards() {
         // load for the selector
         let lastDashboardId = this.userpreferences.getPreference('last_dashboard');
         this.model.module = 'Dashboards';

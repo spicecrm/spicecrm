@@ -743,20 +743,11 @@ class SysModuleFilters
         $conditionmet = false;
 
         foreach ($group->conditions as $condition) {
-            if ($condition->conditions) {
-                // save bool value of each condition ($c) in array, then search for a false one, if there is one, $conditionmet is false
-                foreach ($condition->conditions as $c) {
-                    $vals[] = $this->checkBeanForFilterMatchCondition($c, $bean);
-                }
-                if (in_array(false, $vals)) {
-                    $conditionmet = false;
-                } else {
-                    $conditionmet = true;
-                }
+            if ( isset( $condition->conditions )) {
+                $conditionmet = $this->checkBeanForFilterMatchGroup($condition, $bean);
             } else {
                 $conditionmet = $this->checkBeanForFilterMatchCondition($condition, $bean);
             }
-
             // in case of AND .. one negative is all negative
             // in case of OR one positive is enough
             if (strtoupper($group->logicaloperator) == 'AND' && !$conditionmet) {
@@ -788,6 +779,9 @@ class SysModuleFilters
                 break;
             case 'equals':
                 return $bean->{$condition->field} == $condition->filtervalue;
+                break;
+            case 'notequals':
+                return $bean->{$condition->field} != $condition->filtervalue;
                 break;
             case 'equalr':
                 $relatedField = $bean->field_name_map[$condition->field]['id_name'];
