@@ -215,6 +215,12 @@ class SystemTenant extends SpiceBean
             'spiceaclprofiles',
             'spiceaclprofiles_spiceaclobjects',
             'spiceaclstandardactions',
+            'spicebeancustomguides',
+            'spicebeanguides',
+            'spicebeanguidestages',
+            'spicebeanguidestages_check_texts',
+            'spicebeanguidestages_checks',
+            'spicebeanguidestages_texts',
         ];
     }
 
