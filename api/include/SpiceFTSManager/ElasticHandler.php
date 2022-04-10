@@ -210,8 +210,7 @@ class ElasticHandler
         $indexes = [];
 
         //catch installation process and abort. table sysfts will not exist at the point during installation
-        if (!empty($GLOBALS['installing']))
-            return [];
+        if (SpiceConfig::getInstance()->installing) return [];
 
         $indexObjects = $db->query("SELECT module FROM sysfts");
         while ($indexObject = $db->fetchByAssoc($indexObjects)) {
@@ -593,8 +592,8 @@ class ElasticHandler
         $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance('spicelogger');
         //catch installation process and abort. table sysftslog will not exist at the point during installation
-        if (!empty($GLOBALS['installing']))
-            return false;
+        if (SpiceConfig::getInstance()->installing) return false;
+
         $db->query(sprintf("INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( '%s', '" . TimeDate::getInstance()->nowDb() . "', '%s', '%s', '%s', '%s', '%s')", SpiceUtils::createGuid(), $db->quote($method), $db->quote($url), $db->quote($status), $db->quote(str_replace("\\n", "", $request)), $db->quote($response)));
     }
 }

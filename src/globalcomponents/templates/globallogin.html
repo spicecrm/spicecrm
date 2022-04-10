@@ -21,17 +21,6 @@
                                 <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
                             </div>
                         </div>
-                        <div *ngIf="sites.length > 1" class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container slds-m-vertical--xx-small">
-                                    <select [disabled]="loggingIn" name="currentsite" class="slds-select slds-p-horizontal--large" [ngModel]="currentSiteId" (change)="setSite($event)">
-                                        <option *ngFor="let site of sites" [value]="site.id">
-                                            {{site.display}}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                         <div class="slds-p-top--small">
                             <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)"></global-login-oauth2>
