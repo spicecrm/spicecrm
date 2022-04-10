@@ -63,7 +63,7 @@ class SpiceFTSCreator {
 
 
         //display
-        if(!$GLOBALS['installing']) {
+        if(!SpiceConfig::getInstance()->installing) {
             echo('FTS Default Config was restored.');
         }
     }

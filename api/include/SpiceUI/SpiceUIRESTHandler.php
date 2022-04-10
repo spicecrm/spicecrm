@@ -1236,7 +1236,7 @@ class SpiceUIRESTHandler
         $db = DBManagerFactory::getInstance();
 
         $assets = [];
-        $assetsObj = $db->query("SELECT * FROM sysuiassets");
+        $assetsObj = $db->query("SELECT assetkey, assetvalue FROM sysuiassets");
         while($asset = $db->fetchByAssoc($assetsObj)){
             $assets[] = $asset;
         }

@@ -7,6 +7,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -211,7 +212,7 @@ class Mailbox extends SugarBean {
     public static function getDefaultMailbox()
     {// todo errors when no default mailbox available
 
-        if ( !empty( $GLOBALS['installing'] )) return false;
+        if (SpiceConfig::getInstance()->installing) return false;
 
 //        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 //        if(is_null($db)){

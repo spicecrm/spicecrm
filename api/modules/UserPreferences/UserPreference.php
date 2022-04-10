@@ -421,7 +421,7 @@ class UserPreference extends SugarBean
         $user = $this->_userFocus;
 
         // these are not the preferences you are looking for [ hand waving ]
-        if(empty($GLOBALS['installing']) && !empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key']) return;
+        if(SpiceConfig::getInstance()->installing && !empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key']) return;
 
         LoggerManager::getLogger()->debug('Saving Preferences to DB ' . $user->user_name);
         if(isset($_SESSION[$user->user_name. '_PREFERENCES']) && is_array($_SESSION[$user->user_name. '_PREFERENCES'])) {
