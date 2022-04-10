@@ -51,6 +51,11 @@ export class configurationService {
     };
 
     /**
+     * the assets retrieved from the sysinfo
+     */
+    public assets: any[] = [];
+
+    /**
      * holds any app data the application can store with a given key
      */
     public appdata: any = {};
@@ -100,7 +105,7 @@ export class configurationService {
 
 
         // Update Theme when configuration has been loaded.
-        this.loaded$.subscribe(() => this.updateThemeColors());
+        // this.loaded$.subscribe(() => this.updateThemeColors());
     }
 
     /**
@@ -283,6 +288,10 @@ export class configurationService {
                 this.initialized = true;
                 this.reloading = false;
 
+                if(res.assets){
+                    this.setAssets(res.assets);
+                }
+
                 // set the favicon
                 // ToDo: move to separate theming service
                 this.setFavIcon();
@@ -303,6 +312,66 @@ export class configurationService {
             }
         });
         return sysinfo;
+    }
+
+    /**
+     * gets a specific assetvalue and returns it or undefined
+     *
+     * @param asset
+     */
+    public getAsset(asset){
+        if(this.assets && this.assets.find(a => a.assetkey == asset)?.assetvalue)
+        {
+            return this.assets.find(a => a.assetkey == asset).assetvalue;
+        }
+        return undefined;
+    }
+
+    /**
+     * sets the asset
+     *
+     * @param asset
+     * @param value
+     */
+    public setAsset(asset, value){
+        let index = this.assets.findIndex(a => a.assetkey == asset);
+        if(index >= 0){
+            this.assets[index].assetvalue = value;
+        } else {
+            this.assets.push({assetkey: asset, assetvalue: value});
+        }
+
+        this.loaded$.next(true);
+    }
+
+    /**
+     * sets the assets
+     * @param assets
+     * @param emit
+     */
+    public setAssets(assets, emit = false){
+        this.assets = assets;
+
+        this.setColors();
+
+        if(emit) this.loaded$.next(true);
+    }
+
+    /**
+     * sets the colors
+     *
+     * @private
+     */
+    private setColors(){
+        // chek that we have colors
+        if(!this.getAsset('colors')) return;
+
+        // get the color object
+        let colorObj = JSON.parse(this.getAsset('colors'));
+        for(let assetColor in colorObj){
+            document.documentElement.style.setProperty('--' + assetColor, colorObj[assetColor]);
+        }
+
     }
 
     /**
