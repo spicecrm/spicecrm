@@ -257,7 +257,7 @@ class User extends Person
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        if (!isset($GLOBALS['installing']) && $current_user !== null) {
+        if (!SpiceConfig::getInstance()->installing && $current_user !== null) {
             if ($current_user->isAdmin()) {
                 if (isset($this->UserType[0])) {
                     switch ($this->UserType) {
