@@ -39,7 +39,7 @@ import {loader} from "./services/loader.service";
 import {broadcast} from "./services/broadcast.service";
 import {dockedComposer} from "./services/dockedcomposer.service";
 import {backend} from "./services/backend.service";
-import {navigation,canNavigateAway} from "./services/navigation.service";
+import {navigation, canNavigateAway} from "./services/navigation.service";
 import {modelutilities} from "./services/modelutilities.service";
 import {toast} from "./services/toast.service";
 import {favorite} from "./services/favorite.service";
@@ -60,6 +60,7 @@ import {GlobalHeader} from "./globalcomponents/components/globalheader";
 import {activitiytimeline} from "./services/activitiytimeline.service";
 import {googleapiloader} from "./services/apiloader";
 import {mediafiles} from "./services/mediafiles.service";
+import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
 
 // declarations for TS
 /**
@@ -67,8 +68,8 @@ import {mediafiles} from "./services/mediafiles.service";
  */
 declare var System: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 declare global {
     interface Date {
@@ -125,13 +126,12 @@ export class SpiceUI {
         SystemComponents,
         GlobalComponents,
         ObjectComponents,
+        SpiceInstallerModule,
         RouterModule.forRoot(
             [
-                {path: "install", component: SystemInstallerComponent},
                 {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]},
-                // {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
             ]
         )
     ],

@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
+use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -34,6 +35,29 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class AdminController
 {
+
+    /**
+     * resets the cache
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function resetCache(Request $req, Response $res, array $args): Response {
+        SugarCache::instance()->resetFull();
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * build stats for the system
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
     public function systemstats(Request $req, Response $res, array $args): Response {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();

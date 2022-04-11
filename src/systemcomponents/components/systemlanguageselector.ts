@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {language} from "../../services/language.service";
 import {modal} from "../../services/modal.service";
 import {userpreferences} from "../../services/userpreferences.service";
@@ -25,9 +25,9 @@ export class SystemLanguageSelector implements OnInit{
     public availableLanguages: any[] = [];
 
     /**
-     * emitter for changes on teh language
+     * emitter for changes on the language
      */
-    public selected: EventEmitter<boolean> = new EventEmitter();
+    @Output() public selected: EventEmitter<boolean> = new EventEmitter();
 
     /**
      * set to false if no label shoudl be displayed
