@@ -101,9 +101,6 @@ export class GlobalLogin {
                public changeDetectorRef: ChangeDetectorRef
     ) {
         if (sessionStorage['OAuth-Token']) {
-            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
-                this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
-            }
 
             // try to login with the found token
             this.loginService.oauthToken = sessionStorage['OAuth-Token'];
@@ -122,17 +119,8 @@ export class GlobalLogin {
                 }
             });
         } else {
-
             // set that we propmt the user
             this.promptUser = true;
-
-
-
-            let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-            let selectedsite = sessionStorage.getItem(siteHash);
-            if (this.selectedsite) {
-                this.configuration.setSiteID(this.selectedsite);
-            }
         }
 
         // check the last selected language from the Cookie
@@ -202,19 +190,6 @@ export class GlobalLogin {
         }
     }
 
-    /**
-     * returns thecurrent site id from the configuration service
-     */
-    get currentSiteId() {
-        return this.configuration.data.id;
-    }
-
-    /**
-     * helpe to retrieve all available sites from teh configuration service
-     */
-    get sites() {
-        return this.configuration.sites;
-    }
 
    public getBackendUrls() {
         if (this.configuration.data.backendUrls) {
@@ -224,14 +199,6 @@ export class GlobalLogin {
         }
     }
 
-    /**
-     * setter for the new site id. This sets the site id in the configuration service and triggers detection of the baakcned extensions, languages and capabilities
-     *
-     * @param event
-     */
-   public setSite(event) {
-        this.configuration.setSiteID(event.srcElement.value);
-    }
 
     /**
      * toggles the forgotten password screen elements
