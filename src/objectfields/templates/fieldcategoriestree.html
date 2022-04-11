@@ -1,4 +1,4 @@
-<div *ngIf="!searchTerm && !searchFavorites">
+<div *ngIf="!searchTerm && !searchFavorites" style="overflow: hidden">
     <div class="slds-grid" [@treeanimation]="shifttree" [ngStyle]="boxStyle">
         <div class="slds-col slds-size--1-of-3 slds-border--right slds-height_full slds-scrollable--y">
             <div *ngFor="let cat of levelCategories(0); trackBy: trackByFn" [ngClass]="{'slds-theme--shade': isCategorySelected(0, cat)}">
