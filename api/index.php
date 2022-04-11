@@ -38,7 +38,7 @@ $RESTManager = SpiceCRM\includes\RESTManager::getInstance();
 try {
     // check that we have a config
     if(!SpiceConfig::getInstance()->configExists()){
-        throw new \SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException('system is not installed');
+        throw new \SpiceCRM\includes\ErrorHandlers\SystemNotInstalledException();
     }
 
     $slimContainer = new Container();
@@ -58,8 +58,6 @@ try {
 
     // add the developer middleware
     $app->add(DeveloperMiddleware::class);
-
-    SpiceConfig::getInstance()->loadConfigFromDB();
 
     // load the core dictionary files
     SpiceDictionaryHandler::loadMetaDataFiles();
