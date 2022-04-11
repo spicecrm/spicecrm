@@ -9,7 +9,7 @@ import {Subscription} from 'rxjs';
 @Component({
     selector: 'global-header-image',
     templateUrl: '../templates/globalheaderimage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalHeaderImage {
 
@@ -56,7 +56,7 @@ export class GlobalHeaderImage {
         }
 
         // detect changes
-        this.cdref.detectChanges();
+        // this.cdref.detectChanges();
     }
 
     /**
