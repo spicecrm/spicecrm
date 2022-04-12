@@ -82,7 +82,6 @@ export class SystemInputDate implements ControlValueAccessor {
      */
     public hideErrorMessage: boolean = false;
 
-
     /**
      * an attribute that can be set and does not require the value true passed in
      *
