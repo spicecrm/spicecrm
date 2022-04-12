@@ -61,7 +61,7 @@ export class SystemInputDate implements ControlValueAccessor {
     /**
      * emits if the date is valid or not
      */
-    @Output() valid$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
     /**
@@ -136,7 +136,7 @@ export class SystemInputDate implements ControlValueAccessor {
         }
 
         // emit if the date is valid
-        this.valid$.emit(this._date.valid);
+        this.valid.emit(this._date.valid);
     }
 
     get canclear() {
