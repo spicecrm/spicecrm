@@ -106,13 +106,14 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
         this.backend.getRequest(`module/${(this.model.getField('parent_type'))}/${(this.model.getField('parent_id'))}`).subscribe(parent => {
 
             if (!!parent.email1) {
-                this.value = [{
+                this.value.push({
                     parent_type: this.model.getField('parent_type'),
                     parent_id: this.model.getField('parent_id'),
                     email_address: parent.email1,
                     id: this.model.generateGuid(),
                     address_type: 'to'
-                }];
+                });
+                this.setDisplayValue();
             }
         });
     }
