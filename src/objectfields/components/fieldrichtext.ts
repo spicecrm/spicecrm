@@ -148,9 +148,10 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         this.setHtmlValue();
         this.modelChangesSubscriber();
         if (!!this.fieldconfig?.useSignature) {
+            this.addSignature('mailbox', '', 'LBL_MAILBOX_SIGNATURE');
             this.selectedSignatureId = this.model.getFieldValue("signature");
-            this.loadUserSignature();
-            this.loadMailboxSignature(this.model.getField('mailbox_id'), true);
+            this.loadUserSignature(this.selectedSignatureId == 'user');
+            this.loadMailboxSignature(this.model.getField('mailbox_id'), this.selectedSignatureId == 'mailbox');
         }
     }
 
@@ -270,7 +271,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * load the user signatures from the backend
      * @private
      */
-    public loadUserSignature() {
+    public loadUserSignature(render) {
 
         if (!this.isEditMode()) return;
 
@@ -278,6 +279,10 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         if (!userSignatures) return;
         const noMailboxSignature = this.signatures.length == 0;
         this.addSignature('user', userSignatures, 'LBL_MY_SIGNATURE');
+
+        if(render) {
+            this.renderSelectedSignature();
+        }
     }
 
     public setStylesheetField() {
