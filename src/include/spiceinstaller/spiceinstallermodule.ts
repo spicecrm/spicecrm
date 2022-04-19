@@ -31,10 +31,8 @@ import /*embed*/ {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
         CommonModule,
         FormsModule,
         DirectivesModule,
-        SystemComponents,
-        RouterModule.forRoot([
-            {path: "install", component: SpiceInstaller}
-        ])],
+        SystemComponents
+    ],
     declarations: [
         SpiceInstaller,
         SpiceInstallerProgressIndicator,
@@ -50,6 +48,9 @@ import /*embed*/ {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
         SpiceInstallerCredentials,
         SpiceInstallerSetLanguage,
         SpiceInstallerReview
+    ],
+    exports:[
+        SpiceInstaller
     ],
     providers: [spiceinstaller]
 })

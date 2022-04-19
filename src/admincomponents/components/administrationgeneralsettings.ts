@@ -25,7 +25,7 @@ export class AdministrationGeneralSettings implements OnInit {
             unique_key: ''
         },
         advanced: {
-            developerMode: false,
+            developerMode: 0,
             stack_trace_errors: false,
             dump_slow_queries: false,
             slow_query_time_msec: 0,
@@ -76,6 +76,17 @@ export class AdministrationGeneralSettings implements OnInit {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.getRequest('configuration/settings').subscribe(data => {
                 this.settings = data;
+
+                // switch developer mode
+                switch (this.settings.advanced.developerMode){
+                    case true:
+                        this.settings.advanced.developerMode = '1';
+                        break;
+                    case false:
+                        this.settings.advanced.developerMode = '0';
+                        break;
+                }
+
                 this._loglevels = this.settings.logger.level.split(',');
                 this.loading = false;
                 modalRef.instance.self.destroy();

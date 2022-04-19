@@ -44,6 +44,7 @@ export class dockedComposer {
     public addComposer(module: string, model?: model, expanded?: boolean) {
 
         if (model) {
+            model.data.acl = model.acl;
             this.composers.splice(0, 0, {
                 module,
                 id: model.id,

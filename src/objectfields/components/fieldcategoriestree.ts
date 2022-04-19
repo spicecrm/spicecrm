@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {backend} from "../../services/backend.service";
@@ -24,7 +24,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
         ])
     ]
 })
-export class fieldCategoriesTree {
+export class fieldCategoriesTree{
 
     /**
      * the selected levels
@@ -68,6 +68,7 @@ export class fieldCategoriesTree {
         public model: model,
         public backend: backend,
         public config: configurationService,
+        public elementref: ElementRef,
         public language: language,
     ) {
 
@@ -77,7 +78,34 @@ export class fieldCategoriesTree {
      * determine if we shoudl display level 4 and there is a level 4
      */
     get shifttree() {
-        return !!this.levels[2] && this.categories.filter(c => c.parent_id == this.levels[2]).length > 0;
+        return !!this.levels[1] && this.has4Levels(this.levels[1]);// this.categories.filter(c => c.parent_id == this.levels[2]).length > 0;
+    }
+
+    /**
+     * returns if we have 4 levels under the second level
+     * ensures that if we have 4 levels this is left open
+     *
+     * @param level1
+     * @private
+     */
+    private has4Levels(level1){
+        for(let level2 of this.categories.filter(c => c.parent_id == level1)){
+            if(this.categories.filter(c => c.parent_id == level2.id).length > 0) {
+                return true
+            };
+        }
+        return false;
+    }
+
+    /**
+     * gets the style for the box
+     */
+    get boxStyle(){
+        let box = this.elementref.nativeElement.getBoundingClientRect();
+        let maxHeight = window.innerHeight - box.top - 30;
+        return {
+            height : maxHeight + 'px'
+        }
     }
 
     public nodeStyle(n){

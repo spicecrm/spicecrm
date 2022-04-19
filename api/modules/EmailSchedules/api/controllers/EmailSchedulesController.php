@@ -6,9 +6,11 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -68,12 +70,17 @@ class EmailSchedulesController
 
         $emailscheduleId = $this->saveBean($postBody, $args['id']);
 
+        // limit to a maximum of 50
+        if(count($postBody['ids']) > 50){
+            throw new ForbiddenException('Maximum Number for email schedules is 50');
+        }
+
         if (!empty($emailscheduleId) && count($postBody['ids']) > 0) {
 
             $query = "INSERT INTO emailschedules_beans (id, emailschedule_status, emailschedule_id, bean_module, bean_id, date_modified, deleted) VALUES ";
             foreach ($postBody['ids'] as $beanid) {
                 $guid = SpiceUtils::createGuid();
-                $query .= "('$guid', 'queued', '$emailscheduleId', '{$postBody['module']}', '$beanid', now(), 0),";
+                $query .= "('$guid', 'queued', '$emailscheduleId', '{$postBody['module']}', '$beanid', '".TimeDate::getInstance()->nowDb()."', 0),";
             }
             if (!empty($query)) {
                 $query = substr_replace($query, ";", -1);
@@ -185,9 +192,9 @@ class EmailSchedulesController
 
                     $seed = BeanFactory::getBean($related);
                     if($seed->field_defs['is_inactive']){
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
                     } else {
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related)];
                     }
                 }
             }
@@ -230,6 +237,12 @@ class EmailSchedulesController
             }
         }
 
+
+        // limit to a maximum of 50
+        if(count($relatedbeans) + count($postBody['linkedbeans']) > 50){
+            throw new ForbiddenException('Maximum Number for email schedules is 50');
+        }
+
         // create the scheduleid
         if (count($relatedbeans) > 0 || count($postBody['linkedbeans']) > 0) {
             $emailscheduleId = $this->saveBean($postBody, $args['id']);
@@ -242,7 +255,7 @@ class EmailSchedulesController
                 foreach ($relatedbeans as $relatedbean) {
                     foreach ($relatedbean as $relatedbeanentry) {
                         $guid = SpiceUtils::createGuid();
-                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->module_dir', '$relatedbeanentry->id', now(), 0),";
+                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->module_dir', '$relatedbeanentry->id', '".TimeDate::getInstance()->nowDb()."', 0),";
                     }
                 }
                 if (!empty($query)) {
@@ -258,7 +271,7 @@ class EmailSchedulesController
                 foreach ($postBody['linkedbeans'] as $module => $ids) {
                     foreach ($ids as $id) {
                         $guid = SpiceUtils::createGuid();
-                        $query .= "('$guid', 'queued', '$emailscheduleId', '{$module}', '{$id}', now(), 0),";
+                        $query .= "('$guid', 'queued', '$emailscheduleId', '{$module}', '{$id}', '".TimeDate::getInstance()->nowDb()."', 0),";
                     }
                 }
                 if (!empty($query)) {

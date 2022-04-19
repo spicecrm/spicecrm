@@ -119,7 +119,8 @@ export class EmailReplyModal implements OnInit {
         let htime = datetime ? datetime.format(this.userpreferences.getTimeFormat()) : "";
 
         let historytext = "";
-        historytext += "<div class='spicecrm_quote'>";
+        historytext += "<br><br>";
+        historytext += "<div spicecrm_reply_quote='' class='spicecrm_reply_quote'>";
         historytext += "<div dir='ltr' class='crm_attr'>";
         historytext += "<b>" + this.language.getLabel('LBL_FROM') + ":</b> <a href='mailto:" + this.parent.getField('from_addr') + "'>" + this.parent.getField('from_addr') + "</a>";
         historytext += "<br>";
@@ -132,7 +133,7 @@ export class EmailReplyModal implements OnInit {
         historytext += "</div>";
 
         historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
-        historytext += this.parent.getField('body').replace('data-signature=""', '');
+        historytext += this.parent.getField('body').replace('data-signature=""', '').replace('spicecrm_temp_quote=""', '');
         historytext += '</blockquote>';
 
         historytext += '</div>';

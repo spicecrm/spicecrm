@@ -39,6 +39,7 @@ use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
  * Description: This file handles the Data base functionality for the application.
@@ -1214,7 +1215,7 @@ EOSQL;
 
             //insert dummy data
             $FTSqry[] = "INSERT INTO fts_wakeup (id ,body)
-                VALUES ('".create_guid()."', 'SugarCRM Rocks' )";
+                VALUES ('".SpiceUtils::createGuid()."', 'SugarCRM Rocks' )";
 
 
             //create queries to stop and restart indexing
@@ -1679,6 +1680,7 @@ EOSQL;
     }
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string

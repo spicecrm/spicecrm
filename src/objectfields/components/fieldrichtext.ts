@@ -14,6 +14,7 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
+import {lastValueFrom} from "rxjs";
 
 declare var _;
 
@@ -70,7 +71,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     public useStylesheets: boolean;
 
-    public signaturePreviousPosition: number = -1;
+    public signaturePosition: number = -1;
 
     constructor(public model: model,
                 public view: view,
@@ -141,15 +142,27 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     /**
      * call to load the initial values
      */
-    public async ngOnInit() {
+    public ngOnInit() {
         this.setStylesheetField();
         this.setStylesheetsToUse();
         this.setHtmlValue();
-        if (!!this.fieldconfig?.useSignature) {
-            await this.loadMailboxSignature();
-            this.loadUserSignature();
-        }
         this.modelChangesSubscriber();
+        if (!!this.fieldconfig?.useSignature) {
+            this.addSignature('mailbox', '', 'LBL_MAILBOX_SIGNATURE');
+            this.selectedSignatureId = this.model.getFieldValue("signature");
+            this.loadUserSignature(this.selectedSignatureId == 'user');
+            this.loadMailboxSignature(this.model.getField('mailbox_id'), this.selectedSignatureId == 'mailbox');
+        }
+    }
+
+    /**
+     * signature changed (if mailbox -> load signature)
+     */
+    public changeSignature() {
+        if(this.selectedSignatureId == 'mailbox') {
+            this.loadMailboxSignature(this.model.getField('mailbox_id'), true);
+        }
+        this.renderSelectedSignature();
     }
 
     /**
@@ -157,20 +170,38 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     public renderSelectedSignature() {
 
-        this.clearSignature();
+        if (!this.value) this.value = '';
+
+        const tempElement: HTMLElement = document.createElement('div');
+        tempElement.innerHTML = this.value;
+
+        let selectedEleSign = tempElement.querySelectorAll("div[data-signature]");
+        let selectedEleReply = tempElement.querySelectorAll("div[spicecrm_reply_quote]");
+
+
+        // keep text till signature or reply (find index position)
+        this.signaturePosition = tempElement.innerHTML.indexOf(selectedEleReply[0]?.outerHTML);
+        if(selectedEleSign.length > 0) {
+            this.signaturePosition = tempElement.innerHTML.indexOf(selectedEleSign[0]?.outerHTML);
+        }
+
+        // remove signature from value
+        selectedEleSign[0]?.parentNode.removeChild(selectedEleSign[0]);
+        this.value = tempElement.innerHTML;
+
+        // set signature to non-db field (keep it after expanding)
+        this.model.setField("signature", this.selectedSignatureId);
 
         if (!this.selectedSignatureId) return;
 
-        if (!this.value) this.value = '';
-
         const signature = this.signatures.find(s => s.id == this.selectedSignatureId);
-        const html = `<div data-signature="" style="margin: 10px 0">${signature.content}</div>`;
+        const html = `<div data-signature="" class="data-signature" style="margin: 10px 0">${signature.content}</div>`;
 
-        if (this.signaturePreviousPosition > -1) {
-            this.value = `${this.value.slice(0, this.signaturePreviousPosition)} ${html} ${this.value.slice(html.length + this.signaturePreviousPosition)}`;
-        } else {
-            this.value = `<p><br></p> ${html} ${this.value}`;
-        }
+        this.value = [
+            this.value.slice(0, this.signaturePosition),
+            html,
+            selectedEleReply[0]?.outerHTML
+        ].join('<p><br></p>');
     }
 
     /**
@@ -195,29 +226,31 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * push the signature option
      * @private
      */
-    public loadMailboxSignature(): Promise<any> | void {
+    public loadMailboxSignature(mailboxId, render): Promise<any> | void {
 
         if (!this.isEditMode()) return;
 
-        const mailboxId = this.model.getField('mailbox_id');
         if (!mailboxId) return;
 
         const signatureContent: string = this.configurationService.getData('mailbox_signature_' + mailboxId);
         if (!signatureContent) {
-            return this.backend.get('Mailboxes', mailboxId)
-                .toPromise()
+            return lastValueFrom(this.backend.get('Mailboxes', mailboxId))
                 .then((data: any) => {
-                    if (!data.email_signature) return;
+                    // if (!data.email_signature) return;
                     this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
 
-                    this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
-                    this.selectedSignatureId = mailboxId;
-                    this.renderSelectedSignature();
+                    this.addSignature('mailbox', data.email_signature, 'LBL_MAILBOX_SIGNATURE');
+
+                    if(render) {
+                        this.renderSelectedSignature();
+                    }
                 });
         } else {
-            this.addSignature(mailboxId, signatureContent, 'LBL_MAILBOX');
-            this.selectedSignatureId = mailboxId;
-            this.renderSelectedSignature();
+            this.addSignature('mailbox', signatureContent, 'LBL_MAILBOX');
+
+            if(render) {
+                this.renderSelectedSignature();
+            }
         }
     }
 
@@ -238,7 +271,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * load the user signatures from the backend
      * @private
      */
-    public loadUserSignature() {
+    public loadUserSignature(render) {
 
         if (!this.isEditMode()) return;
 
@@ -246,29 +279,10 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         if (!userSignatures) return;
         const noMailboxSignature = this.signatures.length == 0;
         this.addSignature('user', userSignatures, 'LBL_MY_SIGNATURE');
-        if (noMailboxSignature) {
-            this.selectedSignatureId = 'user';
+
+        if(render) {
             this.renderSelectedSignature();
         }
-    }
-
-    /**
-     * clear the signature from the body
-     * @private
-     */
-    public clearSignature() {
-
-        if (!this.value) return;
-
-        const tempElement: HTMLElement = document.createElement('div');
-        tempElement.innerHTML = this.value;
-
-        Array.from(tempElement.querySelectorAll('div[data-signature]'))
-            .forEach(el => {
-                this.signaturePreviousPosition = tempElement.innerHTML.indexOf(el.outerHTML);
-                el.parentNode.removeChild(el);
-            });
-        this.value = tempElement.innerHTML;
     }
 
     public setStylesheetField() {
@@ -319,8 +333,8 @@ export class fieldRichText extends fieldGeneric implements OnInit {
             this.setHtmlValue();
         }));
         this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe(mailboxId => {
-            if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
-                this.loadMailboxSignature();
+            if (this.fieldconfig?.useSignature && !!mailboxId && this.model.getField('signature') == 'mailbox') {
+                this.loadMailboxSignature(mailboxId, true);
             }
         }));
     }

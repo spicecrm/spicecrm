@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 
-import {Subject} from "rxjs";
+import {lastValueFrom, Subject} from "rxjs";
 
 /**
  * @ignore
@@ -76,7 +76,7 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
                 ret.complete();
             }
         }
-        return ret.toPromise();
+        return lastValueFrom(ret.asObservable());
     }
 
     /**
@@ -100,7 +100,7 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
                 sub.next(false);
                 sub.complete();
             });
-        return sub.toPromise();
+        return lastValueFrom(sub.asObservable());
     }
 
     /**

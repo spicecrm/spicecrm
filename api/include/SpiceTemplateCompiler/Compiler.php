@@ -102,8 +102,8 @@ class Compiler
 
         $dom = new DOMDocument();
 
-        $html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
-        $dom->loadHTML('<?xml encoding="utf-8"?>' . $html );
+        #$html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
+        $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
 
         $dummy = $dom->getElementsByTagName('html');
         foreach( $this->parseDom( $dummy[0], ['bean' => $bean] ) as $newElement ){
@@ -135,7 +135,8 @@ class Compiler
                     // ToDo: check if there is not a nice way to do this
                     if(strip_tags($elementcontent) != $elementcontent) {
                         $elementdom = new DOMDocument();
-                        $elementhtml = preg_replace("/\n|\r|\t/", "", html_entity_decode($elementcontent, ENT_QUOTES));
+                        # $elementhtml = preg_replace("/\n|\r|\t/", "", html_entity_decode($elementcontent, ENT_QUOTES));
+                        $elementhtml = html_entity_decode($elementcontent, ENT_QUOTES);
                         $elementdom->loadHTML('<?xml encoding="utf-8"?><embedded>'.$elementhtml.'</embedded>');
                         $embeddednode = $elementdom->getElementsByTagName('embedded');
                         $elements[] = $this->createNewElement($embeddednode[0], $beans);
@@ -293,7 +294,7 @@ class Compiler
      */
     private function getLinkedBeans($locator, $obj = NULL, $beans = [], $params = [])
     {
-         $parts = explode('.', $locator);
+        $parts = explode('.', $locator);
 
         // if we do not have an object we try to resolve it
         if (!$obj) {
@@ -468,7 +469,7 @@ class Compiler
                             }
                             $value = implode(', ', $values);
                             // unencodeMultienum can't be used because of a different language...
-                            //$value = implode(', ', unencodeMultienum($obj->{$parts[$level]}));
+                            //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                         }
                         break;
                     default:
@@ -519,18 +520,18 @@ class Compiler
         while ( strlen( $remainingText )) {
 
             # Only normal text, without curly brackets?
-            if (preg_match('#^([^\{]+)$#', $remainingText, $matches)) {
+            if (preg_match('#^([^\{]+)$#s', $remainingText, $matches)) {
                 $resultText .= $matches[1];
                 break;
             }
 
             # Normal text preceding a curly bracket:
-            if ( preg_match('#^([^\{]+)(\{.*)$#', $remainingText, $matches)) {
+            if ( preg_match('#^([^\{]+)(\{.*)$#s', $remainingText, $matches)) {
                 $resultText .= $matches[1];
                 $remainingText = $matches[2];
             }
 
-            preg_match('#^\{([^\}]*)(.*)$#', $remainingText, $matches);
+            preg_match('#^\{([^\}]*)(.*)$#s', $remainingText, $matches);
             # No closing curly bracket? Cancel the parsing, all is normal text.
             if ( strlen($matches[1]) === 0 or !isset($matches[2][0])) {
                 $resultText .= $matches[0];
@@ -564,7 +565,7 @@ class Compiler
 
     function getValueForCompileblock($m, $beans, $raw = false ) {
 
-        preg_match('#^([^:]+)(:(.*))?$#', $m, $matches );
+        preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
         $parts = explode('.', $matches[1] );
         $objectname = $parts[0];
@@ -613,7 +614,7 @@ class Compiler
                     }
                     $value = implode(', ', $values);
                     // unencodeMultienum can't be used because of a different language...
-                    //$value = implode(', ', unencodeMultienum($obj->{$parts[$level]}));
+                    //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                     break;
                 case 'date':
                     if(!empty($obj->{$part})){
@@ -660,7 +661,7 @@ class Compiler
                     break;
                 case 'currency':
                     // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                    $value = $raw ? $obj->{$part} : currency_format_number($obj->{$part}, ['symbol_space' => true] );
+                    $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
                     break;
                 case 'html':
                     $value = html_entity_decode($obj->{$part});
@@ -712,7 +713,7 @@ class Compiler
      * @return array
      */
     private static function parseParams( $string ) {
-        preg_match_all("/[^':]+|'(?:\\\\.|[^\\\\'])*'|:/", $string, $matches );
+        preg_match_all("/[^':]+|'(?:\\\\.|[^\\\\'])*'|:/s", $string, $matches );
         foreach ( $matches[0] as $k => $v ) {
             if ( $v === ':' ) continue;
             if ( $v[0] === "'" and $v[-1] === "'" ) {

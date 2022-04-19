@@ -27,6 +27,10 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
      * holds the fieldset id
      */
     public formFieldSet: string = '';
+    /**
+     * holds the headerfieldset id
+     */
+    public headerFieldSet: string = '';
 
     constructor(
         public metadata: metadata,
@@ -83,6 +87,19 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         });
     }
 
+    /**
+     * the trigger when the header fieldset or any item therein in focused and the item is expanded
+     */
+    public onHeaderClick() {
+        if (!this.isExpanded) {
+            this.isExpanded = true;
+            this.initializeEmail();
+
+            // set start editing here as well so we can block navigating away
+            this.model.startEdit(false);
+        }
+    }
+
     public subscribeParent() {
         this.activitiytimeline.parent.data$.subscribe(data => {
             if (this.model.getField('recipient_addresses')?.length == 0) {
@@ -109,6 +126,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     public getFieldsetFields() {
         let conf = this.metadata.getComponentConfig('ActivityTimelineAddEmail', this.model.module);
         this.formFieldSet = conf.fieldset;
+        this.headerFieldSet = conf.headerfieldset;
         this.formFields = this.metadata.getFieldSetItems(conf.fieldset);
     }
 

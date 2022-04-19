@@ -33,20 +33,33 @@
     <field-container field="description"></field-container>
 </div>
 <div class="slds-grid slds-gutters_direct-xx-small">
-    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
-        <field-label fieldname="timetostart"></field-label>
-        <field-container field="timetostart"></field-container>
+    <div class="slds-grid slds-col slds-size--1-of-4 slds-p-right--xx-small">
+        <div class="slds-grow">
+            <field-label [fieldname]="'timetostart'"></field-label>
+            <field-container [field]="'timetostart'"></field-container>
+        </div>
+        <span class="slds-m-top_xxx-small slds-p-left--small slds-p-right_x-small slds-p-top--x-large">OR</span>
     </div>
-    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
-        <field-label fieldname="timetocomplete"></field-label>
-        <field-container field="timetocomplete"></field-container>
+    <div class="slds-col slds-size--3-of-4 slds-p-right--xx-small">
+        <field-label [fieldname]="'method_get_timetostart'"></field-label>
+        <field-container [field]="'method_get_timetostart'"></field-container>
     </div>
-    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
-        <field-label fieldname="timetoalert"></field-label>
-        <field-container field="timetoalert"></field-container>
+</div>
+<div class="slds-gutters_direct-xx-small">
+    <system-label label="…takes into account the service calendar"></system-label>
+    <field-container [field]="'servicecalendar_name'"></field-container>
+</div>
+<div class="slds-grid slds-gutters_direct-xx-small">
+    <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+        <field-label [fieldname]="'timetocomplete'"></field-label>
+        <field-container [field]="'timetocomplete'"></field-container>
     </div>
-    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
-        <field-label fieldname="timetoescalate"></field-label>
-        <field-container field="timetoescalate"></field-container>
+    <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+        <field-label [fieldname]="'timetoalert'"></field-label>
+        <field-container [field]="'timetoalert'"></field-container>
+    </div>
+    <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+        <field-label [fieldname]="'timetoescalate'"></field-label>
+        <field-container [field]="'timetoescalate'"></field-container>
     </div>
 </div>

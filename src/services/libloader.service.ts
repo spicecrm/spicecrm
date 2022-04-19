@@ -67,7 +67,7 @@ export class libloader {
                     cnt++;
                     // console.log("completed...", cnt == observables.length);
                     if (cnt == observables.length) {
-                        sub.next();
+                        sub.next(true);
                         sub.complete();
                     }
                 },
@@ -131,24 +131,23 @@ export class libloader {
      * @param scripts
      */
     public async loadScriptsDirect(scripts): Promise<any> {
-        let sub = new Subject();
-        let loadedcount = 0;
-        for (let lib of scripts) {
-            await this.loadScriptDirect(lib.src).then(
-                success => {
-                    loadedcount++;
-                    if (loadedcount == scripts.length) {
-                        sub.next({script: name, loaded: true, status: "Loaded"});
-                        sub.complete();
+
+        return new Promise(async (next, error) => {
+            let loadedcount = 0;
+            for (let lib of scripts) {
+                await this.loadScriptDirect(lib.src).then(
+                    success => {
+                        loadedcount++;
+                        if (loadedcount == scripts.length) {
+                            next({script: lib.name, loaded: true, status: "Loaded"});
+                        }
+                    },
+                    err => {
+                        error({script: lib.name, loaded: false, status: "error"});
                     }
-                },
-                error => {
-                    sub.error({script: name, loaded: false, status: "error"});
-                    sub.complete();
-                }
-            );
-        }
-        return sub.toPromise();
+                );
+            }
+        });
     }
 
     /**
@@ -184,41 +183,37 @@ export class libloader {
      */
     public async loadScriptDirect(src: string): Promise<boolean> {
         if (this.loadedDirect.indexOf(src) != -1) {
-            return of(true).toPromise();
+            return Promise.resolve(true);
         } else {
-            let sub = new Subject<boolean>();
-            // create the elemnt as script or stylesheet
-            let element: any = {};
-            if (src.endsWith('.css')) {
-                element = document.createElement("link");
-                element.rel = "stylesheet";
-                element.href = src;
-            } else {
-                element = document.createElement("script");
-                element.type = "text/javascript";
-                element.src = src;
-            }
+            return new Promise((next, error) => {
+                let element: any = {};
+                if (src.endsWith('.css')) {
+                    element = document.createElement("link");
+                    element.rel = "stylesheet";
+                    element.href = src;
+                } else {
+                    element = document.createElement("script");
+                    element.type = "text/javascript";
+                    element.src = src;
+                }
 
-            if (element.readyState) {  // IE
-                element.onreadystatechange = () => {
-                    if (element.readyState === "loaded" || element.readyState === "complete") {
-                        element.onreadystatechange = null;
-                        sub.next(true);
-                        sub.complete();
-                    }
+                if (element.readyState) {  // IE
+                    element.onreadystatechange = () => {
+                        if (element.readyState === "loaded" || element.readyState === "complete") {
+                            element.onreadystatechange = null;
+                            next(true);
+                        }
+                    };
+                } else {  // Others
+                    element.onload = () => {
+                        next(true);
+                    };
+                }
+                element.onerror = (err: any) => {
+                    error(false);
                 };
-            } else {  // Others
-                element.onload = () => {
-                    sub.next(true);
-                    sub.complete();
-                };
-            }
-            element.onerror = (error: any) => {
-                sub.error(false);
-                sub.complete();
-            };
-            document.getElementsByTagName("head")[0].appendChild(element);
-            return sub.toPromise();
+                document.getElementsByTagName("head")[0].appendChild(element);
+            })
         }
     }
 

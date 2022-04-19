@@ -28,6 +28,19 @@ export class fieldDate extends fieldGeneric {
     }
 
     /**
+     * set the field to invalid, tied to the emitter on the system-date
+     *
+     * @param valid
+     */
+    public setValid(valid){
+        if(!valid){
+            this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
+        } else {
+            this.clearFieldError();
+        }
+    }
+
+    /**
      * if set to highlight determine if the date is in the past
      */
     get highlightdate() {

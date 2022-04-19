@@ -132,8 +132,8 @@ class SpiceDictionaryVardefs  {
     public static function getModuleByDictionaryName($dictionaryName){
         $db = DBManagerFactory::getInstance();
         $module = null;
-        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.singular ='{$dictionaryName}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.singular ='{$dictionaryName}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 $module = $row['module'];
             }
@@ -150,8 +150,8 @@ class SpiceDictionaryVardefs  {
     public static function getModuleByDictionaryId($dictionaryId){
         $db = DBManagerFactory::getInstance();
         $module = null;
-        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.sysdictionarydefinition_id ='{$dictionaryId}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT module FROM (SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules) as sysmod WHERE sysmod.sysdictionarydefinition_id ='{$dictionaryId}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 $module = $row['module'];
             }
@@ -167,14 +167,14 @@ class SpiceDictionaryVardefs  {
      */
     public static function getDictionaryIdByModule($module){
         $db = DBManagerFactory::getInstance();
-        $q = "SELECT sysdictionarydefinition_id FROM syscustommodules sysmod WHERE sysmod.module ='{$module}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT sysdictionarydefinition_id FROM syscustommodules sysmod WHERE sysmod.module ='{$module}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 return $row['sysdictionarydefinition_id'];
             }
         }
-        $q = "SELECT sysdictionarydefinition_id FROM sysmodules sysmod WHERE sysmod.module ='{$module}' LIMIT 1";
-        if($res = $db->query($q)){
+        $q = "SELECT sysdictionarydefinition_id FROM sysmodules sysmod WHERE sysmod.module ='{$module}'";
+        if($res = $db->limitQuery($q, 0, 1)){
             while($row = $db->fetchByAssoc($res)){
                 return $row['sysdictionarydefinition_id'];
             }
@@ -356,7 +356,7 @@ class SpiceDictionaryVardefs  {
 
     /**
      * create full indices for a dictionary
-     *
+     * we can't group_concat on sysdi.name since group_concat() is not cross compatible
      * @param string $dictionaryId
      * @param string $tablename
      * @return array
@@ -364,21 +364,27 @@ class SpiceDictionaryVardefs  {
     public static function loadDictionaryIndices($dictionaryId, $tablename){
         $db = DBManagerFactory::getInstance();
         $indices = [];
-        $q = "SELECT sysdx.name, sysdx.indextype, GROUP_CONCAT(sysdi.name) indexfields
+        $q = "SELECT sysdx.name, sysdx.indextype, sysdi.name indexfield
         FROM sysdictionaryindexes sysdx
         LEFT JOIN sysdictionaryindexitems sysdxi ON sysdxi.sysdictionaryindex_id = sysdx.id
         LEFT JOIN sysdictionarydefinitions sysd ON sysd.id = sysdx.sysdictionarydefinition_id      
         LEFT JOIN sysdictionaryitems sysdi on sysdi.id = sysdxi.sysdictionaryitem_id 
         LEFT JOIN sysdictionaryitems sysdiref on sysdiref.sysdictionarydefinition_id = sysdi.sysdictionary_ref_id
         WHERE sysdx.sysdictionarydefinition_id = '{$dictionaryId}'
-        GROUP BY sysdx.id
-        ORDER BY sysdx.name ASC
+        ORDER BY sysdx.name ASC, sysdx.indextype ASC
 ";
 
         if($res = $db->query($q)){
+            // loop a first time to reorganize data
             while($row = $db->fetchByAssoc($res)){
+                $defRows[$row['name']][$row['indextype']]['indexfields'][] = $row['indexfield'];
+            }
+
+            // loop data to write indices
+            foreach($defRows as $indexName => $def){
                 $indices[] = SpiceDictionaryVardefsParser::parseIndexDefinition($row, $tablename);
             }
+
         }
         return $indices;
     }
@@ -957,7 +963,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     public static function createSysDomainForValidation($field, $sysdomainfieldvalidation_id){
         $db = DBManagerFactory::getInstance();
         $qi = [];
-        $sysdomaindefinition_id = create_guid();
+        $sysdomaindefinition_id = SpiceUtils::createGuid();
         $qi[] = "INSERT INTO sysdomaindefinitions (id, name, fieldtype, fieldlen) VALUES('{$sysdomaindefinition_id}', '{$field['options']}', '{$field['type']}', '{$field['len']}');";
         $qi[] = "INSERT INTO sysdomainfields (id, name, dbtype, fieldlen, sysdomaindefinition_id, sysdomainfieldvalidation_id, fieldtype, fieldcomment) VALUES(uuid(), '{sysdictionaryitems.name}', '".($field['dbType'] ? $field['dbType'] : 'varchar')."', '{$field['len']}', '{$sysdomaindefinition_id}', '{$sysdomainfieldvalidation_id}', '{$field['type']}', '".$db->quote($field['description'])."');";
         foreach($qi as $q){

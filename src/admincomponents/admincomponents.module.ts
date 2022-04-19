@@ -91,6 +91,8 @@ import /*embed*/ {AdministrationBlockedUsers} from './components/administrationb
 import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
 
 import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
+import {AdministrationAssetManager} from "./components/administrationassetmanager";
+import {AdministrationDictRepairResetCache} from "./components/administrationdictrepairresetcache";
 
 @NgModule({
     imports: [
@@ -137,6 +139,7 @@ import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/adminis
         AdministrationDictRepairModal,
         AdministrationDictRepairACLRoles,
         AdministrationDictRepairCache,
+        AdministrationDictRepairResetCache,
         AdministrationDictRepairDbColumns,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
@@ -166,7 +169,8 @@ import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/adminis
         AdministrationLoginRestrictionIpAddressesRow,
         AdministrationPasswordConfig,
         AdministrationBlockedUsers,
-        AdministrationLoginManagement
+        AdministrationLoginManagement,
+        AdministrationAssetManager
     ],
     entryComponents: [
         AdministrationMain,

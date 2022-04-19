@@ -36,7 +36,6 @@
 
 namespace SpiceCRM\modules\Emails;
 
-
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
@@ -164,6 +163,9 @@ class Email extends SugarBean
                 $this->from_addr = $this->from_addr_name;
             } elseif (empty($this->from_addr)) {
                 $this->from_addr = $mailbox->imap_pop3_username;
+            }
+            if (!empty($this->to_addrs)) {
+                $this->to_addrs = $this->cleanEmails($this->to_addrs);
             }
             if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
                 $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
@@ -557,7 +559,7 @@ class Email extends SugarBean
                 }
             }
         } else {
-            $emails = str_replace([",", ";"], "::", from_html($emails));
+            $emails = str_replace([",", ";"], "::", DBUtils::fromHtml($emails));
             $addrs = explode("::", $emails);
 
             foreach ($addrs as $addr) {
@@ -587,7 +589,7 @@ class Email extends SugarBean
         if(!$ret) return false;
 
         //$ret->raw_source = SugarCleaner::cleanHtml($ret->raw_source);
-        $ret->description = to_html($ret->description);
+        $ret->description = DBUtils::toHtml($ret->description);
         //$ret->description_html = SugarCleaner::cleanHtml($ret->description_html);
 
         // BEGIN CR1000307
@@ -769,7 +771,7 @@ class Email extends SugarBean
         }
 
         if($mailbox->track_mailbox) {
-           $this->generateTrackingPixel();
+            $this->generateTrackingPixel();
         }
 
         $mailbox->initTransportHandler();
@@ -1355,13 +1357,15 @@ class Email extends SugarBean
     function findInlineImages(): DOMNodeList
     {
         $doc = new DOMDocument();
-        $doc->loadHTML($this->body);
+        // load html and use utf-8 encoding
+        $doc->loadHTML('<?xml encoding="utf-8"?>' . $this->body);
         $selector = new DOMXPath($doc);
 
-        return $selector->query("//img[contains(@src, 'data:image/png;base64,')]");
+        // query all inline images. some images include charset utf-8 in the src
+        return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
     }
 
-    public function addDocumentAttachment(DocumentRevision $doc): void {
-        SpiceAttachments::saveDocumentRevisionAttachment('Emails', $this->id, $doc);
+    public function addDocumentAttachment($doc): void {
+        SpiceAttachments::saveDocumentAttachment('Emails', $this->id, $doc);
     }
 }

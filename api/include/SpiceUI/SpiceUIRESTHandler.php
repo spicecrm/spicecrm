@@ -13,6 +13,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
 
@@ -174,7 +175,7 @@ class SpiceUIRESTHandler
                 'component' => $componentset['component'],
                 'package' => $componentset['package'],
                 //'componentconfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($componentset['componentconfig'], ENT_QUOTES)), true) ?: new \stdClass()
-                'componentconfig' => json_decode(str_replace(["\r", "\n", "&#039;", "'"], ['', '', '"', '"'], $componentset['componentconfig']), true) ?: new stdClass()
+                'componentconfig' => json_decode(str_replace(["\r", "\n", "&#039;", "'"], ['', '', '"', '"'], $componentset['componentconfig']), true) ?: []
             ];
         }
 
@@ -198,7 +199,7 @@ class SpiceUIRESTHandler
                 'sequence' => $componentset['sequence'],
                 'component' => $componentset['component'],
                 'package' => $componentset['package'],
-                'componentconfig' => json_decode(str_replace(["\r", "\n", "&#039;", "'"], ['', '', '"', '"'], $componentset['componentconfig']), true) ?: new stdClass()
+                'componentconfig' => json_decode(str_replace(["\r", "\n", "&#039;", "'"], ['', '', '"', '"'], $componentset['componentconfig']), true) ?: []
             ];
         }
         return $retArray;
@@ -207,7 +208,7 @@ class SpiceUIRESTHandler
     function setComponentSets($data)
     {
 
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
 
@@ -320,7 +321,7 @@ $db = DBManagerFactory::getInstance();
                 'action' => $actionset['action'],
                 'component' => $actionset['component'],
                 'singlebutton' => $actionset['singlebutton'],
-                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($actionset['actionconfig'])), true) ?: new stdClass()
+                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($actionset['actionconfig'])), true) ?: []
             ];
         }
 
@@ -343,7 +344,7 @@ $db = DBManagerFactory::getInstance();
                 'action' => $actionset['action'],
                 'component' => $actionset['component'],
                 'singlebutton' => $actionset['singlebutton'],
-                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($actionset['actionconfig'])), true) ?: new stdClass()
+                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($actionset['actionconfig'])), true) ?: []
             ];
         }
 
@@ -436,7 +437,7 @@ $db = DBManagerFactory::getInstance();
 
         switch ($args['action']) {
             case 'new':
-                $guid = create_guid();
+                $guid = SpiceUtils::createGuid();
                 $entry = $this->db->fetchByAssoc($this->db->query("SELECT * FROM sysuiuserroles WHERE sysuirole_id = '$sysuirole_id' AND user_id = '$user_id'"));
                 if (!$entry) {
                     $insertData = [
@@ -561,12 +562,12 @@ $db = DBManagerFactory::getInstance();
         $retArray = [];
         $componentconfigs = $this->db->query("SELECT * FROM sysuicomponentdefaultconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         $componentconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentdefaultconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         return $retArray;
@@ -582,12 +583,12 @@ $db = DBManagerFactory::getInstance();
         $retArray = [];
         $componentconfigs = $this->db->query("SELECT * FROM sysuicomponentmoduleconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         $componentconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentmoduleconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         return $retArray;
@@ -847,7 +848,7 @@ $db = DBManagerFactory::getInstance();
     public function getLibraries()
     {
         $return = [];
-        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.rank ASC";
+        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.libsequence ASC";
         $res = $this->db->query($sql);
         while ($row = $this->db->fetchByAssoc($res)) {
             $return[$row['name']][] = ['loaded' => false, 'src' => $row['src']];
@@ -1110,7 +1111,7 @@ $db = DBManagerFactory::getInstance();
     function addListType($module, $params)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $newGuid = create_guid();
+        $newGuid = SpiceUtils::createGuid();
         $insertData = array_merge([
             'id' => $newGuid,
             'created_by_id' => $current_user->id,
@@ -1141,7 +1142,7 @@ $db = DBManagerFactory::getInstance();
     function getAdminNavigation()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         $navElements = [];
 
         // admin only
@@ -1155,7 +1156,7 @@ $db = DBManagerFactory::getInstance();
                 while ($groupComponent = $db->fetchByAssoc($groupComponentsObjects)) {
                     // ugly but effective
                     // ToDo: find a nice way to handle that
-                    $groupComponent['componentconfig'] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($groupComponent['componentconfig'])), true) ?: new stdClass();
+                    $groupComponent['componentconfig'] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($groupComponent['componentconfig'])), true) ?: [];
                     $groupComponents[] = $groupComponent;
                 }
                 // only add if we have any component
@@ -1171,7 +1172,7 @@ $db = DBManagerFactory::getInstance();
     function getAllModules()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         $modules = [];
         $modulestmp = []; // CR1000442
@@ -1224,5 +1225,40 @@ $db = DBManagerFactory::getInstance();
         $response['stylesheetsToUse'] = isset(SpiceConfig::getInstance()->config['htmlStylesheetsToUse']) ? SpiceConfig::getInstance()->config['htmlStylesheetsToUse'] : (object)[];
 
         return $response;
+    }
+
+    /**
+     * gets all asstes stored in the databasae
+     *
+     * @return void
+     */
+    public function getAssets(){
+        $db = DBManagerFactory::getInstance();
+
+        $assets = [];
+        $assetsObj = $db->query("SELECT assetkey, assetvalue FROM sysuiassets");
+        while($asset = $db->fetchByAssoc($assetsObj)){
+            $assets[] = $asset;
+        }
+        return $assets;
+    }
+
+    /**
+     * gets all asstes stored in the databasae
+     *
+     * @return void
+     */
+    public function setAssets($assets){
+        $db = DBManagerFactory::getInstance();
+
+        foreach($assets as $asset){
+            // check if we have the asset
+            $asssetRecord = $db->fetchOne("SELECT id FROM sysuiassets WHERE assetkey='{$asset['assetkey']}'");
+            $asset['id'] = $asssetRecord['id'] ?: SpiceUtils::createGuid();
+
+            // upsert it
+            $db->upsertQuery('sysuiassets', ['id' => $asset['id'] ?: SpiceUtils::createGuid()], $asset);
+        }
+        return $this->getAssets();
     }
 }

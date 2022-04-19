@@ -30,6 +30,7 @@ export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
         this.model.module = 'QuestionOptions';
         this.model.id = this.option.id;
         this.model.setData(this.option);
+        this.model.initialize();
         if ( this.option.text?.length < 1 ) this.option.text = this.option.name;
         this.textIsMultiline = this.option.text && ( this.option.text.length > 80 || this.option.text.indexOf("\n") > -1 );
     }

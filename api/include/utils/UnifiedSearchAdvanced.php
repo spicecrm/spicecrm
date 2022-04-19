@@ -40,6 +40,10 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 /*********************************************************************************
@@ -69,8 +73,8 @@ class UnifiedSearchAdvanced {
                 $this->query_string = $query_string;
             }
         }
-        $this->cache_search = sugar_cached('modules/unified_search_modules.php');
-        $this->cache_display = sugar_cached('modules/unified_search_modules_display.php');
+        $this->cache_search  = SpiceFileUtils::spiceCached('modules/unified_search_modules.php');
+        $this->cache_display = SpiceFileUtils::spiceCached('modules/unified_search_modules_display.php');
     }
 
 
@@ -97,7 +101,7 @@ class UnifiedSearchAdvanced {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		$home_mod_strings = return_module_language($current_language, 'Home');
 
-		$this->query_string = DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($this->query_string, 'UNIFIED_SEARCH'))));
+		$this->query_string = DBManagerFactory::getInstance()->quote(SpiceUtils::securexss(DBUtils::fromHtml(SpiceUtils::cleanString($this->query_string, 'UNIFIED_SEARCH'))));
 
 		if(!empty($_REQUEST['advanced']) && $_REQUEST['advanced'] != 'false') {
 			$modules_to_search = [];
@@ -392,7 +396,7 @@ class UnifiedSearchAdvanced {
 		}
 
 		ksort($supported_modules);
-		write_array_to_file('unified_search_modules', $supported_modules, $this->cache_search);
+		FileUtils::writeArrayToFile('unified_search_modules', $supported_modules, $this->cache_search);
 	}
 
     /**
@@ -482,7 +486,7 @@ class UnifiedSearchAdvanced {
 
 	public static function unlinkUnifiedSearchModulesFile() {
 		//clear the unified_search_module.php file
-		$cache_search = sugar_cached('modules/unified_search_modules.php');
+		$cache_search = SpiceFileUtils::spiceCached('modules/unified_search_modules.php');
     	if(file_exists($cache_search))
     	{
     		LoggerManager::getLogger()->info("unlink {$cache_search}");
@@ -502,14 +506,14 @@ class UnifiedSearchAdvanced {
     public function getUnifiedSearchModules()
     {
 		//Make directory if it doesn't exist
-        $cachedir = sugar_cached('modules');
+        $cachedir = SpiceFileUtils::spiceCached('modules');
 		if(!file_exists($cachedir))
 		{
-		   mkdir_recursive($cachedir);
+		   FileUtils::mkdirRecursive($cachedir);
 		}
 
 		//Load unified_search_modules.php file
-        $cachedFile = sugar_cached('modules/unified_search_modules.php');
+        $cachedFile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php');
 		if(!file_exists($cachedFile))
 		{
 			$this->buildCache();
@@ -566,11 +570,10 @@ class UnifiedSearchAdvanced {
 		   return false;
 		}
 
-	    if(!write_array_to_file("unified_search_modules_display", $unified_search_modules_display, 'custom/modules/unified_search_modules_display.php'))
-	    {
+	    if (!FileUtils::writeArrayToFile("unified_search_modules_display", $unified_search_modules_display, 'custom/modules/unified_search_modules_display.php')) {
 	    	//Log error message and throw Exception
 	    	global $app_strings;
-	    	$msg = string_format($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
+	    	$msg = SpiceUtils::stringFormat($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
 	    	LoggerManager::getLogger()->error($msg);
 	    	throw new Exception($msg);
 	    }

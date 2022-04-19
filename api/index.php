@@ -5,22 +5,16 @@
 // require the autoloader
 require_once 'vendor/autoload.php';
 
-use Fig\Http\Message\StatusCodeInterface;
 use Slim\Factory\AppFactory;
 use DI\Container;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\Middleware\DeveloperMiddleware;
 use SpiceCRM\includes\UploadStream;
-use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\Administration\Administration;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 require_once('include/utils.php');
 require_once('sugar_version.php'); // provides $sugar_version, $sugar_db_version
@@ -44,7 +38,7 @@ $RESTManager = SpiceCRM\includes\RESTManager::getInstance();
 try {
     // check that we have a config
     if(!SpiceConfig::getInstance()->configExists()){
-        throw new \SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException('system is not installed');
+        throw new \SpiceCRM\includes\ErrorHandlers\SystemNotInstalledException();
     }
 
     $slimContainer = new Container();
@@ -62,11 +56,8 @@ try {
         throw new \Exception("Unable to determine App Base Path");
     }
 
-    //enable error output when in developer mode
-    if (SpiceConfig::getInstance()->config['developerMode'] == true) {
-        ini_set('display_errors', 1);
-    }
-    SpiceConfig::getInstance()->loadConfigFromDB();
+    // add the developer middleware
+    $app->add(DeveloperMiddleware::class);
 
     // load the core dictionary files
     SpiceDictionaryHandler::loadMetaDataFiles();
@@ -86,11 +77,7 @@ try {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);
     }
 
-
-    $system_config = new Administration();
-    $system_config->retrieveSettings();
-
-
+    // initialize the REST Manager
     $RESTManager->initialize($app);
 
     // run the request

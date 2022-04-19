@@ -126,8 +126,9 @@ export class questionnaireParticipationService {
 
     constructor( public backend: backend, public toast: toast, public language: language, public helper: helper, public broadcast: broadcast ) { }
 
-    public init_byParent( parentId: string, parentType: string ): Observable<any> {
+    public init_byParent( parentId: string, parentType: string, questionnaireId: string = null ): Observable<any> {
         this.initByParent = true;
+        if ( questionnaireId ) this.questionnaireId = questionnaireId;
         this.parentId = parentId;
         this.parentType = parentType;
         this.routeForSave = 'module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId;
@@ -168,6 +169,8 @@ export class questionnaireParticipationService {
         this.answers[questionId].answer_value = value;
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( questionId, backupForNetworkError );
         else this.isDirty = true;
+
+        this.answersChanged$.emit();
 
     }
 
@@ -233,9 +236,11 @@ export class questionnaireParticipationService {
     /**
      * An answer option (radio button or checkbox) was clicked.
      */
-    public clickAnswerOption( optionId: string, event: any ): boolean {
+    public clickAnswerOption( optionId: string, event?: any ): boolean {
 
-        event.stopPropagation();
+        if(event) {
+            event.stopPropagation();
+        }
         let question = this.questionoptions[optionId].parentQuestion;
 
         // If the edit mode is 'off' or 'postview', a input/change is not allowed. --> Do nothing and return false.
@@ -289,7 +294,7 @@ export class questionnaireParticipationService {
      */
     public loadQuestionnaire(): Observable<any> {
         this.isLoadedParticipation = true; // Only in case there was no participation to load.
-        let responseSubject = new Subject<any>();
+        let responseSubject = new Subject<void>();
         this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/render' ).subscribe( ( response: any ) => {
             this.questionnaire = response;
             this.doBasics();
@@ -480,9 +485,9 @@ export class questionnaireParticipationService {
     }
 
     public loadParticipation_byParent(): Observable<any> {
-        let responseSubject = new Subject<any>();
+        let responseSubject = new Subject<void>();
         this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
-            this.questionnaireId = response.questionnaireId;
+            if ( response.questionnaireId ) this.questionnaireId = response.questionnaireId;
             // In case the edit mode is "off" or "preview" there are no answer values to load:
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
             this.loadQuestionnaire().subscribe( () => {
@@ -499,7 +504,7 @@ export class questionnaireParticipationService {
     }
 
     public loadParticipation_byParticipation(): Observable<any> {
-        let responseSubject = new Subject<any>();
+        let responseSubject = new Subject<void>();
         this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParticipation/'+this.participationId ).subscribe( response => {
             this.questionnaireId = response.questionnaireId;
             this.loadQuestionnaire().subscribe( () => {

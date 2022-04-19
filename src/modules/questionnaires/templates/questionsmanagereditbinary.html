@@ -1,16 +1,20 @@
-<div class="slds-grid">
-    <div class="slds-p-right--medium" style="width:100%;" [ngClass]="{'slds-has-error':nameMissing}">
-        <label for="{{compId}}-questiontext" class="slds-form-element__label" ><system-label label="LBL_QUESTION_TEXT"></system-label></label>
-        <input id="{{compId}}-questiontext" type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
+<div class="slds-grid slds-gutters_direct-x-small">
+    <div class="slds-col slds-form-element" [ngClass]="{'slds-has-error':nameMissing}">
+        <label class="slds-form-element__label" ><system-label label="LBL_QUESTION_TEXT"></system-label></label>
+        <input type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
     </div>
-    <div class="x-slds-p-right--medium" style="width:100%;">
-        <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
-        <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
+    <div class="slds-col slds-form-element">
+        <label class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+        <input type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
     </div>
     <!--div style="width:4rem">
         <label class="slds-form-element__label" ><system-label label="LBL_IMAGE"></system-label></label>
         <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="'left bottom'" (change)="change()"></field-container>
     </div--><!-- image instead of text not yet implemented, not or question type binary -->
+</div>
+
+<div class="slds-m-top--medium">
+    <system-checkbox [(ngModel)]="answerRequired"><system-label label="LBL_ANSWER_REQUIRED"></system-label></system-checkbox>
 </div>
 
 <system-spinner *ngIf="options.length === 0" class="slds-p-vertical--xx-large" style="display:block"></system-spinner>

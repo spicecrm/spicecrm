@@ -8,6 +8,7 @@ use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Campaigns\Campaign;
 use SpiceCRM\modules\ProspectLists\ProspectList;
 
@@ -175,7 +176,7 @@ class KReport extends SugarBean
     {
         global $app_list_strings, $current_language;
         if (!is_array($app_list_strings)) {
-            $app_list_strings = return_app_list_strings_language($current_language);
+            $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
         }
 
         // fix 2010-10-25 .. enums not found for charts
@@ -436,7 +437,7 @@ class KReport extends SugarBean
 
         global $app_list_strings, $current_language;
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         foreach ($fieldArray as $fieldID => $fieldValue) {
             // get the FieldDetails from the Query
@@ -1197,7 +1198,7 @@ $db = DBManagerFactory::getInstance();
     {
         $db = DBManagerFactory::getInstance();
 
-        $snapshotID = create_guid();
+        $snapshotID = SpiceUtils::createGuid();
 
         // go get the results
         $results = $this->getSelectionResults(['toPDF' => true, 'noFormat' => true]);
@@ -1325,7 +1326,7 @@ $db = DBManagerFactory::getInstance();
         if (count($results) > 0) {
 
             $mapService = new kReportBingMaps ();
-            require_once(get_custom_file_if_exists('modules/Accounts/Account.php'));
+            require_once(SpiceUtils::getCustomFileIfExists('modules/Accounts/Account.php'));
 
             foreach ($results as $thisResult) {
                 if (($thisResult [$mapDetails->latitude] == '' || $thisResult [$mapDetails->latitude] == null || $thisResult [$mapDetails->latitude] == '0,00') || ($thisResult [$mapDetails->longitude] == '' || $thisResult [$mapDetails->longitude] == null || $thisResult [$mapDetails->longitude] == '0,00')) {
