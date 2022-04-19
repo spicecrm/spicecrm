@@ -1,5 +1,8 @@
 <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowpenworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
-<div *ngIf="workflow.activeCount == 0" class="slds-box slds-align--absolute-center slds-p-around--medium slds-m-bottom--medium">
+<div *ngIf="workflow.loading" class="slds-p-around--medium slds-align--absolute-center">
+    <system-spinner></system-spinner>
+</div>
+<div *ngIf="!workflow.loading && workflow.activeCount == 0" class="slds-box slds-align--absolute-center slds-p-around--medium slds-m-bottom--medium">
     <system-illustration-no-records><system-label label="LBL_NO_ACTIVE_WORKFLOWS"></system-label></system-illustration-no-records>
 </div>
 <div *ngIf="(workflow.workflows|workflowcompletedworkflowspipe).length > 0">

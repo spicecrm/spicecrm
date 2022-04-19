@@ -6,6 +6,7 @@ import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
 import {broadcast} from '../../../services/broadcast.service';
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'workflow-panel',
@@ -22,7 +23,11 @@ export class WorkflowPanel implements OnInit, OnDestroy {
     /**
      * @ignore
      */
-    constructor(public model: model, public workflow: workflow, public language: language, public broadcast: broadcast) {
+    constructor(public model: model,
+                public workflow: workflow,
+                public language: language,
+                public modal: modal,
+                public broadcast: broadcast) {
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
