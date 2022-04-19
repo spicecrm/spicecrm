@@ -162,7 +162,7 @@ class LDAPAuthenticate
      */
     private function ldapConn()
     {
-        if (SpiceConfig::getInstance()->config['developerMode'] == true) {
+        if (SpiceUtils::inDeveloperMode()) {
             if (!defined("LDAP_OPT_DIAGNOSTIC_MESSAGE")) {
                 define("LDAP_OPT_DIAGNOSTIC_MESSAGE", 0x0032); // needed for more detailed logging
             }

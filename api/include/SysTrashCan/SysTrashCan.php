@@ -34,6 +34,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SysTrashCan
 {
@@ -55,23 +56,38 @@ class SysTrashCan
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
         $now = $timedate->nowDb();
-        $db->query("INSERT INTO systrashcan (id, transactionid, date_deleted, user_deleted, recordtype, recordmodule, recordid, recordname, linkname, linkmodule, linkid, recorddata) VALUES('" . create_guid() . "', '" . LoggerManager::getLogger()->getTransactionId() . "', '$now', '$current_user->id','$recordtype', '$recordmodule', '$recordid', '$recordname', '$linkname', '$linkmodule', '$linkid', '" . base64_encode($recorddata) . "' )");
+        $db->query("INSERT INTO systrashcan (id, transactionid, date_deleted, user_deleted, recordtype, recordmodule, recordid, recordname, linkname, linkmodule, linkid, recorddata) VALUES('" . SpiceUtils::createGuid() . "', '" . LoggerManager::getLogger()->getTransactionId() . "', '$now', '$current_user->id','$recordtype', '$recordmodule', '$recordid', '$recordname', '$linkname', '$linkmodule', '$linkid', '" . base64_encode($recorddata) . "' )");
     }
 
     /**
      * @return array
      * @throws \Exception
      */
-    static function getRecords()
+    static function getRecords($offset = 0, $limit = 50, array $filter = null)
     {
         $db = DBManagerFactory::getInstance();
 
-        $retArray = [];
-        $sql = "SELECT systrashcan.*, users.user_name FROM systrashcan, users WHERE systrashcan.user_deleted = users.id AND recordtype = 'bean' AND recovered = '0' ORDER BY date_deleted DESC";
+        $retArray = ['records' => []];
+        $filterWhere = '';
 
-        $records = $db->limitQuery($sql, 0, 1000);
+        if ($filter['searchTerm']) {
+            $terms = array_map(function ($e) {return "recordname LIKE '%$e%'";}, explode(' ', trim($filter['searchTerm'])));
+            $filterWhere .= 'AND ' . implode(' AND ', $terms);
+        }
+
+        if ($filter['module']) $filterWhere .= "AND recordmodule = '{$filter['module']}'";
+
+        if ($filter['user']) $filterWhere .= "AND user_deleted = '{$filter['user']}'";
+
+        $sql = "SELECT systrashcan.*, users.user_name FROM systrashcan, users WHERE systrashcan.user_deleted = users.id $filterWhere AND recordtype = 'bean' AND recovered = '0' ORDER BY date_deleted DESC";
+
+        $count = $db->getOne("SELECT count(0) FROM systrashcan, users WHERE systrashcan.user_deleted = users.id $filterWhere AND recordtype = 'bean' AND recovered = '0'");
+        $retArray['count'] = (double) $count;
+
+        $records = $db->limitQuery($sql, $offset, $limit);
+
         while ($record = $db->fetchByAssoc($records)) {
-            $retArray[] = $record;
+            $retArray['records'][] = $record;
         }
 
         return $retArray;

@@ -44,8 +44,20 @@ export class ObjectPageHeader implements OnInit {
         this.fieldset = componentconfig.fieldset;
     }
 
+    /**
+     * checks that the user can navigate to the module
+     */
+    get canGoToModule(){
+        return this.metadata.getModuleDefs(this.moduleName).visible && this.metadata.checkModuleAcl(this.moduleName, 'list');
+    }
+
+    /**
+     * opens the regular list view
+     */
     public goToModule() {
-        this.router.navigate(['/module/' + this.moduleName]);
+        if (this.canGoToModule){
+            this.router.navigate(['/module/' + this.moduleName]);
+        }
     }
 
 }

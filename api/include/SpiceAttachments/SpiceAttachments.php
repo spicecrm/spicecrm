@@ -14,7 +14,6 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
 use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachment;
@@ -148,7 +147,7 @@ class SpiceAttachments
 
         $ext_pos = strrpos($upload_file->stored_file_name, ".");
         $upload_file->file_ext = substr($upload_file->stored_file_name, $ext_pos + 1);
-        if (in_array($upload_file->file_ext, isset(SpiceConfig::getInstance()->config['upload_badext']) ?: [])) {
+        if (in_array($upload_file->file_ext, isset(SpiceConfig::getInstance()->config['upload_badext']) ? SpiceConfig::getInstance()->config['upload_badext'] : [])) {
             $upload_file->stored_file_name .= ".txt";
             $upload_file->file_ext = "txt";
         }
@@ -236,7 +235,7 @@ class SpiceAttachments
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $guid = create_guid();
+        $guid = SpiceUtils::createGuid();
 
         // if we have an image create a thumbnail
         $thumbnail = self::createThumbnail($payload->filemd5, $payload->mime_type);
@@ -314,7 +313,7 @@ class SpiceAttachments
         return $md5;
     }
 
-    public static function saveDocumentRevisionAttachment($beanName, $beanId, DocumentRevision $doc): void {
+    public static function saveDocumentAttachment($beanName, $beanId, $doc): void {
         $db          = DBManagerFactory::getInstance();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $guid        = SpiceUtils::createGuid();

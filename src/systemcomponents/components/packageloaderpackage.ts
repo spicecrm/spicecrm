@@ -106,7 +106,7 @@ export class PackageLoaderPackage implements OnInit {
             const loadingModal = this.modal.await(this.language.getLabel('LBL_PROCESSING'));
 
             this.backend.getRequest('admin/repair/sql').subscribe(result => {
-                loadingModal.next();
+                loadingModal.next(true);
                 loadingModal.complete();
                 if(result) {
                     this.modal.openModal('AdministrationDictRepairModal', true).subscribe(modal => {

@@ -1,8 +1,9 @@
 <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
-    <h2 class="slds-text-heading_medium">
+    <h2 class="slds-text-heading_medium slds-col--bump-right">
         <system-label label="LBL_FTS_STATUS"></system-label>
     </h2>
-    <button class="slds-button slds-col--bump-left slds-button_icon slds-button_icon-border-filled" [disabled]="loading || ! hasLocks" (click)="unlock()">
+    <button type="button" class="slds-button slds-button--neutral" (click)="initialize()"><system-label label="LBL_INITIALIZE"></system-label></button>
+    <button class="slds-button  slds-button_icon slds-button_icon-border-filled" [disabled]="loading || ! hasLocks" (click)="unlock()">
         <system-button-icon icon="unlock"></system-button-icon>
     </button>
     <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="loading"
@@ -37,7 +38,7 @@
                         <system-label label="LBL_DOCS"></system-label>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{stats.docs}}</div>
+                        <div class="slds-truncate"><system-display-number [number]="stats.pdocs" system-display-number-nodigits></system-display-number>/<system-display-number [number]="stats.tdocs" system-display-number-nodigits></system-display-number></div>
                     </td>
                 </tr>
                 <tr>
@@ -45,7 +46,7 @@
                         <system-label label="LBL_SIZE"></system-label>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{stats.size}}</div>
+                        <div class="slds-truncate">{{stats.psize}}/{{stats.tsize}}</div>
                     </td>
                 </tr>
             </tbody>
@@ -54,45 +55,61 @@
         <div class="slds-border--top" system-to-bottom>
             <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--header-fixed">
                 <thead>
-                <tr class="slds-text-title_caps">
-                    <th scope="col">
-                        <div class="slds-truncate">
-                            <system-label label="LBL_INDEX"></system-label>
-                        </div>
-                    </th>
-                    <th scope="col">
-                        <div class="slds-truncate">
-                            <system-label label="LBL_DOCS"></system-label>
-                        </div>
-                    </th>
-                    <th scope="col">
-                        <div class="slds-truncate">
-                            <system-label label="LBL_SIZE"></system-label>
-                        </div>
-                    </th>
-                    <th scope="col">
-                        <div class="slds-truncate">
-                            <system-label label="LBL_BLOCKED"></system-label>
-                        </div>
-                    </th>
-                </tr>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate">
+                                <system-label label="LBL_INDEX"></system-label>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">
+                                <system-label label="LBL_DOCS"></system-label>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">
+                                <system-label label="LBL_STORED"></system-label>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">
+                                <system-label label="LBL_UNINDEXED"></system-label>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">
+                                <system-label label="LBL_SIZE"></system-label>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">
+                                <system-label label="LBL_BLOCKED"></system-label>
+                            </div>
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let index of indices">
-                    <td>
-                        <div class="slds-truncate">{{index.name}}</div>
-                    </td>
-                    <td>
-                        <div class="slds-truncate">{{index.docs}}</div>
-                    </td>
-                    <td>
-                        <div class="slds-truncate">{{index.size}}</div>
-                    </td>
-                    <td>
-                        <system-utility-icon *ngIf="index.blocked" icon="lock" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
-                        <system-utility-icon *ngIf="!index.blocked" icon="unlock" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
-                    </td>
-                </tr>
+                    <tr *ngFor="let index of indices">
+                        <td>
+                            <div class="slds-truncate">{{index.name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate"><system-display-number [number]="index.pdocs" system-display-number-nodigits></system-display-number>/<system-display-number [number]="index.tdocs" system-display-number-nodigits></system-display-number></div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{index.stored}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{index.unindexed}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{index.psize}}/{{index.tsize}}</div>
+                        </td>
+                        <td>
+                            <system-utility-icon *ngIf="index.blocked" icon="lock" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+                            <system-utility-icon *ngIf="!index.blocked" icon="unlock" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

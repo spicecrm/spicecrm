@@ -1,0 +1,6 @@
+<system-modal size="large">
+  <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+  <system-modal-content system-modal-content-grow margin="none">
+    <iframe class="slds-size--1-of-1 slds-height_full" style="border: none;" *ngIf="source" [src]="iframeSource"></iframe>
+  </system-modal-content>
+</system-modal>

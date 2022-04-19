@@ -181,6 +181,12 @@ export class ObjectModelPopover implements OnInit {
             }
         }
 
+        // if we have a reload flag load the model
+        // this allows to get potential details when the model is not fully loaded in the list
+        if(componentconfig.forcereload){
+            this.model.getData(false);
+        }
+
         // don't know why... but this call fixes ExpressionChangedAfterItHasBeenCheckedError ... maybe because it sets the nubbin class earlier so it won't change after changedetection anymore?
         this.styles = this.popoverStyle;
     }

@@ -150,6 +150,7 @@ import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 import /*embed*/ {SystemInputFile} from './components/systeminputfile';
+import /*embed*/ {SystemInputFileContent} from './components/systeminputfilecontent';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -166,15 +167,15 @@ import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferenc
 import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
 import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
 import {SystemPDFContainer} from "./components/systempdfcontainer";
-import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
+import {SystemIframeModal} from "./components/systemiframemodal";
+import {SystemInputColor} from "./components/systeminputcolor";
 
 @NgModule({
     imports: [
         DirectivesModule,
         CommonModule,
         FormsModule,
-        DragDropModule,
-        PdfJsViewerModule
+        DragDropModule
     ],
     declarations: [
         PackageLoader,
@@ -213,6 +214,7 @@ import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
         SystemGooglePlacesSearch,
         SystemIcon,
         SystemFileIcon,
+        SystemIframeModal,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -224,6 +226,7 @@ import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
         SystemInputEnum,
         SystemInputMultiEnum,
         SystemInputActionset,
+        SystemInputColor,
         SystemInputComponentset,
         SystemInputCountry,
         SystemInputCountryCode,
@@ -320,6 +323,7 @@ import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemWrappedText
     ],
     entryComponents: [
@@ -450,9 +454,11 @@ import {PdfJsViewerModule} from "ng2-pdfjs-viewer";
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
+        SystemInputFileContent,
         SystemModalHeaderEmpty,
         SystemWrappedText,
-        SystemPDFContainer
+        SystemPDFContainer,
+        SystemInputColor
     ]
 })
 export class SystemComponents {}

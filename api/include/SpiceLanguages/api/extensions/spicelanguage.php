@@ -182,6 +182,39 @@ $routes = [
             ],
         ]
     ],
+    [
+        'method' => 'get',
+        'route' => '/syslanguage/labels/translate/cantranslate',
+        'class' => SpiceLanguageController::class,
+        'function' => 'LanguageTranslateAPIKEYGet',
+        'description' => 'translates a label using the google Translate API',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/syslanguage/labels/translate/{fromlanguage}/{tolanguage}',
+        'class' => SpiceLanguageController::class,
+        'function' => 'LanguageTranslateLabel',
+        'description' => 'translates a label using the google Translate API',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'fromlanguage' => [
+                'in' => 'path',
+                'description' => 'the language to translate from',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'tolanguage' => [
+                'in' => 'path',
+                'description' => 'the language to translate to',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'labels'=> [
+                'in' => 'body',
+                'description' => 'the language to translate to',
+                'type' => ValidationMiddleware::TYPE_ARRAY
+            ],
+        ]
+    ],
 ];
 
 /**

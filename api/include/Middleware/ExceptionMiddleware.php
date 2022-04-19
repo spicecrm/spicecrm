@@ -8,6 +8,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class ExceptionMiddleware extends FailureMiddleware
 {
@@ -76,7 +77,7 @@ class ExceptionMiddleware extends FailureMiddleware
      * @return ResponseInterface
      */
     private function handleException(\Exception $exception): ResponseInterface {
-        $inDevMode = SpiceConfig::getInstance()->config['developerMode'];
+        $inDevMode = SpiceUtils::inDeveloperMode();
 
         if ($inDevMode) {
             $responseData = [

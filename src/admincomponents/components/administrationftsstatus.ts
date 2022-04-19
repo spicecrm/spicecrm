@@ -8,12 +8,13 @@ import {backend} from '../../services/backend.service';
 import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
 import {helper} from "../../services/helper.service";
-import set = Reflect.set;
+import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 
 @Component({
     selector: '[administration-ftsstatus]',
-    templateUrl: '../templates/administrationftsstatus.html'
+    templateUrl: '../templates/administrationftsstatus.html',
+    providers: [ftsconfiguration]
 })
 export class AdministrationFTSStatus {
 
@@ -47,6 +48,7 @@ export class AdministrationFTSStatus {
         public backend: backend,
         public helper: helper,
         public toast: toast,
+        public ftsconfiguration: ftsconfiguration,
         public injector: Injector
     ) {
         this.loadstatus();
@@ -68,25 +70,33 @@ export class AdministrationFTSStatus {
                 this.version = response.version;
 
                 // initialize
-                this.stats.docs = 0;
-                this.stats.size = 0;
+                this.stats.tdocs = 0;
+                this.stats.pdocs = 0;
+                this.stats.tsize = 0;
+                this.stats.psize = 0;
 
                 if ( response.stats?._all ) {
                     // catch when no fts index is set yet
                     if( response.stats._all.total.docs && response.stats._all.total.docs.count ) {
-                        this.stats.docs = response.stats._all.total.docs.count;
+                        this.stats.tdocs = response.stats._all.total.docs.count;
+                        this.stats.pdocs = response.stats._all.primaries.docs.count;
                     }
                     // catch when no fts index is set yet
                     if ( response.stats._all.total?.store && response.stats._all.total.store.size_in_bytes ) {
-                        this.stats.size = this.helper.humanFileSize( response.stats._all.total.store.size_in_bytes );
+                        this.stats.tsize = this.helper.humanFileSize( response.stats._all.total.store.size_in_bytes );
+                        this.stats.psize = this.helper.humanFileSize( response.stats._all.primaries.store.size_in_bytes );
                     }
                 }
 
                 for (let index in response.stats.indices) {
                     this.indices.push({
                         name: index,
-                        docs: response.stats.indices[index].total.docs.count,
-                        size: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
+                        pdocs: response.stats.indices[index].primaries.docs.count,
+                        psize: this.helper.humanFileSize(response.stats.indices[index].primaries.store.size_in_bytes),
+                        tdocs: response.stats.indices[index].total.docs.count,
+                        tsize: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
+                        stored: response.stats.indexed[index].count,
+                        unindexed: response.stats.indexed[index].unindexed,
                         blocked: (response.settings && response.settings[index] && response.settings[index].settings.index.blocks?.read_only_allow_delete) ? true : false
                     });
                 }
@@ -110,7 +120,6 @@ export class AdministrationFTSStatus {
      */
     public unlock() {
         this.backend.putRequest('admin/elastic/unblock').subscribe(resp => {
-            console.log(resp);
             this.loadstatus();
         });
     }
@@ -123,6 +132,20 @@ export class AdministrationFTSStatus {
         return this.indices.find(i => i.blocked) ? true : false;
     }
 
+
+
+    /**
+     * initialize the full index
+     */
+    public initialize() {
+        this.modal.confirm('Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!', 'Initialize')
+            .subscribe(res => {
+                    if (res) {
+                        this.ftsconfiguration.executeAction('init');
+                    }
+                }
+            );
+    }
 
 }
 

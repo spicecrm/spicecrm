@@ -612,6 +612,16 @@ class Link2
     }
 
     /**
+     * set to loaded as override
+     * use only if you really know what you are doing
+     *
+     * @return void
+     */
+    public function setLoaded(){
+        $this->loaded = true;
+    }
+
+    /**
      * Remove a bean object from the list of beans currently loaded to this relationship.
      * This for the most part should not need to be called except by the relatipnship implementation classes.
      *

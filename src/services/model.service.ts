@@ -770,6 +770,9 @@ export class model implements OnDestroy {
             case "set_value":
                 this.data[action.fieldname] = params;
                 return true;
+            case "set_value_from_field":
+                this.data[action.fieldname] = this.data[params];
+                return true;
             case "set_message":
                 if (params instanceof Object) {
                     this._messages.push(params);
@@ -1060,13 +1063,10 @@ export class model implements OnDestroy {
 
         // determine changed fields
         let changedData: any;
-        if (this.isEditing && !this.isNew) {
+        if ((this.isEditing || !_.isEmpty(this.backupData)) && !this.isNew) {
             changedData = this.getDirtyFields();
             // in any case send back date_modified
             changedData.date_modified = this.data.date_modified;
-
-            // hack to provoke the changes for Testing
-            // changedData.date_modified.subtract( 1, 'days');
         } else {
             changedData = this.data;
         }
@@ -1316,6 +1316,9 @@ export class model implements OnDestroy {
             for (let fieldname in presets) {
                 this.data[fieldname] = presets[fieldname];
             }
+
+            // run the evaluation rules
+            this.evaluateValidationRules();
 
             this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
                 if (editModalRef) {

@@ -3,22 +3,22 @@
 * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
 * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
 * You can contact us at info@spicecrm.io
-* 
+*
 * SpiceCRM is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
-* 
+*
 * SpiceCRM is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -389,7 +389,7 @@ class SysModuleFilters
             case 'inlessthanndays':
             case 'inlessthandays':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
-                $date->add(new DateInterval("P{$condition->filtervalue}D"));
+                $date->sub(new DateInterval("P{$condition->filtervalue}D"));
                 return "{$tablename}.{$condition->field} <= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59'";
                 break;
             case 'inmorethanndays':
@@ -743,20 +743,11 @@ class SysModuleFilters
         $conditionmet = false;
 
         foreach ($group->conditions as $condition) {
-            if ($condition->conditions) {
-                // save bool value of each condition ($c) in array, then search for a false one, if there is one, $conditionmet is false
-                foreach ($condition->conditions as $c) {
-                    $vals[] = $this->checkBeanForFilterMatchCondition($c, $bean);
-                }
-                if (in_array(false, $vals)) {
-                    $conditionmet = false;
-                } else {
-                    $conditionmet = true;
-                }
+            if ( isset( $condition->conditions )) {
+                $conditionmet = $this->checkBeanForFilterMatchGroup($condition, $bean);
             } else {
                 $conditionmet = $this->checkBeanForFilterMatchCondition($condition, $bean);
             }
-
             // in case of AND .. one negative is all negative
             // in case of OR one positive is enough
             if (strtoupper($group->logicaloperator) == 'AND' && !$conditionmet) {
@@ -788,6 +779,9 @@ class SysModuleFilters
                 break;
             case 'equals':
                 return $bean->{$condition->field} == $condition->filtervalue;
+                break;
+            case 'notequals':
+                return $bean->{$condition->field} != $condition->filtervalue;
                 break;
             case 'equalr':
                 $relatedField = $bean->field_name_map[$condition->field]['id_name'];

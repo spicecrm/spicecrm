@@ -2,65 +2,59 @@
  * @module AdminComponentsModule
  */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    Input,
-    NgModule,
-    ViewChild,
-    OnInit,
-    ViewContainerRef
+    Input
 } from '@angular/core';
-import {metadata} from '../../services/metadata.service';
-import {navigation} from '../../services/navigation.service';
-import {backend} from '../../services/backend.service';
+import {language} from '../../services/language.service';
+import {helper} from '../../services/helper.service';
 import {administrationconfigurator} from '../services/administrationconfigurator.service';
 
 @Component({
     selector: '[administration-configurator-item]',
-    templateUrl: '../templates/administrationconfiguratoritem.html'
+    templateUrl: '../../admincomponents/templates/administrationconfiguratoritem.html'
 })
-export class AdministrationConfiguratorItem implements OnInit{
+export class AdministrationConfiguratorItem {
 
-    @Input() fields: Array<any> = [];
-    @Input() entry: any = {};
+    @Input() public fields: any[] = [];
+    @Input() public entry: any = {};
 
-    constructor(public administrationconfigurator: administrationconfigurator) {
+    constructor(public administrationconfigurator: administrationconfigurator, public language: language, public helper: helper) {
     }
 
-    ngOnInit(){
-
-    }
-
-    setEditMode() {
+    public setEditMode() {
         this.administrationconfigurator.setEditMode(this.entry.id);
     }
 
-    isEditMode(field = null) {
-        if (!field)
+    public isEditMode(field = null) {
+        if (!field) {
             return this.administrationconfigurator.isEditMode(this.entry.id);
-        else
+        } else {
             return !field.readonly && this.administrationconfigurator.isEditMode(this.entry.id);
+        }
     }
 
-    setViewMode() {
+    public setViewMode() {
         this.administrationconfigurator.cancelEditMode(this.entry.id);
     }
 
-    save() {
+    public save() {
         this.administrationconfigurator.saveEntry(this.entry.id);
     }
 
-    delete() {
-        this.administrationconfigurator.deleteEntry(this.entry.id);
+    public delete() {
+        this.helper.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('MSG_DELETE_RECORD', 'long'))
+            .subscribe(answer => {
+                if (answer) {
+                    this.administrationconfigurator.deleteEntry(this.entry.id);
+                }
+            });
     }
 
-    copy(id)
-    {
+    public copy(id) {
         this.administrationconfigurator.copy(id);
     }
 
-    getJSON(value) {
+    public getJSON(value) {
         try {
             let object = JSON.parse(value);
             return JSON.stringify(object, null, 2);

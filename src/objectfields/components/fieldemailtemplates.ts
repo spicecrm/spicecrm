@@ -105,38 +105,25 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                     if (!this.model.getField(this.subjectField)) {
                         this.model.setField(this.subjectField, data.subject);
                     }
-                    // Check if element with class "spicecrm_quote" should kept on the bottom (it is for the email-reply)
-                    if(this.addtocurrentquote) {
 
-                        // create a new document to manage the current html string (body)
-                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
-                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
-                        let selectedEle = virtualDocument.querySelectorAll(".spicecrm_quote");
+                    // create a new document to manage the current html string (body)
+                    let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
+                    virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
 
-                        // keep the html with the class "spicecrm_quote" and set the template
-                        this.model.setField(this.bodyField, data.body_html + selectedEle[0].outerHTML);
-                    } else {
-                        // create a new document to manage the current html string (body)
-                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
-                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
-                        // check if a div tag with signature is present in order to keep the signature when set
-                        // extract signatures, add again to the end of body_html
-                        let selectedEle = virtualDocument.querySelectorAll("div[data-signature]");
-                        virtualDocument.documentElement.innerHTML = data.body_html;
-                        let body = virtualDocument.querySelector('body');
-                        if(body) { // add as laast child within the body
-                            selectedEle.forEach(el => {
-                                body.appendChild(el);
-                            });
-                        } else { // add as laast child within the main tag
-                            selectedEle.forEach(el => {
-                                virtualDocument.documentElement.appendChild(el);
-                            });
-                        }
+                    let selectedEleTemp = virtualDocument.querySelectorAll("div[spicecrm_temp_quote]");
+                    let selectedEleSign = virtualDocument.querySelectorAll("div[data-signature]");
+                    let selectedEleReply = virtualDocument.querySelectorAll("div[spicecrm_reply_quote]");
 
-                        // keep the html with the signature in the end and set the template
-                        this.model.setField(this.bodyField, virtualDocument.documentElement.outerHTML);
-                    }
+                    selectedEleTemp[0]?.parentNode.removeChild(selectedEleTemp[0]);
+
+                    let newBody = [
+                        '<div class="spicecrm_temp_quote">' + data.body_html + '</div>',
+                        selectedEleSign[0]?.outerHTML,
+                        selectedEleReply[0]?.outerHTML
+                    ].join("<p><br></p>");
+
+                    this.model.setField(this.bodyField, newBody);
+
                     modalRef.instance.self.destroy();
                 });
             });

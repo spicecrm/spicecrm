@@ -57,6 +57,6 @@ class CampaignLog extends SugarBean {
 
 	static function setStatus($id,$status){
         $db = DBManagerFactory::getInstance();
-        $db->query("UPDATE campaign_log SET activity_type = '$status', activity_date = NOW() WHERE id = '$id'");
+        $db->query("UPDATE campaign_log SET activity_type = '$status', activity_date = {$db->now()} WHERE id = '$id'");
     }
 }

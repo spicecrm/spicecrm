@@ -7,6 +7,7 @@ const PROXY_CONFIG = [
             "/config",
             "/api",
             "/vendor",
+            "/node_modules",
         ],
         target: devTarget.toString(),
         secure: false,

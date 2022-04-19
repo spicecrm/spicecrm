@@ -41,7 +41,7 @@ export class GlobalSearchModuleOnly implements OnChanges {
         if (_.isEmpty(componentconfig)) componentconfig = this.metadata.getModuleDefaultComponentConfigByUsage(this.module, 'list');
 
         for (let listField of this.metadata.getFieldSetFields(componentconfig.fieldset)) {
-            if (listField.fieldconfig.default !== false) this.listfields.push(listField);
+            if (!listField.fieldconfig.hidden) this.listfields.push(listField);
         }
     }
 

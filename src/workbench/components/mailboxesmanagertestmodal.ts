@@ -91,7 +91,7 @@ export class MailboxesmanagerTestModal implements OnInit {
             (err: any) => {
                 this.tested = false;
                 this.testing = false;
-                this.validConnection = false;
+                this.validConnection = null;
             });
     }
 

@@ -29,7 +29,7 @@ export class mailboxesEmails implements OnDestroy {
     /**
      * the default limit for the emails to be loaded at once
      */
-    public limit = 30;
+    public limit = 50;
 
     /**
      * the list of mailboxes
@@ -87,6 +87,11 @@ export class mailboxesEmails implements OnDestroy {
      * @private
      */
     public serviceSubscriptions: Subscription = new Subscription();
+
+    /**
+     * holds the search term
+     */
+    public searchTerm: string;
 
     constructor(
         public backend: backend,
@@ -322,7 +327,8 @@ export class mailboxesEmails implements OnDestroy {
                 sortfield: "date_sent"
             }],
             fields: JSON.stringify(this.requestFields),
-            limit: this.limit
+            limit: this.limit,
+            searchterm: this.searchTerm
         };
 
         this.isLoading = true;

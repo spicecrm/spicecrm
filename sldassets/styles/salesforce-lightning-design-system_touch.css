@@ -1,4 +1,4 @@
-/*! Lightning Design System 2.16.2 */
+/*! Lightning Design System 2.17.5 */
 @charset "UTF-8";
 @media (pointer: coarse) and (hover: none){
   body{
@@ -10,7 +10,7 @@
   }
 
   .slds-button{
-    --sds-c-button-line-height:2.625rem;
+    --slds-c-button-line-height:2.625rem;
     font-weight:700;
   }
 
@@ -100,7 +100,7 @@
 .slds-checkbox--button-group .slds-checkbox_button + .slds-checkbox_button,
 .slds-checkbox--button-group .slds-checkbox--button + .slds-checkbox--button{
     border-left:0;
-    border-top:1px solid #dddbda;
+    border-top:1px solid #e5e5e5;
   }
   .slds-checkbox_button-group .slds-checkbox_button:first-child > .slds-checkbox_button__label,
 .slds-checkbox_button-group .slds-checkbox--button:first-child > .slds-checkbox--button__label,
@@ -164,6 +164,7 @@
         -ms-flex-align:start;
             align-items:flex-start;
     font-size:1rem;
+    padding-right:0.5rem;
   }
   .slds-checkbox_toggle [type=checkbox] + .slds-checkbox_faux_container,
 .slds-checkbox_toggle [type=checkbox] + .slds-checkbox--faux_container,
@@ -407,6 +408,8 @@
   .slds-modal__close{
     width:2.75rem;
     height:2.75rem;
+  }
+  .slds-modal__header .slds-modal__close{
     top:-2.75rem;
     right:0;
   }
@@ -538,7 +541,7 @@
 .slds-radio--button-group .slds-radio_button + .slds-radio_button,
 .slds-radio--button-group .slds-radio--button + .slds-radio--button{
     border-left:0;
-    border-top:1px solid #dddbda;
+    border-top:1px solid #e5e5e5;
   }
   .slds-radio_button-group .slds-radio_button:first-child > .slds-radio_button__label,
 .slds-radio_button-group .slds-radio--button:first-child > .slds-radio--button__label,
