@@ -15,6 +15,43 @@ $routes = [
         'function'    => 'getTrashedRecords',
         'description' => 'get all records contained in trash can',
         'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'limit' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'description' => 'limit of the list',
+                'example' => '50',
+                'required' => false
+            ],
+            'offset' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'description' => 'offset of the list',
+                'example' => '0',
+                'required' => false
+            ],
+            'searchTerm' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'search term',
+                'example' => 'spice',
+                'required' => false
+            ],
+            'module' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'module to filter',
+                'example' => 'Users',
+                'required' => false
+            ],
+            'user' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'user to filter',
+                'example' => '1',
+                'required' => false
+            ]
+        ]
     ],
     [
         'method'      => 'get',

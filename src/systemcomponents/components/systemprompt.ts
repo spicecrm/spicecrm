@@ -20,7 +20,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * the type of prompt
      */
-    @Input() public type: 'info'|'input'|'input_date'|'confirm';
+    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm';
 
     /**
      * the text that is rendered in the popup
@@ -122,7 +122,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      */
     get canSubmit(){
         // only check for input and input data
-        if((this.type != 'input'&& this.type != 'input_date')) return true;
+        if(!this.type.startsWith('input')) return true;
 
         // value needs to be set
         if (!this.value ) return false;

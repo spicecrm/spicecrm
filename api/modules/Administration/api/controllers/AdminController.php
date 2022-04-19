@@ -9,10 +9,13 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
+use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\utils\FileUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\UploadStream;
@@ -32,6 +35,29 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class AdminController
 {
+
+    /**
+     * resets the cache
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function resetCache(Request $req, Response $res, array $args): Response {
+        SugarCache::instance()->resetFull();
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * build stats for the system
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
     public function systemstats(Request $req, Response $res, array $args): Response {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
@@ -135,6 +161,10 @@ class AdminController
             // handle sytem settings
             foreach ($postBody['system'] as $itemname => $itemvalue) {
                 switch ($itemname) {
+                    // do not write the unique key
+                    case 'unique_key':
+                        break;
+                        // name goes to database
                     case 'name':
                         SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
                         $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
@@ -148,6 +178,7 @@ class AdminController
 
             // handle advanced settings
             foreach ($postBody['advanced'] as $itemname => $itemvalue) {
+                if(!$itemvalue) continue;
                 SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
                 $diffArray[$itemname] = $itemvalue;
             }
@@ -447,7 +478,7 @@ class AdminController
             if($lang['system_language']){
                 $language = $lang['language_code'];
                 $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-                $appListStrings[$language][] = return_app_list_strings_language($language);
+                $appListStrings[$language][] = SpiceUtils::returnAppListStringsLanguage($language);
                 $appLang[$language][] = $this->loadLanguage($language);
             }
         }
@@ -527,9 +558,9 @@ class AdminController
 
             if ($shouldSave) {
                 if (!file_exists("custom/$extpath")) {
-                    mkdir_recursive("custom/$extpath", true);
+                    FileUtils::mkdirRecursive("custom/$extpath", true);
                 }
-                $out = sugar_fopen("custom/$extpath/$name", 'w');
+                $out = SpiceFileUtils::spiceFopen("custom/$extpath/$name", 'w');
                 fwrite($out, $extension);
                 fclose($out);
             } else {
@@ -560,9 +591,9 @@ class AdminController
         $extension .= "\n?>";
         if ($shouldSave) {
             if (!file_exists("custom/$extpath")) {
-                mkdir_recursive("custom/$extpath", true);
+                FileUtils::mkdirRecursive("custom/$extpath", true);
             }
-            $out = sugar_fopen("custom/$extpath/$name", 'w');
+            $out = SpiceFileUtils::spiceFopen("custom/$extpath/$name", 'w');
             fwrite($out, $extension);
             fclose($out);
         } else {

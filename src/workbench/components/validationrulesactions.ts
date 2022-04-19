@@ -18,6 +18,7 @@ export class ValidationRulesActions implements OnInit {
     @Input() data; // validation rule data
     readonly action_options = [
         'set_value',
+        'set_value_from_field',
         'set_model_state',
         'set_stati',
         'set_message',

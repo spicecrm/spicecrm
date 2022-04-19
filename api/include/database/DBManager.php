@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -43,6 +43,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 
@@ -568,7 +570,7 @@ protected function checkQuery($sql, $object_name = false)
     public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
 
-        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'");
+        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'", true );
         while ($row = $this->fetchByAssoc($query)) {
             $id = $row['id'];
         }
@@ -577,7 +579,7 @@ protected function checkQuery($sql, $object_name = false)
             foreach ($data as $col => $val) {
                 $sets[] = "$col = '{$this->quote($val)}'";
             }
-            $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
+            $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'", true );
         } else {
             $this->insertQuery($table, $data, $execute);
         }
@@ -632,7 +634,7 @@ protected function checkQuery($sql, $object_name = false)
 
 			if(isset($data[$field])) {
 				// clean the incoming value..
-				$val = from_html($data[$field]);
+				$val = DBUtils::fromHtml($data[$field]);
 			} else {
 				if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
 					$val = $fieldDef['default'];
@@ -1568,15 +1570,15 @@ protected function checkQuery($sql, $object_name = false)
 							if(isset($type) && $type=='int') {
 // CR1000452
 //								if(!empty($custom_fields[$fieldDef['name']]))
-//									$cstm_values[$fieldDef['name']] = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(from_html($val));
+//									$cstm_values[$fieldDef['name']] = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val));
 //								else
-									$values[$fieldDef['name']] = DBManagerFactory::getInstance()->quote(from_html($val));
+									$values[$fieldDef['name']] = DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val));
 							} else {
 // CR1000452
 //								if(!empty($custom_fields[$fieldDef['name']]))
-//									$cstm_values[$fieldDef['name']] = "'".\SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(from_html($val))."'";
+//									$cstm_values[$fieldDef['name']] = "'".\SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val))."'";
 //								else
-									$values[$fieldDef['name']] = "'". DBManagerFactory::getInstance()->quote(from_html($val))."'";
+									$values[$fieldDef['name']] = "'". DBManagerFactory::getInstance()->quote(DBUtils::fromHtml($val))."'";
 							}
 						}
 						if(!$built_columns){
@@ -1683,7 +1685,7 @@ protected function checkQuery($sql, $object_name = false)
 	public function countQuery()
 	{
 		if (self::$queryLimit != 0 && ++self::$queryCount > self::$queryLimit
-			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !is_admin(AuthenticationController::getInstance()->getCurrentUser()))) {
+			&&(empty(AuthenticationController::getInstance()->getCurrentUser()) || !SpiceUtils::isAdmin(AuthenticationController::getInstance()->getCurrentUser()))) {
             $resourceManager = ResourceManager::getInstance();
             $resourceManager->notifyObservers('ERR_QUERY_LIMIT');
 		}
@@ -1697,7 +1699,7 @@ protected function checkQuery($sql, $object_name = false)
      */
 	protected function quoteInternal($string)
 	{
-		return from_html($string);
+		return DBUtils::fromHtml($string);
 	}
 
 	/**
@@ -1821,7 +1823,7 @@ protected function checkQuery($sql, $object_name = false)
 	{
 		LoggerManager::getLogger()->info("Fetch One: |$sql|");
 		$this->checkConnection();
-		$queryresult = $this->query($sql, $dieOnError, $msg);
+		$queryresult = $this->limitQuery($sql, 0, 1, $dieOnError, $msg);
 		$this->checkError($msg.' Fetch One Failed:' . $sql, $dieOnError);
 
 		if (!$queryresult) return false;
@@ -2118,7 +2120,7 @@ protected function checkQuery($sql, $object_name = false)
     		if($fieldDef['name'] == 'deleted' && empty($bean->deleted)) continue;
 
     		if(isset($bean->$field)) {
-    			$val = from_html($bean->$field);
+    			$val = DBUtils::fromHtml($bean->$field);
     		} else {
     			continue;
     		}
@@ -2988,7 +2990,7 @@ protected function checkQuery($sql, $object_name = false)
         $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
 
         $values = [];
-        $values['id'] = $this->massageValue(create_guid(), $fieldDefs['id']);
+        $values['id'] = $this->massageValue(SpiceUtils::createGuid(), $fieldDefs['id']);
         // $values['transactionid']= LoggerManager::getLogger()->getTransactionId();
         $values['parent_id'] = $this->massageValue($bean->id, $fieldDefs['parent_id']);
         $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);
@@ -4155,6 +4157,7 @@ protected function checkQuery($sql, $object_name = false)
 	abstract public function getGuidSQL();
 
     /**
+     * @deprecated
      * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
      * @abstract
      * @return string

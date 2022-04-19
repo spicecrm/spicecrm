@@ -35,18 +35,13 @@ export class SpiceInstallerSetBackEnd implements OnInit {
     public ngOnInit() {
         let currentUrl = window.location.href;
         this.apiurl = currentUrl.replace("#/install", "api");
-        this.http.get('config/check', {params: {url: btoa(this.apiurl)}}).subscribe(
-           (res: any) => {
-               if (res.success) {
-                   this.apiFound = true;
-               }
-           },
-           (err: any) => {
-               switch (err.status) {
-                   case 401:
-                       break;
-               }
-               });
+    }
+
+    public next(){
+        this.spiceinstaller.systemurl = this.apiurl;
+        this.spiceinstaller.selectedStep.completed = true;
+        this.spiceinstaller.steps[0] = this.spiceinstaller.selectedStep;
+        this.spiceinstaller.next(this.spiceinstaller.steps[0]);
     }
 
     public testConnection() {
@@ -117,7 +112,7 @@ export class SpiceInstallerSetBackEnd implements OnInit {
             (res: any) => {
                 let response = res;
                 if (response.success == true) {
-                    this.configurationService.setSiteData(response.site);
+                    // this.configurationService.setSiteData(response.site);
                     this.router.navigate(['/login']);
                 } else {
                     this.checking = false;

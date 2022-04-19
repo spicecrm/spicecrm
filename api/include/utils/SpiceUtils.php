@@ -193,7 +193,7 @@ class SpiceUtils
      */
     public static function spiceCleanup(bool $exit = false) {
         // todo check if there's even a database
-        if (!isset($GLOBALS['installing']) || !$GLOBALS['installing']) { // workaround for installer for now. variable is set in SpiceInstallerController ... find a better way
+        if (SpiceConfig::getInstance()->configExists()) { // workaround for installer for now. variable is set in SpiceInstallerController ... find a better way
             $db = DBManagerFactory::getInstance();
             $db->disconnect();
         }
@@ -374,6 +374,61 @@ class SpiceUtils
     }
 
     /**
+     * @param $errno
+     * @param $errstr
+     * @param $errfile
+     * @param $errline
+     */
+    public static function StackTraceErrorHandler($errno, $errstr, $errfile, $errline) {
+        $error_msg = " $errstr occurred in <b>$errfile</b> on line $errline [" . date("Y-m-d H:i:s") . ']';
+        $halt_script = true;
+        switch ($errno) {
+            case 2048: return; //depricated we have lots of these ignore them
+            case E_USER_NOTICE:
+            case E_NOTICE:
+                if (error_reporting() & E_NOTICE) {
+                    $halt_script = false;
+                    $type = 'Notice';
+                } else
+                    return;
+                break;
+            case E_USER_WARNING:
+            case E_COMPILE_WARNING:
+            case E_CORE_WARNING:
+            case E_WARNING:
+
+                $halt_script = false;
+                $type = "Warning";
+                break;
+
+            case E_USER_ERROR:
+            case E_COMPILE_ERROR:
+            case E_CORE_ERROR:
+            case E_ERROR:
+
+                $type = "Fatal Error";
+                break;
+
+            case E_PARSE:
+
+                $type = "Parse Error";
+                break;
+
+            default:
+                //don't know what it is might not be so bad
+                $halt_script = false;
+                $type = "Unknown Error ($errno)";
+                break;
+        }
+        $error_msg = '<b>' . $type . '</b>:' . $error_msg;
+        echo $error_msg;
+        self::displayStackTrace();
+        if ($halt_script) {
+            exit - 1;
+        }
+    }
+
+    /**
      * @param false $textOnly
      */
     public static function displayStackTrace(bool $textOnly = false): void {
@@ -453,11 +508,15 @@ class SpiceUtils
     /**
      * This function will take a string that has tokens like {0}, {1} and will replace
      * those tokens with the args provided
-     * @param    $format string to format
+     * @param    $format string or null to format
      * @param    $args args to replace
      * @return array|string|string[] $result a formatted string
      */
-    public static function stringFormat(string $format, $args) {
+    public static function stringFormat($format, $args) {
+        if(empty($format)){
+            return '';
+        }
+
         $result = $format;
 
         /** Bug47277 fix.
@@ -552,7 +611,7 @@ class SpiceUtils
      */
     public static function inDeveloperMode(): bool {
         return isset(SpiceConfig::getInstance()->config['developerMode'])
-            && SpiceConfig::getInstance()->config['developerMode'];
+            && SpiceConfig::getInstance()->config['developerMode'] === true;
     }
 
     /**
@@ -597,16 +656,6 @@ class SpiceUtils
         $sugar_web_service_order_by = $field_name;
         usort($beans, "cmp_beans");
         return $beans;
-    }
-
-    /**
-     * This is a utility function for 508 Compliance.  It returns the lang=[Current Language] text string used
-     * inside the <html> tag.  If no current language is specified, it defaults to lang='en'.
-     *
-     * @return String The lang=[Current Language] markup to insert into the <html> tag
-     */
-    public static function getLanguageHeader(): string {
-        return isset($GLOBALS['current_language']) ? "lang='{$GLOBALS['current_language']}'" : "lang='en'";
     }
 
     /**
@@ -724,9 +773,9 @@ class SpiceUtils
             $attemptCounter++;
             $key = self::generateShortUrlKey(6);
             $guid = SpiceUtils::createGuid();
-            $result = $db->query(sprintf(
-                'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" ) LIMIT 1',
-                $guid, $key, $route, $active, $key));
+            $result = $db->limitQuery(sprintf(
+                'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" )',
+                $guid, $key, $route, $active, $key), 0, 1);
         } while ($db->getAffectedRowCount($result) === 0 and $attemptCounter < $maxAttempts);
 
         if ($attemptCounter === $maxAttempts) {
@@ -1135,7 +1184,7 @@ class SpiceUtils
      * @param string $language specific language to load
      * @return array lang strings
      */
-    public static function returnAppListStringsLanguage($language, $scope = 'all'): ?array {
+    public static function returnAppListStringsLanguage($language = 'en_us', $scope = 'all'): ?array {
         global $app_list_strings;
 
         $cache_key = 'app_list_strings.' . $language;
@@ -1286,5 +1335,23 @@ class SpiceUtils
             $string = self::removeInvalidCharacter($subString);
         }
         return $string;
+    }
+
+
+    public static function br2nl($str) {
+        $regex = "#<[^>]+br.+?>#i";
+        preg_match_all($regex, $str, $matches);
+
+        foreach ($matches[0] as $match) {
+            $str = str_replace($match, "<br>", $str);
+        }
+
+        $brs = array('<br>', '<br/>', '<br />');
+        $str = str_replace("\r\n", "\n", $str); // make from windows-returns, *nix-returns
+        $str = str_replace("\n\r", "\n", $str); // make from windows-returns, *nix-returns
+        $str = str_replace("\r", "\n", $str); // make from windows-returns, *nix-returns
+        $str = str_ireplace($brs, "\n", $str); // to retrieve it
+
+        return $str;
     }
 }

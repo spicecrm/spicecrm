@@ -42,6 +42,7 @@ use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -883,7 +884,7 @@ class TimeDate
         }
         $now = new DateTime("now", $tz);
         $off = $now->getOffset();
-        $translated = translate('timezone_dom','',$name);
+        $translated = SpiceUtils::translate('timezone_dom','',$name);
         if(is_string($translated) && !empty($translated) && $translated != 'timezone_dom') {
             $name = $translated;
         }

@@ -17,7 +17,7 @@ class IpAddressesController
     {
         $db = DBManagerFactory::getInstance();
         $ipAddresses = [];
-        $result = $db->query('SELECT i.address, i.date_entered, i.created_by, u.user_name as created_by_name, i.description FROM ipaddresses i LEFT JOIN users u ON i.created_by = u.id WHERE date_deleted IS NULL AND color = "'.$args['color'][0].'"');
+        $result = $db->query('SELECT i.address, i.date_entered, i.created_by, u.user_name as created_by_name, i.description FROM ipaddresses i LEFT JOIN users u ON i.created_by = u.id WHERE date_deleted IS NULL AND color = \''.$args['color'][0].'\'');
         while( $address = $db->fetchByAssoc( $result )) $ipAddresses[] = $address;
         return $res->withJson( $ipAddresses );
     }

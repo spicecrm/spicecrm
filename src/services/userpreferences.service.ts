@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {Observable, Subject, of} from 'rxjs';
 import {backend} from './backend.service';
 import {toast} from './toast.service';
 import {language} from './language.service';
@@ -102,8 +102,10 @@ export class userpreferences {
     }
 
     public loadPreferences(category = 'global'): Observable<any> {
-        let retSubject: Subject<any> = new Subject<any>();
+        return of(this.configuration.getData('globaluserpreferences'));
 
+        /*
+        let retSubject: Subject<any> = new Subject<any>();
         this.backend.getRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category).subscribe((prefs) => {
             this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
             if (category === 'global') {
@@ -117,6 +119,7 @@ export class userpreferences {
         });
 
         return retSubject.asObservable();
+        */
     }
 
     // Completes the global preferences with default values.

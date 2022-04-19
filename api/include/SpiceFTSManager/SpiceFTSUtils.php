@@ -33,6 +33,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceFTSUtils
 {
@@ -116,8 +117,7 @@ class SpiceFTSUtils
     {
         $db = DBManagerFactory::getInstance();
         //catch installation process and abort. table sysfts will not exist at the point during installation
-        if (!empty($GLOBALS['installing']))
-            return false;
+        if (SpiceConfig::getInstance()->installing) return false;
 
 
         if (!$overrideCache && isset($_SESSION['SpiceFTS']['indexes'][$module]['properties'])) {
@@ -138,7 +138,7 @@ class SpiceFTSUtils
                     $addFields = $seed->add_fts_metadata();
                     foreach ($addFields as $addFieldName => $addField) {
                         $modulePropertiesarray[] = [
-                            'fieldid' => create_guid(),
+                            'fieldid' => SpiceUtils::createGuid(),
                             'fieldname' => $addFieldName,
                             'indexfieldname' => $addFieldName,
                             'search' => $addField['search'],
@@ -192,9 +192,8 @@ class SpiceFTSUtils
     static function getBeanIndexSettings($module)
     {
         //BEGIN CR1000190
-        if( @$GLOBALS['installing'] ) {
-            return false;
-        }
+        if( SpiceConfig::getInstance()->installing) return false;
+
         //END
         $db = DBManagerFactory::getInstance();
 

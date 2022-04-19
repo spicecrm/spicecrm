@@ -189,13 +189,13 @@ class SchedulerJobTask extends Basic
 
         if ($success) {
 
-            $message = $return['message'] ?? 'was successfully executed';
+            $message = $executed['message'] ?? 'was successfully executed';
 
             $this->resolve(self::JOB_TASK_RESOLUTION_DONE, $message);
 
         } else {
 
-            $message = $return['message'] ?? 'execution failed';
+            $message = $executed['message'] ?? 'execution failed';
 
             $this->resolve(self::JOB_TASK_RESOLUTION_FAILURE, $message);
         }
@@ -225,10 +225,10 @@ class SchedulerJobTask extends Basic
     private function executeMethod($classMethod)
     {
         LoggerManager::getLogger()->info("-----> SchedulerJobTask starting Job with execution method: $this->method");
-        if (!$classMethod->class) {
-            include_once 'modules/SchedulerJobs/_AddJobsHere.php';
-            return call_user_func_array($classMethod->method, [$this->method_params]);
-        } else {
+//        if (!$classMethod->class) {
+//            include_once 'modules/SchedulerJobs/_AddJobsHere.php';
+//            return call_user_func_array($classMethod->method, [$this->method_params]);
+//        } else {
             try {
                 return call_user_func_array([$classMethod->class, $classMethod->method], [$this->method_params]);
 
@@ -236,7 +236,7 @@ class SchedulerJobTask extends Basic
                 LoggerManager::getLogger()->fatal("SchedulerJobTask {$this->id} ({$this->name}) Exception: {$exception->getMessage()} Stack Trace: {$exception->getTraceAsString()}");
                 return ['success' => false, 'message' => "Exception: " . $exception->getMessage()];
             }
-        }
+//        }
     }
 
     /**
@@ -252,7 +252,7 @@ class SchedulerJobTask extends Basic
         $methodName = $methodArray[1];
 
         if ($isFunction) {
-            include_once 'modules/SchedulerJobs/_AddJobsHere.php';
+//            include_once 'modules/SchedulerJobs/_AddJobsHere.php';
             if (!is_callable($methodName)) {
                 $this->resolve(
                     self::JOB_TASK_RESOLUTION_FAILURE,

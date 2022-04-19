@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, Input, OnInit} from '@angular/core';
 
 interface countdownComponents {
     secondsToDday: string;
@@ -17,7 +17,7 @@ declare var moment: any;
     templateUrl: '../templates/globalcountdown.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GlobalCountdown {
+export class GlobalCountdown implements OnInit{
 
     /**
      * the timer
@@ -35,16 +35,30 @@ export class GlobalCountdown {
     @Input() public event: string;
 
     /**
+     * set to visible if the date is in the future
+     */
+    public visible: boolean = false;
+
+    /**
      * a target date in international format
      */
     @Input() public targetdate: string;
 
     constructor(private zone: NgZone, private cdref: ChangeDetectorRef) {
-        this.zone.runOutsideAngular(() => {
-            this.timer = setInterval(() => {
-                this.update();
-            }, 1000);
-        });
+
+    }
+
+    public ngOnInit() {
+        let date = new moment(this.targetdate);
+
+        this.visible = moment().isBefore(date);
+        if(this.visible) {
+            this.zone.runOutsideAngular(() => {
+                this.timer = setInterval(() => {
+                    this.update();
+                }, 1000);
+            });
+        }
     }
 
     /**

@@ -71,7 +71,7 @@ class SpiceGDPRManagerSchedulerJobTasks
      *
      * @param SugarBean $bean
      */
-    private function deleteRelated(SugarBean $bean, $relatedModules, $purge = false){
+    public function deleteRelated(SugarBean $bean, $relatedModules, $purge = false){
         if(count($relatedModules) > 0) {
 
             foreach ($bean->field_defs as $fieldname => $fielddata) {

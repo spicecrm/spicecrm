@@ -46,6 +46,10 @@ class Meeting extends SugarBean
             }
         }
 
+        # reset the email_reminder_sent flag, in case the start date has been changed
+        if ( !empty( $this->fetched_row['date_start'] ) and $this->email_reminder_sent and $this->date_start !== $this->fetched_row['date_start'] ) {
+            $this->email_reminder_sent = false;
+        }
 
         $return_id = parent::save($check_notify, $fts_index_bean);
 

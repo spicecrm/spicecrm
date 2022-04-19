@@ -229,7 +229,8 @@ export class ObjectActionOutputBeanModal {
 
                 this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
-                        this.blobUrl = pdf.content;
+                        let blob = this.datatoBlob(atob(pdf.content));
+                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                         this.contentForHandBack = pdf.content;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
@@ -301,7 +302,8 @@ export class ObjectActionOutputBeanModal {
      * @param data the raw data of the object being passed in. When the data is pased in the bloburl is created
      */
     set data(data) {
-        this.blobUrl = data;
+        let blob = this.datatoBlob(data);
+        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
     }
 
     /**

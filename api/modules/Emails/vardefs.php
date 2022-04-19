@@ -273,6 +273,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'type'    => 'bool',
             'default' => false,
         ],
+        'signature' => [
+            'name'       => 'signature',
+            'vname'      => 'LBL_SIGNATURE',
+            'type'       => 'varchar',
+            'source'  => 'non-db',
+            'reportable' => false,
+        ],
 
         /* relationship collection attributes */
         /* added to support InboundEmail */

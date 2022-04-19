@@ -89,9 +89,9 @@ $app_list_strings = [
     ],
     'userabsences_type_dom' => [
         '' => '',
-        'Krankenstand' => 'Krankenstand',
-        'Urlaub' => 'Urlaub',
-        'HomeOffice' => 'Home Office'
+        'Sick leave' => 'Krankenstand',
+        'Vacation' => 'Urlaub',
+        'HomeOffice' => 'Home-Office'
     ],
     //e.g. en espaï¿½ol 'Apparel'=>'Ropa',
     'industry_dom' => [
@@ -1485,6 +1485,11 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'P2' => 'mittel',
         'P3' => 'niedrig',
     ];
+    $app_list_strings['serviceticket_type_dom'] = [
+        'request' => 'Anfrage',
+        'claim' => 'Beschwerde',
+        'congrats' => 'Lob',
+    ];
     $app_list_strings['serviceticket_resaction_dom'] = [
         '' => '',
         'credit' => 'Gutschrift ausstellen',
@@ -1838,6 +1843,36 @@ $app_list_strings['systemdeploymentsystems_type_dom'] = [
 $app_list_strings['bonuscard_extension_status_enum'] = [
     'initial' => 'initial',
     'sent' => 'gesendet'
+];
+
+// CR1000710
+$app_list_strings['lmstrainings_status_dom'] = [
+    'draft' => 'Entwurf',
+    'published' => 'veröffentlicht',
+    'retired' => 'aussortiert',
+];
+$app_list_strings['lmstrainingunits_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
+$app_list_strings['lmstrainingunitcontents_status_dom'] = $app_list_strings['lmstrainings_status_dom'];
+$app_list_strings['lmslevel_dom'] = [
+    1 =>  'Level 1',
+    2 =>  'Level 2',
+    3 =>  'Level 3',
+];
+$app_list_strings['lmstrainingunitcontents_type_dom'] = [
+    'text' => 'Text',
+    'video' => 'Video',
+    'audio' => 'Audio',
+    'image' => 'Bild'
+];
+
+
+$app_list_strings['lmslevel_language_dom'] = [
+    'A1' =>  'A1',
+    'A2' =>  'A2',
+    'B1' =>  'B1',
+    'B2' =>  'B2',
+    'C1' =>  'C1',
+    'C2' =>  'C2',
 ];
 
 $app_list_strings['workflowtasktypes_type_enum'] = [

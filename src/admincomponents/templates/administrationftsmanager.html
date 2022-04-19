@@ -15,7 +15,7 @@
         <button type="button" [disabled]="!module" class="slds-button slds-button--neutral" (click)="delete()"><system-label label="LBL_DELETE"></system-label></button>
     </div>
     <div class="slds-form-element slds-col--bump-left">
-        <button type="button" class="slds-button slds-button--neutral" (click)="initialize()"><system-label label="LBL_INITIALIZE"></system-label></button>
+
         <div class="slds-button-group" role="group" *ngIf="!ftsconfiguration.indexing">
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="resetModule()"><system-label label="LBL_RESET"></system-label></button>

@@ -13,6 +13,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\EncryptionUtils;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -411,6 +413,7 @@ class SugarBean
         // only if the current user is an admin
         if (!$current_user->isAdmin()) return [];
 
+        $ret = [];
         $fields = $this->getFieldDefinitions();
         foreach ($fields as $field => $data) {
             $ret[$field] = $this->{$field};
@@ -767,21 +770,21 @@ class SugarBean
 
             //add custom/modules/[]modulename]/vardefs.php capability
             //ORIGINAL: if (file_exists($filename)) {
-            if (file_exists(($iscustom ? $filename : get_custom_file_if_exists($filename)))) {
+            if (file_exists(($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)))) {
                 include($filename);
                 // cn: bug 7679 - dictionary entries defined as $GLOBALS['name'] not found
                 if (empty($dictionary) || !empty(SpiceDictionaryHandler::getInstance()->dictionary[$key])) {
                     $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
                 }
             } else {
-                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : get_custom_file_if_exists($filename)));
+                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)));
                 return;
             }
         }
 
         if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
             LoggerManager::getLogger()->fatal("createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
-            display_notice("meta data absent for table " . $tablename . " keyed to $key ");
+            SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
         } else {
             if (isset($dictionary[$key]['relationships'])) {
 
@@ -1119,7 +1122,7 @@ class SugarBean
         $key = $this->getObjectName();
         if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal("create_tables: Metadata for table " . $this->table_name . " does not exist");
-            display_notice("meta data absent for table " . $this->table_name . " keyed to $key ");
+            SpiceUtils::displayNotice("meta data absent for table " . $this->table_name . " keyed to $key ");
         } else {
             if (!$this->db->tableExists($this->table_name)) {
                 $this->db->createTable($this);
@@ -1182,7 +1185,7 @@ class SugarBean
         $records = [];
 
         // CR1000308
-        if (!$this->db->tableExists($this->get_audit_table_name())) {
+        if(!$this->is_AuditEnabled()){
             return $records;
         }
 
@@ -1496,13 +1499,13 @@ class SugarBean
     function encrpyt_before_save($value)
     {
         require_once("include/utils/encryption_utils.php");
-        return blowfishEncode($this->getEncryptKey(), $value);
+        return EncryptionUtils::blowfishEncode($this->getEncryptKey(), $value);
     }
 
     protected function getEncryptKey()
     {
         if (empty(self::$field_key)) {
-            self::$field_key = blowfishGetKey('encrypt_field');
+            self::$field_key = EncryptionUtils::blowfishGetKey('encrypt_field');
         }
         return self::$field_key;
     }
@@ -2040,7 +2043,7 @@ class SugarBean
         if ($deleted)
             $query .= " AND $this->table_name.deleted=0";
         LoggerManager::getLogger()->debug("Retrieve $this->object_name : " . $query);
-        $result = $this->db->limitQuery($query, 0, 1, true, "Retrieving record by id $this->table_name:$id found ");
+        $result = $this->db->query($query, true, "Retrieving record by id $this->table_name:$id found ");
         if (empty($result)) {
             return null;
         }
@@ -2191,7 +2194,7 @@ class SugarBean
             case 'json':
                 break;
             default:
-                if ($encode) $fieldvalue = to_html($fieldvalue);
+                if ($encode) $fieldvalue = DBUtils::toHtml($fieldvalue);
                 if (!(isset($fieldDef['source']) && !in_array($fieldDef['source'], ['db', 'relate']) && !isset($fieldDef['dbType']))) {
                     $fieldvalue = $this->db->fromConvert($fieldvalue, $this->db->getFieldType($fieldDef));
                 }
@@ -2237,7 +2240,7 @@ class SugarBean
         if (empty($value))
             return $value; // no need to decrypt empty
         require_once("include/utils/encryption_utils.php");
-        return blowfishDecode($this->getEncryptKey(), $value);
+        return EncryptionUtils::blowfishDecode($this->getEncryptKey(), $value);
     }
 
     /**
@@ -2894,7 +2897,7 @@ class SugarBean
             if (isset($data_values)) {
                 $relate_values = array_merge($relate_values, $data_values);
             }
-            $query = "INSERT INTO $table (id, " . implode(',', array_keys($relate_values)) . ", date_modified) VALUES ('" . create_guid() . "', " . "'" . implode("', '", $relate_values) . "', " . $date_modified . ")";
+            $query = "INSERT INTO $table (id, " . implode(',', array_keys($relate_values)) . ", date_modified) VALUES ('" . SpiceUtils::createGuid() . "', " . "'" . implode("', '", $relate_values) . "', " . $date_modified . ")";
 
             $this->db->query($query, false, "Creating Relationship:" . $query);
         } else if ($do_update) {
@@ -3145,7 +3148,7 @@ class SugarBean
     public function cloneLinkedBean($linkName, &$oppositeBean)
     {
         $clone = clone $this;
-        $clone->id = create_guid();
+        $clone->id = SpiceUtils::createGuid();
         $GLOBALS['cloningData']['cloned'][] = ['module' => $clone->module_name, 'id' => $this->id, 'cloneId' => $clone->id, 'clone' => $clone];
         $clone->cloningData['count']++;
         $clone->new_with_id = true;

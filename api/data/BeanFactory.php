@@ -6,7 +6,6 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\modules\Administration\Administration;
 use SpiceCRM\modules\Currencies\Currency;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
@@ -24,7 +23,7 @@ use SpiceCRM\modules\Users\User;
 class BeanFactory
 {
     protected static $loadedBeans = [];
-    protected static $maxLoaded = 10;
+    protected static $maxLoaded = 25;
     protected static $total = 0;
     protected static $loadOrder = [];
     protected static $touched = [];
@@ -36,7 +35,6 @@ class BeanFactory
      * @var string[][]
      */
     protected static $systemModules = [
-        'Administration' => ['beanname' => 'Administration'],
         'EmailAddresses' => ['beanname' => 'EmailAddress'],
         'SchedulersJobs' => ['beanname' => 'SchedulerJob'],
         'SpiceACLObjects' => ['beanname' => 'SpiceACLObject'],
@@ -68,6 +66,16 @@ class BeanFactory
                 unset(self::$systemModules[$moduleClass]);
             }
         }
+    }
+
+    /**
+     * allows setting the max loaded dynamically
+     *
+     * @param $max
+     * @return void
+     */
+    public static function setMaxLoaded($max){
+        self::$maxLoaded = $max;
     }
 
     /**

@@ -64,8 +64,9 @@ $app_list_strings = [
     ],
     'userabsences_type_dom' => [
         '' => '',
-        'Krankenstand' => 'Maladie',
-        'Urlaub' => 'Congé',
+        'Sick leave' => 'Maladie',
+        'Vacation' => 'Congé',
+        'HomeOffice' => 'Home Office',
     ],
     'industry_dom' =>
         [
@@ -2559,6 +2560,12 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'P2' => 'moyenne',
         'P3' => 'basse',
     ];
+    $app_list_strings['serviceticket_type_dom'] = [
+        'request' => 'Demande',
+        'claim' => 'Réclamation',
+        'congrats' => 'Feedback positif',
+    ];
+
     $app_list_strings['serviceticket_resaction_dom'] = [
         '' => '',
         'credit' => 'Créer un avoir',

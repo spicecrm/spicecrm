@@ -69,6 +69,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\MissingEwsCredentialsException;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\EwsConnectionException;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class LogicHook
 {
@@ -120,7 +121,7 @@ class LogicHook
             $db = DBManagerFactory::getInstance();
         }
 
-        if (isset($db) && empty($GLOBALS['installing'])) {
+        if (isset($db) && !SpiceConfig::getInstance()->installing) {
 
             if (empty($moduleDir) && isset($_SESSION['SpiceCRM']['hooks']['*'])) {
                 $spiceHooks = $_SESSION['SpiceCRM']['hooks']['*'];

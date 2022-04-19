@@ -35,6 +35,9 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * handles the dictioonary elements
@@ -198,8 +201,8 @@ class SpiceDictionaryController
 
         $languages = $db->query("SELECT language_code FROM syslangs WHERE system_language = '1'");
         while($language = $db->fetchByAssoc($languages)){
-            $retArray[$language['language_code']]['global'] = return_app_list_strings_language('en_us', 'global');
-            $retArray[$language['language_code']]['custom'] = return_app_list_strings_language('en_us', 'custom');
+            $retArray[$language['language_code']]['global'] = SpiceUtils::returnAppListStringsLanguage('en_us', 'global');
+            $retArray[$language['language_code']]['custom'] = SpiceUtils::returnAppListStringsLanguage('en_us', 'custom');
 
 
             foreach($retArray[$language['language_code']]['custom'] as $dom => $values){
@@ -210,6 +213,43 @@ class SpiceDictionaryController
 
         }
 
+        return $res->withJson($retArray);
+    }
+
+
+    /**
+     * list all vardefs named after a reserved word
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getSpiceWords(Request $req, Response $res, array $args): Response{
+        $wording = new SpiceUIWordsLoader();
+        return $res->withJson($wording->getWords());
+    }
+    /**
+     * list all vardefs named after a reserved word
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function checkSpiceWordsInVardefs(Request $req, Response $res, array $args): Response{
+        $retArray = [];
+        $reservedWords = SpiceUIWordsLoader::getWords('db', null);
+        $db = DBManagerFactory::getInstance();
+        $tables = $db->getTablesArray();
+        foreach($tables as $table) {
+            $columns = $db->get_columns($table);
+            foreach($columns as $columnName => $column) {
+                if(in_array(strtoupper($column['name']), $reservedWords['reservedwords'])){
+                    $retArray[$table][] = $column['name'];
+                }
+            }
+        }
         return $res->withJson($retArray);
     }
 
