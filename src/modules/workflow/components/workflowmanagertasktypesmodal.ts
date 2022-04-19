@@ -57,7 +57,7 @@ export class WorkflowManagerTaskTypesModal {
      * close the modal
      */
     public cancel() {
-        this.responseSubject.next();
+        this.responseSubject.next(undefined);
         this.responseSubject.complete();
         this.self.destroy();
     }
