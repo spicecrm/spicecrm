@@ -249,6 +249,11 @@ export class model implements OnDestroy {
      */
     public loadingError: boolean = false;
 
+    /**
+     * A simple event emitter that emits whenever the model has been validated.
+     */
+    public validated$: EventEmitter<void> = new EventEmitter<void>();
+
     constructor(
         public backend: backend,
         public broadcast: broadcast,
@@ -555,6 +560,7 @@ export class model implements OnDestroy {
         if (!this.isValid) {
             console.warn("validation failed:", this.messages);
         }
+        this.validated$.next();
         return this.isValid;
     }
 
@@ -656,6 +662,7 @@ export class model implements OnDestroy {
 
 
     public getFieldStati(field: string) {
+
         let stati = this._fields_stati_tmp[field];
         if (!stati) {
             stati = this._fields_stati[field];
@@ -664,6 +671,12 @@ export class model implements OnDestroy {
                 this._fields_stati[field] = stati;
             }
         }
+        /*
+        if ( field == 'questionnaire ') {
+            this._fields_stati[field].invalid = true;
+        }
+
+         */
         // copy stati to manipulate them without changing the stored ones...
         stati = {...stati};
         if (!stati.invalid && this.getFieldMessages(field, "error")) {

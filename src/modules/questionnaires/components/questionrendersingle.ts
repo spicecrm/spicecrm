@@ -17,8 +17,6 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit {
 
     @Input() public hideFinishedQuestions = false;
-    @Input() public imageWidthQuestion = 200;
-    @Input() public imageWidthOption = 200;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
@@ -46,8 +44,9 @@ export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit 
         }
     }
 
-    set value(value){
-        this.qp.clickAnswerOption(value);
+    set value( value) {
+        if ( value === null ) this.qp.unsetAnswerOptions( this.questionId );
+        else this.qp.clickAnswerOption(value);
     }
 
 }

@@ -58,6 +58,7 @@ import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnair
 import /*embed*/ {QuestionnaireFillOutButton} from './components/questionnairefilloutbutton';
 import /*embed*/ {QuestionnaireFillOutModal} from './components/questionnairefilloutmodal';
 import /*embed*/ {QuestionRenderBasic} from './components/questionrenderbasic';
+import /*embed*/ {QuestionRenderHeader} from './components/questionrenderheader';
 import /*embed*/ {QuestionRenderIST, QuestionTypeISTTextPipe, QuestionTypeISTOptionsPipe} from './components/questionrenderist';
 import /*embed*/ {QuestionRenderRating} from './components/questionrenderrating';
 import /*embed*/ {QuestionRenderText} from './components/questionrendertext';
@@ -65,9 +66,9 @@ import /*embed*/ {QuestionRenderNPS} from './components/questionrendernps';
 import /*embed*/ {QuestionsManagerEditRatingGroup} from './components/questionsmanagereditratinggroup';
 import /*embed*/ {fieldQuestionnaire} from './fields/fieldquestionnaire';
 import /*embed*/ {QuestionnaireFillOutActionItem} from './components/QuestionnaireFillOutActionItem';
-import {QuestionRenderSingle} from "./components/questionrendersingle";
-import {QuestionRenderBinary} from "./components/questionrenderbinary";
-import {QuestionRenderMulti} from "./components/questionrendermulti";
+import /*embed*/ {QuestionRenderSingle} from "./components/questionrendersingle";
+import /*embed*/ {QuestionRenderBinary} from "./components/questionrenderbinary";
+import /*embed*/ {QuestionRenderMulti} from "./components/questionrendermulti";
 
 @NgModule( {
     imports: [
@@ -126,6 +127,7 @@ import {QuestionRenderMulti} from "./components/questionrendermulti";
         QuestionnaireFillOutButton,
         QuestionnaireFillOutModal,
         QuestionRenderBasic,
+        QuestionRenderHeader,
         QuestionRenderSingle,
         QuestionRenderBinary,
         QuestionRenderMulti,
