@@ -438,7 +438,9 @@ export class WorkflowDiagramService implements OnDestroy {
 
         // edit.task event is a custom event fired in SpiceContextPad class
         this.listenToDiagramEvent('edit.task', (event: BpmnEventI, element) =>
-            this.wfm.openEditModal(element.businessObject.$attrs.taskId)
+            this.wfm.openEditModal(element.businessObject.$attrs.taskId).subscribe(() =>
+                this.updateDiagramFromTasks()
+               )
         );
 
         this.listenToDiagramEvent('drag.ended', () =>
