@@ -53,6 +53,9 @@ module.exports = {
         publicPath: "app/",
         // modify the modules file name
         chunkFilename: (pathData) => {
+
+            if (pathData.chunk.id.startsWith('common')) return pathData.chunk.id;
+
             const path = pathData.chunk.id.split('_');
             if (path[0] === 'default-src') {
                 return pathData.chunk.id.replace(/_ts$/, '') + '.js';
