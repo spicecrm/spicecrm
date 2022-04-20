@@ -71,7 +71,7 @@ export interface WorkflowTaskDefI {
  * bpmn-js diagram element structure
  */
 export interface BpmnElementI {
-    type: 'bpmn:IntermediateThrowEvent' | 'bpmn:EndEvent' | 'bpmn:StartEvent' | 'bpmn:ExclusiveGateway' | 'bpmn:EventBasedGateway' | 'label';
+    type: 'bpmn:IntermediateThrowEvent' | 'bpmn:EndEvent' | 'bpmn:StartEvent' | 'bpmn:ExclusiveGateway' | 'bpmn:EventBasedGateway' | 'bpmn:TextAnnotation' | 'label';
     source: BpmnElementI,
     target: BpmnElementI,
     businessObject: {

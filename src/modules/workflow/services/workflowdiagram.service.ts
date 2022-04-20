@@ -416,25 +416,30 @@ export class WorkflowDiagramService implements OnDestroy {
             )
         );
 
-        this.listenToDiagramEvent('shape.added', (event: BpmnEventI) =>
-            this.updateDiagramElementLabel(event.element)
-        );
+        this.listenToDiagramEvent('shape.added', (event: BpmnEventI) => {
+            this.updateDiagramElementLabel(event.element);
+            this.saveDiagramData();
+        });
 
-        this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnEventI) =>
-            this.updateTaskLabels(event)
-        );
+        this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnEventI) => {
+            this.updateTaskLabels(event);
+            this.saveDiagramData();
+        });
 
-        this.listenToDiagramEvent('shape.removed', (event: BpmnEventI) =>
-            this.handleDiagramElementDelete(event.element)
-        );
+        this.listenToDiagramEvent('shape.removed', (event: BpmnEventI) => {
+            this.handleDiagramElementDelete(event.element);
+            this.saveDiagramData();
+        });
 
-        this.listenToDiagramEvent('connection.changed', (event: BpmnEventI) =>
-            this.handleDiagramConnectionChange(event.element)
-        );
+        this.listenToDiagramEvent('connection.changed', (event: BpmnEventI) => {
+            this.handleDiagramConnectionChange(event.element);
+            this.saveDiagramData();
+        });
 
-        this.listenToDiagramEvent('connection.removed', (event: BpmnEventI) =>
-            this.handleDiagramConnectionDelete(event.element)
-        );
+        this.listenToDiagramEvent('connection.removed', (event: BpmnEventI) => {
+            this.handleDiagramConnectionDelete(event.element);
+            this.saveDiagramData();
+        });
 
         // edit.task event is a custom event fired in SpiceContextPad class
         this.listenToDiagramEvent('edit.task', (event: BpmnEventI, element) =>
@@ -540,6 +545,8 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private handleDiagramConnectionChange(sequenceFlow: BpmnElementI) {
+
+        if (sequenceFlow.target.type == 'bpmn:TextAnnotation') return;
 
         this.cleanupNextTasks();
 
