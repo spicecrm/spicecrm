@@ -1,21 +1,19 @@
-<div *ngIf="taggingEnabled" class="slds-show--medium slds-p-top--xxx-small">
+<div *ngIf="taggingEnabled" class="slds-show--medium slds-p-top--xx-small">
     <system-stencil *ngIf="model.isLoading; else displayContent"></system-stencil>
     <ng-template #displayContent>
         <div class="slds-grid slds-grid--vertical-align-center">
-            <div class="slds-p-vertical--x-small">
-                <div class="slds-p-right--xx-small slds-grid slds-gutters_direct-xxx-small" *ngIf="objecttags.length">
-                    <div *ngFor="let tag of objecttags;let i=index" class="slds-col">
-                        <span class="slds-badge">
-                            {{tag}}
-                            <span *ngIf="isEditing" class="slds-badge__icon slds-badge__icon_right" style="margin-bottom: 2px;" (click)="removeByIndex(i)">
-                                <system-utility-icon icon="close" size="xx-small"></system-utility-icon>
-                            </span>
+            <div class="slds-p-right--xx-small slds-grid slds-gutters_direct-xxx-small" *ngIf="objecttags.length">
+                <div *ngFor="let tag of objecttags;let i=index" class="slds-col">
+                    <span class="slds-badge slds-badge_lightest">
+                        {{tag}}
+                        <span *ngIf="isEditing" class="slds-badge__icon slds-badge__icon_right" (click)="removeByIndex(i)">
+                            <system-utility-icon icon="close" size="xx-small"></system-utility-icon>
                         </span>
-                    </div>
+                    </span>
                 </div>
-                <div *ngIf="objecttags.length == 0 && !isEditing" class="slds-p-right--xx-small">
-                    <div style="font-style:italic"><system-label label="LBL_NO_TAGS_ASSIGNED"></system-label></div>
-                </div>
+            </div>
+            <div *ngIf="objecttags.length == 0 && !isEditing" class="slds-p-right--xx-small">
+                <div style="font-style:italic"><system-label label="LBL_NO_TAGS_ASSIGNED"></system-label></div>
             </div>
             <div *ngIf="!isEditing">
                 <button class="slds-button slds-button_icon" (click)="editTags()">

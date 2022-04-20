@@ -1,5 +1,5 @@
 /**
- * @module ModuleHolidayCalendars
+ * @module SystemHolidayCalendars
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -12,10 +12,10 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {HolidayCalendarList} from "./components/holidaycalendarlist";
-import /*embed*/ {HolidayCalendarListDays} from "./components/holidaycalendarlistdays";
-import /*embed*/ {HolidayCalendarListGetHolidaysModal} from "./components/holidaycalendarlistgetholidaysmodal";
-import /*embed*/ {HolidayCalendarListGetHolidaysButton} from "./components/holidaycalendarlistgetholidaysbutton";
+import /*embed*/ {SystemCalendarList} from "./components/systemcalendarlist";
+import /*embed*/ {SystemCalendarListDays} from "./components/systemcalendarlistdays";
+import /*embed*/ {SystemCalendarListGetHolidaysModal} from "./components/systemcalendarlistgetholidaysmodal";
+import /*embed*/ {SystemCalendarListGetHolidaysButton} from "./components/systemcalendarlistgetholidaysbutton";
 
 @NgModule({
     imports: [
@@ -27,16 +27,13 @@ import /*embed*/ {HolidayCalendarListGetHolidaysButton} from "./components/holid
         SystemComponents,
         DirectivesModule,
     ],
-    exports: [
-        HolidayCalendarListDays
-    ],
     declarations: [
-        HolidayCalendarList,
-        HolidayCalendarListDays,
-        HolidayCalendarListGetHolidaysModal,
-        HolidayCalendarListGetHolidaysButton
+        SystemCalendarList,
+        SystemCalendarListDays,
+        SystemCalendarListGetHolidaysModal,
+        SystemCalendarListGetHolidaysButton
     ]
 })
-export class ModuleHolidayCalendars {
+export class ModuleSystemCalendars {
 
 }
