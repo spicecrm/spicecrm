@@ -301,7 +301,7 @@ export class configurationService {
             },
             error: (err: any) => {
                 // if we figure the system is not installed add the route to the routes available so it can also be called and redirect to the installer
-                if(err.status == '599' && err.error.error.message == 'system is not installed') {
+                if(err.status == '599' || err.error.error.message == 'system is not installed') {
                     this.enableinstall = true;
                     this.router.config.unshift({
                         path: 'install',
