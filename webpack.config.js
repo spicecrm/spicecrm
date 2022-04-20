@@ -54,7 +54,7 @@ module.exports = {
         // modify the modules file name
         chunkFilename: (pathData) => {
 
-            if (pathData.chunk.id.startsWith('common')) return pathData.chunk.id;
+            if (pathData.chunk.id.startsWith('common')) return pathData.chunk.id + '.js';
 
             const path = pathData.chunk.id.split('_');
             if (path[0] === 'default-src') {
