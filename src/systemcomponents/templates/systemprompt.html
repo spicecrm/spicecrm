@@ -34,7 +34,7 @@
                             </select>
                         </div>
                         <ng-template #radioGroupContainer>
-                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" style="display: block">
+                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" (dblclick)="clickOK()" style="display: block">
                                 {{option.display}}
                             </system-input-radio>
                         </ng-template>
