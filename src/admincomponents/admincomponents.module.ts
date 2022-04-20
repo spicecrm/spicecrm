@@ -92,6 +92,7 @@ import /*embed*/ {AdministrationLoginManagement} from './components/administrati
 
 import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
+import {AdministrationDictRepairResetCache} from "./components/administrationdictrepairresetcache";
 
 @NgModule({
     imports: [
@@ -138,6 +139,7 @@ import {AdministrationAssetManager} from "./components/administrationassetmanage
         AdministrationDictRepairModal,
         AdministrationDictRepairACLRoles,
         AdministrationDictRepairCache,
+        AdministrationDictRepairResetCache,
         AdministrationDictRepairDbColumns,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,

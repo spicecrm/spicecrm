@@ -80,8 +80,9 @@ class SugarCache
      */
     public static function instance()
     {
-        if (!is_subclass_of(self::$_cacheInstance, 'SugarCacheAbstract'))
+        if (!is_subclass_of(self::$_cacheInstance, 'SpiceCRM\includes\SugarCache\SugarCacheAbstract')) {
             self::_init();
+        }
 
         return self::$_cacheInstance;
     }

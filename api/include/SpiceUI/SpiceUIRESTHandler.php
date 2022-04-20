@@ -1236,7 +1236,7 @@ class SpiceUIRESTHandler
         $db = DBManagerFactory::getInstance();
 
         $assets = [];
-        $assetsObj = $db->query("SELECT * FROM sysuiassets");
+        $assetsObj = $db->query("SELECT assetkey, assetvalue FROM sysuiassets");
         while($asset = $db->fetchByAssoc($assetsObj)){
             $assets[] = $asset;
         }
@@ -1252,8 +1252,13 @@ class SpiceUIRESTHandler
         $db = DBManagerFactory::getInstance();
 
         foreach($assets as $asset){
-            $db->upsertQuery('sysuiassets', ['id' => $assets['id']], $asset);
+            // check if we have the asset
+            $asssetRecord = $db->fetchOne("SELECT id FROM sysuiassets WHERE assetkey='{$asset['assetkey']}'");
+            $asset['id'] = $asssetRecord['id'] ?: SpiceUtils::createGuid();
+
+            // upsert it
+            $db->upsertQuery('sysuiassets', ['id' => $asset['id'] ?: SpiceUtils::createGuid()], $asset);
         }
-        return true;
+        return $this->getAssets();
     }
 }

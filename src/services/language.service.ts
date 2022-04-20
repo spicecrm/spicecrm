@@ -87,7 +87,7 @@ export class language {
      * a getter for the current language
      */
     get currentlanguage() {
-        return !!this._currentlanguage ? this._currentlanguage : (this.configurationService.getData('currentlanguage') ?? sessionStorage.language);
+        return !!this._currentlanguage ? this._currentlanguage : (!!this.configurationService.getData('currentlanguage') ? this.configurationService.getData('currentlanguage') : sessionStorage.language);
     }
 
     /**
@@ -153,20 +153,24 @@ export class language {
 
         // process normally
         let retSubject = new Subject<any>();
-        let transaction = this.db.transaction([store], "readwrite");
-        let objectStore = transaction.objectStore(store);
-        let request = objectStore.get(id);
-        request.onerror = (event) => {
-            retSubject.error(false);
-        };
-        request.onsuccess = (event) => {
-            if (event.target.result?.data) {
-                retSubject.next(event.target.result.data);
-                retSubject.complete();
-            } else {
+        try {
+            let transaction = this.db.transaction([store], "readwrite");
+            let objectStore = transaction.objectStore(store);
+            let request = objectStore.get(id);
+            request.onerror = (event) => {
                 retSubject.error(false);
-            }
-        };
+            };
+            request.onsuccess = (event) => {
+                if (event.target.result?.data) {
+                    retSubject.next(event.target.result.data);
+                    retSubject.complete();
+                } else {
+                    retSubject.error(false);
+                }
+            };
+        } catch(e){
+            retSubject.error(false);
+        }
         return retSubject.asObservable();
     }
 
