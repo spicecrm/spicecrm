@@ -1,7 +1,8 @@
 /**
  * BPMN custom palette class to provide custom element actions
  */
-export class SpicePalette {
+ class SpicePalette {
+
     $inject = [ 'create', 'elementFactory', 'palette', 'translate', 'eventBus', 'zoomScroll' ];
     create; translate; elementFactory; eventBus; zoomScroll;
 
@@ -63,7 +64,8 @@ export class SpicePalette {
                     action: {
                         click: () => zoomScroll.stepZoom(-1)
                     }
-                }
+                },
+                'create.group': entries['create.group']
             }
         }
     }

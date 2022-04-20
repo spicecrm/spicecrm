@@ -59,7 +59,7 @@
                     <system-button-icon icon="delete"></system-button-icon>
                 </button>
                 <button (click)="save()" system-title="LBL_SAVE" class="slds-button slds-button--icon-border-filled slds-button--icon">
-                    <system-button-icon icon="check"></system-button-icon>
+                    <system-button-icon icon="save"></system-button-icon>
                 </button>
             </div>
             <div class="slds-button-group" role="group">
@@ -71,6 +71,6 @@
     </div>
     <div [class.slds-hide]="!currentWorkflowId" system-to-bottom-noscroll>
         <workflow-manager-detail-tasks *ngIf="!displayDiagram" class="slds-height_full spice-display-block"></workflow-manager-detail-tasks>
-        <div #diagramContainer [class.slds-hide]="!displayDiagram" class="slds-grow" style="min-height: 0"></div>
+        <div #diagramContainer [class.slds-hide]="!displayDiagram" class="slds-grow slds-height_full" style="min-height: 0"></div>
     </div>
 </div>

@@ -2,24 +2,33 @@
  * @module ModuleWorkflow
  */
 import {Injectable, OnDestroy} from '@angular/core';
-import {SpicePalette} from "../../../include/bpmndiagram/SpicePalette";
-import {elementTypes, SpiceContextPad} from "../../../include/bpmndiagram/SpiceContextPad";
 import {libloader} from "../../../services/libloader.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {BpmnElementI, BpmnEventI, WorkflowTaskDefI} from "../interfaces/workflow.interfaces";
 import {WorkflowManagerService} from "./workflowmanager.service";
 
-/**
- * @ignore
- */
-declare var BpmnJS;
+/** @ignore */
+declare var BpmnJS, SpicePalette, SpiceContextPad;
 
 /**
  * provide bpmn-js library instance and api
  */
 @Injectable()
 export class WorkflowDiagramService implements OnDestroy {
+    /**
+     * holds the element types
+     */
+    public elementTypes: {taskType: string, bpmnType: string, eventDefinitionType?: string}[] = [
+        {taskType: 'regular' , bpmnType: 'bpmn:IntermediateThrowEvent'},
+        {taskType: 'end' , bpmnType: 'bpmn:EndEvent'},
+        {taskType: 'start' , bpmnType: 'bpmn:StartEvent'},
+        {taskType: 'gateway_decision' , bpmnType: 'bpmn:ExclusiveGateway'},
+        {taskType: 'gateway_email_event' , bpmnType: 'bpmn:EventBasedGateway'},
+        {taskType: 'email_event_open' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:MessageEventDefinition'},
+        {taskType: 'email_event_bounce' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:SignalEventDefinition'},
+        {taskType: 'email_event_timer' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:TimerEventDefinition'},
+    ];
 
     /**
      * holds the diagram
@@ -41,17 +50,11 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private diagramListeners: { event: string, listener: any }[] = [];
-    /**
-     * holds the diagram element types
-     * @private
-     */
-    private readonly elementTypes: { taskType: string, bpmnType: string, eventDefinitionType?: string }[] = [];
 
     constructor(private libLoader: libloader,
                 private model: model,
                 private modal: modal,
                 private wfm: WorkflowManagerService) {
-        this.elementTypes = elementTypes;
     }
 
     /**
@@ -148,6 +151,7 @@ export class WorkflowDiagramService implements OnDestroy {
             if (!res.loaded) return;
 
             SpiceContextPad.taskTypes = this.wfm.types;
+            SpiceContextPad.elementTypes = this.elementTypes;
 
             this.bpmnJS = new BpmnJS({
                 moddleExtensions: {

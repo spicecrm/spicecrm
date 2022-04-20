@@ -1,23 +1,7 @@
 /**
- * BPMN custom context pad class to provide custom element actions
- */
-import {BpmnElementI, WorkflowTaskTypeI} from "../../modules/workflow/interfaces/workflow.interfaces";
-
-export const elementTypes: {taskType: string, bpmnType: string, eventDefinitionType?: string}[] = [
-    {taskType: 'regular' , bpmnType: 'bpmn:IntermediateThrowEvent'},
-    {taskType: 'end' , bpmnType: 'bpmn:EndEvent'},
-    {taskType: 'start' , bpmnType: 'bpmn:StartEvent'},
-    {taskType: 'gateway_decision' , bpmnType: 'bpmn:ExclusiveGateway'},
-    {taskType: 'gateway_email_event' , bpmnType: 'bpmn:EventBasedGateway'},
-    {taskType: 'email_event_open' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:MessageEventDefinition'},
-    {taskType: 'email_event_bounce' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:SignalEventDefinition'},
-    {taskType: 'email_event_timer' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:TimerEventDefinition'},
-];
-
-/**
  * context pad provider class to customize the actions on shape popover
  */
-export class SpiceContextPad {
+class SpiceContextPad {
 
     /**
      * bpmn-js services to be injected by bpmn-js script
@@ -30,7 +14,8 @@ export class SpiceContextPad {
     /**
      * static array of the task types filled from the workflow diagram service
      */
-    static taskTypes: WorkflowTaskTypeI[];
+    static taskTypes = [];
+    static elementTypes = [];
 
     constructor(config, contextPad, create, elementFactory, injector, translate, eventBus) {
         this.create = create;
@@ -47,7 +32,7 @@ export class SpiceContextPad {
      * override default method to customize the actions
      * @param element
      */
-    public getContextPadEntries(element: BpmnElementI): (entries) => any {
+    getContextPadEntries(element) {
 
         const { autoPlace, create, elementFactory, translate, eventBus } = this;
 
@@ -64,10 +49,10 @@ export class SpiceContextPad {
          */
         return (entries) => {
 
-            if (!elementTypes.some(t => t.bpmnType == element.type)) return entries;
+            if (!SpiceContextPad.elementTypes.some(t => t.bpmnType === element.type)) return entries;
 
             // define default actions
-            const customEntries: any = {
+            const customEntries = {
                 'edit.task': {
                     group: 'model',
                     className: 'bpmn-icon-screw-wrench',
@@ -75,20 +60,27 @@ export class SpiceContextPad {
                     action: {
                         click: (event, element) => eventBus.fire('edit.task', element)
                     }
-                }
+                },
+                'append.text-annotation': entries['append.text-annotation'],
+                'connect': entries['connect'],
             };
 
             let types = SpiceContextPad.taskTypes;
 
-            if (element.type != 'bpmn:StartEvent') {
+            if (element.type !== 'bpmn:StartEvent') {
                 customEntries.delete = entries.delete;
             }
 
-            if (element.type == 'bpmn:EndEvent') {
-                return {'edit.task': customEntries['edit.task'], 'delete': customEntries.delete};
+            if (element.type === 'bpmn:EndEvent') {
+                return {
+                    'edit.task': customEntries['edit.task'],
+                    'delete': customEntries.delete,
+                    'append.text-annotation': entries['append.text-annotation'],
+                    'connect': entries['connect'],
+                };
             }
 
-            if (element.type == 'bpmn:EventBasedGateway') {
+            if (element.type === 'bpmn:EventBasedGateway') {
                 types = types.filter(t => t.type.startsWith('email_event'));
             } else {
                 types = types.filter(t => !t.type.startsWith('email_event'));
@@ -97,9 +89,9 @@ export class SpiceContextPad {
             // define custom actions from task types
             types.forEach(type => {
 
-                if (type.type == 'start') return;
+                if (type.type === 'start') return;
 
-                const bpmnTypeMap = elementTypes.find(e => e.taskType == type.type);
+                const bpmnTypeMap = SpiceContextPad.elementTypes.find(e => e.taskType === type.type);
                 const createShape = () => elementFactory.createShape({ type: bpmnTypeMap.bpmnType, eventDefinitionType: bpmnTypeMap.eventDefinitionType} );
 
                 const createTaskType = event => {
