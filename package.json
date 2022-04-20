@@ -27,7 +27,8 @@
     "underscore": "^1.13.2",
     "zone.js": "^0.11.4",
     "cropperjs": "^1.5.12",
-    "croppie": "^2.6.5"
+    "croppie": "^2.6.5",
+    "bpmn-js": "^8.10.0"
   },
   "devDependencies": {
     "@angular-devkit/core": "^13.3.1",
