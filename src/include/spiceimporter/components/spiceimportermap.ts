@@ -45,7 +45,7 @@ export class SpiceImporterMap {
     }
 
     public setMapping(row, event) {
-        this.spiceImport.setMapping(row, event.srcElement.value);
+        this.spiceImport.setMapping(row, event.target.value);
     }
 
     public checkRequired(fieldName) {

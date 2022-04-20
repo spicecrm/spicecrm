@@ -1105,7 +1105,7 @@ class SpiceFTSHandler
             if (!empty($filterForId)) {
                 // $addFilters[] = $filterForId;
                 if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
-                        $queryParam['query']['bool']['filter']['bool']['must'][] = $filterForId;
+                    $queryParam['query']['bool']['filter']['bool']['must'][] = $filterForId;
                 } else {
                     $queryParam['query']['bool']['filter']['bool']['must'] = [$filterForId];
                 }
@@ -1729,7 +1729,30 @@ class SpiceFTSHandler
                     echo sprintf("%${numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
                 }
                 if ($indexBean['deleted'] == 0) {
-                    $seed->retrieve($indexBean['id'], false, false, false );
+
+                    // get idnex properties and field defs to determine if relationships can be loaded
+                    $indexProperties = SpiceFTSUtils::getBeanIndexProperties($seed->_module);
+                    $fieldDefs = $seed->field_defs;
+
+                    // set loading relationships to false as default
+                    $loadRelated = false;
+
+                    foreach ($indexProperties as $indexProperty) {
+                        $path = explode('::', $indexProperty['path']);
+                        $field = explode(':', $path[1])[0];
+                        // make sure to retrieve only fields from index properties
+                        if ($field == 'field') {
+                            foreach ($fieldDefs as $fieldDef) {
+                                $fieldType = $fieldDef['type'];
+                                // if the type is parent or relate set the loading of relationships to true
+                                if ($fieldType == 'parent' || $fieldType == 'relate') {
+                                    $loadRelated = true;
+                                    break 2;
+                                }
+                            }
+                        }
+                    }
+                    $seed->retrieve($indexBean['id'], false, false, $loadRelated );
 
                     if ($this->elasticHandler->getMajorVersion() == '6') {
                         $bulkItems[] = json_encode([

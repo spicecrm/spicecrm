@@ -117,8 +117,7 @@ class SpiceFTSUtils
     {
         $db = DBManagerFactory::getInstance();
         //catch installation process and abort. table sysfts will not exist at the point during installation
-        if (!empty($GLOBALS['installing']))
-            return false;
+        if (SpiceConfig::getInstance()->installing) return false;
 
 
         if (!$overrideCache && isset($_SESSION['SpiceFTS']['indexes'][$module]['properties'])) {
@@ -193,9 +192,8 @@ class SpiceFTSUtils
     static function getBeanIndexSettings($module)
     {
         //BEGIN CR1000190
-        if( @$GLOBALS['installing'] ) {
-            return false;
-        }
+        if( SpiceConfig::getInstance()->installing) return false;
+
         //END
         $db = DBManagerFactory::getInstance();
 
