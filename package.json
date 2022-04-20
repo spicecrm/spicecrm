@@ -27,12 +27,13 @@
     "underscore": "^1.13.2",
     "zone.js": "^0.11.4",
     "cropperjs": "^1.5.12",
-    "croppie": "^2.6.5"
+    "croppie": "^2.6.5",
+    "bpmn-js": "^8.10.0"
   },
   "devDependencies": {
     "@angular-devkit/core": "^13.3.1",
-    "@angular-builders/custom-webpack": "^13.0.0",
-    "@angular/cli": "^13.2.5",
+    "@angular-builders/custom-webpack": "^13.1.0",
+    "@angular/cli": "^13.3.1",
     "@angular/compiler-cli": "^13.3.1",
     "@types/node": "^14.0.0",
     "@types/underscore": "^1.10.1",

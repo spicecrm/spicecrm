@@ -1,15 +1,42 @@
 <td>
-    <!--field-container [fieldname]="'field_name'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container-->
-    <workflow-manager-fieldsdropdown [module]="module" [field]="'field_name'"></workflow-manager-fieldsdropdown>
+    <div class="slds-form-element__control">
+        <div class="slds-select_container">
+            <select class="slds-select" [(ngModel)]="systemaction.field">
+                <option *ngFor="let field of workflowManagerService.currentModule.fields"
+                        [value]="field.name">{{field.label}} ({{field.name}})
+                </option>
+            </select>
+        </div>
+    </div>
 </td>
 <td>
-    <field-container [fieldname]="'field_value'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+    <input type="text" [(ngModel)]="systemaction.field_value" class="slds-input">
 </td>
 <td>
-    <field-container [fieldname]="'workflowtask_status'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+    <div class="slds-form-element__control">
+        <div class="slds-select_container">
+            <select class="slds-select" [(ngModel)]="systemaction.workflowtask_status">
+                <option value="5">
+                    <system-label label="LBL_SCHEDULED"></system-label>
+                </option>
+                <option value="10">
+                    <system-label label="LBL_NEW"></system-label>
+                </option>
+                <option value="20">
+                    <system-label label="LBL_IN_PROCESS"></system-label>
+                </option>
+                <option value="30">
+                    <system-label label="LBL_COMPLETED"></system-label>
+                </option>
+                <option value="40">
+                    <system-label label="LBL_CLOSED_BY_SYSTEM"></system-label>
+                </option>
+            </select>
+        </div>
+    </div>
 </td>
 <td role="gridcell" class="slds-cell-shrink">
     <button class="slds-button slds-button_icon" (click)="removeDecision()">
-        <system-button-icon [icon]="'delete'"></system-button-icon>
+        <system-button-icon icon="delete"></system-button-icon>
     </button>
 </td>

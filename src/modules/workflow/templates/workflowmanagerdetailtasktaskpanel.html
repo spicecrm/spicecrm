@@ -1,16 +1,36 @@
 <div class="slds-grid">
-    <div class="slds-size--1-of-2 slds-p-right--xx-small">
-        <field-label [fieldname]="'name'"></field-label>
-        <field-container [field]="'name'"></field-container>
+    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-grid">
+        <div class="slds-grow">
+            <field-label fieldname="name"></field-label>
+            <field-container field="name"></field-container>
+        </div>
+        <ng-container *ngFor="let type of workflowManagerService.types">
+            <div *ngIf="type.id == model.data.tasktype" class="slds-p-left--xx-small slds-truncate">
+                <field-label fieldname="tasktype"></field-label>
+                <div class="slds-form-element__control slds-m-vertical--xx-small">
+                    <input type="text" class="slds-input" [ngModel]="type.name" [disabled]="true">
+                </div>
+            </div>
+        </ng-container>
     </div>
-    <div class="slds-size--1-of-2 slds-p-left--xx-small">
-        <field-label [fieldname]="'sequence'" [fieldconfig]="{label:'LBL_SEQUENCE'}"></field-label>
-        <field-container [field]="'sequence'"></field-container>
+    <div class="slds-grid slds-p-left--xx-small slds-size--1-of-2">
+        <div class="slds-size--1-of-3 slds-p-left--xx-small">
+            <field-label fieldname="ishidden" [fieldconfig]="{label:'LBL_HIDDEN'}"></field-label>
+            <field-container field="ishidden"></field-container>
+        </div>
+        <div class="slds-size--1-of-3 slds-p-left--xx-small">
+            <field-label fieldname="allowcomment" [fieldconfig]="{label:'LBL_ALLOW_COMMENT'}"></field-label>
+            <field-container field="allowcomment"></field-container>
+        </div>
+        <div class="slds-size--1-of-3 slds-p-left--xx-small">
+            <field-label fieldname="prevclosedreq" [fieldconfig]="{label:'LBL_PREVIOUS_CLOSED_REQUIRED'}"></field-label>
+            <field-container field="prevclosedreq"></field-container>
+        </div>
     </div>
 </div>
 <div>
-    <field-label [fieldname]="'description'"></field-label>
-    <field-container [field]="'description'"></field-container>
+    <field-label fieldname="description"></field-label>
+    <field-container field="description"></field-container>
 </div>
 <div class="slds-grid slds-gutters_direct-xx-small">
     <div class="slds-grid slds-col slds-size--1-of-4 slds-p-right--xx-small">
@@ -43,40 +63,3 @@
         <field-container [field]="'timetoescalate'"></field-container>
     </div>
 </div>
-<div class="slds-grid">
-    <div class="slds-size--1-of-2 slds-p-right--xx-small">
-        <field-label [fieldname]="'tasktype'" [fieldconfig]="{label:'LBL_TYPE'}"></field-label>
-        <field-container [field]="'tasktype'"></field-container>
-    </div>
-    <div class="slds-size--1-of-8 slds-p-left--xx-small">
-        <field-label [fieldname]="'primarytask'" [fieldconfig]="{label:'LBL_PRIMARY'}"></field-label>
-        <field-container [field]="'primarytask'"></field-container>
-    </div>
-    <div class="slds-size--1-of-8 slds-p-left--xx-small">
-        <field-label [fieldname]="'closetask'" [fieldconfig]="{label:'LBL_CLOSE_W_WORKFLOW'}"></field-label>
-        <field-container [field]="'closetask'"></field-container>
-    </div>
-    <div class="slds-size--1-of-8 slds-p-left--xx-small">
-        <field-label [fieldname]="'ishidden'" [fieldconfig]="{label:'LBL_HIDDEN'}"></field-label>
-        <field-container [field]="'ishidden'"></field-container>
-    </div>
-    <div class="slds-size--1-of-8 slds-p-left--xx-small">
-        <field-label [fieldname]="'allowcomment'" [fieldconfig]="{label:'LBL_ALLOW_COMMENT'}"></field-label>
-        <field-container [field]="'allowcomment'"></field-container>
-    </div>
-</div>
-<div class="slds-grid">
-    <div class="slds-size--3-of-8 slds-p-right--xx-small">
-        <field-label [fieldname]="'previoustask'" [fieldconfig]="{label:'LBL_PREVIOUSTASK'}"></field-label>
-        <workflow-manager-taskdropdown [tasks]="tasks" [field]="'previoustask'" [disabled]="previousTaskDisabled"></workflow-manager-taskdropdown>
-    </div>
-    <div class="slds-size--1-of-8 slds-p-left--xx-small">
-        <field-label [fieldname]="'prevclosedreq'" [fieldconfig]="{label:'LBL_CLOSED_REQ'}"></field-label>
-        <field-container [field]="'prevclosedreq'"></field-container>
-    </div>
-    <div class="slds-size--1-of-2 slds-p-left--xx-small">
-        <field-label [fieldname]="'nexttask'" [fieldconfig]="{label:'LBL_NEXTTASK'}"></field-label>
-        <workflow-manager-taskdropdown [tasks]="tasks" [field]="'nexttask'" [disabled]="nextTaskDisabled"></workflow-manager-taskdropdown>
-    </div>
-</div>
-<workflow-manager-detail-taskdecisions *ngIf="model.data.tasktype == 'decision'" [tasks]="tasks"></workflow-manager-detail-taskdecisions>

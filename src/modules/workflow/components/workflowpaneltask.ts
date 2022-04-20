@@ -2,7 +2,14 @@
  * @module ModuleWorkflow
  */
 import {
-    Component, Input
+    AfterViewInit,
+    Component,
+    ComponentRef,
+    Injector,
+    Input,
+    OnChanges,
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';
@@ -10,6 +17,8 @@ import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {toast} from '../../../services/toast.service';
+import {configurationService} from "../../../services/configuration.service";
+import {metadata} from "../../../services/metadata.service";
 
 
 @Component({
@@ -17,17 +26,71 @@ import {toast} from '../../../services/toast.service';
     templateUrl: '../templates/workflowpaneltask.html'
 
 })
-export class WorkflowPanelTask {
-
+export class WorkflowPanelTask implements OnChanges, AfterViewInit {
+    /**
+     * holds the task data
+     */
     @Input() public workflowtask: any = {};
-    @Input() public workflow: any = {};
+    /**
+     * holds the task comment content
+     */
     public comment: string = '';
+    /**
+     * true if posting data to backend
+     */
     public posting: boolean = false;
+    /**
+     * view container reference to the container element of the type component
+     * @private
+     */
+    @ViewChild('typeComponentContainer', {read: ViewContainerRef}) public typeComponentContainer: ViewContainerRef;
+    /**
+     * holds the workflow data
+     * @private
+     */
+    @Input() public workflow: any = {};
+    /**
+     * holds a reference of the task type component
+     * @private
+     */
+    public typeComponentRef: ComponentRef<any>;
 
-    constructor(public model: model, public workflowservice: workflow, public language: language, public broadcast: broadcast, public toast: toast, public modelutilities: modelutilities) {
+    constructor(public model: model,
+                public workflowservice: workflow,
+                public language: language, public broadcast: broadcast,
+                public configurationService: configurationService,
+                public toast: toast,
+                public metadata: metadata,
+                public injector: Injector,
+                public modelutilities: modelutilities) {
 
     }
 
+    /**
+     * return true if commenting enabled
+     */
+    get showComment(): boolean {
+        return this.workflowtask.enablecomments == '1' && parseInt(this.workflowtask.status, 10) >= 10;
+    }
+
+    /**
+     * call to initialize the model
+     * rerender the type component each time the onChanges triggered
+     */
+    public ngOnChanges() {
+        this.renderTypeComponent();
+    }
+
+    /**
+     * render the type component for the first time after onChanges triggered
+     */
+    public ngAfterViewInit() {
+        this.renderTypeComponent();
+    }
+
+    /**
+     * add a new comment
+     */
     public addComment() {
         this.posting = true;
         this.workflowservice.addComment(this.workflowtask.id, this.comment).subscribe(result => {
@@ -37,38 +100,38 @@ export class WorkflowPanelTask {
         });
     }
 
-    public doAction(action) {
-        this.posting = true;
-        this.workflowservice.doTaskAction(this.workflowtask.id, action, this.comment).subscribe(parent => {
+    /**
+     * render the workflow task type component
+     */
+    public renderTypeComponent() {
 
-            this.model.setData(parent);
+        if (!this.typeComponentContainer) return;
 
-            /**
-             * broadcast that we saved the model
-             */
-            this.broadcast.broadcastMessage('model.save', {
-                id: this.model.id,
-                module: this.model.module,
-                data: this.model.data
-            });
+        this.destroyRenderedComponent();
+        let component;
 
-            /**
-             * broadcast that we updated the workflowtask
-             * this is mainly important so the assistant and other objects that might old it can also pick up the changes
-             */
-            this.broadcast.broadcastMessage('model.save', {
-                id: this.workflowtask.id,
-                module: 'WorkflowTasks',
-                data: {}
-            });
+        const types = this.configurationService.getData('workflowtasktypes');
 
-            this.posting = false;
-            this.comment = '';
-            this.toast.sendToast('Workflow updated');
+        if (types?.length > 0) {
+            component = types?.find(type => type.id == this.workflowtask.tasktype)?.frontend_component;
+        }
+
+        if (!component) component = 'WorkflowPanelTaskStandard';
+
+        this.metadata.addComponent(component, this.typeComponentContainer, this.injector).subscribe((componentRef: ComponentRef<any>) => {
+            componentRef.instance.taskData = this.workflowtask;
+            this.typeComponentRef = componentRef;
         });
     }
 
-    get showComment() {
-        return this.workflowtask.enablecomments == '1' && parseInt(this.workflowtask.status, 10) >= 10;
+    /**
+     * destroy the rendered type component
+     * @private
+     */
+    public destroyRenderedComponent() {
+        if (this.typeComponentRef) {
+            this.typeComponentRef.destroy();
+            this.typeComponentRef = undefined;
+        }
     }
 }

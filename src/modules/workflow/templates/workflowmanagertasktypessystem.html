@@ -1,0 +1,77 @@
+<system-collapsable-tab tabtitle="LBL_CONFIGURATIONS" class="slds-m-top--large spice-display-block">
+    <workflow-manager-task-next-tasks></workflow-manager-task-next-tasks>
+    <div class="slds-text-title--caps slds-p-bottom--small">
+        <system-label label="LBL_ACTIONS"></system-label>
+    </div>
+    <div class="slds-p-vertical--x-small">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_FIELD"></system-label>
+                    </div>
+                </th>
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_VALUE"></system-label>
+                    </div>
+                </th>
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_STATUS"></system-label>
+                    </div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td *ngIf="!model.data.type_config.systemactions || model.data.type_config.systemactions.length == 0"
+                    colspan="4">
+                    <div class="slds-align--absolute-center">
+                        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+                    </div>
+                </td>
+            </tr>
+            <tr *ngFor="let systemaction of model.data.type_config.systemactions"
+                workflow-manager-detail-tasksystemactions-line [systemaction]="systemaction"></tr>
+            </tbody>
+            <tfoot class="slds-border--top slds-theme--shade">
+            <tr>
+                <td colspan="4">
+                    <div class="slds-align--absolute-center slds-p-around--xx-small">
+                        <button class="slds-button slds-button_icon" (click)="addAction()">
+                            <system-button-icon icon="add"></system-button-icon>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="slds-section slds-is-open slds-p-vertical--x-small">
+        <h3 class="slds-section__title slds-m-bottom--small">
+            <button aria-controls="expando-unique-id" aria-expanded="true"
+                    class="slds-button slds-section__title-action">
+            <span class="slds-truncate">
+                <system-label label="LBL_SYSTEM_ACTION"></system-label>
+            </span>
+            </button>
+        </h3>
+        <div>
+            <label class="slds-truncate">
+                <system-label label="LBL_CLASS"></system-label>
+            </label>
+            <system-input-backend-method [(ngModel)]="model.data.type_config.sysclass"></system-input-backend-method>
+        </div>
+        <div>
+            <label class="slds-truncate">
+                <system-label label="LBL_PARAMS"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <textarea [(ngModel)]="model.data.type_config.sysparams" class="slds-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+</system-collapsable-tab>

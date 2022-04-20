@@ -1,0 +1,6 @@
+<div class="slds-p-around--x-small slds-grid slds-grid--align-center">
+    <button *ngFor="let action of taskData.actions" class="slds-button slds-button_neutral" [disabled]="posting"
+            (click)="setStatus(action.value)">
+        <system-label [label]="action.name"></system-label>
+    </button>
+</div>

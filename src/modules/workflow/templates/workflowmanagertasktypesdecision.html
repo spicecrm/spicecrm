@@ -1,0 +1,58 @@
+<system-collapsable-tab tabtitle="LBL_CONFIGURATIONS" class="slds-m-top--large spice-display-block">
+    <div class="slds-p-vertical--x-small">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_NAME"></system-label>
+                    </div>
+                </th>
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_TASK"></system-label>
+                    </div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td *ngIf="model.data.type_config.next_tasks.length == 0" colspan="3">
+                    <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+                </td>
+            </tr>
+            <tr *ngFor="let decision of model.data.type_config.next_tasks; trackBy: trackByFn">
+                <td>
+                    <input type="text" [(ngModel)]="decision.name" class="slds-input">
+                </td>
+                <ng-container *ngFor="let task of workflowManagerService.tasks; trackBy: trackByFn">
+                    <ng-container *ngIf="decision.id == task.id">
+                        <td>
+                            <div class="slds-truncate">
+                                {{task.name}}
+                            </div>
+                        </td>
+                    </ng-container>
+                </ng-container>
+                <td role="gridcell" class="slds-cell-shrink">
+                    <button class="slds-button slds-button_icon" (click)="deleteDecision(decision.id)">
+                        <system-button-icon [icon]="'delete'"></system-button-icon>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot class="slds-border--top slds-theme--shade">
+            <tr>
+                <td colspan="3">
+                    <div class="slds-align--absolute-center slds-p-around--xx-small">
+                        <button class="slds-button slds-button_icon" (click)="addDecision()">
+                            <system-button-icon [icon]="'add'"></system-button-icon>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</system-collapsable-tab>
