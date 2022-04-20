@@ -38,16 +38,7 @@ const generateOptions = (file) => ({
 
 module.exports = {
     mode: "production",
-    entry: {
-        gsuite_main: {
-            filename: 'gsuite_main.js',
-            import: 'src/include/gsuite/gsuite.ts'
-        },
-        outlook_main: {
-            filename: 'outlook_main.js',
-            import: 'src/include/outlook/outlook.ts'
-        },
-    },
+
     output: {
         // needed to adjust the dynamic import path
         publicPath: "app/",
