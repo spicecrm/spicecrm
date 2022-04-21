@@ -98,7 +98,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'relationship_type' => 'one-to-many'
         ]
     ],
-    'indices' => []
+    'indices' => [
+        ['name' => 'idx_agreements_status', 'type' => 'index', 'fields' => ['agreement_status', 'deleted']]
+    ]
 ];
 
 VardefManager::createVardef('Agreements', 'Agreement', ['default', 'assignable']);
