@@ -35,7 +35,7 @@ class UsersController
         if (!empty($email1)) {
             $q = "select id from users where id in ( SELECT  er.bean_id AS id FROM email_addr_bean_rel er,
                 email_addresses ea WHERE ea.id = er.email_address_id
-                AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote($email1)}') )";
+                AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote(strtoupper($email1))}') )";
 
             $row = $db->fetchByAssoc($db->query($q));
 
