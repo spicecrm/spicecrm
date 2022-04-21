@@ -2170,3 +2170,17 @@ $app_list_strings['lmslevel_language_dom'] = [
     'C1' =>  'C1',
     'C2' =>  'C2',
 ];
+
+$app_list_strings['prolonged_reason_dom'] = [
+    '' => '',
+    'waitextern' => 'wait for third party',
+    'vacation' => 'vacation',
+    'sickleave' => 'sick leave'
+];
+$app_list_strings['agreement_status_dom'] = [
+    '' => '',
+    'draft' => 'draft',
+    'submitted' => 'submitted',
+    'rejected' => 'rejected',
+    'approved' => 'approved',
+];

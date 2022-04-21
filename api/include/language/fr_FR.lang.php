@@ -2718,3 +2718,17 @@ $app_list_strings['incoterms_dom'] = [
     'DAP' => 'Delivered at Place',
     'DDP' => 'Delivered duty paid',
 ];
+
+$app_list_strings['prolonged_reason_dom'] = [
+    '' => '',
+    'waitextern' => 'attente tierce personne',
+    'vacation' => 'congés',
+    'sickleave' => 'maladie'
+];
+$app_list_strings['agreement_status_dom'] = [
+    '' => '',
+    'draft' => 'brouillon',
+    'submitted' => 'soumis',
+    'rejected' => 'rejeté',
+    'approved' => 'accepté',
+];
