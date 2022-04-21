@@ -19,7 +19,6 @@ import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 export class QuestionsetRenderRating extends QuestionsetRenderBasic implements OnInit {
 
     @Input() public hideFinishedQuestions = false;
-    @Input() public imageWidthQuestion = 200;
 
     public ratingValuesHaveAlsoText = false;
 
@@ -47,6 +46,18 @@ export class QuestionsetRenderRating extends QuestionsetRenderBasic implements O
 
     public isChecked( questionId: string, optionId: string ): boolean {
         return this.qp.answers && this.qp.answers[questionId] && this.qp.answers[questionId].options && this.qp.answers[questionId].options[optionId];
+    }
+
+    public showError( question ): boolean {
+        return !this.qp.questionsMeta[question.id].finished && question.answer_required && this.qp.showInvalidities
+    }
+
+    public getValue( questionId: string, optionId: string ): boolean {
+        return this.qp.answers[questionId].options[optionId];
+    }
+
+    public setValue( value: boolean, questionId: string, optionId: string ): void {
+        this.qp.clickAnswerOption( optionId );
     }
 
 }

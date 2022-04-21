@@ -17,8 +17,6 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 export class QuestionRenderBinary extends QuestionRenderBasic implements OnInit {
 
     @Input() public hideFinishedQuestions = false;
-    @Input() public imageWidthQuestion = 200;
-    @Input() public imageWidthOption = 200;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
@@ -33,6 +31,22 @@ export class QuestionRenderBinary extends QuestionRenderBasic implements OnInit 
      */
     public isChecked( optionId: string ): boolean {
         return this.qp.answers && this.qp.answers[this.questionId] && this.qp.answers[this.questionId].options && this.qp.answers[this.questionId].options[optionId];
+    }
+
+    get value(){
+        try{
+            for(let id in this.qp.answers[this.questionId].options){
+                if(this.qp.answers[this.questionId].options[id]) return id;
+            }
+            return '';
+        } catch(e){
+            return '';
+        }
+    }
+
+    set value( value) {
+        if ( value === null ) this.qp.unsetAnswerOptions( this.questionId );
+        else this.qp.clickAnswerOption(value);
     }
 
 }
