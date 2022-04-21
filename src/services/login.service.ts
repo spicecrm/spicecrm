@@ -141,8 +141,6 @@ export class loginService {
 
                     sessionStorage[btoa(this.session.authData.sessionId + ':backendurl')] =
                         btoa(this.configurationService.getBackendUrl());
-                    sessionStorage[btoa(this.session.authData.sessionId + ':siteid')] =
-                        btoa(this.configurationService.getSiteId());
 
                     // broadcast that we have a login
                     this.broadcast.broadcastMessage('login');

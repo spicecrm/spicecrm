@@ -37,7 +37,7 @@ class SpiceInstaller
         $this->dbManagerFactory = new DBManagerFactory();
 
         // set installing global to avoid crashing sugarbean hook logic on install, see include/utils/LogicHook.php
-        $GLOBALS['installing'] = true;
+        SpiceConfig::getInstance()->installing = true;
     }
 
 
@@ -490,17 +490,13 @@ class SpiceInstaller
         ksort($globalBeanList);
 
         foreach ($globalBeanList as $dir => $bean) {
-//            if ($bean == 'Administration') { // for core edition
-//                require_once('metadata/system_config.php');
-//            } else {
-                // in core edition some modules might be missing
-                // ignore them when it encountered
-                if (file_exists('modules/' . $dir . '/vardefs.php')) {
-                    require_once('modules/' . $dir . '/vardefs.php');
-                } else {
-                    continue;
-                }
-//            }
+            // in core edition some modules might be missing
+            // ignore them when it encountered
+            if (file_exists('modules/' . $dir . '/vardefs.php')) {
+                require_once('modules/' . $dir . '/vardefs.php');
+            } else {
+                continue;
+            }
 
             if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
                 continue;
@@ -557,7 +553,6 @@ class SpiceInstaller
 
 
         $rel = new Relationship();
-//        Relationship::delete_cache();
         $rel->build_relationship_cache();
 
     }
@@ -568,15 +563,10 @@ class SpiceInstaller
      */
     public function insertDefaults($db)
     {
-        global $sugar_version;
-
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromaddress', 'do_not_reply@example.com')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromname', 'SpiceCRM')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'send_by_default', '1')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'send_from_assigning_user', '0')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ('info', 'sugar_version', '" . $sugar_version . "')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ('MySettings', 'tab', '')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ('portal', 'on', '0')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('tracker', 'Tracker', '1')");
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', 'SpiceCRM')");
@@ -585,7 +575,6 @@ class SpiceInstaller
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'default_date_format', '')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'default_time_format', '')");
-
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_iso4217', 'EUR')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_name', 'Euro')");
@@ -664,17 +653,17 @@ class SpiceInstaller
         $postData = $body->getParsedBody();
 
         //generate a new sugar_config
-        $newSugarConfig = $this->generateSugarConfig($postData);
+        $spice_config = $this->generateSugarConfig($postData);
 
         //assign to global instance
-        SpiceConfig::getInstance()->config = $this->generateSugarConfig($postData);
+        SpiceConfig::getInstance()->config = $spice_config;
 
-        //write to file
-        $this->writeConfig($newSugarConfig);
-
+        // set to installing
+        SpiceConfig::getInstance()->installing = true;
 
         $db = $this->createDatabase($postData);
         file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
+
 
         $repair = new AdminController();
 
@@ -694,8 +683,10 @@ class SpiceInstaller
             $outcome = false;
         } else {
             $outcome = true;
-
         }
+
+        //write the config.php .. all shoudl be good here
+        $this->writeConfig($spice_config);
 
         return [
             "success" => $outcome,

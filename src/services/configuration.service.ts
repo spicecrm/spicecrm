@@ -10,8 +10,7 @@ import {Router} from '@angular/router';
 import {HttpClient} from "@angular/common/http";
 import {Title} from "@angular/platform-browser";
 import {BehaviorSubject, Observable, Subject, throwError} from "rxjs";
-
-import {Md5} from "ts-md5";
+import {SpiceInstaller} from "../include/spiceinstaller/components/spiceinstaller";
 
 /**
  * @ignore
@@ -25,6 +24,11 @@ declare var _: any;
 export class configurationService {
 
     /**
+     * set to true if sysinfo returned 599 so the installer can run
+     */
+    public enableinstall: boolean = false;
+
+    /**
      * set to true once the service loaded itself
      */
     public initialized: boolean = false;
@@ -35,11 +39,6 @@ export class configurationService {
     public reloading: boolean = false;
 
     /**
-     * holds the sites from the frontend config
-     */
-    public sites: any[] = [];
-
-    /**
      * holds general system data retrieved from sysinfo call
      */
     public data: any = {
@@ -47,8 +46,14 @@ export class configurationService {
         backendextensions: {},
         systemparameters: {},
         theme: {},
-        name: 'SpiceCRM'
+        name: 'SpiceCRM',
+        displayloginsidebar: false
     };
+
+    /**
+     * the assets retrieved from the sysinfo
+     */
+    public assets: any[] = [];
 
     /**
      * holds any app data the application can store with a given key
@@ -64,8 +69,6 @@ export class configurationService {
      * emits when a data with a give key is changed
      */
     public datachanged$: EventEmitter<string> = new EventEmitter<string>();
-
-    public locationHash: string;
 
     /**
      * handler to the indexed DB
@@ -83,6 +86,8 @@ export class configurationService {
         // add a new behaviour subject
         this.loaded$ = new BehaviorSubject<boolean>(false);
 
+        this.getSysinfo();
+
         // open a DB for the config
         this.openDB('config').then(
             db => {
@@ -98,81 +103,9 @@ export class configurationService {
             }
         );
 
-        this.locationHash = Md5.hashStr('spiceuisites' + window.location.origin + window.location.pathname).toString();
-        let storedSites = localStorage.getItem(this.locationHash);
-
-        if (storedSites) {
-            this.sites = JSON.parse(atob(storedSites));
-
-            let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-            let selectedsite = sessionStorage.getItem(siteHash);
-
-            let siteFound = false;
-            this.sites.some(site => {
-                if (site.id == selectedsite) {
-                    this.setSiteID(site.id);
-                    siteFound = true;
-                    return true;
-                }
-            });
-
-            if (!siteFound) {
-                this.setSiteID(this.sites[0].id);
-            }
-
-            // subscribe to the broadcast to catch the logout
-            this.broadcast.message$.subscribe(message => this.handleLogout(message));
-        }
 
         // Update Theme when configuration has been loaded.
-        this.loaded$.subscribe(() => this.updateThemeColors());
-
-        // reload the sites
-        http.get('config/sites/')
-            .subscribe(
-                (data: any) => {
-                    let dataObject = data;
-                    let sites = dataObject.sites;
-
-                    // if no site is set naviogate to setup screen
-                    if (sites.length == 0) {
-                        this.router.navigate(['/install']);
-                    }
-
-                    for (let attrname in dataObject.general) {
-                        this.data[attrname] = dataObject.general[attrname];
-                    }
-
-                    // if multiple are set try to find the proper one
-                    if (sites.length > 0) {
-                        this.sites = sites;
-
-                        // this.session.setSessionData('sites', sites);
-                        localStorage.setItem(this.locationHash, btoa(JSON.stringify(sites)));
-
-                        if (!this.data.id) {
-                            let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-                            let selectedsite = sessionStorage.getItem(siteHash);
-                            let siteFound = false;
-                            this.sites.some(site => {
-                                if (site.id == selectedsite) {
-                                    this.setSiteID(site.id);
-                                    siteFound = true;
-                                    return true;
-                                }
-                            });
-
-                            if (!siteFound) {
-                                this.setSiteID(sites[0].id);
-                            }
-                        }
-                    }
-
-                    // this.initialized = true;
-                }
-            );
-
-
+        // this.loaded$.subscribe(() => this.updateThemeColors());
     }
 
     /**
@@ -309,37 +242,6 @@ export class configurationService {
         this.clearDB();
     }
 
-    public setSiteData(data) {
-        this.sites.push(data);
-        for (let attrname in data) {
-            this.data[attrname] = data[attrname];
-        } // before: this.data = data;
-        // this.session.setSessionData('sites', sites);
-        localStorage.setItem(this.locationHash, btoa(JSON.stringify(this.sites)));
-
-        this.getSysinfo();
-    }
-
-    public setSiteID(id) {
-        this.sites.some(site => {
-            if (site.id == id) {
-                for (let attrname in site) {
-                    this.data[attrname] = site[attrname];
-                } // before: this.data = site;
-                // this.cookie.setValue('spiceuibackend', id);
-                let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-                sessionStorage.setItem(siteHash, id);
-                return true;
-            }
-        });
-        this.getSysinfo();
-        return this.data;
-    }
-
-    public getSiteId() {
-        return this.data.id;
-    }
-
     public getBackendUrl() {
         return this.data.backendUrl;
     }
@@ -386,6 +288,10 @@ export class configurationService {
                 this.initialized = true;
                 this.reloading = false;
 
+                if(res.assets){
+                    this.setAssets(res.assets);
+                }
+
                 // set the favicon
                 // ToDo: move to separate theming service
                 this.setFavIcon();
@@ -394,17 +300,78 @@ export class configurationService {
                 this.title.setTitle(this.systemName);
             },
             error: (err: any) => {
-                this.reloading = false;
-                this.initialized = true;
-
-                // set the favicon
-                // ToDo: move to separate theming service
-                this.setFavIcon();
-
-                // this.toast.sendToast('error connecting to Backend', 'error', 'please contact your System administrator');
+                // if we figure the system is not installed add the route to the routes available so it can also be called and redirect to the installer
+                if(err.status == '599' || err.error.error.message == 'system is not installed') {
+                    this.enableinstall = true;
+                    this.router.config.unshift({
+                        path: 'install',
+                        component: SpiceInstaller
+                    });
+                    this.router.navigate(['/install']);
+                }
             }
         });
         return sysinfo;
+    }
+
+    /**
+     * gets a specific assetvalue and returns it or undefined
+     *
+     * @param asset
+     */
+    public getAsset(asset){
+        if(this.assets && this.assets.find(a => a.assetkey == asset)?.assetvalue)
+        {
+            return this.assets.find(a => a.assetkey == asset).assetvalue;
+        }
+        return undefined;
+    }
+
+    /**
+     * sets the asset
+     *
+     * @param asset
+     * @param value
+     */
+    public setAsset(asset, value){
+        let index = this.assets.findIndex(a => a.assetkey == asset);
+        if(index >= 0){
+            this.assets[index].assetvalue = value;
+        } else {
+            this.assets.push({assetkey: asset, assetvalue: value});
+        }
+
+        this.loaded$.next(true);
+    }
+
+    /**
+     * sets the assets
+     * @param assets
+     * @param emit
+     */
+    public setAssets(assets, emit = false){
+        this.assets = assets;
+
+        this.setColors();
+
+        if(emit) this.loaded$.next(true);
+    }
+
+    /**
+     * sets the colors
+     *
+     * @private
+     */
+    private setColors(){
+        // chek that we have colors
+        if(!this.getAsset('colors')) return;
+
+        // get the color object
+        let colorObj = JSON.parse(this.getAsset('colors'));
+        for(let assetColor in colorObj){
+            document.documentElement.style.setProperty('--' + assetColor, colorObj[assetColor]);
+        }
+
     }
 
     /**

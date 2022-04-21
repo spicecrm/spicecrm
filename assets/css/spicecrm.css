@@ -10,6 +10,7 @@
 @import "./imports/spicescrollbar.css";
 @import "./imports/spicetimeline.css";
 @import "./imports/spicepagebuilder.css";
+@import "./imports/bpmn.css";
 
 :root {
     --color-white: white;

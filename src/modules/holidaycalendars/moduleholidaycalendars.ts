@@ -27,6 +27,9 @@ import /*embed*/ {HolidayCalendarListGetHolidaysButton} from "./components/holid
         SystemComponents,
         DirectivesModule,
     ],
+    exports: [
+        HolidayCalendarListDays
+    ],
     declarations: [
         HolidayCalendarList,
         HolidayCalendarListDays,

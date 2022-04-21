@@ -28,6 +28,11 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     public searchterm: string;
 
     /**
+     * a temp searchterm the input ties to to have a short delay so the reponse is acceptable
+     */
+    public tempsearchterm: string;
+
+    /**
      * set to true if favorites shoudl be displayed resp searched
      *
      * @private
@@ -45,6 +50,11 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      * @private
      */
     public dropDownOpen: boolean = false;
+
+    /**
+     * the search timeout
+     */
+    public searchTimeOut: any = undefined;
 
     constructor(
         public model: model,
@@ -215,6 +225,14 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             i++
         }
         this.model.setFields(fields);
+    }
+
+    public search(_e) {
+        // handle the key pressed
+        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+        this.searchTimeOut = window.setTimeout(() => {
+            this.searchterm = this.tempsearchterm
+        }, 1000);
     }
 
 }
