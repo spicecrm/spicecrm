@@ -54,6 +54,4 @@ export class WorkflowTasksDashlet {
             height: 'calc(' + rect.height + 'px - ' + this.itemcontainer.element.nativeElement.offsetTop + 'px)'
         };
     }
-
-
 }

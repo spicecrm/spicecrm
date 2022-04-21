@@ -82,10 +82,6 @@ export class GSuiteLoginPane {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
 
-            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
-                this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
-            }
-
             this.http.get(this.configuration.getBackendUrl() + '/authentication/login', {
                 headers
             }).subscribe({
@@ -175,12 +171,6 @@ export class GSuiteLoginPane {
      */
     public goToSettings() {
         this.promptUser = true;
-
-        let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-        let selectedsite = sessionStorage.getItem(siteHash);
-        if (this.selectedsite) {
-            this.configuration.setSiteID(this.selectedsite);
-        }
     }
 
     /**

@@ -5,6 +5,7 @@ import {Component, OnInit, Injector} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {modal} from '../../services/modal.service';
+import {configurationService} from '../../services/configuration.service';
 import {modelutilities} from '../../services/modelutilities.service';
 
 
@@ -74,6 +75,7 @@ export class AdministrationAssetManager implements OnInit{
         public toast: toast,
         public modal: modal,
         public backend: backend,
+        public configuration: configurationService,
         public modelutilities: modelutilities,
         public injector: Injector
     ) {
@@ -183,7 +185,7 @@ export class AdministrationAssetManager implements OnInit{
         });
 
         this.backend.postRequest('system/spiceui/admin/assets', {}, assets).subscribe(res => {
-            console.log(res);
+            this.configuration.setAssets(res, true);
         })
     }
 

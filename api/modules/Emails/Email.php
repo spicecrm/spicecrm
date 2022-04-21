@@ -328,8 +328,14 @@ class Email extends SugarBean
 
             if (empty($this->$field)) continue;
 
-            $addressesString = str_replace([",", ";"], "::", DBUtils::fromHtml($this->$field));
-            $addresses = explode("::", $addressesString);
+            $addresses = [];
+
+            if (is_array($this->$field)) {
+                foreach ($this->$field as $address) $addresses[] = DBUtils::fromHtml($address);
+            } else {
+                $addressesString = str_replace([",", ";"], "::", DBUtils::fromHtml($this->$field));
+                $addresses = explode("::", $addressesString);
+            }
 
             if (empty($addresses)) continue;
 

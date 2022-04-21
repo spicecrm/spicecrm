@@ -24,6 +24,8 @@ export class QuestionRenderBasic implements OnInit {
      */
     @Input() public followingQuestion: any;
 
+    public hideFinishedQuestions = false;
+
     public questionMeta;
 
     public questionparameter;
@@ -48,16 +50,18 @@ export class QuestionRenderBasic implements OnInit {
         return this.questionMeta.readonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
     }
 
+    /*
     public get hasTitleTextOrImage(): boolean {
         return !!( this.question.questiontext || this.question.image_id );
     }
+     */
 
     /**
      * Should the question rendered together with the following question?
      * Relevant only with questions of specific types
      */
     public get isToMergeWithFollowingQuestion() {
-        if ( !this.hasTitleTextOrImage
+        if ( !this.qp.showQuestionHeader( this.question )
             && this.followingQuestion
             && this.followingQuestion.questiontype === this.question.questiontype
         ) return true;
@@ -76,4 +80,11 @@ export class QuestionRenderBasic implements OnInit {
         return style;
     }
 
+    get showError(): boolean {
+        return !this.questionMeta.finished && this.question.answer_required && this.qp.showInvalidities
+    }
+
+    get showQuestion(): boolean {
+        return this.qp.isLoaded && ( !this.hideFinishedQuestions || !this.questionMeta.finished );
+    }
 }

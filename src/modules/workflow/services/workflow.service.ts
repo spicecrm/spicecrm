@@ -9,7 +9,7 @@ import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
 
 /**
- * a helper servioe for the workflow handler
+ * a helper service for the workflow handler
  */
 @Injectable()
 export class workflow {
@@ -80,12 +80,13 @@ export class workflow {
      * handles an activity on the workflow task
      *
      * @param taskid
-     * @param actionvalue
-     * @param comment
+     * @param method
+     * @param methodParams
      */
-    public doTaskAction(taskid, actionvalue, comment = '') {
+    public callTaskMethod(taskid, method: string, params: any) {
         let retSubject = new Subject<any>();
-        this.backend.postRequest('module/Workflows/settaskstatus/' + taskid + '/' + actionvalue, {}, {comment: comment}).subscribe(workflow => {
+
+        this.backend.postRequest(`module/WorkflowsTaskTypes/${method}/workflowtask/${taskid}`, {}, params).subscribe(workflow => {
 
             this.workflows.some(wf => {
                 if (wf.id == workflow.workflow.id) {

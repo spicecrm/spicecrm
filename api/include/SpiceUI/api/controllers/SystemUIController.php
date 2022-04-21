@@ -48,7 +48,7 @@ class SystemUIController{
     {
         $uiRestHandler = new SpiceUIRESTHandler();
         $postbody = $req->getParsedBody();
-        return $res->withJson(['success' => $uiRestHandler->setAssets($postbody)]);
+        return $res->withJson($uiRestHandler->setAssets($postbody));
     }
 
     /***

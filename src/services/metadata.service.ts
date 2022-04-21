@@ -47,7 +47,6 @@ export class metadata {
         this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
     }
 
-
     get actionSets() {
         return this.configuration.getData('actionsets');
     }
@@ -61,28 +60,11 @@ export class metadata {
     }
 
     get moduleDirectory(): {[key: string]: {id: string, module: string, path: string, factories?: any[]}} {
-        let module = {
-            SpiceInstaller: {
-                id: "766AADDE-FB86-4F9C-9939-9A7B03288CAE",
-                module: "SpiceInstallerModule",
-                path: "app/include/spiceinstaller/spiceinstallermodule"
-            }
-        };
-        return !this.configuration.getData('modules') ? module : this.configuration.getData('modules');
-
+        return !this.configuration.getData('modules') ? {} : this.configuration.getData('modules');
     }
 
     get componentDirectory() {
-        let component = {
-            SpiceInstaller: {
-                component: "SpiceInstaller",
-                componentconfig: [],
-                deprecated: "0",
-                module: "SpiceInstaller",
-                path: 'app/include/spiceinstaller/components/spiceinstaller'
-            }
-        };
-        return !this.configuration.getData('components') ? component : this.configuration.getData('components');
+        return !this.configuration.getData('components') ? {} : this.configuration.getData('components');
     }
 
     get componentSets() {

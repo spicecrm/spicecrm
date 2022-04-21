@@ -1,0 +1,13 @@
+<div *ngIf="qp.showQuestionHeader(question)" [ngClass]="addclasses">
+    <h3 *ngIf="question.questiontext && ( !question.image_id || question.parentQuestionset.showonlyimages !== '1' )" [ngClass]="{'slds-text-color_error':showError}">
+        <abbr *ngIf="!isDisabled() && question.answer_required" class="slds-required">*</abbr>
+        {{question.questiontext}}
+    </h3>
+    <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion" [classOuter]="'slds-m-vertical_small'"></media-file-image>
+</div>
+
+<!--
+from text question:
+<h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" [class.slds-m-bottom_xx-small]="question.image_id">{{question.questiontext}}</h3>
+<div class="slds-m-bottom_small"><media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image></div>
+-->
