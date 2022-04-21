@@ -7,6 +7,14 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
 $routes = [
     [
+        'method' => 'delete',
+        'route' => '/system/cache',
+        'class' => AdminController::class,
+        'function' => 'resetCache',
+        'description' => 'clears the cache (REDIS, MEMCAHCE, File, ..',
+        'options' => ['adminOnly' => true]
+    ],
+    [
         'method' => 'get',
         'route' => '/configuration/systemstats',
         'oldroute' => '/admin/systemstats',

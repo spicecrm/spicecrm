@@ -140,4 +140,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
     ]
 ];
 
-VardefManager::createVardef('SchedulerJobs','SchedulerJob', ['default']);
+VardefManager::createVardef('SchedulerJobs','SchedulerJob', ['default', 'assignable']);

@@ -34,7 +34,7 @@ date_default_timezone_set('UTC');
 /**
  * ------- load initial classes -------
  */
-SpiceConfig::getInstance()->loadConfigFromDB();
+SpiceConfig::getInstance();
 SpiceDictionaryHandler::loadMetaDataFiles();
 UploadStream::register();
 SpiceModules::getInstance()->loadModules();

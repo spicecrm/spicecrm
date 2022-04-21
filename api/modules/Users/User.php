@@ -257,7 +257,7 @@ class User extends Person
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        if (!isset($GLOBALS['installing']) && $current_user !== null) {
+        if (!SpiceConfig::getInstance()->installing && $current_user !== null) {
             if ($current_user->isAdmin()) {
                 if (isset($this->UserType[0])) {
                     switch ($this->UserType) {
@@ -845,10 +845,10 @@ class User extends Person
     public static function usernameAlreadyExists($username, $userIdToIgnore)
     {
         $db = DBManagerFactory::getInstance();
-        $sql = 'SELECT id,user_name FROM users WHERE status = \'Active\' AND deleted = 0';
+        $sql = "SELECT id,user_name FROM users WHERE status = 'Active' AND deleted = 0";
         if (!empty($userIdToIgnore))
-            $sql .= ' AND id <> "' . $db->quote($userIdToIgnore) . '"';
-        $sql .= ' AND LOWER(user_name) = "' . $db->quote(mb_strtolower($username)) . '"';
+            $sql .= " AND id <> '".$db->quote($userIdToIgnore) . "'";
+        $sql .= "AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
         $user = $db->fetchOne($sql);
         return $user !== false;
     }
@@ -866,7 +866,7 @@ class User extends Person
     {
         $db = DBManagerFactory::getInstance();
 
-        $sql = "SELECT * FROM users WHERE LOWER(CONCAT(first_name, ' ' , last_name)) LIKE LOWER('" . $name . "')";
+        $sql = "SELECT * FROM users WHERE LOWER(CONCAT(first_name, ' ' , last_name)) LIKE LOWER('{$name}')";
         $result = $db->query($sql);
 
         if ($result->num_rows > 0) {

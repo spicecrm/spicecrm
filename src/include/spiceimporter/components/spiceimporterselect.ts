@@ -118,7 +118,7 @@ export class SpiceImporterSelect {
      * @private
      */
     public setSavedImport(event) {
-        this.spiceImport.setSavedImport(event.srcElement.value);
+        this.spiceImport.setSavedImport(event.target.value);
     }
 
     /**

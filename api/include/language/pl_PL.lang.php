@@ -999,12 +999,11 @@ $app_list_strings = [
         'email' => 'E-mail',
         'system' => 'System',
     ],
-    'workflowdefinition_status' => [
-        'active' => 'Aktywny',
-        'active_once' => 'Aktywny (jedno wykonanie)',
-        'active_scheduled' => 'Aktywny zaharmonogramowany',
-        'active_scheduled_once' => 'Aktywny zaharmonogramowany (jedno wykonanie)',
-        'inactive' => 'Nieaktywny'
+    'workflowdefinition_frequency' => [
+        'always' => 'always',
+        'run_once' => 'run once',
+        'scheduled_always' => 'scheduled (run always)',
+        'scheduled_once' => 'scheduled (run once)'
     ],
     'workflowdefinition_precondition' => [
         'a' => 'Zawsze',
