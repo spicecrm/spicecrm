@@ -1,24 +1,21 @@
-<div class="slds-tabs_scoped">
-    <ul class="slds-tabs_scoped__nav slds-theme--default" role="tablist"
-        style="position: sticky; z-index: 1; top: 0; margin-top: -1px">
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='T'}">
-            <a class="slds-tabs_scoped__link slds-border--bottom" href="javascript:void(0);" (click)="activeTab='T'">
+<div class="slds-tabs_default">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab=='T'}">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab='T'">
                 <system-label label="LBL_DETAILS"></system-label>
             </a>
         </li>
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='A'}">
-            <a class="slds-tabs_scoped__link slds-border--bottom" href="javascript:void(0);" (click)="activeTab='A'">
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab=='A'}">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab='A'">
                 <system-label label="LBL_ASSIGNMENT"></system-label>
             </a>
         </li>
     </ul>
-    <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show' : activeTab=='T', 'slds-hide': activeTab!='T'}"
-         role="tabpanel">
+    <div class="slds-tabs_default__content slds-p-around--x-small" [ngClass]="{'slds-show' : activeTab=='T', 'slds-hide': activeTab!='T'}" role="tabpanel">
         <workflow-manager-detail-task-taskpanel></workflow-manager-detail-task-taskpanel>
         <div #typeComponentContainer></div>
     </div>
-    <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show' : activeTab=='A', 'slds-hide': activeTab!='A'}"
-         role="tabpanel">
+    <div class="slds-tabs_default__content slds-p-around--x-small" [ngClass]="{'slds-show' : activeTab=='A', 'slds-hide': activeTab!='A'}" role="tabpanel">
         <workflow-manager-detail-task-assignmentpanel></workflow-manager-detail-task-assignmentpanel>
     </div>
 </div>

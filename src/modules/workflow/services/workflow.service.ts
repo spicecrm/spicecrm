@@ -9,7 +9,7 @@ import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
 
 /**
- * a helper servioe for the workflow handler
+ * a helper service for the workflow handler
  */
 @Injectable()
 export class workflow {
