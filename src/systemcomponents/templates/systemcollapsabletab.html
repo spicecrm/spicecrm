@@ -1,16 +1,16 @@
 <div class="slds-section" [ngClass]="{'slds-is-open': expanded}">
     <h3 *ngIf="_title != ''" class="slds-section__title">
         <ng-container *ngIf="collapsible; else simpleheader">
-        <button aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel()">
-            <system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon>
-            <div class="slds-grid slds-grid--vertical-align-center">
-                <system-icon *ngIf="moduleicon" [module]="moduleicon" size="x-small"></system-icon>
-                <span class="slds-truncate"><system-label [label]="_title"></system-label></span>
-            </div>
-        </button>
+            <button aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel()">
+                <system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon>
+                <div class="slds-grid slds-grid--vertical-align-center">
+                    <system-icon *ngIf="moduleicon" [module]="moduleicon" size="x-small"></system-icon>
+                    <span class="slds-truncate"><system-label [label]="_title"></system-label></span>
+                </div>
+            </button>
         </ng-container>
         <ng-template #simpleheader>
-            <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action">
+            <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action" style="cursor: default">
                 <system-icon *ngIf="moduleicon" [module]="moduleicon" size="x-small"></system-icon>
                 <span class="slds-truncate"><system-label [label]="_title"></system-label></span>
             </div>

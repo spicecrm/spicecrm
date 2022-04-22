@@ -41,6 +41,7 @@ class BeanFactory
         'SpiceACLTerritories' => ['beanname' => 'SpiceACLTerritory'],
         'Trackers' => ['beanname' => 'Tracker'],
         'Users' => ['beanname' => 'User'],
+        'UserPreferences' => ['beanname' => 'UserPreference'],
         'UserAbsences' => ['beanname' => 'UserAbsence'],
         'UserAccessLogs' => ['beanname' => 'UserAccessLog'],
         'SystemTenants' => ['beanname' => 'SystemTenant'],

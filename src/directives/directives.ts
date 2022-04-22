@@ -24,6 +24,7 @@ import /*embed*/ {SystemTitleDirective} from './directives/systemtitle';
 import /*embed*/ {SystemPlaceholderDirective} from './directives/systemplaceholder';
 import /*embed*/ {SystemMultiSelectCheckboxesDirective} from './directives/systemmultiselectcheckboxes';
 import /*embed*/ {SystemCalculatorTriggerDirective} from './directives/systemcalculatortrigger';
+import /*embed*/ {SystemStopClickPropagationDirective} from './directives/systemstopclickpropagation';
 
 /**
  * the angular module that collects all teh directives and can be imported by other modules to use the set of directives
@@ -50,7 +51,8 @@ import /*embed*/ {SystemCalculatorTriggerDirective} from './directives/systemcal
         SystemPlaceholderDirective,
         SystemTitleDirective,
         SystemMultiSelectCheckboxesDirective,
-        SystemCalculatorTriggerDirective
+        SystemCalculatorTriggerDirective,
+        SystemStopClickPropagationDirective
     ],
     exports: [
         SystemModelPopOverDirective,
@@ -70,7 +72,8 @@ import /*embed*/ {SystemCalculatorTriggerDirective} from './directives/systemcal
         SystemPlaceholderDirective,
         SystemTitleDirective,
         SystemMultiSelectCheckboxesDirective,
-        SystemCalculatorTriggerDirective
+        SystemCalculatorTriggerDirective,
+        SystemStopClickPropagationDirective
     ]
 })
 export class DirectivesModule {
