@@ -31,7 +31,7 @@ import /*embed*/ {ProjectWBSQuoteButton} from "./components/projectwbsquotebutto
 import /*embed*/ {ProjectSettlementButton} from "./components/projectsettlementbutton";
 import /*embed*/ {ProjectSettlement} from "./components/projectsettlement";
 import {ProjectWBSHierarchyAddNode} from "./components/projectwbshierarchyaddnode";
-
+import {ProjectWBSGantt} from "./components/projectwbsgantt";
 
 @NgModule({
     imports: [
@@ -47,6 +47,7 @@ import {ProjectWBSHierarchyAddNode} from "./components/projectwbshierarchyaddnod
         ProjectWBSHierarchy,
         ProjectWBSHierarchyNode,
         ProjectWBSHierarchyAddNode,
+        ProjectWBSGantt,
         ProjectActivityDashlet,
         ProjectActivityDashletActivity,
         fieldProjectActivityDropdown,
