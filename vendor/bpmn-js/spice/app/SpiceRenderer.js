@@ -130,11 +130,11 @@ export default class SpiceRenderer extends BaseRenderer {
     renderEventContent(element, parentGfx, innerType, fill = false) {
 
         if (innerType == 'bpmn:MessageEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:MessageEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:MessageEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:TimerEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:TimerEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:TimerEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:ConditionalEventDefinition') {
@@ -142,31 +142,31 @@ export default class SpiceRenderer extends BaseRenderer {
         }
 
         if (innerType == 'bpmn:SignalEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:SignalEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:SignalEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:EscalationEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:EscalationEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:EscalationEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:LinkEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:LinkEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:LinkEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:ErrorEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:ErrorEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:ErrorEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:CancelEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:CancelEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:CancelEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:CompensateEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:CompensateEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:CompensateEventDefinition'](parentGfx, element, fill);
         }
 
         if (innerType == 'bpmn:TerminateEventDefinition') {
-            return this.bpmnRenderer.handlers['bpmn:TerminateEventDefinition'](parentGfx, element, isThrowing);
+            return this.bpmnRenderer.handlers['bpmn:TerminateEventDefinition'](parentGfx, element, fill);
         }
 
         return null;
