@@ -78,6 +78,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'type' => 'bool',
             'source' => 'non-db',
             'comment' => 'Comparing the validation date of the agreement (valid from with today\'s date)'
+        ],
+        'agreement_status' => [
+            'name' => 'agreement_status',
+            'vname' => 'LBL_STATUS',
+            'type' => 'enum',
+            'options' => 'agreement_status_dom',
+            'comment' => 'Status of the agreement'
         ]
     ],
     'relationships' => [
@@ -91,7 +98,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'relationship_type' => 'one-to-many'
         ]
     ],
-    'indices' => []
+    'indices' => [
+        ['name' => 'idx_agreements_status', 'type' => 'index', 'fields' => ['agreement_status', 'deleted']]
+    ]
 ];
 
 VardefManager::createVardef('Agreements', 'Agreement', ['default', 'assignable']);

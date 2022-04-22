@@ -30,6 +30,7 @@ import /*embed*/ {ProjectSettlementLine} from "./components/projectsettlementlin
 import /*embed*/ {ProjectWBSQuoteButton} from "./components/projectwbsquotebutton";
 import /*embed*/ {ProjectSettlementButton} from "./components/projectsettlementbutton";
 import /*embed*/ {ProjectSettlement} from "./components/projectsettlement";
+import {ProjectWBSHierarchyAddNode} from "./components/projectwbshierarchyaddnode";
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import /*embed*/ {ProjectSettlement} from "./components/projectsettlement";
     declarations: [
         ProjectWBSHierarchy,
         ProjectWBSHierarchyNode,
+        ProjectWBSHierarchyAddNode,
         ProjectActivityDashlet,
         ProjectActivityDashletActivity,
         fieldProjectActivityDropdown,
