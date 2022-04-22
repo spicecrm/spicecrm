@@ -146,7 +146,8 @@ export class WorkflowManagerService {
             sequence: this.getNextSequence(),
             name: 'new Task ' + (this.tasks.length + 1),
             tasktype: typeId,
-            type_config: {}
+            type_config: {},
+            ishidden: ['start', 'end'].indexOf(this.types.find(t => t.id == typeId).type) > -1
         };
     }
 
@@ -242,7 +243,7 @@ export class WorkflowManagerService {
             case 'end':
                 return [];
             case 'gateway_email_event':
-                return ['email_event_open', 'email_event_bounce', 'email_event_timer'];
+                return ['regular', 'gateway_email_event', 'gateway_decision', 'end', 'email_event_open', 'email_event_bounce', 'email_event_timer'];
             default:
                 return ['regular', 'gateway_email_event', 'gateway_decision', 'end'];
         }

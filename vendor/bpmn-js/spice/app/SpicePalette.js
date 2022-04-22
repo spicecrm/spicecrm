@@ -1,7 +1,7 @@
 /**
  * BPMN custom palette class to provide custom element actions
  */
- class SpicePalette {
+ export default class SpicePalette {
 
     $inject = [ 'create', 'elementFactory', 'palette', 'translate', 'eventBus', 'zoomScroll' ];
     create; translate; elementFactory; eventBus; zoomScroll;
