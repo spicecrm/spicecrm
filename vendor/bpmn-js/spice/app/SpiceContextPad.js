@@ -80,7 +80,7 @@ export default class SpiceContextPad {
                 };
             }
 
-            if (element.type !== 'bpmn:EventBasedGateway') {
+            if (element.businessObject.$attrs.icon !== 'start-event-message') {
                 types = types.filter(t => !t.type.startsWith('email_event'));
             }
 
