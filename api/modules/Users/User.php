@@ -77,7 +77,7 @@ class User extends Person
 
     protected function _loadUserPreferencesFocus()
     {
-        $this->_userPreferenceFocus = new UserPreference($this);
+        $this->_userPreferenceFocus = BeanFactory::getBean('UserPreferences')->setUser($this);
     }
 
     /**
