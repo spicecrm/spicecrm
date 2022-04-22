@@ -74,9 +74,16 @@ export default class SpiceRenderer extends BaseRenderer {
 
         const eType = element.type;
 
+        if (icon == 'end-event-message') {
+            return this.drawStartEvent(parentNode, element, 'bpmn:MessageEventDefinition', true);
+        }
+
         if (icon == 'start-event-message') {
             return this.drawStartEvent(parentNode, element, 'bpmn:MessageEventDefinition');
+        }
 
+        if (icon == 'start-event-condition') {
+            return this.drawStartEvent(parentNode, element, 'bpmn:ConditionalEventDefinition');
         }
 
         const shape = this.bpmnRenderer.drawShape(parentNode, element);
@@ -113,7 +120,7 @@ export default class SpiceRenderer extends BaseRenderer {
      * @param element
      * @returns {*}
      */
-    drawStartEvent(parentGfx, element, innerType) {
+    drawStartEvent(parentGfx, element, innerType, fill = false) {
 
         var attrs = {
             fill: getFillColor(element, this.defaultFillColor),
@@ -122,7 +129,7 @@ export default class SpiceRenderer extends BaseRenderer {
 
         var circle = this.bpmnRenderer.handlers['bpmn:Event'](parentGfx, element, attrs);
 
-        this.renderEventContent(element, parentGfx, innerType);
+        this.renderEventContent(element, parentGfx, innerType, fill);
 
         return circle;
     }
