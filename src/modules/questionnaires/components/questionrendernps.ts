@@ -21,7 +21,6 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
 
     @Input() public hideFinishedQuestions = false;
-    @Input() public imageWidthQuestion = 200;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
@@ -35,11 +34,15 @@ export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
         $event.stopPropagation();
         score = score.toString();
         if ( score === this.qp.answers[this.questionId].answer_value ) score = '';
-        return this.qp.setAnswerValue( this.questionId, score );
+        return this.qp.setAnswerValue( this.questionId, score.toString() );
     }
 
-    public isChecked( questionId: string, score: number ): boolean {
-        return this.qp.answers[questionId].answer_value && this.qp.answers[questionId].answer_value == score;
+    get value(){
+        return this.qp.answers[this.questionId].answer_value;
+    }
+
+    set value( value) {
+        this.qp.setAnswerValue( this.questionId, value );
     }
 
 }

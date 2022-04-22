@@ -1,8 +1,5 @@
-<system-collapsable-tab tabtitle="LBL_CONFIGURATIONS" class="slds-m-top--large spice-display-block">
-    <workflow-manager-task-next-tasks></workflow-manager-task-next-tasks>
-    <div class="slds-text-title--caps slds-p-bottom--small">
-        <system-label label="LBL_ACTIONS"></system-label>
-    </div>
+<workflow-manager-task-next-tasks *ngIf="!workflowManagerService.displayDiagram"></workflow-manager-task-next-tasks>
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_ACTIONS" class="slds-m-top--large">
     <div class="slds-p-vertical--x-small">
         <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
             <thead>
@@ -15,11 +12,6 @@
                 <th>
                     <div class="slds-truncate">
                         <system-label label="LBL_VALUE"></system-label>
-                    </div>
-                </th>
-                <th>
-                    <div class="slds-truncate">
-                        <system-label label="LBL_STATUS"></system-label>
                     </div>
                 </th>
                 <th class="slds-cell-shrink"></th>
@@ -50,15 +42,9 @@
             </tfoot>
         </table>
     </div>
-    <div class="slds-section slds-is-open slds-p-vertical--x-small">
-        <h3 class="slds-section__title slds-m-bottom--small">
-            <button aria-controls="expando-unique-id" aria-expanded="true"
-                    class="slds-button slds-section__title-action">
-            <span class="slds-truncate">
-                <system-label label="LBL_SYSTEM_ACTION"></system-label>
-            </span>
-            </button>
-        </h3>
+</system-collapsable-tab>
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_SYSTEM_ACTION" class="slds-m-top--large">
+    <div class="slds-p-vertical--x-small">
         <div>
             <label class="slds-truncate">
                 <system-label label="LBL_CLASS"></system-label>

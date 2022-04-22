@@ -1894,3 +1894,16 @@ $app_list_strings['workflowtasktypes_type_enum'] = [
 $app_list_strings['workflowtasktypes_icon_enum'] = [
     'intermediate-event-none' => 'Standard',
 ];
+$app_list_strings['prolonged_reason_dom'] = [
+    '' => '',
+    'waitextern' => 'Warten auf Drittpartei',
+    'vacation' => 'Urlaub',
+    'sickleave' => 'Krankenstand'
+];
+$app_list_strings['agreement_status_dom'] = [
+    '' => '',
+    'draft' => 'Entwurf',
+    'submitted' => 'eingereicht',
+    'rejected' => 'abgelehnt',
+    'approved' => 'angenommen',
+];

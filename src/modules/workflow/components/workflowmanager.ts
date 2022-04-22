@@ -48,10 +48,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      * reference to the diagram container
      */
     @ViewChild('diagramContainer', {read: ElementRef}) diagramContainer: ElementRef;
-    /**
-     * if true display diagram
-     */
-    public displayDiagram: boolean = true;
+
 
     constructor(public backend: backend,
                 public metadata: metadata,
@@ -105,6 +102,20 @@ export class WorkflowManager implements OnInit, AfterViewInit {
     }
 
     /**
+     * getter for the dioagram setting from the manager service
+     */
+    get displayDiagram(){
+        return this.workflowManagerService.displayDiagram;
+    }
+
+    /**
+     * setter for the dioagram setting from the manager service
+     */
+    set displayDiagram(value){
+        this.workflowManagerService.displayDiagram = value
+    }
+
+    /**
      * @return string the current workflow id
      */
     get currentWorkflowId(): string {
@@ -150,7 +161,13 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      */
     public ngOnInit() {
         this.loadTypes();
-        this.modules = this.metadata.getModules().sort();
+        // load all modules that are workflow relevant
+        for(let m in this.metadata.moduleDefs){
+            if(this.metadata.moduleDefs[m].workflow) this.modules.push(m);
+        }
+        this.modules.sort();
+
+        // initialize the current model
         this.model.module = 'WorkflowDefinitions';
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -297,14 +314,12 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      * @private
      */
     public getWorkflowDefinitions() {
-
-        this.isLoading = true;
-
+        let loadingModal = this.modal.await('LBL_LOADING');
         this.backend.getRequest('module/WorkflowDefinitions/' + this.currentModule).subscribe(wfd => {
-            this.isLoading = false;
+            loadingModal.emit(true);
             this.workflowManagerService.currentModule.workflowDefinitions = wfd;
         }, () => {
-            this.isLoading = false;
+            loadingModal.emit(true);
         });
     }
 

@@ -40,7 +40,7 @@ export class WorkflowManagerTaskTypesSms {
                 public model: model,
                 private backend: backend,
                 private userpreferences: userpreferences,
-                private workflowManagerService: WorkflowManagerService,
+                public workflowManagerService: WorkflowManagerService,
                 private configuration: configurationService) {
         this.contentOption = this.model.data.emailcontclass && this.model.data.emailcontclass.length > 0 ? 'method' : 'email_template';
     }

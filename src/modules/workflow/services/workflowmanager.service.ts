@@ -12,14 +12,22 @@ import {Observable, Subject} from "rxjs";
  */
 @Injectable()
 export class WorkflowManagerService {
+
+    /**
+     * if true display diagram
+     */
+    public displayDiagram: boolean = true;
+
     /**
      * holds the deleted workflow task types
      */
     public deletedTasks: WorkflowTaskTypeI[] = [];
+
     /**
      * holds the workflow task types
      */
     public types: WorkflowTaskTypeI[] = [];
+
     /**
      * holds the current module
      */

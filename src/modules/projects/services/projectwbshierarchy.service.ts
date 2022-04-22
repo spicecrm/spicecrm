@@ -87,7 +87,7 @@ export class projectwbsHierarchy {
                 }
 
                 // all have a date
-                return a.data.date_start.isBefore(b.data.date_start) ? 1 : -1;
+                return a.data.date_start.isBefore(b.data.date_start) ? -1 : 1;
             });
 
             // rebuild the members list
