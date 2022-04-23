@@ -13,6 +13,7 @@
     "@angular/platform-browser-dynamic": "^13.3.1",
     "@angular/router": "^13.3.1",
     "bpmn-js": "^8.10.0",
+    "chartjs": "^0.3.24",
     "cropperjs": "^1.5.12",
     "croppie": "^2.6.5",
     "dhtmlx-gantt": "^7.1.10",
