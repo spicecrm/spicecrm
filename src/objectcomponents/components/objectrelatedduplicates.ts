@@ -3,6 +3,7 @@
  */
 import {Component, AfterViewInit, OnDestroy, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
+import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {Subscription} from "rxjs";
 
@@ -15,6 +16,13 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      * the component config
      */
     public componentconfig: any = {};
+
+    /**
+     * indicates to show the panel
+     *
+     * it is hidden if no dup check is done for the module or if no duplicates are found
+     */
+    public showPanel: boolean = false;
 
     /**
      * the loaded list of duplicates
@@ -51,7 +59,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      */
     public subscriptions: Subscription = new Subscription();
 
-    constructor(public model: model, public broadcast: broadcast) {
+    constructor(public model: model, public metadata: metadata, public broadcast: broadcast) {
 
     }
 
@@ -59,13 +67,16 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      * load the duplicates and subscribe to the broadcast
      */
     public ngOnInit() {
-        // check duplicates
-        this.checkDuplicates();
+        // check if the module has a dup check at all
+        if(this.metadata.getModuleDuplicatecheck(this.model.module)) {
+            // check duplicates
+            this.checkDuplicates();
 
-        // add a listener to the broadcast service
-        this.subscriptions.add(
-            this.broadcast.message$.subscribe(message => this.handleMessage(message))
-        );
+            // add a listener to the broadcast service
+            this.subscriptions.add(
+                this.broadcast.message$.subscribe(message => this.handleMessage(message))
+            );
+        }
     }
 
     /**
@@ -118,6 +129,9 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
                 this.duplicates = data.records;
                 this.duplicatecount = data.count;
                 this.isLoading = false;
+
+                // if we have duplicates show the panel
+                if(this.duplicatecount > 0) this.showPanel = true;
             },
             error => {
                 this.isLoading = false;

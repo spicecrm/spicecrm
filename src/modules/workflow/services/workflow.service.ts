@@ -9,7 +9,7 @@ import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
 
 /**
- * a helper servioe for the workflow handler
+ * a helper service for the workflow handler
  */
 @Injectable()
 export class workflow {
@@ -83,9 +83,8 @@ export class workflow {
      * @param method
      * @param methodParams
      */
-    public callTaskMethod(taskid, method: string, methodParams: any[]) {
+    public callTaskMethod(taskid, method: string, params: any) {
         let retSubject = new Subject<any>();
-        const params = {methodParams};
 
         this.backend.postRequest(`module/WorkflowsTaskTypes/${method}/workflowtask/${taskid}`, {}, params).subscribe(workflow => {
 

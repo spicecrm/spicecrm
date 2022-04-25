@@ -1,6 +1,11 @@
-<div class="slds-p-around--x-small slds-grid slds-grid--align-center">
-    <button *ngFor="let action of taskData.actions" class="slds-button slds-button_neutral" [disabled]="posting"
-            (click)="setDecision(action.value)">
+<div *ngIf="showComment" class="slds-form-element slds-p-around--x-small">
+    <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
+    <div class="slds-form-element__control">
+        <textarea class="slds-textarea" [disabled]="posting" [(ngModel)]="comment"></textarea>
+    </div>
+</div>
+<div class="slds-p-around--x-small slds-grid slds-grid--align-end">
+    <button *ngFor="let action of taskData.actions" class="slds-button slds-button_neutral" [disabled]="posting" (click)="setDecision(action.value)">
         <system-label [label]="action.name"></system-label>
     </button>
 </div>

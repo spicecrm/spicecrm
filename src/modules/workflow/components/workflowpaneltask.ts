@@ -31,10 +31,7 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
      * holds the task data
      */
     @Input() public workflowtask: any = {};
-    /**
-     * holds the task comment content
-     */
-    public comment: string = '';
+
     /**
      * true if posting data to backend
      */
@@ -67,13 +64,6 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
     }
 
     /**
-     * return true if commenting enabled
-     */
-    get showComment(): boolean {
-        return this.workflowtask.enablecomments == '1' && parseInt(this.workflowtask.status, 10) >= 10;
-    }
-
-    /**
      * call to initialize the model
      * rerender the type component each time the onChanges triggered
      */
@@ -88,17 +78,6 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
         this.renderTypeComponent();
     }
 
-    /**
-     * add a new comment
-     */
-    public addComment() {
-        this.posting = true;
-        this.workflowservice.addComment(this.workflowtask.id, this.comment).subscribe(result => {
-            this.posting = false;
-            this.comment = '';
-            this.toast.sendToast('Comment has been saved');
-        });
-    }
 
     /**
      * render the workflow task type component

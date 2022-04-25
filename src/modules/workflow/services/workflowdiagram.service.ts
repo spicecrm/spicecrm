@@ -9,7 +9,7 @@ import {BpmnElementI, BpmnEventI, WorkflowTaskDefI} from "../interfaces/workflow
 import {WorkflowManagerService} from "./workflowmanager.service";
 
 /** @ignore */
-declare var BpmnJS, SpicePalette, SpiceContextPad;
+declare var BpmnJS, SpiceBpmnModules;
 
 /**
  * provide bpmn-js library instance and api
@@ -24,7 +24,7 @@ export class WorkflowDiagramService implements OnDestroy {
         {taskType: 'end' , bpmnType: 'bpmn:EndEvent'},
         {taskType: 'start' , bpmnType: 'bpmn:StartEvent'},
         {taskType: 'gateway_decision' , bpmnType: 'bpmn:ExclusiveGateway'},
-        {taskType: 'gateway_email_event' , bpmnType: 'bpmn:EventBasedGateway'},
+        {taskType: 'gateway_email_event' , bpmnType: 'bpmn:IntermediateThrowEvent'},
         {taskType: 'email_event_open' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:MessageEventDefinition'},
         {taskType: 'email_event_bounce' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:SignalEventDefinition'},
         {taskType: 'email_event_timer' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:TimerEventDefinition'},
@@ -150,24 +150,25 @@ export class WorkflowDiagramService implements OnDestroy {
 
             if (!res.loaded) return;
 
-            SpiceContextPad.taskTypes = this.wfm.types;
-            SpiceContextPad.elementTypes = this.elementTypes;
+            SpiceBpmnModules.spiceContextPad.taskTypes = this.wfm.types;
+            SpiceBpmnModules.spiceContextPad.elementTypes = this.elementTypes;
 
             this.bpmnJS = new BpmnJS({
+                keyboard: { bindTo: document },
                 moddleExtensions: {
                     spice: {
                         name: 'WorkflowTask', prefix: 'spice', xml: {'tagAlias': 'lowerCase'},
                         types: [{
                             name: 'WorkflowTaskDetails', superClass: ['Element'],
-                            properties: [{name: 'taskId', isAttr: true, type: 'String'}]
+                            properties: [
+                                {name: 'taskId', isAttr: true, type: 'String'},
+                                {name: 'icon', isAttr: true, type: 'String'}
+                            ]
                         }]
                     }
                 },
-                additionalModules: [{
-                    __init__: ['spicePalette', 'spiceContextPad'],
-                    spicePalette: ['type', SpicePalette],
-                    spiceContextPad: ['type', SpiceContextPad]
-                }]
+                additionalModules: [
+                    SpiceBpmnModules.init]
             });
 
             this.bpmnJS.attachTo(container);
@@ -369,8 +370,9 @@ export class WorkflowDiagramService implements OnDestroy {
 
         const elementFactory = this.bpmnJS.get('elementFactory');
         const modeling = this.bpmnJS.get('modeling');
+        const taskType = this.wfm.getType(task.tasktype);
 
-        const type = this.elementTypes.find(t => this.wfm.getType(task.tasktype).type == t.taskType) ?? {
+        const type = this.elementTypes.find(t => taskType.type == t.taskType) ?? {
             bpmnType: 'bpmn:IntermediateThrowEvent',
             eventDefinitionType: undefined
         };
@@ -380,7 +382,10 @@ export class WorkflowDiagramService implements OnDestroy {
             eventDefinitionType: type.eventDefinitionType
         });
 
-        modeling.updateProperties(newElement, {taskId: task.id});
+        modeling.updateProperties(newElement, {
+            taskId: task.id,
+            icon: taskType.icon
+        });
 
         return newElement;
     }
@@ -494,7 +499,11 @@ export class WorkflowDiagramService implements OnDestroy {
 
         this.tasks = [...this.tasks, newTask];
 
-        modeling.updateProperties(element, {taskId: newTask.id});
+        modeling.updateProperties(element, {
+            taskId: newTask.id,
+            icon: this.wfm.getType(type).icon
+        });
+
         this.bpmnJS.get('canvas').zoom('fit-viewport');
     }
 
@@ -519,23 +528,24 @@ export class WorkflowDiagramService implements OnDestroy {
      * @private
      */
     private updateTaskLabels(event: BpmnEventI) {
-        this.tasks.some(task => {
 
-            const isConnection = event.context.element.businessObject.$type == 'bpmn:SequenceFlow';
-            const id = isConnection ? event.context.element.businessObject.sourceRef.$attrs.taskId : event.context.element.businessObject.$attrs.taskId;
+        const isConnection = event.context.element.businessObject.$type == 'bpmn:SequenceFlow';
+        const id = isConnection ? event.context.element.businessObject.sourceRef.$attrs.taskId : event.context.element.businessObject.$attrs.taskId;
+        const target = isConnection ? event.context.element.businessObject.targetRef.$attrs.taskId : id;
 
-            if (id != task.id) return false;
+        this.tasks.forEach(task => {
 
-            if (!isConnection) {
+            if (!isConnection && id == task.id) {
                 task.name = event.context.newLabel;
             } else {
-                this.wfm.getTaskNextTasks(task).some(entry => {
-                    if (entry.id != event.context.element.businessObject.targetRef.$attrs.taskId) return false;
-                    entry.name = event.context.newLabel;
-                })
-            }
 
-            return true;
+                if (isConnection && task.id != id) return;
+
+                this.wfm.getTaskNextTasks(task).some(entry => {
+                    if (entry.id != target) return false;
+                    entry.name = event.context.newLabel;
+                });
+            }
         });
     }
 

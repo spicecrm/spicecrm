@@ -6,6 +6,7 @@ import {model} from '../../../services/model.service';
 import {modal} from "../../../services/modal.service";
 import {metadata} from '../../../services/metadata.service';
 import {footer} from "../../../services/footer.service";
+import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: 'workflow-manager-task-types-system',
@@ -15,7 +16,7 @@ import {footer} from "../../../services/footer.service";
  * handle managing the workflow task system type
  */
 export class WorkflowManagerTaskTypesSystem {
-    constructor(public model: model) {
+    constructor(public model: model, public workflowManagerService: WorkflowManagerService) {
     }
 
     /**

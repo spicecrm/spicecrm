@@ -22,4 +22,5 @@ export class WorkflowManagerTaskTypesStart {
     constructor(public model: model,
                 public workflowManagerService: WorkflowManagerService) {
     }
+
 }

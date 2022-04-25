@@ -1,0 +1,13 @@
+<system-modal size="large">
+  <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+  <system-modal-content system-modal-content-grow margin="x-small">
+      <div #gantt_here style="width: 100%;height: 100%;"></div>
+  </system-modal-content>
+  <system-modal-footer>
+      <div class="slds-grid">
+          <button class="slds-button slds-button--icon-border" (click)="zoomOut()"><system-button-icon icon="zoomout"></system-button-icon></button>
+          <button class="slds-button slds-button--icon-border slds-col--bump-right" (click)="zoomIn()"><system-button-icon icon="zoomin"></system-button-icon></button>
+          <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+      </div>
+  </system-modal-footer>
+</system-modal>

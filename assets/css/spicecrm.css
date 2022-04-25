@@ -48,6 +48,7 @@
     --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-button-text-color-hover: #ffffff;
     --sds-c-toast-text-color: #ffffff;
+    --sds-c-icon-color-foreground: #ffffff;
 }
 
 html {
@@ -465,4 +466,9 @@ input[type="submit"] {
 .slds-dropdown_actions a,
 .slds-dropdown--actions a {
     color: var(--brand-text-link);
+}
+
+.slds-icon-text-error {
+    /*! @css-var-fallback fill */
+    --slds-c-icon-color-foreground: #ffffff
 }
