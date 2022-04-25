@@ -2190,6 +2190,56 @@ $app_list_strings['workflowtasktypes_icon_enum'] = [
     'intermediate-event-none' => 'Standard',
 ];
 
+$app_list_strings['jobofferapplication_status_dom'] = [
+    'New' => 'New',
+    'Qualified' => 'Qualified',
+    'Round1' => 'Round 1',
+    'Round2' => 'Round 2',
+    'Contracting' => 'Contracting',
+    'Accepted' => 'Accepted',
+    'Rejected' => 'Rejected',
+    'Declined' => 'Declined',
+];
+
+
+$app_list_strings['jobofferapplications_skills_dom'] = [
+    'PHP' => 'PHP',
+    'HTML' => 'HTML',
+    'CSS' => 'CSS',
+    'JavaScript' => 'JavaScript',
+];
+
+$app_list_strings['joboffer_status_dom'] = [
+    'Planned' => 'Planning',
+    'Draft' => 'Draft',
+    'Open' => 'Open',
+    'Closed' => 'Closed',
+    'Cancelled' => 'Cancelled',
+];
+
+$app_list_strings['joboffer_department_dom'] = [
+    '' => '',
+    'HR' => 'HR',
+    'IT' => 'IT',
+    'Sales' => 'Sales',
+    'Facility Management' => 'Facility Management',
+    'Accounting' => 'Accounting'
+];
+
+$app_list_strings['joboffer_entry_level_dom'] = [
+    '' => '',
+    'Junior' => 'Junior',
+    'Normal' => 'Normal',
+    'Senior' => 'Senior',
+];
+$app_list_strings['joboffer_contract_type_dom'] = [
+    '' => '',
+    'Internship' => 'Internship',
+    'Full-Time' => 'Full-Time',
+    'Part-Time' => 'Part-Time',
+    'Self-Employed' => 'Self-Employed',
+];
+
 $app_list_strings['prolonged_reason_dom'] = [
     '' => '',
     'waitextern' => 'wait for third party',
