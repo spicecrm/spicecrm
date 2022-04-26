@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -590,11 +591,11 @@ class SpiceInstaller
     public function createCurrentUser($db, $postData)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $user_instance = new User();
+        $user_instance = BeanFactory::getBean('Users');
         $username = $postData['credentials']['username'];
         $surname = $postData['credentials']['surname'];
         $password = $postData['credentials']['password'];
-        $user_instance->user_hash = $user_instance->getPasswordHash($password);
+        $user_instance->user_hash = User::getPasswordHash($password);
         $date = date("Y-m-d h:i:s");
         $user = "INSERT INTO users (id, user_name, user_hash, last_name, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted) 
             VALUES ('1', '$username', '$user_instance->user_hash', '$surname', 1, '$date','$date', '1', '1', 'Administrator', 'Active', 0)";
