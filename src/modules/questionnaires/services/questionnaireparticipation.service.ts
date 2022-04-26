@@ -38,6 +38,8 @@ export class questionnaireParticipationService {
     public imageWidthQuestion = 200;
     public imageWidthOption = 200;
 
+    public sizeSmall = false;
+
     public inModal = true;
 
     public timerText: string = null;
