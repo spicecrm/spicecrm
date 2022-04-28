@@ -369,7 +369,7 @@ class CampaignTask extends SugarBean
      * @return array
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function mailMerge($start = 0, $limit = 100){
+    public function mailMerge($start = 0, $limit = 100, $mailMergeSubject = null, $mailMergeBody = null){
 
         $html = '';
         $inactiveCount = 0;
@@ -387,6 +387,10 @@ class CampaignTask extends SugarBean
                 $style = $outputTemplate->getStyle();
                 $header = html_entity_decode( $outputTemplate->header);
                 $footer = html_entity_decode( $outputTemplate->footer);
+
+                // set the mailmerge subject and body for rendering pdf template
+                $prospectBean->mailmerge_subject = $mailMergeSubject;
+                $prospectBean->mailmerge_body = $mailMergeBody;
 
                 $html .= $outputTemplate->translateBody($prospectBean, true);
                 $html .= '<div style="page-break-after: always;"></div>';

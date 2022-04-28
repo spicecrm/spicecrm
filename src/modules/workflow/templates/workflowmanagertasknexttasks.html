@@ -50,7 +50,7 @@
         <tr>
             <td colspan="3">
                 <div class="slds-align--absolute-center slds-p-around--xx-small">
-                    <button class="slds-button slds-button_icon" (click)="addTask()" [disabled]="nextTasks.length + 1 == workflowManagerService.tasks.length">
+                    <button class="slds-button slds-button_icon" (click)="addTask()" [disabled]="nextTasks?.length + 1 == workflowManagerService.tasks.length">
                         <system-button-icon icon="add"></system-button-icon>
                     </button>
                 </div>

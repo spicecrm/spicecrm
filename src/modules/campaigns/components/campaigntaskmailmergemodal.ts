@@ -103,11 +103,13 @@ export class CampaignTaskMailMergeModal {
     public rendertemplate() {
         this.blobUrl = null;
         this.loading = true;
+
         this.backend.getRequest(`module/CampaignTasks/${this.model.id}/mailmerge`, {
             start: this.start - 1,
-            limit: this.limit
+            limit: this.limit,
         }).subscribe(
             results => {
+                console.log('results: ', results);
                 this.pdf = results.content;
                 // send the inactiveCount to be displayed in front-end
                 this.inactiveCount = results.inactiveCount;
@@ -119,6 +121,8 @@ export class CampaignTaskMailMergeModal {
                 this.loading = false;
             }
         );
+        console.log('this.model: ', this.model);
+        console.log('this.model.data: ', this.model.data);
     }
 
     /**
