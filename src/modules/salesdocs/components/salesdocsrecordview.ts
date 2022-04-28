@@ -38,6 +38,12 @@ export class SalesDocsRecordView {
      */
     public footerComponentset: string = '';
 
+    /**
+     * the componentset to render the items
+     */
+    public itemsComponentset: string = '';
+
+
     constructor(public metadata: metadata, public language: language, public view: view, public model: model, public configuration: configurationService, public salesdocrecord: salesdocrecord) {
         this.model.data$.subscribe(recordData => {
             let docType = this.model.getField('salesdoctype');
@@ -62,6 +68,7 @@ export class SalesDocsRecordView {
             let docType = docTypes.find(docType => docType.name == this.model.getField('salesdoctype'));
             this.headerComponentset = docType.headercomponentset;
             this.footerComponentset = docType.footercomponentset;
+            this.itemsComponentset = docType.itemscomponentset;
 
             // check if displayOnly
             /*
@@ -72,10 +79,11 @@ export class SalesDocsRecordView {
              */
         }
 
-        if (!this.headerComponentset || !this.footerComponentset) {
+        if (!this.headerComponentset || !this.footerComponentset || !this.itemsComponentset) {
             let defaultConfig = this.metadata.getComponentConfig('SalesDocsRecordView', 'SalesDocs');
             if (!this.headerComponentset) this.headerComponentset = defaultConfig.headercomponentset;
             if (!this.footerComponentset) this.footerComponentset = defaultConfig.footercomponentset;
+            if (!this.itemsComponentset) this.itemsComponentset = defaultConfig.itemscomponentset;
         }
         this.initialized = true;
     }
@@ -87,6 +95,7 @@ export class SalesDocsRecordView {
         let componentConf = this.metadata.getComponentConfig('SalesDocsRecordView', this.model.module);
         this.headerComponentset = componentConf.headercomponentset;
         this.footerComponentset = componentConf.footercomponentset;
+        this.itemsComponentset = componentConf.itemscomponentset;
         this.initialized = true;
     }
 

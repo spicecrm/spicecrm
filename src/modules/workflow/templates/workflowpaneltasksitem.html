@@ -11,8 +11,5 @@
     <div class="slds-truncate"><field-container field="date_completed" fielddisplayclass="slds-truncate"></field-container></div>
 </td>
 <td>
-    <div class="slds-truncate"><system-label [label]="model.data.decision"></system-label></div>
-</td>
-<td>
-    <div class="slds-truncate slds-text-link--reset" system-title="LBL_COMMENTS" (click)="toggleComments()"><system-utility-icon  *ngIf="model.data.comments.length > 0" icon="info" size="x-small"></system-utility-icon></div>
+    <div class="slds-truncate slds-text-link--reset" system-title="LBL_COMMENTS" (click)="toggleComments()"><system-utility-icon  *ngIf="model.data.comments.length > 0" icon="display_text" size="x-small"></system-utility-icon></div>
 </td>

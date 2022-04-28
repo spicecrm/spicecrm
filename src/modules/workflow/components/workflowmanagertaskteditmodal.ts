@@ -3,6 +3,8 @@
  */
 import {Component} from "@angular/core";
 import {Observable, Subject} from "rxjs";
+import {model} from '../../../services/model.service';
+import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 /**
  * modal for editing task data
@@ -34,7 +36,7 @@ export class WorkflowManagerTaskEditModal {
      */
     public taskBackup: any;
 
-    constructor() {
+    constructor(private model: model, public workflowManagerService: WorkflowManagerService) {
         this.responseSubject = new Subject<any>();
         this.response = this.responseSubject.asObservable();
     }
@@ -52,6 +54,10 @@ export class WorkflowManagerTaskEditModal {
         );
         this.responseSubject.complete();
         this.self.destroy();
+    }
+
+    get tasktype(){
+        return this.workflowManagerService.types.find(t => t.id == this.task.tasktype)?.name ?? '';
     }
 
     /**

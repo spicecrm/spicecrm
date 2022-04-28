@@ -5,12 +5,6 @@ import {
     Component, Input, OnInit
 } from '@angular/core';
 
-import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
-import {userpreferences} from '../../../services/userpreferences.service';
-
-declare var moment: any;
-
 @Component({
     selector: 'workflow-panel-item',
     templateUrl: '../templates/workflowpanelitem.html',
@@ -18,23 +12,29 @@ declare var moment: any;
 })
 export class WorkflowPanelItem {
 
+    /**
+     * the workflow
+     */
     @Input() public workflow: any = {};
 
-    public hidebody: boolean = false;
+    /**
+     * to display the panel collapsed
+     */
+    @Input() public collapsed: boolean = false;
 
-    constructor(public userpreferences: userpreferences) {
+
+    /**
+     * toggles the collpased vs not collapsed state
+     */
+    public toggleCollapsed() {
+        this.collapsed = !this.collapsed;
     }
 
-    public toggleHidden() {
-        this.hidebody = !this.hidebody;
-    }
-
+    /**
+     * gets the proper toggle icon
+     */
     get toggleicon() {
-        return this.hidebody ? 'chevrondown' : 'chevronup';
-    }
-
-    get startdate() {
-        return this.userpreferences.formatDateTime(this.workflow.date_entered);
+        return this.collapsed ? 'chevrondown' : 'chevronup';
     }
 
 }

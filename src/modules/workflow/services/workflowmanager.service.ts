@@ -146,17 +146,28 @@ export class WorkflowManagerService {
      * @param typeId
      */
     public generateNewTask(typeId: string): WorkflowTaskDefI {
-
-        return {
+        // create a new task
+        let newtask: WorkflowTaskDefI = {
             id: this.model.generateGuid(),
             workflowdefinition_id: this.model.id,
             deleted: 0,
             sequence: this.getNextSequence(),
             name: 'new Task ' + (this.tasks.length + 1),
             tasktype: typeId,
-            type_config: {},
-            ishidden: ['start', 'end'].indexOf(this.types.find(t => t.id == typeId).type) > -1
+            type_config: {}
         };
+
+        // check if we have type defaults
+        let t = this.types.find(t => t.id == typeId);
+        if(t.typedefaults){
+            let defaults = JSON.parse(t.typedefaults);
+            for(let v in defaults){
+                newtask[v] = defaults[v];
+            }
+        }
+
+        // return the new task
+        return newtask;
     }
 
     /**
