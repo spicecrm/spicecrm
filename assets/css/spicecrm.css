@@ -444,6 +444,12 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     visibility: hidden !important;
 }
 
+.spice-counter{
+    height: 28px;
+    width: 28px;
+    border-radius: 14px;
+}
+
 /* general fix for ios devices */
 textarea,
 input[type="text"],
