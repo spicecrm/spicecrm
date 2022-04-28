@@ -44,6 +44,32 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'relationship' => 'account_agreements',
             'source' => 'non-db'
         ],
+        'consumer_id' => [
+            'name' => 'consumer_id',
+            'vname' => 'LBL_ID',
+            'type' => 'id',
+            'comment' => 'ID of related consumer'
+        ],
+        'consumer_name' => [
+            'name' => 'consumer_name',
+            'vname' => 'LBL_CONSUMER',
+            'type' => 'relate',
+            'id_name' => 'consumer_id',
+            'rname' => 'name',
+            'link' => 'consumer',
+            'module' => 'Consumers',
+            'comment' => 'The name of the related consumer',
+            'source' => 'non-db'
+        ],
+        'consumer' => [
+            'name' => 'consumer',
+            'vname' => 'LBL_CONSUMER',
+            'type' => 'link',
+            'comment' => 'Links to Consumers Module',
+            'module' => 'Consumers',
+            'relationship' => 'consumer_agreements',
+            'source' => 'non-db'
+        ],
         'category_1' => [
             'name' => 'category_1',
             'vname' => 'LBL_CATEGORY1',
@@ -96,7 +122,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'rhs_table' => 'agreements',
             'rhs_key' => 'account_id',
             'relationship_type' => 'one-to-many'
-        ]
+        ],
+        'consumer_agreements' => [
+            'lhs_module' => 'Consumers',
+            'lhs_table' => 'consumers',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Agreements',
+            'rhs_table' => 'agreements',
+            'rhs_key' => 'consumer_id',
+            'relationship_type' => 'one-to-many'
+        ],
     ],
     'indices' => [
         ['name' => 'idx_agreements_status', 'type' => 'index', 'fields' => ['agreement_status', 'deleted']]
