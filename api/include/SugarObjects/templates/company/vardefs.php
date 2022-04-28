@@ -437,7 +437,21 @@ $vardefs = [
             'dbType' => 'longtext',
             'maxWidth' => 300,
             'maxHeight' => 300
-        ]
+        ],
+        'mailmerge_subject' => [
+            'name' => 'mailmerge_subject',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'vname' => 'LBL_MAILMERGE_SUBJECT',
+            'comnment' => 'set the mailmerge subject for rendering pdf template'
+        ],
+        'mailmerge_body' => [
+            'name' => 'mailmerge_body',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'vname' => 'LBL_MAILMERGE_BODY',
+            'comnment' => 'set the mailmerge subject for rendering pdf template'
+        ],
     ],
     'relationships' => [
         strtolower($object_name) . '_email_addresses' =>
