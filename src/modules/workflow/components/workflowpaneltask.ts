@@ -24,7 +24,6 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'workflow-panel-task',
     templateUrl: '../templates/workflowpaneltask.html'
-
 })
 export class WorkflowPanelTask implements OnChanges, AfterViewInit {
     /**

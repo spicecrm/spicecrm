@@ -1,65 +1,45 @@
-<div class="slds-grid">
-    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-grid">
-        <div class="slds-grow">
-            <field-label fieldname="name"></field-label>
-            <field-container field="name"></field-container>
-        </div>
-        <ng-container *ngFor="let type of workflowManagerService.types">
-            <div *ngIf="type.id == model.data.tasktype" class="slds-p-left--xx-small slds-truncate">
-                <field-label fieldname="tasktype"></field-label>
-                <div class="slds-form-element__control slds-m-vertical--xx-small">
-                    <input type="text" class="slds-input" [ngModel]="type.name" [disabled]="true">
-                </div>
-            </div>
-        </ng-container>
-    </div>
-    <div class="slds-grid slds-p-left--xx-small slds-size--1-of-2">
-        <div class="slds-size--1-of-3 slds-p-left--xx-small">
-            <field-label fieldname="ishidden" [fieldconfig]="{label:'LBL_HIDDEN'}"></field-label>
-            <field-container field="ishidden"></field-container>
-        </div>
-        <div class="slds-size--1-of-3 slds-p-left--xx-small">
-            <field-label fieldname="allowcomment" [fieldconfig]="{label:'LBL_ALLOW_COMMENT'}"></field-label>
-            <field-container field="allowcomment"></field-container>
-        </div>
-        <div class="slds-size--1-of-3 slds-p-left--xx-small">
-            <field-label fieldname="prevclosedreq" [fieldconfig]="{label:'LBL_PREVIOUS_CLOSED_REQUIRED'}"></field-label>
-            <field-container field="prevclosedreq"></field-container>
-        </div>
-    </div>
+<div>
+    <field-label fieldname="name"></field-label>
+    <field-container field="name"></field-container>
 </div>
 <div>
     <field-label fieldname="description"></field-label>
-    <field-container field="description"></field-container>
+    <field-container field="description" [fieldconfig]="{minheight: '150px'}"></field-container>
 </div>
-<div class="slds-grid slds-gutters_direct-xx-small">
-    <div class="slds-grid slds-col slds-size--1-of-4 slds-p-right--xx-small">
-        <div class="slds-grow">
-            <field-label [fieldname]="'timetostart'"></field-label>
-            <field-container [field]="'timetostart'"></field-container>
+<div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread">
+    <system-checkbox [(ngModel)]="model.data.ishidden"><system-label label="LBL_HIDDEN"></system-label></system-checkbox>
+    <system-checkbox [(ngModel)]="model.data.allowcomment"><system-label label="LBL_ALLOW_COMMENT"></system-label></system-checkbox>
+    <system-checkbox [(ngModel)]="model.data.prevclosedreq"><system-label label="LBL_PREVIOUS_CLOSED_REQUIRED"></system-label></system-checkbox>
+</div>
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_TASKTIMING" >
+    <div class="slds-grid slds-gutters_direct-xx-small">
+        <div class="slds-grid slds-col slds-size--1-of-3 slds-p-right--xx-small">
+            <div class="slds-grow">
+                <field-label fieldname="timetostart"></field-label>
+                <field-container field="timetostart"></field-container>
+            </div>
         </div>
-        <span class="slds-m-top_xxx-small slds-p-left--small slds-p-right_x-small slds-p-top--x-large">OR</span>
+        <div class="slds-col slds-size--2-of-3 slds-p-right--xx-small">
+            <field-label fieldname="timetostart_method"></field-label>
+            <field-container field="timetostart_method"></field-container>
+        </div>
     </div>
-    <div class="slds-col slds-size--3-of-4 slds-p-right--xx-small">
-        <field-label [fieldname]="'method_get_timetostart'"></field-label>
-        <field-container [field]="'method_get_timetostart'"></field-container>
+    <div class="slds-grid slds-gutters_direct-xx-small">
+        <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+            <field-label fieldname="timetocomplete"></field-label>
+            <field-container field="timetocomplete"></field-container>
+        </div>
+        <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+            <field-label fieldname="timetoalert"></field-label>
+            <field-container field="timetoalert"></field-container>
+        </div>
+        <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+            <field-label fieldname="timetoescalate"></field-label>
+            <field-container field="timetoescalate"></field-container>
+        </div>
     </div>
-</div>
-<div class="slds-gutters_direct-xx-small">
-    <system-label label="…takes into account the service calendar"></system-label>
-    <field-container [field]="'servicecalendar_name'"></field-container>
-</div>
-<div class="slds-grid slds-gutters_direct-xx-small">
-    <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
-        <field-label [fieldname]="'timetocomplete'"></field-label>
-        <field-container [field]="'timetocomplete'"></field-container>
+    <div class="slds-gutters_direct-xx-small">
+        <field-label fieldname="servicecalendar_name"></field-label>
+        <field-container field="servicecalendar_name"></field-container>
     </div>
-    <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
-        <field-label [fieldname]="'timetoalert'"></field-label>
-        <field-container [field]="'timetoalert'"></field-container>
-    </div>
-    <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
-        <field-label [fieldname]="'timetoescalate'"></field-label>
-        <field-container [field]="'timetoescalate'"></field-container>
-    </div>
-</div>
+</system-collapsable-tab>

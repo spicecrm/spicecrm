@@ -44,6 +44,8 @@ export class WorkflowPanelTasksItem implements OnInit{
                 return 'play';
             case '30':
                 return 'check';
+            case '40':
+                return 'close';
         }
     }
 }

@@ -31,11 +31,18 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
      * @public
      */
     public typeComponentRef: ComponentRef<any>;
+
     /**
      * holds the task data
      * @public
      */
     @Input() public task: any = {};
+
+    /**
+     * indicates if the task of this type can be assigned to a user
+     */
+    public assignable: boolean = false;
+
     /**
      * view container reference to the container element of the type component
      * @public
@@ -59,6 +66,7 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
      */
     public ngOnChanges() {
         this.setModelData();
+        this.setViewParams();
         this.renderTypeComponent();
     }
 
@@ -86,6 +94,13 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
         this.metadata.addComponent(component, this.typeComponentContainer, this.injector).subscribe(componentRef => {
             this.typeComponentRef = componentRef;
         });
+    }
+
+    private setViewParams(){
+        let type = this.workflowManagerService.types.find(t => t.id == this.task.tasktype);
+        if(type){
+            this.assignable = type.assignable == '1'
+        }
     }
 
     /**
