@@ -1,1 +1,4 @@
-<div class="slds-grid slds-grid--vertical-align-center"><span><system-label label="LBL_FILES"></system-label></span><span *ngIf="hasAttachments" class="slds-badge slds-theme_warning slds-m-horizontal--xx-small">{{attachmentcount}}</span></div>
+<div class="slds-grid slds-grid--vertical-align-center">
+    <span><system-label label="LBL_FILES"></system-label></span>
+    <span *ngIf="hasAttachments" class="slds-theme_warning slds-m-horizontal--xx-small slds-align--absolute-center spice-counter">{{attachmentcount}}</span>
+</div>
