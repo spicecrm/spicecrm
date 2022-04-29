@@ -1,7 +1,10 @@
 <div class="slds-m-vertical--small slds-border--top">
-    <h3 class="slds-theme--shade slds-text-heading--small slds-p-around--small slds-border--bottom">
-        {{workflowtask.name}}
-    </h3>
+    <div class="slds-theme--shade slds-p-around--small slds-border--bottom slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+        <h3 class="slds-text-heading--small slds-truncate slds-m-right--small">
+            {{workflowtask.name}}
+        </h3>
+        <span class="slds-badge" [ngClass]="badgeClass"><system-display-datetime [date]="workflowtask.date_due"></system-display-datetime></span>
+    </div>
     <div *ngIf="workflowtask.description" class="slds-p-around--x-small">
         {{workflowtask.description}}
     </div>

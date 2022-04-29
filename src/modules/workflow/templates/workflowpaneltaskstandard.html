@@ -8,8 +8,7 @@
     <button class="slds-button slds-button_neutral slds-col--bump-right" [ngClass]="{'slds-hidden': !showComment}" [disabled]="posting" (click)="addComment()">
         <system-label label="LBL_ADD_COMMENT"></system-label>
     </button>
-    <button *ngFor="let action of taskData.actions" class="slds-button slds-button_neutral" [disabled]="posting"
-            (click)="setStatus(action.value)">
+    <button *ngFor="let action of taskData.actions" class="slds-button slds-button_neutral" [disabled]="posting" (click)="setStatus(action.value)">
         <system-label [label]="action.name"></system-label>
     </button>
 </div>
