@@ -16,7 +16,12 @@
         </header>
     </div>
     <div class="slds-card__body" [ngClass]="{'slds-hide': collapsed}">
-        <workflow-panel-tasks [workflowtasks]="workflow.worflowtasks"></workflow-panel-tasks>
-        <workflow-panel-task *ngFor="let workflowtask of workflow.worflowtasks|workflowmyopentaskspipe" [workflowtask]="workflowtask" [workflow]="workflow"></workflow-panel-task>
+        <div *ngIf="loading" class="slds-p-around--large slds-align--absolute-center">
+            <system-spinner size="20" message="LBL_LOADING"></system-spinner>
+        </div>
+        <div *ngIf="!loading && workflow.workflowtasks">
+            <workflow-panel-tasks [workflowtasks]="workflow.workflowtasks"></workflow-panel-tasks>
+            <workflow-panel-task *ngFor="let workflowtask of workflow.workflowtasks|workflowmyopentaskspipe" [workflowtask]="workflowtask" [workflow]="workflow"></workflow-panel-task>
+        </div>
     </div>
 </article>
