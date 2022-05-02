@@ -2,13 +2,15 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div class="slds-pill_container" style="border:none;">
         <ul class="slds-listbox slds-listbox_horizontal slds-size--1-of-1" role="listbox">
-            <li class="slds-pill slds-pill_link" *ngFor="let addr of displayValue">
-                <a href="javascript:void(0);" class="slds-pill__action slds-p-horizontal--xx-small">
-                    <span class="slds-pill__label">
-                        {{addr.email_address}}
-                    </span>
-                </a>
-            </li>
+            <ng-container *ngFor="let addr of displayValue">
+                <li *ngIf="addr.address_type == fieldconfig.addresstype" class="slds-pill slds-pill_link" >
+                    <a href="javascript:void(0);" class="slds-pill__action slds-p-horizontal--xx-small">
+                        <span class="slds-pill__label">
+                            {{addr.email_address}}
+                        </span>
+                    </a>
+                </li>
+            </ng-container>
         </ul>
     </div>
 </field-generic-display>
