@@ -264,7 +264,7 @@ class UserAuthenticate
             if ( empty( $user->id )) throw ( new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
         } else $user = $userIdOrBean;
 
-        $destUserPrefs = new UserPreference($user);
+        $destUserPrefs = BeanFactory::getBean('UserPreferences')->setUser($user);
         $destUserPrefs->reloadPreferences();
         $destLang = $destUserPrefs->getPreference('language');
         if (!isset($destLang[0])) $destLang = SpiceConfig::getInstance()->config['default_language'];

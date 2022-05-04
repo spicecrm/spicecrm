@@ -2996,7 +2996,7 @@ protected function checkQuery($sql, $object_name = false)
         $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);
 		$values['field_name']= $this->massageValue($changes['field_name'], $fieldDefs['field_name']);
 		$values['data_type'] = $this->massageValue($changes['data_type'], $fieldDefs['data_type']);
-		if (in_array($changes['data_type'], ['text', 'longtext'])) {
+		if (in_array($changes['data_type'], ['text', 'longtext', 'json'])) {
 			$values['before_value_text'] = $this->massageValue($changes['before'], $fieldDefs['before_value_text']);
 			$values['after_value_text'] = $this->massageValue($changes['after'], $fieldDefs['after_value_text']);
 		} else {

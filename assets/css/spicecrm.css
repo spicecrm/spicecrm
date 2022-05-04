@@ -48,6 +48,7 @@
     --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-button-text-color-hover: #ffffff;
     --sds-c-toast-text-color: #ffffff;
+    --sds-c-icon-color-foreground: #ffffff;
 }
 
 html {
@@ -443,6 +444,12 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     visibility: hidden !important;
 }
 
+.spice-counter{
+    height: 28px;
+    width: 28px;
+    border-radius: 14px;
+}
+
 /* general fix for ios devices */
 textarea,
 input[type="text"],
@@ -465,4 +472,9 @@ input[type="submit"] {
 .slds-dropdown_actions a,
 .slds-dropdown--actions a {
     color: var(--brand-text-link);
+}
+
+.slds-icon-text-error {
+    /*! @css-var-fallback fill */
+    --slds-c-icon-color-foreground: #ffffff
 }

@@ -128,7 +128,7 @@ class SpiceNotifications
 
     private function getParsedTpl()
     {
-        $destUserPrefs = new UserPreference($this->assignedUser);
+        $destUserPrefs = BeanFactory::getBean('UserPreferences')->setUser($this->assignedUser);
         $destUserPrefs->reloadPreferences();
         $destLang = $destUserPrefs->getPreference('language');
 
