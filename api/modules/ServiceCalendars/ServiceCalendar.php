@@ -21,15 +21,6 @@ class ServiceCalendar extends SugarBean
     var $workingtimes;
     var $holidays;
 
-    public function bean_implements($interface)
-    {
-        switch ($interface) {
-            case 'ACL':
-                return true;
-        }
-        return false;
-    }
-
     /**
      * overwrites teh retrieve and also loads the holidays as well as working times slots
      *
@@ -74,6 +65,30 @@ class ServiceCalendar extends SugarBean
     }
 
     /**
+     * takes a startdate and adds a given number of calendardays considering all workingdays per calendar as well as the holidays
+     *
+     * @param $startdate
+     * @param $days
+     * @return mixed
+     * @throws Exception
+     */
+    public function addNCalerndarDays($startdate, $days) {
+
+        // convert the timestamp to calendar Time
+        $endDate = new DateTime($startdate->format('c'), new DateTimeZone('UTC'));
+        $endDate->setTimezone(new DateTimeZone($this->timezone));
+
+        // add the number of days
+        $endDate->add(new DateInterval("P{$days}D"));
+
+        if(!$this->isWorkingTime($endDate)){
+            $endDate = $this->getNextWorkingStartTime($endDate);
+        }
+
+        // format back to UTC
+        return $endDate->setTimezone(new DateTimeZone('UTC'));
+    }
+    /**
      * takes a startdate and adds a given number of workingdays considering all workingdays per calendar as well as the holidays
      *
      * @param $startdate
@@ -82,27 +97,62 @@ class ServiceCalendar extends SugarBean
      * @throws Exception
      */
     public function addNWorkingDays($startdate, $days) {
-        $timedate = TimeDate::getInstance();
+
+        // convert the timestamp to calendar Time
+        $endDate = new DateTime($startdate->format('c'), new DateTimeZone('UTC'));
+        $endDate->setTimezone(new DateTimeZone($this->timezone));
+
         // if we have no working days and no holidays .. just add the days
         if (count($this->workingdays) == 0 && count($this->holidays) == 0) {
-            $startdate->add(new DateInterval("P{$days}D"));
+            $endDate->add(new DateInterval("P{$days}D"));
         } else {
             $i = 0;
             while ($i < $days) {
                 // add a day
-                $startdate->add(new DateInterval("P1D"));
+                $endDate->add(new DateInterval("P1D"));
 
                 // check if the day is a working day according to the calendar
                 // if not add another day
-                while (!$this->isWorkingDay($startdate) || $this->isHoliday($startdate)) {
-                    $startdate->add(new DateInterval("P1D"));
+                while (!$this->isWorkingDay($endDate) || $this->isHoliday($endDate)) {
+                    $endDate->add(new DateInterval("P1D"));
                 }
 
                 $i++;
             }
         }
 
-        return $startdate;
+        // check that we have a working time on that day .. if not shift to the next workingtime
+        if(!$this->isWorkingTime($endDate)){
+            $endDate = $this->getNextWorkingStartTime($endDate);
+        }
+
+        // format back to UTC
+        return $endDate->setTimezone(new DateTimeZone('UTC'));
+    }
+
+    /**
+     * adds a number of calendar hours to a date according to the calendar definition and considers also holidays if a holiday calendar is attached to the calendar
+     *
+     * @param $startdate
+     * @param $hours
+     * @return mixed
+     * @throws Exception
+     */
+    public function addNCalendarHours($startdate, $hours)
+    {
+        // convert the timestamp to calendar Time
+        $endDate = new DateTime($startdate->format('c'), new DateTimeZone('UTC'));
+        $endDate->setTimezone(new DateTimeZone($this->timezone));
+
+        // add the hours
+        $endDate->add(new DateInterval("PT{$hours}H"));
+
+        if(!$this->isWorkingTime($endDate)){
+            $endDate = $this->getNextWorkingStartTime($endDate);
+        }
+
+        // format back to UTC
+        return $endDate->setTimezone(new DateTimeZone('UTC'));
     }
 
     /**
@@ -170,8 +220,6 @@ class ServiceCalendar extends SugarBean
 
     /**
      * returns the next working timestart date
-     *
-     * @ToDo: Test ... this function (is not yet tested) has been tested for PCS/Friesach
      *
      * @param $date
      */
