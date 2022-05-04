@@ -25,6 +25,9 @@ import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
 import { model } from '../../services/model.service';
 import { helper } from '../../services/helper.service';
+import {libloader} from "../../services/libloader.service";
+
+declare var ClassicEditor;
 
 @Component({
     selector: "system-richtext-editor",
@@ -43,6 +46,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * the editor container
      */
     @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) public htmlEditor: ViewContainerRef;
+    @ViewChild('ckEditor', {read: ViewContainerRef, static: true}) public ckEditor: ViewContainerRef;
 
     /**
      * set to true to have all options
@@ -90,6 +94,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
     constructor(public modal: modal,
                 public renderer: Renderer2,
+                private libLoader: libloader,
                 public metadata: metadata,
                 public editorService: systemrichtextservice,
                 @Inject(DOCUMENT) public _document: any,
@@ -114,8 +119,13 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     get richTextStyle() {
         return this.isExpanded ? {height: '100vh', resize: 'none', position: 'fixed'} : {height: (+this.innerHeight + 50) + 'px'};
     }
+private editor;
 
     public ngOnInit() {
+        this.libLoader.loadLib('ckeditor').subscribe(res => {
+            this.editor = new ClassicEditor(this.ckEditor.element.nativeElement);
+
+        })
         this.handleKeyboardShortcuts();
     }
 
