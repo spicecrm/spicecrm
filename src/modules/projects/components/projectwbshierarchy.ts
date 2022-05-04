@@ -1,8 +1,9 @@
 /**
  * @module ModuleProjects
  */
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, Injector} from "@angular/core";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {metadata} from "../../../services/metadata.service";
@@ -15,6 +16,7 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
     providers: [projectwbsHierarchy, relatedmodels]
 })
 export class ProjectWBSHierarchy implements OnInit {
+
     /**
      * the component config
      * @private
@@ -27,7 +29,16 @@ export class ProjectWBSHierarchy implements OnInit {
      */
     public fieldsetFields: any[] = [];
 
-    constructor(public language: language, public metadata: metadata, public projectwbsHierarchy: projectwbsHierarchy, public model: model, public relatedmodels: relatedmodels, public broadcast: broadcast) {
+    constructor(
+        public language: language,
+        public metadata: metadata,
+        public projectwbsHierarchy: projectwbsHierarchy,
+        public modal: modal,
+        public injector: Injector,
+        public model: model,
+        public relatedmodels: relatedmodels,
+        public broadcast: broadcast
+    ) {
 
         // needed for the button in the actionset
         this.relatedmodels.relatedModule = "ProjectWBSs";
@@ -59,7 +70,7 @@ export class ProjectWBSHierarchy implements OnInit {
      */
     public loadHierarchy() {
         this.projectwbsHierarchy.project_id = this.model.id;
-        this.projectwbsHierarchy.loadHierarchy();
+        this.projectwbsHierarchy.loadHierarchy()
     }
 
     public ngOnInit() {
@@ -73,6 +84,8 @@ export class ProjectWBSHierarchy implements OnInit {
         this.relatedmodels.id = this.model.id;
 
         this.loadHierarchy();
+
+
     }
 
     /**
@@ -81,6 +94,10 @@ export class ProjectWBSHierarchy implements OnInit {
      */
     public isLoading() {
         return this.projectwbsHierarchy.isloading;
+    }
+
+    public openGantt(){
+        this.modal.openModal('ProjectWBSGantt', true, this.injector);
     }
 
 }

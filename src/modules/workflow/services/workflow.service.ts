@@ -22,6 +22,13 @@ export class workflow {
     }
 
     /**
+     * returns the number of completed workflows
+     */
+    get completeCount(){
+        return this.workflows.filter(w => parseInt(w.workflow_status, 10) >= 30).length;
+    }
+
+    /**
      * retrieves the workflows for a given model
      *
      * @param module
@@ -65,7 +72,7 @@ export class workflow {
             this.workflows.some(wf => {
                 if (wf.id == workflow.id) {
                     wf.workflow_status = workflow.workflow_status;
-                    wf.worflowtasks = workflow.worflowtasks;
+                    wf.workflowtasks = workflow.workflowtasks;
                     return true;
                 }
             });
@@ -83,24 +90,25 @@ export class workflow {
      * @param method
      * @param methodParams
      */
-    public callTaskMethod(taskid, method: string, methodParams: any[]) {
+    public callTaskMethod(taskid, method: string, params: any) {
         let retSubject = new Subject<any>();
-        const params = {methodParams};
 
-        this.backend.postRequest(`module/WorkflowsTaskTypes/${method}/workflowtask/${taskid}`, {}, params).subscribe(workflow => {
+        this.backend.postRequest(`module/WorkflowsTaskTypes/${method}/workflowtask/${taskid}`, {}, params).subscribe({
+            next : (workflow) => {
 
-            this.workflows.some(wf => {
-                if (wf.id == workflow.workflow.id) {
-                    wf.workflow_status = workflow.workflow.workflow_status;
-                    wf.worflowtasks = workflow.workflow.worflowtasks;
-                    return true;
-                }
-            });
+                this.workflows.some(wf => {
+                    if (wf.id == workflow.workflow.id) {
+                        wf.workflow_status = workflow.workflow.workflow_status;
+                        wf.workflowtasks = workflow.workflow.workflowtasks;
+                        return true;
+                    }
+                });
 
-            retSubject.next(workflow.parent);
-            retSubject.complete();
+                this.broadcastOpenCount();
 
-            this.broadcastOpenCount();
+                retSubject.next(workflow.parent);
+                retSubject.complete();
+            }
         })
         return retSubject.asObservable();
     }
@@ -128,4 +136,5 @@ export class workflow {
             workflowcount: this.activeCount
         });
     }
+
 }

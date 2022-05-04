@@ -27,8 +27,33 @@ export class WorkflowPanelTaskStandard {
      */
     public posting: boolean = false;
 
+    /**
+     * holds the task comment content
+     */
+    public comment: string = '';
+
     constructor(private model: model, private workflowservice: workflow, private language: language, private broadcast: broadcast, private toast: toast, private modelutilities: modelutilities) {
 
+    }
+
+    /**
+     * return true if commenting enabled
+     */
+    get showComment(): boolean {
+        return this.taskData.enablecomments == '1' && parseInt(this.taskData.workflowtask_status, 10) >= 10;
+    }
+
+
+    /**
+     * add a new comment
+     */
+    public addComment() {
+        this.posting = true;
+        this.workflowservice.addComment(this.taskData.id, this.comment).subscribe(result => {
+            this.posting = false;
+            this.comment = '';
+            this.toast.sendToast('Comment has been saved');
+        });
     }
 
     /**
@@ -37,8 +62,8 @@ export class WorkflowPanelTaskStandard {
      */
     public setStatus(status: string) {
         this.posting = true;
-        this.workflowservice.callTaskMethod(this.taskData.id, 'setStatus', [status]).subscribe(parent => {
-
+        this.workflowservice.callTaskMethod(this.taskData.id, 'setStatus', {status: status, comment: this.comment}).subscribe(parent => {
+            this.taskData.workflowtask_status = status;
             this.model.data = this.modelutilities.backendModel2spice(this.model.module, parent);
 
             /**
@@ -57,7 +82,7 @@ export class WorkflowPanelTaskStandard {
             this.broadcast.broadcastMessage('model.save', {
                 id: this.taskData.id,
                 module: 'WorkflowTasks',
-                data: {}
+                data: this.taskData
             });
 
             this.posting = false;

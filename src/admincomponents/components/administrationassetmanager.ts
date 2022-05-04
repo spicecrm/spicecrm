@@ -53,7 +53,8 @@ export class AdministrationAssetManager implements OnInit{
         {value: '', csstype: 'string', name: 'sds-c-input-shadow-focus'},
         {value: '', csstype: 'string', name: 'sds-c-textarea-shadow-focus'},
         {value: '', csstype: 'string', name: 'sds-c-select-shadow-focus'},
-        {value: '', csstype: 'color', name: 'sds-c-button-text-color-hover'}
+        {value: '', csstype: 'color', name: 'sds-c-button-text-color-hover'},
+        {value: '', csstype: 'color', name: 'sds-c-icon-color-foreground'}
     ]
 
     private assetdimensions: any = {

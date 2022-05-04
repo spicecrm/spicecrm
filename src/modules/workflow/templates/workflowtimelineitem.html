@@ -1,0 +1,31 @@
+<div class="slds-timeline__item_expandable slds-p-vertical--none">
+    <div class="slds-media">
+        <div class="slds-media__figure">
+            <button class="slds-button slds-button_icon slds-hidden" disabled>
+                <system-button-icon icon="switch" addclasses="slds-timeline__details-action-icon"></system-button-icon>
+            </button>
+            <system-icon module="WorkflowTasks" [title]="language.getModuleName(model.module, true)" size="small" divClass="slds-icon_container slds-timeline__icon"></system-icon>
+        </div>
+        <div class="slds-media__body">
+            <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                <div class="slds-grow slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [system-view-provider]="{displayLabels: false}">
+                    <h3 class="slds-truncate slds-grid slds-grid--vertical-align-center">
+                        <div system-model-popover [module]="model.data.parent_type" [id]="model.data.parent_id">{{model.data.name}}</div>
+                    </h3>
+                    <workflow-task-status-icon [status]="model.data.workflowtask_status"></workflow-task-status-icon>
+                </div>
+                <div style="border-radius: 10px; height: 18px;" class="slds-timeline__date slds-p-horizontal--x-small slds-theme--shade" [title]="startdate + ' ' + starttime" [ngClass]="{'slds-theme--error' : isPast, 'slds-theme--warning' : isToday}">
+                    <div class="slds-align--absolute-center">{{activitiyDate}}</div>
+                </div>
+                <div class="slds-timeline__actions slds-timeline__actions_inline">
+                    <button class="slds-hidden slds-button slds-button--icon-x-small slds-button--icon-border">
+                        <system-button-icon icon="play" size="x-small"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="slds-m-horizontal_xx-small" [system-view-provider]="{displayLabels: false}">
+                <field-container fielddisplayclass="slds-truncate" fieldname="parent_name"></field-container>
+            </div>
+        </div>
+    </div>
+</div>

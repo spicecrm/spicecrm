@@ -4,6 +4,7 @@
 import {Injectable} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
+import {Observable, of, Subject} from "rxjs";
 
 @Injectable()
 export class projectwbsHierarchy {
@@ -36,10 +37,12 @@ export class projectwbsHierarchy {
      * @param project_id
      * @param expanded
      */
-    public loadHierarchy(project_id = this.project_id, expanded = false) {
+    public loadHierarchy(project_id = this.project_id, expanded = false): Observable<any> {
 
         // if we are in a loading process already dont load twice
-        if(this.isloading) return;
+        if(this.isloading) return of(false);
+
+        let retSubject = new Subject<any>();
 
         // set to loading
         this.isloading = true;
@@ -58,44 +61,55 @@ export class projectwbsHierarchy {
 
         // get the WBS Elements
 
-        this.backend.getRequest(`module/Projects/${project_id}/wbshierarchy`).subscribe(members => {
-            for (let member of members) {
-                this.members.push({
-                    parent_id: member.parent_id,
-                    id: member.id,
-                    member_count: member.member_count,
-                    expanded: membersExpanded.indexOf(member.id) >= 0 ? true : false,
-                    summary_text: member.summary_text,
-                    data: this.modelutilities.backendModel2spice("ProjectWBSs", member.data)
+        this.backend.getRequest(`module/Projects/${project_id}/wbshierarchy`).subscribe({
+            next: (members) => {
+                for (let member of members) {
+                    this.members.push({
+                        parent_id: member.parent_id,
+                        id: member.id,
+                        member_count: member.member_count,
+                        expanded: membersExpanded.indexOf(member.id) >= 0 ? true : false,
+                        summary_text: member.summary_text,
+                        data: this.modelutilities.backendModel2spice("ProjectWBSs", member.data)
+                    });
+                }
+
+                this.members.sort((a, b) => {
+                    // no dates set
+                    if (a.data.date_start == "" && b.data.date_start == "") {
+                        return a.data.name > b.data.name ? -1 : 1;
+                    }
+
+                    // second object does not have a date
+                    if (b.data.date_start == "") {
+                        return -1;
+                    }
+
+                    // first objects does not have a date
+                    if (a.data.date_start == "") {
+                        return 1;
+                    }
+
+                    // all have a date
+                    return a.data.date_start.isBefore(b.data.date_start) ? -1 : 1;
                 });
+
+                // rebuild the members list
+                this.rebuildMembersList();
+
+                // loading completed
+                this.isloading = false;
+
+                // complete the subject
+                retSubject.next(true);
+                retSubject.complete();
+            },
+            error: () => {
+                retSubject.error('error loading Hierarchy');
             }
-
-            this.members.sort((a, b) => {
-                // no dates set
-                if (a.data.date_start == "" && b.data.date_start == "") {
-                    return a.data.name > b.data.name ? -1 : 1;
-                }
-
-                // second object does not have a date
-                if (b.data.date_start == "") {
-                    return -1;
-                }
-
-                // first objects does not have a date
-                if (a.data.date_start == "") {
-                    return 1;
-                }
-
-                // all have a date
-                return a.data.date_start.isBefore(b.data.date_start) ? 1 : -1;
-            });
-
-            // rebuild the members list
-            this.rebuildMembersList();
-
-            // loading completed
-            this.isloading = false;
         });
+
+        return retSubject.asObservable();
     }
 
     /**

@@ -1,26 +1,26 @@
 <div>
-    <field-label [fieldname]="'assigntype'" [fieldconfig]="{label: 'LBL_ASSIGNED_TO_TYPE'}"></field-label>
-    <field-container [field]="'assigntype'"></field-container>
+    <field-label fieldname="assigntype" [fieldconfig]="{label: 'LBL_ASSIGNED_TO_TYPE'}"></field-label>
+    <field-container field="assigntype"></field-container>
 </div>
 <div *ngIf="model.data.assigntype == '1'">
-    <field-label [fieldname]="'assigned_user_name'" [fieldconfig]="{label: 'LBL_ASSIGNED_TO'}"></field-label>
-    <field-container [field]="'assigned_user_name'"></field-container>
+    <field-label fieldname="assigntouser_name" [fieldconfig]="{label: 'LBL_ASSIGNED_TO'}"></field-label>
+    <field-container field="assigntouser_name"></field-container>
 </div>
 <ng-container *ngIf="model.data.assigntype == '5'">
     <div>
-        <field-label [fieldname]="'assignfile'" [fieldconfig]="{label: 'LBL_FILE'}"></field-label>
-        <field-container [field]="'assignfile'"></field-container>
+        <field-label fieldname="assignfile" [fieldconfig]="{label: 'LBL_FILE'}"></field-label>
+        <field-container field="assignfile"></field-container>
     </div>
     <div>
-        <field-label [fieldname]="'assignclass'" [fieldconfig]="{label: 'LBL_CLASS'}"></field-label>
-        <field-container [field]="'assignclass'"></field-container>
+        <field-label fieldname="assignclass" [fieldconfig]="{label: 'LBL_CLASS'}"></field-label>
+        <field-container field="assignclass"></field-container>
     </div>
     <div>
-        <field-label [fieldname]="'assignmethod'" [fieldconfig]="{label: 'LBL_METHOD'}"></field-label>
-        <field-container [field]="'assignmethod'"></field-container>
+        <field-label fieldname="assignmethod" [fieldconfig]="{label: 'LBL_METHOD'}"></field-label>
+        <field-container field="assignmethod"></field-container>
     </div>
     <div>
-        <field-label [fieldname]="'assignparams'" [fieldconfig]="{label: 'LBL_PARAMS'}"></field-label>
-        <field-container [field]="'assignparams'"></field-container>
+        <field-label fieldname="assignparams" [fieldconfig]="{label: 'LBL_PARAMS'}"></field-label>
+        <field-container field="assignparams"></field-container>
     </div>
 </ng-container>

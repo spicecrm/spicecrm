@@ -14,6 +14,8 @@ export interface WorkflowTaskTypeI {
      */
     icon: string;
     type: 'regular' | 'gateway_email_event' | 'gateway_decision' | 'start' | 'end' | 'email_event_open' | 'email_event_bounce' | 'email_event_timer';
+    assignable: string;
+    typedefaults: string,
     deleted: boolean;
 }
 

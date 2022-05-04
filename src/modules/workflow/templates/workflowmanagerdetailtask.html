@@ -1,4 +1,4 @@
-<div class="slds-tabs_default">
+<div *ngIf="assignable; else detailonly" class="slds-tabs_default">
     <ul class="slds-tabs_default__nav" role="tablist">
         <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab=='T'}">
             <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab='T'">
@@ -19,3 +19,9 @@
         <workflow-manager-detail-task-assignmentpanel></workflow-manager-detail-task-assignmentpanel>
     </div>
 </div>
+<ng-template #detailonly>
+    <div class="slds-p-around--x-small">
+        <workflow-manager-detail-task-taskpanel></workflow-manager-detail-task-taskpanel>
+        <div #typeComponentContainer></div>
+    </div>
+</ng-template>

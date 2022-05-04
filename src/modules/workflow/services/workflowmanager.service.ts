@@ -146,8 +146,8 @@ export class WorkflowManagerService {
      * @param typeId
      */
     public generateNewTask(typeId: string): WorkflowTaskDefI {
-
-        return {
+        // create a new task
+        let newtask: WorkflowTaskDefI = {
             id: this.model.generateGuid(),
             workflowdefinition_id: this.model.id,
             deleted: 0,
@@ -156,6 +156,18 @@ export class WorkflowManagerService {
             tasktype: typeId,
             type_config: {}
         };
+
+        // check if we have type defaults
+        let t = this.types.find(t => t.id == typeId);
+        if(t.typedefaults){
+            let defaults = JSON.parse(t.typedefaults);
+            for(let v in defaults){
+                newtask[v] = defaults[v];
+            }
+        }
+
+        // return the new task
+        return newtask;
     }
 
     /**
@@ -250,7 +262,7 @@ export class WorkflowManagerService {
             case 'end':
                 return [];
             case 'gateway_email_event':
-                return ['email_event_open', 'email_event_bounce', 'email_event_timer'];
+                return ['regular', 'gateway_email_event', 'gateway_decision', 'end', 'email_event_open', 'email_event_bounce', 'email_event_timer'];
             default:
                 return ['regular', 'gateway_email_event', 'gateway_decision', 'end'];
         }

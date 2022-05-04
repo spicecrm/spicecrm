@@ -1,7 +1,7 @@
 /**
  * context pad provider class to customize the actions on shape popover
  */
-class SpiceContextPad {
+export default class SpiceContextPad {
 
     /**
      * bpmn-js services to be injected by bpmn-js script
@@ -80,9 +80,7 @@ class SpiceContextPad {
                 };
             }
 
-            if (element.type === 'bpmn:EventBasedGateway') {
-                types = types.filter(t => t.type.startsWith('email_event'));
-            } else {
+            if (element.businessObject.$attrs.icon !== 'start-event-message') {
                 types = types.filter(t => !t.type.startsWith('email_event'));
             }
 
