@@ -1004,7 +1004,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'name' => 'login_blocked_until',
             'vname' => 'LBL_BLOCKED_UNTIL',
             'type' => 'datetime'
-        ]
+        ],
+        'eventregistrations' => [
+            'name' => 'eventregistrations',
+            'vname' => 'LBL_EVENTREGISTRATIONS',
+            'type' => 'link',
+            'relationship' => 'user_eventregistrations',
+            'source' => 'non-db',
+        ],
     ],
     'indices' => [
         [

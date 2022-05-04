@@ -532,9 +532,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             ],
             'eventregistrations' => [
                 'name' => 'eventregistrations',
-                'vname' => 'LBL_EVENTREGISTRATOINS_LINK',
+                'vname' => 'LBL_EVENTREGISTRATIONS',
                 'type' => 'link',
-                'relationship' => 'eventregistration_contact_rel',
+                'relationship' => 'contact_eventregistrations',
                 'source' => 'non-db',
             ],
             'ext_id' => [
