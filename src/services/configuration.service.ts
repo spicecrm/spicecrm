@@ -479,7 +479,8 @@ export class configurationService {
             'sds-c-input-shadow-focus',
             'sds-c-textarea-shadow-focus',
             'sds-c-select-shadow-focus',
-            'sds-c-button-text-color-hover'
+            'sds-c-button-text-color-hover',
+            'sds-c-icon-color-foreground'
         ];
 
         let theme = this.getCapabilityConfig('theme');

@@ -35,6 +35,7 @@
  ********************************************************************************/
 namespace SpiceCRM\modules\UserPreferences;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -64,15 +65,11 @@ class UserPreference extends SugarBean
 
     protected $_userFocus;
 
-    // Do not actually declare, use the functions statically
-    public function __construct(
-        User $user = null
-    )
-    {
-        parent::__construct();
 
+    public function setUser(User $user = null){
         $this->_userFocus = $user;
         $this->tracker_visibility = false;
+        return $this;
     }
 
     /**
@@ -122,7 +119,7 @@ class UserPreference extends SugarBean
         if ( empty($user->user_name) )
             return;
 
-        $focus = new UserPreference($this->_userFocus);
+        $focus = BeanFactory::getBean('UserPreferences')->setUser($this->_userFocus);
         if($result = $focus->retrieve_by_string_fields([
             'assigned_user_id' => $user->id,
             'category' => $category,
@@ -221,7 +218,7 @@ class UserPreference extends SugarBean
         if ( empty($user->user_name) )
             return;
 
-        $focus = new UserPreference($this->_userFocus);
+        $focus = BeanFactory::getBean('UserPreferences')->setUser($this->_userFocus);
         $result = $focus->retrieve_by_string_fields([
             'assigned_user_id' => $user->id,
             'category' => $category,
@@ -439,7 +436,7 @@ class UserPreference extends SugarBean
             }
 
             foreach ($catsToSave as $category => $contents) { #print_r($contents);
-                $focus = new UserPreference($this->_userFocus);
+                $focus = BeanFactory::getBean('UserPreferences')->setUser($this->_userFocus);
                 $result = $focus->retrieve_by_string_fields([
                     'assigned_user_id' => $user->id,
                     'category' => $category,

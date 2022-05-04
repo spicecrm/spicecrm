@@ -73,7 +73,7 @@ class UserAccessLog extends SugarBean
 //            $now = Timedate::getInstance()->asDb($dtObj);
 
             $dtObj = TimeDate::getInstance()->getNow();
-            $dtObj->sub(new DateInterval('PT'.$interval.'M'));
+            $dtObj->sub(new \DateInterval('PT'.$interval.'M'));
             $calculatedDate = TimeDate::getInstance()->asDb($dtObj);
 
 //            return (int)$db->getOne('SELECT COUNT(0) FROM useraccesslogs WHERE date_entered > DATE_SUB( "'.$now.'", INTERVAL '.$interval.' MINUTE ) AND action="loginfail" AND ipaddress = "'.$db->quote($ipAddress).'"');

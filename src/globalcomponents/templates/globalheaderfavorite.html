@@ -1,9 +1,9 @@
 <div class="slds-global-actions__favorites slds-m-around--none slds-dropdown-trigger slds-dropdown-trigger_click" >
     <div class="slds-button-group">
-        <button #favbutton class="slds-button slds-button_icon slds-global-actions__favorites-action slds-button_icon slds-button_icon-border slds-button_icon-small" [disabled]="!favorite.isEnabled"  [ngClass]="{'slds-is-selected': favorite.isFavorite}" (click)="toggleFavorite()" title="Toggle Favorites">
+        <button #favbutton class="slds-button slds-button_icon slds-global-actions__favorites-action slds-button_icon slds-button_icon-border slds-button_icon-small" [disabled]="!favorite.isEnabled"  [ngClass]="{'slds-is-selected': favorite.isFavorite}" (click)="toggleFavorite()" system-title="LBL_MARK_FAVORITE">
             <system-button-icon icon="favorite"></system-button-icon>
         </button>
-        <button class="slds-button slds-button_icon slds-global-actions__favorites-more slds-button_icon slds-button_icon-border slds-button_icon-small" [disabled]="nofavorites" (click)="toggleFavorites()" title="View Favorites">
+        <button class="slds-button slds-button_icon slds-global-actions__favorites-more slds-button_icon slds-button_icon-border slds-button_icon-small" [disabled]="nofavorites" (click)="toggleFavorites()" system-title="LBL_ALL_FAVORITES">
             <system-button-icon icon="down"></system-button-icon>
         </button>
     </div>
