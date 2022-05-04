@@ -53,7 +53,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * Naming convention has the bean name be the same as the module and folder name.
  * All bean names should be singular (e.g. Contact).  The primary table name for
  * a bean should be plural (e.g. contacts).
- * @api
  */
 class SugarBean
 {
@@ -104,6 +103,20 @@ class SugarBean
      * @var string
      */
     public $_module;
+
+    /**
+     * the name of the database table for this Bean
+     *
+     * @var string
+     */
+    public $_tablename;
+
+    /**
+     * the Objectname set when laoded via the beanfactory
+     *
+     * @var string
+     */
+    public $_objectname;
 
     /**
      * When createing a bean, you can specify a value in the id column as
@@ -224,13 +237,45 @@ class SugarBean
      *
      * @var String
      */
+
+    /**
+     * @deprecated replaced by $_module
+     *
+     * @var string
+     */
     var $module_dir = '';
+
+    /**
+     * @deprecated replaced by $_module
+     *
+     * @var string
+     */
     var $module_name = '';
+
     var $field_name_map;
     var $field_defs;
+
+    /**
+     * @deprecated
+     *
+     * @var array
+     */
     var $column_fields = [];
+
+    /**
+     * @deprecated
+     *
+     * @var array
+     */
     var $list_fields = [];
+
+    /**
+     * @deprecated
+     *
+     * @var array
+     */
     var $additional_column_fields = [];
+
     var $relationship_fields = [];
     var $fetched_row = false;
     var $fetched_rel_row = [];
@@ -301,7 +346,7 @@ class SugarBean
      */
     function __construct()
     {
-        $this->initialize_bean();
+        // $this->initialize_bean();
 
         return $this;
     }
