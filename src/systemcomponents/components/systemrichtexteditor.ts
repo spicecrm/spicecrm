@@ -13,7 +13,7 @@ import {
     Renderer2,
     ViewChild,
     ViewContainerRef,
-    Input, Optional
+    Input, Optional, ChangeDetectorRef, NgZone
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -27,7 +27,7 @@ import { model } from '../../services/model.service';
 import { helper } from '../../services/helper.service';
 import {libloader} from "../../services/libloader.service";
 
-declare var ClassicEditor;
+declare var CKSource;
 
 @Component({
     selector: "system-richtext-editor",
@@ -100,6 +100,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 @Inject(DOCUMENT) public _document: any,
                 public elementRef: ElementRef,
                 public language: language,
+                private zone: NgZone,
                 public viewContainerRef: ViewContainerRef,
                 @Optional() public model: model,
                 public helper: helper ) {
@@ -119,13 +120,31 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     get richTextStyle() {
         return this.isExpanded ? {height: '100vh', resize: 'none', position: 'fixed'} : {height: (+this.innerHeight + 50) + 'px'};
     }
-private editor;
+
+    /**
+     * holds a reference to the ckeditor
+     * @private
+     */
+    private editor;
 
     public ngOnInit() {
-        this.libLoader.loadLib('ckeditor').subscribe(res => {
-            this.editor = new ClassicEditor(this.ckEditor.element.nativeElement);
 
-        })
+        this.libLoader.loadLib('ckeditor').subscribe(res => {
+            this.zone.runOutsideAngular(() => {
+                CKSource.Editor.create(this.ckEditor.element.nativeElement, {
+                    toolbar: [],
+                    autosave: {
+                        save: ( editor ) => {
+                            return this.onChange( editor.getData() );
+                        }
+                    },
+                }).then(res => {
+                    this.editor = res;
+                    this.editor.setData(this._html);
+                });
+            });
+
+        });
         this.handleKeyboardShortcuts();
     }
 
@@ -166,6 +185,9 @@ private editor;
     public writeValue(value: any): void {
         this._html = value ? value : '';
         this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
+        if (this.editor) {
+            this.editor.setData(value);
+        }
     }
 
     /**
@@ -173,6 +195,7 @@ private editor;
      * @param command string from triggerCommand
      */
     public executeCommand(command: string) {
+
         switch (command) {
             case 'openSourceEditor':
                 this.openSourceEditor();
@@ -191,7 +214,7 @@ private editor;
                 break;
             default:
                 if (this.isActive && command != '') {
-                    this.editorService.executeCommand(command);
+                    return this.editor.execute(command);
                 }
                 this.exec();
                 break;
@@ -261,15 +284,16 @@ private editor;
      * handle inserting image from media file if active or from url directly
      */
     public insertImage() {
-        this.editorService.saveSelection();
+        // this.editorService.saveSelection();
         this.modal.input(this.language.getLabel('LBL_IMAGE_LINK',this.language.getLabel('LBL_IMAGE')))
             .pipe(take(1))
             .subscribe(url => {
                 if (!url) return;
-                this.focusEditor();
-                this.editorService.restoreSelection();
-                this.editorService.insertImage(url, this.htmlEditor.element.nativeElement);
-                this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
+                // this.focusEditor();
+                // this.editorService.restoreSelection();
+                // this.editorService.insertImage(url, this.htmlEditor.element.nativeElement);
+                // this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
+                this.editor.execute('imageInsert', {source: [{src: url}]});
             });
     }
 
