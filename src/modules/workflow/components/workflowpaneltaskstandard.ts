@@ -40,7 +40,7 @@ export class WorkflowPanelTaskStandard {
      * return true if commenting enabled
      */
     get showComment(): boolean {
-        return this.taskData.enablecomments == '1' && parseInt(this.taskData.status, 10) >= 10;
+        return this.taskData.enablecomments == '1' && parseInt(this.taskData.workflowtask_status, 10) >= 10;
     }
 
 
@@ -63,7 +63,7 @@ export class WorkflowPanelTaskStandard {
     public setStatus(status: string) {
         this.posting = true;
         this.workflowservice.callTaskMethod(this.taskData.id, 'setStatus', {status: status, comment: this.comment}).subscribe(parent => {
-
+            this.taskData.workflowtask_status = status;
             this.model.data = this.modelutilities.backendModel2spice(this.model.module, parent);
 
             /**
@@ -82,7 +82,7 @@ export class WorkflowPanelTaskStandard {
             this.broadcast.broadcastMessage('model.save', {
                 id: this.taskData.id,
                 module: 'WorkflowTasks',
-                data: {}
+                data: this.taskData
             });
 
             this.posting = false;

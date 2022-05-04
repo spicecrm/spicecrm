@@ -52,6 +52,8 @@ import {WorkflowManagerTaskEditModal} from "./components/workflowmanagertasktedi
 import {WorkflowManagerEditModal} from "./components/workflowmanagereditmodal";
 import {WorkflowManagerTaskTypesStart} from "./components/workflowmanagertasktypesstart";
 import {WorkflowManagerTaskTypesEnd} from "./components/workflowmanagertasktypesend";
+import {WorkflowTimelineItem} from "./components/workflowtimelineitem";
+import {WorkflowTaskStatusIcon} from "./components/workflowtaskstatusicon";
 
 @NgModule({
     imports: [
@@ -97,7 +99,9 @@ import {WorkflowManagerTaskTypesEnd} from "./components/workflowmanagertasktypes
         WorkflowManagerTaskEditModal,
         WorkflowManagerEditModal,
         WorkflowManagerTaskTypesStart,
-        WorkflowManagerTaskTypesEnd
+        WorkflowManagerTaskTypesEnd,
+        WorkflowTimelineItem,
+        WorkflowTaskStatusIcon
     ]
 })
 export class ModuleWorkflow {

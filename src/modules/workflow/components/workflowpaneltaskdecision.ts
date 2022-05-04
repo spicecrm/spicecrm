@@ -38,7 +38,7 @@ export class WorkflowPanelTaskDecision {
      * return true if commenting enabled
      */
     get showComment(): boolean {
-        return this.taskData.enablecomments == '1' && parseInt(this.taskData.status, 10) >= 10;
+        return this.taskData.enablecomments == '1' && parseInt(this.taskData.workflowtask_status, 10) >= 10;
     }
 
     /**

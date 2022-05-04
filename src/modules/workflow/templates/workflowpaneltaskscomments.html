@@ -1,7 +1,7 @@
 <td></td>
 <td colspan="4" class="slds-p-around--none">
-    <div class="slds-p-around--xx-small slds-theme--shade" *ngFor="let comment of comments;let i = index" [ngClass]="{'slds-border--bottom': comments.length > 1 && i < comments.length - 1}">
-        <div class="slds-p-around--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+    <div class="slds-p-around--xx-small" *ngFor="let comment of comments;let i = index" [ngClass]="{'slds-border--bottom': comments.length > 1 && i < comments.length - 1}">
+        <div class="slds-p-around--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center slds-theme--shade">
             <div class="slds-text-heading--label">{{comment.created_by_name}}</div>
             <system-display-datetime [date]="comment.date_entered"></system-display-datetime>
         </div>

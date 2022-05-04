@@ -19,6 +19,7 @@ import {broadcast} from '../../../services/broadcast.service';
 import {toast} from '../../../services/toast.service';
 import {configurationService} from "../../../services/configuration.service";
 import {metadata} from "../../../services/metadata.service";
+import moment from "moment";
 
 
 @Component({
@@ -77,6 +78,15 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
         this.renderTypeComponent();
     }
 
+    /**
+     * returns a badge class
+     */
+    get badgeClass(){
+        let dueDate = moment(this.workflowtask.date_due);
+        if(dueDate.isAfter(moment(), 'day')) return 'slds-theme_success';
+        if(dueDate.isSame(moment(), 'day')) return 'slds-theme_warning';
+        if(dueDate.isBefore(moment(), 'day')) return 'slds-theme_error';
+    }
 
     /**
      * render the workflow task type component
