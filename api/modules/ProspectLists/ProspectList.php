@@ -43,11 +43,7 @@ use SpiceCRM\data\SugarBean;
 class ProspectList extends SugarBean
 {
 
-    // module name definitions and table relations
-    var $table_name = "prospect_lists";
-    var $module_dir = 'ProspectLists';
     var $rel_prospects_table = "prospect_lists_prospects";
-    var $object_name = "ProspectList";
 
     // This is used to retrieve related fields from form posts.
     var $additional_column_fields = [
@@ -78,9 +74,9 @@ class ProspectList extends SugarBean
 
         $where_auto = '1=1';
         if ($show_deleted == 0) {
-            $where_auto = "$this->table_name.deleted=0";
+            $where_auto = "$this->_tablename.deleted=0";
         } else if ($show_deleted == 1) {
-            $where_auto = "$this->table_name.deleted=1";
+            $where_auto = "$this->_tablename.deleted=1";
         }
 
         if ($where != "")

@@ -326,7 +326,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         // 2011-07-21 add check for audit records
                         if ($rightArray[2] == 'audit') {
                             //handle audit link
-                            $this->fromString .= $thisPathJoinType . $this->joinSegments[$leftPath]['object']->table_name . '_audit ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.parent_id = ' . $this->joinSegments[$leftPath]['alias'] . '.id';
+                            $this->fromString .= $thisPathJoinType . $this->joinSegments[$leftPath]['object']->_tablename . '_audit ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.parent_id = ' . $this->joinSegments[$leftPath]['alias'] . '.id';
                         } //2011-08-17 reacht to a relationship record and replace the alias in the path
                         elseif ($rightArray[0] == 'relationship') {
                             // set alias for the path to the linkalias of the connected bean
@@ -341,7 +341,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             $this->joinSegments[$thisPath]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['module']);
 
                             // join on the id = relate id .. on _cstm if custom field .. on main if regular
-                            $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->table_name . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name'] . ' ';
+                            $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->_tablename . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name'] . ' ';
 
                         } else {
                             if ($this->joinSegments[$leftPath]['object']->_module != $rightArray[1]) {
@@ -388,7 +388,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             $this->joinSegments[$thisPath]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->joinSegments[$leftPath]['object']->$rightArrayEl->getRelatedModuleName()); //$rightArray[2]
 
                             //bugfix 2010-08-19, respect ACL role access for owner reuqired in select
-                            if ($this->joinSegments[$leftPath]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments[$leftPath]['object']->module_dir, 'list')) {
+                            if ($this->joinSegments[$leftPath]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments[$leftPath]['object']->_module, 'list')) {
                                 //2013-02-22 missing check if we have a wherestring at all
                                 if ($this->whereString != '')
                                     $this->whereString .= ' AND ';
@@ -834,7 +834,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         // check for Role based access on root module
         // 2013-02-22 ... added anyway for each segment ... no need to add here again ...
         /*
-          if (!$current_user->is_admin && $this->joinSegments['root:' . $this->root_module]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments['root:' . $this->root_module]['object']->module_dir, 'list')) {
+          if (!$current_user->is_admin && $this->joinSegments['root:' . $this->root_module]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments['root:' . $this->root_module]['object']->_module, 'list')) {
           $this->whereString .= ' AND ' . $this->rootGuid . '.assigned_user_id=\'' . $current_user->id . '\'';
           }
          */
@@ -1822,7 +1822,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
     function get_table_for_module($module)
     {
         $thisModule = \SpiceCRM\data\BeanFactory::getBean($module);
-        return $thisModule->table_name;
+        return $thisModule->_tablename;
     }
 
 

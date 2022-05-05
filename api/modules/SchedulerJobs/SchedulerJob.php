@@ -21,9 +21,7 @@ use SpiceCRM\modules\Mailboxes\Mailbox;
  */
 class SchedulerJob extends SugarBean
 {
-    var $table_name = "schedulerjobs";
-    var $object_name = "SchedulerJob";
-    var $module_dir = "SchedulerJobs";
+
     /**
      * holds the name of the job
      */

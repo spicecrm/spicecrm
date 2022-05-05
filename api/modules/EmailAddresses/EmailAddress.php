@@ -62,21 +62,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class EmailAddress extends SugarBean
 {
     /**
-     * holds the table name
-     * @var string
-     */
-    public $table_name = 'email_addresses';
-    /**
-     * holds the module name
-     * @var string
-     */
-    public $module_dir = 'EmailAddresses';
-    /**
-     * holds the object name
-     * @var string
-     */
-    public $object_name = 'EmailAddress';
-    /**
      * holds the email address field from db
      * @var string
      */

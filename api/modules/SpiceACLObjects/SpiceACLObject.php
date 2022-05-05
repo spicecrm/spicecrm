@@ -18,12 +18,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
  */
 class SpiceACLObject extends SugarBean
 {
-
-    public $table_name = 'spiceaclobjects';
-    public $object_name = 'SpiceACLObject';
-    public $module_dir = 'SpiceACLObjects';
-
-
     private $aclobjects = [];
 
     /*
@@ -285,7 +279,7 @@ class SpiceACLObject extends SugarBean
 
         // workaround for module Users (table has no assigned_user_id field)
         // simulate assigned_user_id by allocating id
-        if ($bean->module_name == 'Users') {
+        if ($bean->_module == 'Users') {
             $bean->assigned_user_id = $bean->id;
         }
 
@@ -317,7 +311,7 @@ class SpiceACLObject extends SugarBean
 
         // workaround for module Users (table has no assigned_user_id field)
         // simulate assigned_user_id by allocating id
-        if ($bean->module_name == 'Users') {
+        if ($bean->_module == 'Users') {
             $bean->assigned_user_id = $bean->id;
         }
 
@@ -784,7 +778,7 @@ class SpiceACLObject extends SugarBean
 
         $this->beanRelRight = true;
         if (isset($this->relationShip['rhs_module'])) {
-            if ($this->relationShip['rhs_module'] != $thisBean->module_name && $this->relationShip['lhs_module'] == $thisBean->module_name)
+            if ($this->relationShip['rhs_module'] != $thisBean->_module && $this->relationShip['lhs_module'] == $thisBean->_module)
                 $this->beanRelRight = false;
         }
     }

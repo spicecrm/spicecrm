@@ -6,9 +6,6 @@ namespace SpiceCRM\modules\ProspectListFilters;
 use SpiceCRM\data\SugarBean;
 
 class ProspectListFilter extends SugarBean {
-    public $module_dir = 'ProspectListFilters';
-    public $object_name = 'ProspectListFilter';
-    public $table_name = 'prospect_list_filters';
 
     function fill_in_additional_detail_fields()
     {

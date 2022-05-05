@@ -60,12 +60,6 @@ use SpiceCRM\modules\Mailboxes\Mailbox;
 
 class Email extends SugarBean
 {
-
-
-    var $table_name = 'emails';
-    var $module_dir = 'Emails';
-    var $object_name = 'Email';
-
     public $attachment_image;
 
     public $recipient_addresses = [];

@@ -7,16 +7,6 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 
 class Consumer extends Person {
-    public $module_dir = 'Consumers';
-    public $object_name = 'Consumer';
-    public $table_name = 'consumers';
-    public $new_schema = true;
-
-    public $additional_column_fields = [];
-
-    public $relationship_fields = [
-    ];
-
 
     public function get_summary_text(){
         return $this->name;
