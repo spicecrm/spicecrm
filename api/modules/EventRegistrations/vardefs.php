@@ -29,7 +29,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
             'name' => 'salutation',
             'type' => 'enum',
             'options' => 'salutation_dom',
-            'massupdate' => false,
             'len' => 255,
             'vname' => 'LBL_SALUTATION',
         ],

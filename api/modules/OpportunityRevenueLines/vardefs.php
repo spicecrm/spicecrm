@@ -37,7 +37,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['OpportunityRevenueLine'] = [
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
-            'group' => 'amount',
             'dbType' => 'double',
             'disable_num_format' => true,
             'audited' => true

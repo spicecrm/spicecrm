@@ -176,7 +176,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
         'currency_id' => [
             'name' => 'currency_id',
             'type' => 'id',
-            'group' => 'currency_id',
             'vname' => 'LBL_CURRENCY',
             'reportable' => false,
             'comment' => 'ID of currency used'
