@@ -6,9 +6,6 @@ namespace SpiceCRM\modules\ScrumThemes;
 use SpiceCRM\data\SugarBean;
 
 class ScrumTheme extends SugarBean {
-    public $module_dir = 'ScrumThemes';
-    public $object_name = 'ScrumTheme';
-    public $table_name = 'scrumthemes';
 
     public function save($check_notify = false, $fts_index_bean = true)
     {
@@ -23,7 +20,7 @@ class ScrumTheme extends SugarBean {
 
         // set has_epics to true if there are related epics
         if(isset($this->id)) {
-            $epics = $bean->get_linked_beans('scrumepics', $this->object_name);
+            $epics = $bean->get_linked_beans('scrumepics', $this->_objectname);
             if (count($epics) > 0) {
                 $this->has_epics = true;
             }

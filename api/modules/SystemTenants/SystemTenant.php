@@ -15,10 +15,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 class SystemTenant extends SugarBean
 {
 
-    public $table_name = "systemtenants";
-    public $object_name = "SystemTenant";
-    public $module_dir = 'SystemTenants';
-
     /**
      * loads the tenant data from teh config for the loader to return to the frontend
      */

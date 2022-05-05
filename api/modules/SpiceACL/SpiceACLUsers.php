@@ -70,7 +70,7 @@ class SpiceACLUsers{
         $userIDs = array_merge([$current_user->id], $substituteIds);
         $userIDs = "'". join("','", $userIDs) . "'";
 
-        if(empty($table_name)) $table_name = $bean->table_name;
+        if(empty($table_name)) $table_name = $bean->_tablename;
 
         $whereClauses[] = "$table_name.assigned_user_id IN ($userIDs)";
 
@@ -89,7 +89,7 @@ class SpiceACLUsers{
         $userIDs = array_merge([$current_user->id], $substituteIds);
         $userIDs = "'". join("','", $userIDs) . "'";
 
-        if(empty($table_name)) $table_name = $bean->table_name;
+        if(empty($table_name)) $table_name = $bean->_tablename;
 
         return "$table_name.created_by IN ($userIDs)";
     }

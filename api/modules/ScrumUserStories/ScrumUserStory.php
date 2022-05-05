@@ -5,10 +5,6 @@ namespace SpiceCRM\modules\ScrumUserStories;
 use SpiceCRM\data\SugarBean;
 
 class ScrumUserStory extends SugarBean {
-    public $module_dir = 'ScrumUserStories';
-    public $object_name = 'ScrumUserStory';
-    public $table_name = 'scrumuserstories';
-
 
     public function save($check_notify = false, $fts_index_bean = true)
     {

@@ -44,7 +44,7 @@ class DictionaryController
                         $returnArray[] = [
                             'path' => 'link:' . $module . ':' . $field_name,
                             'module' => $nodeModule->$field_name->getRelatedModuleName(),
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false,
                             'label' => $field_defs['vname']
                         ];

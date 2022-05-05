@@ -290,7 +290,7 @@ class KReporterRESTHandler
         } else
             $thisModule = $parentModule;
 
-        if ($thisModule->table_name != '') {
+        if ($thisModule->_tablename != '') {
 
             // determine the field name we need to go for
             $fieldName = 'name';
@@ -298,13 +298,13 @@ class KReporterRESTHandler
             if ($fieldArray[0] == 'field' && isset($thisModule->field_name_map[$fieldArray[1]]) && $fieldArray[1] != 'id')
                 $fieldName = $fieldArray[1];
 
-            $query_res = $db->limitQuery("SELECT id, " . $fieldName . " FROM $thisModule->table_name WHERE " . (!empty($query) ? "name like '%" . $query . "%' AND" : "") . " deleted='0' ORDER BY name ASC", (!empty($start) ? $start : 0), (!empty($limit) ? $limit : 25));
+            $query_res = $db->limitQuery("SELECT id, " . $fieldName . " FROM $thisModule->_tablename WHERE " . (!empty($query) ? "name like '%" . $query . "%' AND" : "") . " deleted='0' ORDER BY name ASC", (!empty($start) ? $start : 0), (!empty($limit) ? $limit : 25));
             while ($thisEntry = $db->fetchByAssoc($query_res)) {
                 $returnArray['data'][] = ['itemid' => $thisEntry['id'], 'itemtext' => $thisEntry[$fieldName]];
             }
 
             // get count
-            $totalRec = $db->fetchByAssoc($db->query("SELECT count(*) as count FROM $thisModule->table_name WHERE " . (!empty($query) ? "name like '%" . $query . "%' AND" : "") . " deleted='0'"));
+            $totalRec = $db->fetchByAssoc($db->query("SELECT count(*) as count FROM $thisModule->_tablename WHERE " . (!empty($query) ? "name like '%" . $query . "%' AND" : "") . " deleted='0'"));
             $returnArray['total'] = $totalRec['count'];
         }
 
@@ -730,7 +730,7 @@ $db = DBManagerFactory::getInstance();
         $nodeModule->load_relationships();
         // print_r(SpiceDictionaryHandler::getInstance()->dictionary);//
         // 2011-07-21 add audit table
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->object_name]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->object_name]['audited'])
+        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->_objectname]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->_objectname]['audited'])
             $functionsArray[] = [
                 'path' => /* ($requester != '' ? $requester. '#': '') . */
                     'audit:' . $module . ':audit',
@@ -745,7 +745,7 @@ $db = DBManagerFactory::getInstance();
             if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                 $functionsArray[] = [
                     'path' => /*  ($requester != '' ? $requester. '#': '') . */
-                        'relationship:' . $thisLink->focus->module_dir /* $module */ . ':' . $thisLink->name,
+                        'relationship:' . $thisLink->focus->_module /* $module */ . ':' . $thisLink->name,
                     'module' => 'relationship Fields',
                     'leaf' => true
                 ];
@@ -753,7 +753,7 @@ $db = DBManagerFactory::getInstance();
             if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                 $functionsArray[] = [
                     'path' => /*  ($requester != '' ? $requester. '#': '') . */
-                        'relationship:' . $thisLink->_bean->module_dir /* $module */ . ':' . $thisLink->name, 'name' => 'relationship Fields',
+                        'relationship:' . $thisLink->_bean->_module /* $module */ . ':' . $thisLink->name, 'name' => 'relationship Fields',
                     'leaf' => true
                 ];
         }
@@ -771,7 +771,7 @@ $db = DBManagerFactory::getInstance();
                             'link:' . $module . ':' . $field_name,
                         'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                         ['vname'], $module))),
-                        'bean' => $nodeModule->$field_name->focus->object_name,
+                        'bean' => $nodeModule->$field_name->focus->_objectname,
                         'leaf' => false
                     ];
                 elseif (isset($field_defs['module']))
@@ -779,7 +779,7 @@ $db = DBManagerFactory::getInstance();
                         'path' => /*  ($requester != '' ? $requester. '#': '') . */
                             'link:' . $module . ':' . $field_name,
                         'module' => SpiceUtils::translate($field_defs['module'], $module),
-                        'bean' => $nodeModule->$field_name->focus->object_name,
+                        'bean' => $nodeModule->$field_name->focus->_objectname,
                         'leaf' => false
                     ];
                 else {
@@ -788,7 +788,7 @@ $db = DBManagerFactory::getInstance();
                         'path' => /* ($requester != '' ? $requester. '#': '') . */
                             'link:' . $module . ':' . $field_name,
                         'module' => get_class($nodeModule->$field_defs_rel->_bean),  //PHP7 - 5.6 COMPAT $nodeModule->$field_defs['relationship']->_bean
-                        'bean' => $nodeModule->$field_name->focus->object_name,
+                        'bean' => $nodeModule->$field_name->focus->_objectname,
                         'leaf' => false
                     ];
                 }
@@ -1545,7 +1545,7 @@ $db = DBManagerFactory::getInstance();
                 $bean = BeanFactory::getBean($module);
                 //Get table_name from $module
                 $q = "SELECT DISTINCT(" . $fieldname . ") colvalue "
-                    . " FROM " . $bean->table_name . " "
+                    . " FROM " . $bean->_tablename . " "
                     . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 ";
 //                    . " LIMIT " . $start . ", " . $limit . ";";
                 if (!$res = DBManagerFactory::getInstance()->limitQuery($q, $start, $limit))
@@ -1556,7 +1556,7 @@ $db = DBManagerFactory::getInstance();
 
                 //total count
                 $q = "SELECT count(DISTINCT(" . $fieldname . ")) total "
-                    . " FROM " . $bean->table_name . " "
+                    . " FROM " . $bean->_tablename . " "
                     . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 ";
                 if (!$res = DBManagerFactory::getInstance()->query($q))
                     LoggerManager::getLogger()->fatal("DB query error count " . DBManagerFactory::getInstance()->last_error);

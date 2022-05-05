@@ -18,13 +18,9 @@ use SpiceCRM\modules\SpiceACL\SpiceACL;
 class Call extends SugarBean
 {
 
-    var $table_name = "calls";
     var $rel_users_table = "calls_users";
     var $rel_contacts_table = "calls_contacts";
     var $rel_leads_table = "calls_leads";
-    var $module_dir = 'Calls';
-    var $object_name = "Call";
-
 
     /**
      * Disable edit if call is recurring and source is not Sugar. It should be edited only from Outlook.

@@ -55,7 +55,7 @@ class SpiceSubscriptionsLoader
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
-        $sql = "INSERT INTO spicesubscriptions (user_id, bean_id, bean_module) VALUES ('{$currentUser->id}', '{$bean->id}', '{$bean->module_dir}')";
+        $sql = "INSERT INTO spicesubscriptions (user_id, bean_id, bean_module) VALUES ('{$currentUser->id}', '{$bean->id}', '{$bean->_module}')";
         $db->query($sql, true);
     }
 

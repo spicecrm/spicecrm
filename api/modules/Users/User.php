@@ -59,10 +59,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 // User is used to store customer information.
 class User extends Person
 {
-
-    var $table_name = "users";
-    var $module_dir = 'Users';
-    var $object_name = "User";
     var $user_preferences;
     var $impersonating_user_id;
 
@@ -466,7 +462,7 @@ class User extends Person
         $this->savePreferencesToDB();
         //set new password
         $now = TimeDate::getInstance()->nowDb();
-        $query = "UPDATE $this->table_name SET user_hash='$user_hash', system_generated_password='$system_generated', pwd_last_changed='$now' where id='$this->id'";
+        $query = "UPDATE $this->_tablename SET user_hash='$user_hash', system_generated_password='$system_generated', pwd_last_changed='$now' where id='$this->id'";
         $this->db->query($query, true, "Error setting new password for $this->user_name: ");
         $_SESSION['hasExpiredPassword'] = '0';
 

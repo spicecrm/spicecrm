@@ -47,11 +47,11 @@ class SpiceACLHooks
 
     public function hook_create_vardefs(&$bean, $event, $arguments)
     {
-        if (!isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->object_name]['templates']['spiceaclusers'])) {
+        if (!isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->_objectname]['templates']['spiceaclusers'])) {
             $loader = new SpiceUIModulesController();
             $modules = $loader->geUnfilteredModules();
-            if ($modules[$bean->module_dir]['acl_multipleusers'] == 1){
-                VardefManager::addTemplate($bean->module_dir, $bean->object_name, 'spiceaclusers');
+            if ($modules[$bean->_module]['acl_multipleusers'] == 1){
+                VardefManager::addTemplate($bean->_module, $bean->_objectname, 'spiceaclusers');
             }
         }
     }

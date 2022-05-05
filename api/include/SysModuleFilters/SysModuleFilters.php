@@ -96,7 +96,7 @@ class SysModuleFilters
 
         $seed = BeanFactory::getBean($filter['module']);
         $whereClause = $this->generateWhereClauseForFilterId($filterId);
-        $result = $db->fetchByAssoc($db->query("SELECT count(*) entry_count FROM {$seed->table_name} WHERE deleted = 0 AND $whereClause"));
+        $result = $db->fetchByAssoc($db->query("SELECT count(*) entry_count FROM {$seed->_tablename} WHERE deleted = 0 AND $whereClause"));
         return $result['entry_count'] ?: 0;
 
     }
@@ -157,7 +157,7 @@ class SysModuleFilters
 
         if (!$tablename) {
             $seed = BeanFactory::getBean($filter['module']);
-            $tablename = $seed->table_name;
+            $tablename = $seed->_tablename;
         }
 
         $conditions = json_decode(html_entity_decode($filter['filterdefs']));
