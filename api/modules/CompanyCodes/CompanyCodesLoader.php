@@ -7,6 +7,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 class CompanyCodesLoader{
+
     public function loadCompanyCodes(){
         $db = DBManagerFactory::getInstance();
 

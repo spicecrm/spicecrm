@@ -314,7 +314,7 @@ class M2MRelationship extends SugarRelationship
             $relatedSeedKey = $this->def['rhs_key'];
             $seedFocusKey = $this->def['lhs_key'];
             if (!empty($params['where']))
-                $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->table_name : $params['right_join_table_alias']);
+                $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->_tablename : $params['right_join_table_alias']);
         }
         else
         {
@@ -324,7 +324,7 @@ class M2MRelationship extends SugarRelationship
             $relatedSeedKey = $this->def['lhs_key'];
             $seedFocusKey = $this->def['rhs_key'];
             if (!empty($params['where']))
-                $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->table_name : $params['left_join_table_alias']);
+                $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->_tablename : $params['left_join_table_alias']);
         }
         $rel_table = $this->getRelationshipTable();
 
@@ -429,9 +429,9 @@ class M2MRelationship extends SugarRelationship
     {
         $linkIsLHS = $link->getSide() == REL_LHS;
         if ($linkIsLHS) {
-            $startingTable = (empty($params['left_join_table_alias']) ? $link->getFocus()->table_name : $params['left_join_table_alias']);
+            $startingTable = (empty($params['left_join_table_alias']) ? $link->getFocus()->_tablename : $params['left_join_table_alias']);
         } else {
-            $startingTable = (empty($params['right_join_table_alias']) ? $link->getFocus()->table_name : $params['right_join_table_alias']);
+            $startingTable = (empty($params['right_join_table_alias']) ? $link->getFocus()->_tablename : $params['right_join_table_alias']);
         }
 
         $startingKey = $linkIsLHS ? $this->def['lhs_key'] : $this->def['rhs_key'];

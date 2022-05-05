@@ -16,7 +16,9 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * loads the metadata files
      */
     public static function loadMetaDataFiles() {
-        $metaDataDirectories = ['metadata', 'extensions/metadata', 'custom/metadata'];
+        $metaDataDirectories = ['metadata', 'extensions/metadata', 'custom/metadata',
+        //    'modules', 'extensions/modules', 'custom/modules'
+        ];
 
         foreach ($metaDataDirectories as $metaDataDirectory) {
             self::loadMetaDataFilesFromDir($metaDataDirectory);

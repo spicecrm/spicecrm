@@ -8,12 +8,8 @@ use DateTime;
 
 class UserQuota extends SugarBean
 {
-    public $db;
 
-    public $object_name = 'UserQuota';
-    public $table_name = 'userquotas';
     public $disable_row_level_security = true;
-    public $module_dir = 'UserQuotas';
 
     public function __construct()
     {

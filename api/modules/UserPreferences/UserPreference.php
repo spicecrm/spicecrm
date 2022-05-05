@@ -56,15 +56,9 @@ use SpiceCRM\modules\Users\User;
 class UserPreference extends SugarBean
 {
 
-
-    public $object_name = 'UserPreference';
-    public $table_name = 'user_preferences';
     public $disable_row_level_security = true;
-    public $module_dir = 'UserPreferences';
-    public $new_schema = true;
 
     protected $_userFocus;
-
 
     public function setUser(User $user = null){
         $this->_userFocus = $user;
@@ -276,7 +270,7 @@ class UserPreference extends SugarBean
 
         $user = $this->_userFocus;
 
-        if($user->object_name != 'User')
+        if($user->_objectname != 'User')
             return;
         if(!empty($user->id) && (!isset($_SESSION[$user->user_name . '_PREFERENCES'][$category]) || (!empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key']))) {
             // cn: moving this to only log when valid - throwing errors on install
@@ -325,7 +319,7 @@ class UserPreference extends SugarBean
     {
         $user = $this->_userFocus;
 
-        if($user->object_name != 'User' || empty($user->id) || empty($user->user_name)) {
+        if($user->_objectname != 'User' || empty($user->id) || empty($user->user_name)) {
             return false;
         }
         LoggerManager::getLogger()->debug('Loading Preferences DB ' . $user->user_name);
@@ -380,7 +374,7 @@ class UserPreference extends SugarBean
             $prefDate['date'] = $timedate->get_date_format();
             $prefDate['time'] = $timedate->get_time_format();
 
-            if(!empty($user) && $user->object_name == 'User') {
+            if(!empty($user) && $user->_objectname == 'User') {
                 $timeZone = TimeDate::userTimezone($user);
                 // cn: bug 9171 - if user has no time zone, cron.php fails for InboundEmail
                 if(!empty($timeZone)) {

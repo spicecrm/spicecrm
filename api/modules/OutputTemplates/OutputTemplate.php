@@ -12,10 +12,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class OutputTemplate extends SugarBean
 {
-    var $table_name = "outputtemplates";
-    var $object_name = "OutputTemplate";
-    var $module_dir = "OutputTemplates";
-    var $new_schema = true;
+
     // fields which holds options to create pdfs
     public static $PDF_OPTION_FIELDS = [
         'page_size',

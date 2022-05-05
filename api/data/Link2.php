@@ -52,7 +52,7 @@ class Link2
         if (empty($bean->field_defs) || empty($bean->field_defs[$linkName]) || empty($bean->field_defs[$linkName]['relationship'])) {
             if (empty($linkDef)) {
                 //Assume $linkName is really relationship_name, and find the link name with the vardef manager
-                $this->def = VardefManager::getLinkFieldForRelationship($bean->module_dir, $bean->object_name, $linkName);
+                $this->def = VardefManager::getLinkFieldForRelationship($bean->_module, $bean->_objectname, $linkName);
             } else {
                 $this->def = $linkDef;
             }
@@ -269,13 +269,13 @@ class Link2
 
         //Next try the relationship
         if ($this->relationship->getLHSLink() == $this->name &&
-            ($this->relationship->getLHSModule() == $this->focus->module_name)
+            ($this->relationship->getLHSModule() == $this->focus->_module)
         ) {
             return REL_LHS;
         }
 
         if ($this->relationship->getRHSLink() == $this->name &&
-            ($this->relationship->getRHSModule() == $this->focus->module_name)
+            ($this->relationship->getRHSModule() == $this->focus->_module)
         ) {
             return REL_RHS;
         }
@@ -288,7 +288,7 @@ class Link2
                 return REL_LHS;
         }
 
-        LoggerManager::getLogger()->error("Unable to get proper side for link {$this->name} in {$this->focus->module_name}");
+        LoggerManager::getLogger()->error("Unable to get proper side for link {$this->name} in {$this->focus->_module}");
     }
 
     /**
@@ -543,7 +543,7 @@ class Link2
     function delete($id, $related_id = '')
     {
         if (empty($this->focus->id))
-            $this->focus = BeanFactory::getBean($this->focus->module_name, $id);
+            $this->focus = BeanFactory::getBean($this->focus->_module, $id);
         if (!empty($related_id)) {
             if (!($related_id instanceof SugarBean)) {
                 $related_id = $this->getRelatedBean($related_id);
