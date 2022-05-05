@@ -12,10 +12,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class UserAccessLog extends SugarBean
 {
-    public $object_name = 'UserAccessLog';
-    public $table_name = 'useraccesslogs';
     public $disable_row_level_security = true;
-    public $module_dir = 'UserAccessLogs';
 
     public function __construct()
     {

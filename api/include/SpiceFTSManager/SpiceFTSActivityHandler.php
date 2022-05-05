@@ -362,7 +362,7 @@ class SpiceFTSActivityHandler
                 // check if bean found since it might be deleted
             if($seed){
 
-                foreach ($seed->field_name_map as $field => $fieldData) {
+                foreach ($seed->field_defs as $field => $fieldData) {
                     //if (!isset($hit['_source']{$field}))
                     if(is_string($seed->$field)){
                         $hit['_source'][$field] = html_entity_decode( $seed->$field, ENT_QUOTES);

@@ -437,7 +437,7 @@ class EmailsController
                     'assigned_user_id',
                     'modified_user_id'
                 ];
-                foreach ($email->field_name_map as $fieldName => $fieldData) {
+                foreach ($email->field_defs as $fieldName => $fieldData) {
                     if (!in_array($fieldName, $excludedFields) && isset($emailbean[$fieldName])) {
                         $email->{$fieldName} = $emailbean[$fieldName];
                     }

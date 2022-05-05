@@ -13,11 +13,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class Task extends SugarBean
 {
-
-    public $table_name = "tasks";
-    public $object_name = "Task";
-    public $module_dir = 'Tasks';
-
     /**
      * Available status values
      */

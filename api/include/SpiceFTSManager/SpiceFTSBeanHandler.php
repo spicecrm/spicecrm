@@ -155,8 +155,8 @@ class SpiceFTSBeanHandler
 
         // add Standard Fields
         foreach (SpiceFTSUtils::$standardFields as $standardField => $standardFieldData) {
-            if (isset($this->seed->field_name_map[$standardField]) && isset($this->seed->$standardField) and ($this->seed->$standardField == '0' || !empty($this->seed->$standardField))) {
-                $indexArray[$standardField] = $this->mapDataType($this->seed->field_name_map[$standardField]['type'], $this->seed->$standardField);
+            if (isset($this->seed->field_defs[$standardField]) && isset($this->seed->$standardField) and ($this->seed->$standardField == '0' || !empty($this->seed->$standardField))) {
+                $indexArray[$standardField] = $this->mapDataType($this->seed->field_defs[$standardField]['type'], $this->seed->$standardField);
             }
         }
 
@@ -339,7 +339,7 @@ class SpiceFTSBeanHandler
                                 $valArray[] = $this->enrichDataByFunction($indexproperty);
                             } // END
                             else {
-                                $valArray[] = $this->mapDataType($thisValueBean->field_name_map[$pathRecordDetails[1]]['type'], $thisValueBean->{$pathRecordDetails[1]});
+                                $valArray[] = $this->mapDataType($thisValueBean->field_defs[$pathRecordDetails[1]]['type'], $thisValueBean->{$pathRecordDetails[1]});
                             }
                         }
                         $fieldValue = $valArray;
@@ -350,13 +350,13 @@ class SpiceFTSBeanHandler
                             $fieldValue = $this->enrichDataByFunction($indexproperty);
                         } // END
                         else {
-                            $fieldValue = $this->mapDataType($valueBean->field_name_map[$pathRecordDetails[1]]['type'], $valueBean->{$pathRecordDetails[1]});
+                            $fieldValue = $this->mapDataType($valueBean->field_defs[$pathRecordDetails[1]]['type'], $valueBean->{$pathRecordDetails[1]});
                         }
                     }
 
                     // see if we have a related id for the field
-                    if (isset($this->seed->field_name_map[$pathRecordDetails[1]]['id_name']) && $this->seed->field_name_map[$pathRecordDetails[1]]['id_name'] != '')
-                        $this->addRelated($this->seed->{$this->seed->field_name_map[$pathRecordDetails[1]]['id_name']});
+                    if (isset($this->seed->field_defs[$pathRecordDetails[1]]['id_name']) && $this->seed->field_defs[$pathRecordDetails[1]]['id_name'] != '')
+                        $this->addRelated($this->seed->{$this->seed->field_defs[$pathRecordDetails[1]]['id_name']});
                     break;
             }
         }

@@ -9,10 +9,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class EmailSchedule extends SugarBean
 {
-    public $module_dir = 'EmailSchedules';
-    public $object_name = 'EmailSchedule';
-    public $table_name = 'emailschedules';
-
     public function get_summary_text()
     {
         return $this->name;
@@ -77,7 +73,7 @@ class EmailSchedule extends SugarBean
         $email->new_with_id = true;
         // save or only send the email
         if($saveEmail){
-            $email->parent_type = $seed->module_dir;
+            $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent = true;
             $email->save();

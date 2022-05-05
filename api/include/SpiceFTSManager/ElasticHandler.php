@@ -234,7 +234,7 @@ class ElasticHandler
         // Determine the db table names
         $dbTables = [];
         foreach ( SpiceModules::getInstance()->modules as $moduleName => $v ) {
-            $dbTables[strtolower($moduleName)] = BeanFactory::getBean($moduleName)->table_name;
+            $dbTables[strtolower($moduleName)] = BeanFactory::getBean($moduleName)->_tablename;
         }
 
         // get the indexing stats

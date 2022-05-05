@@ -282,10 +282,10 @@ class VardefManager{
             $temp = \SpiceCRM\data\BeanFactory::newBean($module);
             if ($temp)
             {
-                $object_name = \SpiceCRM\data\BeanFactory::getObjectName($temp->module_dir);
-                if ($temp && $temp->module_dir != $temp->module_name && !empty($object_name))
+                $object_name = \SpiceCRM\data\BeanFactory::getObjectName($temp->_module);
+                if ($temp && $temp->_module != $temp->module_name && !empty($object_name))
                 {
-                    self::refreshVardefs($temp->module_dir, $object_name, $additional_search_paths, $cacheCustom);
+                    self::refreshVardefs($temp->_module, $object_name, $additional_search_paths, $cacheCustom);
                 }
             }
         }

@@ -9,17 +9,7 @@ use SpiceCRM\KREST\handlers\ModuleHandler;
 
 class ProductGroup extends SugarBean
 {
-
-    public $table_name = "productgroups";
-    public $object_name = "ProductGroup";
-    public $module_dir = 'ProductGroups';
-    public $unformated_numbers = true;
-
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
+//    public $unformated_numbers = true;
 
     function getSubProductGroups($groupid = '')
     {
