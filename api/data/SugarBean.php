@@ -2355,36 +2355,18 @@ class SugarBean
             if (0 == strcmp($field['type'], 'relate') && !empty($field['module'])) {
                 $name = $field['name'];
                 if (empty($this->$name)) {
-
                     if (empty($this->{$field['id_name']})) {
                         $this->fill_in_link_field($field['id_name'], $field);
                     }
                     if (!empty($this->{$field['id_name']}) && ($this->object_name != $field['module'] || ($this->object_name == $field['module'] && $this->{$field['id_name']} != $this->id))) {
-                        if (SpiceModules::getInstance()->getBeanName($field['module'])) {
-
-                                // change to use of BeanFactory
-                                $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
-                                /*
-                                $this->$name = [];
-                                foreach ($mod->field_name_map as $fieldId => $fieldData) {
-                                    switch ($fieldData['type']) {
-                                        case 'relate':
-                                        case 'parent':
-                                        case 'link':
-                                            break;
-                                        default:
-                                            $this->$name[$fieldId] = is_string($mod->$fieldId) ? html_entity_decode($mod->$fieldId, ENT_QUOTES) : $mod->$fieldId;
-                                            break;
-                                    }
-                                }
-                                */
-                                if ($mod and !empty(@$field['rname'])) {
-                                    $field_rname = $field['rname']; //PHP7 COMPAT
-                                    $this->$name = $mod->$field_rname; //PHP7 COMPAT
-                                } else if (isset($mod->name)) {
-                                    $this->$name = $mod->name;
-                                }
-                        }
+                            // change to use of BeanFactory
+                            $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
+                            if ($mod and !empty(@$field['rname'])) {
+                                $field_rname = $field['rname']; //PHP7 COMPAT
+                                $this->$name = $mod->$field_rname; //PHP7 COMPAT
+                            } else if (isset($mod->name)) {
+                                $this->$name = $mod->name;
+                            }
                     }
                 }
             }

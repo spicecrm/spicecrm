@@ -267,6 +267,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'bean_name' => 'Letter',
             'vname' => 'LBL_LETTERS',
         ],
+        'eventregistrations' => [
+            'name' => 'eventregistrations',
+            'vname' => 'LBL_EVENTREGISTRATIONS',
+            'type' => 'link',
+            'relationship' => 'consumer_eventregistrations',
+            'source' => 'non-db',
+        ],
     ],
     'relationships' => [
         'consumers_email_addresses' => [

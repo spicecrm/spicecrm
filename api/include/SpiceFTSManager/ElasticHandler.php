@@ -509,12 +509,12 @@ class ElasticHandler
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '2':
                 $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                $logEntryHandler->writeOutogingLogEntry(true);
+                $logEntryHandler->writeOutogingLogEntry();
                 break;
             case '1':
                 if (@$resultdec->status > 0) {
                     $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                    $logEntryHandler->writeOutogingLogEntry(true);
+                    $logEntryHandler->writeOutogingLogEntry();
                 }
                 break;
         }
@@ -564,12 +564,12 @@ class ElasticHandler
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '2':
                 $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                $logEntryHandler->writeOutogingLogEntry(true);
+                $logEntryHandler->writeOutogingLogEntry();
                 break;
             case '1':
                 if (@$resultdec->status > 0) {
                     $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                    $logEntryHandler->writeOutogingLogEntry(true);
+                    $logEntryHandler->writeOutogingLogEntry();
                 }
                 break;
         }
