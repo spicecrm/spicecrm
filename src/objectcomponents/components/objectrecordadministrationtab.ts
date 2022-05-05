@@ -18,7 +18,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
     public componentconfig: any = {};
     public expanded: boolean = true;
     public hasFieldAssignedUser = false;
-    // public territorymanaged: boolean = false;
+    public hasFieldAssignedOrgunit = false;
 
     public fields: any = {
         spiceacl_primary_territory: {
@@ -37,6 +37,10 @@ export class ObjectRecordAdministrationTab implements OnInit {
             field: 'assigned_user_name',
             fieldconfig: {}
         },
+        assigned_orgunit_name: {
+            field: 'assigned_orgunit_name',
+            fieldconfig: {}
+        },
         created_by_name: {
             field: 'created_by_name',
             fieldconfig: {fieldtype: 'modifiedby', field_date: 'date_entered'}
@@ -47,7 +51,16 @@ export class ObjectRecordAdministrationTab implements OnInit {
         }
     };
 
-    constructor(public activatedRoute: ActivatedRoute, public metadata: metadata, public model: model, public language: language, public territories: territories) {
+    constructor(public metadata: metadata, public model: model, public territories: territories) {
+        this.model.data$.subscribe({
+            next: (modeldata) => {
+                if(!!model.getField('assigned_user_id')){
+                    this.model.setFieldStatus('assigned_orgunit_id', 'readonly', true);
+                } else {
+                    this.model.setFieldStatus('assigned_orgunit_id', 'readonly', false);
+                }
+            }
+        })
     }
 
     public ngOnInit() {
@@ -55,16 +68,9 @@ export class ObjectRecordAdministrationTab implements OnInit {
             this.expanded = false;
         }
 
-        /*
-        let fields = this.metadata.getModuleFields(this.model.module)
-        {
-            if (fields.spiceacl_primary_territory) {
-                this.territorymanaged = true;
-            }
-        }
-        */
-
-        this.hasFieldAssignedUser = this.metadata.hasField(this.model.module, 'assigned_user_name');
+        // get what we have in terms of assignment
+        this.hasFieldAssignedUser = this.metadata.hasField(this.model.module, 'assigned_user_id');
+        this.hasFieldAssignedOrgunit = this.metadata.hasField(this.model.module, 'assigned_orgunit_id');
     }
 
     /**
