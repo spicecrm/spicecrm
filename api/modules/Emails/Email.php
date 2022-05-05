@@ -57,6 +57,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
+use SpiceCRM\modules\TrackingLinks\TrackingLink;
 
 class Email extends SugarBean
 {
@@ -736,8 +737,28 @@ class Email extends SugarBean
         $data = $this->_module .':'.$this->id;
         $encrypted = openssl_encrypt($data, $method, $key);
 
-       $this->body .= '<img src="'.$trackingurl.base64_encode($encrypted).'" height="1" width="1">';
+       $this->body .= '<img src="'.$trackingurl.'count/'.base64_encode($encrypted).'" height="1" width="1">';
 
+    }
+
+    /**
+     * searches for links with the data-trackingid attribute, replaces
+     * @param $mailboxTrackingUrl
+     */
+    private function findTrackingLinks($mailboxTrackingUrl) {
+        $dom = new DOMDocument();
+        $dom->loadHTML($this->body);
+        //todo maybe querying with xpath is better?
+       // $xpath = new DOMXPath($dom);
+       // $matches = $xpath->query("//a[@data-trackingid')]");
+        foreach ($dom->getElementsByTagName('a') as $node) {
+            $trackingId = $node->getAttribute('data-trackingid');
+            if(!empty($trackingId)){
+                $trackingLink = TrackingLink::transformTrackingLinks($trackingId, $mailboxTrackingUrl);
+                $node->setAttribute('href', $trackingLink);
+            }
+        }
+        $this->body = $dom->saveHTML();
     }
 
     /**
@@ -774,6 +795,7 @@ class Email extends SugarBean
 
         if($mailbox->track_mailbox && !empty($mailbox->tracking_url)) {
            $this->generateTrackingPixel($mailbox->tracking_url);
+           $this->findTrackingLinks($mailbox->tracking_url);
         }
 
         $mailbox->initTransportHandler();
