@@ -10,24 +10,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
     'duplicate_merge' => false,
     'unified_search' => false,
     'fields' => [
-        'id' => [
-            'name' => 'id',
-            'vname' => 'LBL_ID',
-            'type' => 'id',
-            'required'=>true,
-            'comment' => 'Unique identifier'
-        ],
         'action' => [
             'name' => 'action',
             'type' => 'enum',
             'options' => 'tracking_actions_dom'
-        ],
-        'date_entered' => [
-            'name' => 'date_entered',
-            'vname' => 'LBL_DATE_ENTERED',
-            'type' => 'datetime',
-            'required' => true,
-            'comment' => 'Date record created'
         ],
         'parent_id' => [
             'name'       => 'parent_id',
@@ -130,4 +116,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
 
 ];
 
-VardefManager::createVardef('EmailTrackingActions', 'EmailTrackingAction', []);
+VardefManager::createVardef('EmailTrackingActions', 'EmailTrackingAction', ['default']);
