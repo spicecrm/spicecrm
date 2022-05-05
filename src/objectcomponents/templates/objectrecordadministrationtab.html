@@ -11,14 +11,21 @@
         <object-record-fieldset-field [fieldsetitem]="fields.spiceacl_users_hash"></object-record-fieldset-field>
     </div>
     <div class="slds-grid slds-wrap">
-        <div *ngIf="hasFieldAssignedUser" class="slds-size--1-of-1 slds-medium-size--1-of-3">
-            <object-record-fieldset-field [fieldsetitem]="fields.assigned_user_name"></object-record-fieldset-field>
+        <div *ngIf="hasFieldAssignedUser || hasFieldAssignedOrgunit" class="slds-grid slds-size--1-of-1 slds-medium-size--1-of-2">
+            <div class="slds-grow" *ngIf="hasFieldAssignedUser">
+                <object-record-fieldset-field [fieldsetitem]="fields.assigned_user_name"></object-record-fieldset-field>
+            </div>
+            <div class="slds-grow slds-p-around--x-small" *ngIf="hasFieldAssignedOrgunit">
+                <field-container field="assigned_orgunit_name"></field-container>
+            </div>
         </div>
-        <div class="slds-size--1-of-1 slds-small-size--1-of-2" [ngClass]="{'slds-medium-size--1-of-3':hasFieldAssignedUser,'slds-medium-size--1-of-2':!hasFieldAssignedUser}">
-            <object-record-fieldset-field [fieldsetitem]="fields.created_by_name"></object-record-fieldset-field>
-        </div>
-        <div class="slds-size--1-of-1 slds-small-size--1-of-2" [ngClass]="{'slds-medium-size--1-of-3':hasFieldAssignedUser,'slds-medium-size--1-of-2':!hasFieldAssignedUser}">
-            <object-record-fieldset-field [fieldsetitem]="fields.modified_by_name"></object-record-fieldset-field>
+        <div class="slds-grid" [ngClass]="{'slds-size--1-of-1': !hasFieldAssignedUser && !hasFieldAssignedOrgunit, 'slds-size--1-of-1 slds-medium-size--1-of-2': hasFieldAssignedUser || !hasFieldAssignedOrgunit}">
+            <div class="slds-size--1-of-2">
+                <object-record-fieldset-field [fieldsetitem]="fields.created_by_name"></object-record-fieldset-field>
+            </div>
+            <div class="slds-size--1-of-2">
+                <object-record-fieldset-field [fieldsetitem]="fields.modified_by_name"></object-record-fieldset-field>
+            </div>
         </div>
     </div>
 </system-collapsable-tab>
