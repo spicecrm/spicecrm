@@ -214,12 +214,29 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 break;
             default:
                 if (this.isActive && command != '') {
-                    return this.editor.execute(command);
+                     this.editor.execute(command);
                 }
-                this.exec();
+
                 break;
         }
         return;
+    }
+
+    /**
+     *
+     * execute headings
+     */
+    public heading(command: string){
+        this.editor.execute('heading', {value: command})
+    }
+
+
+    /**
+     *
+     * execute alignment
+     */
+    public alignment(command: string) {
+        this.editor.execute('alignment', {value: command})
     }
 
     /**
