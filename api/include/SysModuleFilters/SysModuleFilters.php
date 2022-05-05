@@ -216,11 +216,18 @@ class SysModuleFilters
         if (!empty($filterConditionArray)) {
             $filterCondition = '(' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
+                $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
                 $filterCondition = "({$tablename}.assigned_user_id IN ({$userIds}) AND ($filterCondition))";
+            }
+
+            if ($group->groupscope == 'ownorgunit') {
+                $orgunitIds = array_merge([$current_user->orgunit_id], $absence->getSubstituteOrgUnitIDs());
+                $filterCondition = "({$tablename}.assigned_orgunit_id IN ({$orgunitIds}) AND ($filterCondition))";
             }
 
             // added an option for the creator
             if ($group->groupscope == 'creator') {
+                $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
                 $filterCondition = "({$tablename}.created_by IN ({$userIds}) AND ($filterCondition))";
             }
         }
@@ -495,17 +502,19 @@ class SysModuleFilters
         }
 
         // handle group scope
-        if($group->groupscope == 'own' || $group->groupscope == 'creator') {
+        if($group->groupscope == 'own' || $group->groupscope == 'ownorgunit' || $group->groupscope == 'creator') {
             // get also users we represent
             $absence = BeanFactory::getBean('UserAbsences');
-            $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
 
             switch ($group->groupscope) {
                 case 'own':
-                    $filterCondition['must'][] = ["terms" => ["assigned_user_id" => $userIds]];
+                    $filterCondition['must'][] = ["terms" => ["assigned_user_id" => array_merge([$current_user->id], $absence->getSubstituteIDs())]];
+                    break;
+                case 'ownorgunit':
+                    $filterCondition['must'][] = ["terms" => ["assigned_orgunit_id" => array_merge([$current_user->orgunit_id], $absence->getSubstituteOrgUnitIDs())]];
                     break;
                 case 'creator':
-                    $filterCondition['must'][] = ["terms" => ["created_by" => $userIds]];
+                    $filterCondition['must'][] = ["terms" => ["created_by" => array_merge([$current_user->id], $absence->getSubstituteIDs())]];
                     break;
             }
         }

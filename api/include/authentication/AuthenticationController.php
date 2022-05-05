@@ -394,6 +394,8 @@ class AuthenticationController
             'user_image' => $currentUser->user_image,
             'companycode_id' => $currentUser->companycode_id,
             'tenant_id' => $currentUser->systemtenant_id,
+            'orgunit_id' => $currentUser->orgunit_id,
+            'orgunit_name' => $currentUser->orgunit_name,
             'tenant_name' => $this->systemtenantname,
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),

@@ -1,5 +1,6 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -234,5 +235,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
     ],
     'optimistic_lock' => true,
 ];
+
+if (file_exists('extensions/modules/OrgCharts/vardefs.php')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode']['fields']['orgcharts'] = [
+        'name' => 'orgcharts',
+        'type' => 'link',
+        'vname' => 'LBL_ORGCHARTS',
+        'relationship' => 'companycodes_orgcharts',
+        'module' => 'OrgCharts',
+        'source' => 'non-db'
+    ];
+}
 
 VardefManager::createVardef('CompanyCodes', 'CompanyCode', ['default', 'assignable']);

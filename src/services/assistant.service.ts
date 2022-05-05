@@ -146,31 +146,37 @@ export class assistant {
     public loadItems(silent: boolean = true): Observable<any> {
 
         // set to loading if we are not silent
-        if (!silent) this.loading = true;
-
+        if (!silent) {
+            this.loading = true;
+            this.assitantItems = [];
+        }
 
         let retSubject = new Subject<any>();
 
+        this.backend.getRequest('module/Activities/assistant/list').subscribe({
+            next:(retData) => {
+                let newItems = [];
+                for (let retItem of retData.items) {
+                    newItems.push({
+                        id: retItem.id,
+                        module: retItem.module,
+                        date_activity: retItem.date_activity,
+                        data: this.modelutilities.backendModel2spice(retItem.module, retItem.data)
+                    });
+                }
+                this.assitantItems = newItems;
 
-        this.backend.getRequest('module/Activities/assistant/list').subscribe(retData => {
-            let newItems = [];
-            for (let retItem of retData.items) {
-                newItems.push({
-                    id: retItem.id,
-                    module: retItem.module,
-                    date_activity: retItem.date_activity,
-                    data: this.modelutilities.backendModel2spice(retItem.module, retItem.data)
-                });
+                // set the modules
+                this.assistantModules = retData.modules ? retData.modules : [];
+
+                retSubject.next(this.assitantItems);
+                retSubject.complete();
+
+                this.loading = false;
+            },
+            error: () => {
+                this.loading = false;
             }
-            this.assitantItems = newItems;
-
-            // set the modules
-            this.assistantModules = retData.modules ? retData.modules : [];
-
-            retSubject.next(this.assitantItems);
-            retSubject.complete();
-
-            this.loading = false;
         });
         return retSubject.asObservable();
     }
