@@ -13,13 +13,10 @@ use SpiceCRM\includes\TimeDate;
 
 class ServiceCalendar extends SugarBean
 {
-    public $module_dir = 'ServiceCalendars';
-    public $object_name = 'ServiceCalendar';
-    public $table_name = 'servicecalendars';
 
-    var $workingdays;
-    var $workingtimes;
-    var $holidays;
+    public $workingdays;
+    public $workingtimes;
+    public $holidays;
 
     /**
      * overwrites teh retrieve and also loads the holidays as well as working times slots
@@ -41,7 +38,7 @@ class ServiceCalendar extends SugarBean
     }
 
     /**
-     * reteives the array of working days and the holidays for the calendar
+     * retrieves the array of working days and the holidays for the calendar
      *
      * @return array
      */

@@ -13,13 +13,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 
 class SpiceImport extends SugarBean
 {
-    //Sugar vars
-    var $table_name = "spiceimports";
-    var $object_name = "SpiceImport";
-    var $new_schema = true;
-    var $module_dir = "SpiceImports";
-
-
     var $objectimport;
 
     public static function getFilePreview($params)

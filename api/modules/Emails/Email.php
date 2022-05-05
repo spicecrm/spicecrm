@@ -60,12 +60,6 @@ use SpiceCRM\modules\Mailboxes\Mailbox;
 
 class Email extends SugarBean
 {
-
-
-    var $table_name = 'emails';
-    var $module_dir = 'Emails';
-    var $object_name = 'Email';
-
     public $attachment_image;
 
     public $recipient_addresses = [];
@@ -1154,7 +1148,7 @@ class Email extends SugarBean
         // try to find a relationship between Emails and the module
         $rels = $db->query("SELECT relationship_name FROM relationships WHERE lhs_module = 'Emails' AND rhs_module = '$bean_module'");
         while ($rel = $db->fetchByAssoc($rels)) {
-            foreach ($this->field_name_map as $field => $fieldDetails) {
+            foreach ($this->field_defs as $field => $fieldDetails) {
                 if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
                     $this->load_relationship($field);
                     $this->{$field}->add($bean->id);

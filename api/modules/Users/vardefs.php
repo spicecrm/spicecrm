@@ -54,14 +54,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'len' => '60',
             'importable' => 'required',
             'required' => true,
-            'studio' => [
-                'no_duplicate' => true,
-                'editview' => false,
-                'detailview' => true,
-                'quickcreate' => false,
-                'basic_search' => false,
-                'advanced_search' => false,
-            ],
         ],
         'user_hash' => [
             'name' => 'user_hash',
@@ -71,11 +63,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'reportable' => false,
             'importable' => 'false',
             'sensitive' => true,
-            'studio' => [
-                'no_duplicate' => true,
-                'listview' => false,
-                'searchview' => false,
-            ],
         ],
         'user_image' => [
             'name' => 'user_image',
@@ -88,13 +75,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'bool',
             'required' => false,
             'reportable' => false,
-            'massupdate' => false,
-            'studio' => [
-                'listview' => false,
-                'searchview' => false,
-                'editview' => false,
-                'quickcreate' => false,
-            ],
         ],
 
         'pwd_last_changed' => [
@@ -102,8 +82,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_PSW_MODIFIED',
             'type' => 'datetime',
             'required' => false,
-            'massupdate' => false,
-            'studio' => ['formula' => false],
         ],
         /**
          * authenticate_id is used by authentication plugins so they may place a quick lookup key for looking up a given user after authenticating through the plugin
@@ -115,7 +93,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'len' => '100',
             'reportable' => false,
             'importable' => 'false',
-            'studio' => ['listview' => false, 'searchview' => false, 'related' => false],
         ],
         /**
          * sugar_login will force the user to use sugar authentication
@@ -127,16 +104,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'bool',
             'default' => '1',
             'reportable' => false,
-            'massupdate' => false,
-            'importable' => false,
-            'studio' => ['listview' => false, 'searchview' => false, 'formula' => false],
+            'importable' => 'false',
         ],
         'salutation' => [
             'name' => 'salutation',
             'vname' => 'LBL_SALUTATION',
             'type' => 'enum',
             'options' => 'salutation_dom',
-            'massupdate' => false,
             'len' => '255',
             'comment' => 'Contact salutation (e.g., Mr, Ms)'
         ],
@@ -185,7 +159,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
                 1 => 'last_name'
             ],
             'len' => '510',
-            'studio' => ['formula' => false],
         ],
         'account_user_role' => [
             'name' => 'account_user_role',
@@ -246,7 +219,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_IS_ADMIN',
             'type' => 'bool',
             'default' => '0',
-            'studio' => ['listview' => false, 'searchview' => false, 'related' => false],
         ],
         'is_api_user' => [
             'name' => 'is_api_user',
@@ -265,16 +237,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_EXT_AUTHENTICATE',
             'type' => 'bool',
             'reportable' => false,
-            'massupdate' => false,
             'default' => '0',
-            'studio' => ['listview' => false, 'searchview' => false, 'related' => false],
         ],
         'receive_notifications' => [
             'name' => 'receive_notifications',
             'vname' => 'LBL_RECEIVE_NOTIFICATIONS',
             'type' => 'bool',
-            'massupdate' => false,
-            'studio' => false,
         ],
         'description' => [
             'name' => 'description',
@@ -286,10 +254,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_DATE_ENTERED',
             'type' => 'datetime',
             'required' => true,
-            'studio' => [
-                'editview' => false,
-                'quickcreate' => false,
-            ],
         ],
         'date_indexed' => [
             'name' => 'date_indexed',
@@ -300,10 +264,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'name' => 'date_modified',
             'vname' => 'LBL_DATE_MODIFIED',
             'type' => 'datetime',
-            'studio' => [
-                'editview' => false,
-                'quickcreate' => false,
-            ],
         ],
         'modified_user_id' => [
             'name' => 'modified_user_id',
@@ -320,7 +280,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_MODIFIED_BY',
             'type' => 'varchar',
             'source' => 'non-db',
-            'studio' => false,
         ],
         'created_by' => [
             'name' => 'created_by',
@@ -331,7 +290,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'table' => 'users',
             'isnull' => 'false',
             'dbType' => 'id',
-            'studio' => false,
         ],
         'created_by_name' => [
             'name' => 'created_by_name',
@@ -455,7 +413,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'import' => false,
             'reportable' => false,
-            'studio' => ['formula' => false],
         ],
         'deleted' => [
             'name' => 'deleted',
@@ -474,18 +431,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'name' => 'portal_only',
             'vname' => 'LBL_PORTAL_ONLY_USER',
             'type' => 'bool',
-            'massupdate' => false,
             'default' => '0',
-            'studio' => ['listview' => false, 'searchview' => false, 'formula' => false],
         ],
         'show_on_employees' => [
             'name' => 'show_on_employees',
             'vname' => 'LBL_SHOW_ON_EMPLOYEES',
             'type' => 'bool',
-            'massupdate' => true,
             'importable' => true,
             'default' => true,
-            'studio' => ['formula' => false],
         ],
         'employee_status' => [
             'name' => 'employee_status',
@@ -700,7 +653,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_EMAIL',
             'type' => 'varchar',
             'source' => 'non-db',
-            'group' => 'email1',
             'merge_filter' => 'enabled'
         ],
         'primary_address' => [
@@ -758,10 +710,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_EMAIL_LINK_TYPE',
             'type' => 'enum',
             'options' => 'dom_email_link_type',
-            'importable' => false,
+            'importable' => 'false',
             'reportable' => false,
             'source' => 'non-db',
-            'studio' => false,
         ],
 
         'aclroles' => [
@@ -776,8 +727,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'name' => 'is_group',
             'vname' => 'LBL_GROUP_USER',
             'type' => 'bool',
-            'massupdate' => false,
-            'studio' => ['listview' => false, 'searchview' => false, 'formula' => false],
         ],
         /* to support Meetings SubPanels */
         'c_accept_status_fields' => [
@@ -793,7 +742,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'link_type' => 'relationship_info',
             'source' => 'non-db',
             'importable' => 'false',
-            'studio' => ['listview' => false, 'searchview' => false, 'formula' => false],
         ],
         'm_accept_status_fields' => [
             'name' => 'm_accept_status_fields',
@@ -808,7 +756,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'link_type' => 'relationship_info',
             'source' => 'non-db',
             'importable' => 'false',
-            'studio' => ['listview' => false, 'searchview' => false, 'formula' => false],
         ],
         'accept_status_id' => [
             'name' => 'accept_status_id',
@@ -816,7 +763,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_LIST_ACCEPT_STATUS',
             'importable' => 'false',
-            'studio' => ['listview' => false, 'searchview' => false, 'formula' => false],
         ],
         'accept_status_name' => [
             'name' => 'accept_status_name',
@@ -824,8 +770,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_LIST_ACCEPT_STATUS',
             'options' => 'dom_meeting_accept_status',
-            'massupdate' => false,
-            'studio' => ['listview' => false, 'searchview' => false, 'formula' => false],
         ],
         'prospect_lists' => [
             'name' => 'prospect_lists',

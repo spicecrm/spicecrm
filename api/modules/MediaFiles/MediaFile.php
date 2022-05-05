@@ -11,9 +11,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 
 class MediaFile extends SugarBean {
 
-    public $table_name = "mediafiles";
-    public $object_name = "MediaFile";
-    public $module_dir = 'MediaFiles';
     private $imageQualities = ['image/bmp' => true, 'image/gif' => null, 'image/jpeg' => 85, 'image/png' => 9, 'image/webp' => 80]; # for png: it´s not the quality, it´s the compression (lossless)
     private $imageFunctions = ['image/bmp' => 'bmp', 'image/gif' => 'gif', 'image/jpeg' => 'jpeg', 'image/png' => 'png', 'image/webp' => 'webp'];
     public $filetype, $width, $height, $hash, $name;

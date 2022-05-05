@@ -106,11 +106,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
                 'type' => 'assigned_user_name',
                 'table' => 'users',
                 'isnull' => 'false',
-                'group' => 'modified_by_name',
                 'dbType' => 'id',
                 'reportable' => true,
                 'comment' => 'User who last modified record',
-                'massupdate' => false,
                 'duplicate_merge' => 'disabled',
                 'audited' => false
             ],
@@ -126,7 +124,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'module' => 'Users',
             'link' => 'modified_user_link',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
             'audited' => false
         ],
         'created_by' =>            [
@@ -138,9 +135,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'table' => 'users',
             'isnull' => 'false',
             'dbType' => 'id',
-            'group' => 'created_by_name',
             'comment' => 'User who created record',
-            'massupdate' => false,
             'duplicate_merge' => 'disabled',
             'audited' => false
         ],
@@ -156,7 +151,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'id_name' => 'created_by',
             'module' => 'Users',
             'importable' => 'false',
-            'massupdate' => false,
             'duplicate_merge' => 'disabled'
         ],
         'deleted' => [

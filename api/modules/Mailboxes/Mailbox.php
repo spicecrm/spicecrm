@@ -13,9 +13,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 
 class Mailbox extends SugarBean {
 
-    public $module_dir  = 'Mailboxes';
-    public $table_name  = "mailboxes";
-    public $object_name = "Mailbox";
     public $message_type;
 
     public $transport_handler;

@@ -42,10 +42,6 @@ use SpiceCRM\includes\database\DBManagerFactory;
 
 class CampaignLog extends SugarBean {
 
-    var $table_name = 'campaign_log';
-    var $object_name = 'CampaignLog';
-    var $module_dir = 'CampaignLog';
-
     function fill_in_additional_detail_fields()
     {
         parent::fill_in_additional_detail_fields();
