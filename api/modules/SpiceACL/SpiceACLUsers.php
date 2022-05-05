@@ -74,7 +74,7 @@ class SpiceACLUsers{
 
         $whereClauses[] = "$table_name.assigned_user_id IN ($userIDs)";
 
-        if ( isset($bean->field_name_map['spiceacl_users_hash'])) {
+        if ( isset($bean->field_defs['spiceacl_users_hash'])) {
             $whereClauses[] = "$table_name.spiceacl_users_hash IN (SELECT hash_id FROM spiceaclusers_hash WHERE user_id in ($userIDs))";
         }
 

@@ -18,7 +18,7 @@ class SpiceACLHooks
 
     public function hook_after_retrieve(&$bean, $event, $arguments)
     {
-        if ( isset($bean->field_name_map['spiceacl_users_hash']) && !empty($bean->spiceacl_users_hash)) {
+        if ( isset($bean->field_defs['spiceacl_users_hash']) && !empty($bean->spiceacl_users_hash)) {
             $userManager = new SpiceACLUsers();
             $bean->spiceacl_additional_users = json_encode($userManager->getHashUsers($bean->spiceacl_users_hash));
         }
@@ -26,7 +26,7 @@ class SpiceACLHooks
 
     public function hook_before_save(&$bean, $event, $arguments)
     {
-        if ( isset($bean->field_name_map['spiceacl_users_hash'])) {
+        if ( isset($bean->field_defs['spiceacl_users_hash'])) {
 
             if($bean->spiceacl_additional_users){
 

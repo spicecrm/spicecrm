@@ -253,7 +253,7 @@ class SysModuleFilters
             case 'emptyr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
-                    $relatedField = $seed->field_name_map[$condition->field]['id_name'];
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
                     return "{$tablename}.{$relatedField} IS NULL";
                 }
                 break;
@@ -268,7 +268,7 @@ class SysModuleFilters
             case 'notemptyr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
-                    $relatedField = $seed->field_name_map[$condition->field]['id_name'];
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
                     // specific treatment for Oracle
                     if(DBManagerFactory::getInstance()->dbType == 'oci8') {
                         return "{$tablename}.{$relatedField} IS NOT NULL";
@@ -279,7 +279,7 @@ class SysModuleFilters
                 break;
             case 'equals':
                 $seed = BeanFactory::getBean($this->filtermodule);
-                $isMultiEnum = $seed->field_name_map[$condition->field]['type'] == 'multienum';
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {
                     return "{$tablename}.{$condition->field} LIKE '%{$condition->filtervalue}%'";
                 } else {
@@ -291,7 +291,7 @@ class SysModuleFilters
             case 'equalr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
-                    $relatedField = $seed->field_name_map[$condition->field]['id_name'];
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
                     $filtervalues = explode('::', $condition->filtervalue);
                     return "{$tablename}.{$relatedField} = '{$filtervalues['0']}'";
                 }
@@ -299,7 +299,7 @@ class SysModuleFilters
             case 'oneof':
                 $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
                 $seed = BeanFactory::getBean($this->filtermodule);
-                $isMultiEnum = $seed->field_name_map[$condition->field]['type'] == 'multienum';
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {
                     $fieldEqual = "{$tablename}.{$condition->field}";
                     $conditionString = implode(" OR ", array_map(function ($item) use ($fieldEqual) {return "$fieldEqual LIKE '%$item%'";}, $valArray));
@@ -542,14 +542,14 @@ class SysModuleFilters
             case 'emptyr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
-                    $relatedField = $seed->field_name_map[$condition->field]['id_name'];
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
                     return ['bool' => ['must_not' => [['exists' => ["field" => $relatedField]]]]];
                 }
                 break;
             case 'notempty':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
-                    $relatedField = $seed->field_name_map[$condition->field]['id_name'];
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
                     return ['exists' => ["field" => $relatedField]];
                 }
                 break;
@@ -558,7 +558,7 @@ class SysModuleFilters
                 break;
             case 'equals':
                 $seed = BeanFactory::getBean($this->filtermodule);
-                $isMultiEnum = $seed->field_name_map[$condition->field]['type'] == 'multienum';
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {
                     return ['match' => [$condition->field => $condition->filtervalue]];
                 } else {
@@ -571,7 +571,7 @@ class SysModuleFilters
             case 'equalr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
-                    $relatedField = $seed->field_name_map[$condition->field]['id_name'];
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
                     $filtervalues = explode('::', $condition->filtervalue);
                     return ['term' => [$relatedField => $filtervalues['0']]];
                 }
@@ -584,7 +584,7 @@ class SysModuleFilters
                 }
 
                 $seed = BeanFactory::getBean($this->filtermodule);
-                $isMultiEnum = $seed->field_name_map[$condition->field]['type'] == 'multienum';
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {
                     $matchArray = array_map(function ($item) use ($condition) {return ['match' => [$condition->field => $item]]; }, $valArray);
                     return ['bool' => ['should' => $matchArray]];
@@ -767,14 +767,14 @@ class SysModuleFilters
                 return empty($bean->{$condition->field});
                 break;
             case 'emptyr':
-                $relatedField = $bean->field_name_map[$condition->field]['id_name'];
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 return empty($bean->{$relatedField});
                 break;
             case 'notempty':
                 return !empty($bean->{$condition->field});
                 break;
             case 'notemptyr':
-                $relatedField = $bean->field_name_map[$condition->field]['id_name'];
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 return !empty($bean->{$relatedField});
                 break;
             case 'equals':
@@ -784,13 +784,13 @@ class SysModuleFilters
                 return $bean->{$condition->field} != $condition->filtervalue;
                 break;
             case 'equalr':
-                $relatedField = $bean->field_name_map[$condition->field]['id_name'];
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 $filtervalues = explode('::', $condition->filtervalue);
                 return $bean->{$relatedField} == $filtervalues['0'];
                 break;
             case 'oneof':
                 $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
-                $isMultiEnum = $bean->field_name_map[$condition->field]['type'] == 'multienum';
+                $isMultiEnum = $bean->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {
                     foreach ($valArray as $val) if (strpos($bean->{$condition->field}, $val) !== false) return true;
                     return false;

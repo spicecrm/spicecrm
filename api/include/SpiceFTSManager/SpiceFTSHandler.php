@@ -664,8 +664,8 @@ class SpiceFTSHandler
     private function getSortArrayEntry($seed, $indexProperties, $sortfield, $sortdirection)
     {
         // replace by metadata sortfield definition
-        if ($seed->field_name_map[$sortfield]['sort_on']) {
-            $sortfield = $seed->field_name_map[$sortfield]['sort_on'];
+        if ($seed->field_defs[$sortfield]['sort_on']) {
+            $sortfield = $seed->field_defs[$sortfield]['sort_on'];
         }
 
         // check that the field is here, is sortable and if aanother sort field is set
@@ -1267,7 +1267,7 @@ class SpiceFTSHandler
                         // if we do not find the record .. do not return it
                         if (!$seed) continue;
 
-                        foreach ($seed->field_name_map as $field => $fieldData) {
+                        foreach ($seed->field_defs as $field => $fieldData) {
                             //if (!isset($hit['_source']{$field}))
                             if (is_string($seed->$field)) {
                                 $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
@@ -1322,7 +1322,7 @@ class SpiceFTSHandler
                         continue;
                     };
 
-                    foreach ($seed->field_name_map as $field => $fieldData) {
+                    foreach ($seed->field_defs as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
                         if(is_string($seed->$field)) { // might be Link2 Object! so check on it
                             $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
@@ -1398,7 +1398,7 @@ class SpiceFTSHandler
             $relateFilter = json_decode($params['relatefilter']);
             $relateSeed = BeanFactory::getBean($relateFilter->module, $relateFilter->id);
             $relateSeed->load_relationship($relateFilter->relationship);
-            $relatedBeans = $relateSeed->get_linked_beans($relateFilter->relationship, $relateSeed->field_name_map[$relateFilter->relationship]['module'], [], 0, -99);
+            $relatedBeans = $relateSeed->get_linked_beans($relateFilter->relationship, $relateSeed->field_defs[$relateFilter->relationship]['module'], [], 0, -99);
             $relatedids = [];
             foreach ($relatedBeans as $relatedBean) {
                 $relatedids[] = $relatedBean->id;
@@ -2006,7 +2006,7 @@ class SpiceFTSHandler
         $returnArray = [];
         if ($module != '' && $module != 'undefined') {
             $nodeModule = BeanFactory::getBean($module);
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 if ($field_defs['type'] != 'link') {
                     $returnArray[] = [
                         'id' => 'field:' . $field_defs['name'],

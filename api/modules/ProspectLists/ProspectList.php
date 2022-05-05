@@ -45,10 +45,7 @@ class ProspectList extends SugarBean
 
     var $rel_prospects_table = "prospect_lists_prospects";
 
-    // This is used to retrieve related fields from form posts.
-    var $additional_column_fields = [
-        'assigned_user_name', 'assigned_user_id', 'campaign_id',
-    ];
+
     var $relationship_fields = [
         'campaign_id' => 'campaigns',
         'prospect_list_prospects' => 'prospects',
