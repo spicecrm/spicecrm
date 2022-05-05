@@ -54,8 +54,9 @@ class MarketingAutomationController
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
 
         $this->logTrackingAction($data, 'clicked');
-        if(array_key_exists('Event', $data) && !empty($data['Event'])){
-            //Email::handleEvent($data[4]);
+        if(array_key_exists('Event', $data) && !empty($data['Event'])) {
+            $email = BeanFactory::getBean('Emails', $data['Emails']);
+            $email->handleEvent($data['Event']);
         }
         return $res->withJson(true);
     }
