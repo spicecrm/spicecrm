@@ -37,18 +37,14 @@
 namespace SpiceCRM\modules\Users;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\ACLActions\ACLAction;
-use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 // workaround for spiceinstaller
@@ -523,52 +519,6 @@ class User extends Person
 
 
     /**
-     * Helper function that enumerates the list of modules and checks if they are an admin/dev.
-     * The code was just too similar to copy and paste.
-     *
-     * @return array
-     */
-    protected function _getModulesForACL($type = 'dev')
-    {
-        $isDev = $type == 'dev';
-        $isAdmin = $type == 'admin';
-
-        $myModules = [];
-
-        // These modules don't take kindly to the studio trying to play about with them.
-        static $ignoredModuleList = ['iFrames', 'Feeds', 'Home', 'Dashboard', 'Calendar', 'Activities', 'Reports'];
-
-        $actions = ACLAction::getUserActions($this->id);
-
-        foreach (SpiceModules::getInstance()->getBeanList() as $module => $val) {
-            // Remap the module name
-            $module = $this->_fixupModuleForACL($module);
-            if (in_array($module, $myModules)) {
-                // Already have the module in the list
-                continue;
-            }
-            if (in_array($module, $ignoredModuleList)) {
-                // You can't develop on these modules.
-                continue;
-            }
-
-            $focus = BeanFactory::getBean($module);
-            if ($focus instanceof SugarBean) {
-                $key = $focus->acltype;
-            } else {
-                $key = 'module';
-            }
-
-            if (($this->isAdmin() && isset($actions[$module][$key]))
-            ) {
-                $myModules[] = $module;
-            }
-        }
-
-        return $myModules;
-    }
-
-    /**
      * Is this user a system wide admin
      *
      * @return bool
@@ -581,47 +531,6 @@ class User extends Person
         return false;
     }
 
-    /**
-     * List the modules a user has admin access to
-     *
-     * @return array
-     */
-    public function getAdminModules()
-    {
-        if (!isset($_SESSION[$this->user_name . '_get_admin_modules_for_user'])) {
-            $_SESSION[$this->user_name . '_get_admin_modules_for_user'] = $this->_getModulesForACL('admin');
-        }
-
-        return $_SESSION[$this->user_name . '_get_admin_modules_for_user'];
-    }
-
-    /**
-     * Is this user an admin for the specified module
-     *
-     * @return bool
-     */
-    public function isAdminForModule($module)
-    {
-        if (empty($this->id)) {
-            // empty user is no admin
-            return false;
-        }
-        if ($this->isAdmin()) {
-            return true;
-        }
-
-        $adminModules = $this->getAdminModules();
-
-        if (in_array($module, $adminModules)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-//   function create_new_list_query($order_by, $where,$filter=[],$params=[], $show_deleted = 0,$join_type='', $return_array = false,$parentbean=null, $singleSelect = false)
-//   {	//call parent method, specifying for array to be returned
     function create_new_list_query($order_by, $where, $filter = [], $params = [], $show_deleted = 0, $join_type = '', $return_array = false, $parentbean = null, $singleSelect = false, $ifListForExport = false)
     {
 
@@ -905,7 +814,7 @@ class User extends Person
 
         if ( $blockingDuration ) {
             $dtObj=new \DateTime();
-            $dtObj->setTimestamp(time()+$blockingDuration*60);
+            $dtObj->setTimestamp(time()+ (int)$blockingDuration * 60);
             $user->login_blocked_until = Timedate::getInstance()->asDb($dtObj);
         } else {
             $user->login_blocked = true;
