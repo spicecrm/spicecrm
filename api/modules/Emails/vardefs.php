@@ -47,7 +47,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
                 'type' => 'varchar',
                 'len' => '100',
                 'comment' => 'Attachment MIME type',
-                'importable' => false,
+                'importable' => 'false',
         ],
         'file_md5' =>            [
                 'name' => 'file_md5',
@@ -64,7 +64,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
                 'len' => '255',
                 'reportable'=>true,
                 'comment' => 'File name associated with the email (attachment)',
-                'importable' => false,
+                'importable' => 'false',
         ],
         'attachments_count' => [
             'name'       => 'attachments_count',
@@ -149,7 +149,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'type'       => 'enum',
             'options'    => 'dom_email_types',
             'len'        => 100,
-            'massupdate' => false,
             'comment'    => 'Type of email (ex: draft)',
         ],
         'status' => [
@@ -398,7 +397,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'link_type'       => 'one',
             'source'          => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate'      => false,
             'module'          => 'Mailboxes',
             'bean_name'       => 'Mailbox',
         ],

@@ -85,7 +85,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
             'isnull' => 'true',
             'module' => 'ProductGroups',
             'table' => 'productgroups',
-            'massupdate' => false,
             'source' => 'non-db',
             'len' => 36,
             'link' => 'parent_productgroup'
