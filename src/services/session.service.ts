@@ -29,6 +29,8 @@ interface authDataIf {
     companycode_id: string;
     tenant_id: string;
     tenant_name: string;
+    orgunit_id: string;
+    orgunit_name: string;
     obtainGDPRconsent: boolean;
     canchangepassword: boolean;
     address_country?: string;
@@ -60,6 +62,8 @@ export class session {
         companycode_id: '',
         tenant_id: '',
         tenant_name: '',
+        orgunit_id: '',
+        orgunit_name: '',
         obtainGDPRconsent: false,
         canchangepassword: false,
         expiringPasswordValidityDays: false
@@ -188,6 +192,10 @@ export class session {
         this.authData.admin = false;
         this.authData.dev = false;
         this.authData.companycode_id = '';
+        this.authData.tenant_id = '';
+        this.authData.tenant_name = '';
+        this.authData.orgunit_id = '';
+        this.authData.orgunit_name = '';
         this.authData.obtainGDPRconsent = false;
         this.authData.canchangepassword = false;
         this.authData.expiringPasswordValidityDays = false;

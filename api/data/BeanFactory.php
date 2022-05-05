@@ -44,6 +44,8 @@ class BeanFactory
         'UserPreferences' => ['beanname' => 'UserPreference'],
         'UserAbsences' => ['beanname' => 'UserAbsence'],
         'UserAccessLogs' => ['beanname' => 'UserAccessLog'],
+        'CompanyCodes' => ['beanname' => 'CompanyCode'],
+        'OrgUnits' => ['beanname' => 'OrgUnit'],
         'SystemTenants' => ['beanname' => 'SystemTenant'],
         'Currencies' => ['beanname' => 'Currency'],
     ];

@@ -1251,8 +1251,18 @@ export class model implements OnDestroy {
         // reset the data object
         this.data = {};
         // this.data.id = this.id;
-        this.data.assigned_user_id = this.session.authData.userId;
-        this.data.assigned_user_name = this.session.authData.userName;
+
+        // get the fields and check assigned fields
+        let moduleFields = this.metadata.getModuleFields(this.module);
+        if(moduleFields.assigned_user_id) {
+            this.data.assigned_user_id = this.session.authData.userId;
+            this.data.assigned_user_name = this.session.authData.userName;
+        }
+        if(moduleFields.assigned_orgunit_id) {
+            this.data.assigned_orgunit_id = this.session.authData.orgunit_id;
+            this.data.assigned_orgunit_name = this.session.authData.orgunit_name;
+        }
+
         this.data.modified_by_id = this.session.authData.userId;
         this.data.modified_by_name = this.session.authData.userName;
         this.data.created_by_id = this.session.authData.userId;
@@ -1291,8 +1301,14 @@ export class model implements OnDestroy {
      * @param silent .. st to true to not emit data after setting the data on teh model
      */
     public setData(data: any, transform = true, silent?: boolean){
-        if(data.acl) this.acl = data.acl;
-        if(data.acl_fieldcontrol) this.acl_fieldcontrol = data.acl_fieldcontrol;
+        if(data.acl) {
+            this.acl = data.acl;
+            delete data.acl;
+        }
+        if(data.acl_fieldcontrol) {
+            this.acl_fieldcontrol = data.acl_fieldcontrol;
+            delete data.acl_fieldcontrol;
+        }
         this.data = transform ?  this.utils.backendModel2spice(this.module, data) : data;
 
         // emit the data changes

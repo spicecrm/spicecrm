@@ -1278,7 +1278,8 @@ $app_list_strings = [
         '3' => 'المستخدم مخصص لعنصر والد ',
         '4' => ' مدير المستخدم مخصص لعنصر والد ',
         '5' => 'روتين النظام',
-        '6' => 'Creator'
+        '6' => 'Creator',
+        '7' => 'Orgunit',
     ],
     'workflowdefinition_conditionoperators' => [
         'EQ' => '=',
