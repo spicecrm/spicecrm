@@ -122,13 +122,25 @@ class APILogEntryHandler
         }
 
         if (!$force && ($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance()->tableExists('sysapilogconfig'))) {
+            // build the subroute matches by exploding it, then removing the last part and building the string going forward
+            $routeparts = explode('/', $this->logEntry->route);
+            // pop the last entry (this is then the full route
+            array_pop($routeparts);
+            $routematches = ["route = '*'"];
+            $routematchString = '';
+            foreach ($routeparts as $routepart) {
+                // we might get an empty entry
+                if(empty($routepart)) continue;
+                // build the string gradually
+                $routematchString .= '/' . $routepart;
+                $routematches[] = "route = '{$routematchString}/*'";
+            }
+            $routematches[] = "route = '{$this->logEntry->route}'";
+            $routeWhere = '(' . implode(' OR ', $routematches) . ')';
+
+
             // check if this request has to be logged by some rules...
-            $sql = "SELECT count(id) cnt, logtable FROM sysapilogconfig WHERE
-              (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND
-              (method = '{$this->logEntry->method}' OR method = '*') AND
-              (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND
-              (ip = '{$this->logEntry->ip}' OR ip = '*') AND
-              is_active = 1 GROUP BY logtable";
+            $sql = "SELECT count(id) cnt, logtable FROM sysapilogconfig WHERE $routeWhere AND (method = '{$this->logEntry->method}' OR method = '*') AND (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND (ip = '{$this->logEntry->ip}' OR ip = '*') AND is_active = 1 GROUP BY logtable";
             $res = DBManagerFactory::getInstance()->query($sql);
             while($row = DBManagerFactory::getInstance()->fetchByAssoc($res)){
                 if(array_search($row['logtable'] ?: 'sysapilog',$this->logtables) === false) $this->logtables[] = $row['logtable'] ?: 'sysapilog';
