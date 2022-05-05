@@ -29,7 +29,6 @@ if (file_exists('./custom/modules/KReports/includes')) {
 class KReport extends SugarBean
 {
 
-    public $field_name_map;
     // Stored fields
 
     public $report_module = '';
