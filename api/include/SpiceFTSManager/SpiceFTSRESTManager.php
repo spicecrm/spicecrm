@@ -414,7 +414,7 @@ class SpiceFTSRESTManager
                     ];
             }
 
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 // 2011-03-23 also exculde the excluded modules from the config in the Module Tree
                 //if ($field_defs['type'] == 'link' && (!isset($field_defs['module']) || (isset($field_defs['module']) && array_search($field_defs['module'], $excludedModules) == false))) {
                 if ($field_defs['type'] == 'link' && !isset($field_defs['module'])) {
@@ -499,7 +499,7 @@ class SpiceFTSRESTManager
         if ($module != '' && $module != 'undefined') {
             $nodeModule =  BeanFactory::getBean($module);
 
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 if ($field_defs['type'] != 'link' && (!array_key_exists('source', $field_defs) || (array_key_exists('source', $field_defs)))) {
                     $returnArray[] = [
                         'id' => 'field:' . $field_defs['name'],

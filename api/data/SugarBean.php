@@ -253,7 +253,7 @@ class SugarBean
     var $module_name = '';
 
     /**
-     * @deprecated. Use $field_defs
+     * @deprecated. Use $field_defs instead
      *
      * @var string
      */
@@ -382,26 +382,26 @@ class SugarBean
             $this->call_custom_logic('create_vardefs');
 
             // build $this->column_fields from the field_defs if they exist
-            if (!empty($dictHandler->dictionary[$this->_objectname]['fields'])) {
-                foreach ($dictHandler->dictionary[$this->_objectname]['fields'] as $key => $value_array) {
-                    $column_fields[] = $key;
-                    if (!empty($value_array['required']) && !empty($value_array['name'])) {
-                        $this->required_fields[$value_array['name']] = 1;
-                    }
-                }
-                $this->column_fields = $column_fields;
-            }
+//            if (!empty($dictHandler->dictionary[$this->_objectname]['fields'])) {
+//                foreach ($dictHandler->dictionary[$this->_objectname]['fields'] as $key => $value_array) {
+//                    $column_fields[] = $key;
+//                    if (!empty($value_array['required']) && !empty($value_array['name'])) {
+//                        $this->required_fields[$value_array['name']] = 1;
+//                    }
+//                }
+//                $this->column_fields = $column_fields;
+//            }
 
             //load up field_arrays from CacheHandler;
-            if (empty($this->list_fields))
-                $this->list_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'list_fields');
-            if (empty($this->column_fields))
-                $this->column_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'column_fields');
-            if (empty($this->required_fields))
-                $this->required_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'required_fields');
+//            if (empty($this->list_fields))
+//                $this->list_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'list_fields');
+//            if (empty($this->column_fields))
+//                $this->column_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'column_fields');
+//            if (empty($this->required_fields))
+//                $this->required_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'required_fields');
 
             if (isset($dictHandler->dictionary[$this->_objectname]) && !$this->disable_vardefs) {
-                $this->field_name_map = $dictHandler->dictionary[$this->_objectname]['fields'];
+//                $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
                 $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
 
                 if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
@@ -410,7 +410,7 @@ class SugarBean
             }
 
         } else {
-            $this->field_name_map = &$loaded_defs[$this->_objectname]['field_name_map'];
+//            $this->field_name_map = &$loaded_defs[$this->_objectname]['field_name_map'];
             $this->field_defs = &$loaded_defs[$this->_objectname]['field_defs'];
 
             if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {

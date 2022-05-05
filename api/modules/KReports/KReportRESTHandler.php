@@ -295,7 +295,7 @@ class KReporterRESTHandler
             // determine the field name we need to go for
             $fieldName = 'name';
             // #bug 520 changed to object rather than array.
-            if ($fieldArray[0] == 'field' && isset($thisModule->field_name_map[$fieldArray[1]]) && $fieldArray[1] != 'id')
+            if ($fieldArray[0] == 'field' && isset($thisModule->field_defs[$fieldArray[1]]) && $fieldArray[1] != 'id')
                 $fieldName = $fieldArray[1];
 
             $query_res = $db->limitQuery("SELECT id, " . $fieldName . " FROM $thisModule->_tablename WHERE " . (!empty($query) ? "name like '%" . $query . "%' AND" : "") . " deleted='0' ORDER BY name ASC", (!empty($start) ? $start : 0), (!empty($limit) ? $limit : 25));
@@ -411,8 +411,8 @@ $db = DBManagerFactory::getInstance();
             }
 
             // special handling for Kreporttype if we have an eval array
-            if ($thisModule->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && is_array($thisModule->field_name_map[$fieldArray[1]]['eval'])) {
-                foreach ($thisModule->field_name_map[$fieldArray[1]]['eval']['selection'] as $operator => $eval)
+            if ($thisModule->field_defs[$fieldArray[1]]['type'] == 'kreporter' && is_array($thisModule->field_defs[$fieldArray[1]]['eval'])) {
+                foreach ($thisModule->field_defs[$fieldArray[1]]['eval']['selection'] as $operator => $eval)
                     $retarray[] = [
                         'operator' => $operator,
                         'values' => $kreporterWhereOperatorCount[$operator],
@@ -429,7 +429,7 @@ $db = DBManagerFactory::getInstance();
                 }
             } else {
                 // parse the options into the return array
-                $wheretype = $kreporterWhereOperatorAssignments[isset($thisModule->field_name_map[$fieldArray[1]]['kreporttype']) ? $thisModule->field_name_map[$fieldArray[1]]['kreporttype'] : $thisModule->field_name_map[$fieldArray[1]]['type']];
+                $wheretype = $kreporterWhereOperatorAssignments[isset($thisModule->field_defs[$fieldArray[1]]['kreporttype']) ? $thisModule->field_defs[$fieldArray[1]]['kreporttype'] : $thisModule->field_defs[$fieldArray[1]]['type']];
                 if (!empty($grouping) && isset($kreporterWhereOperatorTypes[$wheretype . 'grouped']))
                     $wheretype .= 'grouped';
 
@@ -502,22 +502,22 @@ $db = DBManagerFactory::getInstance();
             }
 
             //2013-02-28 if we have the kreporttype set ... override the type
-            if ($thisModule->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && !empty($thisModule->field_name_map[$fieldArray[1]]['kreporttype']))
-                $thisModule->field_name_map[$fieldArray[1]]['type'] = $thisModule->field_name_map[$fieldArray[1]]['kreporttype'];
+            if ($thisModule->field_defs[$fieldArray[1]]['type'] == 'kreporter' && !empty($thisModule->field_defs[$fieldArray[1]]['kreporttype']))
+                $thisModule->field_defs[$fieldArray[1]]['type'] = $thisModule->field_defs[$fieldArray[1]]['kreporttype'];
 
 
             // pars the otpions into the return array
-            switch ($thisModule->field_name_map[$fieldArray[1]]['kreporttype'] ?: $thisModule->field_name_map[$fieldArray[1]]['type']) {
+            switch ($thisModule->field_defs[$fieldArray[1]]['kreporttype'] ?: $thisModule->field_defs[$fieldArray[1]]['type']) {
                 case 'enum':
                 case 'radioenum':
                 case 'multienum':
-                    if ($thisModule->field_name_map[$fieldArray[1]]['function'] && isset($thisModule->field_name_map[$fieldArray[1]]['function']['include'])) {
-                        require_once($thisModule->field_name_map[$fieldArray[1]]['function']['include']);
-                        $functionName = $thisModule->field_name_map[$fieldArray[1]]['function']['name'];
+                    if ($thisModule->field_defs[$fieldArray[1]]['function'] && isset($thisModule->field_defs[$fieldArray[1]]['function']['include'])) {
+                        require_once($thisModule->field_defs[$fieldArray[1]]['function']['include']);
+                        $functionName = $thisModule->field_defs[$fieldArray[1]]['function']['name'];
                         $returnArray = $functionName($thisModule, $fieldArray[1], '', 'KReporterOptions', $operators);
 
                     } else {
-                        foreach ($app_list_strings[$thisModule->field_name_map[$fieldArray[1]]['options']] as $value => $text) {
+                        foreach ($app_list_strings[$thisModule->field_defs[$fieldArray[1]]['options']] as $value => $text) {
                             if ($value !== "")
                                 $returnArray[] = ['value' => $value, 'text' => (!empty($text) ? $text : '-')];
                         }
@@ -526,7 +526,7 @@ $db = DBManagerFactory::getInstance();
                 case 'parent_type':
                     // bug 2011-08-08 we assume it is parent_name
                     // not completely correct since we should look for the field where the name is the type but will be sufficient
-                    foreach ($app_list_strings[$thisModule->field_name_map['parent_name']['options']] as $value => $text) {
+                    foreach ($app_list_strings[$thisModule->field_defs['parent_name']['options']] as $value => $text) {
                         $returnArray[] = ['value' => $value, 'text' => $text];
                     }
                     break;
@@ -554,20 +554,20 @@ $db = DBManagerFactory::getInstance();
         } else {
 
             //2013-02-28 if we have the kreporttype set ... override the type
-            if ($parentModule->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && !empty($parentModule->field_name_map[$fieldArray[1]]['kreporttype']))
-                $parentModule->field_name_map[$fieldArray[1]]['type'] = $parentModule->field_name_map[$fieldArray[1]]['kreporttype'];
+            if ($parentModule->field_defs[$fieldArray[1]]['type'] == 'kreporter' && !empty($parentModule->field_defs[$fieldArray[1]]['kreporttype']))
+                $parentModule->field_defs[$fieldArray[1]]['type'] = $parentModule->field_defs[$fieldArray[1]]['kreporttype'];
 
             // we have the root module
-            switch ($parentModule->field_name_map[$fieldArray[1]]['kreporttype'] ?: $parentModule->field_name_map[$fieldArray[1]]['type']) {
+            switch ($parentModule->field_defs[$fieldArray[1]]['kreporttype'] ?: $parentModule->field_defs[$fieldArray[1]]['type']) {
                 case 'enum':
                 case 'radioenum':
                 case 'multienum':
-                    if ($parentModule->field_name_map[$fieldArray[1]]['function'] && isset($parentModule->field_name_map[$fieldArray[1]]['function']['include'])) {
-                        require_once($parentModule->field_name_map[$fieldArray[1]]['function']['include']);
-                        $functionName = $parentModule->field_name_map[$fieldArray[1]]['function']['name'];
+                    if ($parentModule->field_defs[$fieldArray[1]]['function'] && isset($parentModule->field_defs[$fieldArray[1]]['function']['include'])) {
+                        require_once($parentModule->field_defs[$fieldArray[1]]['function']['include']);
+                        $functionName = $parentModule->field_defs[$fieldArray[1]]['function']['name'];
                         $returnArray = $functionName($parentModule, $fieldArray[1], '', 'KReporterOptions', $operators);
                     } else {
-                        foreach ($app_list_strings[$parentModule->field_name_map[$fieldArray[1]]['options']] as $value => $text) {
+                        foreach ($app_list_strings[$parentModule->field_defs[$fieldArray[1]]['options']] as $value => $text) {
                             if ($value !== "")
                                 $returnArray[] = ['value' => $value, 'text' => (!empty($text) ? $text : '-')];
                         }
@@ -576,7 +576,7 @@ $db = DBManagerFactory::getInstance();
                 case 'parent_type':
                     // bug 2011-08-08 we assume it is parent_name
                     // not completely correct since we should look for the field where the name is the type but will be sufficient
-                    foreach ($app_list_strings[$parentModule->field_name_map['parent_name']['options']] as $value => $text) {
+                    foreach ($app_list_strings[$parentModule->field_defs['parent_name']['options']] as $value => $text) {
                         $returnArray[] = ['value' => $value, 'text' => $text];
                     }
                     break;
@@ -758,7 +758,7 @@ $db = DBManagerFactory::getInstance();
                 ];
         }
 
-        foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+        foreach ($nodeModule->field_defs as $field_name => $field_defs) {
             // 2011-03-23 also exculde the excluded modules from the config in the Module Tree
             //if ($field_defs['type'] == 'link' && (!isset($field_defs['module']) || (isset($field_defs['module']) && array_search($field_defs['module'], $excludedModules) == false))) {
             if ($field_defs['type'] == 'link' && (!isset($field_defs['reportable']) || (isset($field_defs ['reportable']) && $field_defs['reportable'])) && (!isset($field_defs['module']) || (isset($field_defs['module']) && array_search($field_defs['module'], $excludedModules) == false))) {
@@ -846,7 +846,7 @@ $db = DBManagerFactory::getInstance();
         if ($module != '' && $module != 'undefined') {
             $nodeModule = BeanFactory::getBean($module);
 
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 if ($field_defs['type'] != 'link' && (!isset($field_defs['reportable']) || (isset($field_defs['reportable']) && $field_defs['reportable'] == true))
                     //&& $field_defs['type'] != 'relate'
                     && (!array_key_exists('source', $field_defs) || (array_key_exists('source', $field_defs) && (

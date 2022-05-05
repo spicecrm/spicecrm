@@ -61,14 +61,14 @@ class Opportunity extends SugarBean
         'currency_id' => 'currencies',
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
-        
-        if (!SpiceConfig::getInstance()->config['require_accounts']) {
-            unset($this->required_fields['account_name']);
-        }
-    }
+//    public function __construct()
+//    {
+//        parent::__construct();
+//
+//        if (!SpiceConfig::getInstance()->config['require_accounts']) {
+//            unset($this->required_fields['account_name']);
+//        }
+//    }
 
 
     function fill_in_additional_list_fields()
