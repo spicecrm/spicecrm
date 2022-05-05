@@ -773,7 +773,7 @@ class SpiceACLObject extends SugarBean
 
         $link = $db->fetchByAssoc($db->query("SELECT kom.* FROM korgobjecttypes_modules kom INNER JOIN kauthtypes kt ON kt.bean = kom.module WHERE kt.id='" . $this->objDetail['kauthtype_id'] . "'"));
         $thisBean = \SpiceCRM\data\BeanFactory::getBean(array_search($link['module'], SpiceModules::getInstance()->getBeanList()));
-        $this->relationShip = $db->fetchByAssoc($db->query("SELECT * FROM relationships WHERE relationship_name ='" . $thisBean->field_name_map[$link['relatefrom']]['relationship'] . "'"));
+        $this->relationShip = $db->fetchByAssoc($db->query("SELECT * FROM relationships WHERE relationship_name ='" . $thisBean->field_defs[$link['relatefrom']]['relationship'] . "'"));
 
 
         $this->beanRelRight = true;

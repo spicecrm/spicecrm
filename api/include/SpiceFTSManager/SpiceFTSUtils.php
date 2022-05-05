@@ -263,7 +263,7 @@ class SpiceFTSUtils
                     }
                     break;
                 case 'field':
-                    $fieldData = $valueBean->field_name_map[$pathRecordDetails[1]];
+                    $fieldData = $valueBean->field_defs[$pathRecordDetails[1]];
                     break;
             }
         }

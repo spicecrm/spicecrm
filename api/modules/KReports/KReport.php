@@ -1258,7 +1258,7 @@ $db = DBManagerFactory::getInstance();
             foreach ($arrayList as $thisList) {
                 //$pathName = $this->getPathNameFromPath($thisList['path']);
                 //$fieldName = explode(':', $this->getFieldNameFromPath($thisList['path']));
-                //if($this->joinSegments[$pathName]['object']->field_name_map[$fieldname[1]]->type == 'currency')
+                //if($this->joinSegments[$pathName]['object']->field_defs[$fieldname[1]]->type == 'currency')
                 $retArray [] = ['fieldid' => $thisList ['fieldid'], 'fieldname' => $thisList ['name']];
             }
         } else {
@@ -1591,11 +1591,11 @@ $db = DBManagerFactory::getInstance();
             $thisModule = BeanFactory::getBean($parentModule->$moduleArrayEl->getRelatedModuleName());
 
             // pars the otpions into the return array
-            switch ($thisModule->field_name_map [$fieldArray[1]] ['type']) {
+            switch ($thisModule->field_defs [$fieldArray[1]] ['type']) {
                 case 'enum' :
                 case 'radioenum' :
                 case 'multienum' :
-                    foreach ($app_list_strings [$thisModule->field_name_map [$fieldArray [1]] ['options']] as $value => $text) {
+                    foreach ($app_list_strings [$thisModule->field_defs [$fieldArray [1]] ['options']] as $value => $text) {
                         $returnArray [] = ['value' => $value, 'text' => $text];
                     }
                     break;
@@ -1611,11 +1611,11 @@ $db = DBManagerFactory::getInstance();
             }
         } else {
             // we have the root module
-            switch ($parentModule->field_name_map [$fieldArray [1]] ['type']) {
+            switch ($parentModule->field_defs [$fieldArray [1]] ['type']) {
                 case 'enum' :
                 case 'radioenum' :
                 case 'multienum' :
-                    foreach ($app_list_strings [$parentModule->field_name_map [$fieldArray [1]] ['options']] as $value => $text) {
+                    foreach ($app_list_strings [$parentModule->field_defs[$fieldArray[1]]['options']] as $value => $text) {
                         $returnArray [] = ['value' => $value, 'text' => $text];
                     }
                     break;

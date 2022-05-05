@@ -95,7 +95,7 @@ class SpiceFTSCreator {
 
         $bean = BeanFactory::getBean($module);
         if($bean){
-            foreach($bean->field_name_map as $fieldname => $field){
+            foreach($bean->field_defs as $fieldname => $field){
                 if( (in_array(strtoupper($field['name']), $listkeys) && !isset($field['usage'])) || $useVardefs){
                     $id          = SpiceUtils::createGuid();
                     $fieldid     = SpiceUtils::createGuid();

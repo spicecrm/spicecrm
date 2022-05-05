@@ -647,7 +647,7 @@ class SpiceUIRESTHandler
         ];
         foreach ($modules as $module) {
             $seed = BeanFactory::getBean($module);
-            $retArray['fielddefs'][$module] = $seed->field_name_map;
+            $retArray['fielddefs'][$module] = $seed->field_defs;
             $indexProperties = SpiceFTSUtils::getBeanIndexProperties($module);
             if($indexProperties) {
                 foreach ($indexProperties as $indexProperty) {

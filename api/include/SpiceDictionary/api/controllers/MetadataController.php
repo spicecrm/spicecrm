@@ -47,7 +47,7 @@ class MetadataController {
      */
     public function getVarDefsForModule(Request $req, Response $res, array $args): Response {
         $bean = BeanFactory::getBean($args['module']);
-        return $res->withJson($bean->field_name_map);
+        return $res->withJson($bean->field_defs);
     }
 
 }

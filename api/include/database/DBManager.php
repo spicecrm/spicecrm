@@ -2086,7 +2086,7 @@ protected function checkQuery($sql, $object_name = false)
 	{
 		// get column names and values
 		$sql = $this->insertParams($bean->getTableName(), $bean->getFieldDefinitions(), get_object_vars($bean),
-		        isset($bean->field_name_map)?$bean->field_name_map:null, false);
+		        isset($bean->field_defs)?$bean->field_defs:null, false);
 		return $sql;
 	}
 
@@ -2111,10 +2111,10 @@ protected function checkQuery($sql, $object_name = false)
 
     		// If the field is an auto_increment field, then we shouldn't be setting it.  This was added
     		// specially for Bugs and Cases which have a number associated with them.
-    		if (!empty($bean->field_name_map[$field]['auto_increment'])) continue;
+    		if (!empty($bean->field_defs[$field]['auto_increment'])) continue;
 
     		//custom fields handle their save separately
-    		if(isset($bean->field_name_map) && !empty($bean->field_name_map[$field]['custom_type']))  continue;
+    		if(isset($bean->field_defs) && !empty($bean->field_defs[$field]['custom_type']))  continue;
 
     		// no need to clear deleted since we only update not deleted records anyway
     		if($fieldDef['name'] == 'deleted' && empty($bean->deleted)) continue;
