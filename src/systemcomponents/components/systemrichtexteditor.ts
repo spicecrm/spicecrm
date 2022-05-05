@@ -45,7 +45,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * the editor container
      */
-    @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) public htmlEditor: ViewContainerRef;
     @ViewChild('ckEditor', {read: ViewContainerRef, static: true}) public ckEditor: ViewContainerRef;
 
     /**
@@ -125,14 +124,27 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * holds a reference to the ckeditor
      * @private
      */
-    private editor;
+    private editor: {execute: (command: string, params?: any) => void, setData: (data: string) => void, getData: () => string, model: any, ui: any, editing: any};
 
     public ngOnInit() {
 
         this.libLoader.loadLib('ckeditor').subscribe(res => {
             this.zone.runOutsideAngular(() => {
+
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
                     toolbar: [],
+                    htmlSupport: {
+                        allow: [ {
+                            name: 'div',
+                            attributes: {
+                                'data-spicefor': true,
+                                'data-spiceif': true,
+                                'data-spicefor-first': true,
+                                'data-spicefor-last': true,
+                                'data-spicetemplate': true
+                            }
+                        }]
+                    },
                     autosave: {
                         save: ( editor ) => {
                             return this.onChange( editor.getData() );
@@ -140,6 +152,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     },
                 }).then(res => {
                     this.editor = res;
+                    this.editor.editing.view.change(writer=>{
+                        writer.setStyle('height', this.innerHeight + 'px', this.editor.editing.view.document.getRoot());
+                    });
                     this.editor.setData(this._html);
                 });
             });
@@ -184,7 +199,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public writeValue(value: any): void {
         this._html = value ? value : '';
-        this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
         if (this.editor) {
             this.editor.setData(value);
         }
@@ -196,30 +210,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public executeCommand(command: string) {
 
-        switch (command) {
-            case 'openSourceEditor':
-                this.openSourceEditor();
-                break;
-            case 'toggleFullscreen':
-                this.isExpanded = !this.isExpanded;
-                break;
-            case 'openMediaFilePicker':
-                this.openMediaFilePicker();
-                break;
-            case 'insertImage':
-                this.insertImage();
-                break;
-            case 'openTemplateVariableHelper':
-                this.openTemplateVariableHelper();
-                break;
-            default:
-                if (this.isActive && command != '') {
-                     this.editor.execute(command);
-                }
+        if (!this.isActive || !command) return;
 
-                break;
-        }
-        return;
+        this.editor.execute(command);
+    }
+
+    /**
+     * toggle fullscreen
+     */
+    public toggleFullscreen() {
+        this.isExpanded = !this.isExpanded;
     }
 
     /**
@@ -227,7 +227,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * execute headings
      */
     public heading(command: string){
-        this.editor.execute('heading', {value: command})
+        this.editor.execute('heading', {value: command});
     }
 
 
@@ -236,7 +236,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * execute alignment
      */
     public alignment(command: string) {
-        this.editor.execute('alignment', {value: command})
+        this.editor.execute('alignment', {value: command});
     }
 
     /**
@@ -246,7 +246,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         // check if we are active already
         if (!this.isActive) {
             this.isActive = true;
-            this.focusEditor();
 
             // listen to the click event if it is ousoide of the current elements scope
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -259,20 +258,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.isActive = false;
             this.clickListener();
         }
-    }
-
-    /**
-     * Executed from the contenteditable section while the input property changes
-     * @param html html string from contenteditable
-     */
-    public onContentChange(html: string): void {
-
-        if (typeof this.onChange === 'function') {
-            this.onChange(html);
-        }
-
-        this._html = html;
-        return;
     }
 
     /**
@@ -301,46 +286,34 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * handle inserting image from media file if active or from url directly
      */
     public insertImage() {
-        // this.editorService.saveSelection();
         this.modal.input(this.language.getLabel('LBL_IMAGE_LINK',this.language.getLabel('LBL_IMAGE')))
-            .pipe(take(1))
             .subscribe(url => {
                 if (!url) return;
-                // this.focusEditor();
-                // this.editorService.restoreSelection();
-                // this.editorService.insertImage(url, this.htmlEditor.element.nativeElement);
-                // this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                 this.editor.execute('imageInsert', {source: [{src: url}]});
             });
     }
 
     public openMediaFilePicker() {
 
-        this.editorService.saveSelection();
         this.modalOpen = true;
         this.modal.openModal('MediaFilePicker')
-            .pipe(take(1))
             .subscribe(componentRef => {
                 componentRef.instance.answer.subscribe(image => {
-                    if (!image) {return;}
+
+                    if (!image) return;
+
                     if (image.upload) {
                         this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                             uploadComponentRef.instance.answer.subscribe(uploadimage => {
                                 if (uploadimage) {
-                                    this.focusEditor();
-                                    this.editorService.restoreSelection();
-                                    this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage, this.htmlEditor.element.nativeElement);
-                                    this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
+                                    this.editor.execute('imageInsert', {source: [{src: 'https://cdn.spicecrm.io/' + uploadimage}]});
                                 }
                                 this.modalOpen = false;
                             });
                         });
                     } else {
                         if (image.id) {
-                            this.focusEditor();
-                            this.editorService.restoreSelection();
-                            this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id, this.htmlEditor.element.nativeElement);
-                            this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
+                            this.editor.execute('imageInsert', {source: [{src: 'https://cdn.spicecrm.io/' + image.id}]});
                         }
                         this.modalOpen = false;
                     }
@@ -352,18 +325,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector )
             .pipe(take(1))
             .subscribe(componentRef => {
-                componentRef.instance._html = this._html;
+                componentRef.instance._html = this.editor.getData();
                 componentRef.instance.html.subscribe(newHtml => {
                     // update our internal value
                     this._html = newHtml;
+                    this.editor.setData(newHtml);
 
                     // set the model value
                     if (typeof this.onChange === 'function') {
                         this.onChange(newHtml);
                     }
-
-                    // set the value to the editor
-                    this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
                 });
             });
     }
@@ -403,49 +374,28 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * Insert Link
      */
-    public insertLink()
-    {
-        this.editorService.selectedText = this.getSelectedText();
-        // this.focusEditor();
-        this.editorService.saveSelection();
-        this.modal.openModal('SystemRichTextLink', true )
-            .pipe(take(1))
-            .subscribe(modalRef => {
-                modalRef.instance.text = this.editorService.selectedText;
-                modalRef.instance.response
-                    .pipe(take(1))
-                    .subscribe( linkData => {
-                        if ( linkData ) {
-                            if ( !linkData.text ) linkData.text = linkData.url;
-                            // this.focusEditor();
-                            this.editorService.restoreSelection();
-                            let linkContent = linkData.text;
-                            if ( this.editorService.selectedText === linkData.text ) linkContent = this.editorService.selectedHtml;
-                            this.editorService.createLink( linkData.url, linkContent, linkData.toTrack ? {'data-trackingid':this.helper.generateGuid()}:null );
-                        }
-                    });
+    public insertLink() {
+        this.modal.input('', 'LBL_ADD_LINK')
+            .subscribe(linkData => {
+                if (!linkData) return;
+
+                this.editor.execute('link', linkData);
             });
     }
 
+    /**
+     * add video
+     */
     public addVideo() {
-        if (!this.isActive) {return;}
-        this.editorService.saveSelection();
-        this.modal.input('Add Video','Insert Video URL')
-            .pipe(take(1))
+
+        if (!this.isActive) return;
+
+        this.modal.input('', 'LBL_ADD_VIDEO')
             .subscribe((url: string) => {
-                if (!url || url.length == 0) return;
-                this.focusEditor();
-                this.editorService.restoreSelection();
-                let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
-                let youtubeReg = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-                if (url.match(vimeoReg)) {
-                    url = 'https://player.vimeo.com/video/' + url.match(vimeoReg)[3];
-                }
-                if (url.match(youtubeReg)) {
-                    url = 'https://www.youtube.com/embed/' + url.match(youtubeReg)[7];
-                }
-                let html = `<iframe src="${url}" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>`;
-                this._document.execCommand('insertHTML', false, html);
+
+                if (!url) return;
+
+                this.editor.execute('mediaEmbed', url);
             });
     }
 
@@ -500,22 +450,39 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             .replace(/"/g, '&quot;');
     }
 
-    public addCodeSnippet(): void {
-        if (!this.isActive) {return;}
-        let value = this.encodeHtml(this.getSelectedText()) || '&nbsp;';
-        let html = `<br><pre style="background-color: #eee;border-radius: .2rem; border:1px solid #ccc; padding: .5rem"><code>${value}</code></pre><br>`;
-        this._document.execCommand('insertHTML', false, html);
-    }
-
     /**
-     * paste a plain text when the caret is in a code tag.
+     * add code snippet
      */
-    public onPaste(e) {
-        if (e.target.nodeName == 'CODE') {
-            e.preventDefault();
-            let text = (e.originalEvent || e).clipboardData.getData('text/plain');
-            document.execCommand("insertHTML", false, this.encodeHtml(text));
-        }
+    public addCodeSnippet(): void {
+
+        if (!this.isActive) return;
+
+        const options = [
+            { value: 'plaintext', display: 'Plain text' },
+            { value: 'c', display: 'C' },
+            { value: 'cs', display: 'C#' },
+            { value: 'cpp', display: 'C++' },
+            { value: 'css', display: 'CSS' },
+            { value: 'diff', display: 'Diff' },
+            { value: 'html', display: 'HTML' },
+            { value: 'java', display: 'Java' },
+            { value: 'javascript', display: 'JavaScript' },
+            { value: 'php', display: 'PHP' },
+            { value: 'python', display: 'Python' },
+            { value: 'ruby', display: 'Ruby' },
+            { value: 'typescript', display: 'TypeScript' },
+            { value: 'xml', display: 'XML' }
+        ];
+
+        this.modal.prompt('input', '', 'LBL_SELECT_LANGUAGE', 'shade', undefined, options, true).subscribe(res => {
+            if (!res) return;
+            this.editor.execute( 'codeBlock', { language: res, forceValue: true } );
+        })
+
+        // todo check html
+        // let value = this.encodeHtml(this.getSelectedText()) || '&nbsp;';
+        // let html = `<br><pre style="background-color: #eee;border-radius: .2rem; border:1px solid #ccc; padding: .5rem"><code>${value}</code></pre><br>`;
+
     }
 
     public handleKeyboardShortcuts() {
@@ -527,24 +494,23 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         });
     }
 
-    public focusEditor() {
-        this.htmlEditor.element.nativeElement.focus();
-    }
 
     public openTemplateVariableHelper() {
-        if (!this.isActive) {return;}
-        this.editorService.saveSelection();
+
+        if (!this.isActive) return;
+
         this.modalOpen = true;
+
         this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector )
-            .pipe(take(1))
             .subscribe(modal => {
                 modal.instance.response
                     .pipe(take(1))
                     .subscribe( text => {
-                        this.focusEditor();
-                        this.editorService.restoreSelection();
-                        this._document.execCommand('insertText', false, '{'+text+'}' );
                         this.modalOpen = false;
+
+                        this.editor.model.change(writer => {
+                            this.editor.model.insertContent( writer.createText( `{${text}}` ) );
+                        });
                     });
             });
     }
@@ -566,4 +532,10 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         return div.innerHTML;
     }
 
+    /**
+     * emit save event with the editor data
+     */
+    public save() {
+        this.save$.emit(this.editor.getData());
+    }
 }

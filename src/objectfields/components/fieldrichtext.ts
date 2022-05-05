@@ -361,10 +361,8 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         this.backend.save(this.model.module, this.model.id, toSave)
             .subscribe(
                 (res: any) => {
-                    this.model.endEdit();
                     this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
-                    this.model.startEdit();
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
                 },
                 error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
