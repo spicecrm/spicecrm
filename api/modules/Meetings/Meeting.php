@@ -8,11 +8,6 @@ use SpiceCRM\includes\TimeDate;
 
 class Meeting extends SugarBean
 {
-
-    var $table_name = "meetings";
-    var $module_dir = "Meetings";
-    var $object_name = "Meeting";
-
     var $date_changed = false;
 
     // save date_end by calculating user input

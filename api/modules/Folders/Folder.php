@@ -8,16 +8,8 @@ use SpiceCRM\includes\database\DBManagerFactory;
 
 class Folder extends SugarBean
 {
-    public $new_schema = true;
-    public $module_dir = 'Folders';
-    public $object_name = 'Folder';
-    public $table_name = 'folders';
     public $importable = false;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function get_summary_text()
     {

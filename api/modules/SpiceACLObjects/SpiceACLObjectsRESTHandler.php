@@ -464,7 +464,7 @@ class SpiceACLObjectsRESTHandler
 //
 //        $module = array_search($object['bean'], $beanList);
 //        $seed = BeanFactory::getBean($module);
-//        foreach ($seed->field_name_map as $fieldname => $fielddata) {
+//        foreach ($seed->field_defs as $fieldname => $fielddata) {
 //            if (array_search($fieldname, $fArray) === false)
 //                $retArray[] = ['name' => $fieldname];
 //        }

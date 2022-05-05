@@ -234,7 +234,7 @@ class ElasticHandler
         // Determine the db table names
         $dbTables = [];
         foreach ( SpiceModules::getInstance()->modules as $moduleName => $v ) {
-            $dbTables[strtolower($moduleName)] = BeanFactory::getBean($moduleName)->table_name;
+            $dbTables[strtolower($moduleName)] = BeanFactory::getBean($moduleName)->_tablename;
         }
 
         // get the indexing stats
@@ -509,12 +509,12 @@ class ElasticHandler
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '2':
                 $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                $logEntryHandler->writeOutogingLogEntry(true);
+                $logEntryHandler->writeOutogingLogEntry();
                 break;
             case '1':
                 if (@$resultdec->status > 0) {
                     $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                    $logEntryHandler->writeOutogingLogEntry(true);
+                    $logEntryHandler->writeOutogingLogEntry();
                 }
                 break;
         }
@@ -564,12 +564,12 @@ class ElasticHandler
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '2':
                 $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                $logEntryHandler->writeOutogingLogEntry(true);
+                $logEntryHandler->writeOutogingLogEntry();
                 break;
             case '1':
                 if (@$resultdec->status > 0) {
                     $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                    $logEntryHandler->writeOutogingLogEntry(true);
+                    $logEntryHandler->writeOutogingLogEntry();
                 }
                 break;
         }

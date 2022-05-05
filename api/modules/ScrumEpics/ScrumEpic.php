@@ -6,9 +6,6 @@ namespace SpiceCRM\modules\ScrumEpics;
 use SpiceCRM\data\SugarBean;
 
 class ScrumEpic extends SugarBean {
-    public $module_dir = 'ScrumEpics';
-    public $object_name = 'ScrumEpic';
-    public $table_name = 'scrumepics';
 
     public function save($check_notify = false, $fts_index_bean = true)
     {
@@ -23,7 +20,7 @@ class ScrumEpic extends SugarBean {
 
         // set has_stories to true if there are related epics
         if(isset($this->id)) {
-            $epics = $bean->get_linked_beans('scrumuserstories', $this->object_name);
+            $epics = $bean->get_linked_beans('scrumuserstories', $this->_objectname);
             if (count($epics) > 0) {
                 $this->has_stories = true;
             }

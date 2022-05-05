@@ -192,7 +192,7 @@ class EmailSchedulesController
 
                     $seed = BeanFactory::getBean($related);
                     if($seed->field_defs['is_inactive']){
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->_tablename}.is_inactive = 0 OR {$seed->_tablename}.is_inactive IS NULL)")];
                     } else {
                         $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related)];
                     }
@@ -229,7 +229,7 @@ class EmailSchedulesController
             foreach ($links as $module) {
                 $seed = BeanFactory::getBean($module);
                 if($seed->field_defs['is_inactive']){
-                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)");
+                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "({$seed->_tablename}.is_inactive = 0 OR {$seed->_tablename}.is_inactive IS NULL)");
                 } else {
                     $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0);
                 }
@@ -255,7 +255,7 @@ class EmailSchedulesController
                 foreach ($relatedbeans as $relatedbean) {
                     foreach ($relatedbean as $relatedbeanentry) {
                         $guid = SpiceUtils::createGuid();
-                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->module_dir', '$relatedbeanentry->id', '".TimeDate::getInstance()->nowDb()."', 0),";
+                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->_module', '$relatedbeanentry->id', '".TimeDate::getInstance()->nowDb()."', 0),";
                     }
                 }
                 if (!empty($query)) {

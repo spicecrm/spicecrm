@@ -14,10 +14,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class ServiceTicket extends SugarBean
 {
-    public $module_dir = 'ServiceTickets';
-    public $object_name = 'ServiceTicket';
-    public $table_name = 'servicetickets';
-
     private $stageFields = [
         'assigned_user_id' => 'st_assigned_user_id',
         'serviceticket_status' =>'serviceticket_status',

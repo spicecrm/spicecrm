@@ -372,7 +372,6 @@ $vardefs = [
             'group' => 'email1',
             'type' => 'varchar',
             'source' => 'non-db',
-            'studio' => ['editField' => true, 'searchview' => false],
             'full_text_search' => ['boost' => 3, 'analyzer' => 'whitespace'], //bug 54567
         ],
         'primary_address' => [
@@ -426,7 +425,6 @@ $vardefs = [
                 'type' => 'email',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAIL_NON_PRIMARY',
-                'studio' => false,
                 'reportable' => false,
                 'massupdate' => false,
             ],

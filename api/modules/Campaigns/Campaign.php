@@ -47,18 +47,8 @@ use SpiceCRM\includes\database\DBManagerFactory;
 
 class Campaign extends SugarBean {
 
-	// module name definitions and table relations
-	var $table_name = "campaigns";
-	var $rel_prospect_list_table = "prospect_list_campaigns";
-	var $object_name = "Campaign";
-	var $module_dir = 'Campaigns';
+    var $rel_prospect_list_table = "prospect_list_campaigns";
 	var $importable = true;
-
-  	// This is used to retrieve related fields from form posts.
-	var $additional_column_fields = [
-				'assigned_user_name', 'assigned_user_id',
-    ];
-
 	var $relationship_fields = ['prospect_list_id'=>'prospect_lists'];
 
 	function clear_campaign_prospect_list_relationship($campaign_id, $prospect_list_id='')

@@ -216,14 +216,14 @@ class AdminController
         $sql = '';
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
+            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->_tablename])) {
                 $sql .= $db->repairTable($focus, $execute);
-                $repairedTables[$focus->table_name] = true;
+                $repairedTables[$focus->_tablename] = true;
             }
             // check on audit tables
-            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->table_name . '_audit'])) {
+            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
                 $sql .= $focus->update_audit_table(false);
-                $repairedTables[$focus->table_name . '_audit'] = true;
+                $repairedTables[$focus->_tablename . '_audit'] = true;
             }
         }
 
@@ -270,14 +270,14 @@ class AdminController
 
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
+            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->_tablename])) {
                 $sql .= $db->repairTable($focus, $execute);
-                $repairedTables[$focus->table_name] = true;
+                $repairedTables[$focus->_tablename] = true;
             }
             // check on audit tables
-            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->table_name . '_audit'])) {
+            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
                 $sql .= $focus->update_audit_table(false);
-                $repairedTables[$focus->table_name . '_audit'] = true;
+                $repairedTables[$focus->_tablename . '_audit'] = true;
             }
         }
 
@@ -420,7 +420,7 @@ class AdminController
 //            foreach ($GLOBALS['moduleList'] as $module) {
 //                $focus = BeanFactory::getBean($module);
 //                if (!$focus) continue;
-//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => SpiceDictionaryHandler::getInstance()->dictionary[$focus->object_name]], $focus->module_dir);
+//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->_tablename, [$focus->_objectname => SpiceDictionaryHandler::getInstance()->dictionary[$focus->_objectname]], $focus->_module);
 //            }
 //
 //            // rebuild the metadata relationships as well
@@ -755,7 +755,7 @@ class AdminController
         if (SpiceUtils::isAdmin($current_user)) {
             $db = DBManagerFactory::getInstance();
             $nodeModule = BeanFactory::getBean($args['module']);
-            return $res->withJson($db->get_columns($nodeModule->table_name));
+            return $res->withJson($db->get_columns($nodeModule->_tablename));
         }
     }
 
@@ -778,7 +778,7 @@ class AdminController
             $nodeModule = BeanFactory::getBean($postBody['module']);
 
             // build sql to drop table-column
-            $deleteQuery = 'ALTER TABLE ' . $nodeModule->table_name . ' ';
+            $deleteQuery = 'ALTER TABLE ' . $nodeModule->_tablename . ' ';
             foreach ($postBody['dbcolumns'] as $column) {
                 $deleteQuery .= 'DROP COLUMN ' . $column['name'] . ', ';
             }

@@ -35,7 +35,7 @@ class SpiceNotifications
         $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();
-        $this->beanModule = $bean->module_dir; // todo change it to the actual module name
+        $this->beanModule = $bean->_module; // todo change it to the actual module name
         $this->beanId = $bean->id;
         $this->userId = $userId ?? $bean->assigned_user_id;
         $this->notificationDate = $timedate->nowDb();
