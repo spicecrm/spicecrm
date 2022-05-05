@@ -31,28 +31,14 @@ class KReport extends SugarBean
 
     public $field_name_map;
     // Stored fields
-    public $id;
-    public $date_entered;
-    public $date_modified;
-    public $assigned_user_id;
-    public $modified_user_id;
-    public $created_by;
-    public $created_by_name;
-    public $modified_by_name;
+
     public $report_module = '';
     public $reportoptions = '';
     public $team_id;
-    public $description;
-    public $name;
     public $status;
-    public $assigned_user_name;
-    public $team_name;
     public $category_id;
     public $category_name;
     public $category_priority;
-    public $table_name = "kreports";
-    public $object_name = "KReport";
-    public $module_dir = 'KReports';
     public $importable = true;
     public $dynamicoptions = false; //fix 2018-02-22 for KReportQuery referencefields looping
     // This is used to retrieve related fields from form posts.

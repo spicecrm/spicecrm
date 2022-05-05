@@ -1492,7 +1492,7 @@ protected function checkQuery($sql, $object_name = false)
 		if(!empty($count_query))
 		{
 			// We have a count query.  Run it and get the results.
-			$result = $this->query($count_query, true, "Error running count query for $this->object_name List: ");
+			$result = $this->query($count_query, true, "Error running count query for $this->_objectname List: ");
 			$assoc = $this->fetchByAssoc($result);
 			if(!empty($assoc['c']))
 			{

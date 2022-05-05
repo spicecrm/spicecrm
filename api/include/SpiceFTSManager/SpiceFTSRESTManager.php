@@ -386,7 +386,7 @@ class SpiceFTSRESTManager
             $nodeModule->load_relationships();
             // print_r(SpiceDictionaryHandler::getInstance()->dictionary);//
             // 2011-07-21 add audit table
-            if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->object_name]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->object_name]['audited'])
+            if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->_objectname]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->_objectname]['audited'])
                 $functionsArray[] = [
                     'path' => /* ($requester != '' ? $requester. '#': '') . */
                         'audit:' . $module . ':audit',
@@ -401,7 +401,7 @@ class SpiceFTSRESTManager
                 if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                     $functionsArray[] = [
                         'path' => /*  ($requester != '' ? $requester. '#': '') . */
-                            'relationship:' . $thisLink->focus->module_dir /* $module */ . ':' . $thisLink->name,
+                            'relationship:' . $thisLink->focus->_module /* $module */ . ':' . $thisLink->name,
                         'module' => 'relationship Fields',
                         'leaf' => true
                     ];
@@ -409,7 +409,7 @@ class SpiceFTSRESTManager
                 if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                     $functionsArray[] = [
                         'path' => /*  ($requester != '' ? $requester. '#': '') . */
-                            'relationship:' . $thisLink->_bean->module_dir /* $module */ . ':' . $thisLink->name, 'name' => 'relationship Fields',
+                            'relationship:' . $thisLink->_bean->_module /* $module */ . ':' . $thisLink->name, 'name' => 'relationship Fields',
                         'leaf' => true
                     ];
             }
@@ -426,7 +426,7 @@ class SpiceFTSRESTManager
                                 'link:' . $module . ':' . $field_name,
                             'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                             ['vname'], $module))),
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false
                         ];
                     elseif (isset($field_defs['module']))
@@ -434,7 +434,7 @@ class SpiceFTSRESTManager
                             'path' => /*  ($requester != '' ? $requester. '#': '') . */
                                 'link:' . $module . ':' . $field_name,
                             'module' => SpiceUtils::translate($field_defs['module'], $module),
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false
                         ];
                     else {
@@ -443,7 +443,7 @@ class SpiceFTSRESTManager
                             'path' => /* ($requester != '' ? $requester. '#': '') . */
                                 'link:' . $module . ':' . $field_name,
                             'module' => get_class($nodeModule->$field_defs_rel->_bean),  //PHP7 - 5.6 COMPAT $nodeModule->$field_defs['relationship']->_bean
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false
                         ];
                     }

@@ -9,11 +9,6 @@ use SpiceCRM\includes\database\DBManagerFactory;
 
 class SpiceACLProfile extends SugarBean {
 
-    public $table_name = 'spiceaclprofiles';
-    public $object_name = 'SpiceACLProfile';
-    public $module_dir = 'SpiceACLProfiles';
-
-
     /**
      * returns the raw database rows of  spiceaclprofiles for a specified userId
      * @param $userId

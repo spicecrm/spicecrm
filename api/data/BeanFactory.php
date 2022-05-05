@@ -6,6 +6,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\modules\Currencies\Currency;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
@@ -142,10 +143,11 @@ class BeanFactory
 
         // set the bean module
         $bean->_module = $module;
-        $bean->_tablename = $bean->table_name;
-        $bean->_objectname = $bean->object_name;
-
+        $bean->_objectname = $beanName;
+        // initialize the bean. Will load the vardefs
         $bean->initialize_bean();
+        // set the table name (vardefs need to be loaded first as done in initialize_bean())
+        $bean->_tablename = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
 
         if (!empty($id)) {
             if ($forceRetrieve || empty(self::$loadedBeans[$module][$id])) {

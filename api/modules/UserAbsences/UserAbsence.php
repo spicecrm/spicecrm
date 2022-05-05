@@ -13,10 +13,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class UserAbsence extends SugarBean
 {
-    public $module_dir = 'UserAbsences';
-    public $object_name = 'UserAbsence';
-    public $table_name = 'userabsences';
-    public $new_schema = true;
 
     public function get_summary_text()
     {

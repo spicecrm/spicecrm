@@ -122,7 +122,7 @@ abstract class SugarRelationship
 
             // write trash record
             if ($link->def['recover'] !== false)
-                SysTrashCan::addRecord('related', $focus->module_name, $focus->id, $relBean->get_summary_text(), $link->name, $relBean->module_name, $relBean->id);
+                SysTrashCan::addRecord('related', $focus->_module, $focus->id, $relBean->get_summary_text(), $link->name, $relBean->_module, $relBean->id);
 
             $result = $result && $sub_result;
         }
@@ -324,8 +324,8 @@ abstract class SugarRelationship
         $custom_logic_arguments = [];
         $custom_logic_arguments['id'] = $focus->id;
         $custom_logic_arguments['related_id'] = $related->id;
-        $custom_logic_arguments['module'] = $focus->module_dir;
-        $custom_logic_arguments['related_module'] = $related->module_dir;
+        $custom_logic_arguments['module'] = $focus->_module;
+        $custom_logic_arguments['related_module'] = $related->_module;
         $custom_logic_arguments['related_bean'] = $related;
         $custom_logic_arguments['link'] = $link_name;
         $custom_logic_arguments['relationship'] = $this->name;
@@ -408,10 +408,10 @@ abstract class SugarRelationship
      */
     public static function addToResaveList($bean)
     {
-        if (!isset(self::$beansToResave[$bean->module_dir])) {
-            self::$beansToResave[$bean->module_dir] = [];
+        if (!isset(self::$beansToResave[$bean->_module])) {
+            self::$beansToResave[$bean->_module] = [];
         }
-        self::$beansToResave[$bean->module_dir][$bean->id] = $bean;
+        self::$beansToResave[$bean->_module][$bean->id] = $bean;
     }
 
     /**

@@ -313,7 +313,7 @@ class SpiceFTSHandler
 
         $seed = BeanFactory::getBean($module);
         if ($seed)
-            $db->query('UPDATE ' . $seed->table_name . ' SET date_indexed = NULL');
+            $db->query('UPDATE ' . $seed->_tablename . ' SET date_indexed = NULL');
 
     }
 
@@ -328,10 +328,10 @@ class SpiceFTSHandler
 
         $seed = BeanFactory::getBean($module);
 
-        $db->query('UPDATE ' . $seed->table_name . ' SET date_indexed = NULL');
+        $db->query('UPDATE ' . $seed->_tablename . ' SET date_indexed = NULL');
 
-        // $ids = $db->limitQuery('SELECT id FROM ' . $seed->table_name . ' WHERE deleted = 0', 0, 5);
-        $ids = $db->query('SELECT id FROM ' . $seed->table_name . ' WHERE deleted = 0');
+        // $ids = $db->limitQuery('SELECT id FROM ' . $seed->_tablename . ' WHERE deleted = 0', 0, 5);
+        $ids = $db->query('SELECT id FROM ' . $seed->_tablename . ' WHERE deleted = 0');
         while ($id = $db->fetchByAssoc($ids)) {
             $seed->retrieve($id['id'], false); //set encode to false to avoid things like ' being translated to &#039;
             $this->indexBean($seed);
@@ -545,7 +545,7 @@ class SpiceFTSHandler
                     array_splice($this->transactionEntries['elastic'], $found, 2);
                 } else {
                     // if none is found add the db update entry
-                    $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
+                    $this->transactionEntries['database'][] = "UPDATE {$bean->_tablename} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
                 }
 
                 // add the index entries to the array
@@ -561,7 +561,7 @@ class SpiceFTSHandler
                 // if (!$indexResponse->error) {
                 if ($indexResponse && !in_array('error', $indexResponse)) {
                     // update the date
-                    $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'");
+                    $bean->db->query("UPDATE {$bean->_tablename} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'");
                 }
             }
         }
@@ -612,10 +612,10 @@ class SpiceFTSHandler
                         '_id' => $bean->id
                     ]
                 ]);
-                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = NULL WHERE id = '{$bean->id}'";
+                $this->transactionEntries['database'][] = "UPDATE {$bean->_tablename} SET date_indexed = NULL WHERE id = '{$bean->id}'";
             } else {
                 $this->elasticHandler->document_delete($beanModule, $bean->id);
-                $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = NULL WHERE id = '{$bean->id}'");
+                $bean->db->query("UPDATE {$bean->_tablename} SET date_indexed = NULL WHERE id = '{$bean->id}'");
             }
         }
 
@@ -1620,7 +1620,7 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL  OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL))", 0, $packagesize - $beanCounter);
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE (deleted = 0 AND (date_indexed IS NULL  OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL))", 0, $packagesize - $beanCounter);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
             if ($toConsole) {
@@ -1712,7 +1712,7 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
             if ($toConsole) {
@@ -1796,10 +1796,10 @@ class SpiceFTSHandler
                     $indexResponse = $this->elasticHandler->bulk($bulkItems);
                     if (!$indexResponse->errors) {
                         if (count($bulkUpdates['indexed']) > 0)
-                            $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                            $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                         if (count($bulkUpdates['deleted']) > 0)
-                            $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
+                            $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
                     }
 
                     // reset the list
@@ -1816,10 +1816,10 @@ class SpiceFTSHandler
                 $indexResponse = $this->elasticHandler->bulk($bulkItems);
                 if (!$indexResponse->errors) {
                     if (count($bulkUpdates['indexed']) > 0)
-                        $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                        $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                     if (count($bulkUpdates['deleted']) > 0)
-                        $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
+                        $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
                 }
 
@@ -1845,10 +1845,10 @@ class SpiceFTSHandler
             $indexResponse = $this->elasticHandler->bulk($bulkItems);
             if (!$indexResponse->errors) {
                 if (count($bulkUpdates['indexed']) > 0)
-                    $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                    $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                 if (count($bulkUpdates['deleted']) > 0)
-                    $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
+                    $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
             }
 

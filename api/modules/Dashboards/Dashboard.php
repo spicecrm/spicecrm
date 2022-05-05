@@ -39,12 +39,6 @@ use SpiceCRM\data\SugarBean;
 ********************************************************************************/
 class Dashboard extends SugarBean
 {
-
-    var $object_name = "Dashboard";
-    var $module_dir = 'Dashboards';
-    var $table_name = "dashboards";
-
-
     function bean_implements($interface)
     {
         switch ($interface) {

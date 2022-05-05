@@ -50,10 +50,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
  */
 class Currency extends SugarBean
 {
-
-	var $table_name = "currencies";
-	var $object_name = "Currency";
-	var $module_dir = "Currencies";
 	var $disable_num_format = true;
 
     public function __construct()

@@ -52,11 +52,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 // EmailTemplate is used to store email email_template information.
 class EmailTemplate extends SugarBean {
 
-	var $table_name = "email_templates";
-	var $object_name = "EmailTemplate";
-	var $module_dir = "EmailTemplates";
-
-
     /**
      * List of IDs of possible parent templates (to prevent recursions).
      * @var
