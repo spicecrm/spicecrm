@@ -4,13 +4,9 @@
         <question-render-header [question]="question" [showError]="showError" addclasses="slds-p-around_small slds-border_bottom"></question-render-header>
         <!-- Options vertical -->
         <ng-container *ngIf="!questionMeta.parameter.formatOptionsHorizontal">
-            <div class="slds-p-around--small">
-                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-scrollable--none slds-grid slds-grid--vertical-align-centerd slds-gutters_direct-small slds-p-vertical--x-small question-hover" (click)="qp.clickAnswerOption(option.id,$event)">
-                    <div class="slds-col slds-grow-none">
-                        <span system-stop-click-propagation>
-                            <system-checkbox [value]="option.id" (ngModelChange)="setValue(option.id,$event)" [ngModel]="getValue(option.id)" [disabled]="isDisabled()"></system-checkbox>
-                        </span>
-                    </div>
+            <div class="slds-p-around--x-small">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-scrollable--none slds-grid slds-grid--vertical-align-center slds-gutters_direct-x-small slds-p-around--x-small question-hover" (click)="qp.clickAnswerOption(option.id,$event)">
+                    <question-render-checkbox class="slds-col slds-grow-none" [option]="option"></question-render-checkbox>
                     <div class="slds-col">
                         <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom_small'"></media-file-image>
                         <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
@@ -22,9 +18,7 @@
         <ng-container *ngIf="questionMeta.parameter.formatOptionsHorizontal">
             <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-grid slds-grid_pull-padded-x-small slds-scrollable--none slds-size_1-of-1 slds-text-align_center slds-p-horizontal_small" [ngClass]="{'slds-border_left':j>0}" [ngStyle]="{'width':100/qp.questionoptionsArray[question.id].length+'%'}" (click)="qp.clickAnswerOption(option.id,$event)">
                 <div class="slds-m-bottom_xxx-small">
-                    <span system-stop-click-propagation>
-                        <system-checkbox [value]="option.id" (ngModelChange)="setValue(option.id,$event)" [ngModel]="getValue(option.id)" [disabled]="isDisabled()"></system-checkbox>
-                    </span>
+                    <question-render-checkbox [option]="option"></question-render-checkbox>
                     <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical_small'" [align]="'center'"></media-file-image>
                 </div>
                 <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>

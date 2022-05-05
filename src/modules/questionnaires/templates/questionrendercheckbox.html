@@ -1,0 +1,8 @@
+<span class="slds-form-element__control">
+    <span class="slds-checkbox">
+        <input type="checkbox" id="{{id}}" [checked]="isChecked(option.id)" [disabled]="isDisabled()" (click)="this.qp.clickAnswerOption( option.id, $event )"/>
+        <label class="slds-checkbox__label slds-truncate" for="{{id}}" (click)="$event.stopPropagation()">
+            <span class="slds-checkbox_faux"></span>
+        </label>
+    </span>
+</span>

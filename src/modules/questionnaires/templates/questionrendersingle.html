@@ -6,12 +6,10 @@
         <!-- Options vertical aligned -->
         <ng-container *ngIf="!questionMeta.parameter.formatOptionsHorizontal && !questionMeta.parameter.asDropDown">
             <question-render-header [question]="question" [showError]="showError" addclasses="slds-p-around_small slds-border_bottom"></question-render-header>
-            <div class="slds-p-vertical--x-small">
-                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-grid slds-grid--vertical-align-center slds-scrollable--none slds-p-around--xx-small question-hover" (click)="qp.clickAnswerOption(option.id,$event)">
-                    <div class="slds-p-around--xx-small">
-                        <system-input-radio [value]="option.id" [(ngModel)]="value" [disabled]="isDisabled()" [canUnset]="true" name="question-{{question.id}}" system-stop-click-propagation></system-input-radio>
-                    </div>
-                    <div class="slds-p-around--xx-small">
+            <div class="slds-p-around--x-small">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-scrollable--none slds-grid slds-grid--vertical-align-center slds-gutters_direct-x-small slds-p-around--x-small question-hover" (click)="qp.clickAnswerOption(option.id,$event)">
+                    <question-render-radio-button [option]="option" class="slds-col slds-grow-none"></question-render-radio-button>
+                    <div class="slds-col">
                         <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthOption" [classOuter]="'slds-m-bottom_small'"></media-file-image>
                         <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
                     </div>
@@ -22,14 +20,12 @@
         <div *ngIf="questionMeta.parameter.formatOptionsHorizontal" class="slds-grid">
             <question-render-header [question]="question" [showError]="showError" addclasses="slds-p-around_small slds-border--bottom"></question-render-header>
             <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isFirst=first" class="slds-size_1-of-1 slds-scrollable--none slds-text-align_center slds-p-horizontal_small slds-p-vertical_x-small question-hover" [ngClass]="{'slds-border_left':!isFirst}" [ngStyle]="{'width':100/qp.questionoptionsArray[question.id].length+'%'}" (click)="qp.clickAnswerOption(option.id,$event)">
-                <div class="slds-m-bottom_xxx-small">
-                    <system-input-radio [(ngModel)]="value" [disabled]="isDisabled()" [canUnset]="true" name="question-{{question.id}}" system-stop-click-propagation><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></system-input-radio>
-                </div>
+                <question-render-radio-button [option]="option" class="slds-m-bottom_xxx-small"></question-render-radio-button>
                 <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical_small'" [align]="'center'"></media-file-image>
                 <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
             </div>
         </div>
-        <!-- Options horizontal aligned -->
+        <!-- Options as select field -->
         <div *ngIf="questionMeta.parameter.asDropDown" class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
             <question-render-header [question]="question" [showError]="showError" addclasses="slds-p-around--x-small"></question-render-header>
             <div class="slds-form-element__control slds-p-around--x-small">

@@ -5,6 +5,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionRenderBasic } from './questionrenderbasic';
 
+declare var _;
+
 @Component({
     selector: 'question-render-nps',
     templateUrl: '../templates/questionrendernps.html',
@@ -22,6 +24,8 @@ export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
 
     @Input() public hideFinishedQuestions = false;
 
+    public id = _.uniqueId();
+
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
     }
@@ -30,19 +34,40 @@ export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
         super.ngOnInit();
     }
 
-    public onClick( score: number|string, $event ): boolean {
-        $event.stopPropagation();
+    /**
+     * A click around the radio button happened.
+     * @param score
+     * @param $event
+     */
+    public clickAround( score: number|string, $event ): boolean {
         score = score.toString();
         if ( score === this.qp.answers[this.questionId].answer_value ) score = '';
         return this.qp.setAnswerValue( this.questionId, score.toString() );
     }
 
-    get value(){
-        return this.qp.answers[this.questionId].answer_value;
+    /**
+     * A click on a radio button (actually on the related label) has happened.
+     * @param event
+     */
+    public clickOnLabel( score, event ) {
+        let inputElement = event.target.parentElement.parentElement.firstChild; // or closest()
+        if ( inputElement.checked ) {
+            inputElement.checked = false;
+            this.qp.setAnswerValue( this.questionId, null );
+        } else {
+            this.qp.setAnswerValue( this.questionId, score.toString() );
+        }
+        event.preventDefault();
+        event.stopPropagation();
     }
 
-    set value( value) {
-        this.qp.setAnswerValue( this.questionId, value );
+    /**
+     * Has the radio button to be checked?
+     * @param questionId
+     * @param score
+     */
+    public isChecked( questionId: string, score: number ): boolean {
+        return this.qp.answers[questionId].answer_value && this.qp.answers[questionId].answer_value == score;
     }
 
 }

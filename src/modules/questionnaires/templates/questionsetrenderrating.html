@@ -23,7 +23,7 @@
                         <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal" [ngClass]="{'slds-text-color_error':showError(question)}">{{question.questiontext}}</div>
                     </td>
                     <td *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;" class="slds-text-align_center question-hover" (click)="qp.clickAnswerOption( option.id, $event )">
-                        <system-input-radio [value]="true" (ngModelChange)="setValue($event,question.id,option.id)" [ngModel]="getValue(question.id,option.id)" [disabled]="isDisabled(question.id)" [canUnset]="true" name="question-{{question.id}}" system-stop-click-propagation></system-input-radio>
+                        <question-render-radio-button [option]="option"></question-render-radio-button>
                     </td>
                 </tr>
             </ng-container>
