@@ -255,10 +255,15 @@ class SugarBean
     /**
      * @deprecated. Use $field_defs instead
      *
-     * @var string
+     * @var array
      */
     var $field_name_map;
 
+    /**
+     * Stores the variable definitions in the bean
+     *
+     * @var array
+     */
     var $field_defs;
 
     /**
@@ -289,11 +294,13 @@ class SugarBean
      */
     var $additional_column_fields = [];
 
+
     var $relationship_fields = [];
     var $fetched_row = false;
     var $fetched_rel_row = [];
     var $force_load_details = false;
     var $optimistic_lock = false;
+
     /*
      * The default ACL type
      */
@@ -369,7 +376,7 @@ class SugarBean
      */
     public function initialize_bean()
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+//        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         static $loaded_defs = [];
         $this->db = DBManagerFactory::getInstance();
         $dictHandler = SpiceDictionaryHandler::getInstance();
@@ -401,7 +408,7 @@ class SugarBean
 //                $this->required_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'required_fields');
 
             if (isset($dictHandler->dictionary[$this->_objectname]) && !$this->disable_vardefs) {
-//                $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
+//                $this->field_name_map = $dictHandler->dictionary[$this->_objectname]['fields'];
                 $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
 
                 if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
