@@ -63,6 +63,13 @@ class SpiceFTSUtils
             'type' => 'keyword',
             'index' => true
         ],
+        'assigned_orgunit_name' => [
+            'type' => 'text'
+        ],
+        'assigned_orgunit_id' => [
+            'type' => 'keyword',
+            'index' => true
+        ],
         'modified_by_name' => [
             'type' => 'text'
         ],
