@@ -64,7 +64,7 @@ class SpiceFTSActivityHandler
      *
      * @return array and array with the element totalcount, aggregates and items
      */
-    public static function loadActivities($activitiesmodule, $parentid = null, $start = 0, $limit = 10, $searchterm = '', $ownerfiler = '', $objects = [])
+    public static function loadActivities($activitiesmodule, $parentid = null, $start = 0, $limit = 10, $searchterm = '', $ownerfilter = '', $objects = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -108,7 +108,10 @@ class SpiceFTSActivityHandler
             }
             $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["_index" => SpiceFTSUtils::getIndexNameForModule($module)]];
 
-            switch ($ownerfiler) {
+            switch ($ownerfilter) {
+                case 'participant':
+                    $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["_activityparticipantids" => $current_user->id]];
+                    break;
                 case 'assigned':
                     $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["assigned_user_id" => $current_user->id]];
                     break;
