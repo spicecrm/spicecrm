@@ -105,7 +105,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Campaigns',
             //'dbType' => 'char',
             'reportable' => false,
-            'massupdate' => false,
             'duplicate_merge' => 'disabled',
         ],
         'campaign_name' => [
@@ -178,17 +177,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
-            'group' => 'amount',
             'dbType' => 'double',
             'disable_num_format' => true,
             'duplicate_merge' => '0',
             'audited' => true,
             'comment' => 'Formatted amount of the opportunity',
-            'studio' => [
-                'editview' => false,
-                'detailview' => false,
-                'quickcreate' => false,
-            ],
         ],
         'forecast' => [
             'name' => 'forecast',
@@ -225,7 +218,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
         'currency_id' => [
             'name' => 'currency_id',
             'type' => 'id',
-            'group' => 'currency_id',
             'vname' => 'LBL_CURRENCY',
             'reportable' => false,
             'comment' => 'Currency used for display purposes'
@@ -241,7 +233,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencyNameDropDown', 'returns' => 'html'],
-            'studio' => 'false',
             'duplicate_merge' => 'disabled',
         ],
         'currency_symbol' => [
@@ -255,7 +246,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencySymbolDropDown', 'returns' => 'html'],
-            'studio' => 'false',
             'duplicate_merge' => 'disabled',
         ],
         'date_closed' => [

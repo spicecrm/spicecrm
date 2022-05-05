@@ -87,7 +87,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'vname'               => 'LBL_DATE_END',
             'type'                => 'datetimecombo',
             'dbType'              => 'datetime',
-            'massupdate'          => false,
             'comment'             => 'Date is which call is scheduled to (or did) end'
         ],
         'external_id' => [
@@ -96,7 +95,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'type'    => 'varchar',
             'len'     => 160,
             'comment' => 'Call ID for external app API',
-            'studio'  => 'false',
         ],
         'external_data' => [
             'name'    => 'external_data',
@@ -109,8 +107,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'type'     => 'parent_type',
             'dbType'   => 'varchar',
             'required' => false,
-            'group'    => 'parent_name',
-            'options'  => 'parent_type_display',
             'len'      => 255,
             'comment'  => 'The Sugar object to which the call is related',
         ],
@@ -121,9 +117,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'id_name'     => 'parent_id',
             'vname'       => 'LBL_RELATED_TO',
             'type'        => 'parent',
-            'group'       => 'parent_name',
             'source'      => 'non-db',
-            'options'     => 'parent_type_display',
         ],
         'status' => [
             'name'       => 'status',
@@ -160,7 +154,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'name'       => 'parent_id',
             'vname'      => 'LBL_LIST_RELATED_TO_ID',
             'type'       => 'id',
-            'group'      => 'parent_name',
             'reportable' => false,
             'comment'    => 'The ID of the parent Sugar object identified by parent_type'
         ],
@@ -186,7 +179,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'default'    => 0,
             'type'       => 'bool',
             'comment'    => 'Whether email reminder is already sent',
-            'massupdate' => false,
         ],
         'outlook_id' => [
             'name'       => 'outlook_id',
@@ -273,7 +265,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
                 3 => 'degree2'
             ],
             'id_name'          => 'contact_id',
-            'massupdate'       => false,
             'vname'            => 'LBL_CONTACT',
             'type'             => 'relate',
             'link'             => 'contacts',
@@ -284,12 +275,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'dbType'           => 'varchar',
             'source'           => 'non-db',
             'len'              => 36,
-            'importable'       => 'false',
-            'studio'           => [
-                'required' => false,
-                'listview' => true,
-                'visible'  => false,
-            ],
+            'importable' => 'false',
         ],
         'opportunities' => [
             'name'         => 'opportunities',
@@ -434,9 +420,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'options'    => 'repeat_type_dom',
             'comment'    => 'Type of recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_interval' => [
             'name'       => 'repeat_interval',
@@ -446,9 +430,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'default'    => 1,
             'comment'    => 'Interval of recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_dow' => [
             'name'       => 'repeat_dow',
@@ -457,9 +439,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'len'        => 7,
             'comment'    => 'Days of week in recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_until' => [
             'name'       => 'repeat_until',
@@ -467,9 +447,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'type'       => 'date',
             'comment'    => 'Repeat until specified date',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_count' => [
             'name'       => 'repeat_count',
@@ -478,9 +456,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'len'        => 7,
             'comment'    => 'Number of recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_parent_id' => [
             'name'       => 'repeat_parent_id',
@@ -489,9 +465,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'len'        => 36,
             'comment'    => 'Id of the first element of recurring records',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'recurring_source' => [
             'name'       => 'recurring_source',
@@ -499,10 +473,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'type'       => 'varchar',
             'len'        => 36,
             'comment'    => 'Source of recurring call',
-            'importable' => false,
-            'massupdate' => false,
+            'importable' => 'false',
             'reportable' => false,
-            'studio'     => false,
         ],
         'campaigntask_id' => [
             'name'  => 'campaigntask_id',
