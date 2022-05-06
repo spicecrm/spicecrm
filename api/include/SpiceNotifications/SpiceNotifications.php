@@ -4,7 +4,7 @@ namespace SpiceCRM\includes\SpiceNotifications;
 
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -31,7 +31,7 @@ class SpiceNotifications
     const TYPE_DELETE     = 'delete';
     const TYPE_RELATE     = 'relate';
 
-    public function __construct(SugarBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null) {
+    public function __construct(SpiceBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null) {
         $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();
@@ -116,7 +116,7 @@ class SpiceNotifications
             $email->addEmailAddress('from', $current_user->email1);
             $sendResults = $email->sendEmail();
             if (isset($sendResults['errors'])) {
-                LoggerManager::getLogger()->fatal('Error sending notification email over Mailbox in SugarBean on file ' . __FILE__ . ', line ' . __LINE__ . '.');
+                LoggerManager::getLogger()->fatal('Error sending notification email over Mailbox in SpiceBean on file ' . __FILE__ . ', line ' . __LINE__ . '.');
                 LoggerManager::getLogger()->fatal($sendResults);
             }
             return true;

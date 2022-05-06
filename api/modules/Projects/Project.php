@@ -3,10 +3,10 @@
 namespace SpiceCRM\modules\Projects;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class Project extends SugarBean {
+class Project extends SpiceBean {
     // calculated information
     public $total_estimated_effort;
     public $total_actual_effort;

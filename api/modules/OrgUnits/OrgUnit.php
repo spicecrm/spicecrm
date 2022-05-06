@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\OrgUnits;
 
-class OrgUnit extends \SpiceCRM\data\SugarBean
+class OrgUnit extends \SpiceCRM\data\SpiceBean
 {
     public function save($check_notify = false, $fts_index_bean = true)
     {

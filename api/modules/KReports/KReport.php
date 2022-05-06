@@ -4,7 +4,7 @@
 namespace SpiceCRM\modules\KReports;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -26,7 +26,7 @@ if (file_exists('./custom/modules/KReports/includes')) {
 }
 
 
-class KReport extends SugarBean
+class KReport extends SpiceBean
 {
 
     // Stored fields

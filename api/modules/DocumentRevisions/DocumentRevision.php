@@ -2,7 +2,7 @@
 namespace SpiceCRM\modules\DocumentRevisions;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\TimeDate;
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
@@ -40,7 +40,7 @@ use SpiceCRM\includes\TimeDate;
 ********************************************************************************/
 
 
-class DocumentRevision extends SugarBean {
+class DocumentRevision extends SpiceBean {
 
 	function __construct() {
 		parent::__construct();

@@ -7,11 +7,11 @@ use DateTime;
 use DateTimeZone;
 use DateInterval;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
 
-class ServiceCalendar extends SugarBean
+class ServiceCalendar extends SpiceBean
 {
 
     public $workingdays;
@@ -25,7 +25,7 @@ class ServiceCalendar extends SugarBean
      * @param bool $encode
      * @param bool $deleted
      * @param bool $relationships
-     * @return SugarBean|null
+     * @return SpiceBean|null
      */
     public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
     {

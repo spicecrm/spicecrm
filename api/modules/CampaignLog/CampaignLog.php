@@ -36,11 +36,11 @@
 namespace SpiceCRM\modules\CampaignLog;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 
-class CampaignLog extends SugarBean {
+class CampaignLog extends SpiceBean {
 
     function fill_in_additional_detail_fields()
     {

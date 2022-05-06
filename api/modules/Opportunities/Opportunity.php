@@ -37,14 +37,14 @@
 namespace SpiceCRM\modules\Opportunities;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 
-class Opportunity extends SugarBean
+class Opportunity extends SpiceBean
 {
     var $rel_account_table = "accounts_opportunities";
     var $rel_contact_table = "opportunities_contacts";

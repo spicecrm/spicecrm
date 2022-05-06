@@ -44,7 +44,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 
 /**
- * SugarBean is the base class for all business objects in Sugar.  It implements
+ * SpiceBean is the base class for all business objects in Sugar.  It implements
  * the primary functionality needed for manipulating business objects: create,
  * retrieve, update, delete.  It allows for searching and retrieving list of records.
  * It allows for retrieving related objects (e.g. contacts related to a specific account).
@@ -54,7 +54,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * All bean names should be singular (e.g. Contact).  The primary table name for
  * a bean should be plural (e.g. contacts).
  */
-class SugarBean
+class SpiceBean
 {
     /**
      * introduced in spicecrm 201903001
@@ -361,7 +361,7 @@ class SugarBean
      * 2. Load the vardefs for the module implemeting the class. cache the entries
      *    if needed
      * 3. Setup row-level security preference
-     * All implementing classes  must call this constructor using the parent::SugarBean() class.
+     * All implementing classes  must call this constructor using the parent::SpiceBean() class.
      *
      */
     function __construct()
@@ -911,7 +911,7 @@ class SugarBean
     }
 
     /**
-     * Handle the following when a SugarBean object is cloned
+     * Handle the following when a SpiceBean object is cloned
      *
      * Currently all this does it unset any relationships that were created prior to cloning the object
      *
@@ -940,7 +940,7 @@ class SugarBean
      */
     function load_relationships()
     {
-        LoggerManager::getLogger()->debug("SugarBean.load_relationships, Loading all relationships of type link.");
+        LoggerManager::getLogger()->debug("SpiceBean.load_relationships, Loading all relationships of type link.");
         $linked_fields = $this->get_linked_fields();
         foreach ($linked_fields as $name => $properties) {
             $this->load_relationship($name);
@@ -996,10 +996,10 @@ class SugarBean
      */
     function load_relationship($rel_name)
     {
-        LoggerManager::getLogger()->debug("SugarBean[{$this->_objectname}].load_relationships, Loading relationship (" . $rel_name . ").");
+        LoggerManager::getLogger()->debug("SpiceBean[{$this->_objectname}].load_relationships, Loading relationship (" . $rel_name . ").");
 
         if (empty($rel_name)) {
-            LoggerManager::getLogger()->error("SugarBean.load_relationships, Null relationship name passed.");
+            LoggerManager::getLogger()->error("SpiceBean.load_relationships, Null relationship name passed.");
             return false;
         }
         $fieldDefs = $this->getFieldDefinitions();
@@ -1026,7 +1026,7 @@ class SugarBean
                 return true;
             }
         }
-        LoggerManager::getLogger()->info("SugarBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
+        LoggerManager::getLogger()->info("SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
 
         return false;
     }
@@ -1210,8 +1210,8 @@ class SugarBean
     }
 
     /**
-     * Returns the ACL category for this module; defaults to the SugarBean::$acl_category if defined
-     * otherwise it is SugarBean::$module_dir
+     * Returns the ACL category for this module; defaults to the SpiceBean::$acl_category if defined
+     * otherwise it is SpiceBean::$module_dir
      *
      * @return string
      */
@@ -1381,7 +1381,7 @@ class SugarBean
     }
 
     /**
-     * Implements a generic insert and update logic for any SugarBean
+     * Implements a generic insert and update logic for any SpiceBean
      * This method only works for subclasses that implement the same variable names.
      * This method uses the presence of an id field that is not null to signify and update.
      * The id field should not be set otherwise.
@@ -1835,7 +1835,7 @@ class SugarBean
      * Prefixes column names with this bean's table name.
      *
      * @param string $order_by Order by clause to be processed
-     * @param SugarBean $submodule name of the module this order by clause is for
+     * @param SpiceBean $submodule name of the module this order by clause is for
      * @param boolean $suppress_table_name Whether table name should be suppressed
      * @return string Processed order by clause
      *
@@ -1969,7 +1969,7 @@ class SugarBean
             //instantiate a new class each time. This is because php5 passes
             //by reference by default so if we continually update $this, we will
             //at the end have a list of all the same objects
-            /** @var SugarBean $temp */
+            /** @var SpiceBean $temp */
             $temp = BeanFactory::getBean($this->_module, $row['id'], ['relationships' => false]);
 
             $temp->fill_in_additional_list_fields();
