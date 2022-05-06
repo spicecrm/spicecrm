@@ -26,13 +26,6 @@ export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit 
         super.ngOnInit();
     }
 
-    /**
-     * Is the radio button of the quesion option selected?
-     */
-    public isChecked( optionId: string ): boolean {
-        return this.qp.answers && this.qp.answers[this.questionId] && this.qp.answers[this.questionId].options && this.qp.answers[this.questionId].options[optionId];
-    }
-
     get value(){
         try{
             for(let id in this.qp.answers[this.questionId].options){

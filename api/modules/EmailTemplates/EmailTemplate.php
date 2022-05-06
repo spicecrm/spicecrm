@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\EmailTemplates;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -50,12 +50,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
  ********************************************************************************/
 
 // EmailTemplate is used to store email email_template information.
-class EmailTemplate extends SugarBean {
-
-	var $table_name = "email_templates";
-	var $object_name = "EmailTemplate";
-	var $module_dir = "EmailTemplates";
-
+class EmailTemplate extends SpiceBean {
 
     /**
      * List of IDs of possible parent templates (to prevent recursions).

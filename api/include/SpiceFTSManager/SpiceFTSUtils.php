@@ -63,6 +63,13 @@ class SpiceFTSUtils
             'type' => 'keyword',
             'index' => true
         ],
+        'assigned_orgunit_name' => [
+            'type' => 'text'
+        ],
+        'assigned_orgunit_id' => [
+            'type' => 'keyword',
+            'index' => true
+        ],
         'modified_by_name' => [
             'type' => 'text'
         ],
@@ -263,7 +270,7 @@ class SpiceFTSUtils
                     }
                     break;
                 case 'field':
-                    $fieldData = $valueBean->field_name_map[$pathRecordDetails[1]];
+                    $fieldData = $valueBean->field_defs[$pathRecordDetails[1]];
                     break;
             }
         }

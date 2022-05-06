@@ -3,7 +3,7 @@
 namespace SpiceCRM\modules\EmailAddresses;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -59,23 +59,8 @@ use SpiceCRM\includes\utils\SpiceUtils;
 /**
  * handle managing email addresses with modules
  */
-class EmailAddress extends SugarBean
+class EmailAddress extends SpiceBean
 {
-    /**
-     * holds the table name
-     * @var string
-     */
-    public $table_name = 'email_addresses';
-    /**
-     * holds the module name
-     * @var string
-     */
-    public $module_dir = 'EmailAddresses';
-    /**
-     * holds the object name
-     * @var string
-     */
-    public $object_name = 'EmailAddress';
     /**
      * holds the email address field from db
      * @var string
@@ -94,7 +79,7 @@ class EmailAddress extends SugarBean
      * @param $ignoreInvalidEmailAddresses bool
      * @return int|string
      * @throws Exception
-     * @see SugarBean::save
+     * @see SpiceBean::save
      */
     public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
@@ -203,7 +188,7 @@ class EmailAddress extends SugarBean
     /**
      * searches for email addresses on all related beans on a parent bean
      *
-     * @param SugarBean $seed
+     * @param SpiceBean $seed
      * @return array
      */
     public function searchForParentBean($seed)

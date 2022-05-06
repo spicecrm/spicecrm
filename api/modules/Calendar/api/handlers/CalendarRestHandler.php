@@ -105,9 +105,9 @@ class CalendarRestHandler
                 }
             } else {
                 $bean = BeanFactory::getBean($module);
-                $beanFieldEvent = $bean->table_name . '.' . $fieldEvent;
-                $beanFieldStart = $bean->table_name . '.' . $fieldStart;
-                $beanFieldEnd = $bean->table_name . '.' . $fieldEnd;
+                $beanFieldEvent = $bean->_tablename . '.' . $fieldEvent;
+                $beanFieldStart = $bean->_tablename . '.' . $fieldStart;
+                $beanFieldEnd = $bean->_tablename . '.' . $fieldEnd;
 
                 switch ($module) {
                     case 'Contacts':
@@ -120,7 +120,7 @@ class CalendarRestHandler
                         $where = "IFNULL($beanFieldStart, $beanFieldEnd) <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE)";
                         break;
                     case 'UserAbsences':
-                        $absenceType = $bean->table_name . '.type';
+                        $absenceType = $bean->_tablename . '.type';
                         $where = "$beanFieldStart <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE) AND user_id <> '$current_user->id' AND ($absenceType = 'Vacation' OR $absenceType = 'Urlaub')";
                         break;
                     default:

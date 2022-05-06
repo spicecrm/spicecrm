@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -900,7 +900,7 @@ class MysqliManager extends DBManager
     /**
      * Returns the name of the engine to use or null if we are to use the default
      *
-     * @param  object $bean SugarBean instance
+     * @param  object $bean SpiceBean instance
      * @return string
      */
 

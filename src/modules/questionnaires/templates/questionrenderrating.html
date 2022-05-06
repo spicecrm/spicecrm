@@ -23,7 +23,7 @@
                 </td>
                 <td class="slds-text-align_center question-hover"
                     *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;" (click)="qp.clickAnswerOption(option.id,$event)">
-                    <system-input-radio [value]="option.id" [(ngModel)]="value" [disabled]="isDisabled()" [canUnset]="true" name="question-{{question.id}}" system-stop-click-propagation></system-input-radio>
+                    <question-render-radio-button [option]="option"></question-render-radio-button>
                 </td>
             </tr>
         </tbody>

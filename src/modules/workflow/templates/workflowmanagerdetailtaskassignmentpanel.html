@@ -6,6 +6,10 @@
     <field-label fieldname="assigntouser_name" [fieldconfig]="{label: 'LBL_ASSIGNED_TO'}"></field-label>
     <field-container field="assigntouser_name"></field-container>
 </div>
+<div *ngIf="model.data.assigntype == '7'">
+    <field-label fieldname="assigntoorgunit_name" [fieldconfig]="{label: 'LBL_ORGUNIT'}"></field-label>
+    <field-container field="assigntoorgunit_name"></field-container>
+</div>
 <ng-container *ngIf="model.data.assigntype == '5'">
     <div>
         <field-label fieldname="assignfile" [fieldconfig]="{label: 'LBL_FILE'}"></field-label>

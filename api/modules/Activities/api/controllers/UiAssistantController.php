@@ -15,7 +15,6 @@ use SpiceCRM\includes\RESTManager;
 
 class UiAssistantController{
 
-
     /**
      * loads the assitant using Elastic
      *

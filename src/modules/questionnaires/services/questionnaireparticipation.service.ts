@@ -248,9 +248,8 @@ export class questionnaireParticipationService {
      */
     public clickAnswerOption( optionId: string, event?: any ): boolean {
 
-        if(event) {
-            event.stopPropagation();
-        }
+        event?.stopPropagation();
+
         let question = this.questionoptions[optionId].parentQuestion;
 
         // If the edit mode is 'off' or 'postview', a input/change is not allowed. --> Do nothing and return false.

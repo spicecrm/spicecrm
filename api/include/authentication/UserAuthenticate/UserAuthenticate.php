@@ -253,7 +253,7 @@ class UserAuthenticate
     /**
      * @param $user User | string
      * @param $type string
-     * @return false|\SpiceCRM\data\SugarBean
+     * @return false|\SpiceCRM\data\SpiceBean
      * @throws Exception
      */
     public function getProperEmailTemplate( $userIdOrBean, $type )

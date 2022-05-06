@@ -5,19 +5,15 @@ namespace SpiceCRM\modules\SystemTenants;
 
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-class SystemTenant extends SugarBean
+class SystemTenant extends SpiceBean
 {
-
-    public $table_name = "systemtenants";
-    public $object_name = "SystemTenant";
-    public $module_dir = 'SystemTenants';
 
     /**
      * loads the tenant data from teh config for the loader to return to the frontend

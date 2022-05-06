@@ -49,13 +49,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
 //		'len' => '11',
 //		'auto_increment' => true,
 //		'importable' => 'false',
-//		'studio' => array('editview' => false),
 //		),
 	  'birthdate' =>
 	  [
 	    'name' => 'birthdate',
 	    'vname' => 'LBL_BIRTHDATE',
-	    'massupdate' => false,
 	    'type' => 'date',
       ],
 	  'do_not_call' =>
@@ -92,7 +90,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
         'module' => 'Campaigns',
         //'dbType' => 'char',
         'reportable'=>false,
-        'massupdate' => false,
             'duplicate_merge'=> 'disabled',
       ],
 	  'campaigns' =>
@@ -161,9 +158,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
                 'type' => 'email',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAIL_NON_PRIMARY',
-                'studio' => false,
                 'reportable' => false,
-                'massupdate' => false,
             ],
     ],
 

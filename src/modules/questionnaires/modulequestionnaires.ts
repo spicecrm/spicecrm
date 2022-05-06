@@ -59,6 +59,8 @@ import /*embed*/ {QuestionnaireFillOutButton} from './components/questionnairefi
 import /*embed*/ {QuestionnaireFillOutModal} from './components/questionnairefilloutmodal';
 import /*embed*/ {QuestionRenderBasic} from './components/questionrenderbasic';
 import /*embed*/ {QuestionRenderHeader} from './components/questionrenderheader';
+import /*embed*/ {QuestionRenderRadioButton} from './components/questionrenderradiobutton';
+import /*embed*/ {QuestionRenderCheckbox} from './components/questionrendercheckbox';
 import /*embed*/ {QuestionRenderIST, QuestionTypeISTTextPipe, QuestionTypeISTOptionsPipe} from './components/questionrenderist';
 import /*embed*/ {QuestionRenderRating} from './components/questionrenderrating';
 import /*embed*/ {QuestionRenderText} from './components/questionrendertext';
@@ -128,6 +130,8 @@ import /*embed*/ {QuestionRenderMulti} from "./components/questionrendermulti";
         QuestionnaireFillOutModal,
         QuestionRenderBasic,
         QuestionRenderHeader,
+        QuestionRenderRadioButton,
+        QuestionRenderCheckbox,
         QuestionRenderSingle,
         QuestionRenderBinary,
         QuestionRenderMulti,

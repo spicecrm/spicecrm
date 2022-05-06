@@ -21,14 +21,14 @@
                                 </ng-container>
                             </div>
                             <div class="slds-p-left_small">
-                                <system-input-radio [value]="qp.questionoptionsArray[question.id][0].id" [(ngModel)]="value" [disabled]="isDisabled()" [canUnset]="true" name="question-{{question.id}}" system-stop-click-propagation></system-input-radio>
+                                <question-render-radio-button [option]="qp.questionoptionsArray[question.id][0]" class="slds-p-vertical--xx-small slds-p-horizontal--x-small"></question-render-radio-button>
                             </div>
                         </div>
                     </td>
                     <td width="50%" class="question-hover" style="padding: 0.75rem 0.25rem 0.75rem 0.75rem" (click)="qp.clickAnswerOption(qp.questionoptionsArray[question.id][1].id,$event)">
                         <div class="slds-grid slds-grid_vertical-align-center">
                             <div class="slds-p-right_small">
-                                <system-input-radio [value]="qp.questionoptionsArray[question.id][1].id" [(ngModel)]="value" [disabled]="isDisabled()" [canUnset]="true" name="question-{{question.id}}" system-stop-click-propagation></system-input-radio>
+                                <question-render-radio-button [option]="qp.questionoptionsArray[question.id][1]" class="slds-p-vertical--xx-small slds-p-horizontal--x-small"></question-render-radio-button>
                             </div>
                             <div style="cursor:default">
                                 <ng-container *ngIf="qp.questionoptionsArray[question.id][1].image_id">

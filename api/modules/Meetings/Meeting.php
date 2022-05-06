@@ -2,17 +2,12 @@
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\Meetings;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use DateTime;
 use SpiceCRM\includes\TimeDate;
 
-class Meeting extends SugarBean
+class Meeting extends SpiceBean
 {
-
-    var $table_name = "meetings";
-    var $module_dir = "Meetings";
-    var $object_name = "Meeting";
-
     var $date_changed = false;
 
     // save date_end by calculating user input

@@ -2,7 +2,7 @@
 
 /* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -270,7 +270,7 @@ if (file_exists('custom/application/Ext/Utils/custom_utils.ext.php')) {
  * @deprecated moved to SpiceUtils
  * Remove vars marked senstitive from array
  * @param array $defs
- * @param SugarBean|array $data
+ * @param SpiceBean|array $data
  * @return mixed $data without sensitive fields
  */
 function clean_sensitive_data($defs, $data) {
@@ -279,7 +279,7 @@ function clean_sensitive_data($defs, $data) {
             if (is_array($data)) {
                 $data[$field] = '';
             }
-            if ($data instanceof SugarBean) {
+            if ($data instanceof SpiceBean) {
                 $data->$field = '';
             }
         }
