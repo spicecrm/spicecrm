@@ -169,6 +169,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
 import {SystemPDFContainer} from "./components/systempdfcontainer";
 import {SystemIframeModal} from "./components/systemiframemodal";
 import {SystemInputColor} from "./components/systeminputcolor";
+import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcontent";
 
 @NgModule({
     imports: [
@@ -324,7 +325,8 @@ import {SystemInputColor} from "./components/systeminputcolor";
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
         SystemInputFileContent,
-        SystemWrappedText
+        SystemWrappedText,
+        SystemRichTextEditorContent
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
