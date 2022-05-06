@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\CompanyFiscalPeriods;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class CompanyFiscalPeriod extends SugarBean {
+class CompanyFiscalPeriod extends SpiceBean {
 
     public function get_summary_text(){
         return $this->name;

@@ -3,10 +3,10 @@
 
 namespace SpiceCRM\modules\UserQuotas;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use DateTime;
 
-class UserQuota extends SugarBean
+class UserQuota extends SpiceBean
 {
 
     public $disable_row_level_security = true;

@@ -28,7 +28,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -1355,7 +1355,7 @@ class OCI8Manager extends DBManager
     /**
      * @see DBManager::insert()
      */
-    public function insert(SugarBean $bean)
+    public function insert(SpiceBean $bean)
     {
 
         // clone the bean for kicking out text fields and other potential LOB candidates
@@ -1405,7 +1405,7 @@ class OCI8Manager extends DBManager
     /**
      * @see DBManager::update()
      */
-    public function update(SugarBean $bean, array $where = [])
+    public function update(SpiceBean $bean, array $where = [])
     {
 
         // clone the bean for kicking out text fields and other potential LOB candidates

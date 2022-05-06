@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\Letters;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class Letter extends SugarBean {
+class Letter extends SpiceBean {
 
 
 };

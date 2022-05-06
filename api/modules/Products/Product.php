@@ -4,10 +4,10 @@
 namespace SpiceCRM\modules\Products;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
-class Product extends SugarBean {
+class Product extends SpiceBean {
 
 //    public $unformated_numbers = true;
 

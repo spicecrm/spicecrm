@@ -5,13 +5,13 @@ namespace SpiceCRM\modules\Mailboxes;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-class Mailbox extends SugarBean {
+class Mailbox extends SpiceBean {
 
     public $message_type;
 

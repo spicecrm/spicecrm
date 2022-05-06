@@ -46,7 +46,7 @@ use Hfig\MAPI\OLE\Pear;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -59,7 +59,7 @@ use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\TrackingLinks\TrackingLink;
 
-class Email extends SugarBean
+class Email extends SpiceBean
 {
     public $attachment_image;
 
@@ -179,7 +179,7 @@ class Email extends SugarBean
             LoggerManager::getLogger()->debug('-------------------------------> Email called save()');
 
             // handle legacy concatenation of date and time fields
-            //Bug 39503 - SugarBean is not setting date_sent when seconds missing
+            //Bug 39503 - SpiceBean is not setting date_sent when seconds missing
             if (empty($this->date_sent)) {
                 $this->date_sent = $timedate->now();
             }
@@ -583,7 +583,7 @@ class Email extends SugarBean
 ////	RETRIEVERS
     function retrieve($id = -1, $encoded = true, $deleted = true, $relationships = true)
     {
-        // cn: bug 11915, return SugarBean's retrieve() call bean instead of $this
+        // cn: bug 11915, return SpiceBean's retrieve() call bean instead of $this
         $ret = parent::retrieve($id, $encoded, $deleted, $relationships);
 
         // if bean was not found --- return false
@@ -1133,11 +1133,11 @@ class Email extends SugarBean
 
     /**
      * links this email to another bean by using the assignBeanToEmail() method.
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return bool
      */
     public
-    function assignToBean(SugarBean $bean)
+    function assignToBean(SpiceBean $bean)
     {
         return $this->assignBeanToEmail($bean->id, $bean->module_name);
     }
@@ -1254,7 +1254,7 @@ class Email extends SugarBean
     }
 
     public
-    function setParent(SugarBean $bean)
+    function setParent(SpiceBean $bean)
     {
         $this->parent_type = $bean->module_name;
         $this->parent_id = $bean->id;
@@ -1281,11 +1281,11 @@ class Email extends SugarBean
     /**
      * retrieves all related emails to a given bean
      * should be static I know...
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return array of Emails or empty
      */
     public
-    function retrieve_for_bean(SugarBean $bean)
+    function retrieve_for_bean(SpiceBean $bean)
     {
         $emails = [];
         $sql = "SELECT email_id FROM emails_beans WHERE bean_id = '{$bean->id}' AND deleted = 0";
@@ -1325,7 +1325,7 @@ class Email extends SugarBean
      * Converts a Swiftmailer Message into an Email Bean.
      *
      * @param Swiftmailer\Message $message
-     * @return SugarBean
+     * @return SpiceBean
      * @throws Exception
      */
     private
