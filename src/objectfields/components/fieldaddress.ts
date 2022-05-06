@@ -46,8 +46,8 @@ export class fieldAddress extends fieldGeneric {
         super(model, view, language, metadata, router);
 
         // load the ui config and set the config properly
-        let uiconfig = this.configuration.getCapabilityConfig('spiceui');
-        if (uiconfig.addressmode == 'strict') this.strict = true;
+        let uiconfig = this.configuration.data.backendextensions.spiceui.config.format;
+        if (uiconfig == 'strict') this.strict = true;
         if (uiconfig.addressformat) this.addressFormat = uiconfig.addressformat;
         this.getAddressConfig();
     }
