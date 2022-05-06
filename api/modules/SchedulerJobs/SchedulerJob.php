@@ -5,7 +5,7 @@ namespace SpiceCRM\modules\SchedulerJobs;
 
 use Cron\CronExpression;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -19,7 +19,7 @@ use SpiceCRM\modules\Mailboxes\Mailbox;
  * Class Job
  * @package SpiceCRM\modules\Jobs
  */
-class SchedulerJob extends SugarBean
+class SchedulerJob extends SpiceBean
 {
 
     /**

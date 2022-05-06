@@ -2,12 +2,12 @@
 namespace SpiceCRM\modules\EmailSchedules;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class EmailSchedule extends SugarBean
+class EmailSchedule extends SpiceBean
 {
     public function get_summary_text()
     {
@@ -28,7 +28,7 @@ class EmailSchedule extends SugarBean
      * @param $seed
      * @param $id
      * @param bool $saveEmail
-     * @return bool|SugarBean
+     * @return bool|SpiceBean
      */
     public function sendEmail($seed, $id, $saveEmail = false)
     {

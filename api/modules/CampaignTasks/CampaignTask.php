@@ -5,7 +5,7 @@ namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
@@ -15,7 +15,7 @@ use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
-class CampaignTask extends SugarBean
+class CampaignTask extends SpiceBean
 {
 
     public function get_summary_text()
@@ -218,7 +218,7 @@ class CampaignTask extends SugarBean
      * @param $seed
      * @param false $saveEmail
      * @param false $test
-     * @return false|SugarBean
+     * @return false|SpiceBean
      */
     function sendEmail($seed, $saveEmail = false, $test = false)
     {

@@ -4,14 +4,14 @@
 namespace SpiceCRM\modules\UserAbsences;
 
 use DateTime;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class UserAbsence extends SugarBean
+class UserAbsence extends SpiceBean
 {
 
     public function get_summary_text()

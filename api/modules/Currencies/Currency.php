@@ -36,7 +36,7 @@
 
 namespace SpiceCRM\modules\Currencies;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -48,7 +48,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
  * formatting in the SugarCRM application.
  *
  */
-class Currency extends SugarBean
+class Currency extends SpiceBean
 {
 	var $disable_num_format = true;
 
