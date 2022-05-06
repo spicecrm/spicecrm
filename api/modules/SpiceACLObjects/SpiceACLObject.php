@@ -283,15 +283,19 @@ class SpiceACLObject extends SpiceBean
             $bean->assigned_user_id = $bean->id;
         }
 
-        // check assigned user Or creator
-        if ((($objectData['spiceaclowner'] && !$objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsOwner($bean)) ||
-            ((!$objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsCreator($bean)) ||
-            (($objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && (!SpiceACLUsers::checkCurrentUserIsOwner($bean) || !SpiceACLUsers::checkCurrentUserIsCreator($bean))))
+        // check assigned user OR creator OR in orgunit
+        $ownercheck = false;
+        if($objectData['spiceaclowner']) $ownercheck = SpiceACLUsers::checkCurrentUserIsOwner($bean);
+        if($objectData['spiceaclcreator']) $ownercheck = SpiceACLUsers::checkCurrentUserIsCreator($bean);
+        if($objectData['spiceaclorgunit']) $ownercheck = SpiceACLUsers::checkCurrentUserIsInOrgUnit($bean);
+        if(($objectData['spiceaclowner'] || $objectData['spiceaclcreator'] || $objectData['spiceaclorgunit']) && !$ownercheck) {
             return false;
+        }
 
         // check that the territory matches
-        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id']))
+        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
+        }
 
         return true;
     }
@@ -315,26 +319,28 @@ class SpiceACLObject extends SpiceBean
             $bean->assigned_user_id = $bean->id;
         }
 
-        // check assigned user Or creator
-        if ((($objectData['spiceaclowner'] && !$objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsOwner($bean)) ||
-            ((!$objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && !SpiceACLUsers::checkCurrentUserIsCreator($bean)) ||
-            (($objectData['spiceaclowner'] && $objectData['spiceaclcreator']) && (!SpiceACLUsers::checkCurrentUserIsOwner($bean) || !SpiceACLUsers::checkCurrentUserIsCreator($bean))))
+        // check assigned user or creator or orgunit
+        $ownercheck = false;
+        if($objectData['spiceaclowner']) $ownercheck = SpiceACLUsers::checkCurrentUserIsOwner($bean);
+        if($objectData['spiceaclcreator']) $ownercheck = SpiceACLUsers::checkCurrentUserIsCreator($bean);
+        if($objectData['spiceaclorgunit']) $ownercheck = SpiceACLUsers::checkCurrentUserIsInOrgUnit($bean);
+        if(($objectData['spiceaclowner'] || $objectData['spiceaclcreator'] || $objectData['spiceaclorgunit']) && !$ownercheck) {
             return false;
+        }
+
 
         // check that the territory matches
-        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id']))
+        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
+        }
 
         return $objectData['objectactions'];
     }
 
     public function matchObject2Activity($activity, $objectData)
     {
-        // check the activity .. if it is noit found .. cointinue
-        if (array_search($activity, $objectData['objectactions']) === false)
-            return false;
-
-        return true;
+        // check the activity .. if it is not found .. continue
+        return  !(array_search($activity, $objectData['objectactions']) === false);
     }
 
     /*
@@ -348,60 +354,59 @@ class SpiceACLObject extends SpiceBean
         $filters = [];
 
         // owner Query
+        $ownermatches = [];
+        /** @var UserAbsence $absences */
+        $absences = BeanFactory::getBean('UserAbsences');
         if ($this->spiceaclowner || $this->spiceaclcreator) {
             // check absence substitutes
-            $absences = BeanFactory::getBean('UserAbsences');
             $substituteIds = $absences->getSubstituteIDs();
             $userIds = array_merge([$current_user->id], $substituteIds);
 
-            if ($this->spiceaclowner && $this->spiceaclcreator) {
-                $filters['must'][] = [
-                    'bool' => [
-                        'should' => [
-                            [
-                                'terms' => [
-                                    'assigned_user_id' => $userIds
-                                ]
-                            ],
-                            [
-                                'terms' => [
-                                    'assigned_user_ids' => $userIds
-                                ]
-                            ],
-                            [
-                                'terms' => [
-                                    'created_by' => $userIds
-                                ]
+            // matches for the owner or coOwner
+            if ($this->spiceaclowner) {
+                $ownermatches[] = [
+                        [
+                            'terms' => [
+                                'assigned_user_id' => $userIds
                             ]
                         ],
-                        'minimum_should_match' => '1'
-                    ]
-                ];
-            } elseif ($this->spiceaclowner) {
-                $filters['must'][] = [
-                    'bool' => [
-                        'should' => [
-                            [
-                                'terms' => [
-                                    'assigned_user_id' => $userIds
-                                ]
-                            ],
-                            [
-                                'terms' => [
-                                    'assigned_user_ids' => $userIds
-                                ]
+                        [
+                            'terms' => [
+                                'assigned_user_ids' => $userIds
                             ]
-                        ],
-                        'minimum_should_match' => '1'
-                    ]
+                        ]
                 ];
-            } elseif ($this->spiceaclcreator) {
-                $filters['must'][] = [
+            }
+            // matches for the creator
+            if ($this->spiceaclcreator) {
+                $ownermatches[] = [
                     'terms' => [
                         'created_by' => $userIds
                     ]
                 ];
             }
+        }
+
+        // get the orgunits of the user and all he is substituting for
+        if ($this->spiceaclorgunit) {
+            $substituteOrgUnitIds = $absences->getSubstituteOrgUnitIDs();
+            $orgunitIds =  $current_user->orgunit_id ? array_merge([$current_user->orgunit_id], $substituteOrgUnitIds) : $substituteOrgUnitIds;
+            if(count($orgunitIds) > 0)
+            $ownermatches[] = [
+                'terms' => [
+                    'assigned_orgunit_id' => $orgunitIds
+                ]
+            ];
+        }
+
+        // if we have an ownermatch add it to the fts query
+        if(count($ownermatches > 0)){
+            $filters['must'][] = [
+                'bool' => [
+                    'should' => $ownermatches,
+                    'minimum_should_match' => '1'
+                ]
+            ];
         }
 
         // add Values
@@ -560,14 +565,15 @@ class SpiceACLObject extends SpiceBean
         $whereClauses = [];
 
         // owner Query
-        if ($this->spiceaclowner || $this->spiceaclcreator) {
-            if ($this->spiceaclowner && $this->spiceaclcreator) {
-                $whereClauses[] = "((" . SpiceACLUsers::generateCurrentUserWhereClause($table_name, $bean) . ") OR (" . SpiceACLUsers::generateCreatedByWhereClause($table_name, $bean) . "))";
-            } elseif ($this->spiceaclowner) {
-                $whereClauses[] = SpiceACLUsers::generateCurrentUserWhereClause($table_name, $bean);
-            } elseif ($this->spiceaclcreator) {
-                $whereClauses[] = SpiceACLUsers::generateCreatedByWhereClause($table_name, $bean);
-            }
+        $ownerWhereClauses = [];
+        if($this->spiceaclowner) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCurrentUserWhereClause($table_name, $bean) . ')';
+        if($this->spiceaclcreator) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCreatedByWhereClause($table_name, $bean) . ')';
+        if($this->spiceaclcreator){
+            $w = SpiceACLUsers::generateOrgUnitWhereClause($table_name, $bean);
+            if($w !== false) $ownerWhereClauses[] = "($w)";
+        }
+        if(count($ownerWhereClauses) > 0){
+            $whereClauses[] = '(' . implode(' OR ', $ownerWhereClauses) . ')';
         }
 
         // add Values
@@ -759,32 +765,6 @@ class SpiceACLObject extends SpiceBean
     }
 
     /*
-     * ===
-     */
-
-
-    /*
-    private function getKauthObjectRelationship()
-    {
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
-
-        if ($this->relationShip != '')
-            return;
-
-        $link = $db->fetchByAssoc($db->query("SELECT kom.* FROM korgobjecttypes_modules kom INNER JOIN kauthtypes kt ON kt.bean = kom.module WHERE kt.id='" . $this->objDetail['kauthtype_id'] . "'"));
-        $thisBean = \SpiceCRM\data\BeanFactory::getBean(array_search($link['module'], SpiceModules::getInstance()->getBeanList()));
-        $this->relationShip = $db->fetchByAssoc($db->query("SELECT * FROM relationships WHERE relationship_name ='" . $thisBean->field_defs[$link['relatefrom']]['relationship'] . "'"));
-
-
-        $this->beanRelRight = true;
-        if (isset($this->relationShip['rhs_module'])) {
-            if ($this->relationShip['rhs_module'] != $thisBean->_module && $this->relationShip['lhs_module'] == $thisBean->_module)
-                $this->beanRelRight = false;
-        }
-    }
-    */
-
-    /*
      * write the hashes for a Object to the DB ... including Profile Information
      */
     public function activate()
@@ -821,6 +801,11 @@ class SpiceACLObject extends SpiceBean
         return ['status' => 'success'];
     }
 
+    /**
+     * deactiovates the Object anbd also if territorry management is active cleans out all hashes
+     *
+     * @return string[]
+     */
     public function deactivate()
     {
         $territory = BeanFactory::getBean('SpiceACLTerritories');
