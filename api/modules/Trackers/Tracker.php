@@ -35,17 +35,13 @@
 ********************************************************************************/
 namespace SpiceCRM\modules\Trackers;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class Tracker extends SugarBean
+class Tracker extends SpiceBean
 {
-    var $module_dir = 'Trackers';
-    var $table_name = 'tracker';
-    var $object_name = 'Tracker';
-
     /*
      * Return the most recently viewed items for this user.
      * The number of items to return is specified in sugar_config['history_max_viewed']
@@ -69,7 +65,7 @@ class Tracker extends SugarBean
                 $history_max_viewed = (!empty(SpiceConfig::getInstance()->config['history_max_viewed'])) ? SpiceConfig::getInstance()->config['history_max_viewed'] : 50;
             }
 
-            $query = 'SELECT item_id, item_summary, module_name, id FROM ' . $this->table_name . ' WHERE id = (SELECT MAX(id) as id FROM ' . $this->table_name . ' WHERE user_id = \'' . $user_id . '\' AND deleted = 0 AND visible = 1' . $module_query . ')';
+            $query = 'SELECT item_id, item_summary, module_name, id FROM ' . $this->_tablename . ' WHERE id = (SELECT MAX(id) as id FROM ' . $this->_tablename . ' WHERE user_id = \'' . $user_id . '\' AND deleted = 0 AND visible = 1' . $module_query . ')';
             $result = $this->db->limitQuery($query, 0, $history_max_viewed, true, $query);
             while (($row = $this->db->fetchByAssoc($result))) {
                 $breadCrumb->push($row);
@@ -83,7 +79,7 @@ class Tracker extends SugarBean
 
     function makeInvisibleForAll($item_id)
     {
-        $query = "UPDATE $this->table_name SET visible = 0 WHERE item_id = '$item_id' AND visible = 1";
+        $query = "UPDATE $this->_tablename SET visible = 0 WHERE item_id = '$item_id' AND visible = 1";
         $this->db->query($query, true);
         if (!empty($_SESSION['breadCrumbs'])) {
             $breadCrumbs = $_SESSION['breadCrumbs'];

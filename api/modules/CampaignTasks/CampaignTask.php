@@ -5,7 +5,7 @@ namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
@@ -15,17 +15,8 @@ use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
-class CampaignTask extends SugarBean
+class CampaignTask extends SpiceBean
 {
-    public $module_dir = 'CampaignTasks';
-    public $object_name = 'CampaignTask';
-    public $table_name = 'campaigntasks';
-    public $new_schema = true;
-
-    public $additional_column_fields = [];
-
-    public $relationship_fields = [];
-
 
     public function get_summary_text()
     {
@@ -91,8 +82,8 @@ class CampaignTask extends SugarBean
             $seed = BeanFactory::getBean($row['module']);
             $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified)";
             $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date";
-            $insert_query .= " FROM {$seed->table_name}";
-            $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->table_name}.id) AND $where";
+            $insert_query .= " FROM {$seed->_tablename}";
+            $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->_tablename}.id) AND $where";
             $this->db->query($insert_query);
         }
 
@@ -132,7 +123,7 @@ class CampaignTask extends SugarBean
         while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
             $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
             $seed = BeanFactory::getBean($row['module']);
-            $filter_query = " SELECT id recordid, '{$row['module']}' recordmodule FROM {$seed->table_name} WHERE deleted=0 AND $where";
+            $filter_query = " SELECT id recordid, '{$row['module']}' recordmodule FROM {$seed->_tablename} WHERE deleted=0 AND $where";
             $targets_query .= " UNION $filter_query";
         }
 
@@ -227,7 +218,7 @@ class CampaignTask extends SugarBean
      * @param $seed
      * @param false $saveEmail
      * @param false $test
-     * @return false|SugarBean
+     * @return false|SpiceBean
      */
     function sendEmail($seed, $saveEmail = false, $test = false)
     {
@@ -264,7 +255,7 @@ class CampaignTask extends SugarBean
         );
 
         if($saveEmail){
-            $email->parent_type = $seed->module_dir;
+            $email->parent_type = $seed->_module;
             $email->parent_ide = $seed->id;
             $email->to_be_sent = true;
             $email->save();

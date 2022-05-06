@@ -3,14 +3,10 @@
 
 namespace SpiceCRM\modules\AccountCCDetails;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class AccountCCDetail extends SugarBean
+class AccountCCDetail extends SpiceBean
 {
-    public $table_name = "accountccdetails";
-    public $object_name = "AccountCCDetail";
-    public $module_dir = "AccountCCDetails";
-
     function get_summary_text()
     {
         return $this->companycode_name;

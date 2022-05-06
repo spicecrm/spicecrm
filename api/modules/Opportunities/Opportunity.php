@@ -37,25 +37,17 @@
 namespace SpiceCRM\modules\Opportunities;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 
-class Opportunity extends SugarBean
+class Opportunity extends SpiceBean
 {
-
-    var $table_name = "opportunities";
     var $rel_account_table = "accounts_opportunities";
     var $rel_contact_table = "opportunities_contacts";
-    var $module_dir = "Opportunities";
-    var $object_name = "Opportunity";
-
-    // This is used to retrieve related fields from form posts.
-    var $additional_column_fields = ['assigned_user_name', 'assigned_user_id', 'account_name', 'account_id', 'contact_id', 'task_id', 'note_id', 'meeting_id', 'call_id', 'email_id'
-    ];
 
     var $relationship_fields = [
         'task_id' => 'tasks',
@@ -69,14 +61,14 @@ class Opportunity extends SugarBean
         'currency_id' => 'currencies',
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
-        
-        if (!SpiceConfig::getInstance()->config['require_accounts']) {
-            unset($this->required_fields['account_name']);
-        }
-    }
+//    public function __construct()
+//    {
+//        parent::__construct();
+//
+//        if (!SpiceConfig::getInstance()->config['require_accounts']) {
+//            unset($this->required_fields['account_name']);
+//        }
+//    }
 
 
     function fill_in_additional_list_fields()

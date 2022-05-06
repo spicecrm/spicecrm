@@ -87,7 +87,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -1294,7 +1294,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -1582,7 +1582,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -2760,7 +2760,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -3065,7 +3065,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -4570,7 +4570,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -5907,7 +5907,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -8043,7 +8043,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php
@@ -8884,7 +8884,7 @@ r41558 - 2008-11-10 14:35:34 -0800 (Mon, 10 Nov 2008) - majed - changes nusoap t
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php

@@ -88,7 +88,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'module' => 'Users',
             'link' => 'modified_user_link',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'modified_user_link' => [
             'name' => 'modified_user_link',
@@ -124,7 +123,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'module' => 'Users',
             'duplicate_merge' => 'disabled',
             'importable' => 'false',
-            'massupdate' => false,
         ],
         'created_by_link' => [
             'name' => 'created_by_link',
@@ -212,7 +210,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'rname' => 'user_name',
             'id_name' => 'assigned_user_id',
             'vname' => 'LBL_ASSIGNED_TO_ID',
-            'group' => 'assigned_user_name',
             'type' => 'relate',
             'table' => 'users',
             'module' => 'Users',

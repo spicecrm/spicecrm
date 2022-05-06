@@ -1030,6 +1030,7 @@ $app_list_strings = [
         '4' => 'Zwierzchnik użytkownika przypisanego do rekordu nadrzędnego',
         '5' => 'Algorytm',
         '6' => 'Twórca rekordu',
+        '7' => 'Orgunit'
     ],
     'workflowdefinition_conditionoperators' => [
         'EQ' => '=',

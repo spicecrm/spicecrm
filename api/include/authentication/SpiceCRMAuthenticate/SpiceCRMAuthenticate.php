@@ -26,7 +26,7 @@ class SpiceCRMAuthenticate
         session_start();
         if (isset($_SESSION['authenticated_user_id'])) {
             /** @var User $userObj */
-            $userObj = BeanFactory::getBean("Users", $_SESSION['user_id'], ['relationships' => false]);
+            $userObj = BeanFactory::getBean("Users", $_SESSION['user_id'], ['relationships' => true]);
         } else {
             throw new SessionExpiredException("Session Expired",0);
         }

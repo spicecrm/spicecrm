@@ -8,7 +8,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -92,8 +92,8 @@ class M2MRelationship extends SugarRelationship
         return $links[0];
     }
     /**
-     * @param  $lhs SugarBean left side bean to add to the relationship.
-     * @param  $rhs SugarBean right side bean to add to the relationship.
+     * @param  $lhs SpiceBean left side bean to add to the relationship.
+     * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
@@ -192,19 +192,19 @@ class M2MRelationship extends SugarRelationship
 
     public function remove($lhs, $rhs)
     {
-        if(!($lhs instanceof SugarBean) || !($rhs instanceof SugarBean)) {
+        if(!($lhs instanceof SpiceBean) || !($rhs instanceof SpiceBean)) {
             LoggerManager::getLogger()->fatal("LHS and RHS must be beans");
             return false;
         }
         $lhsLinkName = $this->lhsLink;
         $rhsLinkName = $this->rhsLink;
 
-        if (!($lhs instanceof SugarBean)) {
-            LoggerManager::getLogger()->fatal("LHS is not a SugarBean object");
+        if (!($lhs instanceof SpiceBean)) {
+            LoggerManager::getLogger()->fatal("LHS is not a SpiceBean object");
             return false;
         }
-        if (!($rhs instanceof SugarBean)) {
-            LoggerManager::getLogger()->fatal("RHS is not a SugarBean object");
+        if (!($rhs instanceof SpiceBean)) {
+            LoggerManager::getLogger()->fatal("RHS is not a SpiceBean object");
             return false;
         }
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
@@ -314,7 +314,7 @@ class M2MRelationship extends SugarRelationship
             $relatedSeedKey = $this->def['rhs_key'];
             $seedFocusKey = $this->def['lhs_key'];
             if (!empty($params['where']))
-                $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->table_name : $params['right_join_table_alias']);
+                $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->_tablename : $params['right_join_table_alias']);
         }
         else
         {
@@ -324,7 +324,7 @@ class M2MRelationship extends SugarRelationship
             $relatedSeedKey = $this->def['lhs_key'];
             $seedFocusKey = $this->def['rhs_key'];
             if (!empty($params['where']))
-                $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->table_name : $params['left_join_table_alias']);
+                $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->_tablename : $params['left_join_table_alias']);
         }
         $rel_table = $this->getRelationshipTable();
 
@@ -429,9 +429,9 @@ class M2MRelationship extends SugarRelationship
     {
         $linkIsLHS = $link->getSide() == REL_LHS;
         if ($linkIsLHS) {
-            $startingTable = (empty($params['left_join_table_alias']) ? $link->getFocus()->table_name : $params['left_join_table_alias']);
+            $startingTable = (empty($params['left_join_table_alias']) ? $link->getFocus()->_tablename : $params['left_join_table_alias']);
         } else {
-            $startingTable = (empty($params['right_join_table_alias']) ? $link->getFocus()->table_name : $params['right_join_table_alias']);
+            $startingTable = (empty($params['right_join_table_alias']) ? $link->getFocus()->_tablename : $params['right_join_table_alias']);
         }
 
         $startingKey = $linkIsLHS ? $this->def['lhs_key'] : $this->def['rhs_key'];

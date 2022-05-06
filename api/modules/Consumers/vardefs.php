@@ -53,7 +53,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
         'birthdate' => [
             'name' => 'birthdate',
             'vname' => 'LBL_BIRTHDATE',
-            'massupdate' => false,
             'type' => 'date',
             'comment' => 'The birthdate of the consumer'
         ],
@@ -96,7 +95,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'table' => 'campaigns',
             'isnull' => 'true',
             'module' => 'Campaigns',
-            'massupdate' => false,
             'duplicate_merge' => 'disabled',
         ],
         'campaign_name' => [
@@ -141,7 +139,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'source' => 'non-db',
             'importable' => 'false',
             'duplicate_merge' => 'disabled',
-            'studio' => false,
         ],
         'm_accept_status_fields' => [
             'name' => 'm_accept_status_fields',
@@ -155,20 +152,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'importable' => 'false',
             'hideacl' => true,
             'duplicate_merge' => 'disabled',
-            'studio' => false,
         ],
         'accept_status_id' => [
             'name' => 'accept_status_id',
             'type' => 'varchar',
             'source' => 'non-db',
             'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'studio' => ['listview' => false],
         ],
         'accept_status_name' => [
-            'massupdate' => false,
             'name' => 'accept_status_name',
             'type' => 'enum',
-            'studio' => 'false',
             'source' => 'non-db',
             'vname' => 'LBL_LIST_ACCEPT_STATUS',
             'options' => 'dom_meeting_accept_status',
@@ -266,6 +259,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'module' => 'Letters',
             'bean_name' => 'Letter',
             'vname' => 'LBL_LETTERS',
+        ],
+        'eventregistrations' => [
+            'name' => 'eventregistrations',
+            'vname' => 'LBL_EVENTREGISTRATIONS',
+            'type' => 'link',
+            'relationship' => 'consumer_eventregistrations',
+            'source' => 'non-db',
         ],
     ],
     'relationships' => [

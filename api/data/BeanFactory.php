@@ -6,6 +6,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\modules\Currencies\Currency;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
@@ -44,6 +45,8 @@ class BeanFactory
         'UserPreferences' => ['beanname' => 'UserPreference'],
         'UserAbsences' => ['beanname' => 'UserAbsence'],
         'UserAccessLogs' => ['beanname' => 'UserAccessLog'],
+        'CompanyCodes' => ['beanname' => 'CompanyCode'],
+        'OrgUnits' => ['beanname' => 'OrgUnit'],
         'SystemTenants' => ['beanname' => 'SystemTenant'],
         'Currencies' => ['beanname' => 'Currency'],
     ];
@@ -80,7 +83,7 @@ class BeanFactory
     }
 
     /**
-     * Returns a SugarBean object by id. The Last 10 loaded beans are cached in memory to prevent multiple retrieves per request.
+     * Returns a SpiceBean object by id. The Last 10 loaded beans are cached in memory to prevent multiple retrieves per request.
      * If no id is passed, a new bean is created.
      * @static
      * @param string $module
@@ -88,8 +91,8 @@ class BeanFactory
      * @param array $params A name/value array of parameters. Names: encode, deleted,
      *        If $params is boolean we revert to the old arguments (encode, deleted), and use $params as $encode.
      *        This will be changed to using only $params in later versions.
-     * @param boolean $deleted @see SugarBean::retrieve
-     * @return SugarBean
+     * @param boolean $deleted @see SpiceBean::retrieve
+     * @return SpiceBean
      */
     public static function getBean($module, $id = null, $params = [], $deleted = true)
     {
@@ -133,7 +136,7 @@ class BeanFactory
         }
 
         // get the bean
-        $bean = $beanClass && class_exists($beanClass) ? new $beanClass() : new SugarBean();
+        $bean = $beanClass && class_exists($beanClass) ? new $beanClass() : new SpiceBean();
 
         // set the base params if not et in the implementation of the Bean
         if(!$bean->module_dir) $bean->module_dir = $module;
@@ -142,10 +145,11 @@ class BeanFactory
 
         // set the bean module
         $bean->_module = $module;
-        $bean->_tablename = $bean->table_name;
-        $bean->_objectname = $bean->object_name;
-
+        $bean->_objectname = $beanName;
+        // initialize the bean. Will load the vardefs
         $bean->initialize_bean();
+        // set the table name (vardefs need to be loaded first as done in initialize_bean())
+        $bean->_tablename = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
 
         if (!empty($id)) {
             if ($forceRetrieve || empty(self::$loadedBeans[$module][$id])) {
@@ -205,7 +209,7 @@ class BeanFactory
      * This function registers a bean with the bean factory so that it can be access from accross the code without doing
      * multiple retrieves. Beans should be registered as soon as they have an id.
      * @param string $module
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @param bool|string $id
      * @return bool true if the bean registered successfully.
      */

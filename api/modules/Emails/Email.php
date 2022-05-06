@@ -46,7 +46,7 @@ use Hfig\MAPI\OLE\Pear;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -57,15 +57,10 @@ use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
+use SpiceCRM\modules\TrackingLinks\TrackingLink;
 
-class Email extends SugarBean
+class Email extends SpiceBean
 {
-
-
-    var $table_name = 'emails';
-    var $module_dir = 'Emails';
-    var $object_name = 'Email';
-
     public $attachment_image;
 
     public $recipient_addresses = [];
@@ -184,7 +179,7 @@ class Email extends SugarBean
             LoggerManager::getLogger()->debug('-------------------------------> Email called save()');
 
             // handle legacy concatenation of date and time fields
-            //Bug 39503 - SugarBean is not setting date_sent when seconds missing
+            //Bug 39503 - SpiceBean is not setting date_sent when seconds missing
             if (empty($this->date_sent)) {
                 $this->date_sent = $timedate->now();
             }
@@ -588,7 +583,7 @@ class Email extends SugarBean
 ////	RETRIEVERS
     function retrieve($id = -1, $encoded = true, $deleted = true, $relationships = true)
     {
-        // cn: bug 11915, return SugarBean's retrieve() call bean instead of $this
+        // cn: bug 11915, return SpiceBean's retrieve() call bean instead of $this
         $ret = parent::retrieve($id, $encoded, $deleted, $relationships);
 
         // if bean was not found --- return false
@@ -733,15 +728,37 @@ class Email extends SugarBean
     }
 
     /**
+     * @param $trackingurl of the mailbox
      * generate a tracking pixel with blowfish hash and adds it to the email body
      */
-    private function generateTrackingPixel() {
+    private function generateTrackingPixel($trackingurl) {
         $key = '2fs5uhnjcnpxcpg9';
         $method = 'blowfish';
         $data = $this->_module .':'.$this->id;
         $encrypted = openssl_encrypt($data, $method, $key);
 
-        $this->body .= '<img src="'.$this->tracking_url.base64_encode($encrypted) .'" height="1" width="1">';
+       $this->body .= '<img src="'.$trackingurl.'count/'.base64_encode($encrypted).'" height="1" width="1">';
+
+    }
+
+    /**
+     * searches for links with the data-trackingid attribute, replaces
+     * @param $mailboxTrackingUrl
+     */
+    private function findTrackingLinks($mailboxTrackingUrl) {
+        $dom = new DOMDocument();
+        $dom->loadHTML($this->body);
+        //todo maybe querying with xpath is better?
+       // $xpath = new DOMXPath($dom);
+       // $matches = $xpath->query("//a[@data-trackingid')]");
+        foreach ($dom->getElementsByTagName('a') as $node) {
+            $trackingId = $node->getAttribute('data-trackingid');
+            if(!empty($trackingId)){
+                $trackingLink = TrackingLink::transformTrackingLinks($trackingId, $mailboxTrackingUrl);
+                $node->setAttribute('href', $trackingLink);
+            }
+        }
+        $this->body = $dom->saveHTML();
     }
 
     /**
@@ -776,8 +793,9 @@ class Email extends SugarBean
             }
         }
 
-        if($mailbox->track_mailbox) {
-            $this->generateTrackingPixel();
+        if($mailbox->track_mailbox && !empty($mailbox->tracking_url)) {
+           $this->generateTrackingPixel($mailbox->tracking_url);
+           $this->findTrackingLinks($mailbox->tracking_url);
         }
 
         $mailbox->initTransportHandler();
@@ -1115,11 +1133,11 @@ class Email extends SugarBean
 
     /**
      * links this email to another bean by using the assignBeanToEmail() method.
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return bool
      */
     public
-    function assignToBean(SugarBean $bean)
+    function assignToBean(SpiceBean $bean)
     {
         return $this->assignBeanToEmail($bean->id, $bean->module_name);
     }
@@ -1152,7 +1170,7 @@ class Email extends SugarBean
         // try to find a relationship between Emails and the module
         $rels = $db->query("SELECT relationship_name FROM relationships WHERE lhs_module = 'Emails' AND rhs_module = '$bean_module'");
         while ($rel = $db->fetchByAssoc($rels)) {
-            foreach ($this->field_name_map as $field => $fieldDetails) {
+            foreach ($this->field_defs as $field => $fieldDetails) {
                 if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
                     $this->load_relationship($field);
                     $this->{$field}->add($bean->id);
@@ -1236,7 +1254,7 @@ class Email extends SugarBean
     }
 
     public
-    function setParent(SugarBean $bean)
+    function setParent(SpiceBean $bean)
     {
         $this->parent_type = $bean->module_name;
         $this->parent_id = $bean->id;
@@ -1263,11 +1281,11 @@ class Email extends SugarBean
     /**
      * retrieves all related emails to a given bean
      * should be static I know...
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return array of Emails or empty
      */
     public
-    function retrieve_for_bean(SugarBean $bean)
+    function retrieve_for_bean(SpiceBean $bean)
     {
         $emails = [];
         $sql = "SELECT email_id FROM emails_beans WHERE bean_id = '{$bean->id}' AND deleted = 0";
@@ -1307,7 +1325,7 @@ class Email extends SugarBean
      * Converts a Swiftmailer Message into an Email Bean.
      *
      * @param Swiftmailer\Message $message
-     * @return SugarBean
+     * @return SpiceBean
      * @throws Exception
      */
     private
