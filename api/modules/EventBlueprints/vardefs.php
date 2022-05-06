@@ -71,24 +71,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBlueprint'] = [
             'type' => 'parent_type',
             'dbType' => 'varchar',
             'len' => 100,
-            'group' => 'location_name',
-            'options' => 'parent_type_display',
         ],
         'location_id' => [
             'name' => 'location_id',
             'vname' => 'LBL_LOCATION_ID',
             'type' => 'id',
-            'group' => 'location_name',
             'reportable' => false,
         ],
         'location_name' => [
             'name' => 'location_name',
-            'parent_type' => 'record_type_display',
             'type_name' => 'location_type',
             'id_name' => 'location_id',
             'vname' => 'LBL_LOCATION',
             'type' => 'parent',
-            'group' => 'location_name',
             'source' => 'non-db'
         ],
         'location_accounts' => [

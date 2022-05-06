@@ -1,4 +1,4 @@
-<div class="slds-notify_container">
+<div class="slds-notify_container" [ngStyle]="toastContainerStyle">
     <div *ngFor="let activeToast of toast.activeToasts" [ngStyle]="toastStyle" class="slds-notify" [ngClass]="getToastClass(activeToast.type, activeToast.theme)" role="alert">
         <button class="slds-button slds-notify__close slds-button--icon-inverse" (click)="toast.clearToast(activeToast.id)">
             <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>

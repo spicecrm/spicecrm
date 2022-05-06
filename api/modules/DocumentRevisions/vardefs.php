@@ -130,7 +130,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'len' => '255',
             'source' => 'non-db',
             'unified_search' => true,
-            'massupdate' => false,
         ],
         'documents' => [
             'name' => 'documents',
@@ -140,7 +139,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'latest_revision' => [
             'name' => 'latest_revision',

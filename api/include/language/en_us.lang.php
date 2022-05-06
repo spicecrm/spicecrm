@@ -1042,6 +1042,7 @@ $app_list_strings = [
         '4' => 'Manager of User assigned to Parent Object',
         '5' => 'system routine',
         '6' => 'Creator',
+        '7' => 'Organizational Unit'
     ],
     'workflowdefinition_conditionoperators' => [
         'EQ' => '=',

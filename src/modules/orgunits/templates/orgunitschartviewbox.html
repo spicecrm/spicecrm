@@ -1,0 +1,20 @@
+<div style="margin: 1rem auto; width: 200px" class="slds-is-relative">
+    <div class="slds-p-around--small">
+        <div #box class="slds-box slds-theme--alt-inverse slds-align--absolute-center slds-is-relative" [ngClass]="{'slds-theme--alt-inverse': nodemodule == 'OrgUnits', 'slds-theme--info': nodemodule == 'OrgCharts'}" (mouseenter)="displayButtons = true" (mouseleave)="displayButtons=false">
+            <div *ngIf="displayButtons" class="slds-is-absolute slds-grid" style="top: 5px; right: 5px;">
+                <!--button class="slds-button slds-button--icon" (click)="delete()">
+                    <system-button-icon class="slds-theme--inverse" icon="delete"></system-button-icon>
+                </button-->
+                <button class="slds-button slds-button--icon" (click)="edit()">
+                    <system-button-icon [ngClass]="{'slds-theme--alt-inverse': nodemodule == 'OrgUnits', 'slds-theme--info': nodemodule == 'OrgCharts'}" icon="edit"></system-button-icon>
+                </button>
+            </div>
+            <div class="slds-m-around--small slds-truncate" system-model-popover>
+                {{model.data.name}}
+            </div>
+            <div *ngIf="displayButtons && nodemodule=='OrgUnits'" class="slds-is-absolute slds-grid" style="bottom: 3px; right: calc(50% - 8px);">
+                <orgunits-chart-view-box-add></orgunits-chart-view-box-add>
+            </div>
+        </div>
+    </div>
+</div>

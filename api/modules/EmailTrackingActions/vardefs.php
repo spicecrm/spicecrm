@@ -10,24 +10,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
     'duplicate_merge' => false,
     'unified_search' => false,
     'fields' => [
-        'id' => [
-            'name' => 'id',
-            'vname' => 'LBL_ID',
-            'type' => 'id',
-            'required'=>true,
-            'comment' => 'Unique identifier'
-        ],
         'action' => [
             'name' => 'action',
             'type' => 'enum',
             'options' => 'tracking_actions_dom'
-        ],
-        'date_entered' => [
-            'name' => 'date_entered',
-            'vname' => 'LBL_DATE_ENTERED',
-            'type' => 'datetime',
-            'required' => true,
-            'comment' => 'Date record created'
         ],
         'parent_id' => [
             'name'       => 'parent_id',
@@ -67,6 +53,32 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'relationship' => 'email_emailtrackingactions',
             'source' => 'non-db'
         ],
+        'trackinglink_id' => [
+            'name' => 'trackinglink_id',
+            'vname' => 'LBL_TRACKINGLINK_ID',
+            'type' => 'id'
+        ],
+        'trackinglink_name' => [
+            'name' => 'trackinglink_name',
+            'rname' => 'name',
+            'id_name' => 'trackinglink_id',
+            'vname' => 'LBL_TRACKINGLINK',
+            'type' => 'relate',
+            'table' => 'trackinglinks',
+            'isnull' => 'true',
+            'module' => 'TrackingLinks',
+            'dbType' => 'varchar',
+            'link' => 'trackinglinks',
+            'len' => '255',
+            'source' => 'non-db'
+        ],
+        'trackinglinks' => [
+            'name' => 'trackinglinks',
+            'type' => 'link',
+            'relationship' => 'trackinglink_emailtrackingactions',
+            'source' => 'non-db',
+            'module' => 'TrackingLinks'
+        ],
 
 
     ],
@@ -88,8 +100,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'rhs_table'=> 'emailtrackingactions',
             'rhs_key' => 'parent_id',
             'relationship_type'=>'one-to-many'
-        ]
+        ],
+        'trackinglink_emailtrackingactions' => [
+            'lhs_module'=> 'TrackingLinks',
+            'lhs_table'=> 'trackinglinks',
+            'lhs_key' => 'id',
+            'rhs_module'=> 'EmailTrackingActions',
+            'rhs_table'=> 'emailtrackingactions',
+            'rhs_key' => 'trackinglink_id',
+            'relationship_type'=>'one-to-many'
+        ],
+
     ],
     'indices' => [],
 
 ];
+
+VardefManager::createVardef('EmailTrackingActions', 'EmailTrackingAction', ['default']);

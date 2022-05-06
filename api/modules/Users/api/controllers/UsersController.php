@@ -154,7 +154,7 @@ class UsersController
             $addWhere = "";
             // check if assigned_user_id is defined
             if (isset($tmpBean->field_defs['assigned_user_id'])) {
-                $q = "SELECT count(0) totalcount from {$tmpBean->table_name} WHERE assigned_user_id = '{$userid}' AND deleted=0";
+                $q = "SELECT count(0) totalcount from {$tmpBean->_tablename} WHERE assigned_user_id = '{$userid}' AND deleted=0";
                 if (!empty($filterid)) {
                     $filter = new SysModuleFilters();
                     $addWhere .= " " . $filter->generateWhereClauseForFilterId($filterid);
@@ -188,7 +188,7 @@ class UsersController
         $records = [];
         if ($tmpBean = BeanFactory::getBean($module)) {
             $addWhere = "";
-            $q = "SELECT id from {$tmpBean->table_name} WHERE assigned_user_id = '{$userid}' AND deleted=0";
+            $q = "SELECT id from {$tmpBean->_tablename} WHERE assigned_user_id = '{$userid}' AND deleted=0";
             if (!empty($filterid)) {
                 $filter = new SysModuleFilters();
                 $addWhere .= " " . $filter->generateWhereClauseForFilterId($filterid);
@@ -250,7 +250,7 @@ class UsersController
             foreach ($reassigndata as $moduleid => $data) {
                 $tmpBean = BeanFactory::getBean($data['module']);
                 // update query
-                $q = "UPDATE {$tmpBean->table_name} SET assigned_user_id = '{$params['newuserid']}', modified_user_id='{\SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id}', date_modified='" . gmdate(TimeDate::getInstance()->nowDb()) . "'
+                $q = "UPDATE {$tmpBean->_tablename} SET assigned_user_id = '{$params['newuserid']}', modified_user_id='{\SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id}', date_modified='" . gmdate(TimeDate::getInstance()->nowDb()) . "'
                 WHERE assigned_user_id='{$params['userid']}' AND  deleted=0";
                 if (!empty($data['filterid'])) {
                     $filter = new SysModuleFilters();

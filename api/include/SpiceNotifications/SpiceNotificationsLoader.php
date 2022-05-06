@@ -2,7 +2,7 @@
 namespace SpiceCRM\includes\SpiceNotifications;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSubscriptions\SpiceSubscriptionsLoader;
@@ -85,11 +85,11 @@ class SpiceNotificationsLoader
      * Creates a change type notification.
      * It adds the names of the changed fields into additional_infos.
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @param bool $checkNotify
      * @throws \Exception
      */
-    public function createChangeNotifications(SugarBean $bean, bool $checkNotify): void {
+    public function createChangeNotifications(SpiceBean $bean, bool $checkNotify): void {
         if (empty($bean->auditDataChanges)) {
             return;
         }
@@ -116,11 +116,11 @@ class SpiceNotificationsLoader
     /**
      * Creates an assignment type notification.
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @param bool $checkNotify
      * @throws \Exception
      */
-    public function createAssignNotification(SugarBean $bean, bool $checkNotify): void {
+    public function createAssignNotification(SpiceBean $bean, bool $checkNotify): void {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         // notification will be sent if the assigned user has been changed AND the new assigned user is not the current user
         if ($checkNotify && $bean->assigned_user_id != $bean->fetched_row['assigned_user_id']
@@ -133,10 +133,10 @@ class SpiceNotificationsLoader
     /**
      * Creates a delete type notification.
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @throws \Exception
      */
-    public function createDeleteNotification(SugarBean $bean): void {
+    public function createDeleteNotification(SpiceBean $bean): void {
         $notification = new SpiceNotifications($bean, SpiceNotifications::TYPE_DELETE);
         $notification->saveNotification();
 

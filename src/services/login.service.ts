@@ -134,6 +134,8 @@ export class loginService {
                     this.session.authData.dev = response.dev;
                     this.session.authData.portalOnly = response.portal_only;
                     this.session.authData.googleToken = response.access_token;
+                    this.session.authData.orgunit_id = response.orgunit_id;
+                    this.session.authData.orgunit_name = response.orgunit_name;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     this.session.authData.canchangepassword = response.canchangepassword;
 

@@ -54,6 +54,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLObject'] = [
             'type' => 'bool',
             'default' => false
         ],
+        'spiceaclorgunit' => [
+            'name' => 'spiceaclorgunit',
+            'vname' => 'LBL_SPICEACLORGUNIT',
+            'type' => 'bool',
+            'default' => false
+        ],
         'allorgobjects' => [
             'name' => 'allorgobjects',
             'vname' => 'LBL_ALLORGOBJECTS',

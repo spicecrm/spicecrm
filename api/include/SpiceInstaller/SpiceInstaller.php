@@ -20,7 +20,7 @@ use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 require_once('modules/TableDictionary.php');
@@ -530,7 +530,7 @@ class SpiceInstaller
                 }
 
             }
-            SugarBean::createRelationshipMeta(
+            SpiceBean::createRelationshipMeta(
                 $bean,
                 $db,
                 SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'],
@@ -549,7 +549,7 @@ class SpiceInstaller
                 $db->query($query);
             }
 
-            SugarBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
+            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
         }
 
 

@@ -29,7 +29,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
             'name' => 'salutation',
             'type' => 'enum',
             'options' => 'salutation_dom',
-            'massupdate' => false,
             'len' => 255,
             'vname' => 'LBL_SALUTATION',
         ],
@@ -153,34 +152,48 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
             'relationship' => 'eventregistration_campaigntask_rel',
             'source' => 'non-db',
         ],
-        'contact_id' => [
-            'name' => 'contact_id',
-            'vname' => 'LBL_CONTACT_ID',
+        'parent_id' => [
+            'name' => 'parent_id',
+            'vname' => 'LBL_PARENT_ID',
             'type' => 'id',
-            'comment' => 'Contact identifier',
-            'reportable' => false,
-            'required' => false,
+            'comment' => 'ID of parent record'
         ],
-        'contact_name' => [
-            'name' => 'contact_name',
-            'rname' => 'name',
-            'id_name' => 'contact_id',
+        'parent_type' => [
+            'name'     => 'parent_type',
+            'vname'    => 'LBL_PARENT_TYPE',
+            'type'     => 'parent_type',
+            'dbtype'   => 'varchar',
+            'len'      => 255,
+            'comment'  => 'The module name of parent record',
+        ],
+        'parent_name' => [
+            'name'        => 'parent_name',
+            'vname'       => 'LBL_RELATED_TO',
+            'type'        => 'parent',
+            'type_name'   => 'parent_type',
+            'id_name'     => 'parent_id',
+            'source'      => 'non-db',
+            'comment'  => 'The summary of the parent record',
+        ],
+        'contact' => [
+            'name' => 'contact',
             'vname' => 'LBL_CONTACT',
-            'type' => 'relate',
-            'table' => 'contacts',
-            'isnull' => 'true',
-            'module' => 'Contacts',
-            'dbType' => 'varchar',
-            'link' => 'contact_link',
-            'len' => '255',
-            'source' => 'non-db',
-            'required' => false,
-        ],
-        'contact_link' => [
-            'name' => 'contact_link',
-            'vname' => 'LBL_CONTACT_LINK',
             'type' => 'link',
-            'relationship' => 'eventregistration_contact_rel',
+            'relationship' => 'contact_eventregistrations',
+            'source' => 'non-db',
+        ],
+        'consumer' => [
+            'name' => 'consumer',
+            'vname' => 'LBL_CONSUMER',
+            'type' => 'link',
+            'relationship' => 'consumer_eventregistrations',
+            'source' => 'non-db',
+        ],
+        'user' => [
+            'name' => 'user',
+            'vname' => 'LBL_USER',
+            'type' => 'link',
+            'relationship' => 'user_eventregistrations',
             'source' => 'non-db',
         ]
     ],
@@ -212,20 +225,44 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
             'rhs_key' => 'campaigntask_id',
             'relationship_type' => 'one-to-many'
         ],
-        'eventregistration_contact_rel' => [
+        'contact_eventregistrations' => [
             'lhs_module' => 'Contacts',
             'lhs_table' => 'contacts',
             'lhs_key' => 'id',
             'rhs_module' => 'EventRegistrations',
             'rhs_table' => 'eventregistrations',
-            'rhs_key' => 'contact_id',
-            'relationship_type' => 'one-to-many'
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column'=>'parent_type',
+            'relationship_role_column_value' => 'Contacts'
+        ],
+        'consumer_eventregistrations' => [
+            'lhs_module' => 'Consumers',
+            'lhs_table' => 'consumers',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EventRegistrations',
+            'rhs_table' => 'eventregistrations',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column'=>'parent_type',
+            'relationship_role_column_value' => 'Consumers'
+        ],
+        'user_eventregistrations' => [
+            'lhs_module' => 'Users',
+            'lhs_table' => 'users',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EventRegistrations',
+            'rhs_table' => 'eventregistrations',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column'=>'parent_type',
+            'relationship_role_column_value' => 'Users'
         ],
     ],
     'indices' => [
         ['name' => 'idx_regcamp_id', 'type' => 'index', 'fields' => ['campaign_id']],
-        ['name' => 'idx_regctid', 'type' => 'index', 'fields' => ['contact_id']],
-        ['name' => 'idx_regcampctid', 'type' => 'index', 'fields' => ['campaign_id', 'contact_id', 'deleted']],
+        ['name' => 'idx_regparent', 'type' => 'index', 'fields' => ['parent_id', 'parent_type', 'deleted']],
+        ['name' => 'idx_regcampctid', 'type' => 'index', 'fields' => ['campaign_id', 'parent_id', 'deleted']],
     ]
 ];
 
