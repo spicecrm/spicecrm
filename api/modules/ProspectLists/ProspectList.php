@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\ProspectLists;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -40,7 +40,7 @@ use SpiceCRM\data\SugarBean;
 /*********************************************************************************
  * Description:
  ********************************************************************************/
-class ProspectList extends SugarBean
+class ProspectList extends SpiceBean
 {
 
     var $rel_prospects_table = "prospect_lists_prospects";

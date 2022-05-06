@@ -3,13 +3,13 @@
 
 namespace SpiceCRM\modules\MediaFiles;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-class MediaFile extends SugarBean {
+class MediaFile extends SpiceBean {
 
     private $imageQualities = ['image/bmp' => true, 'image/gif' => null, 'image/jpeg' => 85, 'image/png' => 9, 'image/webp' => 80]; # for png: it´s not the quality, it´s the compression (lossless)
     private $imageFunctions = ['image/bmp' => 'bmp', 'image/gif' => 'gif', 'image/jpeg' => 'jpeg', 'image/png' => 'png', 'image/webp' => 'webp'];

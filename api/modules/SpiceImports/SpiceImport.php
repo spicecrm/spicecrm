@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\SpiceImports;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -11,7 +11,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-class SpiceImport extends SugarBean
+class SpiceImport extends SpiceBean
 {
     var $objectimport;
 

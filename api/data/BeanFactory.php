@@ -83,7 +83,7 @@ class BeanFactory
     }
 
     /**
-     * Returns a SugarBean object by id. The Last 10 loaded beans are cached in memory to prevent multiple retrieves per request.
+     * Returns a SpiceBean object by id. The Last 10 loaded beans are cached in memory to prevent multiple retrieves per request.
      * If no id is passed, a new bean is created.
      * @static
      * @param string $module
@@ -91,8 +91,8 @@ class BeanFactory
      * @param array $params A name/value array of parameters. Names: encode, deleted,
      *        If $params is boolean we revert to the old arguments (encode, deleted), and use $params as $encode.
      *        This will be changed to using only $params in later versions.
-     * @param boolean $deleted @see SugarBean::retrieve
-     * @return SugarBean
+     * @param boolean $deleted @see SpiceBean::retrieve
+     * @return SpiceBean
      */
     public static function getBean($module, $id = null, $params = [], $deleted = true)
     {
@@ -136,7 +136,7 @@ class BeanFactory
         }
 
         // get the bean
-        $bean = $beanClass && class_exists($beanClass) ? new $beanClass() : new SugarBean();
+        $bean = $beanClass && class_exists($beanClass) ? new $beanClass() : new SpiceBean();
 
         // set the base params if not et in the implementation of the Bean
         if(!$bean->module_dir) $bean->module_dir = $module;
@@ -209,7 +209,7 @@ class BeanFactory
      * This function registers a bean with the bean factory so that it can be access from accross the code without doing
      * multiple retrieves. Beans should be registered as soon as they have an id.
      * @param string $module
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @param bool|string $id
      * @return bool true if the bean registered successfully.
      */

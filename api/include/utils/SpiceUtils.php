@@ -10,7 +10,7 @@ use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -674,7 +674,7 @@ class SpiceUtils
     /**
      * Remove vars marked senstitive from array
      * @param array $defs
-     * @param SugarBean|array $data
+     * @param SpiceBean|array $data
      * @return mixed $data without sensitive fields
      */
     public static function cleanSensitiveData($defs, $data) {
@@ -683,7 +683,7 @@ class SpiceUtils
                 if (is_array($data)) {
                     $data[$field] = '';
                 }
-                if ($data instanceof SugarBean) {
+                if ($data instanceof SpiceBean) {
                     $data->$field = '';
                 }
             }

@@ -79,7 +79,7 @@ class SpiceModules
                         $this->beanFiles[$module['bean']] = "modules/{$module['module']}/{$module['bean']}.php";
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\modules\\' . $module['module'] . '\\' . $module['bean'];
                     } else {
-                        $this->beanFiles[$module['bean']] = 'data/SugarBean.php';
+                        $this->beanFiles[$module['bean']] = 'data/SpiceBean.php';
                     }
                 }
             }

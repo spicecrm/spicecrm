@@ -4,7 +4,7 @@
 namespace SpiceCRM\modules\SpiceACLObjects;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -16,7 +16,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
  * @property array authObjects
  * @property  relationShip
  */
-class SpiceACLObject extends SugarBean
+class SpiceACLObject extends SpiceBean
 {
     private $aclobjects = [];
 

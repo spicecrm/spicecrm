@@ -36,7 +36,7 @@
 namespace SpiceCRM\modules\UserPreferences;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -53,7 +53,7 @@ use SpiceCRM\modules\Users\User;
  * Contributor(s): ______________________________________..
  ********************************************************************************/
 
-class UserPreference extends SugarBean
+class UserPreference extends SpiceBean
 {
 
     public $disable_row_level_security = true;
