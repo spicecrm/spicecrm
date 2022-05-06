@@ -35,7 +35,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;

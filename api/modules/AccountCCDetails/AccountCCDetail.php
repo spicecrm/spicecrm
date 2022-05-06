@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\AccountCCDetails;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class AccountCCDetail extends SugarBean
+class AccountCCDetail extends SpiceBean
 {
     function get_summary_text()
     {

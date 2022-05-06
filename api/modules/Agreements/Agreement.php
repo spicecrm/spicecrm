@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\Agreements;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class Agreement extends SugarBean {
+class Agreement extends SpiceBean {
     
     public $valid_from;
     public $valid_to;

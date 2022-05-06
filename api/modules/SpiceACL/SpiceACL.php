@@ -111,7 +111,7 @@ class SpiceACL
 
     /*
      * adds the object specific Where Clause to the where array
-     * called in data/SugarBean.php in function create_new_list_query
+     * called in data/SpiceBean.php in function create_new_list_query
      */
     public function addACLAccessToListArray(&$selectArray, $bean, $tableName = '', $retArray = false)
     {
@@ -218,7 +218,7 @@ class SpiceACL
     }
 
     /**
-     * @param $bean SugarBean or String module name
+     * @param $bean SpiceBean or String module name
      * @param $action
      * @param bool $is_owner
      * @param string $type
@@ -339,7 +339,7 @@ class SpiceACL
 
     /*
      * function to check the ACL Access
-     * called in data/SugarBean.php in function ACLAccess
+     * called in data/SpiceBean.php in function ACLAccess
      */
     public function checkACLAccess($bean, $view)
     {

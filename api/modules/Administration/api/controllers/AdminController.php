@@ -4,7 +4,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -216,12 +216,12 @@ class AdminController
         $sql = '';
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->_tablename])) {
+            if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
                 $sql .= $db->repairTable($focus, $execute);
                 $repairedTables[$focus->_tablename] = true;
             }
             // check on audit tables
-            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
+            if (($focus instanceof SpiceBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
                 $sql .= $focus->update_audit_table(false);
                 $repairedTables[$focus->_tablename . '_audit'] = true;
             }
@@ -270,12 +270,12 @@ class AdminController
 
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->_tablename])) {
+            if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
                 $sql .= $db->repairTable($focus, $execute);
                 $repairedTables[$focus->_tablename] = true;
             }
             // check on audit tables
-            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
+            if (($focus instanceof SpiceBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
                 $sql .= $focus->update_audit_table(false);
                 $repairedTables[$focus->_tablename . '_audit'] = true;
             }
@@ -420,7 +420,7 @@ class AdminController
 //            foreach ($GLOBALS['moduleList'] as $module) {
 //                $focus = BeanFactory::getBean($module);
 //                if (!$focus) continue;
-//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->_tablename, [$focus->_objectname => SpiceDictionaryHandler::getInstance()->dictionary[$focus->_objectname]], $focus->_module);
+//                SpiceBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->_tablename, [$focus->_objectname => SpiceDictionaryHandler::getInstance()->dictionary[$focus->_objectname]], $focus->_module);
 //            }
 //
 //            // rebuild the metadata relationships as well
@@ -457,7 +457,7 @@ class AdminController
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
         foreach ($rel_dictionary as $rel_name => $rel_data) {
             $table = isset($rel_data ['table']) ? $rel_data ['table'] : "";
-            SugarBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
+            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
         }
     }
 

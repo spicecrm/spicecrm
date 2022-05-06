@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\ScrumThemes;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class ScrumTheme extends SugarBean {
+class ScrumTheme extends SpiceBean {
 
     public function save($check_notify = false, $fts_index_bean = true)
     {

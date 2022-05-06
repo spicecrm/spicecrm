@@ -4,14 +4,14 @@ namespace SpiceCRM\modules\Tasks;
 
 use DateInterval;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use DateTime;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class Task extends SugarBean
+class Task extends SpiceBean
 {
     /**
      * Available status values

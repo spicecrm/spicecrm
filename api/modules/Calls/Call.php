@@ -3,7 +3,7 @@
 namespace SpiceCRM\modules\Calls;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use DateTime;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -15,7 +15,7 @@ use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\Leads\Lead;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
-class Call extends SugarBean
+class Call extends SpiceBean
 {
 
     var $rel_users_table = "calls_users";

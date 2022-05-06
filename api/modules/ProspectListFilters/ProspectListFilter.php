@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\ProspectListFilters;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class ProspectListFilter extends SugarBean {
+class ProspectListFilter extends SpiceBean {
 
     function fill_in_additional_detail_fields()
     {

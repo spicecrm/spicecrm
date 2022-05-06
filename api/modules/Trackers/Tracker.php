@@ -35,12 +35,12 @@
 ********************************************************************************/
 namespace SpiceCRM\modules\Trackers;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class Tracker extends SugarBean
+class Tracker extends SpiceBean
 {
     /*
      * Return the most recently viewed items for this user.

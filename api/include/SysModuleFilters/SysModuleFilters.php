@@ -721,7 +721,7 @@ class SysModuleFilters
      * checks is a bean matches a filter
      *
      * @param $filterId the filter id
-     * @param SugarBean $bean the bean that shoudl be checked if the filter matches
+     * @param SpiceBean $bean the bean that shoudl be checked if the filter matches
      * @return boolean true if the criteria of the filter are matcehd
      */
     public function checkBeanForFilterIdMatch($filterId, $bean)

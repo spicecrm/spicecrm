@@ -3,10 +3,10 @@
 namespace SpiceCRM\modules\Folders;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
-class Folder extends SugarBean
+class Folder extends SpiceBean
 {
     public $importable = false;
 
