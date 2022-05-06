@@ -5,14 +5,14 @@ namespace SpiceCRM\modules\ServiceTickets;
 
 use DateTime;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\extensions\modules\QuestionAnswers\QuestionAnsweringHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class ServiceTicket extends SugarBean
+class ServiceTicket extends SpiceBean
 {
     private $stageFields = [
         'assigned_user_id' => 'st_assigned_user_id',

@@ -3,7 +3,7 @@
 namespace SpiceCRM\includes\SpiceGDPRManager\schedulerjobtasks;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
@@ -69,9 +69,9 @@ class SpiceGDPRManagerSchedulerJobTasks
     /**
      * deletes all related beans that are relevant
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      */
-    public function deleteRelated(SugarBean $bean, $relatedModules, $purge = false){
+    public function deleteRelated(SpiceBean $bean, $relatedModules, $purge = false){
         if(count($relatedModules) > 0) {
 
             foreach ($bean->field_defs as $fieldname => $fielddata) {

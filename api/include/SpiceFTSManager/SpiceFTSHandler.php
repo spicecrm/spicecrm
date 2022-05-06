@@ -1004,7 +1004,7 @@ class SpiceFTSHandler
      *
      * checks for duplicate records
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      *
      * @return array
      */

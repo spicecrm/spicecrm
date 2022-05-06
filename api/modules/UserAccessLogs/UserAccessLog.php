@@ -3,14 +3,14 @@
 
 namespace SpiceCRM\modules\UserAccessLogs;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class UserAccessLog extends SugarBean
+class UserAccessLog extends SpiceBean
 {
     public $disable_row_level_security = true;
 

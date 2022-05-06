@@ -2,14 +2,14 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\OrgCharts;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * a module to haneld org charts and assignment of org units
  */
-class OrgChart extends SugarBean
+class OrgChart extends SpiceBean
 {
     /**
      * create an initial orgunit if the chart is new

@@ -2,7 +2,7 @@
 namespace SpiceCRM\modules\Campaigns;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 /*********************************************************************************
@@ -45,7 +45,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
  * Description:
  ********************************************************************************/
 
-class Campaign extends SugarBean {
+class Campaign extends SpiceBean {
 
     var $rel_prospect_list_table = "prospect_list_campaigns";
 	var $importable = true;

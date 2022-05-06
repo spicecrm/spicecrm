@@ -4,13 +4,13 @@
 namespace SpiceCRM\modules\OutputTemplates;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
-class OutputTemplate extends SugarBean
+class OutputTemplate extends SpiceBean
 {
 
     // fields which holds options to create pdfs

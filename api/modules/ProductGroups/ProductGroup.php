@@ -4,10 +4,10 @@
 namespace SpiceCRM\modules\ProductGroups;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\KREST\handlers\ModuleHandler;
 
-class ProductGroup extends SugarBean
+class ProductGroup extends SpiceBean
 {
 //    public $unformated_numbers = true;
 
