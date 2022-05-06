@@ -8,7 +8,7 @@ import {
     OnInit,
     ViewContainerRef,
     ViewChild,
-    AfterViewInit, SkipSelf
+    SkipSelf
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -22,7 +22,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
     templateUrl: '../templates/leadconvertopportunitymodal.html',
     providers: [model, view]
 })
-export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
+export class LeadConvertOpportunityModal implements OnInit {
 
     @ViewChild('detailcontainer', {read: ViewContainerRef, static: true})  public detailcontainer: ViewContainerRef;
 
@@ -42,12 +42,12 @@ export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
 
     public ngOnInit() {
         this.model.initialize(this.lead);
-    }
 
-    public ngAfterViewInit(){
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
         this.componentSet = componentconfig.componentset;
     }
+
+
 
     public close() {
         this.self.destroy();

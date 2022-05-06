@@ -132,15 +132,20 @@ class BeanFactory
             return false;
         }
 
-        if ($beanClass && class_exists($beanClass)) {
-            $bean = new $beanClass();
-        } else {
-            $bean = new SugarBean();
-            $bean->module_dir = $module;
-            $bean->object_name = $beanName;
-            $bean->table_name = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
-            $bean->initialize_bean();
-        }
+        // get the bean
+        $bean = $beanClass && class_exists($beanClass) ? new $beanClass() : new SugarBean();
+
+        // set the base params if not et in the implementation of the Bean
+        if(!$bean->module_dir) $bean->module_dir = $module;
+        if(!$bean->object_name) $bean->object_name = $beanName;
+        if(!$bean->table_name) $bean->table_name = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
+
+        // set the bean module
+        $bean->_module = $module;
+        $bean->_tablename = $bean->table_name;
+        $bean->_objectname = $bean->object_name;
+
+        $bean->initialize_bean();
 
         if (!empty($id)) {
             if ($forceRetrieve || empty(self::$loadedBeans[$module][$id])) {
@@ -156,9 +161,6 @@ class BeanFactory
                 $bean = self::$loadedBeans[$module][$id];
             }
         }
-
-        // add the bean module
-        $bean->_module = $module;
 
         return $bean;
     }
