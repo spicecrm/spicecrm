@@ -49,7 +49,7 @@ class ServiceCalendar extends SpiceBean
         $this->holidays = [];
         if ($this->systemholidaycalendar_id) {
             $holidayCalendar = BeanFactory::getBean('SystemHolidayCalendars', $this->systemholidaycalendar_id);
-            $this->holidays = $holidayCalendar->getHolidays();
+            $this->holidays = $holidayCalendar ? $holidayCalendar->getHolidays() : [];
         }
 
         $this->workingtimes = [];
