@@ -9,11 +9,15 @@ import {
     EventEmitter,
     forwardRef,
     Inject,
-    OnDestroy, OnInit, Output,
+    Input,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Optional,
+    Output,
     Renderer2,
     ViewChild,
-    ViewContainerRef,
-    Input, Optional, ChangeDetectorRef, NgZone
+    ViewContainerRef
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -23,9 +27,11 @@ import {systemrichtextservice} from "../services/systemrichtext.service";
 import {language} from "../../services/language.service";
 import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
-import { model } from '../../services/model.service';
-import { helper } from '../../services/helper.service';
+import {model} from '../../services/model.service';
+import {helper} from '../../services/helper.service';
 import {libloader} from "../../services/libloader.service";
+import {DomSanitizer} from "@angular/platform-browser";
+import * as less from 'less'
 
 declare var CKSource;
 
@@ -51,6 +57,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * set to true to have all options
      */
     @Input() public extendedmode: boolean = true;
+
+    /**
+     * display the editor in read only mode
+     * @private
+     */
+    @Input() public readOnly: boolean = false;
 
     /**
      * an input to set the inner height of the editor window set in pixel
@@ -100,6 +112,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 public elementRef: ElementRef,
                 public language: language,
                 private zone: NgZone,
+                private sanitizer: DomSanitizer,
                 public viewContainerRef: ViewContainerRef,
                 @Optional() public model: model,
                 public helper: helper ) {
@@ -124,7 +137,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * holds a reference to the ckeditor
      * @private
      */
-    private editor: {execute: (command: string, params?: any) => void, setData: (data: string) => void, getData: () => string, model: any, ui: any, editing: any};
+    public editor: {execute: (command: string, params?: any) => void, setData: (data: string) => void, getData: () => string, model: any, ui: any, editing: any, enableReadOnlyMode: (val: string) => void};
 
     public ngOnInit() {
 
@@ -152,6 +165,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     },
                 }).then(res => {
                     this.editor = res;
+                    if (this.readOnly) {
+                        this.editor.enableReadOnlyMode('efsjeflksjefloikjse');
+                    }
                     this.editor.editing.view.change(writer=>{
                         writer.setStyle('height', this.innerHeight + 'px', this.editor.editing.view.document.getRoot());
                     });
@@ -537,5 +553,24 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public save() {
         this.save$.emit(this.editor.getData());
+    }
+
+    /**
+     * holds the css content to be applied
+     */
+    public cssContent;
+
+    /**
+     * set the css content from the css input to be used in a link tag
+     * @param val
+     */
+    @Input()
+    set css(val) {
+
+        if (!val) return;
+
+        less.render(`.slds-rich-text-editor__textarea {${val}}`).then(res =>
+            this.cssContent = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/css;base64,' + btoa(res.css))
+        );
     }
 }

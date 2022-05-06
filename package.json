@@ -21,6 +21,7 @@
     "google-auth-library": "^7.11.0",
     "htmlparser2": "^7.1.2",
     "js-beautify": "^1.14.0",
+    "less": "^4.1.2",
     "libphonenumber-js": "^1.9.32",
     "moment": "~2.24.0",
     "moment-timezone": "^0.5.34",
