@@ -348,7 +348,7 @@ class Link2
      *  </li>
      * <li><b>limit:</b> The maximum number of beans to load.</li>
      * <li><b>deleted:</b> If deleted is set to 1, only deleted records related to the current record will be returned.</li></ul>
-     * @return array of SugarBeans related through this link.
+     * @return array of SpiceBeans related through this link.
      */
     function getBeans($params = [])
     {
