@@ -18,7 +18,7 @@ use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\Users\User;
 
 /**
- * Factory to create SugarBeans
+ * Factory to create SpiceBeans
  * @api
  */
 class BeanFactory
