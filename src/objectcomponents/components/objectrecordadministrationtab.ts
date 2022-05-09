@@ -55,9 +55,9 @@ export class ObjectRecordAdministrationTab implements OnInit {
         this.model.data$.subscribe({
             next: (modeldata) => {
                 if(!!model.getField('assigned_user_id')){
-                    this.model.setFieldStatus('assigned_orgunit_id', 'readonly', true);
+                    this.model._fields_stati.assigned_orgunit_name.readonly = true;
                 } else {
-                    this.model.setFieldStatus('assigned_orgunit_id', 'readonly', false);
+                    this.model._fields_stati.assigned_orgunit_name.readonly = false;
                 }
             }
         })
