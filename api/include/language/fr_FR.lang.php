@@ -2689,6 +2689,7 @@ $app_list_strings['textmessage_direction'] = [
 $app_list_strings['textmessage_delivery_status'] = [
     'draft' => 'brouillon',
     'sent' => 'envoyé',
+    'queued' => 'Queued',
     'failed' => 'erreur',
     'transmitting' => 'Transmitting',
 ];
