@@ -3001,6 +3001,7 @@ $app_list_strings['textmessage_direction'] = [
 $app_list_strings['textmessage_delivery_status'] = [
     'draft'        => 'Borrador',
     'sent'         => 'Enviado',
+    'queued'       => 'Queued',
     'failed'       => 'Fallado',
     'transmitting' => 'Transmitting',
 ];
