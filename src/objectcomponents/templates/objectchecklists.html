@@ -90,5 +90,10 @@
                 </div>
             </div>
         </div>
+        <div *ngIf="checklists.length == 0" class="slds-box slds-align--absolute-center">
+            <system-illustration-no-data>
+                <system-label label="LBL_NO_CHECKLISTS"></system-label>
+            </system-illustration-no-data>
+        </div>
     </div>
 </div>
