@@ -62,8 +62,9 @@ export class fieldText extends fieldGeneric implements OnInit {
     public getFieldLength() {
         let field = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         if (field.len) {
-            this.fieldlength = field.len;
+            this.fieldlength = parseInt( field.len, 10 );
         }
+        if ( this.fieldconfig.maxlength && parseInt( this.fieldconfig.maxlength, 10 ) < this.fieldlength ) this.fieldlength = this.fieldconfig.maxlength;
     }
 
     /**
