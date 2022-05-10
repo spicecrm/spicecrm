@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -316,5 +317,47 @@ class EmailSchedulesController
             'status' => boolval($query),
             'openschedules' => $openSchedules
         ]);
+    }
+
+    /**
+     * send the scheduled email as a test to the current user
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function sendTest(Request $req, Response $res, array $args): Response{
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $emailSchedule = BeanFactory::getBean('EmailSchedules');
+
+        $body = $req->getParsedBody();
+
+        // create a seed template, fill with the values from the schedule and parse it
+        $template = BeanFactory::getBean('EmailTemplates');
+        $template->subject = $body['email_subject'];
+        $template->body_html = $body['email_body'];
+        $template->style = $body['email_stylesheet_id'];
+
+        // parse the template
+        $parsedTemplate = $template->parse($current_user);
+
+        // create a new seed email bean
+        $email = BeanFactory::getBean('Emails');
+        $email->mailbox_id = $body['mailbox_id'];
+        $email->name = $parsedTemplate['subject'];
+        $email->body = $parsedTemplate['body_html'];
+        $email->addEmailAddress('to', $current_user->email1);
+
+        // clone the attachments
+        $email->id = SpiceUtils::createGuid();
+        $email->setAttachments(
+            SpiceAttachments::cloneAttachmentsForBean('Emails', $email->id, 'EmailSchedules', $args['id'], false)
+        );
+
+        $email->sendEmail();
+
+        return $res->withJson(['success' => true]);
     }
 }
