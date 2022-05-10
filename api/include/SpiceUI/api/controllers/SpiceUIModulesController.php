@@ -137,6 +137,7 @@ class SpiceUIModulesController
                         'ftsactivities' => SpiceFTSActivityHandler::checkActivities($module['module']),
                         'ftsgeo' => SpiceFTSHandler::checkGeo($module['module']),
                         'ftsaggregates' => $ftsBeanHandler->getAggregates(),
+                        'ftssortable' => $ftsBeanHandler->getSortable(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
                         'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module'])
                     ];
