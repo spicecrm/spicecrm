@@ -64,7 +64,7 @@ export class fieldText extends fieldGeneric implements OnInit {
         if (field.len) {
             this.fieldlength = parseInt( field.len, 10 );
         }
-        if ( this.fieldconfig.maxlength && parseInt( this.fieldconfig.maxlength, 10 ) < this.fieldlength ) this.fieldlength = this.fieldconfig.maxlength;
+        if ( this.fieldconfig.maxlength && ( !this.fieldlength || parseInt( this.fieldconfig.maxlength, 10 ) < this.fieldlength )) this.fieldlength = this.fieldconfig.maxlength;
     }
 
     /**
