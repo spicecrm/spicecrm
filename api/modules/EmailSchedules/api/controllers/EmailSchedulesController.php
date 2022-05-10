@@ -328,7 +328,7 @@ class EmailSchedulesController
      * @return Response
      * @throws \Exception
      */
-    public function sendTest(Request $req, Response $res, array $args): Response{
+    public function sendTestEmail(Request $req, Response $res, array $args): Response{
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $emailSchedule = BeanFactory::getBean('EmailSchedules');
 
@@ -338,7 +338,6 @@ class EmailSchedulesController
         $template = BeanFactory::getBean('EmailTemplates');
         $template->subject = $body['email_subject'];
         $template->body_html = $body['email_body'];
-        $template->style = $body['email_stylesheet_id'];
 
         // parse the template
         $parsedTemplate = $template->parse($current_user);
