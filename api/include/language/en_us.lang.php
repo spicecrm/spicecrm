@@ -1936,6 +1936,7 @@ $app_list_strings['textmessage_direction'] = [
 $app_list_strings['textmessage_delivery_status'] = [
     'draft' => 'Draft',
     'sent' => 'Sent',
+    'queued' => 'Queued',
     'failed' => 'Failed',
     'transmitting' => 'Transmitting',
 ];
