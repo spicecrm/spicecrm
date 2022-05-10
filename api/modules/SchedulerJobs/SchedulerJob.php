@@ -9,6 +9,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
@@ -247,7 +248,10 @@ class SchedulerJob extends SpiceBean
         if (empty($user->email1) || empty($mailbox)) return;
 
         $email = BeanFactory::newBean('Emails');
-        $email->name = 'Notification: Job Execution Failure';
+        $client = SpiceConfig::getInstance()->config['client'];
+        $client = $client ? "($client)" : "";
+
+        $email->name = "Notification: Job Execution Failure $client";
         $email->body = "Failed to execute Job Task <strong>{$this->name}</strong> executed by <strong>$currentUserName</strong> with the following error messages: <br>" . nl2br($this->last_run_message);
         $email->mailbox_id = $mailbox->id;
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
