@@ -234,9 +234,7 @@ class Email extends SpiceBean
             return $result;
         }
 
-        $this->handleEvent('opted_out');
         $this->updateParentNotificationStatus();
-
     }
 
     /**
