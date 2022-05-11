@@ -104,7 +104,7 @@ $app_list_strings = [
         'revoked' => 'Odwolano',
         'cancel_requested' => 'Zażądano anulowania'
     ],
-    
+
     //e.g. en espa 'Apparel'=>'Ropa',
     'industry_dom' => [
       '' => '',
@@ -167,12 +167,12 @@ $app_list_strings = [
       'Investment' => 'Inwestycja',
       'Expected_Revenue' => 'Oczekiwany przychód',
       'Budget' => 'Budżet',
-        
+
     ],
    //Note:  do not translate opportunity_relationship_type_default_key
 //       it is the key for the default opportunity_relationship_type_dom value
    'opportunity_relationship_type_default_key' => 'Primary Decision Maker',
-   'opportunity_relationship_type_dom' => 
+   'opportunity_relationship_type_dom' =>
     [
       '' => '',
       'Primary Decision Maker' => 'Opiniodawca wstępny',
@@ -393,7 +393,7 @@ $app_list_strings = [
     ],
     //time is in seconds; the greater the time the longer it takes;
     'reminder_max_time' => 90000,
-    'reminder_time_options' => [ 
+    'reminder_time_options' => [
         -1 => 'Bez powiadomienia',
         60 => '1 minutę wcześniej',
         300 => '5 minut wcześniej',
@@ -408,14 +408,14 @@ $app_list_strings = [
     ],
 
     'task_priority_default' => 'Medium',
-    'task_priority_dom' => 
+    'task_priority_dom' =>
     [
         'High' => 'Wysoki',
         'Medium' => 'Średni',
         'Low' => 'Niski',
     ],
     'task_status_default' => 'Not Started',
-    'task_status_dom' => 
+    'task_status_dom' =>
     [
         'Not Started' => 'Nierozpoczęte',
         'In Progress' => 'W trakcie',
@@ -424,18 +424,18 @@ $app_list_strings = [
         'Deferred' => 'Odroczone',
     ],
     'meeting_status_default' => 'Planned',
-    'meeting_status_dom' => 
+    'meeting_status_dom' =>
     [
         'Planned' => 'Planowane',
         'Held' => 'Przeprowadzone',
         'Cancelled' => 'Anulowane',
         'Not Held' => 'Nieprzeprowadzone',
     ],
-    'extapi_meeting_password' => 
+    'extapi_meeting_password' =>
     [
         'WebEx' => 'WebEx',
     ],
-    'meeting_type_dom' => 
+    'meeting_type_dom' =>
     [
         'Other' => 'Inne',
         'Spice' => 'SpiceCRM',
@@ -449,12 +449,12 @@ $app_list_strings = [
         'Not Held' => 'Nieprzeprowadzona',
     ],
     'call_direction_default' => 'Outbound',
-    'call_direction_dom' => 
+    'call_direction_dom' =>
     [
         'Inbound' => 'Przychodząca',
         'Outbound' => 'Wychodząca',
     ],
-   'lead_status_dom' => 
+   'lead_status_dom' =>
     [
       '' => '',
       'New' => 'Nowy',
@@ -491,20 +491,20 @@ $app_list_strings = [
         'Duplicate' => 'Duplikat',
     ],
     'case_priority_default_key' => 'P2',
-    'case_priority_dom' => 
+    'case_priority_dom' =>
     [
         'P1' => 'Wysoki',
         'P2' => 'Średni',
         'P3' => 'Niski',
     ],
-    'user_type_dom' => 
+    'user_type_dom' =>
     [
         'RegularUser' => 'Zwykły użytkownik',
         'PortalUser' => 'Użytkownik portalu',
         'Administrator' => 'Administrator',
         'APIuser' => 'Użytkownik API'
     ],
-    'user_status_dom' => 
+    'user_status_dom' =>
     [
         'Active' => 'Aktywny',
         'Inactive' => 'Nieaktywny',
@@ -520,13 +520,13 @@ $app_list_strings = [
         'Released' => 'Opublikowano',
         'Retired' => 'Zarchiwizowano',
     ],
-   'employee_status_dom' => 
+   'employee_status_dom' =>
     [
         'Active' => 'Aktywny',
         'Terminated' => 'Nie pracuje',
         'Leave of Absence' => 'Nieobecny',
     ],
-    'messenger_type_dom' => 
+    'messenger_type_dom' =>
     [
         '' => '',
         'MSN' => 'MSN',
@@ -539,7 +539,7 @@ $app_list_strings = [
         'Low' => 'Niski',
     ],
     'project_task_priority_default' => 'Medium',
-    
+
     'project_task_status_options' => [
         'Not Started' => 'Nierozpoczęte',
         'In Progress' => 'W realizacji',
@@ -629,7 +629,7 @@ $app_list_strings = [
         'Television' => 'Telewizja',
         'NewsLetter' => 'Newsletter',
     ],
-    'newsletter_frequency_dom' => 
+    'newsletter_frequency_dom' =>
     [
         '' => '',
         'Weekly' => 'Tygodniowo',
@@ -719,7 +719,8 @@ $app_list_strings = [
         'delivered' => 'Dostarczony',
         'send_error' => 'Błąd wysyłki',
         'unread' => 'Nieprzeczytany',
-        'bounced' => 'Zwrot/Niedoręczeny'
+        'bounced' => 'Zwrot/Niedoręczeny',
+        'opted_out' => 'Opted Out',
     ],
     'dom_letter_status' => [
         'sent' => 'Wysłany',
@@ -775,8 +776,8 @@ $app_list_strings = [
         'Inactive' => 'Nieaktywny',
         'OnHold' => 'Wstrzymany',
         'Running' => 'W toku',
-    ], 
-    'job_period_dom' => 
+    ],
+    'job_period_dom' =>
     [
         'min' => 'Minuty',
         'hour' => 'Godziny',
@@ -834,7 +835,7 @@ $app_list_strings = [
         'Monthly' => 'Co miesiąc',
         'Yearly' => 'Co rok',
     ],
-        
+
     'repeat_intervals' => [
         '' => '',
         'Daily' => 'dni',
@@ -842,7 +843,7 @@ $app_list_strings = [
         'Monthly' => 'miesiąc(e)',
         'Yearly' => 'rok/lata',
     ],
-    
+
     'duration_dom' => [
         '' => 'Brak',
         '900' => '15 minut',
@@ -858,7 +859,7 @@ $app_list_strings = [
         '259200' => '3 dni',
         '604800' => '1 tydzień',
     ],
-    
+
  // deferred
     /*// QUEUES MODULE DOMs
     'queue_type_dom' => [
@@ -867,7 +868,7 @@ $app_list_strings = [
     ],
     */
 //prospect list type dom
-    'prospect_list_type_dom' => 
+    'prospect_list_type_dom' =>
     [
         'default' => 'Domyślny',
         'seed' => 'Recenzenci',
@@ -876,21 +877,21 @@ $app_list_strings = [
         'exempt' => 'Lista wykluczonych po ID',
         'test' => 'Test',
     ],
-    
-    'email_settings_num_dom' => 
+
+    'email_settings_num_dom' =>
     [
         '10' => '10',
         '20' => '20',
         '50' => '50'
     ],
-    'email_marketing_status_dom' => 
+    'email_marketing_status_dom' =>
     [
         '' => '',
         'active' => 'Aktywny',
         'inactive' => 'Nieaktywny'
     ],
-    
-    'campainglog_activity_type_dom' => 
+
+    'campainglog_activity_type_dom' =>
     [
         '' => '',
         'queued' => 'Zakolejkowane',
@@ -911,8 +912,8 @@ $app_list_strings = [
         'error' => 'Błąd',
         'noemail' => 'Brak adresu e-mail'
     ],
-    
-    'campainglog_target_type_dom' => 
+
+    'campainglog_target_type_dom' =>
     [
         'Contacts' => 'Kontakty',
         'Users' => 'Użytkownicy',
@@ -1748,7 +1749,7 @@ if (file_exists('modules/ServiceEquipments/ServiceEquipment.php')) {
     $app_list_strings['serviceequipment_status_dom'] = [
         'new' => 'Nowy',
         'onsite' => 'Zarezerwowany',
-        'offsite' => 'Odebrany',        
+        'offsite' => 'Odebrany',
         'inactive' => 'Nieaktywny',
     ];
     $app_list_strings['maintenance_cycle_dom'] = [

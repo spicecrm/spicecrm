@@ -832,6 +832,8 @@ $app_list_strings = [
         'sent' => 'مرسل',
         'send_error' => 'خطأ بالإرسال',
         'unread' => 'غير مقروء',
+        'bounced' => 'لم يرسل',
+        'opted_out' => 'ألغي تسجيله',
     ],
     'dom_textmessage_status' => [
         'archived' => 'مأرشف',

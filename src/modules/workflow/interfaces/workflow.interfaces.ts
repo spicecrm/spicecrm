@@ -13,9 +13,10 @@ export interface WorkflowTaskTypeI {
      * use the .bpmn-icon class without (bpmn-icon-) e.g. for (bpmn-icon-task) use (task)
      */
     icon: string;
-    type: 'regular' | 'gateway_email_event' | 'gateway_decision' | 'start' | 'end' | 'email_event_open' | 'email_event_bounce' | 'email_event_timer';
+    type: 'regular' | 'gateway_email_event' | 'gateway_decision' | 'start' | 'end' | 'email_event_open' | 'email_event_bounce' | 'email_event_opt_out' | 'email_event_handle' | 'timer';
     assignable: string;
     typedefaults: string,
+    has_timing: 0 | 1,
     deleted: boolean;
 }
 
