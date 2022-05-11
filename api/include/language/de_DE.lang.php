@@ -654,7 +654,8 @@ $app_list_strings = [
         'delivered' => 'Empfangen',
         'send_error' => 'Sendefehler',
         'unread' => 'Ungelesen',
-        'bounced' => 'nicht Zustellbar'
+        'bounced' => 'nicht Zustellbar',
+        'opted_out' => 'Ausgestiegen',
     ],
     'dom_letter_status' => [
         'sent' => 'gesendet',
@@ -1885,7 +1886,9 @@ $app_list_strings['workflowtasktypes_type_enum'] = [
     'end' => 'End Task',
     'email_event_open' => 'Email Event Open',
     'email_event_bounce' => 'Email Event Bounce',
-    'email_event_timer' => 'Email Event Timer',
+    'email_event_opt_out' => 'Email Event Opt Out',
+    'email_event_handle' => 'Email Event Handle',
+    'timer' => 'Timer',
 ];
 
 /**

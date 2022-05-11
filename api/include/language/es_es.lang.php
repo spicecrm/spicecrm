@@ -796,6 +796,8 @@ $app_list_strings = [
         'sent'                                             => 'Enviado',
         'send_error'                                       => 'Error de Envío',
         'unread'                                           => 'No leído',
+        'bounced' => 'Bounced',
+        'opted_out' => 'Opted Out',
     ],
 
 

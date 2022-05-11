@@ -1,4 +1,7 @@
 <?php
+
+use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
+
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -43,18 +46,17 @@ use Exception;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\TrackingLinks\TrackingLink;
@@ -231,9 +233,8 @@ class Email extends SpiceBean
 
             return $result;
         }
+
         $this->updateParentNotificationStatus();
-
-
     }
 
     /**
@@ -1391,5 +1392,24 @@ class Email extends SpiceBean
 
     public function addDocumentAttachment($doc): void {
         SpiceAttachments::saveDocumentAttachment('Emails', $this->id, $doc);
+    }
+
+    /**
+     * handle fired event by workflow
+     * @param string $event
+     * @return void
+     */
+    public function handleEvent(string $event)
+    {
+        $db = DBManagerFactory::getInstance();
+        $taskId = $db->getOne("SELECT id FROM workflowtasks WHERE email_id ='{$this->id}' AND workflowtask_status = 20 AND deleted != 1");
+
+        if (empty($taskId)) return;
+
+        /* @var WorkflowTask $workflowTask */
+        $workflowTask = BeanFactory::getBean('WorkflowTasks', $taskId);
+        if ($workflowTask->workflow->workflow_status < 30) {
+            $workflowTask->callHandlerMethod('handleEvent', [$event]);
+        }
     }
 }
