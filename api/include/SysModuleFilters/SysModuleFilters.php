@@ -346,53 +346,80 @@ class SysModuleFilters
                 return "({$tablename}.{$condition->field} >= '{$condition->filtervalue}' AND {$tablename}.{$condition->field} <= '{$condition->filtervalueto}')";
                 break;
             case 'betweend':
-                return "({$tablename}.{$condition->field} >= '{$condition->filtervalue} 00:00:00' AND {$tablename}.{$condition->field} <= '{$condition->filtervalueto} 23:59:59')";
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $start =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalue . ' 00:00:00', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $end =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalueto . ' 23:59:59', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} >= '{$start}' AND {$tablename}.{$condition->field} <= '{$end}')";
                 break;
             case 'today':
-                $today = date_format(new DateTime(), TimeDate::DB_DATE_FORMAT);
-                return "({$tablename}.{$condition->field} >= '$today 00:00:00' AND {$tablename}.{$condition->field} <= '$today 23:59:59')";
+                $today = date_format(new DateTime(), 'Y-m-d');
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $start =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $today . ' 00:00:00', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $end =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $today . ' 23:59:59', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+
+                return "({$tablename}.{$condition->field} >= '{$start}' AND {$tablename}.{$condition->field} <= '{$end}')";
                 break;
             case 'past':
-                $now = date_format(new DateTime(), TimeDate::DB_DATETIME_FORMAT);
+                $now = date_format(new DateTime('now', new DateTimeZone('UTC')), TimeDate::DB_DATETIME_FORMAT);
                 return "{$tablename}.{$condition->field} < '$now'";
                 break;
             case 'future':
-                $now = date_format(new DateTime(), TimeDate::DB_DATETIME_FORMAT);
+                $now = date_format(new DateTime('now', new DateTimeZone('UTC')), TimeDate::DB_DATETIME_FORMAT);
                 return "{$tablename}.{$condition->field} > '$now'";
                 break;
             case 'thismonth':
-                $from = date_format(new DateTime(), 'Y-m-01 00:00:00');
-                $to = date_format(new DateTime(), 'Y-m-t 23:59:00');
-                return "({$tablename}.{$condition->field} > '$from' AND {$tablename}.{$condition->field} <= '$to')";
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format(new DateTime('now', new DateTimeZone($timeZone)), 'Y-m-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format(new DateTime('now', new DateTimeZone($timeZone)), 'Y-m-t 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} > '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
                 break;
             case 'nextmonth':
-                $date = new DateTime();
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->add(new DateInterval('P1M'));
-                return "({$tablename}.{$condition->field} >= '" . $date->format('Y-m-01 00:00:00') . "' AND {$tablename}.{$condition->field} <= '" . $date->format('Y-m-t 23:59:59') . "')";
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-m-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-m-t 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
                 break;
             case 'thisyear':
-                $date = new DateTime();
-                return "({$tablename}.{$condition->field} >= '" . $date->format('Y') . "-01-01 00:00:00' AND {$tablename}.{$condition->field} <= '" . $date->format('Y') . "-12-31 23:59:59')";
-                break;
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-01-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-12-31 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
             case 'nextyear':
-                $date = new DateTime();
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->add(new DateInterval('P1Y'));
-                return "({$tablename}.{$condition->field} >= '" . $date->format('Y') . "-01-01 00:00:00' AND {$tablename}.{$condition->field} <= '" . $date->format('Y') . "-12-31 23:59:59')";
-                break;
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-01-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-12-31 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
             case 'inndays':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
-                return "({$tablename}.{$condition->field} >= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 00:00:00' AND {$tablename}.{$condition->field} <= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59')";
-                break;
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
             case 'thisday':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
                 return "(DAY({$tablename}.{$condition->field}) = '{$date->format('d')}' AND MONTH({$tablename}.{$condition->field}) = '{$date->format('m')}')";
                 break;
             case 'ndaysago':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
-                return "({$tablename}.{$condition->field} >= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 00:00:00' AND {$tablename}.{$condition->field} <= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59')";
-                break;
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
             case 'inlessthanndays':
             case 'inlessthandays':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
@@ -404,28 +431,40 @@ class SysModuleFilters
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
                 return "{$tablename}.{$condition->field} >= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59'";
             case 'inlastndays':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
-                return "{$tablename}.{$condition->field} >= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59'";
-                break;
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "{$tablename}.{$condition->field} >= '{$to}'";
             case 'lastndays':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
-                return "{$tablename}.{$condition->field} >= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 00:00:00'";
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "{$tablename}.{$condition->field} >= '$to'";
                 break;
             case 'lastnmonths':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}M"));
-                return "{$tablename}.{$condition->field} >= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 00:00:00'";
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "{$tablename}.{$condition->field} >= '$to'";
                 break;
             case 'untilyesterday':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
-                return "({$tablename}.{$condition->field} < '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 00:00:00')";
-                break;
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} < '$from')";
             case 'fromtomorrow':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
-                return "({$tablename}.{$condition->field} > '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59')";
-                break;
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return "({$tablename}.{$condition->field} > '$to')";
         }
     }
 
@@ -632,87 +671,121 @@ class SysModuleFilters
                 return ['range' => [$condition->field . '.raw' => ['gte' => $condition->filtervalue, 'lte' => $condition->filtervalueto, "include_lower" => true, "include_upper" => true]]];
                 break;
             case 'betweend':
-                return ['range' => [$condition->field => ['gte' => $condition->filtervalue . ' 00:00:00', 'lte' => $condition->filtervalueto . ' 23:59:59', "include_lower" => true, "include_upper" => true]]];
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $start =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalue . ' 00:00:00', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $end =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalueto . ' 23:59:59', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $start, 'lte' => $end, "include_lower" => true, "include_upper" => true]]];
                 break;
             case 'today':
                 $today = date_format(new DateTime(), 'Y-m-d');
-                return ['range' => [$condition->field => ['gte' => $today . ' 00:00:00', "lte" => $today . ' 23:59:59']]];
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $start =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $today . ' 00:00:00', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $end =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $today . ' 23:59:59', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $start, "lte" => $end, "include_lower" => true, "include_upper" => true]]];
                 break;
             case 'past':
-                $now = date_format(new DateTime(), 'Y-m-d H:i:s');
+                $now = date_format(new DateTime('now', new DateTimeZone('UTC')), TimeDate::DB_DATETIME_FORMAT);
                 return ['range' => [$condition->field => ["lt" => $now]]];
                 break;
             case 'future':
-                $now = date_format(new DateTime(), 'Y-m-d H:i:s');
+                $now = date_format(new DateTime('now', new DateTimeZone('UTC')), TimeDate::DB_DATETIME_FORMAT);
                 return ['range' => [$condition->field => ["gt" => $now]]];
-                break;
             case 'thismonth':
-                $from = date_format(new DateTime(), 'Y-m-01 00:00:00');
-                $to = date_format(new DateTime(), 'Y-m-t 23:59:00');
-                return ['range' => [$condition->field => ['gte' => $from, "lte" => $to]]];
-                break;
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format(new DateTime('now', new DateTimeZone($timeZone)), 'Y-m-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format(new DateTime('now', new DateTimeZone($timeZone)), 'Y-m-t 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
             case 'nextmonth':
-                $date = new DateTime();
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->add(new DateInterval('P1M'));
-                return ['range' => [$condition->field => ['gte' => $date->format('Y-m-01 00:00:00'), "lte" => $date->format('Y-m-t 23:59:59')]]];
-                break;
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-m-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-m-t 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
             case 'thisyear':
-                $date = new DateTime();
-                return ['range' => [$condition->field => ['gte' => $date->format('Y') . '-01-01 00:00:00', "lte" => $date->format('Y') . '-12-31 23:59:59']]];
-                break;
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-01-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-12-31 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
             case 'nextyear':
-                $date = new DateTime();
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->add(new DateInterval('P1Y'));
-                return ['range' => [$condition->field => ['gte' => $date->format('Y') . '-01-01 00:00:00', "lte" => $date->format('Y') . '-12-31 23:59:59']]];
-                break;
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-01-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-12-31 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
             case 'inndays':
-                $today = new DateTime(null, new DateTimeZone('UTC'));
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
-                return ['range' => [$condition->field => ['gte' => $date->format('Y-m-d') . ' 00:00:00', "lte" => $today->format('Y-m-d') . ' 23:59:59']]];
-                break;
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
             case 'thisday':
                 $today = new DateTime(null, new DateTimeZone('UTC'));
                 return ['script' => ['script' => "doc.{$condition->field}.date.monthOfYear == {$today->format('m')} && doc.{$condition->field}.date.dayOfMonth  == {$today->format('d')}"]];
                 break;
             case 'ndaysago':
-                $today = new DateTime(null, new DateTimeZone('UTC'));
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
-                return ['range' => [$condition->field => ['gte' => $date->format('Y-m-d') . ' 00:00:00', "lte" => $today->format('Y-m-d') . ' 23:59:59']]];
-                break;
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
             case 'inlessthanndays':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
                 return ['range' => [$condition->field => ["lte" => $date->format('Y-m-d') . ' 23:59:59']]];
                 break;
             case 'inmorethanndays':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
-                return ['range' => [$condition->field => ["gte" => $date->format('Y-m-d') . ' 23:59:59']]];
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ["gte" => $from]]];
             case 'inlastndays':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
-                return ['range' => [$condition->field => ["gte" => $date->format('Y-m-d') . ' 23:59:59']]];
-                break;
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ["gte" => $to]]];
             case 'lastndays':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
-                return ['range' => [$condition->field => ["gte" => $date->format('Y-m-d') . ' 23:59:59']]];
-                break;
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ["gte" => $to]]];
             case 'lastnmonths':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
                 $date->sub(new DateInterval("P{$condition->filtervalue}M"));
-                return ['range' => [$condition->field => ["gte" => $date->format('Y-m-d') . ' 23:59:59']]];
-                break;
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ["gte" => $to]]];
             case 'untilyesterday':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
-                return ['range' => [$condition->field => ["lt" => $date->format('Y-m-d') . ' 00:00:00']]];
-                break;
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ["lt" => $from]]];
             case 'fromtomorrow':
-                $date = new DateTime(null, new DateTimeZone('UTC'));
-                return ['range' => [$condition->field => ["gt" => $date->format('Y-m-d') . ' 23:59:59']]];
-                break;
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $date = new DateTime('now', new DateTimeZone($timeZone));
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return ['range' => [$condition->field => ["gt" => $to]]];
         }
     }
 
