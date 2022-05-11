@@ -139,10 +139,10 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @private
      */
     public loadSortFields() {
-        this.backend.getRequest('configuration/elastic/' + this.modellist.module + '/fields').subscribe(fields => {
-            let filtered = fields.filter(field => field.enablesort);
-            this.sortfields = filtered.map(field => field.fieldname);
-        });
+        let moduleDefs = this.metadata.getModuleDefs(this.modellist.module);
+        if(moduleDefs.ftssortable){
+            this.sortfields = moduleDefs.ftssortable.map(field => field.field);
+        }
     }
 
     /**
