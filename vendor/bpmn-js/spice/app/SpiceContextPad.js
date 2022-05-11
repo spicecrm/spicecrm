@@ -80,7 +80,8 @@ export default class SpiceContextPad {
                 };
             }
 
-            if (element.businessObject.$attrs.icon !== 'start-event-message') {
+            // filter the types between email task and all others
+            if (element.businessObject.$attrs.taskType !== 'gateway_email_event') {
                 types = types.filter(t => !t.type.startsWith('email_event'));
             }
 
