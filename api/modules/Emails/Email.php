@@ -1408,7 +1408,8 @@ class Email extends SpiceBean
 
         /* @var WorkflowTask $workflowTask */
         $workflowTask = BeanFactory::getBean('WorkflowTasks', $taskId);
-
-        $workflowTask->callHandlerMethod('handleEvent', [$event]);
+        if ($workflowTask->workflow->workflow_status < 30) {
+            $workflowTask->callHandlerMethod('handleEvent', [$event]);
+        }
     }
 }
