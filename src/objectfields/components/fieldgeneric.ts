@@ -42,6 +42,11 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     public fieldid: string = '';
 
     /**
+     * the fielddefs
+     */
+    public fielddefs: any = {};
+
+    /**
      * the max length of the field
      */
     public fieldlength: number = 999;
@@ -146,9 +151,9 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public ngOnInit() {
-        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (fieldDefs && fieldDefs.len) {
-            this.fieldlength = fieldDefs.len;
+        this.fielddefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        if (this.fielddefs && this.fielddefs.len) {
+            this.fieldlength = this.fielddefs.len;
         }
     }
 
