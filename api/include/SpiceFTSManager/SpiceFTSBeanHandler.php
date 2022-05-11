@@ -87,6 +87,24 @@ class SpiceFTSBeanHandler
     }
 
     /**
+     * returns the sortable fields defined for the bean
+     */
+    function getSortable()
+    {
+        $sortfields = [];
+        foreach ($this->indexProperties as $indexProperty) {
+            $details = SpiceFTSUtils::getDetailsForField($indexProperty['path']);
+            if (isset($indexProperty['enablesort']) && (!empty($details['field']) || !empty($details['module']))) {
+                $sortfields[] = [
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+        }
+        return $sortfields;
+    }
+
+    /**
      * called to normalize the bean
      *
      * the function takes a bean and resolves the fts settings flatteing the relational structure building the elastic document
