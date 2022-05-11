@@ -5,6 +5,7 @@
         <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component>
     </system-modal-content>
     <system-modal-footer>
+        <button class="slds-button slds-button--neutral" [disabled]="!canSave" (click)="sendTestEmail()"><system-label label="LBL_SEND_TEST_EMAIL"></system-label></button>
         <button class="slds-button slds-button--brand" [disabled]="!canSave" (click)="saveSchedule()"><system-label label="LBL_EMAIL_SCHEDULE"></system-label></button>
     </system-modal-footer>
 </system-modal>
