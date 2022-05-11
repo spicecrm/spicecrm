@@ -719,12 +719,16 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $trackingId = $node->getAttribute('data-trackingid');
             if(!empty($trackingId)){
+                $this->assignBeanToEmail($trackingId, 'TrackingLinks');
                 $trackingLink = TrackingLink::transformTrackingLinks($trackingId, $mailboxTrackingUrl);
                 $node->setAttribute('href', $trackingLink);
             }
         }
         $this->body = $dom->saveHTML();
     }
+
+  //  private function link
+
 
     /**
      * Send the Email
