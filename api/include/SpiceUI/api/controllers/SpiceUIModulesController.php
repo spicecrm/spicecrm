@@ -186,6 +186,7 @@ class SpiceUIModulesController
                 $retArray[$module][$fieldname] = $fielddata;
                 switch($fielddata['type']){
                     case 'parent':
+                    case 'linkedparent':
                         $parentmodules = [];
                         $relationships = $seed->db->query("SELECT lhs_module FROM relationships WHERE rhs_module='{$module}' AND rhs_key='{$fielddata['id_name']}' AND deleted=0");
                         while($relationship = $seed->db->fetchByAssoc($relationships)){
