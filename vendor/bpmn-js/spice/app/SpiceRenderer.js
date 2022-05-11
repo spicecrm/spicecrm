@@ -73,17 +73,33 @@ export default class SpiceRenderer extends BaseRenderer {
         const icon = element.businessObject.$attrs.icon;
 
         const eType = element.type;
-
+        /**
+         * sms task
+         */
         if (icon == 'end-event-message') {
             return this.drawStartEvent(parentNode, element, 'bpmn:MessageEventDefinition', true);
         }
-
+        /**
+         * email task
+         */
         if (icon == 'start-event-message') {
             return this.drawStartEvent(parentNode, element, 'bpmn:MessageEventDefinition');
         }
-
+        /**
+         * system task
+         */
         if (icon == 'start-event-condition') {
             return this.drawStartEvent(parentNode, element, 'bpmn:ConditionalEventDefinition');
+        }
+
+        // email opt out task
+        if (icon == 'end-event-error') {
+            return this.drawStartEvent(parentNode, element, 'bpmn:ErrorEventDefinition', true);
+        }
+
+        // email event handle task
+        if (icon == 'end-event-signal') {
+            return this.drawStartEvent(parentNode, element, 'bpmn:SignalEventDefinition', true);
         }
 
         const shape = this.bpmnRenderer.drawShape(parentNode, element);
