@@ -262,7 +262,7 @@ export class WorkflowManagerService {
             case 'end':
                 return [];
             case 'gateway_email_event':
-                return ['regular', 'gateway_email_event', 'gateway_decision', 'end', 'email_event_open', 'email_event_bounce', 'email_event_timer'];
+                return ['regular', 'gateway_email_event', 'gateway_decision', 'end', 'email_event_open', 'email_event_bounce', 'email_event_opt_out', 'email_event_handle', 'timer'];
             default:
                 return ['regular', 'gateway_email_event', 'gateway_decision', 'end'];
         }

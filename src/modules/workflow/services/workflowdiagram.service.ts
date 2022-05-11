@@ -27,7 +27,9 @@ export class WorkflowDiagramService implements OnDestroy {
         {taskType: 'gateway_email_event' , bpmnType: 'bpmn:IntermediateThrowEvent'},
         {taskType: 'email_event_open' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:MessageEventDefinition'},
         {taskType: 'email_event_bounce' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:SignalEventDefinition'},
-        {taskType: 'email_event_timer' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:TimerEventDefinition'},
+        {taskType: 'email_event_handle' , bpmnType: 'bpmn:IntermediateThrowEvent'},
+        {taskType: 'email_event_opt_out' , bpmnType: 'bpmn:IntermediateThrowEvent'},
+        {taskType: 'timer' , bpmnType: 'bpmn:IntermediateCatchEvent', eventDefinitionType: 'bpmn:TimerEventDefinition'},
     ];
 
     /**
@@ -131,7 +133,7 @@ export class WorkflowDiagramService implements OnDestroy {
 
         const connections = this.getAllConnections();
 
-        this.tasks.filter(t => this.wfm.getType(t.tasktype).type == 'gateway_decision').forEach(t => {
+        this.tasks.filter(t => ['gateway_decision', 'email_event_handle'].indexOf(this.wfm.getType(t.tasktype).type) > -1).forEach(t => {
             this.wfm.getTaskNextTasks(t).forEach(entry => {
                 const connection = connections.find(c => c.source.businessObject.$attrs.taskId == t.id && c.target.businessObject.$attrs.taskId == entry.id);
                 if (!connection) return;
@@ -162,7 +164,8 @@ export class WorkflowDiagramService implements OnDestroy {
                             name: 'WorkflowTaskDetails', superClass: ['Element'],
                             properties: [
                                 {name: 'taskId', isAttr: true, type: 'String'},
-                                {name: 'icon', isAttr: true, type: 'String'}
+                                {name: 'icon', isAttr: true, type: 'String'},
+                                {name: 'taskType', isAttr: true, type: 'String'}
                             ]
                         }]
                     }
@@ -384,7 +387,8 @@ export class WorkflowDiagramService implements OnDestroy {
 
         modeling.updateProperties(newElement, {
             taskId: task.id,
-            icon: taskType.icon
+            icon: taskType.icon,
+            taskType: taskType.type
         });
 
         return newElement;
@@ -498,10 +502,12 @@ export class WorkflowDiagramService implements OnDestroy {
         const modeling = this.bpmnJS.get('modeling');
 
         this.tasks = [...this.tasks, newTask];
+        const typeObject = this.wfm.getType(type);
 
         modeling.updateProperties(element, {
             taskId: newTask.id,
-            icon: this.wfm.getType(type).icon
+            icon: typeObject.icon,
+            taskType: typeObject.type
         });
 
         this.bpmnJS.get('canvas').zoom('fit-viewport');

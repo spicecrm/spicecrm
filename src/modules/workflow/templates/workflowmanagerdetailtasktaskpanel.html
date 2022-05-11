@@ -11,7 +11,7 @@
     <system-checkbox [(ngModel)]="model.data.allowcomment"><system-label label="LBL_ALLOW_COMMENT"></system-label></system-checkbox>
     <system-checkbox [(ngModel)]="model.data.prevclosedreq"><system-label label="LBL_PREVIOUS_CLOSED_REQUIRED"></system-label></system-checkbox>
 </div>
-<system-collapsable-tab [collapsible]="false" tabtitle="LBL_TASKTIMING" >
+<system-collapsable-tab *ngIf="hasTiming" [collapsible]="false" tabtitle="LBL_TASKTIMING" >
     <div class="slds-grid slds-gutters_direct-xx-small">
         <div class="slds-grid slds-col slds-size--1-of-3 slds-p-right--xx-small">
             <div class="slds-grow">
