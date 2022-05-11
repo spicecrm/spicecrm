@@ -137,6 +137,7 @@ class SpiceUIModulesController
                         'ftsactivities' => SpiceFTSActivityHandler::checkActivities($module['module']),
                         'ftsgeo' => SpiceFTSHandler::checkGeo($module['module']),
                         'ftsaggregates' => $ftsBeanHandler->getAggregates(),
+                        'ftssortable' => $ftsBeanHandler->getSortable(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
                         'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module'])
                     ];
@@ -185,6 +186,7 @@ class SpiceUIModulesController
                 $retArray[$module][$fieldname] = $fielddata;
                 switch($fielddata['type']){
                     case 'parent':
+                    case 'linkedparent':
                         $parentmodules = [];
                         $relationships = $seed->db->query("SELECT lhs_module FROM relationships WHERE rhs_module='{$module}' AND rhs_key='{$fielddata['id_name']}' AND deleted=0");
                         while($relationship = $seed->db->fetchByAssoc($relationships)){
