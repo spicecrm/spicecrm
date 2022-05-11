@@ -34,7 +34,7 @@ export class ObjectRelatedlistTable implements OnInit {
      *
      * typical usecase is to add fields fromt eh linkl (e.g. in the buying center) to the fieldset. Those fields are specific to a relationship and can only be added as part of that
      */
-    @Input() public editcomponentset: boolean = false;
+    @Input() public editcomponentset = '';
 
     /**
      * set one field as the one holding a sequence
