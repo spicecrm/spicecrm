@@ -24,7 +24,7 @@ use SpiceCRM\modules\Users\User;
 class BeanFactory
 {
     protected static $loadedBeans = [];
-    protected static $maxLoaded = 25;
+    protected static $maxLoaded = 100;
     protected static $total = 0;
     protected static $loadOrder = [];
     protected static $touched = [];
@@ -216,7 +216,7 @@ class BeanFactory
     public static function registerBean($module, $bean, $id = false)
     {
         $config = SpiceConfig::getInstance()->config;
-        $cacheEnabled = ($config['system']['module_cache_enabled'] ?? false) == 1;
+        $cacheEnabled = true; // ($config['system']['module_cache_enabled'] ?? false) == 1;
 
         if (!$cacheEnabled || empty(SpiceModules::getInstance()->getBeanName($module))) {
             return false;

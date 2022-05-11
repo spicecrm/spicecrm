@@ -2107,7 +2107,7 @@ class SpiceBean
         $query .= " WHERE $this->_tablename.id = " . $this->db->quoted($id);
         if ($deleted)
             $query .= " AND $this->_tablename.deleted=0";
-        LoggerManager::getLogger()->debug("Retrieve $this->_objectname : " . $query);
+        // LoggerManager::getLogger()->debug("Retrieve $this->_objectname : " . $query);
         $result = $this->db->query($query, true, "Retrieving record by id $this->_tablename:$id found ");
         if (empty($result)) {
             return null;
@@ -2317,44 +2317,7 @@ class SpiceBean
      */
     function fill_in_additional_detail_fields()
     {
-        // do not do thif for the users as thius runs in a circular reference
-        if($this->_objectname == 'User') return;
-
-        $usr = BeanFactory::getBean('Users');
-        if (!empty($this->field_defs['created_by']) && !empty($this->created_by)) {
-            if($_SESSION['usernames'][$this->created_by]){
-                $this->created_by_name = $_SESSION['usernames'][$this->created_by];
-            } else {
-                $usr->retrieve($this->created_by, false, true, false);
-                $this->created_by_name = $usr->user_name;
-                $_SESSION['usernames'][$this->created_by] = $usr->user_name;
-            }
-        }
-
-        if (!empty($this->field_defs['modified_user_id']) && !empty($this->modified_user_id)) {
-            if($_SESSION['usernames'][$this->modified_user_id]){
-                $this->modified_by_name = $_SESSION['usernames'][$this->modified_user_id];
-            } else {
-                if ($usr->id != $this->modified_user_id) {
-                    $usr->retrieve($this->modified_user_id, false, true, false);
-                }
-                $this->modified_by_name = $usr->user_name;
-                $_SESSION['usernames'][$this->modified_user_id] = $usr->user_name;
-            }
-        }
-
-        if (!empty($this->field_defs['assigned_user_name']) && !empty($this->assigned_user_id)) {
-            if($_SESSION['usernames'][$this->assigned_user_id]){
-                $this->assigned_user_name = $_SESSION['usernames'][$this->assigned_user_id];
-            } else {
-                if ($usr->id != $this->assigned_user_id) {
-                    $usr->retrieve($this->assigned_user_id,false, true, false);
-                }
-                $this->assigned_user_name = $usr->user_name;
-                $_SESSION['usernames'][$this->assigned_user_id] = $usr->user_name;
-            }
-        }
-
+        return;
     }
 
     /**
