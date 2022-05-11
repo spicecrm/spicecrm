@@ -1851,6 +1851,8 @@ $app_list_strings = [
             'sent' => 'Envoyé',
             'send_error' => 'Erreur Envoi',
             'unread' => 'Non Lu',
+            'bounced' => 'Bounced',
+            'opted_out' => 'Opted Out',
         ],
     'dom_email_archived_status' =>
         [
