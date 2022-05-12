@@ -128,7 +128,7 @@ export class SpiceNotes implements OnInit {
      * returns the image of the current user if the user has mainatned an image
      */
     get userimage() {
-        return this.session.authData.userimage;
+        return this.session.authData.user.user_image;
     }
 
     /**
