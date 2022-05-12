@@ -296,7 +296,8 @@ class SpiceFTSHandler
         $indexedFields = $beanHandler->mapModule();
 
         foreach ($fields as $field) {
-            if (!isset($indexedFields[$field])) return false;
+            // check that we have the field and also a raw value
+            if (!(isset($indexedFields[$field]) && isset($indexedFields[$field]['fields']['raw']))) return false;
         }
 
         return true;
