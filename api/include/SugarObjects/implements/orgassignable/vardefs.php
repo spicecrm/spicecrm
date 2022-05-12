@@ -46,12 +46,12 @@ $vardefs = [
             'audited' => true,
             'comment' => 'OrgUnit ID assigned to record'
         ],
-        'assigned_orgunit_name' => [
-            'name' => 'assigned_orgunit_name',
+        'assigned_orgunit' => [
+            'name' => 'assigned_orgunit',
             'link' => 'assigned_orgunit_link',
             'vname' => 'LBL_ASSIGNED_ORGUNIT',
             'rname' => 'name',
-            'type' => 'relate',
+            'type' => 'linked',
             'reportable' => false,
             'source' => 'non-db',
             'table' => 'orgunits',
