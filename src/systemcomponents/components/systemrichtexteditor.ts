@@ -147,16 +147,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
                     toolbar: [],
                     htmlSupport: {
-                        allow: [ {
-                            name: 'div',
-                            attributes: {
-                                'data-spicefor': true,
-                                'data-spiceif': true,
-                                'data-spicefor-first': true,
-                                'data-spicefor-last': true,
-                                'data-spicetemplate': true
-                            }
-                        }]
+                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4'])
                     },
                     autosave: {
                         save: ( editor ) => {
@@ -177,6 +168,29 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
         });
         this.handleKeyboardShortcuts();
+    }
+
+    /**
+     * generate html tags allow spice custom attribute
+     * @param tags
+     * @protected
+     */
+    protected generateHtmlTagsAllowAttributes(tags: string[]) {
+        return tags.map(tag => {
+
+            return {
+                name: tag,
+                attributes: {
+                    'data-spicefor': true,
+                    'data-spiceif': true,
+                    'data-spicefor-first': true,
+                    'data-spicefor-last': true,
+                    'data-spicetemplate': true,
+                    'class': true,
+                    'style': true,
+                }
+            }
+        });
     }
 
     public ngOnDestroy() {

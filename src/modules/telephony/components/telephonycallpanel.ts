@@ -178,8 +178,8 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      * gets a formatted MSISDN
      */
     get msisdnFormatted() {
-        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.session.authData.address_country && this.calldata.msisdn.length > 5) {
-            return libphonenumber.parsePhoneNumberFromString(this.calldata.msisdn, this.session.authData.address_country).formatInternational();
+        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.session.authData.user.address_country && this.calldata.msisdn.length > 5) {
+            return libphonenumber.parsePhoneNumberFromString(this.calldata.msisdn, this.session.authData.user.address_country).formatInternational();
         } else {
             return this.calldata.msisdn;
         }

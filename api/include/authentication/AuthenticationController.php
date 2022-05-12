@@ -16,6 +16,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\KREST\handlers\ModuleHandler;
 use SpiceCRM\modules\Administration\Administration;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
@@ -59,6 +60,13 @@ class AuthenticationController
      * @var null
      */
     public $systemtenantname = null;
+    /**
+     * holds a boolean of the legal notice acceptance
+     *
+     * @var bool
+     */
+    public $systemTenantLegalNoticeAccepted = false;
+
     public $errorReason;
     public $errorCode;
 
@@ -363,6 +371,7 @@ class AuthenticationController
             $tenant->switchToTenant();
             $this->systemtenantid = $tenant->id;
             $this->systemtenantname = $tenant->name;
+            $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
         }
     }
 
@@ -377,7 +386,12 @@ class AuthenticationController
         if ($authenticationController->getCurrentUser() === null) {
             throw new UnauthorizedException($authenticationController->errorReason, $authenticationController->errorCode);
         }
+
+        // get the current user
         $currentUser = $this->getCurrentUser();
+
+        // get a module handler to map the current user
+        $moduleHandler = new ModuleHandler();
 
         $loginData = [
             'admin' => $currentUser->is_admin == '1' ? true : false,
@@ -394,12 +408,12 @@ class AuthenticationController
             'user_image' => $currentUser->user_image,
             'companycode_id' => $currentUser->companycode_id,
             'tenant_id' => $currentUser->systemtenant_id,
-            'orgunit_id' => $currentUser->orgunit_id,
-            'orgunit_name' => $currentUser->orgunit_name,
             'tenant_name' => $this->systemtenantname,
+            'tenant_accepted_legal_notice' => $this->systemTenantLegalNoticeAccepted,
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
-            'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays
+            'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
+            'user' => $moduleHandler->mapBean($currentUser)
         ];
 
         // Is it a portal user? And the GDPR consent for portal users is configured?

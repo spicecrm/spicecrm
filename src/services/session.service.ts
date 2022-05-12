@@ -9,33 +9,26 @@ import { metadata } from './metadata.service';
 
 declare var moment: any;
 
-// Taken from https://github.com/killmenot/webtoolkit.md5
-
 interface authDataIf {
     sessionId: string;
     loaded: boolean;
     userId: string;
     userName: string;
-    first_name: string;
-    last_name: string;
-    display_name: string;
     email: string;
-    password: string;
     admin: boolean;
     dev: boolean;
     portalOnly: boolean;
     googleToken: string;
-    userimage: string;
     companycode_id: string;
     tenant_id: string;
     tenant_name: string;
-    orgunit_id: string;
-    orgunit_name: string;
+    tenant_accepted_legal_notice: boolean;
+    tenant_wizard_completed: boolean;
     obtainGDPRconsent: boolean;
     canchangepassword: boolean;
-    address_country?: string;
     expiringPasswordValidityDays: boolean | number;
     renewPass?: boolean;
+    user: any
 }
 
 /**
@@ -45,28 +38,24 @@ interface authDataIf {
 export class session {
 
     public authData: authDataIf = {
+        tenant_wizard_completed: false,
+        tenant_accepted_legal_notice: false,
         sessionId: null,
         loaded: false,
         userId: null,
         userName: '',
-        first_name: '',
-        last_name: '',
-        display_name: '',
         email: '',
-        password: '',
         admin: false,
         dev: false,
         portalOnly: false,
         googleToken: '',
-        userimage: '',
         companycode_id: '',
         tenant_id: '',
         tenant_name: '',
-        orgunit_id: '',
-        orgunit_name: '',
         obtainGDPRconsent: false,
         canchangepassword: false,
-        expiringPasswordValidityDays: false
+        expiringPasswordValidityDays: false,
+        user: {}
     };
 
     /**
@@ -179,26 +168,24 @@ export class session {
      * closes the session and removes all sessiondata
      */
     public endSession() {
+        this.authData.tenant_id = '';
+        this.authData.tenant_name = '';
+        this.authData.tenant_accepted_legal_notice = false;
+        this.authData.tenant_wizard_completed = false;
         this.authData.sessionId = null;
         this.authData.userId = null;
         this.authData.loaded = false;
         this.authData.userName = '';
-        this.authData.first_name = '';
-        this.authData.last_name = '';
-        this.authData.display_name = '';
         this.authData.email = '';
-        this.authData.userimage = '';
-        this.authData.password = '';
         this.authData.admin = false;
         this.authData.dev = false;
         this.authData.companycode_id = '';
         this.authData.tenant_id = '';
         this.authData.tenant_name = '';
-        this.authData.orgunit_id = '';
-        this.authData.orgunit_name = '';
         this.authData.obtainGDPRconsent = false;
         this.authData.canchangepassword = false;
         this.authData.expiringPasswordValidityDays = false;
+        this.authData.user = {};
 
         this.sessionData = {};
 
