@@ -77,8 +77,9 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
-        $recipient = BeanFactory::getBean($data[0], $data[1]);
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+        $recipient = BeanFactory::getBean('Contacts', $data['Contact']);
         $emailAddresses = $recipient->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $address) {
             if ($address->primary_address != 1) continue;
@@ -113,8 +114,9 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
-        $recipient = BeanFactory::getBean($data[0], $data[1]);
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+        $recipient = BeanFactory::getBean('Contacts', $data['Contact']);
         $emailAddresses = $recipient->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $address) {
             if ($address->primary_address != 1) continue;
