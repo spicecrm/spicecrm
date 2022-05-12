@@ -256,7 +256,6 @@ class SysModuleFilters
         switch ($condition->operator) {
             case 'empty':
                 return "{$tablename}.{$condition->field} IS NULL";
-                break;
             case 'emptyr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
@@ -271,7 +270,6 @@ class SysModuleFilters
                 } else {
                     return "({$tablename}.{$condition->field} IS NOT NULL AND {$tablename}.{$condition->field} <> '')";
                 }
-                break;
             case 'notemptyr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
@@ -294,7 +292,6 @@ class SysModuleFilters
                 }
             case 'notequals':
                 return "{$tablename}.{$condition->field} <> '{$condition->filtervalue}'";
-                break;
             case 'equalr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
@@ -314,44 +311,32 @@ class SysModuleFilters
                 } else {
                     return "{$tablename}.{$condition->field} IN ('" . implode("','", $valArray) . "')";
                 }
-                break;
             case 'true':
                 return "{$tablename}.{$condition->field} = 1";
-                break;
             case 'false':
                 return "{$tablename}.{$condition->field} = 0";
-                break;
             case 'starts':
                 return "{$tablename}.{$condition->field} LIKE '{$condition->filtervalue}%'";
-                break;
             case 'contains':
                 return "{$tablename}.{$condition->field} LIKE '%{$condition->filtervalue}%'";
-                break;
             case 'ncontains':
                 return "{$tablename}.{$condition->field} NOT LIKE '%{$condition->filtervalue}%'";
-                break;
             case 'greater':
                 return "{$tablename}.{$condition->field} > '{$condition->filtervalue}'";
-                break;
             case 'gequal':
                 return "{$tablename}.{$condition->field} >= '{$condition->filtervalue}'";
-                break;
             case 'less':
                 return "{$tablename}.{$condition->field} < '{$condition->filtervalue}'";
-                break;
             case 'lequal':
                 return "{$tablename}.{$condition->field} <= '{$condition->filtervalue}'";
-                break;
             case 'between':
                 return "({$tablename}.{$condition->field} >= '{$condition->filtervalue}' AND {$tablename}.{$condition->field} <= '{$condition->filtervalueto}')";
-                break;
             case 'betweend':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
                 $start =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalue . ' 00:00:00', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 $end =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalueto . ' 23:59:59', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "({$tablename}.{$condition->field} >= '{$start}' AND {$tablename}.{$condition->field} <= '{$end}')";
-                break;
             case 'today':
                 $today = date_format(new DateTime(), 'Y-m-d');
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
@@ -360,22 +345,18 @@ class SysModuleFilters
                 $end =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $today . ' 23:59:59', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
 
                 return "({$tablename}.{$condition->field} >= '{$start}' AND {$tablename}.{$condition->field} <= '{$end}')";
-                break;
             case 'past':
                 $now = date_format(new DateTime('now', new DateTimeZone('UTC')), TimeDate::DB_DATETIME_FORMAT);
                 return "{$tablename}.{$condition->field} < '$now'";
-                break;
             case 'future':
                 $now = date_format(new DateTime('now', new DateTimeZone('UTC')), TimeDate::DB_DATETIME_FORMAT);
                 return "{$tablename}.{$condition->field} > '$now'";
-                break;
             case 'thismonth':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
                 $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format(new DateTime('now', new DateTimeZone($timeZone)), 'Y-m-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format(new DateTime('now', new DateTimeZone($timeZone)), 'Y-m-t 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "({$tablename}.{$condition->field} > '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
-                break;
             case 'nextmonth':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
@@ -384,7 +365,6 @@ class SysModuleFilters
                 $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-m-01 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, 'Y-m-t 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
-                break;
             case 'thisyear':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
@@ -411,7 +391,6 @@ class SysModuleFilters
             case 'thisday':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
                 return "(DAY({$tablename}.{$condition->field}) = '{$date->format('d')}' AND MONTH({$tablename}.{$condition->field}) = '{$date->format('m')}')";
-                break;
             case 'ndaysago':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
@@ -425,7 +404,6 @@ class SysModuleFilters
                 $date = new DateTime(null, new DateTimeZone('UTC'));
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
                 return "{$tablename}.{$condition->field} <= '" . $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59'";
-                break;
             case 'inmorethanndays':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
@@ -444,7 +422,6 @@ class SysModuleFilters
                 $date->sub(new DateInterval("P{$condition->filtervalue}D"));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "{$tablename}.{$condition->field} >= '$to'";
-                break;
             case 'lastnmonths':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
@@ -452,7 +429,6 @@ class SysModuleFilters
                 $date->sub(new DateInterval("P{$condition->filtervalue}M"));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "{$tablename}.{$condition->field} >= '$to'";
-                break;
             case 'untilyesterday':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
@@ -732,7 +708,6 @@ class SysModuleFilters
             case 'thisday':
                 $today = new DateTime(null, new DateTimeZone('UTC'));
                 return ['script' => ['script' => "doc.{$condition->field}.date.monthOfYear == {$today->format('m')} && doc.{$condition->field}.date.dayOfMonth  == {$today->format('d')}"]];
-                break;
             case 'ndaysago':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
@@ -745,7 +720,6 @@ class SysModuleFilters
                 $date = new DateTime(null, new DateTimeZone('UTC'));
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
                 return ['range' => [$condition->field => ["lte" => $date->format('Y-m-d') . ' 23:59:59']]];
-                break;
             case 'inmorethanndays':
                 $currentUser = AuthenticationController::getInstance()->getCurrentUser();
                 $timeZone = $currentUser->getPreference('timezone');
@@ -847,29 +821,22 @@ class SysModuleFilters
         switch ($condition->operator) {
             case 'empty':
                 return empty($bean->{$condition->field});
-                break;
             case 'emptyr':
                 $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 return empty($bean->{$relatedField});
-                break;
             case 'notempty':
                 return !empty($bean->{$condition->field});
-                break;
             case 'notemptyr':
                 $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 return !empty($bean->{$relatedField});
-                break;
             case 'equals':
                 return $bean->{$condition->field} == $condition->filtervalue;
-                break;
             case 'notequals':
                 return $bean->{$condition->field} != $condition->filtervalue;
-                break;
             case 'equalr':
                 $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 $filtervalues = explode('::', $condition->filtervalue);
                 return $bean->{$relatedField} == $filtervalues['0'];
-                break;
             case 'oneof':
                 $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
                 $isMultiEnum = $bean->field_defs[$condition->field]['type'] == 'multienum';
@@ -879,92 +846,69 @@ class SysModuleFilters
                 } else {
                     return array_search($bean->{$condition->field}, $valArray) !== false;
                 }
-                break;
             case 'true':
                 return $bean->{$condition->field};
-                break;
             case 'false':
                 return !$bean->{$condition->field};
-                break;
             case 'starts':
                 return strpos($bean->{$condition->field}, $condition->filtervalue) === 0;
-                break;
             case 'contains':
                 return strpos($bean->{$condition->field}, $condition->filtervalue) !== false;
-                break;
             case 'ncontains':
                 return strpos($bean->{$condition->field}, $condition->filtervalue) === false;
-                break;
             case 'greater':
                 return $bean->{$condition->field} > $condition->filtervalue;
-                break;
             case 'gequal':
                 return $bean->{$condition->field} >= $condition->filtervalue;
-                break;
             case 'less':
                 return $bean->{$condition->field} < $condition->filtervalue;
-                break;
             case 'lequal':
                 return $bean->{$condition->field} <= $condition->filtervalue;
-                break;
             case 'today':
                 $today = date_format(new DateTime(), 'Y-m-d');
                 return substr($bean->{$condition->field}, 0, 10) == $today;
-                break;
             case 'past':
                 $beanData = new DateTime($bean->{$condition->field});
                 $now = new DateTime();
                 return $beanData < $now;
-                break;
             case 'future':
                 $beanData = new DateTime($bean->{$condition->field});
                 $now = new DateTime();
                 return $beanData > $now;
-                break;
             case 'thismonth':
                 $month = date_format(new DateTime(), 'Y-m');
                 return substr($bean->{$condition->field}, 0, 7) == $month;
-                break;
             case 'nextmonth':
                 $date = new DateTime();
                 $date->add(new DateInterval('P1M'));
                 $month = date_format($date, 'Y-m');
                 return substr($bean->{$condition->field}, 0, 7) == $month;
-                break;
             case 'thisyear':
                 $year = date_format(new DateTime(), 'Y');
                 return substr($bean->{$condition->field}, 0, 4) == $year;
-                break;
             case 'nextyear':
                 $date = new DateTime();
                 $date->add(new DateInterval('P1Y'));
                 $year = date_format($date, 'Y');
                 return substr($bean->{$condition->field}, 0, 4) == $year;
-                break;
             case 'inndays':
                 // todo implement inndays
                 return false;
-                break;
             case 'thisday':
                 // todo implement thisday
                 return false;
-                break;
             case 'inlessthanndays':
                 // todo implement inlessthanndays
                 return false;
-                break;
             case 'inlastndays':
                 // todo implement inlastndays
                 return false;
-                break;
             case 'lastndays':
                 // todo implement
                 return false;
-                break;
             case 'lastnmonths':
                 // todo implement
                 return false;
-                break;
         }
     }
 
