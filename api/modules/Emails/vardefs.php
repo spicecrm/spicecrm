@@ -486,8 +486,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
         'trackinglinks' => [
             'name' => 'trackinglinks',
             'type' => 'link',
-            'module' => 'EmailTrackingLinks',
-            'relationship' => 'email_trackinglinks',
+            'module' => 'TrackingLinks',
+            'relationship' => 'emails_trackinglinks',
             'source' => 'non-db'
         ]
         /* end relationship collections */
@@ -596,6 +596,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'rhs_table' => 'emails',
             'rhs_key' => 'mailbox_id',
             'relationship_type' => 'one-to-many',
+        ],
+        'emails_trackinglinks' => [
+            'lhs_module' => 'Emails',
+            'lhs_table' => 'emails',
+            'lhs_key' => 'id',
+            'rhs_module' => 'TrackingLinks',
+            'rhs_table' => 'trackinglinks',
+            'rhs_key' => 'id',
+            'relationship_type' => 'many-to-many',
+            'join_table' => 'emails_beans',
+            'join_key_lhs' => 'email_id',
+            'join_key_rhs' => 'bean_id',
+            'relationship_role_column' => 'bean_module',
+            'relationship_role_column_value' => 'TrackingLinks',
         ],
     ], // end relationships
     'indices' => [
