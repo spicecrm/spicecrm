@@ -26,11 +26,11 @@ class M2MRelationship extends SugarRelationship
         $this->name = (!empty($def['name']) ? $def['name'] : $def['relationship_name']); // BWC
 
         $lhsModule = $def['lhs_module'];
-        $this->lhsLinkDef = $this->getLinkedDefForModuleByRelationship($lhsModule);
+        $this->lhsLinkDef = $this->getLinkedDefForModuleByRelationship($lhsModule, 'left');
         $this->lhsLink = $this->lhsLinkDef['name'];
 
         $rhsModule = $def['rhs_module'];
-        $this->rhsLinkDef = $this->getLinkedDefForModuleByRelationship($rhsModule);
+        $this->rhsLinkDef = $this->getLinkedDefForModuleByRelationship($rhsModule, 'right');
         $this->rhsLink = $this->rhsLinkDef['name'];
 
         $this->self_referencing = $lhsModule == $rhsModule && $this->def['reverse'] != false;
@@ -42,7 +42,7 @@ class M2MRelationship extends SugarRelationship
      * @param $module
      * @return array|bool
      */
-    public function getLinkedDefForModuleByRelationship($module)
+    public function getLinkedDefForModuleByRelationship($module, $side)
     {
         $results = VardefManager::getLinkFieldForRelationship( $module, BeanFactory::getObjectName($module), $this->name);
         //Only a single link was found
@@ -54,7 +54,7 @@ class M2MRelationship extends SugarRelationship
         else if( is_array($results) )
         {
             LoggerManager::getLogger()->error("Warning: Multiple links found for relationship {$this->name} within module {$module}");
-            return $this->getMostAppropriateLinkedDefinition($results);
+            return $this->getMostAppropriateLinkedDefinition($results, $side);
         }
         else
         {
@@ -69,7 +69,7 @@ class M2MRelationship extends SugarRelationship
      * @param $links
      * @return bool
      */
-    protected function getMostAppropriateLinkedDefinition($links)
+    protected function getMostAppropriateLinkedDefinition($links, $side)
     {
         //First priority is to find a link name that matches the relationship name
         foreach($links as $link)
@@ -83,6 +83,15 @@ class M2MRelationship extends SugarRelationship
         foreach($links as $link)
         {
             if( isset($link['id_name']))
+            {
+                return $link;
+            }
+        }
+
+        // make sure to process the correct link side for m-2-m relationship in self referenced module
+        foreach($links as $link)
+        {
+            if( isset($link['side']) && $side == $link['side'])
             {
                 return $link;
             }

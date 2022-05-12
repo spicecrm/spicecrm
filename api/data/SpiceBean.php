@@ -136,38 +136,6 @@ class SpiceBean
     var $disable_vardefs = false;
 
     /**
-     * holds the full name of the user that an item is assigned to.  Only used if notifications
-     * are turned on and going to be sent out.
-     *
-     * @var String
-     */
-    var $new_assigned_user_name;
-
-    /**
-     * An array of booleans.  This array is cleared out when data is loaded.
-     * As date/times are converted, a "1" is placed under the key, the field is converted.
-     *
-     * @var Array of booleans
-     */
-    var $processed_dates_times = [];
-
-    /**
-     * Whether to process date/time fields for storage in the database in GMT
-     *
-     * @var BOOL
-     */
-    var $process_save_dates = true;
-
-    /**
-     * This signals to the bean that it is being saved in a mass mode.
-     * Examples of this kind of save are import and mass update.
-     * We turn off notificaitons of this is the case to make things more efficient.
-     *
-     * @var BOOL
-     */
-    var $save_from_post = true;
-
-    /**
      * When running a query on related items using the method: retrieve_by_string_fields
      * this value will be set to true if more than one item matches the search criteria.
      *
@@ -1912,7 +1880,7 @@ class SpiceBean
      */
     function process_list_query($query, $row_offset, $limit = -1, $max_per_page = -1)
     {
-        $db = DBManagerFactory::getInstance('listviews');
+        $db = DBManagerFactory::getInstance();
         /**
          * if the row_offset is set to 'end' go to the end of the list
          */
@@ -2765,7 +2733,7 @@ class SpiceBean
     function build_related_list($query, &$template, $row_offset = 0, $limit = -1)
     {
         LoggerManager::getLogger()->debug("Finding linked records $this->_objectname: " . $query);
-        $db = DBManagerFactory::getInstance('listviews');
+        $db = DBManagerFactory::getInstance();
 
         if (!empty($row_offset) && $row_offset != 0 && !empty($limit) && $limit != -1) {
             $result = $db->limitQuery($query, $row_offset, $limit, true, "Error retrieving $template->_objectname list: ");
