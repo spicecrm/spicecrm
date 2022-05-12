@@ -8,6 +8,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\Emails\Email;
 
 class MarketingAutomationController
 {
@@ -27,7 +28,8 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $this->logTrackingAction($data, 'opened');
 
         return $res->withJson(true);
@@ -48,9 +50,13 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
-        $this->logTrackingAction($data, 'clicked');
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
 
+        $this->logTrackingAction($data, 'clicked');
+        if(array_key_exists('Event', $data) && !empty($data['Event'])){
+            //Email::handleEvent($data[4]);
+        }
         return $res->withJson(true);
     }
 
@@ -145,11 +151,19 @@ class MarketingAutomationController
     private function logTrackingAction($data, $action)
     {
         $trackedAction = BeanFactory::getBean('EmailTrackingActions');
-        if (!$trackedAction->retrieve_by_string_fields(['parent_type' => $data[0], 'parent_id' => $data[1], 'action' => $action], true, false)) {
+        if (!$trackedAction->retrieve_by_string_fields(['parent_type' => 'Emails', 'parent_id' => $data['Emails'], 'action' => $action], true, false)) {
             $trackedAction = BeanFactory::newBean('EmailTrackingActions');
-            $trackedAction->parent_type = $data[0];
-            $trackedAction->parent_id = $data[1];
+            $trackedAction->parent_type = 'Emails';
+            $trackedAction->parent_id = $data['Emails'];
             $trackedAction->action = $action;
+            //check if the link is here
+            if(array_key_exists('TrackingLinks', $data) && !empty($data['TrackingLinks'])) {
+                $trackedAction->trackinglink_id = $data['TrackingLinks'];
+            }
+            //register event
+            if(array_key_exists('Event', $data) && !empty($data['Event'])) {
+                $trackedAction->event = $data['Event'];
+            }
             $trackedAction->save();
         }
 
