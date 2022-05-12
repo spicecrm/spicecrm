@@ -8,6 +8,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\Emails\Email;
 
 class MarketingAutomationController
 {
@@ -27,7 +28,8 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $this->logTrackingAction($data, 'opened');
 
         return $res->withJson(true);
@@ -48,9 +50,14 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
-        $this->logTrackingAction($data, 'clicked');
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
 
+        $this->logTrackingAction($data, 'clicked');
+        if(array_key_exists('Event', $data) && !empty($data['Event'])) {
+            $email = BeanFactory::getBean('Emails', $data['Emails']);
+            $email->handleEvent($data['Event']);
+        }
         return $res->withJson(true);
     }
 
@@ -70,8 +77,9 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
-        $recipient = BeanFactory::getBean($data[0], $data[1]);
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+        $recipient = BeanFactory::getBean('Contacts', $data['Contact']);
         $emailAddresses = $recipient->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $address) {
             if ($address->primary_address != 1) continue;
@@ -106,8 +114,9 @@ class MarketingAutomationController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $data = explode(':', $decrypted);
-        $recipient = BeanFactory::getBean($data[0], $data[1]);
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+        $recipient = BeanFactory::getBean('Contacts', $data['Contact']);
         $emailAddresses = $recipient->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $address) {
             if ($address->primary_address != 1) continue;
@@ -145,11 +154,19 @@ class MarketingAutomationController
     private function logTrackingAction($data, $action)
     {
         $trackedAction = BeanFactory::getBean('EmailTrackingActions');
-        if (!$trackedAction->retrieve_by_string_fields(['parent_type' => $data[0], 'parent_id' => $data[1], 'action' => $action], true, false)) {
+        if (!$trackedAction->retrieve_by_string_fields(['parent_type' => 'Emails', 'parent_id' => $data['Emails'], 'action' => $action], true, false)) {
             $trackedAction = BeanFactory::newBean('EmailTrackingActions');
-            $trackedAction->parent_type = $data[0];
-            $trackedAction->parent_id = $data[1];
+            $trackedAction->parent_type = 'Emails';
+            $trackedAction->parent_id = $data['Emails'];
             $trackedAction->action = $action;
+            //check if the link is here
+            if(array_key_exists('TrackingLinks', $data) && !empty($data['TrackingLinks'])) {
+                $trackedAction->trackinglink_id = $data['TrackingLinks'];
+            }
+            //register event
+            if(array_key_exists('Event', $data) && !empty($data['Event'])) {
+                $trackedAction->event = $data['Event'];
+            }
             $trackedAction->save();
         }
 

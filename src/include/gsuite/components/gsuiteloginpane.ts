@@ -8,6 +8,8 @@ import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {libloader} from "../../../services/libloader.service";
+import {modelutilities} from "../../../services/modelutilities.service";
+
 import {Md5} from "ts-md5";
 
 declare var gapi;
@@ -73,6 +75,7 @@ export class GSuiteLoginPane {
         public http: HttpClient,
         public configuration: configurationService,
         public session: session,
+        public modelutilities: modelutilities,
         public libloader: libloader
     ) {
         this.configuration.loaded$.subscribe(loaded => {
@@ -86,17 +89,14 @@ export class GSuiteLoginPane {
                 headers
             }).subscribe({
                 next: (res: any) => {
-                    let repsonse = res;
-                    this.session.authData.sessionId = repsonse.id;
-                    this.session.authData.userId = repsonse.userid;
-                    this.session.authData.userName = repsonse.user_name;
-                    this.session.authData.userimage = repsonse.user_image;
-                    this.session.authData.first_name = repsonse.first_name;
-                    this.session.authData.last_name = repsonse.last_name;
-                    this.session.authData.display_name = repsonse.display_name;
-                    this.session.authData.email = repsonse.email;
-                    this.session.authData.admin = repsonse.admin == 1;
-                    this.session.authData.dev = repsonse.dev == 1;
+                    let response = res;
+                    this.session.authData.sessionId = response.id;
+                    this.session.authData.userId = response.userid;
+                    this.session.authData.userName = response.user_name;
+                    this.session.authData.email = response.email;
+                    this.session.authData.admin = response.admin == 1;
+                    this.session.authData.dev = response.dev == 1;
+                    this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
                     // set the backendurl
                     // this.configuration.data.backendUrl = backendurl;

@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import {loginService} from '../../../services/login.service';
 import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
+import {modelutilities} from '../../../services/modelutilities.service';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
@@ -48,7 +49,7 @@ export class OutlookLoginPane {
     constructor(
         public router: Router,
         public outlookConfiguration: OutlookConfiguration,
-
+        public modelutilities: modelutilities,
         public loginService: loginService,
         public http: HttpClient,
         public configuration: configurationService,
@@ -62,18 +63,14 @@ export class OutlookLoginPane {
                 headers
             }).subscribe({
                 next: (res: any) => {
-                    let repsonse = res;
-                    this.session.authData.sessionId = repsonse.id;
-                    this.session.authData.userId = repsonse.userid;
-                    this.session.authData.userName = repsonse.user_name;
-                    this.session.authData.userimage = repsonse.user_image;
-                    this.session.authData.first_name = repsonse.first_name;
-                    this.session.authData.last_name = repsonse.last_name;
-                    this.session.authData.address_country = repsonse.address_country;
-                    this.session.authData.display_name = repsonse.display_name;
-                    this.session.authData.email = repsonse.email;
-                    this.session.authData.admin = repsonse.admin == 1 ? true : false;
-                    this.session.authData.dev = repsonse.dev == 1 ? true : false;
+                    let response = res;
+                    this.session.authData.sessionId = response.id;
+                    this.session.authData.userId = response.userid;
+                    this.session.authData.userName = response.user_name;
+                    this.session.authData.email = response.email;
+                    this.session.authData.admin = response.admin == 1 ? true : false;
+                    this.session.authData.dev = response.dev == 1 ? true : false;
+                    this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
                     // this.session.authData.renewPass = repsonse.renewPass === '1' ? true : false;
 
                     // set the backendurl
