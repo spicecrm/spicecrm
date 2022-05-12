@@ -55,6 +55,6 @@ export class GlobalUser {
     }
 
     get userimage() {
-        return this.session.authData.userimage;
+        return this.session.authData.user.user_image;
     }
 }
