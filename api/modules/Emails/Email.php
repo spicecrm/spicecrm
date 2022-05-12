@@ -1,7 +1,5 @@
 <?php
 
-use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
-
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -60,6 +58,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\TrackingLinks\TrackingLink;
+use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
 
 class Email extends SpiceBean
 {
