@@ -1,5 +1,6 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -16,26 +17,31 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'options' => 'tracking_actions_dom'
         ],
         'parent_id' => [
-            'name'       => 'parent_id',
-            'vname'      => 'LBL_LIST_RELATED_TO_ID',
-            'type'       => 'id',
+            'name' => 'parent_id',
+            'vname' => 'LBL_LIST_RELATED_TO_ID',
+            'type' => 'id',
             'required' => true,
         ],
         'parent_type' => [
-            'name'     => 'parent_type',
-            'vname'    => 'LBL_PARENT_TYPE',
-            'type'     => 'parent_type',
-            'dbType'   => 'varchar',
+            'name' => 'parent_type',
+            'vname' => 'LBL_PARENT_TYPE',
+            'type' => 'parent_type',
+            'dbType' => 'varchar',
             'required' => true,
-            'len'      => 255,
+            'len' => 255,
         ],
         'parent_name' => [
-            'name'        => 'parent_name',
-            'type_name'   => 'parent_type',
-            'id_name'     => 'parent_id',
-            'vname'       => 'LBL_RELATED_TO',
-            'type'        => 'parent',
-            'source'      => 'non-db',
+            'name' => 'parent_name',
+            'type_name' => 'parent_type',
+            'id_name' => 'parent_id',
+            'vname' => 'LBL_RELATED_TO',
+            'type' => 'parent',
+            'source' => 'non-db',
+        ],
+        'event' => [
+            'name' => 'event',
+            'type' => 'varchar',
+            'len' => 36,
         ],
         'campaigntasks' => [
             'vname' => 'LBL_CAMPAIGNTASKS',
@@ -82,33 +88,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
 
 
     ],
-    'relationships'=> [
+    'relationships' => [
         'campaigntask_emailtrackingactions' => [
-            'lhs_module'=> 'CampaignTasks',
-            'lhs_table'=> 'campaigntasks',
+            'lhs_module' => 'CampaignTasks',
+            'lhs_table' => 'campaigntasks',
             'lhs_key' => 'id',
-            'rhs_module'=> 'EmailTrackingActions',
-            'rhs_table'=> 'emailtrackingactions',
+            'rhs_module' => 'EmailTrackingActions',
+            'rhs_table' => 'emailtrackingactions',
             'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many'
+            'relationship_type' => 'one-to-many'
         ],
         'email_emailtrackingactions' => [
-            'lhs_module'=> 'Emails',
-            'lhs_table'=> 'emails',
+            'lhs_module' => 'Emails',
+            'lhs_table' => 'emails',
             'lhs_key' => 'id',
-            'rhs_module'=> 'EmailTrackingActions',
-            'rhs_table'=> 'emailtrackingactions',
+            'rhs_module' => 'EmailTrackingActions',
+            'rhs_table' => 'emailtrackingactions',
             'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many'
+            'relationship_type' => 'one-to-many'
         ],
         'trackinglink_emailtrackingactions' => [
-            'lhs_module'=> 'TrackingLinks',
-            'lhs_table'=> 'trackinglinks',
+            'lhs_module' => 'TrackingLinks',
+            'lhs_table' => 'trackinglinks',
             'lhs_key' => 'id',
-            'rhs_module'=> 'EmailTrackingActions',
-            'rhs_table'=> 'emailtrackingactions',
+            'rhs_module' => 'EmailTrackingActions',
+            'rhs_table' => 'emailtrackingactions',
             'rhs_key' => 'trackinglink_id',
-            'relationship_type'=>'one-to-many'
+            'relationship_type' => 'one-to-many'
         ],
 
     ],

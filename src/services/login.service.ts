@@ -13,6 +13,7 @@ import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
+import {modelutilities} from "./modelutilities.service";
 
 interface loginAuthDataIf {
     userName: string;
@@ -56,7 +57,9 @@ export class loginService {
         public helper: helper,
         public session: session,
         public broadcast: broadcast,
-        public modal: modal, public metadata: metadata
+        public modelutilities: modelutilities,
+        public modal: modal,
+        public metadata: metadata
     ) {
         this.broadcast.message$.subscribe((message: any) => {
             if (message.messagetype === 'loader.completed' && message.messagedata === 'loadUserData') {
@@ -126,20 +129,14 @@ export class loginService {
                     this.session.authData.tenant_accepted_legal_notice = response.tenant_accepted_legal_notice;
                     this.session.authData.tenant_wizard_completed = response.tenant_wizard_completed;
                     this.session.authData.userName = response.user_name;
-                    this.session.authData.userimage = response.user_image;
-                    this.session.authData.first_name = response.first_name;
-                    this.session.authData.last_name = response.last_name;
-                    this.session.authData.address_country = response.address_country;
-                    this.session.authData.display_name = response.display_name;
                     this.session.authData.email = response.email;
                     this.session.authData.admin = response.admin;
                     this.session.authData.dev = response.dev;
                     this.session.authData.portalOnly = response.portal_only;
                     this.session.authData.googleToken = response.access_token;
-                    this.session.authData.orgunit_id = response.orgunit_id;
-                    this.session.authData.orgunit_name = response.orgunit_name;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     this.session.authData.canchangepassword = response.canchangepassword;
+                    this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
 

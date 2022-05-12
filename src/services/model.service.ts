@@ -1257,16 +1257,23 @@ export class model implements OnDestroy {
         if(moduleFields.assigned_user_id) {
             this.data.assigned_user_id = this.session.authData.userId;
             this.data.assigned_user_name = this.session.authData.userName;
+            this.data.assigned_user = this.session.authData.user;
         }
-        if(moduleFields.assigned_orgunit_id) {
-            this.data.assigned_orgunit_id = this.session.authData.orgunit_id;
-            this.data.assigned_orgunit_name = this.session.authData.orgunit_name;
+
+        if(moduleFields.assigned_orgunit_id && this.session.authData.user.orgunit) {
+            this.data.assigned_orgunit_id = this.session.authData.user.orgunit.id;
+            this.data.assigned_orgunit_name = this.session.authData.user.orgunit.name;
+            this.data.assigned_orgunit = this.session.authData.user.orgunit;
         }
 
         this.data.modified_by_id = this.session.authData.userId;
         this.data.modified_by_name = this.session.authData.userName;
+        this.data.modified_by_user = this.session.authData.user;
+
         this.data.created_by_id = this.session.authData.userId;
         this.data.created_by_name = this.session.authData.userName;
+        this.data.created_by_user = this.session.authData.user;
+
         this.data.date_entered = new moment();
         this.data.date_modified = new moment();
 
