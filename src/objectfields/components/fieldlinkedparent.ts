@@ -62,28 +62,47 @@ export class fieldLinkedParent extends fieldGeneric implements OnInit {
         return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : 'parent_type';
     }
 
+    /**
+     * get the parent name
+     */
     get parentName() {
-        return this.model.getField(this.fieldname);
+        return this.model.getField(this.fielddefs.rname ?? 'summary_text');
     }
 
+    /**
+     * get the parent type
+     */
     get parentType() {
         return this.model.getField(this.parentTypeField);
     }
 
+    /**
+     * gets the parent id
+     */
     get parentId() {
         return this.model.getField(this.parentIdField);
     }
 
+    /**
+     * a getter for thec config setting to display the module icon or hide it
+     */
     get displayModuleIcon() {
         return !this.fieldconfig.hidemoduleicon;
     }
 
     /**
      * a getter for the value bound top the model
+     * this is a fallback used when no fieldset is defined
      */
     get value() {
+        // get related data
         let reldata = this.model.getField(this.fieldname);
-        return this.fielddefs?.rname && reldata && reldata.summary_text ? reldata.summary_text : '';
+
+        // if no reladat return empty
+        if(!reldata) return '';
+
+        // if rname is set use that value otherwise the summary text
+        return this.fielddefs?.rname ? reldata[this.fielddefs?.rname] : reldata.summary_text;
     }
 
     /**
