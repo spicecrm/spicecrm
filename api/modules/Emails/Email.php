@@ -720,7 +720,7 @@ class Email extends SpiceBean
             $trackingId = $node->getAttribute('data-trackingid');
             if(!empty($trackingId)){
                 $this->assignBeanToEmail($trackingId, 'TrackingLinks');
-                $trackingLink = TrackingLink::transformTrackingLinks($trackingId, $mailboxTrackingUrl);
+                $trackingLink = TrackingLink::transformTrackingLinks($this->id,$trackingId, $mailboxTrackingUrl);
                 $node->setAttribute('href', $trackingLink);
             }
         }
