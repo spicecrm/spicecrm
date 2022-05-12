@@ -41,7 +41,6 @@ class SystemTenant extends SpiceBean
 
         // unset the fts settings
         unset($_SESSION['SpiceFTS']);
-        unset($_SESSION['spiceaclaccess']);
 
         AuthenticationController::getInstance()->getCurrentUser()->reloadPreferences();
     }
