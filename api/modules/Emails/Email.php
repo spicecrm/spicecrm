@@ -713,9 +713,6 @@ class Email extends SpiceBean
     private function findTrackingLinks($mailboxTrackingUrl) {
         $dom = new DOMDocument();
         $dom->loadHTML($this->body);
-        //todo maybe querying with xpath is better?
-       // $xpath = new DOMXPath($dom);
-       // $matches = $xpath->query("//a[@data-trackingid')]");
         foreach ($dom->getElementsByTagName('a') as $node) {
             $trackingId = $node->getAttribute('data-trackingid');
             if(!empty($trackingId)){
@@ -726,8 +723,6 @@ class Email extends SpiceBean
         }
         $this->body = $dom->saveHTML();
     }
-
-  //  private function link
 
 
     /**
