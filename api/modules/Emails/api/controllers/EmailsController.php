@@ -11,7 +11,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\includes\UploadFile;
@@ -50,7 +50,7 @@ class EmailsController
      */
     public function getEmail(Request $req, Response $res, array $args): Response {
         $queryParams = $req->getQueryParams();
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
         $result = [];
 
         $db = DBManagerFactory::getInstance();
@@ -211,7 +211,7 @@ class EmailsController
     public function search(Request $req, Response $res, array $args): Response {
         $postBody = $req->getParsedBody();
         $db = DBManagerFactory::getInstance();
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         // get the modules that are fts enabled and have a link to emails
         $modulesObject = $db->query("SELECT sysfts.module FROM relationships, sysfts
@@ -318,7 +318,7 @@ class EmailsController
         $email = BeanFactory::getBean('Emails');
         $email->convertMsgToEmail($attachment->filemd5);
 
-        $ModuleHandler = new ModuleHandler();
+        $ModuleHandler = new SpiceBeanHandler();
 
         $emailResponse = $ModuleHandler->mapBeanToArray('EMails', $email);
 
@@ -362,7 +362,7 @@ class EmailsController
         $email->convertMsgToEmail($email->file_md5, $postBody['beanModule'], $postBody['beanId']);
         $email->save();
 
-        $KRESTModuleHandler = new ModuleHandler();
+        $KRESTModuleHandler = new SpiceBeanHandler();
 
         return $res->withJson($KRESTModuleHandler->get_bean_detail('Emails', $email->id, null));
     }

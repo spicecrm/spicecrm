@@ -12,7 +12,7 @@ use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class OutputTemplatesController
 {
@@ -127,7 +127,7 @@ class OutputTemplatesController
 
         $db = DBManagerFactory::getInstance();
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
         $moduleHandler->add_bean($outputTemplate->module_name, $beanData['id'], $beanData);
 
         $content = $outputTemplate->getPdfContent();

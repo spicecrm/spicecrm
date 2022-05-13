@@ -7,7 +7,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class SpiceGDPRManagerSchedulerJobTasks
 {

@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class OrgChartsController
 {
@@ -44,7 +44,7 @@ class OrgChartsController
             'orgcharts' => []
         ];
 
-        $modHandler = new ModuleHandler();
+        $modHandler = new SpiceBeanHandler();
         $units = $seed->get_linked_beans('orgunits', 'OrgUnit', [], 0, -99);
         foreach($units as $unit){
             $result['orgunits'][] = $modHandler->mapBean($unit);

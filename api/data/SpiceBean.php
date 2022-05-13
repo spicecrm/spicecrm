@@ -15,7 +15,7 @@ use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\EncryptionUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SugarCleaner;
