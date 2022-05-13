@@ -86,6 +86,7 @@
     <system-modal-footer>
         <div class="slds-grid slds-grid--vertical-align-center">
             <div *ngIf="selectedCount > maxCount"><system-label label="LBL_MAX50RECORDS"></system-label></div>
+            <button class="slds-button slds-col--bump-left slds-button--neutral" [disabled]="!canSendTest" (click)="sendTestEmail()"><system-label label="LBL_SEND_TEST_EMAIL"></system-label></button>
             <button [disabled]="!canSchedule" (click)="saveSchedule()" class="slds-col--bump-left slds-button slds-button--brand"><system-label label="LBL_EMAIL_SCHEDULE"></system-label></button>
         </div>
     </system-modal-footer>
