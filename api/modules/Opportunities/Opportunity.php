@@ -92,7 +92,7 @@ class Opportunity extends SpiceBean
             $currency->retrieve($this->currency_id);
             if ($currency->id != $this->currency_id || $currency->deleted == 1) {
 //                $this->amount = $this->amount_usdollar;
-                $this->amount = $this->amount_base;
+                $this->amount = $this->amount_systemcurrency;
                 $this->currency_id = $currency->id;
             }
         }
@@ -143,7 +143,7 @@ class Opportunity extends SpiceBean
             $currency = BeanFactory::getBean('Currencies');
             $currency->retrieve($this->currency_id);
             $this->amount_usdollar = $currency->convertToDollar($this->amount);
-            $this->amount_base = $currency->convertToBase($this->amount);
+            $this->amount_systemcurrency = $currency->convertToBase($this->amount);
         }
 
         if (!$this->in_save && ($this->sales_stage != $this->fetched_row['sales_stage'] || $this->date_closed != $this->fetched_row['date_closed'] || $this->probability != $this->fetched_row['probability'] || $this->forecast != $this->fetched_row['forecast'])) {
@@ -157,7 +157,7 @@ class Opportunity extends SpiceBean
                 $oppStage->sales_stage = $this->sales_stage;
                 $oppStage->amount = $this->amount;
                 $oppStage->amount_usdollar = $this->amount_usdollar;
-                $oppStage->amount_base = $this->amount_base;
+                $oppStage->amount_systemcurrency = $this->amount_systemcurrency;
                 $oppStage->forecast = $this->forecast;
                 $oppStage->budget = $this->budget;
                 $oppStage->bestcase = $this->bestcase;

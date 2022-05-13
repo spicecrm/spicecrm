@@ -41,9 +41,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['OpportunityRevenueLine'] = [
             'disable_num_format' => true,
             'audited' => true
         ],
-        'amount_base' => [
-            'name' => 'amount_base',
-            'vname' => 'LBL_AMOUNT_BASE',
+        'amount_systemcurrency' => [
+            'name' => 'amount_systemcurrency',
+            'vname' => 'LBL_AMOUNT_SYSTEMCURRENCY',
             'type' => 'currency',
             'dbType' => 'double',
             'disable_num_format' => true,
