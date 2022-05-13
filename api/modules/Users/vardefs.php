@@ -967,7 +967,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'name' => 'orgunit_name',
             'rname' => 'name',
             'id_name' => 'orgunit_id',
-            'link' => 'orgunit',
+            'link' => 'orgunits',
             'vname' => 'LBL_ORGUNIT',
             'type' => 'relate',
             'table' => 'orgunits',
@@ -976,6 +976,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
         ],
         'orgunit' => [
             'name' => 'orgunit',
+            'id_name' => 'orgunit_id',
+            'link' => 'orgunits',
+            'vname' => 'LBL_ORGUNIT',
+            'type' => 'linked',
+            'module' => 'OrgUnits',
+            'source' => 'non-db'
+        ],
+        'orgunits' => [
+            'name' => 'orgunits',
             'type' => 'link',
             'vname' => 'LBL_ORGUNITS',
             'relationship' => 'orgunits_users',

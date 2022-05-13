@@ -17,7 +17,7 @@
                       <system-icon [module]="model.data[parentTypeField]" [size]="'small'"></system-icon>
                     </span>
                     <span class="slds-pill__label">
-                        <ng-container *ngIf="!fieldconfig.fieldset">{{parentName}}</ng-container>
+                        <ng-container *ngIf="!fieldconfig.fieldset">{{value}}</ng-container>
                         <ng-container *ngIf="fieldconfig.fieldset">
                             <field-linked-details [fieldset]="fieldconfig.fieldset" [module]="parentType" [data]="relData"></field-linked-details>
                         </ng-container>

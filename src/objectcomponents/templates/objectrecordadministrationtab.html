@@ -12,19 +12,19 @@
     </div>
     <div class="slds-grid slds-wrap">
         <div *ngIf="hasFieldAssignedUser || hasFieldAssignedOrgunit" class="slds-grid slds-size--1-of-1 slds-medium-size--1-of-2">
-            <div class="slds-grow" *ngIf="hasFieldAssignedUser">
-                <object-record-fieldset-field [fieldsetitem]="fields.assigned_user_name"></object-record-fieldset-field>
+            <div [ngClass]="{'slds-size--1-of-1': !hasFieldAssignedOrgunit, 'slds-size--1-of-2': hasFieldAssignedOrgunit}" *ngIf="hasFieldAssignedUser">
+                <object-record-fieldset-field [fieldsetitem]="fields.assigned_user"></object-record-fieldset-field>
             </div>
-            <div class="slds-grow slds-p-around--x-small" *ngIf="hasFieldAssignedOrgunit">
-                <field-container field="assigned_orgunit_name"></field-container>
+            <div [ngClass]="{'slds-size--1-of-1': !hasFieldAssignedUser, 'slds-size--1-of-2': hasFieldAssignedUser}" *ngIf="hasFieldAssignedOrgunit">
+                <object-record-fieldset-field [fieldsetitem]="fields.assigned_orgunit"></object-record-fieldset-field>
             </div>
         </div>
         <div class="slds-grid" [ngClass]="{'slds-size--1-of-1': !hasFieldAssignedUser && !hasFieldAssignedOrgunit, 'slds-size--1-of-1 slds-medium-size--1-of-2': hasFieldAssignedUser || !hasFieldAssignedOrgunit}">
             <div class="slds-size--1-of-2">
-                <object-record-fieldset-field [fieldsetitem]="fields.created_by_name"></object-record-fieldset-field>
+                <object-record-fieldset-field [fieldsetitem]="fields.created_by_user"></object-record-fieldset-field>
             </div>
             <div class="slds-size--1-of-2">
-                <object-record-fieldset-field [fieldsetitem]="fields.modified_by_name"></object-record-fieldset-field>
+                <object-record-fieldset-field [fieldsetitem]="fields.modified_by_user"></object-record-fieldset-field>
             </div>
         </div>
     </div>
