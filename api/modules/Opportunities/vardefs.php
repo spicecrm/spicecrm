@@ -132,7 +132,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
                     'type' => 'currency',
                     'map' => 'opportunity_amount'
                 ],
-                'amount_base' => [
+                'amount_system_currency' => [
                     'type' => 'currency',
                     'map' => 'opportunity_amount_usdollar'
                 ]
@@ -176,9 +176,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'audited' => true,
             'comment' => 'Formatted amount of the opportunity',
         ],
-        'amount_base' => [
-            'name' => 'amount_base',
-            'vname' => 'LBL_AMOUNT_BASE',
+        'amount_systemcurrency' => [
+            'name' => 'amount_systemcurrency',
+            'vname' => 'LBL_AMOUNT_SYSTEMCURRENCY',
             'type' => 'currency',
             'dbType' => 'double',
             'disable_num_format' => true,

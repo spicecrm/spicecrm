@@ -24,6 +24,7 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\includes\database\DBManagerFactory;
 
 class UtilsController
 {
@@ -129,5 +130,27 @@ class UtilsController
         }
 
         return $data;
+    }
+
+    /**
+     * helper to generate a GUID
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function generateGuid(Request $req, Response $res, $args): Response
+    {
+        return $res->withJson(['id' => SpiceUtils::createGuid()]);
+    }
+
+    /**
+     * get redirection data for a short url
+     */
+    public function getRedirection(Request $req, Response $res, $args): Response
+    {
+        $redirectTo = DBManagerFactory::getInstance()->getOne(sprintf('SELECT route FROM sysshorturls WHERE urlkey = "%s" AND active = 1 AND deleted = 0', $args['key']));
+        return $res->withJson(['redirection' => $redirectTo]);
     }
 }

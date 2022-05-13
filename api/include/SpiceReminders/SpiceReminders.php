@@ -33,7 +33,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SugarThemeRegistry;
 
 class SpiceReminders
@@ -90,7 +90,7 @@ class SpiceReminders
         $db = DBManagerFactory::getInstance();
         $favArray = [];
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         if (!empty($lastN)) {
             $lastNObj = $db->limitQuery("SELECT * FROM spicereminders WHERE user_id='$current_user->id' ORDER BY reminder_date ASC", 0, $lastN);
