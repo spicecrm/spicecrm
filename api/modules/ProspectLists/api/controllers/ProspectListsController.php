@@ -5,7 +5,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -22,7 +22,7 @@ class ProspectListsController
 
         $requestParams = $req->getQueryParams();
 
-        $KRESTModuleHandler = new ModuleHandler();
+        $KRESTModuleHandler = new SpiceBeanHandler();
 
         $pl = BeanFactory::getBean('ProspectLists');
         $pl->name = $requestParams['targetlistname'];
@@ -76,7 +76,7 @@ class ProspectListsController
 
         $seed = BeanFactory::getBean($postBody['module']);
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
         if (!empty($postBody['listid']) && $postBody['listid'] != 'owner' && $postBody['listid'] != 'all') {
             // get the list defs
             $listDef = $db->fetchByAssoc($db->query("SELECT * FROM sysmodulelists WHERE id = '{$postBody['listid']}'"));

@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class LettersController
 {
@@ -28,7 +28,7 @@ class LettersController
         $outputTemplate->bean_id = $args['id'];
         $beanData['letter_status'] = 'sent';
         
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
         $moduleHandler->add_bean($outputTemplate->module_name, $args['id'], $beanData);
 
         $attachment = [

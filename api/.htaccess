@@ -12,8 +12,6 @@ RewriteEngine On
 # RewriteCond %{REQUEST_FILENAME} !-f
 # RewriteRule "^(.*)KREST(.*)" "$1/$2" [R=302,L]
 
-RewriteCond %{REQUEST_URI} ^(.*)KREST(.*)$
-RewriteRule ^ KREST/krestlegacy.php [QSA,L]
 
 RewriteCond %{REQUEST_URI} ^(.*)soap(.*)$
 RewriteRule ^ service/v4_1/soap.php [QSA,L]
