@@ -604,51 +604,7 @@ class AdminController
 
     }
 
-    /**
-     * repairs ACL Roles
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return false|Response|string
-     */
-    public function repairACLRoles(Request $req, Response $res, array $args) {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $repairedACLs = [];
-        $ACLActions = ACLAction::getDefaultActions();
-        if (SpiceUtils::isAdmin($current_user)) {
-            if (!empty($ACLActions)) {
-                foreach ($ACLActions as $action) {
-                    if (empty(SpiceModules::getInstance()->getBeanName($action->category))) {
-                        ACLAction::removeActions($action->category);
-                    }
 
-                }
-            } else {
-                foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
-                    $beanName = SpiceModules::getInstance()->getBeanName($module);
-                    if (empty($repairedACLs[$beanName]) && class_exists($beanClass)) {
-                        $currentModule = BeanFactory::getBean($module);
-                        if ($currentModule->bean_implements('ACL') && empty($currentModule->acl_display_only)) {
-                            if (!empty($currentModule->acltype)) {
-                                ACLAction::addActions($currentModule->getACLCategory(), $currentModule->acltype);
-                            } else {
-                                ACLAction::addActions($currentModule->getACLCategory());
-                            }
-
-                            $repairedACLs[$beanName] = true;
-                        }
-                    }
-                }
-            }
-        }
-        if ($res) {
-            return $res->withJson(['installed_classes' => $repairedACLs]);
-        } else {
-            return json_encode(['installed_classes' => $repairedACLs]);
-        }
-
-    }
 
     /**
      * rebuilds vardefs extensions
