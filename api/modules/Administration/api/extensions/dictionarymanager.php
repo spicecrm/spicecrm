@@ -121,16 +121,6 @@ $routes = [
     ],
     [
         'method' => 'get',
-        'route' => '/admin/repair/aclroles',
-        'oldroute' => '/repair/aclroles',
-        'class' => AdminController::class,
-        'function' => 'repairACLRoles',
-        'description' => 'repairs ACL Roles',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
-        'parameters' => []
-    ],
-    [
-        'method' => 'get',
         'route' => '/admin/repair/cache',
         'oldroute' => '/repair/cache',
         'class' => AdminController::class,
