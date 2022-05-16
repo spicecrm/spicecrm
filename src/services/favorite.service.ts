@@ -98,17 +98,7 @@ export class favorite {
      * @param module
      */
     public getFavorites(module) {
-        let retArr = [];
-        for (let favorite of this.favorites) {
-            if (favorite.module_name === module) {
-                retArr.push({
-                    item_id: favorite.item_id,
-                    item_summary: favorite.item_summary
-                });
-            }
-        }
-
-        return retArr;
+        return this.favorites.filter(f => f.module_name === module);
     }
 
     /**
