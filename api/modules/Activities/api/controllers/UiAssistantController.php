@@ -9,7 +9,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use Slim\Routing\RouteCollectorProxy;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\RESTManager;
 
 

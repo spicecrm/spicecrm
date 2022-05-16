@@ -5,7 +5,7 @@ namespace SpiceCRM\modules\ProductGroups\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -32,7 +32,7 @@ class ProductGroupsController
         $products = $group->get_linked_beans('products', 'Product');
 
         $retArray = [];
-        $handler = new ModuleHandler();
+        $handler = new SpiceBeanHandler();
         foreach($products as $product){
             $retArray[] = $handler->mapBeanToArray('Products', $product);
         }
@@ -46,7 +46,7 @@ class ProductGroupsController
         $list = [];
 
         // get an instance of the module handler
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         // a seed bean for the list
         $seed = BeanFactory::getBean('ProductGroups');
@@ -79,7 +79,7 @@ class ProductGroupsController
      */
 
     public function ProductWriteValidation(Request $req, Response $res, array $args): Response{
-        $resthandler = new ModuleHandler();
+        $resthandler = new SpiceBeanHandler();
 
         $group = BeanFactory::getBean('ProductGroups');
         $group->retrieve($args['id']);

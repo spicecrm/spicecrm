@@ -5,7 +5,7 @@ namespace SpiceCRM\modules\ProductGroups;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class ProductGroup extends SpiceBean
 {
@@ -100,7 +100,7 @@ class ProductGroup extends SpiceBean
 
     function getRelatedAttributesRecursively($searchEnabled = false, $attributes = [], &$attributeIds = [])
     {
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         if ($this->parent_productgroup_id) {
             $parent_group = new ProductGroup();

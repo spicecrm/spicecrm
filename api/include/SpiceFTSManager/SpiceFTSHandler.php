@@ -10,7 +10,7 @@ use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
@@ -158,7 +158,7 @@ class SpiceFTSHandler
 
             // loop modules
             foreach ($modArray as $module) {
-                $krestHandler = new ModuleHandler();
+                $krestHandler = new SpiceBeanHandler();
                 $listData = $krestHandler->get_bean_list($module, ['searchterm' => $postBody['searchterm']]);
                 $result[$module]['aggregations'] = [];
                 $result[$module]['total'] = intval($listData['totalcount']);
@@ -200,7 +200,7 @@ class SpiceFTSHandler
         // determine the modules
         // ToDo: move to fts utils and utilize cache
         $searchresults = [];
-        $krestHandler = new ModuleHandler();
+        $krestHandler = new SpiceBeanHandler();
         $modulesObject = $db->query("SELECT * FROM sysfts");
         while ($ftsmodule = $db->fetchByAssoc($modulesObject)) {
             $ftsParams = json_decode(html_entity_decode($ftsmodule['settings']));
@@ -1276,7 +1276,7 @@ class SpiceFTSHandler
                         }
 
                         // get the email addresses
-                        $krestHandler = new ModuleHandler();
+                        $krestHandler = new SpiceBeanHandler();
                         $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
 
                         $hit['acl'] = $seed->getACLActions();
@@ -1331,7 +1331,7 @@ class SpiceFTSHandler
                     }
 
                     // get the email addresses
-                    $krestHandler = new ModuleHandler();
+                    $krestHandler = new SpiceBeanHandler();
                     // $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
 
                     $hit['acl'] = $seed->getACLActions();
@@ -1536,7 +1536,7 @@ class SpiceFTSHandler
         }
 
         // get the email addresses
-        $krestHandler = new ModuleHandler();
+        $krestHandler = new SpiceBeanHandler();
         foreach ($searchresultsraw['hits']['hits'] as &$hit) {
             $seed = BeanFactory::getBean($module, $hit['_id']);
             $exportresults[] = $krestHandler->mapBeanToArray($module, $seed);
