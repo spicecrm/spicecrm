@@ -70,7 +70,7 @@ class SpiceBeanHandler
         $tracker = BeanFactory::getBean('Trackers');
         $tracker->monitor_id = SpiceUtils::createGuid();
         $tracker->user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
-        $tracker->_module = $module;
+        $tracker->module_name = $module;
         $tracker->action = $action;
         $tracker->date_modified = TimeDate::getInstance()->nowDb();
         $tracker->visible = (($action == 'detailview') || ($action == 'editview')) ? 1 : 0;
