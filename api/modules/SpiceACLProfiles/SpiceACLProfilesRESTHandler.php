@@ -136,6 +136,26 @@ class SpiceACLProfilesRESTHandler
     }
 
     /**
+     * get the users having specified profile
+     * @param guid $id
+     * @return array
+     * @throws \Exception
+     */
+    public function getProfileOrgUnits($id)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $retArray = [];
+
+        $records = $db->query("SELECT spiceaclprofiles_orgunits.orgunit_id id, orgunits.name FROM spiceaclprofiles_orgunits LEFT JOIN orgunits ON spiceaclprofiles_orgunits.orgunit_id = orgunits.id WHERE spiceaclprofiles_orgunits.spiceaclprofile_id = '$id' AND spiceaclprofiles_orgunits.deleted = 0 AND orgunits.deleted = 0 ORDER BY orgunits.name");
+        while ($record = $db->fetchByAssoc($records)) {
+            $retArray[] = $record;
+        }
+
+        return $retArray;
+    }
+
+    /**
      * allocate a profile to a list of users
      *
      * @param guid $id
@@ -148,6 +168,23 @@ class SpiceACLProfilesRESTHandler
         $db = DBManagerFactory::getInstance();
         foreach($userids as $userid) {
             $db->query("INSERT INTO spiceaclprofiles_users (id, user_id, spiceaclprofile_id, deleted, date_modified) VALUES(".$db->getGuidSQL().", '$userid', '$id', 0, '" . $timedate->nowDb() . "')");
+        }
+        return true;
+    }
+
+    /**
+     * allocate a profile to a list of users
+     *
+     * @param guid $id
+     * @param array $userids
+     * @return bool
+     * @throws \Exception
+     */
+    public function addProfileOrgunits($id, $orgunitids){
+        $timedate = TimeDate::getInstance();
+        $db = DBManagerFactory::getInstance();
+        foreach($orgunitids as $orgunitid) {
+            $db->query("INSERT INTO spiceaclprofiles_orgunits (id, orgunit_id, spiceaclprofile_id, deleted, date_modified) VALUES(".$db->getGuidSQL().", '$orgunitid', '$id', 0, '" . $timedate->nowDb() . "')");
         }
         return true;
     }
@@ -167,6 +204,21 @@ class SpiceACLProfilesRESTHandler
         return true;
     }
 
+    /**
+     * remove a profile for specified orgunit
+     *
+     * @param guid $id
+     * @param guid $userid
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteProfileOrgUnit($id, $orgunitid){
+        $timedate = TimeDate::getInstance();
+        $db = DBManagerFactory::getInstance();
+        $db->query("UPDATE spiceaclprofiles_orgunits SET deleted = 1, date_modified='" . $timedate->nowDb() . "' WHERE spiceaclprofile_id = '$id' AND orgunit_id = '$orgunitid' AND deleted = 0");
+        return true;
+    }
+
 
     /**
      * get profiles allocated to specified user
@@ -180,7 +232,13 @@ class SpiceACLProfilesRESTHandler
 
         $retArray = [];
 
-        $records = $db->query("SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, spiceaclprofiles_users.user_id  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id IN ('$userid', '*') AND spiceaclprofiles_users.deleted = 0 ORDER BY spiceaclprofiles.name");
+        $user = BeanFactory::getBean('Users', $userid);
+
+        $globalUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'global' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id = '*' AND spiceaclprofiles_users.deleted = 0";
+        $directUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'user' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id = '$userid' AND spiceaclprofiles_users.deleted = 0";
+        $orgUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'orgunit' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_orgunits ON spiceaclprofiles_orgunits.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_orgunits.orgunit_id = '{$user->orgunit_id}' AND spiceaclprofiles_orgunits.deleted = 0";
+
+        $records = $db->query("$globalUserQuery UNION $directUserQuery UNION $orgUserQuery");
         while ($record = $db->fetchByAssoc($records)) {
             $retArray[] = $record;
         }

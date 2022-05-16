@@ -11,6 +11,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
+    selector: 'acl-profiles-manager',
     templateUrl: '../templates/aclprofilesmanager.html',
 })
 export class ACLProfilesManager {

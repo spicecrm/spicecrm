@@ -8,6 +8,7 @@ import {
 import {Router} from '@angular/router';
 import {broadcast} from '../../services/broadcast.service';
 import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
 import {recent} from '../../services/recent.service';
 import {favorite} from '../../services/favorite.service';
 import {language} from '../../services/language.service';
@@ -28,7 +29,7 @@ interface menuItem {
         '[class.slds-context-bar__item]': 'true',
         '[class.slds-is-active]': 'isActive()'
     },
-    providers: [model]
+    providers: [model, view]
 })
 export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestroy {
 
@@ -62,9 +63,11 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
                public broadcast: broadcast,
                public navigation: navigation,
                public model: model,
+               public view: view,
                public recent: recent,
                public favorite: favorite,
                public renderer: Renderer2) {
+        this.view.displayLabels = false;
     }
 
    public executeMenuItem(id) {
