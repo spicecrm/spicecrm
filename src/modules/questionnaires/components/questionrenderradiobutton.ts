@@ -8,7 +8,8 @@ declare var _;
 
 @Component({
     selector: 'question-render-radio-button',
-    templateUrl: '../templates/questionrenderradiobutton.html'
+    templateUrl: '../templates/questionrenderradiobutton.html',
+    styles: [':host {line-height:0}']
 })
 export class QuestionRenderRadioButton implements OnInit {
 

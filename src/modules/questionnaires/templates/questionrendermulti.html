@@ -4,8 +4,8 @@
         <question-render-header [question]="question" [showError]="showError" addclasses="slds-p-around_small slds-border_bottom"></question-render-header>
         <!-- Options vertical -->
         <ng-container *ngIf="!questionMeta.parameter.formatOptionsHorizontal">
-            <div class="slds-p-around--x-small">
-                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-scrollable--none slds-grid slds-grid--vertical-align-center slds-gutters_direct-x-small slds-p-around--x-small question-hover" (click)="qp.clickAnswerOption(option.id,$event)">
+            <div class="slds-p-horizontal--x-small" [ngClass]="{'slds-p-vertical--x-small':this.qp.sizeSmall}">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index; let isLast=last" class="slds-scrollable--none slds-grid slds-grid--vertical-align-center slds-gutters_direct-x-small slds-p-around--x-small question-hover" [ngClass]="{'slds-border_bottom':!isLast && !this.qp.sizeSmall}" (click)="qp.clickAnswerOption(option.id,$event)">
                     <question-render-checkbox class="slds-col slds-grow-none" [option]="option"></question-render-checkbox>
                     <div class="slds-col">
                         <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom_small'"></media-file-image>
