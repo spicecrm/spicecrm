@@ -74,23 +74,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'id_name' => 'account_id',
             'vname' => 'LBL_ACCOUNT',
             'type' => 'relate',
-            'table' => 'accounts',
-            'join_name' => 'accounts',
-            'isnull' => 'true',
             'module' => 'Accounts',
-            'dbType' => 'varchar',
             'link' => 'accounts',
-            'len' => '255',
             'source' => 'non-db',
-            'unified_search' => true,
             'required' => true,
-            'importable' => 'required',
         ],
         'account_id' => [
             'name' => 'account_id',
             'vname' => 'LBL_ACCOUNT_ID',
             'type' => 'id',
-            'source' => 'non-db',
+//            'source' => 'non-db',
             'audited' => true,
         ],
         'campaign_id' => [
@@ -139,7 +132,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
                     'type' => 'currency',
                     'map' => 'opportunity_amount'
                 ],
-                'amount_usdollar' => [
+                'amount_system_currency' => [
                     'type' => 'currency',
                     'map' => 'opportunity_amount_usdollar'
                 ]
@@ -173,7 +166,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'options' => 'numeric_range_search_dom',
             'enable_range_search' => true,
         ],
-        'amount_usdollar' => [
+        'amount_usdollar' => [ /**@deprecated**/
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
@@ -182,6 +175,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'duplicate_merge' => '0',
             'audited' => true,
             'comment' => 'Formatted amount of the opportunity',
+        ],
+        'amount_systemcurrency' => [
+            'name' => 'amount_systemcurrency',
+            'vname' => 'LBL_AMOUNT_SYSTEMCURRENCY',
+            'type' => 'currency',
+            'dbType' => 'double',
+            'disable_num_format' => true,
+            'duplicate_merge' => '0',
+            'audited' => true,
+            'comment' => 'Original amount as per default currency of the opportunity',
         ],
         'forecast' => [
             'name' => 'forecast',
@@ -556,33 +559,42 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
     , 'opportunity_currencies' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'currency_id',
             'rhs_module' => 'Currencies', 'rhs_table' => 'currencies', 'rhs_key' => 'id',
             'relationship_type' => 'one-to-many'],
-        'opportunities_assigned_user' => [
-            'lhs_module' => 'Users',
-            'lhs_table' => 'users',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Opportunities',
-            'rhs_table' => 'opportunities',
-            'rhs_key' => 'assigned_user_id',
-            'relationship_type' => 'one-to-many'
-        ],
-        'opportunities_modified_user' => [
-            'lhs_module' => 'Users',
-            'lhs_table' => 'users',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Opportunities',
-            'rhs_table' => 'opportunities',
-            'rhs_key' => 'modified_user_id',
-            'relationship_type' => 'one-to-many'
-        ],
-        'opportunities_created_by' => [
-            'lhs_module' => 'Users',
-            'lhs_table' => 'users',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Opportunities',
-            'rhs_table' => 'opportunities',
-            'rhs_key' => 'created_by',
-            'relationship_type' => 'one-to-many'
-        ],
+    'accounts_opportunities' => [
+        'lhs_module' => 'Accounts',
+        'lhs_table' => 'accounts',
+        'lhs_key' => 'id',
+        'rhs_module' => 'Opportunities',
+        'rhs_table' => 'opportunities',
+        'rhs_key' => 'account_id',
+        'relationship_type' => 'one-to-many',
+    ],
+//        'opportunities_assigned_user' => [
+//            'lhs_module' => 'Users',
+//            'lhs_table' => 'users',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Opportunities',
+//            'rhs_table' => 'opportunities',
+//            'rhs_key' => 'assigned_user_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
+//        'opportunities_modified_user' => [
+//            'lhs_module' => 'Users',
+//            'lhs_table' => 'users',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Opportunities',
+//            'rhs_table' => 'opportunities',
+//            'rhs_key' => 'modified_user_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
+//        'opportunities_created_by' => [
+//            'lhs_module' => 'Users',
+//            'lhs_table' => 'users',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Opportunities',
+//            'rhs_table' => 'opportunities',
+//            'rhs_key' => 'created_by',
+//            'relationship_type' => 'one-to-many'
+//        ],
         'opportunities_campaign' => [
             'lhs_module' => 'Campaigns',
             'lhs_table' => 'campaigns',

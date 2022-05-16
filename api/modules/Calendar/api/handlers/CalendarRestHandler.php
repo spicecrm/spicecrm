@@ -8,7 +8,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class CalendarRestHandler
 {
@@ -68,7 +68,7 @@ class CalendarRestHandler
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
         $calendarId = $db->quote($calendarId);
-        $krestModuleHandler = new ModuleHandler();
+        $krestModuleHandler = new SpiceBeanHandler();
         $calendars = "SELECT citems.* FROM sysuicalendaritems as citems ";
         $calendars .= "LEFT JOIN sysuicalendars ON citems.calendar_id = sysuicalendars.id ";
         $calendars .= "WHERE sysuicalendars.is_default = 1 AND citems.calendar_id = '$calendarId'";

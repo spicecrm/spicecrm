@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\includes\SpiceSocket;
 
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class SpiceSocketHooks
 {
@@ -11,7 +11,7 @@ class SpiceSocketHooks
      */
     public function updateSocket(&$bean)
     {
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         SpiceSocket::getInstance()->emit(
             'module',

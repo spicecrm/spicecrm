@@ -72,13 +72,13 @@ class Campaign extends SpiceBean {
 	function save($check_notify = FALSE, $fts_index_bean = TRUE) {
 
         //US DOLLAR
-        if(isset($this->amount) && !empty($this->amount)){
-
-            $currency = BeanFactory::getBean('Currencies');
-            $currency->retrieve($this->currency_id);
-            $this->amount_usdollar = $currency->convertToDollar($this->amount);
-
-        }
+//        if(isset($this->amount) && !empty($this->amount)){
+//
+//            $currency = BeanFactory::getBean('Currencies');
+//            $currency->retrieve($this->currency_id);
+//            $this->amount_usdollar = $currency->convertToDollar($this->amount);
+//
+//        }
 
 		// Bug53301
 		if($this->campaign_type != 'NewsLetter') {

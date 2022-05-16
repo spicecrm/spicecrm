@@ -3,14 +3,14 @@ namespace SpiceCRM\modules\EmailAddresses;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class EmailAddressRestHandler
 {
     public static function searchBeans($params) {
         $db = DBManagerFactory::getInstance();
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $results = [];
 

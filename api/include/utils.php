@@ -419,7 +419,7 @@ function format_number($amount, $round = null, $decimals = null, $params = []) {
         }
     }
     if(!empty($params['convert']) && $params['convert']) {
-        $amount = $currency->convertFromDollar($amount, 6);
+        $amount = $currency->convertFromBase($amount, 6);
     }
 
     if(!empty($params['currency_symbol']) && $params['currency_symbol']) {
