@@ -25,8 +25,8 @@
                 </td>
                 <td style="width: 3rem;">
                     <div class="slds-grid">
-                        <system-custom-icon *ngIf="aclprofile.status == 'r'" icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deactivateProfile(aclprofile.id)"></system-custom-icon>
-                        <system-custom-icon *ngIf="aclprofile.status != 'r'" icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light" (click)="activateProfile(aclprofile.id)"></system-custom-icon>
+                        <system-utility-icon *ngIf="aclprofile.status == 'r'" icon="light_bulb" colorclass="slds-icon-text-success" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deactivateProfile(aclprofile.id)"></system-utility-icon>
+                        <system-utility-icon *ngIf="aclprofile.status != 'r'" icon="light_bulb" colorclass="slds-icon-text-light" size="x-small" addclasses="slds-icon slds-icon-text-light" (click)="activateProfile(aclprofile.id)"></system-utility-icon>
                     </div>
                 </td>
             </tr>
