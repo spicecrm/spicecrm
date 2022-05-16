@@ -20,6 +20,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
             'module' => 'Users',
             'vname' => 'LBL_USERS',
         ],
+        'orgunits' =>    [
+            'name' => 'orgunits',
+            'type' => 'link',
+            'relationship' => 'spiceaclprofiles_orgunits',
+            'source' => 'non-db',
+            'module' => 'OrgUnits',
+            'vname' => 'LBL_ORGUNITS',
+        ],
         'for_portal_users' => [
             'name' => 'for_portal_users',
             'vname' => 'LBL_FOR_PORTAL_USERS',
