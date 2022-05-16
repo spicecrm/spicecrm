@@ -34,7 +34,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\ArrayUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
@@ -191,7 +191,7 @@ class SpiceFTSActivityHandler
         $elastichandler = new ElasticHandler();
         $results = json_decode($elastichandler->query('POST', join(',', $queryModules) . '/_search', null, $query), true);
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $items = [];
         foreach ($results['hits']['hits'] as &$hit) {
@@ -202,7 +202,7 @@ class SpiceFTSActivityHandler
             }
 
             // get the email addresses
-            $krestHandler = new ModuleHandler();
+            $krestHandler = new SpiceBeanHandler();
 
             $items[] = [
                 'id' => $seed->id,
@@ -353,7 +353,7 @@ class SpiceFTSActivityHandler
         $results = json_decode($elastichandler->query('POST', join(',', $queryModules) . '/_search', null, $query), true);
 
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $items = [];
         /** @todo clarify if we should add a check for the data types to split an object etc.. */

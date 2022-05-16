@@ -444,16 +444,14 @@ class RESTManager
         }
 
         $this->initExtensionsInFolder('.');
+        $this->initExtensionsInFolder('./data');
         $this->initExtensionsInFolder('./custom');
     }
 
     private function initExtensionsInFolder(string $folderPath) {
         $apiExtensionPath = $folderPath . '/api/extensions';
-        $krestExtensionPath = $folderPath . '/KREST/extensions';
         if (file_exists($apiExtensionPath)) {
             $extensionPath = $apiExtensionPath;
-        } elseif (file_exists($krestExtensionPath)) {
-            $extensionPath = $krestExtensionPath;
         } else {
             return;
         }

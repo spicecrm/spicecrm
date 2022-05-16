@@ -16,7 +16,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\Administration\Administration;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
@@ -391,7 +391,7 @@ class AuthenticationController
         $currentUser = $this->getCurrentUser();
 
         // get a module handler to map the current user
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $loginData = [
             'admin' => $currentUser->is_admin == '1' ? true : false,

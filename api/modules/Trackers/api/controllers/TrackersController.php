@@ -6,7 +6,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 class TrackersController
@@ -21,7 +21,7 @@ class TrackersController
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $tracker = BeanFactory::getBean('Trackers');
         $history = $tracker->get_recently_viewed($current_user->id, '', 50);
@@ -53,7 +53,7 @@ class TrackersController
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $getParams = $req->getQueryParams();
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $tracker = BeanFactory::getBean('Trackers');
         $history = $tracker->get_recently_viewed($current_user->id, $getParams['module'] ? [$getParams['module']] : '', $getParams['limit']);
