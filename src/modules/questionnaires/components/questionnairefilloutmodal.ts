@@ -51,8 +51,9 @@ export class QuestionnaireFillOutModal implements OnInit {
         if ( this.isAnonymous && !this.questionnaireId ) this.loadQuestionnairesList();
         this.qp = this.questionnaireParticipation; // qp as shortcut
         this.model.module = 'QuestionnaireParticipations';
+        this.model.initialize();
         this.view.isEditable = true;
-        this.model.isEditing = true;
+        this.model.startEdit();
         this.view.setEditMode();
         this.componentconfig = this.metadata.getComponentConfig('QuestionnaireFillOutModal');
     }
