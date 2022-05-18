@@ -92,6 +92,44 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/ProspectLists/getrelated/{beanName}/{beanId}',
+        'class'       => ProspectListsController::class,
+        'function'    => 'getRelatedModules',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'beanName'        => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'links'          => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'required'    => true,
+                'description' => 'array with the links to check beans relationship',
+            ],
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/ProspectLists/fromModule',
+        'class'       => ProspectListsController::class,
+        'function'    => 'saveTargetList',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'data'          => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'required'    => true,
+                'description' => 'array with the ids to check beans relationship',
+            ],
+        ]
+    ],
 
 ];
 

@@ -161,14 +161,6 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     text-transform: capitalize;
 }
 
-/* container for the rich text editor */
-.slds-rich-text-area__content {
-    max-height: none;
-    resize: vertical;
-    overflow: auto;
-    height: 300px;
-}
-
 /* align text justified */
 /* not a slds class, but related to slds classes slds-text-align_left, slds-text-align_center or slds-text-align_right */
 .slds-text-align_justify, .slds-text-align--justify {
