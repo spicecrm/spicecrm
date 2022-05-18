@@ -597,3 +597,24 @@ if (file_exists('extensions/modules/ServiceTicketStages')) {
         'vname' => 'LBL_SERVICETICKETSTAGES',
     ];
 }
+
+if (file_exists('extensions/modules/SystemDeploymentReleases')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['systemdeploymentreleases'] = [
+        'vname' => 'LBL_RELEASES',
+        'name' => 'systemdeploymentreleases',
+        'type' => 'link',
+        'module' => 'SystemDeploymentReleases',
+        'relationship' => 'serviceticket_systemdeploymentreleases',
+        'link_type' => 'one',
+        'source' => 'non-db'
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['relationships']['serviceticket_systemdeploymentreleases'] = [
+        'lhs_module' => 'ServiceDeploymentReleases',
+        'lhs_table' => 'servicedeploymentreleases',
+        'lhs_key' => 'id',
+        'rhs_module' => 'ServiceTickets',
+        'rhs_table' => 'servicetickets',
+        'rhs_key' => 'servicedeploymentrelease_id',
+        'relationship_type' => 'one-to-many',
+    ];
+}
