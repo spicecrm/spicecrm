@@ -121,6 +121,13 @@ class SpiceInstaller
             $requirements['zip'] = true;
         }
 
+        //check mailparse
+        if (!class_exists('Mailparse')) {
+            $requirements['mailparse'] = false;
+        } else {
+            $requirements['mailparse'] = true;
+        }
+
         // db check
         $drivers = $this->dbManagerFactory->getDbDrivers();
         if (empty($drivers)) {
