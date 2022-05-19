@@ -196,7 +196,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'id': true,
                     'name': true,
                     'for': true,
-                    'checked': true
+                    'checked': true,
+                    'size': true,
+                    'placeholder': true
                 }
             }
         });
