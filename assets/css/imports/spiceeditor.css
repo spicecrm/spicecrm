@@ -25,10 +25,11 @@
 .spice-richtext-editor h5,
 .spice-richtext-editor h6,
 .spice-richtext-editor b,
-.spice-richtext-editor strong
+.spice-richtext-editor div,
+.spice-richtext-editor p
 
 {
-    font-weight: bolder !important;
+   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* container for the rich text editor */
