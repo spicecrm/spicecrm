@@ -69,9 +69,10 @@ export class DictionaryManagerDefinitions {
      *
      * @param definitionId
      */
-    public setCurrentDictionaryDefintion(definitionId: string) {
+    public setCurrentDictionaryDefinition(definitionId: string, scope: 'c' | 'g') {
         if(definitionId != this.dictionarymanager.currentDictionaryDefinition) {
             this.dictionarymanager.currentDictionaryDefinition = definitionId;
+            this.dictionarymanager.currentDictionaryScope = scope;
             this.dictionarymanager.currentDictionaryItem = null;
             this.dictionarymanager.currentDictionaryIndex = null;
             this.dictionarymanager.currentDictionaryRelationship = null;
