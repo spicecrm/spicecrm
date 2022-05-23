@@ -96,6 +96,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_MEMBER_OF',
             'side' => 'right',
+        ],
+        'spiceaclprofiles' => [
+            'name' => 'spiceaclprofiles',
+            'type' => 'link',
+            'relationship' => 'spiceaclprofiles_orgunits',
+            'module' => 'SpiceACLProfiles',
+            'bean_name' => 'SpiceACLProfile',
+            'source' => 'non-db',
+            'vname' => 'LBL_SPICEACLPROFILES'
         ]
     ],
     'relationships' => [

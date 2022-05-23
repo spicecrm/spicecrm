@@ -1,6 +1,6 @@
 <div class="slds-form-element slds-is-relative" style="height: 100%;">
     <!--div class="slds-box slds-scrollable" style="height: 100%" [innerHTML]="content" (contextmenu)="showContextMenu($event)"></div-->
-    <textarea class="slds-input" style="height: 100%; width: 100%; resize: none;" (contextmenu)="showContextMenu($event)">{{striped_content}}</textarea>
+    <div class="slds-input" style="height: 100%; width: 100%; resize: none;" [innerHTML]="content" (contextmenu)="showContextMenu($event)">{{striped_content}}</div>
     <div #contextMenu *ngIf="displayContextMenu" [ngStyle]="contextMenuStyle" class="slds-dropdown slds-dropdown_left slds-is-absolute">
         <ul class="slds-dropdown__list" role="menu">
             <li *ngFor="let field of target_module_fields" class="slds-dropdown__item" role="presentation">

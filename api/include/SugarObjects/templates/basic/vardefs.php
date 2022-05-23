@@ -154,7 +154,7 @@ $vardefs = [
         ],
         'created_by_user' => [
             'name' => 'created_by_user',
-            'vname' => 'LBL_CREATED_BY_USER',
+            'vname' => 'LBL_CREATED_BY',
             'type' => 'linked',
             'link' => 'created_by_link',
             'rname' => 'user_name',
