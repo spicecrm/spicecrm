@@ -92,7 +92,7 @@ class SystemTenantsController
         }
 
         $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
-        DBManagerFactory::switchDatabase($dbName, SpiceConfig::getInstance()->config);
+        DBManagerFactory::switchToMasterDatabase();
 
         /* @var SystemTenant */
         $tenant = BeanFactory::getBean('SystemTenants', $authController->systemtenantid);
