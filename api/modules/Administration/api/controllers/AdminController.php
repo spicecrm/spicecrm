@@ -204,12 +204,17 @@ class AdminController
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            SpiceDictionaryVardefs::loadDictionaries();
+        if (SpiceDictionaryVardefs::isDbManaged()) {
+            $vardefs = SpiceDictionaryVardefs::loadVardefs();
+
+            $db->transactionStart();
+            $db->truncateQuery('sysdictionaryfields', true);
+
             // save cache to DB
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
+            foreach ($vardefs as $dictName => $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
+            $db->transactionCommit();
         }
 
         $repairedTables = [];
@@ -257,10 +262,21 @@ class AdminController
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            SpiceDictionaryVardefs::loadDictionaries();
+        if (SpiceDictionaryVardefs::isDbManaged()) {
+            $vardefs = SpiceDictionaryVardefs::loadVardefs();
             // save cache to DB
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
+//            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
+//                SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
+//            }
+            foreach($vardefs as $dictName => $dict){
+                $returnArray[$dictName] = $dict;
+                //create a fake sysdictionarydefinition_id
+                $sysdictionarydefinition_id = SpiceUtils::createGuid();
+
+                // remove deprecated properties
+                SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
+
+                // save to db
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -606,16 +622,18 @@ class AdminController
 
 
 
+
+
     /**
-     * rebuilds vardefs extensions
+     * read the custom vardefs definitions according to backend old way using files
+     * @return array
      */
-    private function rebuildExtensions()
+    private function rebuildExtensionVardefs()
     {
         $extensions = [];
-
         if (is_dir('custom/Extension/modules')) {
             $handle = opendir('custom/Extension/modules');
-            while (false !== ($entry = readdir($handle)))
+            while (false !== ($entry = readdir($handle))){
                 if ($entry != "." && $entry != "..") {
                     $extensions[$entry] = "";
                     $subHandle = opendir("custom/Extension/modules/{$entry}/Ext/Vardefs");
@@ -625,8 +643,17 @@ class AdminController
                         }
                     }
                 }
-
+            }
         }
+        return $extensions;
+    }
+
+    /**
+     * rebuilds vardefs extensions
+     */
+    private function rebuildExtensions()
+    {
+        $extensions = $this->rebuildExtensionVardefs();
 
         if (!empty($extensions) && !empty(array_values($extensions))) {
             foreach ($extensions as $extDir => $extFile) {
@@ -762,7 +789,7 @@ class AdminController
         if (SpiceUtils::isAdmin($current_user)) {
             $confLoader = new SpiceUIConfLoader();
             $db = DBManagerFactory::getInstance();
-            if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+            if (SpiceDictionaryVardefs::isDbManaged()) {
                 $this->rebuildExtensions();
                 $this->merge_files("Ext/TableDictionary/", 'tabledictionary.ext.php');
                 $this->rebuildDictionaryRelationships();
