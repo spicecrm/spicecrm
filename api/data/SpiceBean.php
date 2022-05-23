@@ -1620,7 +1620,7 @@ class SpiceBean
      */
     function call_custom_logic($event, $arguments = null)
     {
-        if (!isset($this->processed) || $this->processed == false) {
+        if ($this->_module && (!isset($this->processed) || $this->processed == false)) {
             //add some logic to ensure we do not get into an infinite loop
             if (!empty($this->logicHookDepth[$event])) {
                 if ($this->logicHookDepth[$event] > $this->max_logic_depth)
