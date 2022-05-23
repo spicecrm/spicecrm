@@ -29,6 +29,7 @@ export class SystemSlider implements ControlValueAccessor {
     @Input() public min: string;
     @Input() public step: string;
     @Input() public disabled: boolean = false;
+    @Input() public displayValue: boolean = true;
 
 
     public _value: number = 0;
