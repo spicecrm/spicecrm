@@ -7,30 +7,27 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class SpiceDictionaryHandler extends SpiceSingleton
 {
     public $dictionary = [];
 
     /**
-     * loads the metadata files
+     * legacy
+     * load the files containing metadata related vardefs
+     * this is the old way od defining vardefs for metadata tables
      */
     public static function loadMetaDataFiles() {
-        $metaDataDirectories = ['metadata', 'extensions/metadata', 'custom/metadata',
-        //    'modules', 'extensions/modules', 'custom/modules'
-        ];
+        $directories = ['metadata', 'extensions/metadata', 'custom/metadata', 'custom/extensions/metadata'];
 
-        foreach ($metaDataDirectories as $metaDataDirectory) {
-            self::loadMetaDataFilesFromDir($metaDataDirectory);
-        }
-
-        if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
-            include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
+        foreach ($directories as $directory) {
+            self::loadMetaDataFilesFromDir($directory);
         }
     }
 
     /**
-     * Loads the metadata files from a particular directory.
+     * Loads the metadata files from a specified directory.
      *
      * @param string $directory
      */
@@ -45,20 +42,78 @@ class SpiceDictionaryHandler extends SpiceSingleton
     }
 
     /**
+     *
      * loads the dictionary Definitions of type metadata from the database
      */
     public static function loadMetaDataDefinitions() {
-        if(isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
+        if(SpiceDictionaryVardefs::isDbManaged()){
             SpiceDictionaryVardefs::loadDictionaries(SpiceDictionaryHandler::getInstance()->dictionary, 'metadata');
         }
     }
 
     /**
-     * retrieves the dictionary definitions
-     *
+     * load vardefs cached in sysdictionaryfields
+     * @return void
+     */
+    public static function loadCachedVardefs(){
+        SpiceDictionaryVardefs::loadDictionariesCacheFromDb();
+    }
+
+
+    /**
+     * load the files containing module related vardefs
+     * this is the old way od defining vardefs for module tables
+     * @param string $directory
+     * @return void
+     */
+    private static function loadModuleFilesFromDir(string $directory): void {
+        if ($metaDataHandle = @opendir('./' . $directory)) {
+            while (false !== ($metaDataFile = readdir($metaDataHandle))) {
+                if(is_dir($directory.'/'.$metaDataFile.'/Ext/Vardefs')) {
+                    $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile.'/Ext/Vardefs');
+                    foreach ($fileSystemIterator as $fileInfo){
+                        if (preg_match('/\.php$/', $fileInfo->getFilename())) {
+                            include($directory . '/' . $metaDataFile . '/Ext/Vardefs/' . $fileInfo->getFilename());
+                        }
+                    }
+                }
+                elseif(is_dir($directory.'/'.$metaDataFile)){
+                    $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile);
+                    foreach ($fileSystemIterator as $fileInfo){
+                        if (preg_match('/vardefs.php$/', $fileInfo->getFilename())) {
+                            include($directory . '/' . $metaDataFile . '/' . $fileInfo->getFilename());
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     * load the module vardefs defined in files
+     * specific folder order to overwrite with file custom definition
+     */
+    public static function loadModuleFiles($module = null) {
+        if(!empty($module)){
+            $directories = ['modules/'.$module, 'extensions/modules/'.$module, 'custom/modules/'.$module, 'custom/Extension/modules/'.$module];
+        } else{
+            $directories = ['modules', 'extensions/modules', 'custom/modules', 'custom/Extension/modules'];
+        }
+
+        foreach ($directories as $directory) {
+            self::loadModuleFilesFromDir($directory);
+        }
+    }
+
+
+
+    /**
+     * retrieves the dictionary definitions from table sysdictionarydefinitions
+     * @param null $module the module name
      * @return array
      */
-    public function getDictionaryDefinitions(){
+    public static function getDictionaryDefinitions(){
         $db = DBManagerFactory::getInstance();
         $defArray = [];
         $dictionarydefinitions = $db->query("SELECT * FROM sysdictionarydefinitions WHERE deleted = 0");
@@ -582,12 +637,12 @@ class SpiceDictionaryHandler extends SpiceSingleton
                 case 'c':
                     unset($domainfieldvalidationvalue['scope']);
                     $db->upsertQuery('syscustomdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
+                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['enumvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
                     break;
                 default:
                     unset($domainfieldvalidationvalue['scope']);
                     $db->upsertQuery('sysdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
+                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['enumvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
                     break;
             }
         }
