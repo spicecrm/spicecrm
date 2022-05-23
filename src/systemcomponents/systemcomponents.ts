@@ -460,7 +460,8 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
         SystemModalHeaderEmpty,
         SystemWrappedText,
         SystemPDFContainer,
-        SystemInputColor
+        SystemInputColor,
+        SystemLabelEditorModal
     ]
 })
 export class SystemComponents {}
