@@ -103,6 +103,8 @@ export class configurationService {
             }
         );
 
+        // add a listener to the broadcast to catch the logout
+        this.broadcast.message$.subscribe(message => this.handleLogout(message));
 
         // Update Theme when configuration has been loaded.
         // this.loaded$.subscribe(() => this.updateThemeColors());
