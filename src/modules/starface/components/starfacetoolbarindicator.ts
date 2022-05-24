@@ -136,6 +136,9 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     public initialize() {
 
+        // starface can hangup
+        this.telephony.actions.hangup = true;
+
         this.getPreferences().subscribe(username => {
             this.login();
         });
@@ -267,7 +270,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
 
         this.subscriptions.add(
             this.socket.initializeNamespace('starface').subscribe(event => {
-                this.handleCallEvent(event.data);
+                if(event.data) this.handleCallEvent(event.data);
             })
         );
 
