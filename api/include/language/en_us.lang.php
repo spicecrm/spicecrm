@@ -828,7 +828,7 @@ $app_list_strings = [
     ],
     'salesvoucher_type_dom' => [
         'v' => 'value',
-        'p' => 'prercent'
+        'p' => 'percent'
     ],
     'salesdoc_status_dom' => [
         'vsnew' => 'new',
@@ -1481,18 +1481,18 @@ $app_list_strings['rptype_dom'] = [
 ];
 
 $app_list_strings['systemdeploymentpackage_repair_dom'] = [
-    'repairDatabase' => 'repair Database',
-    'rebuildExtensions' => 'rebuild Extensions',
-    'clearTpls' => 'clear Templates',
-    'clearJsFiles' => 'clear Js-Files',
-    'clearDashlets' => 'clear Dashlets',
-    'clearSugarFeedCache' => 'clear Sugar-Feed-Cache',
-    'clearThemeCache' => 'clear Theme-Cache',
-    'clearVardefs' => 'clear Vardefs',
-    'clearJsLangFiles' => 'clear Js-Lang-Files',
-    'rebuildAuditTables' => 'rebuild Audit-Tables',
-    'clearSearchCache' => 'clear Search-Cache',
-    'clearAll' => 'clear All',
+//    'repairDatabase' => 'repair Database',
+//    'rebuildExtensions' => 'rebuild Extensions',
+//    'clearTpls' => 'clear Templates',
+//    'clearJsFiles' => 'clear Js-Files',
+//    'clearDashlets' => 'clear Dashlets',
+//    'clearSugarFeedCache' => 'clear Sugar-Feed-Cache',
+//    'clearThemeCache' => 'clear Theme-Cache',
+//    'clearVardefs' => 'clear Vardefs',
+//    'clearJsLangFiles' => 'clear Js-Lang-Files',
+//    'rebuildAuditTables' => 'rebuild Audit-Tables',
+//    'clearSearchCache' => 'clear Search-Cache',
+//    'clearAll' => 'clear All',
 ];
 
 
