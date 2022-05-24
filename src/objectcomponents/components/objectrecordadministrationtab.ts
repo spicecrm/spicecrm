@@ -35,7 +35,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
         },
         assigned_user: {
             field: 'assigned_user',
-            fieldconfig: {}
+            fieldconfig: {fieldtype:'linked'}
         },
         assigned_orgunit: {
             field: 'assigned_orgunit',

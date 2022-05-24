@@ -150,7 +150,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
                     toolbar: [],
                     htmlSupport: {
-                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4'])
+                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
+                        // hr
                     },
                     autosave: {
                         save: ( editor ) => {
@@ -191,6 +192,31 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spicetemplate': true,
                     'class': true,
                     'style': true,
+                    'value': true,
+                    'type': true,
+                    'id': true,
+                    'name': true,
+                    'for': true,
+                    'checked': true,
+                    'selected': true,
+                    'size': true,
+                    'autocomplete': true,
+                    'autofocus': true,
+                    'placeholder': true,
+                    'max': true,
+                    'maxlength': true,
+                    'min': true,
+                    'minlength': true,
+                    'multiple': true,
+                    'required': true,
+                    'disabled': true,
+                    'form': true,
+                    'step': true,
+                    'readonly': true,
+                    'cols': true,
+                    'rows': true,
+                    'wrap': true,
+                    'label': true
                 }
             }
         });
