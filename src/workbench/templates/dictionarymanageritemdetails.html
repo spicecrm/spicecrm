@@ -5,7 +5,7 @@
             <div class="slds-size--1-of-2 slds-form-element slds-m-around--xxx-small">
                 <div class="slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
-                    <system-input-text [maxlength]="128" disabled class="slds-input" [(ngModel)]="dictionaryitem.name"></system-input-text>
+                    <system-input-text [maxlength]="128" disabled [(ngModel)]="dictionaryitem.name"></system-input-text>
                 </div>
             </div>
             <div class="slds-size--1-of-4 slds-form-element slds-m-around--xxx-small">
@@ -44,7 +44,7 @@
                 </div>
                 <div class="slds-size--1-of-3 slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_DEFAULT_VALUE"></system-label></label>
-                    <system-input-text class="slds-input" [(ngModel)]="dictionaryitem.default_value"></system-input-text>
+                    <system-input-text [(ngModel)]="dictionaryitem.default_value"></system-input-text>
                 </div>
 
             </div>
@@ -53,7 +53,7 @@
                     <system-label label="LBL_COMMENT"></system-label>
                 </label>
                 <div class="slds-form-element__control">
-                    <textarea class="slds-textarea" [(ngModel)]="dictionaryitem.description"></textarea>
+                    <system-input-text maxlength="150" [(ngModel)]="dictionaryitem.description"></system-input-text>
                 </div>
             </div>
         </ng-container>
