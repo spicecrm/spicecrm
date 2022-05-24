@@ -56,6 +56,10 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @return void
      */
     public static function loadCachedVardefs(){
+        // load the metadata files if system for BWC
+        if(!SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
+            SpiceDictionaryHandler::loadMetaDataFiles();
+        }
         SpiceDictionaryVardefs::loadDictionariesCacheFromDb();
     }
 
