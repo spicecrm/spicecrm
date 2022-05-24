@@ -163,8 +163,8 @@ class MigrateController
                     $label = 'LBL_' . ($value === '' ? 'BLANK' : strtoupper(str_replace([' / ', '/ ', '/', ' ', '-', '&', '(', ')'], ['_', '_', '_', '_', '_', '', '', ''], $value)));
                     // check if entry is already present in the table
                     $q = "SELECT id FROM syslanguagelabels WHERE name='{$label}'";
-                    if ($row = $db->fetchOne($q)) {
-                        $label_id = $row['id'];
+                    if ($rowLabel = $db->fetchOne($q)) {
+                        $label_id = $rowLabel['id'];
                     } else {
                         $labelData = [
                             'id' => SpiceUtils::createGuid(),
@@ -181,8 +181,9 @@ class MigrateController
 
                     // check if entry is already present in the table
                     $q = "SELECT id FROM syslanguagetranslations WHERE syslanguagelabel_id='{$label_id}' AND syslanguage = '{$baseLanguage}'";
-                    if ($row = $db->fetchOne($q)) {
-                        $translation_id = $row['id'];
+
+                    if ($rowTrans = $db->fetchOne($q)) {
+                            $translation_id = $rowTrans['id'];
                     } else {
                         $translationData = [
                             'id' => SpiceUtils::createGuid(),
@@ -203,8 +204,8 @@ class MigrateController
 
                             // check if entry is already present in the table
                             $q = "SELECT id FROM syslanguagetranslations WHERE syslanguagelabel_id='{$label_id}' AND syslanguage = '{$originalLanguage}'";
-                            if ($row = $db->fetchOne($q)) {
-                                $translation_id = $row['id'];
+                            if ($rowOrigTrans = $db->fetchOne($q)) {
+                                $translation_id = $rowOrigTrans['id'];
                             } else {
                                 $translationData = [
                                     'id' => SpiceUtils::createGuid(),

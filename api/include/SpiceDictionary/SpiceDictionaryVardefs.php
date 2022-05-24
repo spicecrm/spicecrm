@@ -101,7 +101,7 @@ class SpiceDictionaryVardefs  {
         }
 
         // get definitions from database
-        $dictionaryDefinitions = SpiceDictionaryHandler::getDictionaryDefinitions('all');
+        $dictionaryDefinitions = SpiceDictionaryHandler::getDictionaryDefinitions();
 
         // override in/add to $vardefs (only fields defined in dictionary itself)
         if(count($dictionaryDefinitions) > 0){
@@ -1220,7 +1220,13 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             ];
 
             // insert manually
-            $sqls[] = "INSERT INTO sysdictionarydefinitions (".implode(', ', array_keys($insertParams)).") VALUES(".implode(",", $insertParams).")";
+            $skipEntry = false;
+            if(empty($dict['name']) && empty($dict['table']) && empty($dict['dictionaryname'])){
+                $skipEntry = true;
+            }
+            if(!$skipEntry){
+                $sqls[] = "INSERT INTO sysdictionarydefinitions (".implode(', ', array_keys($insertParams)).") VALUES(".implode(",", $insertParams).")";
+            }
 
         }
 
@@ -1241,8 +1247,14 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                 'fielddefinition' => "'".$db->quote(json_encode($fieldDef))."'"
             ];
 
-            //$db->insertQuery('sysdictionaryfields', $insertParams, true);
-            $sqls[] = "INSERT INTO sysdictionaryfields (".implode(', ', array_keys($insertParams)).") VALUES(".implode(",", $insertParams).")";
+            $skipEntry = false;
+            if(empty($dictName) && empty($dict['table'])){
+                $skipEntry = true;
+            }
+            if(!$skipEntry) {
+                //$db->insertQuery('sysdictionaryfields', $insertParams, true);
+                $sqls[] = "INSERT INTO sysdictionaryfields (" . implode(', ', array_keys($insertParams)) . ") VALUES(" . implode(",", $insertParams) . ")";
+            }
         }
 
         // process slqs
