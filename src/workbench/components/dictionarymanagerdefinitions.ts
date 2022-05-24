@@ -48,6 +48,8 @@ export class DictionaryManagerDefinitions {
     get dictionarydefinitions(): DictionaryDefinition[] {
 
         return this.dictionarymanager.dictionarydefinitions.filter(d => {
+            // no empty name (workaround for now)
+            if(!d.name) return false;
             // no deleted records
             if(d.deleted != 0) return false;
             // if we have a type filter apply it
