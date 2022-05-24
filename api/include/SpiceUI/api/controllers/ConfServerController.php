@@ -101,6 +101,12 @@ class ConfServerController
         $db = DBManagerFactory::getInstance();
 
         $tables = [
+            'sysdictionarydefinitions',
+            'sysdictionaryitems',
+            'sysdomaindefinitions',
+            'sysdomainfields',
+            'sysdomainfieldvalidations',
+            'sysdomainfieldvalidationvalues',
             'sysmodules',
             'sysmodulefilters',
             'systemplatefunctions',
