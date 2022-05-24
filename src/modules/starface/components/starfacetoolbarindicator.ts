@@ -136,6 +136,9 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     public initialize() {
 
+        // starface can hangup
+        this.telephony.actions.hangup = true;
+
         this.getPreferences().subscribe(username => {
             this.login();
         });
