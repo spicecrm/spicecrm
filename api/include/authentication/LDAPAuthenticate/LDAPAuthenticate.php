@@ -233,13 +233,17 @@ class LDAPAuthenticate
             throw new UnauthorizedException("Invalid username/password combination ", 10);
         }
 
-        //bind with username & password in order to check password
+        // bind with username & password in order to check password
         $bind = ldap_bind($this->ldapConn, $this->userDn, $password);
-
-
-
         if ($bind === false) {
-            throw new UnauthorizedException("Invalid username/password combination ", 10);
+            $msg = "Unable to bind for userDn:" . $this->userDn . " in ldap.";
+            // last hope: bind with credentials as entered in CRM login form
+            $bind = ldap_bind($this->ldapConn, $name, $password);
+            if ($bind === false) {
+                $msg.= " Unable to bind for username " . $name. " in ldap (as entered in CRM login form)";
+                LoggerManager::getLogger()->warn($msg);
+                throw new UnauthorizedException("Invalid username/password combination ", 10);
+            }
         }
 
         //bind back with admin credentials if available

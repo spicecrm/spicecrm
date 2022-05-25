@@ -101,6 +101,12 @@ class ConfServerController
         $db = DBManagerFactory::getInstance();
 
         $tables = [
+            'sysdictionarydefinitions',
+            'sysdictionaryitems',
+            'sysdomaindefinitions',
+            'sysdomainfields',
+            'sysdomainfieldvalidations',
+            'sysdomainfieldvalidationvalues',
             'sysmodules',
             'sysmodulefilters',
             'systemplatefunctions',
@@ -196,7 +202,7 @@ class ConfServerController
         $langs = explode(',', $args['language']);
 
         //$records = $db->query("SELECT * FROM $table WHERE version='$version'");
-        $records = $db->query("SELECT ll.id, ll.name, lt.syslanguage, lt.translation_default, lt.translation_short, lt.translation_long FROM syslanguagelabels ll, syslanguagetranslations lt WHERE ll.id = lt.syslanguagelabel_id AND lt.syslanguage in ('".implode("','", $langs)."')");
+        $records = $db->query("SELECT ll.id, ll.name, lt.syslanguage, lt.translation_default, lt.translation_short, lt.translation_long, lt.id translation_id FROM syslanguagelabels ll, syslanguagetranslations lt WHERE ll.id = lt.syslanguagelabel_id AND lt.syslanguage in ('".implode("','", $langs)."')");
         if (!$records) {
             return $langArray;
         }

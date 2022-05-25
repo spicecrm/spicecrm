@@ -463,6 +463,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemWrappedText,
         SystemPDFContainer,
         SystemInputColor,
+        SystemLabelEditorModal,
         SystemHtmlEditor
     ]
 })
