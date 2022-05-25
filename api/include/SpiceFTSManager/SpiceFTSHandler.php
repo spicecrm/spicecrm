@@ -14,7 +14,6 @@ use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
-use UnifiedSearchAdvanced;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\includes\TimeDate;
 
@@ -383,16 +382,6 @@ class SpiceFTSHandler
         $modListFts = $db->query("SELECT * FROM sysfts");
         while ($row = $db->fetchByAssoc($modListFts)) {
             $modules[] = $row;
-        }
-        // BWC when no FTS is set. Fall back on unified search definition
-        if (empty($modules)) {
-            // try unified search
-            require_once 'include/utils/UnifiedSearchAdvanced.php';
-            $usa = new UnifiedSearchAdvanced();
-            $modListUS = $usa->getUnifiedSearchModules();
-            foreach ($modListUS as $modName => $modData) {
-                $modules[] = ['module' => $modName, 'settings' => '{"globalsearch":true}'];
-            }
         }
 
         foreach ($modules as $module) {
