@@ -132,6 +132,11 @@ class SpiceDictionaryVardefs  {
     public static function loadVardefsForModule($module, $object){
         $vardefs = [];
 
+        if(!empty($_SESSION['dictionaries'][$object])){
+            $vardefs[$object] =  $_SESSION['dictionaries'][$object];
+            return $vardefs;
+        }
+
         // now load from modules
         SpiceDictionaryHandler::loadModuleFiles($module);
 
@@ -149,6 +154,10 @@ class SpiceDictionaryVardefs  {
             $vardefs[$object] = $dbDict;
         }
         $vardefs[$object]['dictionaryname'] = $object;
+
+        // set to session
+//        file_put_contents('vardefs.log', print_r($vardefs, true), FILE_APPEND);
+        $_SESSION['dictionaries'][$object] = $vardefs[$object];
         return $vardefs;
     }
 
@@ -1404,10 +1413,17 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 //die($q);
         if($res = $db->query($q)){
             while($row = $db->fetchByAssoc($res)){
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
+                if(!isset($_SESSION['dictionaries'][$row['sysdictionaryname']])){
+                    SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['dictionaryname'] = $row['sysdictionaryname'];
+                    SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
+                    SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
+                    SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
+                    SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
+                    $_SESSION['dictionaries'][$row['sysdictionaryname']] = SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']];
+                } else {
+                    SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']] = $_SESSION['dictionaries'][$row['sysdictionaryname']];
+                }
+
 
 //                foreach(SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['fields'] as $fieldName => $fieldDef){
 //                    if(isset($fieldDef['source']) && $fieldDef['source'] == 'non-db') continue;
