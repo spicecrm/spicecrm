@@ -285,9 +285,9 @@ $vardefs = [
         ],
         'gdpr_marketing_agreement' => [
             'name' => 'gdpr_marketing_agreement',
-            'vname' => 'LBL_GDPR_MARKETING_AGREEMENT',
-            'type' => 'bool',
-            'default' => false,
+            'type' => 'enum',
+            'options' => 'gdpr_marketing_agreement_dom',
+            'len' => 1,
             'audited' => true
         ],
         'gdpr_marketing_source' => [

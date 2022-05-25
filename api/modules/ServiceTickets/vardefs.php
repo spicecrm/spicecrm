@@ -183,25 +183,25 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'name' => 'sysservicecategory_id1',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID1',
             'type' => 'varchar',
-            'len' => 32
+            'len' => 36
         ],
         'sysservicecategory_id2' => [
             'name' => 'sysservicecategory_id2',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID2',
             'type' => 'varchar',
-            'len' => 32
+            'len' => 36
         ],
         'sysservicecategory_id3' => [
             'name' => 'sysservicecategory_id3',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID3',
             'type' => 'varchar',
-            'len' => 32
+            'len' => 36
         ],
         'sysservicecategory_id4' => [
             'name' => 'sysservicecategory_id4',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID4',
             'type' => 'varchar',
-            'len' => 32
+            'len' => 36
         ],
         'add_params' => [
             'name' => 'add_params',
