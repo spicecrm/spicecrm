@@ -56,22 +56,27 @@ class SpiceDictionaryVardefsParser
             $field['source'] = $row['dbtype'];
         }
 
-        $field['audited'] = (bool)!$row['exclude_from_audited'];
+        $field['audited'] = !(bool)intval($row['exclude_from_audited']);
 
+        $field['required'] = (bool)intval($row['itemrequired']);
 
-
-        if($field['type'] == 'enum' || $field['type'] == 'multienum' || $field['type'] == 'radio'){
-            $sysvalidation = SpiceDictionaryVardefs::getSysDomainFieldValidationBySysDomainId($row['sysdomaindefinition_id']);
-            if($sysvalidation['validation_type'] == 'enum'){
-                $field['options'] = $sysvalidation['name'];
-            }
-
-            // @todo: not sure this is needed. To be checked
-            if($sysvalidation['validation_type'] == 'function'){
-                $field['function_name'] = $sysvalidation['function_name'];
-//                $field['function_returns'] = $sysvalidation['function_returns'];
-            }
+        if(!empty($row['validationname'])){
+            $field['options'] = $row['validationname'];
         }
+
+
+//        if($field['type'] == 'enum' || $field['type'] == 'multienum' || $field['type'] == 'radio'){
+//            $sysvalidation = SpiceDictionaryVardefs::getSysDomainFieldValidationBySysDomainId($row['sysdomaindefinition_id']);
+//            if($sysvalidation['validation_type'] == 'enum'){
+//                $field['options'] = $sysvalidation['name'];
+//            }
+//
+//            // @todo: not sure this is needed. To be checked
+//            if($sysvalidation['validation_type'] == 'function'){
+//                $field['function_name'] = $sysvalidation['function_name'];
+////                $field['function_returns'] = $sysvalidation['function_returns'];
+//            }
+//        }
 
         // @todo: check on validation for options, ranges...
         if(!empty($row['sysdomainfieldvalidation_id'])){
@@ -83,9 +88,7 @@ class SpiceDictionaryVardefsParser
             }
         }
 
-        if(!empty($row['description'])){
-            $field['comment'] = $row['description'];
-        }
+        $field['comment'] = ($row['itemcomment'] ?: $row['description']);
 
         return $field;
     }

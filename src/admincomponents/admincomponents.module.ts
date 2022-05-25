@@ -93,6 +93,7 @@ import /*embed*/ {AdministrationLoginManagement} from './components/administrati
 import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationDictRepairResetCache} from "./components/administrationdictrepairresetcache";
+import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
 
 @NgModule({
     imports: [
@@ -160,6 +161,7 @@ import {AdministrationDictRepairResetCache} from "./components/administrationdic
         AdministrationHomeScreenCardItem,
         AdministrationGeneralSettings,
         AdministrationLanguages,
+        AdministrationMigrateLegacyDoms,
         AdministrationDefaultPreferences,
         AdministrationUserAccessLogViewer,
         AdministrationDictRepairConvertDBCharset,
