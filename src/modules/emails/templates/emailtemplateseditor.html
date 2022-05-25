@@ -28,14 +28,19 @@
                 <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center" style="min-height: 250px">
                     <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1"></field-container>
                     <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1"></field-container>
+                    <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1"></field-container>
                     <div *ngSwitchDefault>
                         <system-label label="LBL_EDIT_WITH" class="slds-m-right--xx-small"></system-label>
-                        <button class="slds-button slds-button--neutral spice-hover-button" (click)="activeEditor = 'richText'">
+                        <button class="slds-button slds-button--neutral spice-hover-button" (click)="updateModelEditor('richText')">
                             <system-label label="LBL_RICH_TEXT_EDITOR"></system-label>
                         </button>
                         <system-label label="LBL_OR" class="slds-m-horizontal--xx-small"></system-label>
-                        <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="activeEditor = 'pageBuilder'">
+                        <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="updateModelEditor ('pageBuilder')">
                             <system-label label="LBL_PAGE_BUILDER"></system-label>
+                        </button>
+                        <system-label label="LBL_OR" class="slds-m-horizontal--xx-small"></system-label>
+                        <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="updateModelEditor ('html')">
+                            <system-label label="LBL_HTML"></system-label>
                         </button>
                     </div>
                 </div>
