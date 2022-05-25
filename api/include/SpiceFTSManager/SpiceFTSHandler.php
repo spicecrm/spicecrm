@@ -1460,8 +1460,11 @@ class SpiceFTSHandler
 
                 // add the aggregates
                 $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
-                foreach ($searchresultsraw['hits']['hits'] as &$hit) {
-                    $searchresults['hits'][] = $hit;
+                // only add when not hidden
+                if($bucketitem['hidden'] === false) {
+                    foreach ($searchresultsraw['hits']['hits'] as &$hit) {
+                        $searchresults['hits'][] = $hit;
+                    }
                 }
 
                 // loop over the aggregate keys to get the searched values
