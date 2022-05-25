@@ -170,6 +170,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
 import {SystemIframeModal} from "./components/systemiframemodal";
 import {SystemInputColor} from "./components/systeminputcolor";
 import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcontent";
+import {SystemHtmlEditor} from "./components/systemhtmleditor";
 
 @NgModule({
     imports: [
@@ -326,7 +327,8 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
         SystemInputFile,
         SystemInputFileContent,
         SystemWrappedText,
-        SystemRichTextEditorContent
+        SystemRichTextEditorContent,
+        SystemHtmlEditor
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -460,7 +462,8 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
         SystemModalHeaderEmpty,
         SystemWrappedText,
         SystemPDFContainer,
-        SystemInputColor
+        SystemInputColor,
+        SystemHtmlEditor
     ]
 })
 export class SystemComponents {}
