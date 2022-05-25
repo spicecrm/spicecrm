@@ -171,11 +171,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'dbType' => 'longtext',
             'comment' => 'save the json structure of the page builder'
         ],
-        'via_spb' => [
-            'name' => 'via_spb',
+        'editor_type' => [
+            'name' => 'editor_type',
             'vname' => 'LBL_VIA_SPICE_PAGE_BUILDER',
-            'type' => 'bool',
-            'comment' => 'True when the body is designed via the spice page builder'
+            'type' => 'enum',
+            'comment' => 'options: richText, pageBuilder, html'
         ],
         'body' => [
             'name' => 'body',
