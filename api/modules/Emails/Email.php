@@ -7,6 +7,7 @@ use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
+use DateTime;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
@@ -1318,6 +1319,12 @@ class Email extends SpiceBean
 
         // get the main parts for the email
         $this->name = $bodyParts[0]['headers']['subject'];
+
+        // get the proper date sent
+        $date = new DateTime($bodyParts[0]['headers']['date']);
+        $this->date_sent = $date->format(TimeDate::DB_DATETIME_FORMAT);
+
+        // set some constants
         $this->type = self::TYPE_INBOUND;
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;

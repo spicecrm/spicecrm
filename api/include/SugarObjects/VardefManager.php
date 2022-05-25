@@ -51,7 +51,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * @api
  */
 class VardefManager{
-    static $custom_disabled_modules = [];
+//    static $custom_disabled_modules = [];
     static $linkFields;
 
     /**
@@ -60,13 +60,6 @@ class VardefManager{
      */
     static function createVardef($module, $object, $templates = ['default'], $object_name = false)
     {
-        // BEGIN CR1000108: check system usage and overwrite vardefs
-        if(isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            //if(!is_array($GLOBALS['relationships'])) $GLOBALS['relationships'] = SpiceDictionaryVardefs::loadRelationships();
-            SpiceDictionaryHandler::getInstance()->dictionary[$object] = SpiceDictionaryVardefs::loadDictionaryModule($module);
-        }
-        // END
-        else{
             //reverse the sort order so priority goes highest to lowest;
             $templates = array_reverse($templates);
             foreach ($templates as $template)
@@ -74,25 +67,22 @@ class VardefManager{
                 self::addTemplate($module, $object, $template, $object_name);
             }
 
-            // @deprecated - no language files crated any longer
-            // LanguageManager::createLanguageFile($module, $templates);
+//            if (isset(self::$custom_disabled_modules[$module]))
+//            {
+//                $vardef_paths = [
+//                    'custom/modules/' . $module . '/Ext/Vardefs/vardefs.ext.php',
+//                    'custom/Extension/modules/' . $module . '/Ext/Vardefs/vardefs.php'
+//                ];
+//
+//                //search a predefined set of locations for the vardef files
+//                foreach ($vardef_paths as $path)
+//                {
+//                    if (file_exists($path)) {
+//                        require($path);
+//                    }
+//                }
+//            }
 
-            if (isset(self::$custom_disabled_modules[$module]))
-            {
-                $vardef_paths = [
-                    'custom/modules/' . $module . '/Ext/Vardefs/vardefs.ext.php',
-                    'custom/Extension/modules/' . $module . '/Ext/Vardefs/vardefs.php'
-                ];
-
-                //search a predefined set of locations for the vardef files
-                foreach ($vardef_paths as $path)
-                {
-                    if (file_exists($path)) {
-                        require($path);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -101,13 +91,13 @@ class VardefManager{
      * @param Boolean $enable true to enable, false to disable
      * @return  null
      */
-    public static function setCustomAllowedForModule($module, $enable) {
-        if ($enable && isset($custom_disabled_modules[$module])) {
-              unset($custom_disabled_modules[$module]);
-        } else if (!$enable) {
-              $custom_disabled_modules[$module] = true;
-        }
-    }
+//    public static function setCustomAllowedForModule($module, $enable) {
+//        if ($enable && isset($custom_disabled_modules[$module])) {
+//              unset($custom_disabled_modules[$module]);
+//        } else if (!$enable) {
+//              $custom_disabled_modules[$module] = true;
+//        }
+//    }
 
     static function addTemplate($module, $object, $template, $object_name=false){
         global $vardefs;
@@ -140,7 +130,7 @@ class VardefManager{
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = [];
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = [];
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = [];
-            SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = array_merge($templates[$template]['fields'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields']);
+            SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'], $templates[$template]['fields']);
             if(!empty($templates[$template]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = array_merge($templates[$template]['relationships'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']);
             if(!empty($templates[$template]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = array_merge($templates[$template]['indices'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']);
             // maintain a record of this objects inheritance from the SugarObject templates...
@@ -169,11 +159,12 @@ class VardefManager{
     }
 
     /**
+     * @deprecated
      * Save the dictionary object to the cache
      * @param string $module the name of the module
      * @param string $object the name of the object
      */
-    static function saveCache($module,$object, $additonal_objects= []){
+    static function saveCache($module, $object, $additonal_objects= []){
 
         if (empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]))
             $object = BeanFactory::getObjectName($module);
@@ -196,6 +187,7 @@ class VardefManager{
     }
 
     /**
+     * @deprecated
      * clear out the vardef cache. If we receive a module name then just clear the vardef cache for that module
      * otherwise clear out the cache for every module
      * @param string module_dir the module_dir to clear, if not specified then clear
@@ -215,6 +207,7 @@ class VardefManager{
     }
 
     /**
+     * @deprecated
      * PRIVATE function used within clearVardefCache so we do not repeat logic
      * @param string module_dir the module_dir to clear
      * @param string object_name the name of the object we are clearing this is for sugar_cache
@@ -247,6 +240,14 @@ class VardefManager{
      * @param array $additional_search_paths an array which allows a consumer to pass in additional vardef locations to search
      */
     static function refreshVardefs($module, $object, $additional_search_paths = null, $cacheCustom = false, $params = []){
+
+        if(SpiceDictionaryVardefs::isDbManaged()){
+            $dict = SpiceDictionaryVardefs::loadVardefsForModule($module, $object);
+            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
+            return;
+        }
+
+        // LEGACY
         $vardef_paths = [
                     'modules/'.$module.'/vardefs.php',
                     'extensions/modules/'.$module.'/vardefs.php',
@@ -362,7 +363,7 @@ class VardefManager{
     public static function getLinkFieldForRelationship($module, $object, $relName)
     {
         // load relationship from database cache table when turned on
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+        if (SpiceDictionaryVardefs::isDbManaged()) {
             $cachedRel = SpiceDictionaryVardefs::loadRelationshipsForModuleFromCache($module);
             if(!empty($cachedRel)) {
                 LoggerManager::getLogger()->debug('Loading {$object} from DB cache table');
@@ -441,12 +442,16 @@ class VardefManager{
         if(empty($module) || empty($object)) return;
 
         // load dictionary from database cache table when turned on
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+        if (SpiceDictionaryVardefs::isDbManaged()) {
             // LoggerManager::getLogger()->debug("Try Loading $object $module from DB cache table");
-            $cachedDict = SpiceDictionaryVardefs::loadDictionaryModuleCacheFromDb($module);
+            $cachedDict = SpiceDictionaryVardefs::getDictionaryCacheFromDbByObject($object);
             if(!empty($cachedDict)) {
                 SpiceDictionaryHandler::getInstance()->dictionary[$object] = $cachedDict;
                 // LoggerManager::getLogger()->debug("Loaded $object from DB cache table ");
+            } else{
+                // try a refresh
+                self::refreshVardefs($module, $object, null, false, $params);
+
             }
             return;
         }
