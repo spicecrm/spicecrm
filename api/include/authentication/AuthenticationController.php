@@ -363,8 +363,7 @@ class AuthenticationController
     {
         /* switch to a different tenant if the tenant id is set for the user */
         if (!empty($this->getCurrentUser()->systemtenant_id)) {
-            $tenant = new SystemTenant();
-            $tenant->retrieve($this->getCurrentUser()->systemtenant_id);
+            $tenant = BeanFactory::getBean('SystemTenants', $this->getCurrentUser()->systemtenant_id);
             if ($tenant->valid_until < TimeDate::getInstance()->nowDbDate()) {
                 throw new UnauthorizedException('Tenant expired', 401);
             }
