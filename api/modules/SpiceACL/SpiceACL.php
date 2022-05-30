@@ -422,6 +422,10 @@ class SpiceACL
                 return true;
 
             foreach ($this->aclObject->getUserACLObjects($bean) as $aclObjectId => $aclObjectData) {
+                // only check type 0
+                if ($aclObjectData['spiceaclobjecttype'] != 0)
+                    continue;
+
                 // check the activity .. if it is noit found .. cointinue
                 if (array_search($thisActivity, $aclObjectData['objectactions']) === false)
                     continue;
