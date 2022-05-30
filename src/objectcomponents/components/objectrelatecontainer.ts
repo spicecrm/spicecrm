@@ -22,4 +22,11 @@ export class ObjectRelateContainer implements OnInit {
         let componentconfig = this.metadata.getComponentConfig('ObjectRelateContainer', this.model.module);
         this.componentset = componentconfig.componentset;
     }
+
+    /**
+     * checks that we have access
+     */
+    get hasAccess() {
+        return this.model.checkAccess('detail');
+    }
 }
