@@ -446,12 +446,21 @@ export class model implements OnDestroy {
     }
 
     /**
-     * returns the field access status if one is set
+     * returns if access to a field is granted
      *
      * @param field the field to be checked
      */
     public checkFieldAccess(field): boolean {
-        return !(this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1');
+        return !(this.acl_fieldcontrol && this.acl_fieldcontrol[field] && this.acl_fieldcontrol[field] == '1');
+    }
+
+    /**
+     * returns the field access control data
+     *
+     * @param field the field to be checked
+     */
+    public getFieldAccess(field): number {
+        return this.acl_fieldcontrol && this.acl_fieldcontrol[field] ? parseInt(this.acl_fieldcontrol[field], 10) : undefined;
     }
 
     /**
