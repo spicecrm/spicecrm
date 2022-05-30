@@ -354,6 +354,8 @@ class SpiceBean
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
             // logic hook to create vardefs .. if any additonal fields are required
+
+            // ToDo - check why we need this here
             $this->call_custom_logic('create_vardefs');
 
             // build $this->column_fields from the field_defs if they exist

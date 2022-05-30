@@ -44,6 +44,52 @@ class SpiceDictionaryVardefs  {
     public static $deprecatedProperties = ['unified_search', 'unified_search_default_enabled', 'full_text_search'];
 
     /**
+     * the instance for the singelton
+     *
+     * @var
+     */
+    private static $instance;
+
+    private $dictionary = [];
+
+    public final function __construct()
+    {
+        $db = DBManagerFactory::getInstance();
+        $q = "SELECT sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition FROM sysdictionaryfields sysfields";
+        $res = $db->query($q);
+        while($row = $db->fetchByAssoc($res)){
+            $this->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
+            $this->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
+            $this->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
+            $this->dictionary[$row['sysdictionaryname']]['module'] = SpiceModules::getInstance()->getModuleName($row['sysdictionaryname']);
+            $this->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
+        }
+    }
+
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
+    }
+
+    /**
+     * @return SpiceDictionaryVardefs
+     */
+    static function getInstance()
+    {
+        if (self::$instance === null) {
+
+            //set instance
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
+
+
+
+    /**
      * checks if the System is set for database managed vardefs
      * @return false
      */
@@ -1331,10 +1377,12 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @param array $dictionaryId
      * @return array
      */
-    public static function getDictionaryFromDbByObject($object){
+    public function getDictionaryFromDbByObject($object){
         if(empty($object)){
             return [];
         }
+
+        return $this->dictionary[$object];
 
         $db = DBManagerFactory::getInstance();
         $dict = [];
@@ -1367,10 +1415,12 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @param array $dictionaryId
      * @return array
      */
-    public static function getDictionaryCacheFromDbByObject($object){
+    public function getDictionaryCacheFromDbByObject($object){
         if(empty($object)){
             return [];
         }
+
+        return $this->dictionary[$object];
 
         $db = DBManagerFactory::getInstance();
         $dict = [];
@@ -1402,6 +1452,12 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @throws \Exception
      */
     public static function getDictionariesCacheFromDb(){
+
+        if(isset($_SESSION['dictionaries'])){
+            SpiceDictionaryHandler::getInstance()->dictionary = $_SESSION['dictionaries'];
+            return;
+        }
+
         $db = DBManagerFactory::getInstance();
         $fieldcombinations = [];
         $fielddbtypes = [];
