@@ -33,6 +33,7 @@ import /*embed*/ {SystemCard} from "./components/systemcard";
 import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
 import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
 import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
+import /*embed*/ {SystemCardStencil} from "./components/systemcardstencil";
 import /*embed*/ {SystemCheckboxGroup} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroupcheckbox";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
@@ -197,6 +198,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemCardBody,
         SystemCardFooter,
         SystemCardHeader,
+        SystemCardStencil,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
@@ -464,7 +466,8 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemPDFContainer,
         SystemInputColor,
         SystemLabelEditorModal,
-        SystemHtmlEditor
+        SystemHtmlEditor,
+        SystemCardStencil
     ]
 })
 export class SystemComponents {}
