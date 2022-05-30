@@ -1071,6 +1071,7 @@ class SpiceBeanHandler
     public function get_bean_auditlog($beanModule, $beanId, $params)
     {
         $db = DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
@@ -1082,7 +1083,25 @@ class SpiceBeanHandler
 
         $auditLog = [];
 
-        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId'";
+
+        // check field access and exclude all fields the user should not see
+        $excludedFieldsSQL = '';
+        if (!$current_user->is_admin) {
+            $hiddenfields = [];
+            // get the fields
+            $fields = SpiceACL::getInstance()->getFieldAccess($thisBean, 'display', false);
+            foreach ($fields as $field => $fieldcontrol) {
+                if ($fieldcontrol == 1) {
+                    $hiddenfields[] = $field;
+                }
+            }
+            if(count($hiddenfields) > 0){
+                $excludedFieldsSQL = " AND field_name NOT IN ('". implode("','", $hiddenfields) ."')";
+            }
+        }
+
+
+        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' $excludedFieldsSQL";
         if ($params['user']) {
             $query .= " AND au.user_name like '%{$params['user']}%'";
         }
