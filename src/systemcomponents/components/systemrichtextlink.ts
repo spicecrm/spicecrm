@@ -1,14 +1,19 @@
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import { language } from '../../services/language.service';
+import {Component, EventEmitter, Input, OnInit, SkipSelf} from '@angular/core';
+import {language} from '../../services/language.service';
+import {model} from '../../services/model.service';
+import {helper} from '../../services/helper.service';
 
 @Component({
     templateUrl: '../templates/systemrichtextlink.html',
+    providers: [model]
 })
 export class SystemRichTextLink implements OnInit {
 
     @Input() public url = ''; // The URL of the link.
     @Input() public text = ''; // The text of the link.
     @Input() public toTrack = false; // Should clicks on the link be trackable?
+    @Input() public trackingId = '';
+    @Input() public parent: model;
     // @Input() public generateShortUrl = false;
 
     /**
@@ -38,7 +43,7 @@ export class SystemRichTextLink implements OnInit {
 
     public self: any;
 
-    constructor( public language: language ) {
+    constructor(public language: language, public helper: helper, private model: model) {
         this.response = new EventEmitter<any>(); // Create the event emitter for emitting the form input.
     }
 
@@ -95,7 +100,17 @@ export class SystemRichTextLink implements OnInit {
      * Submit the form and close the modal.
      */
     public submit() {
-        this.response.emit({ url: this.url.trim(), toTrack: this.toTrack, text: this.text.trim() });
+        if (this.toTrack) {
+            this.trackingId = this.helper.generateGuid();
+            this.saveTrackingLink();
+        }
+        this.response.emit({
+            url: this.url.trim(),
+            toTrack: this.toTrack,
+            text: this.text.trim(),
+            trackingId: this.trackingId
+        });
+
         this.self.destroy(); // close the modal
     }
 
@@ -105,6 +120,20 @@ export class SystemRichTextLink implements OnInit {
     public cancel() {
         this.response.emit(null);
         this.self.destroy(); // close the modal
+    }
+
+    /**
+     * */
+    private saveTrackingLink() {
+        this.model.id = this.trackingId;
+        this.model.module = 'TrackingLinks';
+        this.model.setFields({
+            name: this.text,
+            url: this.url,
+            parent_type: this.parent.module,
+            parent_id: this.parent.id
+        });
+        this.model.save();
     }
 
 }
