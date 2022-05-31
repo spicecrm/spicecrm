@@ -810,12 +810,14 @@ class User extends Person
      */
     public static function blockUserByName( $username, $blockingDuration = null ) {
         $user = BeanFactory::getBean('Users');
-        $user->findByUserName( $username );
+        // if we do not find the user return .. causes empty users to be created
+        if(!$user->findByUserName( $username )){
+            return;
+        }
 
+        // set a block end date
         if ( $blockingDuration ) {
-            $dtObj=new \DateTime();
-            $dtObj->setTimestamp(time()+ (int)$blockingDuration * 60);
-            $user->login_blocked_until = Timedate::getInstance()->asDb($dtObj);
+            $user->login_blocked_until = date_create()->add(new DateInterval("PT{$blockingDuration}S"))->format(TimeDate::DB_DATETIME_FORMAT);
         } else {
             $user->login_blocked = true;
         }
