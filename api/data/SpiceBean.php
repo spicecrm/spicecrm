@@ -845,7 +845,8 @@ class SpiceBean
                     if (Relationship::exists($rel_name, $db)) {
                         LoggerManager::getLogger()->debug('Skipping, reltionship already exists ' . $rel_name);
                     } else {
-                        $seed = new Relationship();
+                        /** @var Relationship */
+                        $seed = BeanFactory::getBean('Relationships');
                         $keys = array_keys($seed->field_defs);
                         $toInsert = [];
                         foreach ($keys as $key) {
