@@ -361,6 +361,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
             .pipe(take(1))
             .subscribe(modalRef => {
                 modalRef.instance.text = this.editorService.selectedText;
+                modalRef.instance.parent = this.model;
                 modalRef.instance.response
                     .pipe(take(1))
                     .subscribe( linkData => {
@@ -370,7 +371,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                             this.editorService.restoreSelection();
                             let linkContent = linkData.text;
                             if ( this.editorService.selectedText === linkData.text ) linkContent = this.editorService.selectedHtml;
-                            this.editorService.createLink( linkData.url, linkContent, linkData.toTrack ? {'data-trackingid':this.helper.generateGuid()}:null );
+                            this.editorService.createLink( linkData.url, linkContent, linkData.toTrack ? {'data-trackingid': linkData.trackingId}:null );
                         }
                     });
             });
