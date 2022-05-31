@@ -122,7 +122,7 @@ class SpiceInstaller
         }
 
         //check mailparse
-        if (!class_exists('Mailparse')) {
+        if (!function_exists('mailparse_msg_parse_file')) {
             $requirements['mailparse'] = false;
         } else {
             $requirements['mailparse'] = true;
