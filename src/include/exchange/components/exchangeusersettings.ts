@@ -45,8 +45,17 @@ export class ExchangeUserSettings implements OnInit {
      * the config for the user
      */
     public userconfig: any[] = [];
+    /**
+     * used to call the proper service route
+     * @private
+     */
+    private serviceName: 'msgraph' | 'spicecrmexchange' = 'spicecrmexchange';
 
     constructor(public metadata: metadata, public model: model, public backend: backend, public configuration: configurationService) {
+        if (this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
+            this.serviceName = 'msgraph';
+        }
+
         let ewsconfig = this.configuration.getCapabilityConfig('ewsconfig');
         if (ewsconfig && ewsconfig.subscriptiontimeout) {
             this.subscriptiontimeout = parseInt(ewsconfig.subscriptiontimeout, 10);
@@ -64,7 +73,7 @@ export class ExchangeUserSettings implements OnInit {
      * loads the config from the backend
      */
     public getConfig() {
-        this.backend.getRequest(`spicecrmexchange/config/${this.model.id}`).subscribe(response => {
+        this.backend.getRequest(`${this.serviceName}/config/${this.model.id}`).subscribe(response => {
             this.modules = response.modules;
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
@@ -118,7 +127,7 @@ export class ExchangeUserSettings implements OnInit {
      */
     public toggleActive(sysmoduleid: string, e: MouseEvent) {
         if (e) {
-            this.backend.postRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
+            this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
 
@@ -126,7 +135,7 @@ export class ExchangeUserSettings implements OnInit {
                 this.configuration.setData('exchangeuserconfig', this.userconfig);
             });
         } else {
-            this.backend.deleteRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
+            this.backend.deleteRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
 
