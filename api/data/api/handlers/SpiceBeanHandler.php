@@ -1481,7 +1481,7 @@ class SpiceBeanHandler
         }
 
         // get the field access details
-        $fieldControl = SpiceACL::getInstance()->getFieldAccess($thisBean, 'edit', false);
+        $fieldControl = SpiceACL::getInstance()->getFieldAccess($thisBean, $thisBean->isNew() ? 'create' : 'edit', false);
 
         foreach ($thisBean->field_defs as $fieldId => $fieldData) {
             if ($fieldId == 'date_entered')
