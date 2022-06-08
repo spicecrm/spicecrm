@@ -230,10 +230,13 @@ class AuthenticationController
 
             # In case the max. failed login attempts are reached, black list the IP address.
             # ( But only if IP restriction is enabled and the IP address is not white listed and the IP address has not been black listed just before (isIPblocked). )
-            if ( $config['login_attempt_restriction']['ip_enabled']
+            if (
+                $config['login_attempt_restriction']['ip_enabled']
                 and UserAccessLog::getNumberLoginAttemptsByIp() >= (int)$config['login_attempt_restriction']['ip_number_attempts']
                 and !IpAddresses::ipAddressIsWhite()
-                and !$e->isIPblocked() ) {
+                and !$e->isIPblocked()
+                and !User::isAdmin_byName( $username ) # don´t block the admin
+            ) {
                 IpAddresses::addIpAddress('b');
                 $e->setIPblocked( true );
             };
