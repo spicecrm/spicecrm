@@ -627,7 +627,7 @@ class SpiceUtils
             $string = substr(substr($string, 1), 0, strlen($string) - 2);
         }
 
-        return explode('^,^', $string);
+        return !is_null($string)? explode('^,^', $string): [];
     }
 
     /**
