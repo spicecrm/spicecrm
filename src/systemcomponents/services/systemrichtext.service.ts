@@ -4,7 +4,7 @@
 // from https://github.com/kolkov/angular-editor
 import {
     AfterContentInit,
-    Component,
+    Component, ElementRef,
     EventEmitter,
     forwardRef,
     Inject,
@@ -49,6 +49,10 @@ export class systemrichtextservice {
      */
     public dummyHtmlElement: HTMLElement;
 
+    public editorContainer: HTMLElement;
+
+    public savedSelectionParentElement: HTMLElement;
+
     constructor(@Inject(DOCUMENT) public _document: Document) {
         this.dummyHtmlElement = document.createElement('div');
     }
@@ -72,6 +76,7 @@ export class systemrichtextservice {
      * @param text string from UI prompt
      * @param attributes object with html attributes
      */
+    /*
     public createLink( url: string, text: string, attributes: {} = {} )
     {
         if ( !text ) text = url;
@@ -83,6 +88,7 @@ export class systemrichtextservice {
         const html = '<a href="' + url + '"' + ( blankTarget ? ' target="_blank"':'' ) + attributesString + '>' + text + '</a>';
         this.insertHtml(html);
     }
+     */
 
     /**
      * insert color either font or background
@@ -140,6 +146,7 @@ export class systemrichtextservice {
     public saveSelection(): any {
         if (window.getSelection) {
             const sel = window.getSelection();
+            this.savedSelectionParentElement = sel.anchorNode.parentElement;
             if (sel.getRangeAt && sel.rangeCount) {
                 this.savedSelection = sel.getRangeAt(0);
                 this.selectedText = sel.toString();
@@ -197,7 +204,33 @@ export class systemrichtextservice {
 
         const newImg: HTMLImageElement = document.createElement('IMG') as HTMLImageElement;
         newImg.src = imageUrl;
-        this.insertElement(newImg, editorContainer);
+        this.insertElement(newImg);
+    }
+
+    /**
+     * Inserts an anchor (link) to html text.
+     * @param href
+     * @param editorContainer
+     * @param content
+     * @param dataAttributes
+     */
+    public insertAnchor( href: string, content: string, dataAttributes: any = {} ) {
+        const newAnchor: HTMLAnchorElement = document.createElement('A') as HTMLAnchorElement;
+        newAnchor.href = href;
+        this.addDataAttributes( newAnchor, dataAttributes );
+        newAnchor.innerHTML = content;
+        this.insertElement( newAnchor );
+    }
+
+    /**
+     * Adds data-* attributes to a HTML element.
+     * @param htmlElement
+     * @param data Object with the attributs
+     */
+    public addDataAttributes( htmlElement: HTMLElement, data: any ) {
+        for ( let key in data ) {
+            htmlElement.dataset[key] = data[key];
+        }
     }
 
     /**
@@ -205,24 +238,24 @@ export class systemrichtextservice {
      * @param element
      * @param editorContainer
      */
-    public insertElement(element: HTMLElement, editorContainer: HTMLElement) {
+    public insertElement(element: HTMLElement) {
 
         if (!this.savedSelection) {
 
-            this.insertElementForNode(element, editorContainer);
+            this.insertElementForNode(element, this.editorContainer);
 
         } else {
 
-            this.resetRangeBoundaries(editorContainer);
+            this.resetRangeBoundaries(this.editorContainer);
 
-            let currentTarget = this.getRangeCurrentTarget(this.savedSelection.startContainer, editorContainer);
+            let currentTarget = this.getRangeCurrentTarget(this.savedSelection.startContainer, this.editorContainer);
             const addBefore = this.savedSelection.collapsed && this.savedSelection.startOffset == 0;
-            const currentTargetIsEditor = editorContainer.isEqualNode(currentTarget);
+            const currentTargetIsEditor = this.editorContainer.isEqualNode(currentTarget);
             let beforeElement;
 
             if (currentTargetIsEditor) {
-                beforeElement = !addBefore ? null : editorContainer.firstChild as HTMLElement;
-                this.insertElementForNode(element, editorContainer, beforeElement);
+                beforeElement = !addBefore ? null : this.editorContainer.firstChild as HTMLElement;
+                this.insertElementForNode(element, this.editorContainer, beforeElement);
             } else {
                 beforeElement = !addBefore ? currentTarget.nextSibling : currentTarget;
                 this.insertElementForNode(element, currentTarget.parentElement, beforeElement);

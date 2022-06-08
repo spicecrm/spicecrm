@@ -117,6 +117,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
 
     public ngOnInit() {
         this.handleKeyboardShortcuts();
+        this.editorService.editorContainer = this.htmlEditor.element.nativeElement;
     }
 
     public ngOnDestroy() {
@@ -350,31 +351,60 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     /**
-     * Insert Link
+     * Insert or edit anchor (link)
      */
-    public insertLink()
+    public insertAnchor()
     {
         this.editorService.selectedText = this.getSelectedText();
-        // this.focusEditor();
         this.editorService.saveSelection();
+        let aTag: HTMLAnchorElement = null;
+        if ( this.editorService.savedSelectionParentElement.nodeName === 'A' ) aTag = (this.editorService.savedSelectionParentElement as HTMLAnchorElement);
+        else aTag = this.editorService.savedSelectionParentElement.closest('a');
         this.modal.openModal('SystemRichTextLink', true )
             .pipe(take(1))
             .subscribe(modalRef => {
                 modalRef.instance.text = this.editorService.selectedText;
                 modalRef.instance.parent = this.model;
+                if ( aTag ) {
+                    modalRef.instance.alterMode = true;
+                    modalRef.instance.url = aTag.href;
+                    modalRef.instance.trackingId = aTag.dataset.trackingid;
+                }
                 modalRef.instance.response
                     .pipe(take(1))
-                    .subscribe( linkData => {
-                        if ( linkData ) {
-                            if ( !linkData.text ) linkData.text = linkData.url;
-                            // this.focusEditor();
-                            this.editorService.restoreSelection();
-                            let linkContent = linkData.text;
-                            if ( this.editorService.selectedText === linkData.text ) linkContent = this.editorService.selectedHtml;
-                            this.editorService.createLink( linkData.url, linkContent, linkData.toTrack ? {'data-trackingid': linkData.trackingId}:null );
+                    .subscribe( anchorData => {
+                        if ( anchorData ) {
+                            if ( aTag ) {
+                                aTag.href = anchorData.url;
+                                if ( anchorData.trackingId ) aTag.dataset.trackingid = anchorData.trackingId;
+                                else delete aTag.dataset.trackingid;
+                            } else {
+                                if( !anchorData.text ) anchorData.text = anchorData.url;
+                                this.editorService.restoreSelection();
+                                let linkContent = anchorData.text;
+                                if( this.editorService.selectedText === anchorData.text ) linkContent = this.editorService.selectedHtml;
+                                this.editorService.insertAnchor( anchorData.url, linkContent, anchorData.toTrack ? { trackingid: anchorData.trackingId } : null );
+                            }
+                            this.onContentChange( this.htmlEditor.element.nativeElement.innerHTML );
                         }
                     });
             });
+    }
+
+    /**
+     * Remove anchor (link)
+     */
+    public removeAnchor()
+    {
+        this.editorService.selectedText = this.getSelectedText();
+        this.editorService.saveSelection();
+        let aTag: HTMLAnchorElement;
+        if ( this.editorService.savedSelectionParentElement.nodeName === 'A' ) aTag = (this.editorService.savedSelectionParentElement as HTMLAnchorElement);
+        else aTag = this.editorService.savedSelectionParentElement.closest('a');
+        if ( aTag ) {
+            aTag.outerHTML = aTag.innerHTML;
+            this.onContentChange( this.htmlEditor.element.nativeElement.innerHTML );
+        }
     }
 
     public addVideo() {
