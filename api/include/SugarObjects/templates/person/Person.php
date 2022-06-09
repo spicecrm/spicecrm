@@ -180,7 +180,7 @@ class Person extends Basic
 
         foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-            if ($primaryEmailAddressId == $linkedEmailAddress->email_address_id) {
+            if ($primaryEmailAddressId == $linkedEmailAddress->id) {
 
                 $relationExists = true;
                 $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 1]);

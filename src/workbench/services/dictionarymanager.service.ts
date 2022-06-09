@@ -243,10 +243,10 @@ export class dictionarymanager {
     public getDictionaryDefinitionItems(refid) {
         let itemsArray: any[] = [];
 
-        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
-            if (item.sysdictionary_ref_id) {
+        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0 ).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+            if (item.sysdictionary_ref_id && item.sysdictionary_ref_id != refid) {
                 itemsArray = itemsArray.concat(this.getDictionaryDefinitionItems(item.sysdictionary_ref_id));
-            } else {
+            } else if(!item.sysdictionary_ref_id) {
                 itemsArray.push(item);
             }
         }
