@@ -270,4 +270,11 @@ class BeanFactory
         }
         return true;
     }
+
+    /**
+     * clear loaded beans
+     */
+    public static function clearLoadedBeans() {
+        self::$loadedBeans = [];
+    }
 }
