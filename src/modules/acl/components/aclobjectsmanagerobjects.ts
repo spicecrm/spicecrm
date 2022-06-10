@@ -140,14 +140,20 @@ export class ACLObjectsManagerObjects {
      * @private
      */
     public activateObject(objectid) {
-        this.backend.postRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
-            this.aclobjects.some(object => {
-                if (object.id == objectid) {
-                    object.status = 'r';
-                    return true;
+        this.modal.confirm('LBL_ACTIVATE_OBJECT', 'LBL_ACTIVATE_OBJECT').subscribe(
+            res => {
+                if (res) {
+                    this.backend.postRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
+                        this.aclobjects.some(object => {
+                            if (object.id == objectid) {
+                                object.status = 'r';
+                                return true;
+                            }
+                        });
+                    });
                 }
-            });
-        });
+            }
+        )
     }
 
     /**
@@ -156,13 +162,19 @@ export class ACLObjectsManagerObjects {
      * @private
      */
     public deactivateObject(objectid) {
-        this.backend.deleteRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
-            this.aclobjects.some(object => {
-                if (object.id == objectid) {
-                    object.status = 'd';
-                    return true;
+        this.modal.confirm('LBL_DEACTIVATE_OBJECT', 'LBL_DEACTIVATE_OBJECT').subscribe(
+            res => {
+                if (res) {
+                    this.backend.deleteRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
+                        this.aclobjects.some(object => {
+                            if (object.id == objectid) {
+                                object.status = 'd';
+                                return true;
+                            }
+                        });
+                    });
                 }
-            });
-        });
+            }
+        )
     }
 }
