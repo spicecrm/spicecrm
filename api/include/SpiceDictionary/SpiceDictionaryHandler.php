@@ -72,10 +72,9 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @return void
      */
     private static function loadModuleFilesFromDir(string $directory): void {
-        $moduleList = array_keys(SpiceModules::getInstance()->getModuleList());
         if ($metaDataHandle = @opendir('./' . $directory)) {
             while (false !== ($metaDataFile = readdir($metaDataHandle))) {
-                if(is_dir($directory.'/'.$metaDataFile.'/Ext/Vardefs') && in_array($metaDataFile, $moduleList)) {
+                if(is_dir($directory.'/'.$metaDataFile.'/Ext/Vardefs')) {
                     $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile.'/Ext/Vardefs');
                     foreach ($fileSystemIterator as $fileInfo){
                         if (preg_match('/\.php$/', $fileInfo->getFilename())) {
@@ -83,7 +82,7 @@ class SpiceDictionaryHandler extends SpiceSingleton
                         }
                     }
                 }
-                elseif(is_dir($directory.'/'.$metaDataFile) && in_array($metaDataFile, $moduleList)){
+                elseif(is_dir($directory.'/'.$metaDataFile)){
                     $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile);
                     foreach ($fileSystemIterator as $fileInfo){
                         if (preg_match('/vardefs.php$/', $fileInfo->getFilename())) {
