@@ -379,12 +379,16 @@ class SpiceACL
                 return $this->checkedBeans[$bean->id][$thisActivity];
 
             // get a territory Object
-            if (!$this->territory)
+            if (!$this->territory) {
                 $this->territory = BeanFactory::getBean('SpiceACLTerritories');
+            }
 
-            foreach ($this->aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
+            $aclObjects = $this->aclObject->getUserACLObjects($bean->_module ?: $bean->_module);
+
+            // check basic access or extended access
+            foreach ($aclObjects as $aclObjectId => $aclObjectData) {
                 // only check type 0
-                if ($aclObjectData['spiceaclobjecttype'] != 0)
+                if ($aclObjectData['spiceaclobjecttype'] != 0 && $aclObjectData['spiceaclobjecttype'] != 6)
                     continue;
 
                 if (!$this->aclObject->matchBean2Object($bean, $thisActivity, $aclObjectData))
@@ -394,9 +398,9 @@ class SpiceACL
                 break;
             }
 
-            // check if we shodul limit
+            // check if we should limit
             if ($allowAccess) {
-                foreach ($this->aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
+                foreach ($aclObjects as $aclObjectId => $aclObjectData) {
                     // only check type 0
                     if ($aclObjectData['spiceaclobjecttype'] != 3)
                         continue;
