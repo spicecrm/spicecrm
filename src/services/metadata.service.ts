@@ -107,6 +107,16 @@ export class metadata {
         return this.configuration.getData('modulefilters');
     }
 
+    /**
+     * all the system roles available
+     */
+    get sysroles() {
+        return this.configuration.getData('sysroles');
+    }
+
+    /**
+     * the system roles assigned to current user
+     */
     get roles() {
         return this.configuration.getData('roles');
     }
@@ -1271,6 +1281,13 @@ export class metadata {
      */
     public getRoles() {
         return this.roles;
+    }
+
+    /**
+     * get all available roles
+     */
+    public getSysRoles() {
+        return this.sysroles;
     }
 
     public getActiveRole(): any {
