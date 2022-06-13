@@ -684,7 +684,6 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
             $relationships[$relKey]['relationship_name'] = $relDef['relationship_name'];
 
         }
-file_put_contents('relationships.log', print_r($sysDictRels, true)."\n");
         return $relationships;
     }
 
