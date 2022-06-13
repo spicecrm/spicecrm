@@ -67,13 +67,15 @@ class SpiceDictionaryHandler extends SpiceSingleton
     /**
      * load the files containing module related vardefs
      * this is the old way od defining vardefs for module tables
+     * load only if corresponding module is present in sysmodules
      * @param string $directory
      * @return void
      */
     private static function loadModuleFilesFromDir(string $directory): void {
+        $moduleList = array_keys(SpiceModules::getInstance()->getModuleList());
         if ($metaDataHandle = @opendir('./' . $directory)) {
             while (false !== ($metaDataFile = readdir($metaDataHandle))) {
-                if(is_dir($directory.'/'.$metaDataFile.'/Ext/Vardefs')) {
+                if(is_dir($directory.'/'.$metaDataFile.'/Ext/Vardefs') && in_array($metaDataFile, $moduleList)) {
                     $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile.'/Ext/Vardefs');
                     foreach ($fileSystemIterator as $fileInfo){
                         if (preg_match('/\.php$/', $fileInfo->getFilename())) {
@@ -81,7 +83,7 @@ class SpiceDictionaryHandler extends SpiceSingleton
                         }
                     }
                 }
-                elseif(is_dir($directory.'/'.$metaDataFile)){
+                elseif(is_dir($directory.'/'.$metaDataFile) && in_array($metaDataFile, $moduleList)){
                     $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile);
                     foreach ($fileSystemIterator as $fileInfo){
                         if (preg_match('/vardefs.php$/', $fileInfo->getFilename())) {
@@ -89,7 +91,6 @@ class SpiceDictionaryHandler extends SpiceSingleton
                         }
                     }
                 }
-
             }
         }
     }
