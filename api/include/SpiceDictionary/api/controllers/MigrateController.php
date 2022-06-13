@@ -16,7 +16,14 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class MigrateController
 {
 
-
+    /**
+     * move dom keys to table, create corresponding labels
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
     public function migrateLegacyDoms(Request $req, Response $res, array $args): Response
     {
         ini_set('max_execution_time', 300);
@@ -233,6 +240,138 @@ class MigrateController
         return $res->withJson([]);
 
     }
+
+    /**
+     * migrate all vardefs id fieldefinitions to table
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function migrateIdFields(Request $req, Response $res, array $args): Response
+    {
+        $vardefs = SpiceDictionaryVardefs::getInstance()->loadVardefs();
+        $typeCheck = ['id', 'char', 'varchar'];
+        $storeDictionaryNameId = [];
+        $sqls = [];
+        foreach($vardefs as $dictionaryName => $vardef){
+            if(preg_match('/^sys/', $dictionaryName) ){
+                continue;
+            }
+
+
+            // store dictionary id
+            if(!in_array($dictionaryName, array_keys($storeDictionaryNameId))){
+                $storeDictionaryNameId[$dictionaryName] = SpiceDictionaryVardefs::getInstance()->getDictionaryIdByName($dictionaryName);
+            }
+            if(!$vardef['fields']){
+                continue;
+            }
+            $allFieldItems = array_keys($vardef['fields'] );
+            foreach($vardef['fields'] as $fieldName => $fieldDef){
+                if(in_array($fieldDef['type'], $typeCheck)){
+                    switch($fieldDef['type']){
+                        case 'id':
+                            if($fieldDef['name'] == 'id'){
+                                if(is_array($allFieldItems) && in_array('name', $allFieldItems) &&
+                                    in_array('deleted', $allFieldItems) &&
+                                    in_array('date_entered', $allFieldItems) &&
+                                    in_array('date_modified', $allFieldItems) &&
+                                    in_array('date_indexed', $allFieldItems) &&
+                                    in_array('tags', $allFieldItems) &&
+                                    in_array('description', $allFieldItems) &&
+                                    in_array('created_by', $allFieldItems) &&
+                                    in_array('modified_user_id', $allFieldItems)
+                                ) {
+                                    // save the default dictionary template
+                                    $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdictionary_ref_id, status, version, package) VALUES(uuid(), 'default', '{$storeDictionaryNameId[$dictionaryName]}', 'a738ceee-6853-44dc-bb74-dd1530d3d1fe', 'a', '2022.02.001', 'coreid');";
+                                } elseif(is_array($allFieldItems) &&
+                                    !in_array('name', $allFieldItems) &&
+                                    in_array('deleted', $allFieldItems) &&
+                                    in_array('date_entered', $allFieldItems) &&
+                                    in_array('date_modified', $allFieldItems) &&
+                                    in_array('date_indexed', $allFieldItems) &&
+                                    in_array('tags', $allFieldItems) &&
+                                    in_array('description', $allFieldItems) &&
+                                    in_array('created_by', $allFieldItems) &&
+                                    in_array('modified_user_id', $allFieldItems)
+                                ) {
+                                    // save the default dictionary without name template
+                                    $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdictionary_ref_id, status, version, package) VALUES(uuid(), 'default without name', '{$storeDictionaryNameId[$dictionaryName]}', '1ca4c87d-c36d-c4f9-2e23-19c8e4b85de6', 'a', '2022.02.001', 'coreid');";
+                                } else {
+                                    // save item entry
+                                    $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdomaindefinition_id, status, version, package) VALUES(uuid(), '{$fieldDef['name']}', '{$storeDictionaryNameId[$dictionaryName]}', 'a4fa167b-8922-5924-ac9b-03cdca41c044', 'a', '2022.02.001', 'coreid');";
+                                }
+
+                            } elseif($fieldDef['name'] == 'assigned_user_id'){
+                                // save the assignable dictionary template
+                                $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdictionary_ref_id, status, version, package) VALUES(uuid(), 'assignable', '{$storeDictionaryNameId[$dictionaryName]}', '6fed999b-1cb8-8af5-58c1-acf5bd047c2a', 'a', '2022.02.001', 'coreid');";
+
+                            } else {
+                                // save item entry
+                                $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdomaindefinition_id, status, version, package) VALUES(uuid(), '{$fieldDef['name']}', '{$storeDictionaryNameId[$dictionaryName]}', 'a4fa167b-8922-5924-ac9b-03cdca41c044', 'a', '2022.02.001', 'coreid');";
+                            }
+                            break;
+                        case 'char':
+                        case 'varchar':
+                            if($fieldDef['len'] == 36 || $fieldDef['len'] == '36' ){
+                                if($fieldDef['name'] == 'id'){
+                                    if(is_array($allFieldItems) && in_array('name', $allFieldItems) &&
+                                        in_array('deleted', $allFieldItems) &&
+                                        in_array('date_entered', $allFieldItems) &&
+                                        in_array('date_modified', $allFieldItems) &&
+                                        in_array('date_indexed', $allFieldItems) &&
+                                        in_array('tags', $allFieldItems) &&
+                                        in_array('description', $allFieldItems) &&
+                                        in_array('created_by', $allFieldItems) &&
+                                        in_array('modified_user_id', $allFieldItems)
+                                    ) {
+                                        // save the default dictionary template
+                                        $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdictionary_ref_id, status, version, package) VALUES(uuid(), 'default', '{$storeDictionaryNameId[$dictionaryName]}', 'a738ceee-6853-44dc-bb74-dd1530d3d1fe', 'a', '2022.02.001', 'coreid');";
+                                    } elseif(is_array($allFieldItems) &&
+                                        !in_array('name', $allFieldItems) &&
+                                        in_array('deleted', $allFieldItems) &&
+                                        in_array('date_entered', $allFieldItems) &&
+                                        in_array('date_modified', $allFieldItems) &&
+                                        in_array('date_indexed', $allFieldItems) &&
+                                        in_array('tags', $allFieldItems) &&
+                                        in_array('description', $allFieldItems) &&
+                                        in_array('created_by', $allFieldItems) &&
+                                        in_array('modified_user_id', $allFieldItems)
+                                    ) {
+                                        // save the default dictionary without name template
+                                        $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdictionary_ref_id, status, version, package) VALUES(uuid(), 'default without name', '{$storeDictionaryNameId[$dictionaryName]}', '1ca4c87d-c36d-c4f9-2e23-19c8e4b85de6', 'a', '2022.02.001', 'coreid');";
+
+                                    }
+
+                                } elseif($fieldDef['name'] == 'assigned_user_id'){
+                                    // save the assignable dictionary template
+                                    $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdictionary_ref_id, status, version, package) VALUES(uuid(), 'assignable', '{$storeDictionaryNameId[$dictionaryName]}', '6fed999b-1cb8-8af5-58c1-acf5bd047c2a', 'a', '2022.02.001', 'coreid');";
+
+                                } else {
+                                    // save item entry
+                                    $sqls[$dictionaryName][] = "INSERT INTO sysdictionaryitems (id, name, sysdictionarydefinition_id, sysdomaindefinition_id, status, version, package) VALUES(uuid(), '{$fieldDef['name']}', '{$storeDictionaryNameId[$dictionaryName]}', 'a4fa167b-8922-5924-ac9b-03cdca41c044', 'a', '2022.02.001', 'coreid');";
+                                }
+
+                            }
+                            break;
+
+                    }
+                }
+
+            }
+
+
+        }
+
+        foreach($sqls as $dictName => $sql){
+            foreach ($sql as $sqlQuery)
+                $sqlList[] = $sqlQuery;
+        }
+die(print_r(implode("\n", $sqlList), true));
+        return $res->withJson($sqlList);
+    }
+
 
     public function repairCache(Request $req, Response $res, array $args): Response
     {
