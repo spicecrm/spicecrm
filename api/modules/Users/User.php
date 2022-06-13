@@ -46,6 +46,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\UserPreferences\UserPreference;
+use DateInterval;
 
 // workaround for spiceinstaller
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;

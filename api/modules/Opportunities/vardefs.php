@@ -132,7 +132,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
                     'type' => 'currency',
                     'map' => 'opportunity_amount'
                 ],
-                'amount_system_currency' => [
+                'amount_systemcurrency' => [
                     'type' => 'currency',
                     'map' => 'opportunity_amount_usdollar'
                 ]
