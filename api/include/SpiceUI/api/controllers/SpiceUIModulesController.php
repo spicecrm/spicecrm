@@ -261,6 +261,28 @@ class SpiceUIModulesController
 
 
     /**
+     * loads all the sysui roles
+     *
+     * @return array
+     */
+    static function getSysRolesAll()
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $retArray = [];
+
+        # load all the global roles:
+        $roles = $db->query( "SELECT sysuiroles.*, 0 defaultrole, 'global' scope  FROM sysuiroles ORDER BY NAME" );
+        while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+
+        // load all the custom roles:
+        $roles = $db->query( "SELECT sysuicustomroles.*, 0 defaultrole, 'custom' scope FROM sysuicustomroles ORDER BY NAME" );
+        while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+
+        return array_values( $retArray );
+    }
+
+    /**
      * loadsand combines the sysui roles
      *
      * @return array

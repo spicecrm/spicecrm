@@ -2,19 +2,26 @@
     <system-modal-header (close)="close()"><system-label label="LBL_ADD_VALIDATION"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+            <div class="slds-form-element__control slds-size--1-of-3 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><system-label label="LBL_VALUE"></system-label></label>
                 <system-input-text [(ngModel)]="fieldvalidationvalue.enumvalue"></system-input-text>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><system-label label="LBL_MIN"></system-label></label>
-                <system-input-text [(ngModel)]="fieldvalidationvalue.minvalue"></system-input-text>
+            <div class="slds-form-element__control slds-size--1-of-3 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><system-label label="LBL_VALUE_TYPE"></system-label></label>
+                <select class="slds-select" [(ngModel)]="fieldvalidationvalue.valuetype">
+                    <option value="string"><system-label label="LBL_STRING"></system-label></option>
+                    <option value="int"><system-label label="LBL_INTEGER"></system-label></option>
+                </select>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><system-label label="LBL_MAX"></system-label></label>
-                <system-input-text [(ngModel)]="fieldvalidationvalue.maxval"></system-input-text>
-            </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
+            <!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
+            <!--                <label class="slds-form-element__label"><system-label label="LBL_MIN"></system-label></label>-->
+            <!--                <system-input-text [(ngModel)]="fieldvalidationvalue.minvalue"></system-input-text>-->
+            <!--            </div>-->
+            <!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
+            <!--                <label class="slds-form-element__label"><system-label label="LBL_MAX"></system-label></label>-->
+            <!--                <system-input-text [(ngModel)]="fieldvalidationvalue.maxvalue"></system-input-text>-->
+            <!--            </div>-->
+            <div class="slds-form-element__control slds-size--1-of-3 slds-p-left--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="fieldvalidationvalue.scope">
@@ -25,6 +32,10 @@
             </div>
         </div>
         <div class="slds-grid">
+            <div class="slds-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_LABEL"></system-label></label>
+                <system-input-label [(ngModel)]="fieldvalidationvalue.label"></system-input-label>
+            </div>
             <div class="slds-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <system-input-text [(ngModel)]="fieldvalidationvalue.package"></system-input-text>

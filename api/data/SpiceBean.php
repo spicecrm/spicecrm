@@ -354,6 +354,8 @@ class SpiceBean
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
             // logic hook to create vardefs .. if any additonal fields are required
+
+            // ToDo - check why we need this here
             $this->call_custom_logic('create_vardefs');
 
             // build $this->column_fields from the field_defs if they exist
@@ -843,7 +845,8 @@ class SpiceBean
                     if (Relationship::exists($rel_name, $db)) {
                         LoggerManager::getLogger()->debug('Skipping, reltionship already exists ' . $rel_name);
                     } else {
-                        $seed = new Relationship();
+                        /** @var Relationship */
+                        $seed = BeanFactory::getBean('Relationships');
                         $keys = array_keys($seed->field_defs);
                         $toInsert = [];
                         foreach ($keys as $key) {
