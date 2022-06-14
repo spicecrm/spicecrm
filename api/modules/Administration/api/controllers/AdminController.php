@@ -264,14 +264,8 @@ class AdminController
         VardefManager::clearVardef();
         if (SpiceDictionaryVardefs::isDbManaged()) {
             $vardefs = SpiceDictionaryVardefs::loadVardefs();
-            // save cache to DB
-//            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
-//                SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
-//            }
             foreach($vardefs as $dictName => $dict){
                 $returnArray[$dictName] = $dict;
-                //create a fake sysdictionarydefinition_id
-                $sysdictionarydefinition_id = SpiceUtils::createGuid();
 
                 // remove deprecated properties
                 SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);

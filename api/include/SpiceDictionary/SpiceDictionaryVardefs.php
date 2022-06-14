@@ -317,6 +317,29 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
+     * return dictionary_id for specified dictionary name
+     *
+     * @param string $module
+     * @return mixed
+     */
+    public static function getDictionaryIdByName($dictionaryName){
+        $db = DBManagerFactory::getInstance();
+        $q = "SELECT sysdictdef.id sysdictionarydefinition_id FROM syscustomdictionarydefinitions sysdictdef WHERE sysdictdef.name ='{$dictionaryName}'";
+        if($res = $db->limitQuery($q, 0, 1)){
+            while($row = $db->fetchByAssoc($res)){
+                return $row['sysdictionarydefinition_id'];
+            }
+        }
+        $q = "SELECT sysdictdef.id sysdictionarydefinition_id FROM sysdictionarydefinitions sysdictdef WHERE sysdictdef.name ='{$dictionaryName}'";
+        if($res = $db->limitQuery($q, 0, 1)){
+            while($row = $db->fetchByAssoc($res)){
+                return $row['sysdictionarydefinition_id'];
+            }
+        }
+        return null;
+    }
+
+    /**
      * return dictionary_id for specified module
      *
      * @param string $module
@@ -639,9 +662,9 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
             {
                 foreach($def['relationships'] as $relKey => $relDef)
                 {
-                    if ($key == $relKey) // Relationship only entry, we need to capture everything
+                    if ($key == $relKey) // Relationship only entry (metadata), we need to capture everything
                         $relationships[$key] = array_merge(['name' => $key], $def, $relDef);
-                    else {
+                    else {  // from  module
                         $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
                         if(!empty($relationships[$relKey]['join_table']) && empty($relationships[$relKey]['fields'])
                             && isset(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$relKey]['join_table']]['fields'])) {
@@ -653,6 +676,14 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
             }
         }
 
+        // enrich with relationships from sysdictionaryrelationships/ syscustomdictionaryrelationships
+        $sysDictRels = SpiceDictionaryHandler::getInstance()->getDictionaryRelationships();
+        foreach($sysDictRels as $relDef){
+            $relKey = $relDef['relationship_name'];
+            $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
+            $relationships[$relKey]['relationship_name'] = $relDef['relationship_name'];
+
+        }
         return $relationships;
     }
 
@@ -1648,9 +1679,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      */
     public static function deleteAllRelationshipsCacheFromDb(){
         $tableName = 'relationships';
-        if (SpiceDictionaryVardefs::isDbManaged()) {
-            $tableName = 'sysdictionaryrelationships';
-        }
+//        if (SpiceDictionaryVardefs::isDbManaged()) {
+//            $tableName = 'sysdictionaryrelationships';
+//        }
         $db = DBManagerFactory::getInstance();
         if(!$db->truncateQuery($tableName)){
             LoggerManager::getLogger()->fatal('error truncating '.$tableName.' table '.$db->lastError());
