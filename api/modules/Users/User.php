@@ -232,17 +232,19 @@ class User extends Person
      *
      */
     public function getPreference(
-        $name, $category = 'global'
-    )
-    {
+        $name,
+        $category = 'global',
+        $fallBackToSystem = false,
+        $default = null
+    ) {
         // for BC
-        if (func_num_args() > 2) {
+        if (func_num_args() > 2 and !is_bool( $fallBackToSystem )) {
             $user = func_get_arg(2);
             LoggerManager::getLogger()->deprecated('User::getPreference() should not be used statically.');
         } else
             $user = $this;
 
-        return $user->_userPreferenceFocus->getPreference($name, $category);
+        return $user->_userPreferenceFocus->getPreference($name, $category, $fallBackToSystem, $default );
     }
 
 
