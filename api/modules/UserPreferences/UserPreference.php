@@ -75,10 +75,11 @@ class UserPreference extends SpiceBean
      */
     public function getPreference(
         $name,
-        $category = 'global'
+        $category = 'global',
+        $fallBackToSystem = false,
+        $default = null
     )
     {
-
 
         $user = $this->_userFocus;
 
@@ -89,6 +90,16 @@ class UserPreference extends SpiceBean
         if(isset($_SESSION[$user->user_name.'_PREFERENCES'][$category][$name])) {
             return $_SESSION[$user->user_name.'_PREFERENCES'][$category][$name];
         }
+
+        // no user preference ist set ...
+        // so, if desired ($fallBackToSystem==true), return the default configuration value of the system config
+        if ( $fallBackToSystem and $category == 'global' and isset( SpiceConfig::getInstance()->config['default_preferences'][$name] )) {
+            return SpiceConfig::getInstance()->config['default_preferences'][$name];
+        }
+
+        // no default configuration value is set in the system config ...
+        // so return the default value, if provided
+        if ( !empty( $default )) return $default;
 
         return null;
     }

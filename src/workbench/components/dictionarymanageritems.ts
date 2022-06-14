@@ -23,7 +23,7 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 export class DictionaryManagerItems {
 
     /**
-     * the curretn dictionaryitem
+     * the current dictionaryitem
      */
     public dictionaryitem: DictionaryItem;
 

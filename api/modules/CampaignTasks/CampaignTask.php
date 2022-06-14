@@ -177,11 +177,24 @@ class CampaignTask extends SpiceBean
      * @return bool
      */
     function sendQueuedEmails(){
+        // set the admin user
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // get the queued emails
         $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Email' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
             if($queuedEmail['campaigntask_id'] != $this->id){
                 $this->retrieve($queuedEmail['campaigntask_id']);
+
+                // set the current user to the one assigned to the task .. if none assigned go back to the admin
+                if($current_user->id != $this->assigned_user_id){
+                    $user = BeanFactory::getBean('Users', $this->assigned_user_id ?: '1');
+                    AuthenticationController::getInstance()->setCurrentUser($user);
+                    $current_user = AuthenticationController::getInstance()->getCurrentUser();
+                }
             };
 
             // load the bean and send the email
@@ -209,6 +222,10 @@ class CampaignTask extends SpiceBean
                 $campaignLog->save();
             }
         }
+
+        // set the assigned user back to the admin
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+
         return true;
     }
 
