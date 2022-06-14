@@ -187,6 +187,18 @@ class SchedulerJob extends SpiceBean
     {
         $this->beforeRun();
 
+        # Feature: In case the assigned user of the cron job is different to the current user (basically "1"), use it instead.
+        $currentUserChanged = false;
+        $initialUser = AuthenticationController::getInstance()->getCurrentUser();
+        if ( isset( $this->assigned_user_id[0] ) and $this->assigned_user_id !== $initialUser->id ) {
+            $currentUserChanged = true;
+            $cronjobUser = BeanFactory::getBean('Users', $this->assigned_user_id );
+            if (!$cronjobUser) {
+                throw (new Exception('Cannot run Cronjob, not existing Cronjob User (ID: ' . $this->assigned_user_id . ')'));
+            }
+            AuthenticationController::getInstance()->setCurrentUser($cronjobUser);
+        }
+
         $onHold = SchedulerJobTask::JOB_TASK_STATUS_ON_HOLD;
 
         $tasks = $this->get_linked_beans('schedulerjobtasks', null, [], 0, -1, 0, "schedulerjobtasks.jobtask_status != '$onHold'");
@@ -211,6 +223,9 @@ class SchedulerJob extends SpiceBean
         }
 
         $this->afterRun($lastTask);
+
+        # restore current user
+        if ( $currentUserChanged ) AuthenticationController::getInstance()->setCurrentUser( $initialUser );
 
         return ['success' => $executed, 'message' => $this->last_run_message];
     }
