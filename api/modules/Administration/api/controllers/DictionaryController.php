@@ -9,6 +9,7 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Relationships\Relationship;
 
 class DictionaryController
 {
@@ -162,6 +163,10 @@ class DictionaryController
 
         // confirm save into db
         $db->transactionCommit();
+
+        // repair relationships
+        $rel = new Relationship();
+        $rel->build_relationship_cache();
 
         return $res->withJson($returnArray);
     }

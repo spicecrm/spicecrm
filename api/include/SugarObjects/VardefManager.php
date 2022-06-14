@@ -367,9 +367,9 @@ class VardefManager{
             $cachedRel = SpiceDictionaryVardefs::loadRelationshipsForModuleFromCache($module);
             if(!empty($cachedRel)) {
                 LoggerManager::getLogger()->debug('Loading {$object} from DB cache table');
-                return $cachedRel;
+                //return $cachedRel;
             }
-            return false;
+            //return false;
         }
 
 
