@@ -35,7 +35,7 @@ class IpAddresses
         $db = DBManagerFactory::getInstance();
         $now = TimeDate::getInstance()->nowDb();
 
-        if ( $db->getOne("SELECT COUNT(*) FROM ipaddresses WHERE address = '".$db->quote( $ipAddress ).'" AND date_deleted IS NULL')) {
+        if ( $db->getOne("SELECT COUNT(*) FROM ipaddresses WHERE address = '".$db->quote( $ipAddress )."' AND date_deleted IS NULL")) {
             throw ( new BadRequestException('IP Address already exists.'));
         }
 

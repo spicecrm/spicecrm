@@ -1071,6 +1071,7 @@ class SpiceBeanHandler
     public function get_bean_auditlog($beanModule, $beanId, $params)
     {
         $db = DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
@@ -1082,7 +1083,25 @@ class SpiceBeanHandler
 
         $auditLog = [];
 
-        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId'";
+
+        // check field access and exclude all fields the user should not see
+        $excludedFieldsSQL = '';
+        if (!$current_user->is_admin) {
+            $hiddenfields = [];
+            // get the fields
+            $fields = SpiceACL::getInstance()->getFieldAccess($thisBean, 'display', false);
+            foreach ($fields as $field => $fieldcontrol) {
+                if ($fieldcontrol == 1) {
+                    $hiddenfields[] = $field;
+                }
+            }
+            if(count($hiddenfields) > 0){
+                $excludedFieldsSQL = " AND field_name NOT IN ('". implode("','", $hiddenfields) ."')";
+            }
+        }
+
+
+        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' $excludedFieldsSQL";
         if ($params['user']) {
             $query .= " AND au.user_name like '%{$params['user']}%'";
         }
@@ -1462,7 +1481,7 @@ class SpiceBeanHandler
         }
 
         // get the field access details
-        $fieldControl = SpiceACL::getInstance()->getFieldAccess($thisBean, 'edit', false);
+        $fieldControl = SpiceACL::getInstance()->getFieldAccess($thisBean, $thisBean->isNew() ? 'create' : 'edit', false);
 
         foreach ($thisBean->field_defs as $fieldId => $fieldData) {
             if ($fieldId == 'date_entered')
@@ -1496,13 +1515,9 @@ class SpiceBeanHandler
             $thisBean->notify_on_save = true;
         }
 
-        $tempEmail1 = null;
-
-        // workaround: to prevent saving the email address twice
-        if (isset($thisBean->email1) || isset($post_params['email1'])) {
-            $tempEmail1 = $thisBean->email1 ?? $post_params['email1'];
+        // do not save the email1 value if the email_addresses array was passed in the body
+        if (!empty($post_params['email_addresses']['beans'])) {
             $thisBean->email1 = '';
-            unset($post_params['email1']);
         }
 
         // save the bean bbut do not index .. indexing is handled later here since we might save related beans
@@ -1511,6 +1526,14 @@ class SpiceBeanHandler
 
         // process links if sent
         foreach ($thisBean->field_defs as $fieldId => $fieldData) {
+
+            if (in_array($fieldData['name'], ['email_addresses', 'email_addresses_primary'])) {
+                if ($fieldData['name'] == 'email_addresses' && isset($post_params['email_addresses'])) {
+                    $this->handleEmailAddresses('email_addresses', $thisBean, $post_params['email_addresses']);
+                }
+                continue;
+            }
+
             switch ($fieldData['type']) {
                 case 'link':
                     if ($fieldData['module'] && isset($post_params[$fieldData['name']])) {
@@ -1543,11 +1566,6 @@ class SpiceBeanHandler
                         $beans = $post_params[$fieldData['name']]['beans'];
                         foreach ($beans as $thisBeanId => $beanData) {
                             $seed = BeanFactory::getBean($relModule, $thisBeanId);
-
-                            // handle email addresses link
-                            if ($fieldData['name'] == 'email_addresses') {
-                                $beanData = $this->handleEmailAddresses($thisBean, $seed, $beanData);
-                            }
 
                             if (empty($beanData['deleted'])) {
                                 // if it does not exist create new bean
@@ -1616,11 +1634,6 @@ class SpiceBeanHandler
         // retrieve the bean
         $thisBean->retrieve();
 
-        // refill the email1 if it was cleared in the workaround line
-        if ($tempEmail1) {
-            $thisBean->email1 = $tempEmail1;
-        }
-
         // load the view details
         $thisBean->retrieveViewDetails();
 
@@ -1629,63 +1642,102 @@ class SpiceBeanHandler
 
     /**
      * handle email addresses
-     * @param $thisBean
-     * @param $seed
-     * @param $data
-     * @return array
+     * @param string $linkName
+     * @param $bean
+     * @param $emailAddresses
      */
-    private function handleEmailAddresses($thisBean, &$seed, $data): array {
+    private function handleEmailAddresses(string $linkName, $bean, $emailAddresses) {
 
-        $previousEmailAddress = null;
+        if (!$bean->load_relationship($linkName)) return;
 
-        // hold the old retrieved email address if exists
-        if ($seed) {
+        // fill in mapping for additional relationship fields
+        $additional_rel_fields = [];
+        $additional_rel_fields_mapped = [];
+        if (isset($bean->field_name_map[$linkName]['rel_fields'])) {
+            foreach ($bean->field_name_map[$linkName]['rel_fields'] as $join_table_field => $joinDetails) {
+                $additional_rel_fields_mapped[] = $joinDetails['map'];
+                $additional_rel_fields[$joinDetails['map']] = $join_table_field;
+            }
+        }
 
-            $allAddresses = $thisBean->get_linked_beans('email_addresses');
+        // handle deleted email addresses
+        foreach (array_keys($emailAddresses['beans_relations_to_delete']) as $emailAddressId) {
+            $emailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
+            $bean->$linkName->delete($bean, $emailAddress);
+        }
 
-            foreach ($allAddresses as $address) {
-                if ($seed->id == $address->id) {
-                    $previousEmailAddress = [
-                        'id' => $address->id,
-                        'email_address' => $address->email_address,
-                        'primary_address' => $seed->primary_address,
-                        'reply_to_address' => $address->reply_to_address,
-                        'opt_in_status' => $address->opt_in_status
-                    ];
+        // handle insert/update email addresses
+        foreach ($emailAddresses['beans'] as $emailAddressId => $emailAddressData) {
+
+            $emailAddress = BeanFactory::newBean('EmailAddresses');
+
+            $existingEmailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
+
+            // if email address deleted handle deletion and continue
+            if ($emailAddressData['deleted'] == 1 && $existingEmailAddress) {
+                $existingEmailAddress->mark_deleted($existingEmailAddress->id);
+                continue;
+            }
+
+            // if the existing email address id is the same but the email address was changed create a new one
+            // copy the old additional relationship values
+            // delete the link to the old one
+            if ($existingEmailAddress) {
+
+                $linkedEmailAddresses = $bean->get_linked_beans($linkName);
+
+                foreach ($linkedEmailAddresses as $linkedEmailAddress) {
+
+                    if ($existingEmailAddress->id !== $linkedEmailAddress->id || $existingEmailAddress->email_address == $emailAddressData['email_address']) {
+                        continue;
+                    }
+
+                    $bean->$linkName->delete($bean, $existingEmailAddress->id);
+
+                    // check if the new email address also exists
+                    $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
+
+                    $emailAddressData['id'] = $emailAddress->id;
+                    $emailAddressData['opt_in_status'] = $linkedEmailAddress->opt_in_status;
+                    $emailAddressData['reply_to_address'] = $linkedEmailAddress->reply_to_address;
+
+                    if (empty($emailAddress->id)) {
+                        $emailAddress->new_with_id = true;
+                        $emailAddressData['id'] = SpiceUtils::createGuid();
+                    }
+
                     break;
                 }
+            } else {
+                $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
+                $emailAddressData['id'] = $emailAddress->id;
+
+                if (empty($emailAddress->id)) {
+                    $emailAddress->id = $emailAddressId;
+                    $emailAddress->new_with_id = true;
+                }
             }
+
+            $additional_values = [];
+
+            // update the email address fields and the additional relationship values
+            foreach (array_keys($emailAddress->field_defs) as $field) {
+
+                if (empty($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
+
+                // update email address field
+                $emailAddress->$field = $emailAddressData[$field];
+
+                // prepare additional values
+                if (in_array($field, $additional_rel_fields_mapped)) {
+                    $additional_values[$additional_rel_fields[$field]] = $emailAddress->$field;
+                }
+            }
+
+            $emailAddress->save();
+
+            $bean->$linkName->add($emailAddress, $additional_values);
         }
-
-
-        // try to find the seed by the email address
-        $seed = BeanFactory::getBean('EmailAddresses');
-        $seed->retrieve_by_string_fields(['email_address_caps' => strtoupper($data['email_address'])]);
-
-        // if the seed was not found
-        if (!$seed->id) {
-
-            // set seed to null to force creating a new one
-            $seed = null;
-
-            // delete the old relationship and generate a new guid if the email address from the old retrieved seed does not match the current one and the id was the same
-            if ($previousEmailAddress && $data['email_address'] != $previousEmailAddress['email_address']) {
-                $thisBean->email_addresses->delete($thisBean, $previousEmailAddress['id']);
-                $data['id'] = SpiceUtils::createGuid();
-            }
-        } else {
-            // if the primary email address is changing remove the link to the old one if exists and copy the necessary rel fields to the new linked
-            if ($previousEmailAddress && $data['primary_address'] == 1 && $seed->id != $previousEmailAddress['id']) {
-
-                $data['opt_in_status'] = $previousEmailAddress['opt_in_status'];
-                $data['reply_to_address'] = $previousEmailAddress['reply_to_address'];
-
-                $thisBean->email_addresses->delete($thisBean, $previousEmailAddress['id']);
-            }
-            $data['id'] = $seed->id;
-        }
-
-        return $data;
     }
 
     /**
