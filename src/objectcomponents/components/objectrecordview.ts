@@ -70,9 +70,14 @@ export class ObjectRecordView implements OnInit, OnDestroy {
         this.model.id = this.navigationtab.activeRoute.params.id;
 
         // retrieve the model data
-        this.model.getData(true, 'detailview', true, true).subscribe(data => {
-            // this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
-            this.modelloaded = true;
+        this.model.getData(true, 'detailview', true, true).subscribe({
+            next: data => {
+                // this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
+                this.modelloaded = true;
+            },
+            error: () =>{
+                this.navigationtab.closeTab();
+            }
         });
 
         /**

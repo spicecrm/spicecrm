@@ -15,7 +15,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class EmailSchedulesController
 {
@@ -149,7 +149,7 @@ class EmailSchedulesController
         }
 
         // cancel all scheudled lines
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $resArray = [];
         $beans= $seed->db->query("select *FROM emailschedules_beans WHERE emailschedule_id='$seed->id'");

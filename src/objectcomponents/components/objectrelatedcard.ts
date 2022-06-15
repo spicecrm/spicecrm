@@ -125,7 +125,7 @@ export class ObjectRelatedCard {
     public aclAccess() {
         if (this.module) {
             let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule?.toLowerCase();
-            return (this.metadata.checkModuleAcl(this.module, "list") || this.metadata.checkModuleAcl(this.module, "listrelated")) && this.model.checkFieldAccess(linkField);
+            return (this.metadata.checkModuleAcl(this.module, "list") || this.metadata.checkModuleAcl(this.module, "listrelated")) && this.model.checkAccess('detail') &&  this.model.checkFieldAccess(linkField);
         } else {
             return false;
         }

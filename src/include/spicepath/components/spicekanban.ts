@@ -180,7 +180,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
                 values: {},
-                items: 0
+                items: 0,
+                hidden: stage.stagedata.not_in_kanban == '1'
             });
 
         }

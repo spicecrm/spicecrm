@@ -33,6 +33,7 @@ import /*embed*/ {SystemCard} from "./components/systemcard";
 import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
 import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
 import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
+import /*embed*/ {SystemCardStencil} from "./components/systemcardstencil";
 import /*embed*/ {SystemCheckboxGroup} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroupcheckbox";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
@@ -170,6 +171,7 @@ import {SystemPDFContainer} from "./components/systempdfcontainer";
 import {SystemIframeModal} from "./components/systemiframemodal";
 import {SystemInputColor} from "./components/systeminputcolor";
 import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcontent";
+import {SystemHtmlEditor} from "./components/systemhtmleditor";
 
 @NgModule({
     imports: [
@@ -196,6 +198,7 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
         SystemCardBody,
         SystemCardFooter,
         SystemCardHeader,
+        SystemCardStencil,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
@@ -326,7 +329,8 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
         SystemInputFile,
         SystemInputFileContent,
         SystemWrappedText,
-        SystemRichTextEditorContent
+        SystemRichTextEditorContent,
+        SystemHtmlEditor
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -460,7 +464,10 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
         SystemModalHeaderEmpty,
         SystemWrappedText,
         SystemPDFContainer,
-        SystemInputColor
+        SystemInputColor,
+        SystemLabelEditorModal,
+        SystemHtmlEditor,
+        SystemCardStencil
     ]
 })
 export class SystemComponents {}

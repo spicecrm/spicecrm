@@ -157,7 +157,6 @@ export class ObjectActionOutputBeanModal {
         // if no template is set and we only have one select this
         if (!this.selected_template && this.templates.length == 1) {
             this.selected_template = this.templates[0];
-            this.rendertemplate();
         }
     }
 

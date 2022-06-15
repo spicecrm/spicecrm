@@ -11,11 +11,9 @@
                     <div class="slds-form-element slds-p-horizontal_x-small" *ngIf="textitem.type == 'option'">
                         <div class="slds-form-element__control">
                             <div *ngIf="qp.questionoptionsArray[question.id][textitem.index*1].description && qp.questionoptionsArray[question.id][textitem.index].description != ''" class="slds-select_container">
-                                <select  class="slds-select" [disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview'" [value]="getAnswerValue(textitem.index)" (change)="onChange(textitem.index, $event)">
+                                <select  class="slds-select" [disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview'" [ngModel]="getAnswerValue(textitem.index)" (change)="onChange(textitem.index, $event)">
                                     <option value=""></option>
-                                    <option *ngFor="let seloption of qp.questionoptionsArray[question.id][textitem.index].description|questiontypeistoptionspipe"
-                                            [ngValue]="seloption">{{seloption}}
-                                    </option>
+                                    <option *ngFor="let seloption of qp.questionoptionsArray[question.id][textitem.index].description|questiontypeistoptionspipe" [value]="seloption">{{seloption}}</option>
                                 </select>
                             </div>
                             <input *ngIf="!qp.questionoptionsArray[question.id][textitem.index].description || qp.questionoptionsArray[question.id][textitem.index].description == ''" style="width: 50px" type="text" class="slds-input" [value]="getAnswerValue(textitem.index)" (blur)="onChange(textitem.index, $event)"/>

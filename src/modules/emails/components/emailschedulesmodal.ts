@@ -114,7 +114,6 @@ export class EmailSchedulesModal {
                 loadingRef.instance.self.destroy();
                 if (result.success) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
-                    this.close();
                 } else {
                     this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
                 }

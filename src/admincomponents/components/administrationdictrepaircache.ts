@@ -27,4 +27,15 @@ export class AdministrationDictRepairCache {
             }
         });
     }
+    public executeRepairCacheDb() {
+        let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        this.backend.getRequest('admin/repair/cachedb').subscribe(result => {
+            loadingModal.emit(true);
+            if(result) {
+                this.toast.sendToast(this.language.getLabel('LBL_CACHE_REPAIRED'), 'success');
+            } else {
+                this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+            }
+        });
+    }
 }

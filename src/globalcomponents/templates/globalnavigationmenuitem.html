@@ -35,9 +35,9 @@
                 <li class="slds-dropdown__header" role="separator">
                     <span class="slds-text-title--caps"><system-label label="LBL_RECENTLYVIEWED"></system-label></span>
                 </li>
-                <li *ngFor="let recentItem of recentitems" class="slds-dropdown__item" role="presentation" (click)="navigateRecent(recentItem.item_id)">
+                <li *ngFor="let recentItem of recentitems" class="slds-dropdown__item" role="presentation" (click)="navigateRecent(recentItem.item_id)" [system-model-provider]="{module: model.module, data: recentItem.data, id: recentItem.id}">
                     <a href="javascript:void(0);" role="menuitem">
-                        <span class="slds-truncate">{{recentItem.item_summary}}</span>
+                        <span class="slds-truncate">{{recentItem.data.summary_text}}</span>
                     </a>
                 </li>
                 <li class="slds-dropdown__item slds-align--absolute-center slds-text-color_inverse-weak slds-p-around--xx-small" *ngIf="recentitems.length == 0 && isInitialized"><system-label label="LBL_NO_ENTRIES"></system-label></li>

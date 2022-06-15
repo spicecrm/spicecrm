@@ -86,10 +86,13 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     public _html: string = '';
 
     public isActive: boolean = false;
+    public isShow: boolean = false;
     public clickListener: any;
     public keydownListener: any;
     public modalOpen: boolean = false;
     public isExpanded: boolean = false;
+    public selectedColumn: number;
+    public selectedRow: number;
 
     public block: string = 'default';
     public fontName: string = 'Tilium Web';
@@ -130,7 +133,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     get richTextStyle() {
-        return this.isExpanded ? {height: '100vh', resize: 'none', position: 'fixed'} : {height: (+this.innerHeight + 50) + 'px'};
+        return this.isExpanded ? {height: '100vh', resize: 'none', position: 'fixed'} : {height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px'};
     }
 
     /**
@@ -147,7 +150,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
                     toolbar: [],
                     htmlSupport: {
-                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4'])
+                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
+                        // hr
                     },
                     autosave: {
                         save: ( editor ) => {
@@ -160,7 +164,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         this.editor.enableReadOnlyMode('efsjeflksjefloikjse');
                     }
                     this.editor.editing.view.change(writer=>{
-                        writer.setStyle('height', this.innerHeight + 'px', this.editor.editing.view.document.getRoot());
+                        writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                     });
                     this.editor.setData(this._html);
                 });
@@ -188,6 +192,31 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spicetemplate': true,
                     'class': true,
                     'style': true,
+                    'value': true,
+                    'type': true,
+                    'id': true,
+                    'name': true,
+                    'for': true,
+                    'checked': true,
+                    'selected': true,
+                    'size': true,
+                    'autocomplete': true,
+                    'autofocus': true,
+                    'placeholder': true,
+                    'max': true,
+                    'maxlength': true,
+                    'min': true,
+                    'minlength': true,
+                    'multiple': true,
+                    'required': true,
+                    'disabled': true,
+                    'form': true,
+                    'step': true,
+                    'readonly': true,
+                    'cols': true,
+                    'rows': true,
+                    'wrap': true,
+                    'label': true
                 }
             }
         });
@@ -259,7 +288,35 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     public heading(command: string){
         this.editor.execute('heading', {value: command});
     }
+    /**
+     *
+     *  table modal
+     */
+    public  openTable() {
+        this.isShow = !this.isShow;
+        this.selectedColumn = this.selectedRow = 0;
+    }
 
+    /**
+     *
+     * selecting row and column
+     */
+    public selectTable(row,column) {
+        this.selectedColumn = column;
+        this.selectedRow = row;
+    }
+
+    /**
+     * inserting table
+     */
+    public insertTable(){
+        this.editor.execute('insertTable', { rows: this.selectedRow, columns: this.selectedColumn })
+        this.isShow = false;
+    }
+
+    public cancelTable(){
+        this.isShow = false;
+    }
 
     /**
      *

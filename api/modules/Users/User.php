@@ -46,6 +46,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\UserPreferences\UserPreference;
+use DateInterval;
 
 // workaround for spiceinstaller
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -231,17 +232,19 @@ class User extends Person
      *
      */
     public function getPreference(
-        $name, $category = 'global'
-    )
-    {
+        $name,
+        $category = 'global',
+        $fallBackToSystem = false,
+        $default = null
+    ) {
         // for BC
-        if (func_num_args() > 2) {
+        if (func_num_args() > 2 and !is_bool( $fallBackToSystem )) {
             $user = func_get_arg(2);
             LoggerManager::getLogger()->deprecated('User::getPreference() should not be used statically.');
         } else
             $user = $this;
 
-        return $user->_userPreferenceFocus->getPreference($name, $category);
+        return $user->_userPreferenceFocus->getPreference($name, $category, $fallBackToSystem, $default );
     }
 
 
@@ -810,12 +813,14 @@ class User extends Person
      */
     public static function blockUserByName( $username, $blockingDuration = null ) {
         $user = BeanFactory::getBean('Users');
-        $user->findByUserName( $username );
+        // if we do not find the user return .. causes empty users to be created
+        if(!$user->findByUserName( $username )){
+            return;
+        }
 
+        // set a block end date
         if ( $blockingDuration ) {
-            $dtObj=new \DateTime();
-            $dtObj->setTimestamp(time()+ (int)$blockingDuration * 60);
-            $user->login_blocked_until = Timedate::getInstance()->asDb($dtObj);
+            $user->login_blocked_until = date_create()->add(new DateInterval("PT{$blockingDuration}S"))->format(TimeDate::DB_DATETIME_FORMAT);
         } else {
             $user->login_blocked = true;
         }
