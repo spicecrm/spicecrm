@@ -50,9 +50,9 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/system/marketing/aboStep1/{key}',
+        'route'       => '/system/marketing/action/{key}',
         'class'       => MarketingAutomationController::class,
-        'function'    => 'handleSubscription',
+        'function'    => 'handleMarketingAction',
         'description' => '',
         'options'     => ['noAuth' => true, 'adminOnly' => false],
         'parameters' => [
@@ -64,14 +64,6 @@ $routes = [
                 'required' => true
             ]
         ]
-    ],
-    [
-        'method'      => 'get',
-        'route'       => '/system/marketing/aboStep2/{key}',
-        'class'       => MarketingAutomationController::class,
-        'function'    => 'makeKey',
-        'description' => '',
-        'options'     => ['noAuth' => true, 'adminOnly' => false],
     ],
 ];
 

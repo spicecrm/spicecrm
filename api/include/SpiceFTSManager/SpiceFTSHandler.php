@@ -10,11 +10,10 @@ use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
-use UnifiedSearchAdvanced;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\includes\TimeDate;
 
@@ -158,7 +157,7 @@ class SpiceFTSHandler
 
             // loop modules
             foreach ($modArray as $module) {
-                $krestHandler = new ModuleHandler();
+                $krestHandler = new SpiceBeanHandler();
                 $listData = $krestHandler->get_bean_list($module, ['searchterm' => $postBody['searchterm']]);
                 $result[$module]['aggregations'] = [];
                 $result[$module]['total'] = intval($listData['totalcount']);
@@ -200,7 +199,7 @@ class SpiceFTSHandler
         // determine the modules
         // ToDo: move to fts utils and utilize cache
         $searchresults = [];
-        $krestHandler = new ModuleHandler();
+        $krestHandler = new SpiceBeanHandler();
         $modulesObject = $db->query("SELECT * FROM sysfts");
         while ($ftsmodule = $db->fetchByAssoc($modulesObject)) {
             $ftsParams = json_decode(html_entity_decode($ftsmodule['settings']));
@@ -383,16 +382,6 @@ class SpiceFTSHandler
         $modListFts = $db->query("SELECT * FROM sysfts");
         while ($row = $db->fetchByAssoc($modListFts)) {
             $modules[] = $row;
-        }
-        // BWC when no FTS is set. Fall back on unified search definition
-        if (empty($modules)) {
-            // try unified search
-            require_once 'include/utils/UnifiedSearchAdvanced.php';
-            $usa = new UnifiedSearchAdvanced();
-            $modListUS = $usa->getUnifiedSearchModules();
-            foreach ($modListUS as $modName => $modData) {
-                $modules[] = ['module' => $modName, 'settings' => '{"globalsearch":true}'];
-            }
         }
 
         foreach ($modules as $module) {
@@ -1276,7 +1265,7 @@ class SpiceFTSHandler
                         }
 
                         // get the email addresses
-                        $krestHandler = new ModuleHandler();
+                        $krestHandler = new SpiceBeanHandler();
                         $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
 
                         $hit['acl'] = $seed->getACLActions();
@@ -1331,7 +1320,7 @@ class SpiceFTSHandler
                     }
 
                     // get the email addresses
-                    $krestHandler = new ModuleHandler();
+                    $krestHandler = new SpiceBeanHandler();
                     // $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
 
                     $hit['acl'] = $seed->getACLActions();
@@ -1471,8 +1460,11 @@ class SpiceFTSHandler
 
                 // add the aggregates
                 $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
-                foreach ($searchresultsraw['hits']['hits'] as &$hit) {
-                    $searchresults['hits'][] = $hit;
+                // only add when not hidden
+                if($bucketitem['hidden'] === false) {
+                    foreach ($searchresultsraw['hits']['hits'] as &$hit) {
+                        $searchresults['hits'][] = $hit;
+                    }
                 }
 
                 // loop over the aggregate keys to get the searched values
@@ -1536,7 +1528,7 @@ class SpiceFTSHandler
         }
 
         // get the email addresses
-        $krestHandler = new ModuleHandler();
+        $krestHandler = new SpiceBeanHandler();
         foreach ($searchresultsraw['hits']['hits'] as &$hit) {
             $seed = BeanFactory::getBean($module, $hit['_id']);
             $exportresults[] = $krestHandler->mapBeanToArray($module, $seed);

@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\RESTManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -22,7 +22,7 @@ class MetadataController {
     public function __construct()
     {
         $RESTManager = RESTManager::getInstance();
-        $this->moduleHandler = new ModuleHandler($RESTManager);
+        $this->moduleHandler = new SpiceBeanHandler($RESTManager);
     }
 
     /**

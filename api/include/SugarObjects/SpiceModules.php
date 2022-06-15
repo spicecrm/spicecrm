@@ -58,7 +58,8 @@ class SpiceModules
     public function loadModules($forceReload = false): void {
         if (!isset($_SESSION['modules']) || $forceReload) {
             $this->modules = [];
-            $modules = DBManagerFactory::getInstance()->query("SELECT id, module, bean, beanfile, workflow, visible, tagging FROM sysmodules UNION SELECT id, module, bean, beanfile, workflow, visible, tagging FROM syscustommodules");
+            $columns = ['id', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id'];
+            $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION SELECT ".implode(', ', $columns)." FROM syscustommodules");
             while ($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)) {
                 $this->moduleList[$module['module']] = $module['module'];
 

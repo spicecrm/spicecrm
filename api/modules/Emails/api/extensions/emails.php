@@ -468,6 +468,46 @@ $routes = [
         ],
     ],
     [
+        'method'      => 'post',
+        'route'       => '/module/Emails/eml',
+        'class'       => EmailsController::class,
+        'function'    => 'createEmailFromEMLFile',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'filename'     => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'The file name',
+            ],
+            'filemimetype' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'The mime type of the file',
+            ],
+            'file'         => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_BASE64,
+                'required'    => true,
+                'description' => 'The base64 contents of the file',
+            ],
+            'beanModule'   => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The bean module name',
+            ],
+            'beanId'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The bean ID',
+            ],
+        ],
+    ],
+    [
         'method'      => 'get',
         'route'       => '/module/Emails/msg/{attachmentId}',
         'oldroute'    => '/module/Emails/msg/{attachmentId}/preview',

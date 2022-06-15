@@ -15,7 +15,7 @@ use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\EncryptionUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SugarCleaner;
@@ -134,38 +134,6 @@ class SpiceBean
      * @var BOOL -- default false
      */
     var $disable_vardefs = false;
-
-    /**
-     * holds the full name of the user that an item is assigned to.  Only used if notifications
-     * are turned on and going to be sent out.
-     *
-     * @var String
-     */
-    var $new_assigned_user_name;
-
-    /**
-     * An array of booleans.  This array is cleared out when data is loaded.
-     * As date/times are converted, a "1" is placed under the key, the field is converted.
-     *
-     * @var Array of booleans
-     */
-    var $processed_dates_times = [];
-
-    /**
-     * Whether to process date/time fields for storage in the database in GMT
-     *
-     * @var BOOL
-     */
-    var $process_save_dates = true;
-
-    /**
-     * This signals to the bean that it is being saved in a mass mode.
-     * Examples of this kind of save are import and mass update.
-     * We turn off notificaitons of this is the case to make things more efficient.
-     *
-     * @var BOOL
-     */
-    var $save_from_post = true;
 
     /**
      * When running a query on related items using the method: retrieve_by_string_fields
@@ -386,6 +354,8 @@ class SpiceBean
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
             // logic hook to create vardefs .. if any additonal fields are required
+
+            // ToDo - check why we need this here
             $this->call_custom_logic('create_vardefs');
 
             // build $this->column_fields from the field_defs if they exist
@@ -875,7 +845,8 @@ class SpiceBean
                     if (Relationship::exists($rel_name, $db)) {
                         LoggerManager::getLogger()->debug('Skipping, reltionship already exists ' . $rel_name);
                     } else {
-                        $seed = new Relationship();
+                        /** @var Relationship */
+                        $seed = BeanFactory::getBean('Relationships');
                         $keys = array_keys($seed->field_defs);
                         $toInsert = [];
                         foreach ($keys as $key) {
@@ -1652,7 +1623,7 @@ class SpiceBean
      */
     function call_custom_logic($event, $arguments = null)
     {
-        if (!isset($this->processed) || $this->processed == false) {
+        if ($this->_module && (!isset($this->processed) || $this->processed == false)) {
             //add some logic to ensure we do not get into an infinite loop
             if (!empty($this->logicHookDepth[$event])) {
                 if ($this->logicHookDepth[$event] > $this->max_logic_depth)

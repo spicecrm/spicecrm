@@ -7,7 +7,7 @@ use SpiceCRM\modules\MediaFiles\MediaFile;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
@@ -17,7 +17,7 @@ class MediaFilesController
 
     public function saveMediaFile(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $params = $req->getQueryParams();
 

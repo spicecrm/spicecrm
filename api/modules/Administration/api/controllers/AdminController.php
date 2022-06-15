@@ -204,12 +204,17 @@ class AdminController
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            SpiceDictionaryVardefs::loadDictionaries();
+        if (SpiceDictionaryVardefs::isDbManaged()) {
+            $vardefs = SpiceDictionaryVardefs::loadVardefs();
+
+            $db->transactionStart();
+            $db->truncateQuery('sysdictionaryfields', true);
+
             // save cache to DB
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
+            foreach ($vardefs as $dictName => $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
+            $db->transactionCommit();
         }
 
         $repairedTables = [];
@@ -257,10 +262,15 @@ class AdminController
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            SpiceDictionaryVardefs::loadDictionaries();
-            // save cache to DB
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
+        if (SpiceDictionaryVardefs::isDbManaged()) {
+            $vardefs = SpiceDictionaryVardefs::loadVardefs();
+            foreach($vardefs as $dictName => $dict){
+                $returnArray[$dictName] = $dict;
+
+                // remove deprecated properties
+                SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
+
+                // save to db
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -604,62 +614,20 @@ class AdminController
 
     }
 
-    /**
-     * repairs ACL Roles
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return false|Response|string
-     */
-    public function repairACLRoles(Request $req, Response $res, array $args) {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $repairedACLs = [];
-        $ACLActions = ACLAction::getDefaultActions();
-        if (SpiceUtils::isAdmin($current_user)) {
-            if (!empty($ACLActions)) {
-                foreach ($ACLActions as $action) {
-                    if (empty(SpiceModules::getInstance()->getBeanName($action->category))) {
-                        ACLAction::removeActions($action->category);
-                    }
 
-                }
-            } else {
-                foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
-                    $beanName = SpiceModules::getInstance()->getBeanName($module);
-                    if (empty($repairedACLs[$beanName]) && class_exists($beanClass)) {
-                        $currentModule = BeanFactory::getBean($module);
-                        if ($currentModule->bean_implements('ACL') && empty($currentModule->acl_display_only)) {
-                            if (!empty($currentModule->acltype)) {
-                                ACLAction::addActions($currentModule->getACLCategory(), $currentModule->acltype);
-                            } else {
-                                ACLAction::addActions($currentModule->getACLCategory());
-                            }
 
-                            $repairedACLs[$beanName] = true;
-                        }
-                    }
-                }
-            }
-        }
-        if ($res) {
-            return $res->withJson(['installed_classes' => $repairedACLs]);
-        } else {
-            return json_encode(['installed_classes' => $repairedACLs]);
-        }
 
-    }
 
     /**
-     * rebuilds vardefs extensions
+     * read the custom vardefs definitions according to backend old way using files
+     * @return array
      */
-    private function rebuildExtensions()
+    private function rebuildExtensionVardefs()
     {
         $extensions = [];
-
         if (is_dir('custom/Extension/modules')) {
             $handle = opendir('custom/Extension/modules');
-            while (false !== ($entry = readdir($handle)))
+            while (false !== ($entry = readdir($handle))){
                 if ($entry != "." && $entry != "..") {
                     $extensions[$entry] = "";
                     $subHandle = opendir("custom/Extension/modules/{$entry}/Ext/Vardefs");
@@ -669,8 +637,17 @@ class AdminController
                         }
                     }
                 }
-
+            }
         }
+        return $extensions;
+    }
+
+    /**
+     * rebuilds vardefs extensions
+     */
+    private function rebuildExtensions()
+    {
+        $extensions = $this->rebuildExtensionVardefs();
 
         if (!empty($extensions) && !empty(array_values($extensions))) {
             foreach ($extensions as $extDir => $extFile) {
@@ -806,7 +783,7 @@ class AdminController
         if (SpiceUtils::isAdmin($current_user)) {
             $confLoader = new SpiceUIConfLoader();
             $db = DBManagerFactory::getInstance();
-            if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+            if (SpiceDictionaryVardefs::isDbManaged()) {
                 $this->rebuildExtensions();
                 $this->merge_files("Ext/TableDictionary/", 'tabledictionary.ext.php');
                 $this->rebuildDictionaryRelationships();
