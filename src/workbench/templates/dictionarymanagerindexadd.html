@@ -4,7 +4,7 @@
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
-                <system-input-text [(ngModel)]="index.name"></system-input-text>
+                <system-input-text [maxlength]="128" [(ngModel)]="index.name"></system-input-text>
             </div>
             <div class="slds-large-size--1-of-2 slds-p-left--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>

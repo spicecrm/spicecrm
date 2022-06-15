@@ -95,7 +95,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
         ],
         'product_status' => [
             'name' => 'product_status',
-            'vname' => 'LBL_PRODUCT_STATUS',
+            'vname' => 'LBL_STATUS',
             'type' => 'enum',
             'options' => 'product_status_dom'
         ],

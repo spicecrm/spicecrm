@@ -1,10 +1,15 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Relationships\Relationship;
 
 class DictionaryController
 {
@@ -17,18 +22,14 @@ class DictionaryController
      * @return mixed
      */
 
-    function getNodes($req, $res, $args)
-    {
+    public function getNodes(Request $req, Response $res, array $args): Response {
         return $res->withJson($this->buildNodeArray($args['module']));
     }
 
     /*
      * Helper function to get the Fields for a module
      */
-
-    private function buildNodeArray($module)
-    {
-
+    private function buildNodeArray($module) {
         $returnArray = [];
 
         $nodeModule = BeanFactory::getBean($module);
@@ -84,7 +85,7 @@ class DictionaryController
                 return -1;
         });
 
-        // 2013-08-21 BUG #492 merge with the basic functional elelements
+        // 2013-08-21 BUG #492 merge with the basic functional elements
         return $returnArray;
     }
 
@@ -95,9 +96,7 @@ class DictionaryController
      * @param $args
      * @return mixed
      */
-
-    function getFields($req, $res, $args)
-    {
+    public function getFields(Request $req, Response $res, array $args): Response {
         return $res->withJson($this->buildFieldArray($args['module']));
     }
 
@@ -130,4 +129,46 @@ class DictionaryController
 
         return $returnArray;
     }
+
+
+    /**
+     * load all vardefs defined in files
+     * then load all vardefs defined in dictionary tables
+     */
+    public function repairVardefs($req, $res, $args){
+
+        $returnArray = [];
+        $db = DBManagerFactory::getInstance();
+
+        //load Vardefs
+        $vardefs = SpiceDictionaryVardefs::loadVardefs();
+
+        // start db transaction
+        $db->transactionStart();
+
+        // truncate cache table sysdictionaryfields
+        $db->truncateQuery('sysdictionaryfields', true);
+
+        // reorganise
+        foreach($vardefs as $dictName => $dict){
+
+            $returnArray[$dictName] = $dict;
+
+            // remove deprecated properties
+            SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
+
+            // save to db
+            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
+        }
+
+        // confirm save into db
+        $db->transactionCommit();
+
+        // repair relationships
+        $rel = new Relationship();
+        $rel->build_relationship_cache();
+
+        return $res->withJson($returnArray);
+    }
+
 }

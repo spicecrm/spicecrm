@@ -61,6 +61,7 @@ class Currency extends SpiceBean
 	}
 
     /**
+     * @deprecated
      * convertToDollar
      * This method accepts a currency amount and converts it to the US Dollar amount
      *
@@ -68,11 +69,16 @@ class Currency extends SpiceBean
      * @param $precision The rounding precision scale
      * @return currency value in US Dollars from conversion
      */
-	function convertToDollar($amount, $precision = 6) {
-		return round(($amount / $this->conversion_rate), $precision);
+	function convertToDollar( $amount, $precision = 6) {
+		return $this->convertToBase($amount, $precision);
 	}
 
+    public function convertToBase( $amount, $precision = 6) {
+        return round(($amount / $this->conversion_rate), $precision);
+    }
+
     /**
+     * @deprecated
      * convertFromCollar
      * This method accepts a US Dollar amount and returns a currency amount
      * with the conversion rate applied to it.
@@ -82,8 +88,12 @@ class Currency extends SpiceBean
      * @return currency value from US Dollar conversion
      */
 	function convertFromDollar($amount, $precision = 6){
-		return round(($amount * $this->conversion_rate), $precision);
+		return $this->convertFromBase($amount, $precision);
 	}
+
+    public function convertFromBase($amount, $precision = 6){
+        return round(($amount * $this->conversion_rate), $precision);
+    }
 
     /**
      * getDefaultCurrencyName

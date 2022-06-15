@@ -43,6 +43,8 @@ export class OrgunitsChartView implements AfterViewInit {
      */
     @ViewChild('orgviewport', {static: false}) public orgViewPort;
 
+    private zoomFactor: number = 1;
+
     constructor(public model: model, public oview: orgunitsViewService, public cdRef: ChangeDetectorRef) {
         this.oview.updated$.subscribe(() => {
             this.cdRef.detectChanges();
@@ -64,6 +66,33 @@ export class OrgunitsChartView implements AfterViewInit {
 
     get rootID(){
         return this.oview.orgunits.find(o => !o.parent_id).id;
+    }
+
+    get zoomedStyle(){
+        return {
+            transform: `scale(${this.zoomFactor})`
+        };
+    }
+
+    public zoomout(){
+        if(this.zoomFactor > 0.1) this.zoomFactor -= 0.1;
+        // ugly but effective way to ensure the update ont eh page happens before the update on the connectors happen
+        window.setTimeout(() => this.oview.buildConnectors(), 0);
+    }
+    public zoomin(){
+        if(this.zoomFactor < 1) this.zoomFactor += 0.1;
+        // ugly but effective way to ensure the update ont eh page happens before the update on the connectors happen
+        window.setTimeout(() => this.oview.buildConnectors(), 0);
+    }
+
+    get zoom(){
+        return this.zoomFactor * 100;
+    }
+
+    set zoom(value){
+        this.zoomFactor = value / 100;
+        // ugly but effective way to ensure the update ont eh page happens before the update on the connectors happen
+        window.setTimeout(() => this.oview.buildConnectors(), 0);
     }
 
 }

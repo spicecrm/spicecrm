@@ -261,7 +261,7 @@ class SystemTenant extends SpiceBean
 
         // if we have a user in a tenant and are not in the tenant central user maintenance in the master db
         if (!empty($bean->systemtenant_id) && empty($tenantId) && DBManagerFactory::getInstance()->dbConfig['dbconfig']['db_name'] != $tenantId) {
-            $tenant = $this->retrieve($bean->systemtenant_id);
+            $tenant = BeanFactory::getBean('SystemTenants', $bean->systemtenant_id);
             if ($tenant) {
                 DBManagerFactory::switchDatabase($tenant->id);
 

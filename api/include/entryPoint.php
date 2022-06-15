@@ -48,7 +48,8 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 SpiceConfig::getInstance();
 
 // load the core dictionary files
-SpiceDictionaryHandler::loadMetaDataFiles();
+//SpiceDictionaryHandler::loadMetaDataFiles();
+SpiceDictionaryHandler::loadCachedVardefs();
 
 require_once('include/utils.php');
 
@@ -59,7 +60,7 @@ require_once('sugar_version.php'); // provides $sugar_version, $sugar_db_version
 LoggerManager::getLogger();
 
 // load the metadata from the database
-SpiceDictionaryHandler::loadMetaDataDefinitions();
+//SpiceDictionaryHandler::loadMetaDataDefinitions();
 
 // load the modules
 SpiceModules::getInstance()->loadModules();
