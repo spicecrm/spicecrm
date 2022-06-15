@@ -46,7 +46,7 @@ class MeetingsController
             $participant = BeanFactory::getBean('Users', $args['userid']);
 
             $graphHandler = new MSGraphMeetingHandler($user, $bean);
-            $graphHandler->updateAttendeeStatus($participant, $args['value']);
+            $graphHandler->updateGraphAttendeeStatus($participant, $args['value']);
         }
 
 // for exchange: send status to exchange => setInvitationStatusOnExchange() doesn't work... access denied...
