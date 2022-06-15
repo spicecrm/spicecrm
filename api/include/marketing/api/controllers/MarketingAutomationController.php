@@ -54,9 +54,24 @@ class MarketingAutomationController
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
 
         $this->logTrackingAction($data, 'clicked');
-        if(array_key_exists('Event', $data) && !empty($data['Event'])) {
+
+        return $res->withJson(true);
+    }
+
+    public function handleMarketingAction(Request $req, Response $res, array $args): Response
+    {
+        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+
+        if (!$decrypted) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+
+        if(array_key_exists('MarketingActions', $data) && !empty($data['MarketingActions'])) {
+            $marketingAction = BeanFactory::getBean('MarketingActions', $data['MarketingActions']);
             $email = BeanFactory::getBean('Emails', $data['Emails']);
-            $email->handleEvent($data['Event']);
+            $email->handleEvent($marketingAction->name);
         }
         return $res->withJson(true);
     }
@@ -163,10 +178,7 @@ class MarketingAutomationController
             if(array_key_exists('TrackingLinks', $data) && !empty($data['TrackingLinks'])) {
                 $trackedAction->trackinglink_id = $data['TrackingLinks'];
             }
-            //register event
-            if(array_key_exists('Event', $data) && !empty($data['Event'])) {
-                $trackedAction->event = $data['Event'];
-            }
+
             $trackedAction->save();
         }
 
