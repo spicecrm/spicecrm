@@ -487,6 +487,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'name' => 'trackinglinks',
             'type' => 'link',
             'module' => 'TrackingLinks',
+            'bean_name' => 'TrackingLink',
             'relationship' => 'emails_trackinglinks',
             'source' => 'non-db'
         ]
