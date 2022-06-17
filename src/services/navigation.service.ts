@@ -99,7 +99,8 @@ export interface objectTabInfo {
 export class navigation {
 
     /**
-     * determines the navigatioon paradigm if set to tabbed or simple
+     * determines the navigation paradigm if set to tabbed or simple
+     * values 'simple'|'tabbed' are deprecated since 2022.02.001 and are no longer selectable
      */
     public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'subtabbed';
 
@@ -341,10 +342,10 @@ export class navigation {
 
     /**
      * call to enforce a navigation paradigm
-     *
+     * values 'simple' | 'tabbed' are deprecated since 2022.02.001
      * @param paradigm
      */
-    public enforceNavigationParadigm(paradigm: 'simple' | 'tabbed' | 'subtabbed') {
+    public enforceNavigationParadigm(paradigm: 'subtabbed') {
         this.enforcednavigationparadigm = true;
         this.navigationparadigm = paradigm;
     }
@@ -357,16 +358,20 @@ export class navigation {
     public handleMessage(message: any) {
         switch (message.messagetype) {
             case "loader.completed":
-                // once the laoder completed set the paradigm
+                // once the loader completed set the paradigm
                 if (!this.enforcednavigationparadigm && message.messagedata == 'loadUserData') {
                     let navparadigm = this.userpreferences.getPreference('navigation_paradigm');
-                    this.navigationparadigm = navparadigm ? navparadigm : 'tabbed';
+                    // values 'simple' , 'tabbed' are deprecated since 2021.02.001. Catch in older instances and replace by subtabbed
+                    // this.navigationparadigm = navparadigm ? navparadigm : 'tabbed';
+                    this.navigationparadigm = 'subtabbed';
                     this.session.setSessionData('navigation_paradigm', this.navigationparadigm);
                 }
                 break;
             case 'userpreferences.save':
                 // handle the paradigm Change
                 let nvp = this.userpreferences.getPreference('navigation_paradigm');
+                // 'simple', 'tabbed' are deprecated since 2021.02.001. Refactor to subtabbed.
+                nvp = 'subtabbed';
                 if (!this.enforcednavigationparadigm && nvp && this.navigationparadigm != nvp) {
                     if (nvp == 'simple' && this.navigationparadigm != nvp) {
                         this.objectTabs = [];
