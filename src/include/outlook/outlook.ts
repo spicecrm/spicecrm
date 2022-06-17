@@ -152,7 +152,7 @@ declare var Office: any;
 })
 export class Outlook {
     constructor(public navigation: navigation) {
-        this.navigation.enforceNavigationParadigm('simple');
+        // this.navigation.enforceNavigationParadigm('simple');
     }
 }
 
