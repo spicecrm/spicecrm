@@ -7,6 +7,7 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -16,7 +17,6 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\EncryptionUtils;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SugarCleaner;
 use SpiceCRM\data\Relationships\SugarRelationship;
@@ -691,9 +691,21 @@ class SpiceBean
      */
     function getIndices()
     {
+        // load indices from dictionary definitions
+//        $dbDefIndices = SpiceDictionaryVardefs::getInstance()->loadDictionaryIndicesByDictionaryName($this->getObjectName());
         if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'])) {
+//            if(count($dbDefIndices) > 0){
+//                foreach($dbDefIndices as $num => $idxDef){
+//                    SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'][] = $idxDef;
+//                }
+//            }
+//            echo $this->getObjectName(). ' aa '.print_r(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'], true);
             return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'];
         }
+//        else{
+//            echo $this->getObjectName(). ' '.print_r($dbDefIndices, true);
+//            return $dbDefIndices;
+//        }
         return [];
     }
 
@@ -1148,37 +1160,6 @@ class SpiceBean
     }
 
 
-    /**
-     * Creates tables for the module implementing the class.
-     * If you override this function make sure that your code can handles table creation.
-     *
-     */
-    function create_tables()
-    {
-        $key = $this->getObjectName();
-        if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
-            LoggerManager::getLogger()->fatal("create_tables: Metadata for table " . $this->_tablename . " does not exist");
-            SpiceUtils::displayNotice("meta data absent for table " . $this->_tablename . " keyed to $key ");
-        } else {
-            if (!$this->db->tableExists($this->_tablename)) {
-                $this->db->createTable($this);
-                if ($this->bean_implements('ACL')) {
-                    if (!empty($this->acltype)) {
-                        ACLAction::addActions($this->getACLCategory(), $this->acltype);
-                    } else {
-                        ACLAction::addActions($this->getACLCategory());
-                    }
-                }
-            } else {
-                echo "Table already exists : $this->_tablename<br>";
-            }
-            if ($this->is_AuditEnabled()) {
-                if (!$this->db->tableExists($this->get_audit_table_name())) {
-                    $this->create_audit_table();
-                }
-            }
-        }
-    }
 
     /**
      * Returns the ACL category for this module; defaults to the SpiceBean::$acl_category if defined
