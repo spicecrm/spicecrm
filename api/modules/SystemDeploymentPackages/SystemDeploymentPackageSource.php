@@ -6,7 +6,7 @@ namespace SpiceCRM\modules\SystemDeploymentPackages;
 class SystemDeploymentPackageSource
 {
     /** @var string used when no entry is set in sysuipackagerepositories table */
-    public static $public_source = 'https://spicecrmreference.spicecrm.io/api/';
+    public static $public_source = 'https://spicecrmreference.spicecrm.io/api';
 
 
     /**
@@ -15,9 +15,9 @@ class SystemDeploymentPackageSource
      */
     public static function getPublicSource(){
         $add = '';
-        if(substr(self::$public_source, -1) != '/'){
-            $add = '/';
-        }
+//        if(substr(self::$public_source, -1) != '/'){
+//            $add = '/';
+//        }
         return self::$public_source.$add;
     }
 
