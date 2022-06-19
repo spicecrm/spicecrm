@@ -9,7 +9,6 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Relationships\Relationship;
 
 class DictionaryController
 {
@@ -132,8 +131,8 @@ class DictionaryController
 
 
     /**
-     * load all vardefs defined in files
-     * then load all vardefs defined in dictionary tables
+     * load all vardefs
+     * legacy & cache table
      */
     public function repairVardefs($req, $res, $args){
 
@@ -165,7 +164,7 @@ class DictionaryController
         $db->transactionCommit();
 
         // repair relationships
-        $rel = new Relationship();
+        $rel = BeanFactory::getBean('Relationships');
         $rel->build_relationship_cache();
 
         return $res->withJson($returnArray);
