@@ -1,27 +1,26 @@
-<div class="slds-grid">
-    <div class="slds-p-right--medium" style="width:100%">
+<div class="slds-grid slds-gutters_direct-x-small">
+    <div class="slds-col slds-form-element">
         <label class="slds-form-element__label" ><system-label label="LBL_QUESTION_TEXT"></system-label></label>
         <input type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
     </div>
-    <div style="width:4rem">
+    <div class="slds-col slds-form-element" [ngClass]="{'slds-has-error':nameMissing}">
+        <label class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+        <input type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
+    </div>
+    <div class="slds-col slds-grow-none slds-form-element">
         <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_IMAGE"></system-label></label><br>
         <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>
     </div>
 </div>
-<div class="slds-p-top_xx-small">
-    <div [ngClass]="{'slds-has-error':nameMissing}">
-        <label class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
-        <input type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
-    </div>
+
+<div class="slds-p-top_xx-small slds-form-element">
+    <label class="slds-form-element__label"><system-label label="LBL_CORRECT_ANSWER"></system-label></label>
+    <input [system-trim-input] type="text" class="slds-input" [(ngModel)]="answer.name">
 </div>
-<div class="slds-p-top_xx-small slds-grid slds-grid_align-spread slds-grid_vertical-align-end">
-    <div class="slds-size_1-of-1 slds-p-right_medium">
-        <label class="slds-form-element__label" ><system-label label="LBL_CORRECT_ANSWER"></system-label></label>
-        <input [system-trim-input] type="text" class="slds-input" [(ngModel)]="answer.name">
-    </div>
-</div>
-<div class="slds-p-top_x-small slds-grid slds-grid_align-spread slds-grid_vertical-align-end">
-    <div><system-checkbox [(ngModel)]="isinput"><system-label label="LBL_DISPLAY_AS_INPUT"></system-label></system-checkbox></div>
-    <div><system-checkbox [(ngModel)]="sequenced"><system-label label="LBL_DISPLAY_AS_SEQUENCE"></system-label></system-checkbox></div>
-    <div><system-checkbox [(ngModel)]="numeric"><system-label label="LBL_IS_NUMERIC"></system-label></system-checkbox></div>
+
+<div class="slds-grid slds-gutters_xx-small slds-m-top--medium">
+    <system-checkbox [(ngModel)]="answerRequired" class="slds-col slds-grow-none"><system-label label="LBL_ANSWER_REQUIRED"></system-label></system-checkbox>
+    <system-checkbox [(ngModel)]="isInput" class="slds-col slds-grow-none"><system-label label="LBL_INPUT_SINGLE_LINE"></system-label></system-checkbox>
+    <system-checkbox [(ngModel)]="sequenced" class="slds-col slds-grow-none"><system-label label="LBL_DISPLAY_QUESTION_AS_SEQUENCE"></system-label></system-checkbox>
+    <system-checkbox [(ngModel)]="numeric" class="slds-col slds-grow-none"><system-label label="LBL_ANSWER_IS_NUMERIC"></system-label></system-checkbox>
 </div>

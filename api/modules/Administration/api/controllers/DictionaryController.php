@@ -1,9 +1,13 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class DictionaryController
@@ -17,25 +21,21 @@ class DictionaryController
      * @return mixed
      */
 
-    function getNodes($req, $res, $args)
-    {
+    public function getNodes(Request $req, Response $res, array $args): Response {
         return $res->withJson($this->buildNodeArray($args['module']));
     }
 
     /*
      * Helper function to get the Fields for a module
      */
-
-    private function buildNodeArray($module)
-    {
-
+    private function buildNodeArray($module) {
         $returnArray = [];
 
         $nodeModule = BeanFactory::getBean($module);
         // $nodeModule->load_relationships();
         if ($nodeModule) {
 
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 // 2011-03-23 also exculde the excluded modules from the config in the Module Tree
                 //if ($field_defs['type'] == 'link' && (!isset($field_defs['module']) || (isset($field_defs['module']) && array_search($field_defs['module'], $excludedModules) == false))) {
                 if ($field_defs['type'] == 'link') {
@@ -44,7 +44,7 @@ class DictionaryController
                         $returnArray[] = [
                             'path' => 'link:' . $module . ':' . $field_name,
                             'module' => $nodeModule->$field_name->getRelatedModuleName(),
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false,
                             'label' => $field_defs['vname']
                         ];
@@ -84,7 +84,7 @@ class DictionaryController
                 return -1;
         });
 
-        // 2013-08-21 BUG #492 merge with the basic functional elelements
+        // 2013-08-21 BUG #492 merge with the basic functional elements
         return $returnArray;
     }
 
@@ -95,9 +95,7 @@ class DictionaryController
      * @param $args
      * @return mixed
      */
-
-    function getFields($req, $res, $args)
-    {
+    public function getFields(Request $req, Response $res, array $args): Response {
         return $res->withJson($this->buildFieldArray($args['module']));
     }
 
@@ -107,7 +105,7 @@ class DictionaryController
 
         $nodeModule = BeanFactory::getBean($module);
 
-        foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+        foreach ($nodeModule->field_defs as $field_name => $field_defs) {
             if ($field_defs['type'] != 'link') {
                 $returnArray[] = [
                     'id' => 'field:' . $field_defs['name'],
@@ -129,5 +127,17 @@ class DictionaryController
         usort($returnArray, "arraySortByName");
 
         return $returnArray;
+    }
+
+
+    /**
+     * load all vardefs
+     * legacy & cache table
+     */
+    public function repairVardefs(Request $req, Response $res, array $args): Response {
+
+        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries();
+
+        return $res->withJson($returnArray);
     }
 }

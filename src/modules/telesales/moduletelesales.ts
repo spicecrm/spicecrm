@@ -11,20 +11,20 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
-import /*embed*/ {telecockpitservice} from "./services/telecockpit.service";
+import {telecockpitservice} from "./services/telecockpit.service";
 
-import /*embed*/ {TeleSalesCockpitListItem} from './components/telesalescockpitlistitem';
-import /*embed*/ {TeleSalesCockpitList} from './components/telesalescockpitlist';
-import /*embed*/ {TeleSalesCockpitMain} from './components/telesalescockpitmain';
-import /*embed*/ {TeleSalesCockpitCreateLeadButton} from './components/telesalescockpitcreateleadbutton';
-import /*embed*/ {TeleSalesCockpitLogCallButton} from './components/telesalescockpitlogcallbutton';
-import /*embed*/ {TeleSalesCockpitCompleteButton} from './components/telesalescockpitcompletebutton';
-import /*embed*/ {TeleSalesCockpitAddAttemptButton} from './components/telesalescockpitaddattemptbutton';
-import /*embed*/ {TeleSalesCockpitAddAttemptModal} from './components/telesalescockpitaddattemptmodal';
-import /*embed*/ {TeleSalesCockpitModuleActions} from './components/telesalescockpitmoduleactions';
-import /*embed*/ {TeleSalesCockpitAddMeetingButton} from './components/telesalescockpitaddmeetingbutton';
-import /*embed*/ {TeleSalesCockpitHeader} from './components/telesalescockpitheader';
-import /*embed*/ {TeleSalesCockpit} from './components/telesalescockpit';
+import {TeleSalesCockpitListItem} from './components/telesalescockpitlistitem';
+import {TeleSalesCockpitList} from './components/telesalescockpitlist';
+import {TeleSalesCockpitMain} from './components/telesalescockpitmain';
+import {TeleSalesCockpitCreateLeadButton} from './components/telesalescockpitcreateleadbutton';
+import {TeleSalesCockpitLogCallButton} from './components/telesalescockpitlogcallbutton';
+import {TeleSalesCockpitCompleteButton} from './components/telesalescockpitcompletebutton';
+import {TeleSalesCockpitAddAttemptButton} from './components/telesalescockpitaddattemptbutton';
+import {TeleSalesCockpitAddAttemptModal} from './components/telesalescockpitaddattemptmodal';
+import {TeleSalesCockpitModuleActions} from './components/telesalescockpitmoduleactions';
+import {TeleSalesCockpitAddMeetingButton} from './components/telesalescockpitaddmeetingbutton';
+import {TeleSalesCockpitHeader} from './components/telesalescockpitheader';
+import {TeleSalesCockpit} from './components/telesalescockpit';
 
 @NgModule({
     imports: [

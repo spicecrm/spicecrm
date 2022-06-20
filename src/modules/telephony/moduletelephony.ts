@@ -11,20 +11,20 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {TelephonyDockedCall} from "./components/telephonydockedcall";
-import /*embed*/ {TelephonyCallDuration} from "./components/telephonycallduration";
-import /*embed*/ {TelephonyCallSearching} from "./components/telephonycallsearching";
-import /*embed*/ {TelephonyCallPanelRelated} from "./components/telephonycallpanelrelated";
-import /*embed*/ {TelephonyCallPanelRelatedCompact} from "./components/telephonycallpanelrelatedcompact";
-import /*embed*/ {TelephonyCallPanelSaveButton} from "./components/telephonycallpanelsavebutton";
-import /*embed*/ {TelephonyCallLogAttemptButton} from "./components/telephonycalllogattemptbutton";
-import /*embed*/ {TelephonyCallSearchModal} from "./components/telephonycallsearchmodal";
-import /*embed*/ {TelephonyCallSearchButton} from "./components/telephonycallsearchbutton";
-import /*embed*/ {TelephonyCallCreateRelatedModal} from "./components/telephonycallcreaterelatedmodal";
-import /*embed*/ {TelephonyCallCreateRelatedButton} from "./components/telephonycallcreaterelatedbutton";
-import /*embed*/ {TelephonyCallPanel} from "./components/telephonycallpanel";
-import /*embed*/ {TelephonyCallModelUpdate} from "./components/telephonycallmodelupdate";
-import /*embed*/ {TelephonyToolbarIndicator} from "./components/telephonytoolbarindicator";
+import {TelephonyDockedCall} from "./components/telephonydockedcall";
+import {TelephonyCallDuration} from "./components/telephonycallduration";
+import {TelephonyCallSearching} from "./components/telephonycallsearching";
+import {TelephonyCallPanelRelated} from "./components/telephonycallpanelrelated";
+import {TelephonyCallPanelRelatedCompact} from "./components/telephonycallpanelrelatedcompact";
+import {TelephonyCallPanelSaveButton} from "./components/telephonycallpanelsavebutton";
+import {TelephonyCallLogAttemptButton} from "./components/telephonycalllogattemptbutton";
+import {TelephonyCallSearchModal} from "./components/telephonycallsearchmodal";
+import {TelephonyCallSearchButton} from "./components/telephonycallsearchbutton";
+import {TelephonyCallCreateRelatedModal} from "./components/telephonycallcreaterelatedmodal";
+import {TelephonyCallCreateRelatedButton} from "./components/telephonycallcreaterelatedbutton";
+import {TelephonyCallPanel} from "./components/telephonycallpanel";
+import {TelephonyCallModelUpdate} from "./components/telephonycallmodelupdate";
+import {TelephonyToolbarIndicator} from "./components/telephonytoolbarindicator";
 
 
 @NgModule({

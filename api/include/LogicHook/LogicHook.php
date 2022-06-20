@@ -63,12 +63,13 @@
 
 namespace SpiceCRM\includes\LogicHook;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\MissingEwsCredentialsException;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\EwsConnectionException;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class LogicHook
 {
@@ -120,7 +121,7 @@ class LogicHook
             $db = DBManagerFactory::getInstance();
         }
 
-        if (isset($db) && empty($GLOBALS['installing'])) {
+        if (isset($db) && !SpiceConfig::getInstance()->installing) {
 
             if (empty($moduleDir) && isset($_SESSION['SpiceCRM']['hooks']['*'])) {
                 $spiceHooks = $_SESSION['SpiceCRM']['hooks']['*'];
@@ -201,7 +202,7 @@ class LogicHook
 
     /**
      * Provide a means for developers to create upgrade safe business logic hooks.
-     * If the bean is null, then we assume this call was not made from a SugarBean Object and
+     * If the bean is null, then we assume this call was not made from a SpiceBean Object and
      * therefore we do not pass it to the method call.
      *
      * @param string $moduleDir
@@ -235,7 +236,7 @@ class LogicHook
 
     /**
      * This is called from call_custom_logic and actually performs the action as defined in the
-     * logic hook. If the bean is null, then we assume this call was not made from a SugarBean Object and
+     * logic hook. If the bean is null, then we assume this call was not made from a SpiceBean Object and
      * therefore we do not pass it to the method call.
      *
      * @param array $hookArray

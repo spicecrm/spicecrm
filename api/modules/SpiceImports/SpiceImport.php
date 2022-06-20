@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\SpiceImports;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -11,15 +11,8 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-class SpiceImport extends SugarBean
+class SpiceImport extends SpiceBean
 {
-    //Sugar vars
-    var $table_name = "spiceimports";
-    var $object_name = "SpiceImport";
-    var $new_schema = true;
-    var $module_dir = "SpiceImports";
-
-
     var $objectimport;
 
     public static function getFilePreview($params)

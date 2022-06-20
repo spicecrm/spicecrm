@@ -11,13 +11,13 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from '../../directives/directives';
 
-import /*embed*/ {priceconditonsconfiguration} from './services/priceconditonsconfiguration.service';
+import {priceconditonsconfiguration} from './services/priceconditonsconfiguration.service';
 
-import /*embed*/ {PriceConditionsAccountsPanel} from './components/priceconditionsaccountspanel';
-import /*embed*/ {PriceConditionsByCondition} from './components/priceconditionsbycondition';
-import /*embed*/ {PriceConditionsConditionsList} from './components/priceconditionsconditionslist';
-import /*embed*/ {PriceConditionsByDetermination} from './components/priceconditionsbydetermination';
-import /*embed*/ {PriceConditionsByDeterminationList} from './components/priceconditionsbydeterminationlist';
+import {PriceConditionsAccountsPanel} from './components/priceconditionsaccountspanel';
+import {PriceConditionsByCondition} from './components/priceconditionsbycondition';
+import {PriceConditionsConditionsList} from './components/priceconditionsconditionslist';
+import {PriceConditionsByDetermination} from './components/priceconditionsbydetermination';
+import {PriceConditionsByDeterminationList} from './components/priceconditionsbydeterminationlist';
 
 @NgModule({
     imports: [

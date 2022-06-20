@@ -3,7 +3,7 @@
         <span class="slds-form-element__label slds-m-bottom_none slds-grow">
             <system-label [label]="label"></system-label>
         </span>
-        <input type="checkbox" [ngModel]="localValue" (ngModelChange)="onChange($event)">
+        <input type="checkbox" [(ngModel)]="localValue" (ngModelChange)="onChange($event)">
         <span class="slds-checkbox_faux_container" aria-live="assertive">
             <span class="slds-checkbox_faux"></span>
         </span>

@@ -8,7 +8,6 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
-import {popup} from "../../services/popup.service";
 
 /**
  * renders a field for a numerical value and a timeunit. Used to define a timespan resp tiomediffernece that can later on be evaluated e.g. in Formulas, SLAs etc

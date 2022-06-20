@@ -217,6 +217,89 @@ $routes = [
             ]
         ]
     ],
+    // for the orgunits
+    [
+        'method'      => 'get',
+        'route'       => '/module/SpiceACLProfiles/{id}/related/orgunits',
+        'class'       => SpiceACLProfilesController::class,
+        'function'    => 'getOrgUnitsHavingProfile',
+        'description' => 'get list of orgunits having specified profile',
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => 'guid',
+                'description' => 'a profile id',
+                'example' => '8571a91c-9456-11eb-ac92-00fffe0c4f07'
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/SpiceACLProfiles/{id}/related/orgunits',
+        'class'       => SpiceACLProfilesController::class,
+        'function'    => 'addProfileOrgUnits',
+        'description' => 'add specified profile to a list of urgunits',
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => 'guid',
+                'description' => 'a profile id',
+                'example' => '8571a91c-9456-11eb-ac92-00fffe0c4f07'
+            ],
+            'orgunitids' => [
+                'in' => 'body',
+                'type' => 'array',
+                'description' => 'an array of orgunit Ids',
+                'example' => ['e493a427-945b-11eb-ac92-00fffe0c4f07', 'ebb23322-945b-11eb-ac92-00fffe0c4f07']
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/SpiceACLProfiles/{id}/related/orgunits/{orgunitid}',
+        'class'       => SpiceACLProfilesController::class,
+        'function'    => 'addProfileOrgUnit',
+        'description' => 'allocate a profile to specified orguint',
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => 'guid',
+                'description' => 'a profile id',
+                'example' => '8571a91c-9456-11eb-ac92-00fffe0c4f07'
+            ],
+            'orgunitid' => [
+                'in' => 'path',
+                'type' => 'guid',
+                'description' => 'an orgunit id',
+                'example' => 'fe475f76-9455-11eb-ac92-00fffe0c4f07'
+            ]
+        ]
+    ],
+    [
+        'method'      => 'delete',
+        'route'       => '/module/SpiceACLProfiles/{id}/related/orgunit/{orgunitid}',
+        'class'       => SpiceACLProfilesController::class,
+        'function'    => 'deleteProfileOrgUnit',
+        'description' => 'remove a profile allocation for specified orgunit',
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => 'guid',
+                'description' => 'a profile id',
+                'example' => '8571a91c-9456-11eb-ac92-00fffe0c4f07'
+            ],
+            'orgunitid' => [
+                'in' => 'path',
+                'type' => 'guid',
+                'description' => 'an orgunit id',
+                'example' => 'fe475f76-9455-11eb-ac92-00fffe0c4f07'
+            ]
+        ]
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);

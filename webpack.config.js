@@ -32,25 +32,34 @@ const generateOptions = (file) => ({
     minify: false,
     aacServices: copyright,
     buildNumber: `${global.build.releaseNumber}.${now}`,
-    chunksSortMode: (a) => a === 'scripts' ? -1 : 1
+    chunksSortMode: (a) => a === 'scripts' ? -1 : 1,
+    excludeChunks: file.exclude
 });
 
 module.exports = {
     mode: "production",
+
     output: {
         // needed to adjust the dynamic import path
         publicPath: "app/",
         // modify the modules file name
         chunkFilename: (pathData) => {
+
+            if (pathData.chunk.id.startsWith('common')) return pathData.chunk.id + '.js';
+
             const path = pathData.chunk.id.split('_');
             if (path[0] === 'default-src') {
                 return pathData.chunk.id.replace(/_ts$/, '') + '.js';
             }
             return path[['include', 'modules', 'custom'].indexOf(path[1]) > -1 ? 3 : 2] + '.js';
-        }
+        },
+        filename: "[name].js"
     },
     optimization: {
         chunkIds: 'named',
+        splitChunks: {
+            chunks: 'all'
+        },
         minimize: true,
         minimizer: [
             // custom minimize to keep class names for lazy loading
@@ -78,13 +87,16 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin(
-            generateOptions({name: "../index.html", template: "assets/index.html"})
+            generateOptions({name: "../index.html", template: "assets/index.html", exclude: ['outlook_main', 'gsuite_main']})
         ),
         new HtmlWebpackPlugin(
-            generateOptions({name: "../outlook.html", template: "assets/outlook/outlook.html"})
+            generateOptions({name: "../outlook.html", template: "assets/outlook/outlook.html", exclude: ['main', 'gsuite_main']})
        ),
         new HtmlWebpackPlugin(
-            generateOptions({name: "../outlookcrm.html", template: "assets/outlook/outlookcrm.html"})
+            generateOptions({name: "../outlookcrm.html", template: "assets/outlook/outlookcrm.html", exclude: ['outlook_main', 'gsuite_main']})
+        ),
+        new HtmlWebpackPlugin(
+            generateOptions({name: "../gsuite.html", template: "assets/gsuite/gsuite.html", exclude: ['main', 'outlook_main']})
         )
     ],
 };

@@ -1,26 +1,19 @@
-<td>
-    <field-container [fieldname]="'sequence'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+<td class="slds-p-around--none">
+    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
 </td>
 <td>
-    <field-container [fieldname]="'name'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+    {{task.name}}
 </td>
 <td>
-    <field-container [fieldname]="'tasktype'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
-</td>
-<td>
-    <field-container [fieldname]="'primarytask'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
-</td>
-<td>
-    <field-container [fieldname]="'closetask'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
-</td>
-<td>
-    <div class="slds-truncate slds-p-horizontal--x-small">{{getTaskName(model.data.previoustask)}}</div>
-</td>
-<td>
-    <div class="slds-truncate slds-p-horizontal--x-small">{{getTaskName(model.data.nexttask, true)}}</div>
+    {{type.name}}
 </td>
 <td role="gridcell" class="slds-cell-shrink">
-    <button class="slds-button slds-button_icon" (click)="removeTask()">
-        <system-button-icon [icon]="'delete'"></system-button-icon>
-    </button>
+    <div class="slds-grid slds-grid--align-end">
+        <button *ngIf="type.type != 'end'" class="slds-button slds-button_icon slds-m-right--x-small" (click)="addTask()">
+            <system-button-icon icon="add"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button_icon" (click)="removeTask()">
+            <system-button-icon icon="delete"></system-button-icon>
+        </button>
+    </div>
 </td>

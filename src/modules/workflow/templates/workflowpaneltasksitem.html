@@ -1,18 +1,17 @@
 <td class="slds-p-around--none">
-    <system-utility-icon system-model-popover [enablelink]="false" [icon]="statusIcon" size="x-small" addclasses="slds-m-horizontal--xx-small"></system-utility-icon>
+    <workflow-task-status-icon system-model-popover [enablelink]="false" [status]="model.getField('workflowtask_status')"></workflow-task-status-icon>
+    <!--system-utility-icon system-model-popover [enablelink]="false" [icon]="statusIcon" size="x-small" addclasses="slds-m-horizontal--xx-small"></system-utility-icon-->
 </td>
 <td>
     <div class="slds-truncate"><field-container field="name" fielddisplayclass="slds-truncate"></field-container></div>
 </td>
 <td>
-    <div class="slds-truncate"><field-container field="assigned_user_name" fielddisplayclass="slds-truncate"></field-container></div>
+    <div class="slds-truncate" *ngIf="!model.getField('assigned_orgunit_id')"><field-container field="assigned_user_name" fielddisplayclass="slds-truncate"></field-container></div>
+    <div class="slds-truncate" *ngIf="model.getField('assigned_orgunit_id')"><field-container field="assigned_orgunit_name" fielddisplayclass="slds-truncate"></field-container></div>
 </td>
 <td>
     <div class="slds-truncate"><field-container field="date_completed" fielddisplayclass="slds-truncate"></field-container></div>
 </td>
 <td>
-    <div class="slds-truncate"><system-label [label]="model.data.decision"></system-label></div>
-</td>
-<td>
-    <div class="slds-truncate slds-text-link--reset" system-title="LBL_COMMENTS" (click)="toggleComments()"><system-utility-icon  *ngIf="model.data.comments.length > 0" icon="info" size="x-small"></system-utility-icon></div>
+    <div class="slds-truncate slds-text-link--reset" system-title="LBL_COMMENTS" (click)="toggleComments()"><system-utility-icon  *ngIf="model.data.comments.length > 0" icon="display_text" size="x-small"></system-utility-icon></div>
 </td>

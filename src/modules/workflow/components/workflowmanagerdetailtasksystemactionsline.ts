@@ -1,59 +1,37 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component,
-    Input
-} from '@angular/core';
-import {modelutilities} from '../../../services/modelutilities.service';
-import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
-import {metadata} from '../../../services/metadata.service';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {footer} from "../../../services/footer.service";
+import {modal} from "../../../services/modal.service";
+import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[workflow-manager-detail-tasksystemactions-line]',
-    templateUrl: '../templates/workflowmanagerdetailtasksystemactionsline.html',
-    providers: [model, view]
+    templateUrl: '../templates/workflowmanagerdetailtasksystemactionsline.html'
 })
 export class WorkflowManagerDetailTaskSystemactionsLine {
 
     @Input() public systemaction: any = {};
-    @Input() public systemactions: any = {};
-    @Input() public module: string = '';
+    @Input() public field: string = '';
 
-    constructor(public metadata: metadata, public model: model, public view: view, public language: language, public modelutilities: modelutilities, public footer: footer) {
-        this.model.module = 'WorkflowSystemActions';
-
-        // set the view to edit mode
-        this.view.isEditable = true;
-        this.view.setEditMode();
-        this.view.displayLabels = false;
+    constructor(public modal: modal,
+                public language: language,
+                public model: model,
+                public workflowManagerService: WorkflowManagerService) {
     }
 
-    public ngOnChanges() {
-        this.model.id = this.systemaction.id;
-        this.model.setData(this.systemaction);
-    }
+    /**
+     * remove the decision option from the available options
+     * @private
+     */
 
     public removeDecision() {
-        this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
-            componenRef.instance.title = 'Delete Systemaction';
-            componenRef.instance.message = 'are you sure you want to delete the system action?';
-            componenRef.instance.answer.subscribe(decision => {
-                if (decision) {
-                    let index = 0;
-                    this.systemactions.some(systemaction => {
-                        if (systemaction.id == this.model.id) {
-                            systemaction.deleted = 1;
-                            return true;
-                        }
-                        index++;
-                    });
-                }
-            });
+        this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD', null, 'long'), 'MSG_DELETE_RECORD').subscribe(answer => {
+            if (answer) {
+                this.model.data.type_config.systemactions = this.model.data.type_config.systemactions.filter(e => e.id != this.systemaction.id);
+            }
         });
     }
-
 }

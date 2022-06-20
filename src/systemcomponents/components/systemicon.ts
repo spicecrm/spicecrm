@@ -37,9 +37,9 @@ export class SystemIcon {
             case "standard":
             case "action":
             case "custom":
-                return "slds-icon" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-" + this.getSprite() + "-" + this.getIcon().replace(/_/g, "-") + " " + this.addclasses;
+                return "slds-icon slds-icon_container" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-" + this.getSprite() + "-" + this.getIcon().replace(/_/g, "-") + " " + this.addclasses;
             default:
-                return "slds-icon" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-text-default" + " " + this.addclasses;
+                return "slds-icon slds-icon_container" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-text-default" + " " + this.addclasses;
         }
     }
 

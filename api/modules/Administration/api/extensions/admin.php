@@ -7,6 +7,14 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
 $routes = [
     [
+        'method' => 'delete',
+        'route' => '/system/cache',
+        'class' => AdminController::class,
+        'function' => 'resetCache',
+        'description' => 'clears the cache (REDIS, MEMCAHCE, File, ..',
+        'options' => ['adminOnly' => true]
+    ],
+    [
         'method' => 'get',
         'route' => '/configuration/systemstats',
         'oldroute' => '/admin/systemstats',
@@ -38,19 +46,19 @@ $routes = [
             'system' => [
                 'in' => 'body',
                 'description' => 'the system settings',
-                'type' => ValidationMiddleware::TYPE_JSON,
+                'type' => ValidationMiddleware::TYPE_ARRAY,
                 'example' => '{"name":"SpiceCRM","site_url":"http://localhost/spicecrm_be_factory","unique_key":"03324ddd8cf6dedcebcc717c8c0066ce"}',
             ],
             'advanced' => [
                 'in' => 'body',
                 'description' => 'the advanced settings',
-                'type' => ValidationMiddleware::TYPE_JSON,
+                'type' => ValidationMiddleware::TYPE_ARRAY,
                 'example' => '{"developerMode":true,"stack_trace_errors":null,"dump_slow_queries":null,"log_memory_usage":null,"slow_query_time_msec":null,"upload_maxsize":30000000,"upload_dir":"upload/"}'
             ],
             'logger' => [
                 'in' => 'body',
                 'description' => 'the logger settings',
-                'type' => ValidationMiddleware::TYPE_JSON,
+                'type' => ValidationMiddleware::TYPE_ARRAY,
                 'example' => '{"level":"error"}'
             ]
         ]

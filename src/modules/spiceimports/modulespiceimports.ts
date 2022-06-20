@@ -11,12 +11,12 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
-import /*embed*/ {spiceimportsservice} from "./services/spiceimports.service";
+import {spiceimportsservice} from "./services/spiceimports.service";
 
-import /*embed*/ {SpiceImports} from './components/spiceimports';
-import /*embed*/ {SpiceImportsList} from './components/spiceimportslist';
-import /*embed*/ {SpiceImportsListItem} from './components/spiceimportslistitem';
-import /*embed*/ {Spiceimportslogs} from './components/spiceimportslogs';
+import {SpiceImports} from './components/spiceimports';
+import {SpiceImportsList} from './components/spiceimportslist';
+import {SpiceImportsListItem} from './components/spiceimportslistitem';
+import {Spiceimportslogs} from './components/spiceimportslogs';
 
 @NgModule({
     imports: [

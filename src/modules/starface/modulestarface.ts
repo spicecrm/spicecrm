@@ -13,8 +13,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {StarfaceToolbarIndicator} from "./components/starfacetoolbarindicator";
-import /*embed*/ {StarfacePreferences} from "./components/starfacepreferences";
+import {StarfaceToolbarIndicator} from "./components/starfacetoolbarindicator";
+import {StarfacePreferences} from "./components/starfacepreferences";
 
 
 @NgModule({

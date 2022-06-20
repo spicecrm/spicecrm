@@ -369,7 +369,7 @@ function write_mail_merge_log_entry($campaign_id,$pl_row) {
                     $campaign_log->campaign_id = $campaign_id;
                     $campaign_log->target_tracker_key = $tracker_id;
                     $campaign_log->target_id = $rel_bean->id;
-                    $campaign_log->target_type = $rel_bean->module_dir;
+                    $campaign_log->target_type = $rel_bean->_module;
                     $campaign_log->activity_type = 'targeted';
                     $campaign_log->activity_date=$timedate->now();
                     //save the campaign log entry

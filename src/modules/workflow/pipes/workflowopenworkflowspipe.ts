@@ -18,16 +18,6 @@ export class WorkflowOpenWorkflowsPipe {
      * @param values
      */
     public transform(values) {
-        let retvalues = [];
-
-        if (values) {
-            for (let value of values) {
-                if (parseInt(value.workflow_status, 10) >= 10 && parseInt(value.workflow_status, 10) < 30) {
-                    retvalues.push(value);
-                }
-            }
-        }
-
-        return retvalues;
+        return values.filter(w => parseInt(w.workflow_status, 10) >= 10 && parseInt(w.workflow_status, 10) < 30);
     }
 }

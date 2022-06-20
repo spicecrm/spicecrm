@@ -151,7 +151,7 @@ class SpiceLanguageLoader{
             }
             //insert command translation
             $entryT = [
-                'id' => SpiceUtils::createGuid(),
+                'id' => $decodeData['translation_id'],
                 'syslanguagelabel_id' => $decodeData['id'],
                 'syslanguage' => $decodeData['syslanguage'],
                 'translation_default' => $decodeData['translation_default'],

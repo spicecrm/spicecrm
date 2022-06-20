@@ -12,9 +12,9 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 import {FormsModule} from "@angular/forms";
 
-import /*embed*/ {fieldDocumentRevisionStatus} from "./fields/fielddocumentrevisionstatus";
-import /*embed*/ {DocumentCreateRevisionButton} from "./components/documentcreaterevisionbutton";
-import /*embed*/ {DocumentCreateRevisionModal} from "./components/documentcreaterevisionmodal";
+import {fieldDocumentRevisionStatus} from "./fields/fielddocumentrevisionstatus";
+import {DocumentCreateRevisionButton} from "./components/documentcreaterevisionbutton";
+import {DocumentCreateRevisionModal} from "./components/documentcreaterevisionmodal";
 
 
 

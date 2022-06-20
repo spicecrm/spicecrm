@@ -31,7 +31,7 @@ class MailboxManagerController
 
         $mailbox = BeanFactory::getBean('Mailboxes');
         foreach ($params['data'] as $name => $value) {
-            if (isset($mailbox->field_name_map[$name])) {
+            if (isset($mailbox->field_defs[$name])) {
                 $mailbox->$name = $value;
             }
         }

@@ -8,6 +8,8 @@ import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {libloader} from "../../../services/libloader.service";
+import {modelutilities} from "../../../services/modelutilities.service";
+
 import {Md5} from "ts-md5";
 
 declare var gapi;
@@ -73,6 +75,7 @@ export class GSuiteLoginPane {
         public http: HttpClient,
         public configuration: configurationService,
         public session: session,
+        public modelutilities: modelutilities,
         public libloader: libloader
     ) {
         this.configuration.loaded$.subscribe(loaded => {
@@ -82,37 +85,31 @@ export class GSuiteLoginPane {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
 
-            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
-                this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
-            }
-
             this.http.get(this.configuration.getBackendUrl() + '/authentication/login', {
                 headers
-            }).subscribe(
-                (res: any) => {
-                    let repsonse = res;
-                    this.session.authData.sessionId = repsonse.id;
-                    this.session.authData.userId = repsonse.userid;
-                    this.session.authData.userName = repsonse.user_name;
-                    this.session.authData.userimage = repsonse.user_image;
-                    this.session.authData.first_name = repsonse.first_name;
-                    this.session.authData.last_name = repsonse.last_name;
-                    this.session.authData.display_name = repsonse.display_name;
-                    this.session.authData.email = repsonse.email;
-                    this.session.authData.admin = repsonse.admin == 1;
-                    this.session.authData.dev = repsonse.dev == 1;
+            }).subscribe({
+                next: (res: any) => {
+                    let response = res;
+                    this.session.authData.sessionId = response.id;
+                    this.session.authData.userId = response.userid;
+                    this.session.authData.userName = response.user_name;
+                    this.session.authData.email = response.email;
+                    this.session.authData.admin = response.admin == 1;
+                    this.session.authData.dev = response.dev == 1;
+                    this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
                     // set the backendurl
                     // this.configuration.data.backendUrl = backendurl;
                     this.loginService.load();
                 },
-                (err: any) => {
+                error: (err: any) => {
                     switch (err.status) {
                         case 401:
                             this.promptUser = true;
                             break;
                     }
-                });
+                }
+            });
         } else {
             this.goToSettings();
         }
@@ -128,14 +125,14 @@ export class GSuiteLoginPane {
         if (this.username && this.username.length > 0 && this.password && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
-            this.loginService.login().subscribe(
-                () => {
+            this.loginService.login(true).subscribe({
+                next: () => {
                     // todo handle login
                 },
-                () => {
+                error: () => {
                     this.goToSettings();
                 }
-            );
+            });
         }
     }
 
@@ -174,12 +171,6 @@ export class GSuiteLoginPane {
      */
     public goToSettings() {
         this.promptUser = true;
-
-        let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-        let selectedsite = sessionStorage.getItem(siteHash);
-        if (this.selectedsite) {
-            this.configuration.setSiteID(this.selectedsite);
-        }
     }
 
     /**

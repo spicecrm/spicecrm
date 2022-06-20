@@ -1,25 +1,22 @@
 <div class="slds-p-vertical--x-small">
-    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+    <table class="slds-table slds-table_bordered slds-no-row-hover slds-size--1-of-1">
         <thead>
             <tr class="slds-text-title_caps">
                 <th class="slds-cell-shrink slds-p-around--none"></th>
-                <th width="45%" scope="col">
+                <th scope="col">
                     <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                 </th>
-                <th width="45%" scope="col">
+                <th scope="col" style="width: 200px">
                     <div class="slds-truncate"><system-label label="LBL_USER"></system-label></div>
                 </th>
-                <th width="45%" scope="col">
+                <th style="width: 125px" scope="col">
                     <div class="slds-truncate"><system-label label="LBL_DATE_COMPLETED"></system-label></div>
-                </th>
-                <th width="45%" scope="col">
-                    <div class="slds-truncate"><system-label label="LBL_DECISION"></system-label></div>
                 </th>
                 <th class="slds-cell-shrink slds-p-around--none"></th>
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="let workflowtask of workflowtasks" #modelProvider="system-model-provider"  [system-model-provider]="{module:'WorkflowTasks', id: workflowtask.id, data: workflowtask}">
+            <ng-container #modelProvider="system-model-provider" *ngFor="let workflowtask of workflowtasks" [system-model-provider]="{module:'WorkflowTasks', id: workflowtask.id, data: workflowtask}">
                 <tr workflow-panel-tasks-item><tr>
                 <tr *ngIf="modelProvider.model.data._displayComments" workflow-panel-tasks-comments [comments]="workflowtask.comments"></tr>
             </ng-container>
