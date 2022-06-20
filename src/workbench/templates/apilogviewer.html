@@ -1,8 +1,19 @@
 <workbench-header titlelabel="LBL_API_LOG_VIEWER" icon="custom:custom62">
     ({{entries.length}} <system-label label="LBL_RECORDS"></system-label>)
     <workbench-header-controls>
-        <!--button class="slds-button slds-button--neutral" (click)="truncate()" [disabled]="isLoading"><system-label label="LBL_TRUNCATE"></system-label></button-->
-        <button class="slds-button slds-button--brand" (click)="buttonLoad()" [disabled]="isLoading"><system-label label="LBL_LOAD"></system-label></button>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="logtables.length > 0" class="slds-form-element slds-m-right--small">
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="logtable">
+                            <option>sysapilog</option>
+                            <option *ngFor="let logtable of logtables">{{logtable}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="slds-button slds-button--brand" (click)="buttonLoad()" [disabled]="isLoading"><system-label label="LBL_LOAD"></system-label></button>
+        </div>
     </workbench-header-controls>
 </workbench-header>
 <div system-to-bottom-noscroll [system-overlay-loading-spinner]="isLoading">
@@ -116,7 +127,7 @@
             </tr>
             </thead>
             <tbody #tbody>
-            <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' :entry.http_status_code!=200}">
+            <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' : entry.http_status_code < 200 || entry.http_status_code >= 300 }">
                 <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
                 <td><div class="slds-truncate">{{entry.user_name}}</div></td>
                 <td><div class="slds-truncate">{{entry.transaction_id}}</div></td>

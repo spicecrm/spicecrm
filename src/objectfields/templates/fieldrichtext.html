@@ -7,12 +7,35 @@
     </button>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
-    <div *ngIf="!fieldconfig.asiframe" class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="parsedHtml" style="white-space: normal; resize: vertical; overflow-y: auto;"></div>
+    <system-richtext-editor *ngIf="!fieldconfig.asiframe" [readOnly]="true" [ngModel]="value" [css]="this.metadata.getHtmlStylesheetCode(this.stylesheetId)" [innerheight]="fieldconfig.innerheight"></system-richtext-editor>
     <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
-        <li *ngIf="fieldconfig?.useSignature">
+    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [css]="this.metadata.getHtmlStylesheetCode(this.stylesheetId)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
+        <li *ngIf="fieldconfig?.useSignature" id="signatureIcon">
+            <div  class="slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" aria-expanded="true">
+                <system-button-icon icon="signature" class="slds-button__icon" aria-hidden="true"></system-button-icon>
+            </button>
+                <div class="slds-dropdown slds-dropdown_left slds-dropdown_small">
+                    <ul class="slds-dropdown__list" role="menu">
+                        <li class="slds-dropdown__item" (click)="selectedSignatureId=''; changeSignature()">
+                            <a aria-checked="true" role="menuitemcheckbox" tabindex="0">
+                                <span class="slds-truncate" title="Menu Item One">
+                                    <system-label label="LBL_NONE"></system-label></span>
+                            </a>
+                        </li>
+                        <li *ngFor="let signature of signatures" [value]="signature.id" class="slds-dropdown__item slds-is-selected" role="presentation" (click)="selectedSignatureId=signature.id; changeSignature()">
+                            <a aria-checked="true" role="menuitemcheckbox" tabindex="-1">
+                                <span class="slds-truncate" title="Menu Item One">
+                            <system-label [label]="signature.label" class="slds-truncate"></system-label></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+        <li *ngIf="fieldconfig?.useSignature" id="signatureSelector">
             <div class="slds-form-element slds-grid">
                 <label class="slds-form-element__label">
                     <system-label label="LBL_SIGNATURE"></system-label>:

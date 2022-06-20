@@ -494,7 +494,7 @@ class SpiceAttachments
                 if (!empty($module['module'])) {
                     $seed = BeanFactory::getBean($module['module']);
                     if ($seed) {
-                        $count = $db->fetchByAssoc($db->query("SELECT count(a.id) attachmentcount FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->table_name} s where s.deleted = 0 and a.bean_id = s.id)"));
+                        $count = $db->fetchByAssoc($db->query("SELECT count(a.id) attachmentcount FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->_tablename} s where s.deleted = 0 and a.bean_id = s.id)"));
                         $analysis[$module['module']] = $count['attachmentcount'] ?: 0;
                     } else {
                         $count = $db->fetchByAssoc($db->query("SELECT count(a.id) attachmentcount FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0"));
@@ -561,7 +561,7 @@ class SpiceAttachments
                 if (!empty($module['module'])) {
                     $seed = BeanFactory::getBean($module['module']);
                     if ($seed) {
-                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type = '{$module['module']}' AND id IN (SELECT id FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->table_name} s where s.deleted = 0 and a.bean_id = s.id))");
+                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type = '{$module['module']}' AND id IN (SELECT id FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->_tablename} s where s.deleted = 0 and a.bean_id = s.id))");
                     } else {
                         $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type='{$module['module']}' AND a.deleted = 0");
                     }

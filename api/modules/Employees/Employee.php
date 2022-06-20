@@ -7,11 +7,6 @@ use SpiceCRM\includes\SugarObjects\templates\person\Person;
 
 class Employee extends Person {
 
-
-	var $module_dir = "Employees";
-	var $table_name = "users";
-	var $object_name = "Employee";
-
 	function __construct() {
 		parent::__construct();
 		$this->emailAddress = BeanFactory::getBean('EmailAddresses');

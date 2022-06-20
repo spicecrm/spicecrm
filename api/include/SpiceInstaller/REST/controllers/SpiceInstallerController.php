@@ -1,12 +1,13 @@
 <?php
 namespace SpiceCRM\includes\SpiceInstaller\REST\controllers;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceInstallerController {
 
     public function __construct(){
         // workaround for installer because of SpiceUtils::spiceCleanup... find a better way
-        $GLOBALS['installing'] = true;
+        SpiceConfig::getInstance()->installing = true;
     }
 
     public function getSysInfo($req, $res, $args)

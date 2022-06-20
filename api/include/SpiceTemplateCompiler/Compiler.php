@@ -501,10 +501,10 @@ class Compiler
                 $obj = new SystemTemplateFunctions();
                 break;
             case 'template':
-                $obj = BeanFactory::getBean($this->currentTemplate->module_dir, $this->currentTemplate->id);
+                $obj = BeanFactory::getBean($this->currentTemplate->_module, $this->currentTemplate->id);
                 break;
             case 'root_template':
-                $obj = BeanFactory::getBean($this->rootTemplate->module_dir, $this->rootTemplate->id);
+                $obj = BeanFactory::getBean($this->rootTemplate->_module, $this->rootTemplate->id);
                 break;
             default:
                 $obj = $beans[$object];

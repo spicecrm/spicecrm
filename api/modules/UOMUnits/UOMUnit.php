@@ -2,13 +2,9 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\UOMUnits;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class UOMUnit extends SugarBean {
-    public $module_dir = 'UOMUnits';
-    public $object_name = 'UOMUnit';
-    public $table_name = 'uomunits';
-    public $new_schema = true;
+class UOMUnit extends SpiceBean {
 
     public function get_summary_text(){
         return $this->label;

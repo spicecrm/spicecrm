@@ -26,6 +26,9 @@ import {Subscription} from "rxjs";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
+    /**
+     * the reference to the comtainer for the visualization item
+     */
     @ViewChild('vizcontainer', {read: ViewContainerRef, static: true}) public vizcontainer: ViewContainerRef;
 
     /**
@@ -37,6 +40,12 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      * the id of the parent reord also used to render in teh context
      */
     @Input() public parentId: string = '';
+
+    /**
+     * set to true to display embedded
+     * if true a header and refresh button is displayed
+     */
+    @Input() public displayEmbedded: boolean = false;
 
     /**
      * when the comonent is loading
@@ -51,7 +60,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     /**
      * the rendered chartcomponent
      */
-    public chartComponent: any[] = [];
+    public chartComponent: any;
 
     /**
      * holds the subscriptions for thsi component
@@ -82,6 +91,18 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      */
     public ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * removes the chart component and relaods from the backend
+     */
+    public reload(){
+        // reset the view
+        if(this.chartComponent) {
+            this.chartComponent.destroy();
+            this.chartComponent = null;
+        }
+        this.getVisualization();
     }
 
     /**
@@ -120,6 +141,12 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
         });
     }
 
+    get visualizationStyle(){
+        return {
+            height: this.displayEmbedded ? "calc(100% - 36px)" : "100%"
+        }
+    }
+
     /**
      * renders the visualization
      *
@@ -127,8 +154,10 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      */
     public renderVisualization() {
         // reset the view
-        this.chartComponent.forEach(componentRef => componentRef.destroy());
-        this.chartComponent = [];
+        if(this.chartComponent) {
+            this.chartComponent.destroy();
+            this.chartComponent = null;
+        }
 
         for (let visualization of this.vizData) {
             let visComponent = '';
@@ -145,7 +174,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
             }
             if (visComponent != '') {
                 this.metadata.addComponent(visComponent, this.vizcontainer).subscribe(componentRef => {
-                    this.chartComponent.push(componentRef);
+                    this.chartComponent = componentRef;
                     componentRef.instance.vizdata = visualization;
                     componentRef.changeDetectorRef.detectChanges();
                 });

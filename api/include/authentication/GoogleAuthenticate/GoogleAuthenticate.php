@@ -92,7 +92,7 @@ class GoogleAuthenticate
      */
     private function verifyIdToken($oauthToken)
     {
-        $apiUrl = 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=';
+        $apiUrl = 'https://oauth2.googleapis.com/tokeninfo?id_token=';
         $apiUrl .= $oauthToken;
 
         $curl = curl_init();
@@ -143,7 +143,7 @@ class GoogleAuthenticate
     function getTokenByUserName($username)
     {
 
-        $apiUrl = "https://www.googleapis.com/oauth2/v4/token";
+        $apiUrl = "https://oauth2.googleapis.com/token";
         $params = [
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             'assertion' => $this->createJWTAssertion($username)
@@ -192,7 +192,7 @@ class GoogleAuthenticate
         $jwtClaim = $this->base64url_encode(json_encode([
             "iss" => $serviceuserdetails->{'client_email'},
             "scope" => SpiceConfig::getInstance()->config['googleapi']['serviceuserscope'],
-            "aud" => "https://www.googleapis.com/oauth2/v4/token",
+            "aud" => "https://oauth2.googleapis.com/token",
             "exp" => $now + 3600,
             "iat" => $now,
             "sub" => $username

@@ -12,10 +12,10 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {HolidayCalendarList} from "./components/holidaycalendarlist";
-import /*embed*/ {HolidayCalendarListDays} from "./components/holidaycalendarlistdays";
-import /*embed*/ {HolidayCalendarListGetHolidaysModal} from "./components/holidaycalendarlistgetholidaysmodal";
-import /*embed*/ {HolidayCalendarListGetHolidaysButton} from "./components/holidaycalendarlistgetholidaysbutton";
+import {HolidayCalendarList} from "./components/holidaycalendarlist";
+import {HolidayCalendarListDays} from "./components/holidaycalendarlistdays";
+import {HolidayCalendarListGetHolidaysModal} from "./components/holidaycalendarlistgetholidaysmodal";
+import {HolidayCalendarListGetHolidaysButton} from "./components/holidaycalendarlistgetholidaysbutton";
 
 @NgModule({
     imports: [
@@ -26,6 +26,9 @@ import /*embed*/ {HolidayCalendarListGetHolidaysButton} from "./components/holid
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+    ],
+    exports: [
+        HolidayCalendarListDays
     ],
     declarations: [
         HolidayCalendarList,
