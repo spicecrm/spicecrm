@@ -10,14 +10,6 @@ import {ObjectFields}      from "../objectfields/objectfields";
 import {ObjectComponents}      from "../objectcomponents/objectcomponents";
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
 
-/**
- * @ignore
- */
-declare var _: any;
-
-import {loginService, loginCheck} from "../services/login.service";
-import {metadata} from "../services/metadata.service";
-
 import {GlobalCopyright} from "./components/globalcopyright";
 import {GlobalHeader} from "./components/globalheader";
 import {GlobalHeaderTrialBar} from "./components/globalheadertrialbar";
@@ -216,21 +208,6 @@ import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
         GlobalLoginOAuth2,
         GlobalLoginOAuth2Button
     ],
-    entryComponents: [
-        GlobalCopyright,
-        GlobalHeader,
-        GlobalNavigationMenuItem,
-        GlobalNavigationMenuItemNew,
-        GlobalNavigationMenuMore,
-        GlobalHeaderTop,
-        GlobalHeaderSearch,
-        GlobalHeaderSearchResultsItems,
-        GlobalHeaderSearchResultsItem,
-        GlobalHeaderSearchRecentItems,
-        GlobalHeaderSearchRecentItem,
-        GlobalDockedComposerContainer,
-        GlobalDockedComposer,
-        GlobalDockedComposerContainer],
     exports: [
         GlobalCopyright,
         GlobalNewsFeed,
@@ -244,7 +221,4 @@ import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
     ]
 })
 export class GlobalComponents {
-
-    constructor() {
-    }
 }

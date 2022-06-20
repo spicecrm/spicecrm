@@ -12,12 +12,12 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 import {ModuleActivities} from "../activities/moduleactivities";
 
-import /*embed*/ {Home} from './components/home';
-import /*embed*/ {HomeAssistant} from './components/homeassistant';
-import /*embed*/ {HomeAssistantTile} from './components/homeassistanttile';
-import /*embed*/ {HomeAssistantFilter} from './components/homeassistantfilter';
-import /*embed*/ {HomeDashboard} from './components/homedashboard';
-import /*embed*/ {HomeDashboardSetContainer} from './components/homedashboardsetcontainer';
+import {Home} from './components/home';
+import {HomeAssistant} from './components/homeassistant';
+import {HomeAssistantTile} from './components/homeassistanttile';
+import {HomeAssistantFilter} from './components/homeassistantfilter';
+import {HomeDashboard} from './components/homedashboard';
+import {HomeDashboardSetContainer} from './components/homedashboardsetcontainer';
 
 
 @NgModule({
