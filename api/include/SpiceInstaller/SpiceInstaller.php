@@ -564,8 +564,8 @@ class SpiceInstaller
         }
 
 
-        $rel = new Relationship();
-        $rel->build_relationship_cache();
+        // repair relationships
+        Relationship::build_relationship_cache();
 
     }
 
