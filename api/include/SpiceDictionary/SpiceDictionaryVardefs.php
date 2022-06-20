@@ -1551,7 +1551,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         if(empty($object)){
             return [];
         }
-        SpiceModules::getInstance()->loadModules(true);
 
         $db = DBManagerFactory::getInstance();
         $dict = [];
@@ -1576,10 +1575,8 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             }
         }
 
-        // grab dictionary id for module
-        $dictionaryId = SpiceModules::getInstance()->getModuleDetails(SpiceModules::getInstance()->getModuleName($object))['sysdictionary_id'];
         // load indices
-        $dict['indices'] = self::getDictionaryIndexCacheFromDb($dictionaryId);
+        $dict['indices'] = self::getDictionaryIndexCacheFromDb($dict['id']);
         return $dict;
     }
 
