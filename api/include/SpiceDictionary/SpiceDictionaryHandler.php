@@ -731,4 +731,12 @@ LEFT JOIN
 
         return $tables;
     }
+
+    /**
+     * @param string $objectName
+     * @return array|mixed
+     */
+    public function loadDictionaryIndicesFromSession(string $objectName){
+        return $_SESSION['dictionaries'][$objectName]['indices'] ?: [];
+    }
 }
