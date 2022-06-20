@@ -5,6 +5,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -18,9 +19,7 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * load the files containing metadata related vardefs
      * this is the old way od defining vardefs for metadata tables
      */
-    public static function loadMetaDataFiles() {
-        $directories = ['metadata', 'extensions/metadata', 'custom/metadata', 'custom/extensions/metadata'];
-
+    public static function loadMetaDataFiles($directories = ['metadata', 'extensions/metadata', 'custom/metadata', 'custom/extensions/metadata', 'custom/Extension/modules']) {
         foreach ($directories as $directory) {
             self::loadMetaDataFilesFromDir($directory);
         }
@@ -46,27 +45,28 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * loads the dictionary Definitions of type metadata from the database
      */
     public static function loadMetaDataDefinitions() {
+        SpiceDictionaryHandler::loadMetaDataFiles();
+
         if(SpiceDictionaryVardefs::isDbManaged()){
-            SpiceDictionaryVardefs::loadDictionaries(SpiceDictionaryHandler::getInstance()->dictionary, 'metadata');
+            SpiceDictionaryVardefs::loadDictionaries();
         }
     }
 
     /**
-     * load vardefs cached in sysdictionaryfields
+     * load vardefs cached in sysdictionaryfields & relationships
      * @return void
      */
-    public static function loadCachedVardefs(){
-        // load the metadata files if system for BWC
-        if(!SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
-            SpiceDictionaryHandler::loadMetaDataFiles();
-        }
-        SpiceDictionaryVardefs::loadDictionariesCacheFromDb();
+    public static function loadCachedVardefs($forceReload = false){
+        SpiceDictionaryVardefs::loadDictionariesCacheFromDb($forceReload);
+        // SpiceDictionaryVardefs::loadRelationshipsCacheFromDb($forceReload);
     }
+
 
 
     /**
      * load the files containing module related vardefs
      * this is the old way od defining vardefs for module tables
+     * load only if corresponding module is present in sysmodules
      * @param string $directory
      * @return void
      */
@@ -89,7 +89,6 @@ class SpiceDictionaryHandler extends SpiceSingleton
                         }
                     }
                 }
-
             }
         }
     }
@@ -219,22 +218,75 @@ class SpiceDictionaryHandler extends SpiceSingleton
 
 
     /**
-     * retrieves the dictionary relationships
+     * retrieves the dictionary relationships located in sysdictionaryrelationships, syscustomdictionaryrelationships
      *
      * @return array
      */
     public function getDictionaryRelationships(){
         $db = DBManagerFactory::getInstance();
+        $relOriginTables = ['sysdictionaryrelationships' => 'g', 'syscustomdictionaryrelationships' => 'c'];
         $relArray = [];
-        $dictionaryrelationships = $db->query("SELECT * FROM sysdictionaryrelationships WHERE deleted = 0");
-        while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-            $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
-            $relArray[] = array_merge($dictionaryrelationship, ['scope' => 'g']);
-        }
-        $dictionaryrelationships = $db->query("SELECT * FROM syscustomdictionaryrelationships WHERE deleted = 0");
-        while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-            $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
-            $relArray[] = array_merge($dictionaryrelationship, ['scope' => 'c']);;
+
+        foreach($relOriginTables as $relOriginTable => $scope){
+            $q = "SELECT rels.*, 
+itemsleft.sysdictionaryitem_name lhs_key, itemsright.sysdictionaryitem_name rhs_key, 
+lhsdictionaries.sysdictionary_tablename lhs_table,rhsdictionaries.sysdictionary_tablename rhs_table,
+lhssysmods.module_name lhs_module, rhssysmods.module_name rhs_module,
+joindictionaries.tablename join_table, joinitemsleft.sysdictionaryitem_name join_key_lhs,joinitemsright.sysdictionaryitem_name join_key_rhs
+
+FROM ".$relOriginTable." rels 
+LEFT JOIN
+ (
+	SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM sysdictionarydefinitions UNION 
+ SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM syscustomdictionarydefinitions 
+ ) lhsdictionaries ON lhsdictionaries.sysdictionary_id = rels.lhs_sysdictionarydefinition_id 
+
+LEFT JOIN
+ (
+	SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id  FROM sysmodules UNION 
+ SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id FROM syscustommodules
+ ) lhssysmods ON lhsdictionaries.sysdictionary_id = lhssysmods.sysdictionarydefinition_id 
+  
+LEFT JOIN
+        (SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM sysdictionarydefinitions UNION 
+ SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM syscustomdictionarydefinitions) rhsdictionaries ON rhsdictionaries.sysdictionary_id = rels.rhs_sysdictionarydefinition_id 
+    
+LEFT JOIN
+ (
+	SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id  FROM sysmodules UNION 
+ SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id FROM syscustommodules
+ ) rhssysmods ON rhsdictionaries.sysdictionary_id = rhssysmods.sysdictionarydefinition_id 
+    
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) itemsleft ON itemsleft.sysdictionaryitem_id = rels.lhs_sysdictionaryitem_id 
+
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) itemsright ON itemsright.sysdictionaryitem_id = rels.rhs_sysdictionaryitem_id
+  
+LEFT JOIN
+ (
+	SELECT id sysdictionary_id, tablename FROM sysdictionarydefinitions UNION 
+ SELECT id sysdictionary_id, tablename FROM syscustomdictionarydefinitions 
+ ) joindictionaries ON joindictionaries.sysdictionary_id = rels.join_sysdictionarydefinition_id   
+  
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) joinitemsleft ON joinitemsleft.sysdictionaryitem_id = rels.join_lhs_sysdictionaryitem_id 
+
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) joinitemsright ON joinitemsright.sysdictionaryitem_id = rels.join_rhs_sysdictionaryitem_id
+  
+ WHERE rels.deleted = 0
+        AND rels.`status` ='a'";
+
+            $dictionaryrelationships = $db->query($q);
+            while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
+                $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
+                $relArray[] = array_merge($dictionaryrelationship, ['scope' => $scope]);
+            }
         }
 
         return $relArray;
@@ -252,7 +304,17 @@ class SpiceDictionaryHandler extends SpiceSingleton
         if ($_SESSION['SystemDeploymentCRsActiveCR'])
             $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
+        // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
+        // todo: see if we can get rid of them
+        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module'];
+
         foreach($relationships as $relationship){
+            // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
+            foreach($unsetKeys as $unsetKey){
+                if(isset($relationship[$unsetKey])) unset($relationship[$unsetKey]);
+            }
+
+            // save to proper dictionaryrelationships table
             switch($relationship['scope']){
                 case 'c':
                     unset($relationship['scope']);

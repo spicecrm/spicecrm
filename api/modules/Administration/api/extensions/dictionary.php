@@ -12,7 +12,7 @@ $routes = [
         'route' => '/admin/repair/cachedb',
         'class' => DictionaryController::class,
         'function' => 'repairVardefs',
-        'description' => 'save all vardefs to sysdictionaryfields table',
+        'description' => 'save all vardefs to sysdictionaryfields table and relationships to relationships table',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
     ],
 ];
