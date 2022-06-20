@@ -3,11 +3,9 @@
 
 namespace SpiceCRM\modules\Letters;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class Letter extends SugarBean {
-    public $module_dir = 'Letters';
-    public $table_name = 'letters';
-    public $object_name = 'Letter';
+class Letter extends SpiceBean {
+
 
 };

@@ -33,11 +33,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['OpportunityRevenueLine'] = [
             'options' => 'numeric_range_search_dom',
             'enable_range_search' => true,
         ],
-        'amount_usdollar' => [
+        'amount_usdollar' => [ /**@deprecated **/
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
-            'group' => 'amount',
+            'dbType' => 'double',
+            'disable_num_format' => true,
+            'audited' => true
+        ],
+        'amount_systemcurrency' => [
+            'name' => 'amount_systemcurrency',
+            'vname' => 'LBL_AMOUNT_SYSTEMCURRENCY',
+            'type' => 'currency',
             'dbType' => 'double',
             'disable_num_format' => true,
             'audited' => true

@@ -2,7 +2,7 @@
 namespace SpiceCRM\modules\DocumentRevisions;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\TimeDate;
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
@@ -40,18 +40,11 @@ use SpiceCRM\includes\TimeDate;
 ********************************************************************************/
 
 
-class DocumentRevision extends SugarBean {
-
-
-	var $table_name = "document_revisions";	
-	var $object_name = "DocumentRevision";
-	var $module_dir = 'DocumentRevisions';
-
-
+class DocumentRevision extends SpiceBean {
 
 	function __construct() {
 		parent::__construct();
-		$this->disable_row_level_security =true; //no direct access to this module.
+		$this->disable_row_level_security = true; //no direct access to this module.
 	}
 
 	function save($check_notify = false, $fts_index_bean = true){
@@ -91,7 +84,7 @@ class DocumentRevision extends SugarBean {
      */
 	function getNextDocumentRevision(){
 
-	    $res = $this->db->fetchByAssoc($this->db->query("SELECT max(revision) maxrevision FROM $this->table_name WHERE document_id ='$this->document_id' AND deleted = 0"));
+	    $res = $this->db->fetchByAssoc($this->db->query("SELECT max(revision) maxrevision FROM $this->_tablename WHERE document_id ='$this->document_id' AND deleted = 0"));
 	    if($res){
 	        return (int)$res['maxrevision'] + 1;
         }
@@ -103,7 +96,7 @@ class DocumentRevision extends SugarBean {
      * find all revisions that have a status released and set them to active
      */
 	private function archiveAllRevisions(){
-	    $active = $this->get_full_list("", "{$this->table_name}.documentrevisionstatus = 'r'");
+        $active = $this->get_full_list("", "document_id='{$this->document_id}' AND {$this->_tablename}.documentrevisionstatus = 'r'");
 	    foreach($active as $activeDocument){
 	        $activeDocument->documentrevisionstatus = 'a';
 	        $activeDocument->save();

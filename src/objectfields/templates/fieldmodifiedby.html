@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
     <div class="slds-grid slds-grid--vertical-align-center">
-        <a href="javascript:void(0);" system-model-popover module="Users" [id]="model.data[relateIdField]">{{value}}</a>
+        <a href="javascript:void(0);" system-model-popover module="Users" [id]="userid">{{value}}</a>
         <span class="slds-p-right--xx-small">,</span>
         <span>{{displayDate}}</span>
         <span class="slds-p-left--xxx-small">{{displayTime}}</span>

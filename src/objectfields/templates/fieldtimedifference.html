@@ -1,14 +1,16 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
     {{value}}
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
     <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
         <input #focus type="number" class="slds-col slds-size--1-of-2 slds-input slds-text-align--right" [(ngModel)]="timedifferencespan" [maxlength]="fieldlength" [ngModelOptions]="modelOptions" />
-        <div class="slds-col slds-size--1-of-2 slds-select_container slds-m-vertical--xx-small">
-            <select [disabled]="!timedifferencespan" class="slds-select " [(ngModel)]="timedifferenceunit">
+        <div class="slds-col slds-size--1-of-2 slds-select_container">
+            <select class="slds-select " [(ngModel)]="timedifferenceunit">
                 <option value="i"><system-label label="LBL_MINUTES"></system-label></option>
                 <option value="h"><system-label label="LBL_HOURS"></system-label></option>
+                <option value="H"><system-label label="LBL_WORKINGHOURS"></system-label></option>
                 <option value="d"><system-label label="LBL_DAYS"></system-label></option>
+                <option value="D"><system-label label="LBL_WORKINGDAYS"></system-label></option>
                 <option value="w"><system-label label="LBL_WEEKS"></system-label></option>
                 <option value="M"><system-label label="LBL_MONTHS"></system-label></option>
                 <option value="y"><system-label label="LBL_YEARS"></system-label></option>

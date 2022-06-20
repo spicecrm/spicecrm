@@ -3,16 +3,10 @@
 namespace SpiceCRM\modules\Projects;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class Project extends SugarBean {
-    // basic definition
-    public $object_name = 'Project';
-    public $module_dir = 'Projects';
-    public $table_name = 'projects';
-    public $new_schema = true;
-
+class Project extends SpiceBean {
     // calculated information
     public $total_estimated_effort;
     public $total_actual_effort;

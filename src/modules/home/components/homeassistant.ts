@@ -18,7 +18,7 @@ export class HomeAssistant {
 
     public reload(e: MouseEvent) {
         e.stopPropagation();
-        this.assistant.loadItems();
+        this.assistant.loadItems(false);
     }
 
     get loading() {

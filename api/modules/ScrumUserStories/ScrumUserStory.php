@@ -2,13 +2,9 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\ScrumUserStories;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class ScrumUserStory extends SugarBean {
-    public $module_dir = 'ScrumUserStories';
-    public $object_name = 'ScrumUserStory';
-    public $table_name = 'scrumuserstories';
-
+class ScrumUserStory extends SpiceBean {
 
     public function save($check_notify = false, $fts_index_bean = true)
     {

@@ -3,7 +3,7 @@
 namespace SpiceCRM\modules\Calls;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use DateTime;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -15,16 +15,12 @@ use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\Leads\Lead;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
-class Call extends SugarBean
+class Call extends SpiceBean
 {
 
-    var $table_name = "calls";
     var $rel_users_table = "calls_users";
     var $rel_contacts_table = "calls_contacts";
     var $rel_leads_table = "calls_leads";
-    var $module_dir = 'Calls';
-    var $object_name = "Call";
-
 
     /**
      * Disable edit if call is recurring and source is not Sugar. It should be edited only from Outlook.

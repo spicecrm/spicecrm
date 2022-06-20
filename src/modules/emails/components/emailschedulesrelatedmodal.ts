@@ -39,6 +39,10 @@ export class EmailSchedulesRelatedModal {
     public modelId: string;
     public currentModule: string;
 
+    /**
+     * the max number of count to be allowed to send emails to
+     */
+    public maxCount: number = 50;
 
     constructor(public language: language,
                 public model: model,
@@ -79,7 +83,7 @@ export class EmailSchedulesRelatedModal {
      */
     public fiilterProspects() {
         this.linkedBeans = this.linkedBeans.map(link => {
-            link.disabled = link.count == 0;
+            link.disabled = link.count == 0 || link.count > this.maxCount;
             link.selected = false;
             link.expanded = false;
             return link;
@@ -101,9 +105,25 @@ export class EmailSchedulesRelatedModal {
         if (!this.model.getField('mailbox_id') || !this.model.getField('email_subject')) return false;
 
         // have a link selected or linked beans that are not deleted
-        if (this.linkedBeans.filter(link => link.selected || (link.linkedbeans && link.linkedbeans.filter(b => !b.deleted).length > 0)).length == 0) return false;
+        let total = this.selectedCount;
+        if (total == 0 || total > this.maxCount) return false;
 
         return true;
+    }
+
+    /**
+     * returns the total selected items
+     */
+    get selectedCount() {
+        let totalcount = 0;
+        this.linkedBeans.forEach(l => {
+            if (l.selected) {
+                totalcount += l.count;
+            } else if (l.linkedbeans) {
+                totalcount += l.linkedbeans.filter(b => !b.deleted).length
+            }
+        });
+        return totalcount;
     }
 
     /**
@@ -133,13 +153,13 @@ export class EmailSchedulesRelatedModal {
         }
     }
 
-    get linkedbeans(){
+    get linkedbeans() {
         let linked: any = {};
-        for(let linkedbean of this.linkedBeans){
-            if(!linkedbean.linkedbeans) continue;
+        for (let linkedbean of this.linkedBeans) {
+            if (!linkedbean.linkedbeans) continue;
 
             let ids = linkedbean.linkedbeans.filter(b => !b.deleted).map(e => e.id);
-            if(ids.length > 0){
+            if (ids.length > 0) {
                 linked[linkedbean.module] = ids;
             }
         }
@@ -164,7 +184,7 @@ export class EmailSchedulesRelatedModal {
     public expandRelated(link) {
         if (!link.expanded) {
             let loadingModal = this.modal.await('LBL_LOADING');
-            link.selected= false;
+            link.selected = false;
             link.expanded = true;
             this.backend.getRequest(`module/${this.parentModel.module}/${this.parentModel.id}/related/${link.link}`, {
                 getcount: 0,
@@ -208,7 +228,7 @@ export class EmailSchedulesRelatedModal {
                     link.open = true;
                     if (!link.linkedbeans) link.linkedbeans = [];
                     for (let item of items) {
-                        if(link.linkedbeans.findIndex(b => b.id == item.id) == -1) {
+                        if (link.linkedbeans.findIndex(b => b.id == item.id) == -1) {
                             item.source = 'user';
                             link.linkedbeans.push(item);
                         }
@@ -236,11 +256,41 @@ export class EmailSchedulesRelatedModal {
      * @private
      */
     public removeBean(link, index) {
-        if(link.linkedbeans[index].source == 'link') {
+        if (link.linkedbeans[index].source == 'link') {
             link.linkedbeans[index].deleted = !link.linkedbeans[index].deleted;
         } else {
             link.linkedbeans.splice(index, 1);
         }
+    }
+
+    /**
+     * checks if we can send test email
+     */
+    get canSendTest() {
+        return this.model.getField('mailbox_id') && this.model.getField('email_subject') && this.model.getField('email_body');
+    }
+
+    /**
+     * sends a test email to current user
+     */
+    public sendTestEmail() {
+        this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
+            loadingRef.instance.messagelabel = 'LBL_LOADING';
+            let body = {
+                parent_id: this.model.data.parent_id,
+                email_subject: this.model.data.email_subject,
+                email_body: this.model.data.email_body,
+                mailbox_id: this.model.data.mailbox_id,
+            };
+            this.backend.postRequest(`module/EmailSchedules/${this.model.id}/sendtest`, {}, body).subscribe(result => {
+                loadingRef.instance.self.destroy();
+                if (result.success) {
+                    this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                }
+            });
+        });
     }
 
 }

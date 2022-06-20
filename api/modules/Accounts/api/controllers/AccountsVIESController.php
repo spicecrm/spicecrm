@@ -30,9 +30,8 @@ class AccountsVIESController{
             "Accept: text/xml",
             "Cache-Control: no-cache",
             "Pragma: no-cache",
-            "SOAPAction: http://connecting.website.com/WSDL_Service/GetPrice",
             "Content-length: " . strlen($xml_post_string),
-        ]; //SOAPAction: your op URL
+        ];
 
         $url = $soapUrl;
 

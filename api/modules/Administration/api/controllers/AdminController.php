@@ -4,11 +4,13 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
+use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
+use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -18,8 +20,6 @@ use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\UploadStream;
-use SpiceCRM\modules\ACLActions\ACLAction;
-use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -34,6 +34,29 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class AdminController
 {
+
+    /**
+     * resets the cache
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function resetCache(Request $req, Response $res, array $args): Response {
+        SugarCache::instance()->resetFull();
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * build stats for the system
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
     public function systemstats(Request $req, Response $res, array $args): Response {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
@@ -137,6 +160,10 @@ class AdminController
             // handle sytem settings
             foreach ($postBody['system'] as $itemname => $itemvalue) {
                 switch ($itemname) {
+                    // do not write the unique key
+                    case 'unique_key':
+                        break;
+                        // name goes to database
                     case 'name':
                         SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
                         $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
@@ -150,6 +177,7 @@ class AdminController
 
             // handle advanced settings
             foreach ($postBody['advanced'] as $itemname => $itemvalue) {
+                if(!$itemvalue) continue;
                 SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
                 $diffArray[$itemname] = $itemvalue;
             }
@@ -172,29 +200,37 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
+
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            SpiceDictionaryVardefs::loadDictionaries();
+
+        if (SpiceDictionaryVardefs::isDbManaged()) {
+            $vardefs = SpiceDictionaryVardefs::loadVardefs();
+//echo print_r($vardefs, true);die('as');
+            $db->transactionStart();
+            $db->truncateQuery('sysdictionaryfields', true);
+
             // save cache to DB
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
+            foreach ($vardefs as $dictName => $dict) {
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
+            $db->transactionCommit();
         }
 
         $repairedTables = [];
         $sql = '';
+
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
+            if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
                 $sql .= $db->repairTable($focus, $execute);
-                $repairedTables[$focus->table_name] = true;
+                $repairedTables[$focus->_tablename] = true;
             }
             // check on audit tables
-            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->table_name . '_audit'])) {
+            if (($focus instanceof SpiceBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
                 $sql .= $focus->update_audit_table(false);
-                $repairedTables[$focus->table_name . '_audit'] = true;
+                $repairedTables[$focus->_tablename . '_audit'] = true;
             }
         }
 
@@ -228,10 +264,15 @@ class AdminController
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            SpiceDictionaryVardefs::loadDictionaries();
-            // save cache to DB
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
+        if (SpiceDictionaryVardefs::isDbManaged()) {
+            $vardefs = SpiceDictionaryVardefs::loadVardefs();
+            foreach($vardefs as $dictName => $dict){
+                $returnArray[$dictName] = $dict;
+
+                // remove deprecated properties
+                SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
+
+                // save to db
                 SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
             }
         }
@@ -240,15 +281,17 @@ class AdminController
         $sql = '';
 
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
+            SpiceDictionaryHandler::loadModuleFiles($module);
+
             $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SugarBean) && !isset($repairedTables[$focus->table_name])) {
+            if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
                 $sql .= $db->repairTable($focus, $execute);
-                $repairedTables[$focus->table_name] = true;
+                $repairedTables[$focus->_tablename] = true;
             }
             // check on audit tables
-            if (($focus instanceof SugarBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->table_name . '_audit'])) {
+            if (($focus instanceof SpiceBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
                 $sql .= $focus->update_audit_table(false);
-                $repairedTables[$focus->table_name . '_audit'] = true;
+                $repairedTables[$focus->_tablename . '_audit'] = true;
             }
         }
 
@@ -391,7 +434,7 @@ class AdminController
 //            foreach ($GLOBALS['moduleList'] as $module) {
 //                $focus = BeanFactory::getBean($module);
 //                if (!$focus) continue;
-//                SugarBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->table_name, [$focus->object_name => SpiceDictionaryHandler::getInstance()->dictionary[$focus->object_name]], $focus->module_dir);
+//                SpiceBean::createRelationshipMeta($focus->getObjectName(), $db, $focus->_tablename, [$focus->_objectname => SpiceDictionaryHandler::getInstance()->dictionary[$focus->_objectname]], $focus->_module);
 //            }
 //
 //            // rebuild the metadata relationships as well
@@ -411,9 +454,9 @@ class AdminController
     public function rebuildDictionaryRelationships()
     {
         unset($_SESSION['relationships']);
+
         // rebuild relationship cache
-        $rel = new Relationship();
-        $rel->build_relationship_cache();
+        Relationship::build_relationship_cache();
     }
 
     /**
@@ -428,7 +471,7 @@ class AdminController
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
         foreach ($rel_dictionary as $rel_name => $rel_data) {
             $table = isset($rel_data ['table']) ? $rel_data ['table'] : "";
-            SugarBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
+            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
         }
     }
 
@@ -575,62 +618,20 @@ class AdminController
 
     }
 
-    /**
-     * repairs ACL Roles
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return false|Response|string
-     */
-    public function repairACLRoles(Request $req, Response $res, array $args) {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $repairedACLs = [];
-        $ACLActions = ACLAction::getDefaultActions();
-        if (SpiceUtils::isAdmin($current_user)) {
-            if (!empty($ACLActions)) {
-                foreach ($ACLActions as $action) {
-                    if (empty(SpiceModules::getInstance()->getBeanName($action->category))) {
-                        ACLAction::removeActions($action->category);
-                    }
 
-                }
-            } else {
-                foreach (SpiceModules::getInstance()->getBeanClasses() as $module => $beanClass) {
-                    $beanName = SpiceModules::getInstance()->getBeanName($module);
-                    if (empty($repairedACLs[$beanName]) && class_exists($beanClass)) {
-                        $currentModule = BeanFactory::getBean($module);
-                        if ($currentModule->bean_implements('ACL') && empty($currentModule->acl_display_only)) {
-                            if (!empty($currentModule->acltype)) {
-                                ACLAction::addActions($currentModule->getACLCategory(), $currentModule->acltype);
-                            } else {
-                                ACLAction::addActions($currentModule->getACLCategory());
-                            }
 
-                            $repairedACLs[$beanName] = true;
-                        }
-                    }
-                }
-            }
-        }
-        if ($res) {
-            return $res->withJson(['installed_classes' => $repairedACLs]);
-        } else {
-            return json_encode(['installed_classes' => $repairedACLs]);
-        }
 
-    }
 
     /**
-     * rebuilds vardefs extensions
+     * read the custom vardefs definitions according to backend old way using files
+     * @return array
      */
-    private function rebuildExtensions()
+    private function rebuildExtensionVardefs()
     {
         $extensions = [];
-
         if (is_dir('custom/Extension/modules')) {
             $handle = opendir('custom/Extension/modules');
-            while (false !== ($entry = readdir($handle)))
+            while (false !== ($entry = readdir($handle))){
                 if ($entry != "." && $entry != "..") {
                     $extensions[$entry] = "";
                     $subHandle = opendir("custom/Extension/modules/{$entry}/Ext/Vardefs");
@@ -640,17 +641,22 @@ class AdminController
                         }
                     }
                 }
-
+            }
         }
+        return $extensions;
+    }
+
+    /**
+     * rebuilds vardefs extensions
+     */
+    private function rebuildExtensions()
+    {
+        $extensions = $this->rebuildExtensionVardefs();
 
         if (!empty($extensions) && !empty(array_values($extensions))) {
             foreach ($extensions as $extDir => $extFile) {
                 $this->merge_files("Ext/Vardefs", 'vardefs.ext.php');
             }
-        }
-
-        if (is_dir('custom/Extension/modules/Jobs/Ext/ScheduledTasks')) {
-            $this->merge_files("Ext/ScheduledTasks", 'scheduledtasks.ext.php');
         }
     }
 
@@ -726,7 +732,7 @@ class AdminController
         if (SpiceUtils::isAdmin($current_user)) {
             $db = DBManagerFactory::getInstance();
             $nodeModule = BeanFactory::getBean($args['module']);
-            return $res->withJson($db->get_columns($nodeModule->table_name));
+            return $res->withJson($db->get_columns($nodeModule->_tablename));
         }
     }
 
@@ -749,7 +755,7 @@ class AdminController
             $nodeModule = BeanFactory::getBean($postBody['module']);
 
             // build sql to drop table-column
-            $deleteQuery = 'ALTER TABLE ' . $nodeModule->table_name . ' ';
+            $deleteQuery = 'ALTER TABLE ' . $nodeModule->_tablename . ' ';
             foreach ($postBody['dbcolumns'] as $column) {
                 $deleteQuery .= 'DROP COLUMN ' . $column['name'] . ', ';
             }
@@ -777,7 +783,7 @@ class AdminController
         if (SpiceUtils::isAdmin($current_user)) {
             $confLoader = new SpiceUIConfLoader();
             $db = DBManagerFactory::getInstance();
-            if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+            if (SpiceDictionaryVardefs::isDbManaged()) {
                 $this->rebuildExtensions();
                 $this->merge_files("Ext/TableDictionary/", 'tabledictionary.ext.php');
                 $this->rebuildDictionaryRelationships();
