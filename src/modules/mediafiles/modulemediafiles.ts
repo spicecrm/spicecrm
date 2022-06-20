@@ -11,14 +11,14 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {MediaFileImage} from './components/mediafileimage';
-import /*embed*/ {MediaFilePicker} from './components/mediafilepicker';
-import /*embed*/ {MediaFileUploader} from './components/mediafileuploader';
-import /*embed*/ {MediaFilesList} from './components/mediafileslist';
-import /*embed*/ {MediaFilesTile} from './components/mediafilestile';
-import /*embed*/ {fieldMediaFilesImage} from './fields/fieldmediafilesimage';
-import /*embed*/ {fieldMediaFile} from './fields/fieldmediafile';
-import /*embed*/ {fieldMediaFileImage} from './fields/fieldmediafileimage';
+import {MediaFileImage} from './components/mediafileimage';
+import {MediaFilePicker} from './components/mediafilepicker';
+import {MediaFileUploader} from './components/mediafileuploader';
+import {MediaFilesList} from './components/mediafileslist';
+import {MediaFilesTile} from './components/mediafilestile';
+import {fieldMediaFilesImage} from './fields/fieldmediafilesimage';
+import {fieldMediaFile} from './fields/fieldmediafile';
+import {fieldMediaFileImage} from './fields/fieldmediafileimage';
 
 @NgModule({
     imports: [

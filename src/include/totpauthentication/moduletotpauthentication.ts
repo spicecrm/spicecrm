@@ -12,8 +12,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {TOTPAuthenticationGenerateButton} from "./components/totpauthenticationgeneratebutton";
-import /*embed*/ {TOTPAuthenticationGenerateModal} from "./components/totpauthenticationgeneratemodal";
+import {TOTPAuthenticationGenerateButton} from "./components/totpauthenticationgeneratebutton";
+import {TOTPAuthenticationGenerateModal} from "./components/totpauthenticationgeneratemodal";
 
 /**
  * provides components for the
