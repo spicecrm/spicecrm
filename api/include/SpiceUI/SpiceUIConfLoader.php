@@ -104,6 +104,10 @@ class SpiceUIConfLoader
 
     }
 
+    /**
+     * @deprecated
+     * @return void
+     */
     public static function getDefaultRoutes(){
         return ;
     }
