@@ -11,7 +11,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
 // import embedding components
-import /*embed*/ {GSuiteUserSettings} from "./components/gsuiteusersettings";
+import {GSuiteUserSettings} from "./components/gsuiteusersettings";
 
 @NgModule({
     imports: [

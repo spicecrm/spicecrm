@@ -12,18 +12,18 @@ import {ModuleReports} from "../../modules/reports/modulereports";
 
 import {reporterconfig} from '../../modules/reports/services/reporterconfig';
 
-import /*embed*/ {ReporterDetailPresentationStandardWS} from "./components/reporterdetailpresentationstandardws";
-import /*embed*/ {ReporterDetailPresentationGrouped} from "./components/reporterdetailpresentationgrouped";
-import /*embed*/ {ReporterDetailPresentationTree} from "./components/reporterdetailpresentationtree";
-import /*embed*/ {ReporterDetailPresentationPivot} from "./components/reporterdetailpresentationpivot";
-import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
-import /*embed*/ {ReporterDetailVisualizationGoogleMaps} from "./components/reporterdetailvisualizationgooglemaps";
+import {ReporterDetailPresentationStandardWS} from "./components/reporterdetailpresentationstandardws";
+import {ReporterDetailPresentationGrouped} from "./components/reporterdetailpresentationgrouped";
+import {ReporterDetailPresentationTree} from "./components/reporterdetailpresentationtree";
+import {ReporterDetailPresentationPivot} from "./components/reporterdetailpresentationpivot";
+import {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
+import {ReporterDetailVisualizationGoogleMaps} from "./components/reporterdetailvisualizationgooglemaps";
 
-import /*embed*/ {ReporterIntegrationXLSexportButton} from "./components/reporterintegrationxlsexportbutton";
-import /*embed*/ {ReporterIntegrationPDFexportButton} from "./components/reporterintegrationpdfexportbutton";
+import {ReporterIntegrationXLSexportButton} from "./components/reporterintegrationxlsexportbutton";
+import {ReporterIntegrationPDFexportButton} from "./components/reporterintegrationpdfexportbutton";
 
-import /*embed*/ {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton";
-import /*embed*/ {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal";
+import {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton";
+import {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal";
 
 
 @NgModule({

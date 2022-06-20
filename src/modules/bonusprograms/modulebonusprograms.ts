@@ -12,12 +12,12 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {BonusProgramValidityTypesField} from "./fields/bonusprogramvaliditytypesfield";
-import /*embed*/ {BonusCardValidityDateField} from "./fields/bonuscardvaliditydatefield";
-import /*embed*/ {BonusCardExtendButton} from "./actions/bonuscardextendbutton";
-import /*embed*/ {BonusCardBulkExtendButton} from "./actions/bonuscardbulkextendbutton";
-import /*embed*/ {BonusCardNewButton} from "./actions/bonuscardnewbutton";
-import /*embed*/ {BonusCardNewRelatedButton} from "./actions/bonuscardnewrelatedbutton";
+import {BonusProgramValidityTypesField} from "./fields/bonusprogramvaliditytypesfield";
+import {BonusCardValidityDateField} from "./fields/bonuscardvaliditydatefield";
+import {BonusCardExtendButton} from "./actions/bonuscardextendbutton";
+import {BonusCardBulkExtendButton} from "./actions/bonuscardbulkextendbutton";
+import {BonusCardNewButton} from "./actions/bonuscardnewbutton";
+import {BonusCardNewRelatedButton} from "./actions/bonuscardnewrelatedbutton";
 
 
 @NgModule({

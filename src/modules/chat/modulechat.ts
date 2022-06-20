@@ -10,7 +10,7 @@ import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
-import /*embed*/ {ChatContainer} from "./components/chatcontainer";
+import {ChatContainer} from "./components/chatcontainer";
 
 @NgModule({
     imports: [

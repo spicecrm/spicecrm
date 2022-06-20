@@ -10,21 +10,21 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {KnowledgeService} from "./services/knowledge.service";
+import {KnowledgeService} from "./services/knowledge.service";
 
-import /*embed*/ {KnowledgeBookSelector} from "./components/knowledgebookselector";
-import /*embed*/ {KnowledgeDocumentsSearch} from "./components/knowledgedocumentssearch";
-import /*embed*/ {KnowledgeDocumentRelatedList} from "./components/knowledgedocumentrelatedlist";
-import /*embed*/ {KnowledgeDocumentFavorites} from "./components/knowledgedocumentfavorites";
-import /*embed*/ {KnowledgeBrowserDetailsContainerRight} from "./components/knowledgebrowserdetailscontainerright";
-import /*embed*/ {KnowledgeBrowserDetailsContainerLeft} from "./components/knowledgebrowserdetailscontainerleft";
-import /*embed*/ {KnowledgeBrowserDetails} from "./components/knowledgebrowserdetails";
-import /*embed*/ {KnowledgeBrowser} from "./components/knowledgebrowser";
-import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
-import /*embed*/ {KnowledgeManagerAddModal} from "./components/knowledgemanageraddmodal";
-import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
-import /*embed*/ {KnowledgeContainer} from "./components/knowledgecontainer";
-import /*embed*/ {KnowledgeReleaseAllButton} from "./components/knowledgereleaseallbutton";
+import {KnowledgeBookSelector} from "./components/knowledgebookselector";
+import {KnowledgeDocumentsSearch} from "./components/knowledgedocumentssearch";
+import {KnowledgeDocumentRelatedList} from "./components/knowledgedocumentrelatedlist";
+import {KnowledgeDocumentFavorites} from "./components/knowledgedocumentfavorites";
+import {KnowledgeBrowserDetailsContainerRight} from "./components/knowledgebrowserdetailscontainerright";
+import {KnowledgeBrowserDetailsContainerLeft} from "./components/knowledgebrowserdetailscontainerleft";
+import {KnowledgeBrowserDetails} from "./components/knowledgebrowserdetails";
+import {KnowledgeBrowser} from "./components/knowledgebrowser";
+import {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
+import {KnowledgeManagerAddModal} from "./components/knowledgemanageraddmodal";
+import {KnowledgeManager} from "./components/knowledgemanager";
+import {KnowledgeContainer} from "./components/knowledgecontainer";
+import {KnowledgeReleaseAllButton} from "./components/knowledgereleaseallbutton";
 
 @NgModule({
     imports: [

@@ -12,13 +12,13 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {PotentialsManager} from "./components/potentialsmanager";
-import /*embed*/ {PotentialsManagerAddButton} from "./components/potentialsmanageraddbutton";
-import /*embed*/ {PotentialsOpportunityAllocationTab} from "./components/potentialsopportunityallocationtab";
-import /*embed*/ {PotentialsOpportunityAllocationLines} from "./components/potentialsopportunityallocationlines";
-import /*embed*/ {PotentialsOpportunityAllocationLineItem} from "./components/potentialsopportunityallocationlineitem";
-import /*embed*/ {PotentialsOpportunityAllocationsCCFilterPipe} from "./pipes/potentialsopportunityallocationsccfilterpipe";
-import /*embed*/ {PotentialsManagerNewButton} from "./components/potentialsmanagernewbutton";
+import {PotentialsManager} from "./components/potentialsmanager";
+import {PotentialsManagerAddButton} from "./components/potentialsmanageraddbutton";
+import {PotentialsOpportunityAllocationTab} from "./components/potentialsopportunityallocationtab";
+import {PotentialsOpportunityAllocationLines} from "./components/potentialsopportunityallocationlines";
+import {PotentialsOpportunityAllocationLineItem} from "./components/potentialsopportunityallocationlineitem";
+import {PotentialsOpportunityAllocationsCCFilterPipe} from "./pipes/potentialsopportunityallocationsccfilterpipe";
+import {PotentialsManagerNewButton} from "./components/potentialsmanagernewbutton";
 
 @NgModule({
     imports: [

@@ -10,19 +10,19 @@ import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
-import /*embed*/ {CampaignTaskActivateButton} from "./components/campaigntaskactivatebutton";
-import /*embed*/ {CampaignTaskExportButton} from "./components/campaigntaskexportbutton";
+import {CampaignTaskActivateButton} from "./components/campaigntaskactivatebutton";
+import {CampaignTaskExportButton} from "./components/campaigntaskexportbutton";
 
-import /*embed*/ {CampaignSendMailButton} from './components/campaignsendmailbutton';
-import /*embed*/ {CampaignSendTestMailButton} from './components/campaignsendtestmailbutton';
-import /*embed*/ {CampaignExportButton} from './components/campaignexportbutton';
-import /*embed*/ {CampaignExportModal} from './components/campaignexportmodal';
-import /*embed*/ {CampaignTaskEmailPanel} from './components/campaigntaskemailpanel';
-import /*embed*/ {CampaignTaskAddModal} from "./components/campaigntaskaddmodal";
-import /*embed*/ {CampaignTaskAddButton} from "./components/campaigntaskaddbutton";
-import /*embed*/ {CampaignTaskMailMergePanel} from "./components/campaigntaskmailmergepanel";
-import /*embed*/ {CampaignTaskMailergeButton} from "./components/campaigntaskmailmergebutton";
-import /*embed*/ {CampaignTaskMailMergeModal} from "./components/campaigntaskmailmergemodal";
+import {CampaignSendMailButton} from './components/campaignsendmailbutton';
+import {CampaignSendTestMailButton} from './components/campaignsendtestmailbutton';
+import {CampaignExportButton} from './components/campaignexportbutton';
+import {CampaignExportModal} from './components/campaignexportmodal';
+import {CampaignTaskEmailPanel} from './components/campaigntaskemailpanel';
+import {CampaignTaskAddModal} from "./components/campaigntaskaddmodal";
+import {CampaignTaskAddButton} from "./components/campaigntaskaddbutton";
+import {CampaignTaskMailMergePanel} from "./components/campaigntaskmailmergepanel";
+import {CampaignTaskMailergeButton} from "./components/campaigntaskmailmergebutton";
+import {CampaignTaskMailMergeModal} from "./components/campaigntaskmailmergemodal";
 import {DirectivesModule} from "../../directives/directives";
 
 @NgModule({

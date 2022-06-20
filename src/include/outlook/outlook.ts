@@ -65,20 +65,20 @@ import {model} from "../../services/model.service";
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
-import /*embed*/ {outlookNameValuePairI} from "./interfaces/outlook.interfaces";
+import {outlookNameValuePairI} from "./interfaces/outlook.interfaces";
 
-import /*embed*/ {OutlookConfiguration} from './services/outlookconfiguration.service';
-import /*embed*/ {OutlookGroupware} from "./services/outlookgroupware.service";
+import {OutlookConfiguration} from './services/outlookconfiguration.service';
+import {OutlookGroupware} from "./services/outlookgroupware.service";
 
-import /*embed*/ {OutlookPane} from './components/outlookpane';
-import /*embed*/ {OutlookPaneFooter} from './components/outlookpanefooter';
-import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
-import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
-import /*embed*/ {OutlookCalendarItemEditPane} from "./components/outlookcalendaritemeditpane";
-import /*embed*/ {OutlookCalendarItemReadPane} from "./components/outlookcalendaritemreadpane";
-import /*embed*/ {OutlookCalendarItemAddContainer} from "./components/outlookcalendaritemaddcontainer";
-import /*embed*/ {OutlookCalendarItemViewContainer} from "./components/outlookcalendaritemviewcontainer";
-import /*embed*/ {OutlookCalendarItemEditContainer} from "./components/outlookcalendaritemeditcontainer";
+import {OutlookPane} from './components/outlookpane';
+import {OutlookPaneFooter} from './components/outlookpanefooter';
+import {OutlookSettingsPane} from './components/outlooksettingspane';
+import {OutlookLoginPane} from "./components/outlookloginpane";
+import {OutlookCalendarItemEditPane} from "./components/outlookcalendaritemeditpane";
+import {OutlookCalendarItemReadPane} from "./components/outlookcalendaritemreadpane";
+import {OutlookCalendarItemAddContainer} from "./components/outlookcalendaritemaddcontainer";
+import {OutlookCalendarItemViewContainer} from "./components/outlookcalendaritemviewcontainer";
+import {OutlookCalendarItemEditContainer} from "./components/outlookcalendaritemeditcontainer";
 
 declare var Office: any;
 

@@ -11,15 +11,15 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {scrum} from "./services/scrum.service";
+import {scrum} from "./services/scrum.service";
 
-import /*embed*/ {ScrumTreeAddItem} from "./components/scrumtreeadditem";
-import /*embed*/ {ScrumTreeTheme} from "./components/scrumtreetheme";
-import /*embed*/ {ScrumTreeDetail} from "./components/scrumtreedetail";
-import /*embed*/ {ScrumTreeUserStory} from "./components/scrumtreeuserstory";
-import /*embed*/ {ScrumTreeEpic} from "./components/scrumtreeepic";
-import /*embed*/ {ScrumMain} from "./components/scrummain";
-import /*embed*/ {ScrumTree} from "./components/scrumtree";
+import {ScrumTreeAddItem} from "./components/scrumtreeadditem";
+import {ScrumTreeTheme} from "./components/scrumtreetheme";
+import {ScrumTreeDetail} from "./components/scrumtreedetail";
+import {ScrumTreeUserStory} from "./components/scrumtreeuserstory";
+import {ScrumTreeEpic} from "./components/scrumtreeepic";
+import {ScrumMain} from "./components/scrummain";
+import {ScrumTree} from "./components/scrumtree";
 
 @NgModule({
     imports: [

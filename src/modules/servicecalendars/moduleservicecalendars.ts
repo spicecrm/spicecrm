@@ -12,8 +12,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {ServiceCalendars} from "./components/servicecalendars";
-import /*embed*/ {ServiceCalendarTime} from "./components/servicecalendartime";
+import {ServiceCalendars} from "./components/servicecalendars";
+import {ServiceCalendarTime} from "./components/servicecalendartime";
 
 @NgModule({
     imports: [
