@@ -12,24 +12,24 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ { projectwbsHierarchy } from "./services/projectwbshierarchy.service";
+import { projectwbsHierarchy } from "./services/projectwbshierarchy.service";
 
-import /*embed*/ {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
-import /*embed*/ {ProjectWBSHierarchyNode} from "./components/projectwbshierarchynode";
+import {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
+import {ProjectWBSHierarchyNode} from "./components/projectwbshierarchynode";
 
-import /*embed*/ {ProjectActivityDashletActivity} from "./components/projectactivitydashletactivity";
-import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydashlet";
-import /*embed*/ {ProjectActivityConfirmation} from "./components/projectactivityconfirmation";
-import /*embed*/ {fieldProjectActivityEffort} from "./fields/fieldprojectactivityeffort";
-import /*embed*/ {fieldProjectPlannedActivityConsumption} from "./fields/fieldprojectplannedactivityconsumption";
-import /*embed*/ {fieldProjectActivityDropdown} from "./fields/fieldprojectactivitydropdown";
-import /*embed*/ {fieldProjectActivityStartdate} from "./fields/fieldprojectactivitystartdate";
-import /*embed*/ {fieldProjectActivityDuration} from "./fields/fieldprojectactivityduration";
-import /*embed*/ {ProjectSettlementLine} from "./components/projectsettlementline";
+import {ProjectActivityDashletActivity} from "./components/projectactivitydashletactivity";
+import {ProjectActivityDashlet} from "./components/projectactivitydashlet";
+import {ProjectActivityConfirmation} from "./components/projectactivityconfirmation";
+import {fieldProjectActivityEffort} from "./fields/fieldprojectactivityeffort";
+import {fieldProjectPlannedActivityConsumption} from "./fields/fieldprojectplannedactivityconsumption";
+import {fieldProjectActivityDropdown} from "./fields/fieldprojectactivitydropdown";
+import {fieldProjectActivityStartdate} from "./fields/fieldprojectactivitystartdate";
+import {fieldProjectActivityDuration} from "./fields/fieldprojectactivityduration";
+import {ProjectSettlementLine} from "./components/projectsettlementline";
 
-import /*embed*/ {ProjectWBSQuoteButton} from "./components/projectwbsquotebutton";
-import /*embed*/ {ProjectSettlementButton} from "./components/projectsettlementbutton";
-import /*embed*/ {ProjectSettlement} from "./components/projectsettlement";
+import {ProjectWBSQuoteButton} from "./components/projectwbsquotebutton";
+import {ProjectSettlementButton} from "./components/projectsettlementbutton";
+import {ProjectSettlement} from "./components/projectsettlement";
 import {ProjectWBSHierarchyAddNode} from "./components/projectwbshierarchyaddnode";
 import {ProjectWBSGantt} from "./components/projectwbsgantt";
 

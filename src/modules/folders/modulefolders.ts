@@ -12,9 +12,9 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 
-import /*embed*/ {FolderViewTree} from "./components/folderviewtree";
-import /*embed*/ {FolderViewTreeItems} from "./components/folderviewtreeitems";
-import /*embed*/ {FolderObjectListView} from './components/folderobjectlistview';
+import {FolderViewTree} from "./components/folderviewtree";
+import {FolderViewTreeItems} from "./components/folderviewtreeitems";
+import {FolderObjectListView} from './components/folderobjectlistview';
 
 @NgModule( {
     imports: [

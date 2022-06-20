@@ -66,15 +66,15 @@ import {model} from "../../services/model.service";
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
-import /*embed*/ {GSuiteMessageI, GSuiteAttachmentI} from "./interfaces/gsuite.interfaces";
+import {GSuiteMessageI, GSuiteAttachmentI} from "./interfaces/gsuite.interfaces";
 
-import /*embed*/ {GSuiteBrokerService} from '../../include/gsuite/services/gsuitebroker.service';
-import /*embed*/ {GSuiteGroupware} from "./services/gsuitegroupware.service";
+import {GSuiteBrokerService} from '../../include/gsuite/services/gsuitebroker.service';
+import {GSuiteGroupware} from "./services/gsuitegroupware.service";
 
-import /*embed*/ {GSuitePane} from './components/gsuitepane';
-import /*embed*/ {GSuitePaneFooter} from './components/gsuitepanefooter';
-import /*embed*/ {GSuitePaneDefault} from "./components/gsuitepanedefault";
-import /*embed*/ {GSuiteLoginPane} from "./components/gsuiteloginpane";
+import {GSuitePane} from './components/gsuitepane';
+import {GSuitePaneFooter} from './components/gsuitepanefooter';
+import {GSuitePaneDefault} from "./components/gsuitepanedefault";
+import {GSuiteLoginPane} from "./components/gsuiteloginpane";
 
 @NgModule({
     imports: [

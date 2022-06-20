@@ -12,11 +12,11 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {OpportunityRevenueLinesActiveLinesPipe} from "./pipes/opportunityrevenuelinesactivelinespipe";
-import /*embed*/ {OpportunityRevenueLinesTab} from "./components/opportunityrevenuelinestab";
-import /*embed*/ {OpportunityRevenueLines} from "./components/opportunityrevenuelines";
-import /*embed*/ {OpportunityRevenueLinesCreator} from "./components/opportunityrevenuelinescreator";
-import /*embed*/ {OpportunityRevenueLineItem} from "./components/opportunityrevenuelineitem";
+import {OpportunityRevenueLinesActiveLinesPipe} from "./pipes/opportunityrevenuelinesactivelinespipe";
+import {OpportunityRevenueLinesTab} from "./components/opportunityrevenuelinestab";
+import {OpportunityRevenueLines} from "./components/opportunityrevenuelines";
+import {OpportunityRevenueLinesCreator} from "./components/opportunityrevenuelinescreator";
+import {OpportunityRevenueLineItem} from "./components/opportunityrevenuelineitem";
 
 @NgModule({
     imports: [

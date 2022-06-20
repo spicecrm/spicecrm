@@ -14,14 +14,14 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
 
-import /*embed*/ {SalesPlanningService} from './services/salesplanning.service';
-import /*embed*/ {SalesPlanningToolContentNoteModal} from './components/salesplanningtoolcontentnotemodal';
-import /*embed*/ {SalesPlanningToolContent} from './components/salesplanningtoolcontent';
-import /*embed*/ {SalesPlanningToolTree} from './components/salesplanningtooltree';
-import /*embed*/ {SalesPlanningTool} from './components/salesplanningtool';
-import /*embed*/ {SalesPlanningToolInputHelperModal} from './components/salesplanningtoolinputhelpermodal';
-import /*embed*/ {SalesPlanningReporterIntegrationExportButton} from './components/salesplanningreporterintegrationexportbutton';
-import /*embed*/ {SalesPlanningReporterIntegrationExportModal} from './components/salesplanningreporterintegrationexportmodal';
+import {SalesPlanningService} from './services/salesplanning.service';
+import {SalesPlanningToolContentNoteModal} from './components/salesplanningtoolcontentnotemodal';
+import {SalesPlanningToolContent} from './components/salesplanningtoolcontent';
+import {SalesPlanningToolTree} from './components/salesplanningtooltree';
+import {SalesPlanningTool} from './components/salesplanningtool';
+import {SalesPlanningToolInputHelperModal} from './components/salesplanningtoolinputhelpermodal';
+import {SalesPlanningReporterIntegrationExportButton} from './components/salesplanningreporterintegrationexportbutton';
+import {SalesPlanningReporterIntegrationExportModal} from './components/salesplanningreporterintegrationexportmodal';
 
 @NgModule({
     imports: [

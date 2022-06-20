@@ -10,10 +10,10 @@ import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
-import /*embed*/ {DeploymentCRDBEntries} from './components/deploymentcrdbentries';
-import /*embed*/ {DeploymentCRSetActiveButton} from './components/deploymentcrsetactivebutton';
-import /*embed*/ {DeploymentCRActive} from './components/deploymentcractive';
-import /*embed*/ {DeploymentCRDBSQL} from './components/deploymentcrdbsql';
+import {DeploymentCRDBEntries} from './components/deploymentcrdbentries';
+import {DeploymentCRSetActiveButton} from './components/deploymentcrsetactivebutton';
+import {DeploymentCRActive} from './components/deploymentcractive';
+import {DeploymentCRDBSQL} from './components/deploymentcrdbsql';
 
 
 @NgModule({
