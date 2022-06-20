@@ -165,9 +165,9 @@ class SpiceDictionaryVardefsParser
      * @return array|void
      */
     public static function parseIndexDefinition($row, $tablename){
-        if(empty($row['name'])) return;
+        if(empty($row['indexname'])) return;
         $index = [];
-        $indexName = str_replace("{tablename}", $tablename, $row['name']);
+        $indexName = str_replace("{tablename}", $tablename, $row['indexname']);
         $index['name'] = $indexName;
         $index['type'] = $row['indextype'];
         $index['fields'] = $row['indexfields'];

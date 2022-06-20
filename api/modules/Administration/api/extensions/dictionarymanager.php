@@ -85,7 +85,7 @@ $routes = [
         'oldroute' => '/repair/sql',
         'class' => AdminController::class,
         'function' => 'buildSQLArray',
-        'description' => 'buildind the query for a relationship repair',
+        'description' => 'building the query for a relationship repair',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
