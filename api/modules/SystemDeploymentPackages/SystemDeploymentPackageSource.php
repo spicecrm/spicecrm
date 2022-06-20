@@ -15,9 +15,9 @@ class SystemDeploymentPackageSource
      */
     public static function getPublicSource(){
         $add = '';
-//        if(substr(self::$public_source, -1) != '/'){
-//            $add = '/';
-//        }
+        if(substr(self::$public_source, -1) != '/'){
+            $add = '/';
+        }
         return self::$public_source.$add;
     }
 
