@@ -706,7 +706,7 @@ class Email extends SpiceBean
     }
 
     /**
-     * searches for links with the data-trackingid attribute, replaces
+     * searches for links with the data-trackingid attribute, replaces it with the encoded and encrypted data
      * @param $mailboxTrackingUrl
      */
     private function findTrackingLinks($mailboxTrackingUrl)
@@ -724,6 +724,26 @@ class Email extends SpiceBean
         $this->body = $dom->saveHTML();
     }
 
+    /**
+     * searches for links with the data-marketingaction attribute, replaces it with the encoded and encrypted data
+     * @param $mailboxTrackingUrl
+     */
+    private function findMarketingActions($mailboxTrackingUrl) {
+        $dom = new DOMDocument();
+        $dom->loadHTML($this->body);
+        foreach ($dom->getElementsByTagName('a') as $node) {
+            $marketingaction = $node->getAttribute('data-marketingaction');
+            if (!empty($trackingId)) {
+                $key = '2fs5uhnjcnpxcpg9';
+                $method = 'blowfish';
+                $data = 'Emails:'.$this->id.':MarketingActions:'.$marketingaction;
+                $link = openssl_encrypt($data, $method, $key);
+                $href = $mailboxTrackingUrl. 'action/' . base64_encode($link);
+                $node->setAttribute('href', $href);
+            }
+        }
+        $this->body = $dom->saveHTML();
+    }
 
     /**
      * Send the Email
@@ -760,6 +780,7 @@ class Email extends SpiceBean
         if ($mailbox->track_mailbox && !empty($mailbox->tracking_url)) {
             $this->generateTrackingPixel($mailbox->tracking_url);
             $this->findTrackingLinks($mailbox->tracking_url);
+            $this->findMarketingActions($mailbox->tracking_url);
         }
 
         $mailbox->initTransportHandler();

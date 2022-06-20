@@ -16,6 +16,9 @@ export class AdministrationDictRepairCache {
     constructor(public backend: backend, public toast: toast, public language: language, public modal: modal) {
     }
 
+    /**
+     * @deprecated
+     */
     public executeRepairCache() {
         let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
         this.backend.getRequest('admin/repair/cache').subscribe(result => {
@@ -27,6 +30,7 @@ export class AdministrationDictRepairCache {
             }
         });
     }
+
     public executeRepairCacheDb() {
         let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
         this.backend.getRequest('admin/repair/cachedb').subscribe(result => {

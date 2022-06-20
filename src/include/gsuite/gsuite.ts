@@ -141,7 +141,7 @@ import {GSuiteLoginPane} from "./components/gsuiteloginpane";
 })
 export class ModuleGSuite {
     constructor(public navigation: navigation) {
-        this.navigation.enforceNavigationParadigm('simple');
+        // this.navigation.enforceNavigationParadigm('simple');
     }
 }
 
