@@ -450,7 +450,10 @@ class SpiceInstaller
         // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
+        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
+
 // will break installation under php8.1 and is unnecessary
 //        $vardef = new VardefManager();
 //        $vardef->clearVardef();
@@ -671,15 +674,11 @@ class SpiceInstaller
         SpiceConfig::getInstance()->installing = true;
 
         $db = $this->createDatabase($postData);
-        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
-
 
         $repair = new AdminController();
 
         if (!empty($db)) {
-            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->createTables($db);
-            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->insertDefaults($db);
             $this->createCurrentUser($db, $postData);
             $this->retrieveCoreandLanguages($db, $postData);
@@ -697,7 +696,7 @@ class SpiceInstaller
         // now we switch to database cache
         $spice_config['systemvardefs'] = ['dictionary' => true, 'domains' => true];
 
-        //write the config.php .. all should be good here
+        //write the config.php ... all should be good here
         $this->writeConfig($spice_config);
         SpiceConfig::getInstance();
 
