@@ -25,11 +25,11 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 // import interfaces
-import /*embed*/ {} from './interfaces/spicecalculator.interfaces';
+import {} from './interfaces/spicecalculator.interfaces';
 
-import /*embed*/ {SpiceCalculator} from './components/spicecalculator';
-import /*embed*/ {SpiceCalculatorModal} from "./components/spicecalculatormodal";
-import /*embed*/ {SpiceCalculatorDashlet} from "./components/spicecalculatordashlet";
+import {SpiceCalculator} from './components/spicecalculator';
+import {SpiceCalculatorModal} from "./components/spicecalculatormodal";
+import {SpiceCalculatorDashlet} from "./components/spicecalculatordashlet";
 
 @NgModule({
     imports: [
