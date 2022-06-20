@@ -60,7 +60,7 @@ class SpiceDictionaryVardefs  {
         $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition FROM sysdictionaryfields sysfields";
         $res = $db->query($q);
         while($row = $db->fetchByAssoc($res)){
-            $this->dictionary[$row['sysdictionaryname']]['id'] = $row['sysdictionarydefinition_id'];
+            $this->dictionary[$row['sysdictionaryname']]['id'] = $row['sysdictionaryid'];
             $this->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
             $this->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
             $this->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
@@ -1547,44 +1547,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @param array $dictionaryId
      * @return array
      */
-    public function getDictionaryFromDbByObject($object){
-        if(empty($object)){
-            return [];
-        }
-
-        return $this->dictionary[$object];
-
-        $db = DBManagerFactory::getInstance();
-        $dict = [];
-        $q = "SELECT sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, 
-       sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition
-            FROM sysdictionaryfields sysfields 
-            WHERE sysfields.sysdictionaryname = '".$object."'";
-
-        if($res = $db->query($q)){
-            $setDictInfo = true;
-            while($row = $db->fetchByAssoc($res)){
-                if($setDictInfo) {
-//                $dict['id'] = $row['sysdictionarydefinition_id'];
-                    $dict['name'] = $row['sysdictionaryname'];
-                    $dict['table'] = $row['sysdictionarytablename'];
-                    $dict['audited'] = $row['sysdictionarytableaudited'];
-                    $dict['module'] = SpiceModules::getInstance()->getModuleName($object);
-                    $setDictInfo = false;
-                }
-                $dict['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
-            }
-        }
-        return $dict;
-    }
-
-
-    /**
-     * get dictionary from cache table
-     *
-     * @param array $dictionaryId
-     * @return array
-     */
     public function getDictionaryCacheFromDbByObject($object){
         if(empty($object)){
             return [];
@@ -1602,8 +1564,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             $setDictInfo = true;
             while($row = $db->fetchByAssoc($res)){
                 if($setDictInfo) {
-                    $dict['id'] = $row['sysdictionarydefinition_id'];
+                    $dict['id'] = $row['sysdictionaryid'];
                     $dict['name'] = $row['sysdictionaryname'];
+                    $dict['dictionaryname'] = $row['sysdictionaryname'];
                     $dict['table'] = $row['sysdictionarytablename'];
                     $dict['audited'] = $row['sysdictionarytableaudited'];
                     $dict['module'] = SpiceModules::getInstance()->getModuleName($object);
