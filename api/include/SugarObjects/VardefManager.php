@@ -60,8 +60,11 @@ class VardefManager{
      */
     static function createVardef($module, $object, $templates = ['default'], $object_name = false)
     {
+            //CR10001008: Do not reverse. Templates should overwrite definitions in given order
+            // example Contacts: default will create name as required. Person will change the name definition to non-db
             //reverse the sort order so priority goes highest to lowest;
-            $templates = array_reverse($templates);
+            //$templates = array_reverse($templates);
+
             foreach ($templates as $template)
             {
                 self::addTemplate($module, $object, $template, $object_name);

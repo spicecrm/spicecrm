@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -453,10 +454,9 @@ class AdminController
     public function rebuildDictionaryRelationships()
     {
         unset($_SESSION['relationships']);
+
         // rebuild relationship cache
-        SpiceDictionaryHandler::loadModuleFiles('Relationships');
-        $rel = BeanFactory::getBean('Relationships');
-        $rel->build_relationship_cache();
+        Relationship::build_relationship_cache();
     }
 
     /**
