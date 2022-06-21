@@ -1661,82 +1661,86 @@ class SpiceBeanHandler
         }
 
         // handle deleted email addresses
-        foreach (array_keys($emailAddresses['beans_relations_to_delete']) as $emailAddressId) {
-            $emailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
-            $bean->$linkName->delete($bean, $emailAddress);
+        if(is_array($emailAddresses['beans_relations_to_delete'])){
+            foreach (array_keys($emailAddresses['beans_relations_to_delete']) as $emailAddressId) {
+                $emailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
+                $bean->$linkName->delete($bean, $emailAddress);
+            }
         }
 
         // handle insert/update email addresses
-        foreach ($emailAddresses['beans'] as $emailAddressId => $emailAddressData) {
+        if(is_array($emailAddresses['beans'])) {
+            foreach ($emailAddresses['beans'] as $emailAddressId => $emailAddressData) {
 
-            $emailAddress = BeanFactory::newBean('EmailAddresses');
+                $emailAddress = BeanFactory::newBean('EmailAddresses');
 
-            $existingEmailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
+                $existingEmailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
 
-            // if email address deleted handle deletion and continue
-            if ($emailAddressData['deleted'] == 1 && $existingEmailAddress) {
-                $existingEmailAddress->mark_deleted($existingEmailAddress->id);
-                continue;
-            }
+                // if email address deleted handle deletion and continue
+                if ($emailAddressData['deleted'] == 1 && $existingEmailAddress) {
+                    $existingEmailAddress->mark_deleted($existingEmailAddress->id);
+                    continue;
+                }
 
-            // if the existing email address id is the same but the email address was changed create a new one
-            // copy the old additional relationship values
-            // delete the link to the old one
-            if ($existingEmailAddress) {
+                // if the existing email address id is the same but the email address was changed create a new one
+                // copy the old additional relationship values
+                // delete the link to the old one
+                if ($existingEmailAddress) {
 
-                $linkedEmailAddresses = $bean->get_linked_beans($linkName);
+                    $linkedEmailAddresses = $bean->get_linked_beans($linkName);
 
-                foreach ($linkedEmailAddresses as $linkedEmailAddress) {
+                    foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-                    if ($existingEmailAddress->id !== $linkedEmailAddress->id || $existingEmailAddress->email_address == $emailAddressData['email_address']) {
-                        continue;
+                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || $existingEmailAddress->email_address == $emailAddressData['email_address']) {
+                            continue;
+                        }
+
+                        $bean->$linkName->delete($bean, $existingEmailAddress->id);
+
+                        // check if the new email address also exists
+                        $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
+
+                        $emailAddressData['id'] = $emailAddress->id;
+                        $emailAddressData['opt_in_status'] = $linkedEmailAddress->opt_in_status;
+                        $emailAddressData['reply_to_address'] = $linkedEmailAddress->reply_to_address;
+
+                        if (empty($emailAddress->id)) {
+                            $emailAddress->new_with_id = true;
+                            $emailAddressData['id'] = SpiceUtils::createGuid();
+                        }
+
+                        break;
                     }
-
-                    $bean->$linkName->delete($bean, $existingEmailAddress->id);
-
-                    // check if the new email address also exists
+                } else {
                     $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
-
                     $emailAddressData['id'] = $emailAddress->id;
-                    $emailAddressData['opt_in_status'] = $linkedEmailAddress->opt_in_status;
-                    $emailAddressData['reply_to_address'] = $linkedEmailAddress->reply_to_address;
 
                     if (empty($emailAddress->id)) {
+                        $emailAddress->id = $emailAddressId;
                         $emailAddress->new_with_id = true;
-                        $emailAddressData['id'] = SpiceUtils::createGuid();
                     }
-
-                    break;
                 }
-            } else {
-                $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
-                $emailAddressData['id'] = $emailAddress->id;
 
-                if (empty($emailAddress->id)) {
-                    $emailAddress->id = $emailAddressId;
-                    $emailAddress->new_with_id = true;
+                $additional_values = [];
+
+                // update the email address fields and the additional relationship values
+                foreach (array_keys($emailAddress->field_defs) as $field) {
+
+                    if (empty($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
+
+                    // update email address field
+                    $emailAddress->$field = $emailAddressData[$field];
+
+                    // prepare additional values
+                    if (in_array($field, $additional_rel_fields_mapped)) {
+                        $additional_values[$additional_rel_fields[$field]] = $emailAddress->$field;
+                    }
                 }
+
+                $emailAddress->save();
+
+                $bean->$linkName->add($emailAddress, $additional_values);
             }
-
-            $additional_values = [];
-
-            // update the email address fields and the additional relationship values
-            foreach (array_keys($emailAddress->field_defs) as $field) {
-
-                if (empty($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
-
-                // update email address field
-                $emailAddress->$field = $emailAddressData[$field];
-
-                // prepare additional values
-                if (in_array($field, $additional_rel_fields_mapped)) {
-                    $additional_values[$additional_rel_fields[$field]] = $emailAddress->$field;
-                }
-            }
-
-            $emailAddress->save();
-
-            $bean->$linkName->add($emailAddress, $additional_values);
         }
     }
 
