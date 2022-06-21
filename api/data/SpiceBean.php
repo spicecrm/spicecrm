@@ -692,21 +692,8 @@ class SpiceBean
     function getIndices()
     {
         // load indices from dictionary definitions
-//        $dbDefIndices = SpiceDictionaryVardefs::getInstance()->loadDictionaryIndicesByDictionaryName($this->getObjectName());
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'])) {
-//            if(count($dbDefIndices) > 0){
-//                foreach($dbDefIndices as $num => $idxDef){
-//                    SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'][] = $idxDef;
-//                }
-//            }
-//            echo $this->getObjectName(). ' aa '.print_r(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'], true);
-            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['indices'];
-        }
-//        else{
-//            echo $this->getObjectName(). ' '.print_r($dbDefIndices, true);
-//            return $dbDefIndices;
-//        }
-        return [];
+        $dbDefIndices = SpiceDictionaryHandler::getInstance()->loadDictionaryIndicesFromSession($this->getObjectName());
+        return $dbDefIndices;
     }
 
     /**
