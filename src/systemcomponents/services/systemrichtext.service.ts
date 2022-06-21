@@ -23,7 +23,12 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpEvent} from "@angular/common/http";
 import {HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
+import { backend } from '../../services/backend.service';
 
+/**
+ * @ignore
+ */
+declare var _: any;
 
 export interface CustomClass {
     name: string;
@@ -53,7 +58,7 @@ export class systemrichtextservice {
 
     public savedSelectionParentElement: HTMLElement;
 
-    constructor(@Inject(DOCUMENT) public _document: Document) {
+    constructor(@Inject(DOCUMENT) public _document: Document, public backend: backend ) {
         this.dummyHtmlElement = document.createElement('div');
     }
 
@@ -350,6 +355,18 @@ export class systemrichtextservice {
     public encodeHTMLEntities(text) {
         this.dummyHtmlElement.innerText = text;
         return this.dummyHtmlElement.innerHTML;
+    }
+
+    public marketingActions: string[] = null;
+
+    public loadMarketingActions( force = false ) {
+        if ( force || !_.isArray( this.marketingActions )) {
+            this.backend.getRequest( 'module/MarketingActions/all/actions' ).subscribe(
+                response => {
+                    this.marketingActions = response.actions;
+                }
+            )
+        }
     }
 
 }
