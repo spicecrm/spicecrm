@@ -450,9 +450,7 @@ class SpiceInstaller
         // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
-        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
-        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
 
 // will break installation under php8.1 and is unnecessary
 //        $vardef = new VardefManager();
