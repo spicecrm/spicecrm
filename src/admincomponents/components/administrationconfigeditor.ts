@@ -84,6 +84,13 @@ export class AdministrationConfigEditor implements OnInit {
     }
 
     /**
+     * Has the browser the ability to paste clipboard data?
+     */
+    public get canCopyPaste(): boolean {
+        return !!navigator.clipboard.readText;
+    }
+
+    /**
      * Copy configuration values to clipboard.
      */
     public copyData(): void {
