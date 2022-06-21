@@ -103,7 +103,7 @@
                 </td>
                 <td system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_module">
                     <div class="slds-truncate">
-                        {{notification.bean_module}}
+                        <system-label-modulename [module]="notification.bean_module"></system-label-modulename>
                     </div>
                 </td>
                 <td system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name">
