@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, SkipSelf} from '@angular/core';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
+import { systemrichtextservice } from '../services/systemrichtext.service';
 
 @Component({
     templateUrl: '../templates/systemrichtextlink.html',
@@ -12,14 +13,19 @@ export class SystemRichTextLink implements OnInit {
     @Input() public url = ''; // The URL of the link.
     @Input() public text = ''; // The text of the link.
     @Input() public toTrack = false; // Should clicks on the link be trackable?
+    @Input() public marketingAction = '';
     @Input() public trackingId = '';
     @Input() public parent: model;
-    // @Input() public generateShortUrl = false;
 
     /**
      * The error text for the URL field.
      */
-    public errorLabel = '';
+    public urlErrorLabel = '';
+
+    /**
+     * The error text for the marketing action.
+     */
+    public marketingActionErrorLabel = '';
 
     /**
      * Indicates that the form currently can get submitted.
@@ -43,7 +49,11 @@ export class SystemRichTextLink implements OnInit {
 
     public self: any;
 
-    constructor(public language: language, public helper: helper, private model: model) {
+    public linkType: 'conv'|'mark' = 'conv';
+
+    public editorService: systemrichtextservice;
+
+    constructor(public language: language, public helper: helper, private model: model ) {
         this.response = new EventEmitter<any>(); // Create the event emitter for emitting the form input.
     }
 
@@ -54,6 +64,8 @@ export class SystemRichTextLink implements OnInit {
         this.textIsUrl = !this.text; // In case there is no link text given, the link text
         this.toTrack = !!this.trackingId;
         if ( this.url ) this.url = this.url.trim();
+        if ( this.marketingAction ) this.linkType = 'mark';
+        if ( this.parent._module === 'CampaignTasks' ) this.loadMarketingActions();
     }
 
     /**
@@ -76,14 +88,26 @@ export class SystemRichTextLink implements OnInit {
     public checkUrl(): boolean {
         let urlTrimmed = this.url.trim();
         if ( !urlTrimmed ) {
-            this.errorLabel = 'MSG_INPUT_REQUIRED';
+            this.urlErrorLabel = 'MSG_INPUT_REQUIRED';
         } else if ( !this.urlIsValid( urlTrimmed )) {
-            this.errorLabel = 'LBL_INPUT_INVALID';
+            this.urlErrorLabel = 'LBL_INPUT_INVALID';
         } else {
-            this.errorLabel = '';
+            this.urlErrorLabel = '';
         }
         if ( this.textIsUrl ) this.text = this.url;
-        return !this.errorLabel;
+        return !this.urlErrorLabel;
+    }
+
+    /**
+     * Check existence of the marketing action and set the error text if necessary.
+     */
+    public checkMarketingAction(): boolean {
+        if ( !this.marketingAction ) {
+            this.marketingActionErrorLabel = 'MSG_INPUT_REQUIRED';
+        } else {
+            this.marketingActionErrorLabel = '';
+        }
+        return !this.marketingActionErrorLabel;
     }
 
     /**
@@ -101,7 +125,8 @@ export class SystemRichTextLink implements OnInit {
      * Submit the form and close the modal.
      */
     public submit() {
-        if ( !this.checkUrl() ) return;
+        if ( this.linkType === 'conv' && !this.checkUrl() ) return;
+        if ( this.linkType === 'mark' && !this.checkMarketingAction() ) return;
         if (this.toTrack) {
             if ( !this.trackingId ) {
                 this.trackingId = this.helper.generateGuid();
@@ -109,10 +134,12 @@ export class SystemRichTextLink implements OnInit {
             }
         } else delete this.trackingId;
         let responseObject = {
-            url: this.url.trim(),
+            url: this.linkType === 'conv' ? this.url.trim() : '',
             toTrack: this.toTrack,
             trackingId: this.trackingId,
-            text: undefined as string
+            text: undefined as string,
+            linkType: this.linkType,
+            marketingAction: this.marketingAction
         };
         if ( !this.alterMode ) responseObject.text = this.text.trim();
         this.response.emit( responseObject );
@@ -139,6 +166,10 @@ export class SystemRichTextLink implements OnInit {
             parent_id: this.parent.id
         });
         this.model.save();
+    }
+    
+    private loadMarketingActions() {
+        this.editorService.loadMarketingActions();
     }
 
 }
