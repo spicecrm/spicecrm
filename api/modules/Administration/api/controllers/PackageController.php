@@ -27,6 +27,7 @@ class PackageController {
         if ($repositoryId) {
             $repository = $db->fetchByAssoc($db->query("SELECT * FROM sysuipackagerepositories WHERE id = '{$repositoryId}'"));
             $repositoryUrl = $repository['url'];
+            if ( substr( $repositoryUrl, -1 ) != '/') $repositoryUrl .= '/';
         }
         if(empty($repositoryUrl)) $repositoryUrl = SystemDeploymentPackageSource::getPublicSource();
         return $repositoryUrl;
