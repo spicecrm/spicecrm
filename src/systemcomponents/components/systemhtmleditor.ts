@@ -365,10 +365,12 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
             .subscribe(modalRef => {
                 modalRef.instance.text = this.editorService.selectedText;
                 modalRef.instance.parent = this.model;
+                modalRef.instance.editorService = this.editorService;
                 if ( aTag ) {
                     modalRef.instance.alterMode = true;
                     modalRef.instance.url = aTag.href;
                     modalRef.instance.trackingId = aTag.dataset.trackingid;
+                    modalRef.instance.marketingAction = aTag.dataset.marketingaction;
                 }
                 modalRef.instance.response
                     .pipe(take(1))
@@ -376,14 +378,19 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                         if ( anchorData ) {
                             if ( aTag ) {
                                 aTag.href = anchorData.url;
-                                if ( anchorData.trackingId ) aTag.dataset.trackingid = anchorData.trackingId;
+                                if ( anchorData.linkType === 'conv' && anchorData.trackingId ) aTag.dataset.trackingid = anchorData.trackingId;
                                 else delete aTag.dataset.trackingid;
+                                if ( anchorData.marketingAction ) aTag.dataset.marketingaction = anchorData.marketingAction;
+                                else delete aTag.dataset.marketingaction;
                             } else {
-                                if( !anchorData.text ) anchorData.text = anchorData.url;
+                                if ( !anchorData.text ) anchorData.text = anchorData.url;
                                 this.editorService.restoreSelection();
                                 let linkContent = anchorData.text;
                                 if( this.editorService.selectedText === anchorData.text ) linkContent = this.editorService.selectedHtml;
-                                this.editorService.insertAnchor( anchorData.url, linkContent, anchorData.toTrack ? { trackingid: anchorData.trackingId } : null );
+                                let dataAttributes: any = {};
+                                if ( anchorData.linkType === 'conv' && anchorData.toTrack ) dataAttributes.trackingid = anchorData.trackingId;
+                                if ( anchorData.linkType === 'mark' ) dataAttributes.marketingaction = anchorData.marketingAction;
+                                this.editorService.insertAnchor( anchorData.url, linkContent, dataAttributes );
                             }
                             this.onContentChange( this.htmlEditor.element.nativeElement.innerHTML );
                         }
