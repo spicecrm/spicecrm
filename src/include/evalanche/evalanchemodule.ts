@@ -12,10 +12,10 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {ProspectListsToEvalancheButton} from "./components/prospectlisttoevalanchebutton";
-import /*embed*/ {ProspectListsToEvalancheModal} from "./components/prospectlisttoevalanchemodal";
-import /*embed*/ {EvalancheMailingButton} from "./components/evalanchemailingbutton";
-import /*embed*/ {EvalancheMailingModal} from "./components/evalanchemailingmodal";
+import {ProspectListsToEvalancheButton} from "./components/prospectlisttoevalanchebutton";
+import {ProspectListsToEvalancheModal} from "./components/prospectlisttoevalanchemodal";
+import {EvalancheMailingButton} from "./components/evalanchemailingbutton";
+import {EvalancheMailingModal} from "./components/evalanchemailingmodal";
 
 @NgModule({
     imports: [

@@ -22,15 +22,8 @@ class SpiceCronJobs
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
 
-        # As current user use the user defined in the crm configuration.
-        # In case there is no user defined, use the admin user with the id '1'
-        $spiceConfig = SpiceConfig::getInstance()->config;
-        $cronUserId = isset( $spiceConfig['cron_user_id'][0] ) ? $spiceConfig['cron_user_id'] : '1';
-        $cronUser = BeanFactory::getBean('Users', $cronUserId );
-        if ( !$cronUser ) {
-            throw (new Exception('Cannot run Cronjob, not existing Cronjob User (ID: '.$cronUserId.')'));
-        }
-        AuthenticationController::getInstance()->setCurrentUser( $cronUser );
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
 
         if (empty($jobId)) {
             $jobs = $this->loadJobs();

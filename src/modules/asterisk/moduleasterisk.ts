@@ -13,7 +13,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {AsteriskToolbarIndicator} from "./components/asterisktoolbarindicator";
+import {AsteriskToolbarIndicator} from "./components/asterisktoolbarindicator";
 
 
 @NgModule({

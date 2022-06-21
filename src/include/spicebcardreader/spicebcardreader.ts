@@ -23,7 +23,7 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
-import /*embed*/ {SpiceBCardReaderButton} from './components/spicebcardreaderbutton';
+import {SpiceBCardReaderButton} from './components/spicebcardreaderbutton';
 
 import {ObjectFields} from "../../objectfields/objectfields";
 
@@ -39,8 +39,7 @@ import {ObjectFields} from "../../objectfields/objectfields";
     ],
     declarations: [
         SpiceBCardReaderButton,
-    ],
-    entryComponents: [SpiceBCardReaderButton]
+    ]
 })
 export class SpiceBCardReaderModule {
 }
