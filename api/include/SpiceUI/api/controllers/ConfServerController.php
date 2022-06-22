@@ -134,7 +134,8 @@ class ConfServerController
             'sysuiloadtaskitems',
             'sysmailboxtransports',
             'spiceaclstandardactions',
-            'systemplatefunctions'
+            'systemplatefunctions',
+            'sysreservedwords'
         ];
 
         $tableArray = [];
