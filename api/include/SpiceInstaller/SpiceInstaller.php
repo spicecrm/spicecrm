@@ -130,7 +130,8 @@ class SpiceInstaller
         }
 
         // db check
-        $drivers = $this->dbManagerFactory->getDbDrivers();
+        $drivers = $this->dbManagerFactory::getDbDrivers();
+
         if (empty($drivers)) {
             $requirements['db'] = false;
         } else {
