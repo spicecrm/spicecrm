@@ -10,13 +10,13 @@ import {language} from "../../../services/language.service";
  * Display a popover to list the google event details
  */
 @Component({
-    selector: 'calendar-google-event-popover',
-    templateUrl: '../templates/calendargoogleeventpopover.html',
+    selector: 'calendar-microsoft-event-popover',
+    templateUrl: '../templates/calendarmicrosofteventpopover.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalendarGoogleEventPopover implements AfterViewInit {
+export class CalendarMicrosoftEventPopover implements AfterViewInit {
     /**
-     * holds the google event data
+     * holds the microsoft event data
      */
     public event: any = {};
     /**
