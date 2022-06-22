@@ -54,8 +54,8 @@ export class DictionaryManagerDefinitions {
             if(d.deleted != 0) return false;
             // if we have a type filter apply it
             if(this.definitionfiltertype && d.sysdictionary_type != this.definitionfiltertype) return false;
-            // if we have aterm filter apply it
-            if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0 || d.tablename.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0)) return false;
+            // if we have a term filter apply it
+            if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0 || (d.tablename && d.tablename.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0))) return false;
             // otherwise list it
             return true;
         }).sort((a, b) => a.name.localeCompare(b.name));
