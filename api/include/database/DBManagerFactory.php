@@ -194,6 +194,20 @@ class DBManagerFactory
     }
 
     /**
+     * switch database for all existing instances
+     * @param string $dbName
+     * @throws Exception
+     */
+    public static function switchAllInstanceDatabases(string $dbName)
+    {
+        $dbInstances = array_keys(self::$instances);
+
+        foreach ($dbInstances as $instanceName) {
+            self::switchDatabase($dbName, $instanceName);
+        }
+    }
+
+    /**
      * switch back to the master db connection
      * @param string $instanceName
      * @return MysqliManager|object|SqlsrvManager|null
