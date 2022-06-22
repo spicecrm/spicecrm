@@ -36,6 +36,8 @@ import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
 import /*embed*/ {CalendarScheduleDashlet} from "./components/calendarscheduledashlet";
 import /*embed*/ {CalendarDayDashlet} from "./components/calendardaydashlet";
 import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedaysdashlet";
+import {CalendarSheetMicrosoftEvent} from "./components/calendarsheetmicrosoftevent";
+import {CalendarMicrosoftEventPopover} from "./components/calendarmicrosofteventpopover";
 
 
 @NgModule({
@@ -70,7 +72,9 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
         CalendarColorPicker,
         CalendarScheduleDashlet,
         CalendarDayDashlet,
-        CalendarThreeDaysDashlet
+        CalendarThreeDaysDashlet,
+        CalendarSheetMicrosoftEvent,
+        CalendarMicrosoftEventPopover
     ],
     providers: [userpreferences]
 })

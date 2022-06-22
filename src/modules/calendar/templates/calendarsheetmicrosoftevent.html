@@ -6,11 +6,10 @@
                 <span (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()"
                       [class.spice-calendar-event-has-dark-color]="calendar.sheetType != 'Schedule'"
                       class="slds-text-link--reset slds-truncate">
-                    {{event.summary}}
+                    {{event.subject}}
                 </span>
             </div>
-            <!-- currently removed as this removes the participants from the meeting as well -->
-            <!--div system-dropdown-trigger class="slds-dropdown-trigger slds-dropdown-trigger--click" style="height: fit-content">
+            <div system-dropdown-trigger class="slds-dropdown-trigger slds-dropdown-trigger--click" style="height: fit-content">
                 <button class="slds-button slds-button--icon-border-filled slds-button--icon-xx-small" aria-haspopup="true">
                     <system-button-icon icon="down" size="xx-small"></system-button-icon>
                 </button>
@@ -25,7 +24,7 @@
                         </li>
                     </ul>
                 </div>
-            </div-->
+            </div>
         </div>
     </div>
 </div>
