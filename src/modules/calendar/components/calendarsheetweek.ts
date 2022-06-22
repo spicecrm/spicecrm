@@ -412,6 +412,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                 });
             });
         });
+
+        this.cdRef.detectChanges();
     }
 
     /**
