@@ -295,6 +295,8 @@ class AdminController
             }
         }
 
+        SpiceDictionaryHandler::loadMetaDataFiles();
+
         foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
             if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
                 continue;
