@@ -22,6 +22,7 @@ use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 
 require_once('modules/TableDictionary.php');
 
@@ -204,7 +205,7 @@ class SpiceInstaller
         $errors = [];
         $postData = $body->getParsedBody();
 
-        $db = $this->dbManagerFactory->getTypeInstance($postData['db_type'], ['db_manager' => $postData['db_manager']]);
+        $db = $this->dbManagerFactory::getTypeInstance($postData['db_type'], ['dbconfig' => ['db_manager' => $postData['db_manager']]]);
         // credentials to connect to the database
         $dbconfig = ['db_host_name' => $postData['db_host_name'],
             'db_host_instance' => $postData['db_host_instance'],
@@ -411,7 +412,7 @@ class SpiceInstaller
             'db_manager' => $postData['database']['db_manager'],
             'db_type' => $postData['database']['db_type'],];
 
-        $db = $this->dbManagerFactory->getTypeInstance($postData['database']['db_type'], ['db_manager' => $postData['database']['db_manager']]);
+        $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
@@ -450,6 +451,7 @@ class SpiceInstaller
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+
 // will break installation under php8.1 and is unnecessary
 //        $vardef = new VardefManager();
 //        $vardef->clearVardef();
@@ -560,8 +562,8 @@ class SpiceInstaller
         }
 
 
-        $rel = new Relationship();
-        $rel->build_relationship_cache();
+        // repair relationships
+        Relationship::build_relationship_cache();
 
     }
 
@@ -670,15 +672,11 @@ class SpiceInstaller
         SpiceConfig::getInstance()->installing = true;
 
         $db = $this->createDatabase($postData);
-        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
-
 
         $repair = new AdminController();
 
         if (!empty($db)) {
-            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->createTables($db);
-            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->insertDefaults($db);
             $this->createCurrentUser($db, $postData);
             $this->retrieveCoreandLanguages($db, $postData);
@@ -693,8 +691,20 @@ class SpiceInstaller
             $outcome = true;
         }
 
-        //write the config.php .. all shoudl be good here
+        // now we switch to database cache
+        $spice_config['systemvardefs'] = ['dictionary' => true, 'domains' => true];
+
+        //write the config.php ... all should be good here
         $this->writeConfig($spice_config);
+        SpiceConfig::getInstance();
+
+        // now move cache to database
+        SpiceDictionaryVardefs::getInstance()->repairDictionaries();
+
+        // remove legacy cache/modules folder
+        if(file_exists('api/cache/modules')){
+            rmdir('api/cache/modules');
+        }
 
         return [
             "success" => $outcome,
