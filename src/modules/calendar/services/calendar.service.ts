@@ -65,7 +65,7 @@ export class calendar implements OnDestroy {
     /**
      * holds the other users calendars
      */
-    public usersCalendars: Array<{id: string, name: string, visible: boolean, color: string}> = [];
+    public usersCalendars: {id: string, name: string, visible: boolean, color: string}[] = [];
     /**
      * holds the other calendars
      */
@@ -123,13 +123,13 @@ export class calendar implements OnDestroy {
      */
     public eventColor: string = '#039be5';
     /**
-     * holds the google event color
+     * holds the groupware service event color
      */
-    public googleColor: string = '#db4437';
+    public groupwareColor: string = '#db4437';
     /**
-     * true if the user is logged by google
+     * if the user was logged in by on of the groupware services
      */
-    public loggedByGoogle: boolean = false;
+    public activeGroupware: 'google' | 'microsoft';
     /**
      * true if the calendar is used as picker
      */
@@ -469,15 +469,29 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * load events for the active groupware service
+     * @param startDate
+     * @param endDate
+     */
+    public loadGroupwareEvents(startDate: string, endDate: string) {
+        switch (this.activeGroupware) {
+            case 'google':
+                return this.loadGoogleEvents(startDate, endDate);
+            case 'microsoft':
+                return this.loadMicrosoftEvents(startDate, endDate);
+            default:
+                return of([]);
+        }
+    }
+
+    /**
      * load google events from backend and manipulate them before return
      * @param startDate: moment
      * @param endDate: moment
      * @return events asObservable
      */
     public loadGoogleEvents(startDate, endDate) {
-        if (!this.loggedByGoogle) {
-            return of([]);
-        }
+
         if (this.doReload(startDate, endDate, "google")) {
             this.isLoading = true;
             this.cdRef.detectChanges();
@@ -500,7 +514,7 @@ export class calendar implements OnDestroy {
                                 .format(!event.end.dateTime && !!event.end.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
 
                             event.isMulti = +event.end.diff(event.start, 'days') > 0;
-                            event.color = this.googleColor;
+                            event.color = this.groupwareColor;
                             event.type = 'google';
 
                             this.calendars.google.push(event);
@@ -515,6 +529,59 @@ export class calendar implements OnDestroy {
         } else {
             let filteredEntries = [];
             for (let event of this.calendars.google) {
+                if (event.start < endDate && event.end > startDate) {
+                    filteredEntries.push(event);
+                }
+            }
+            return of(filteredEntries);
+        }
+    }
+
+    /**
+     * load microsoft events from backend and manipulate them before return
+     * @param startDate: moment
+     * @param endDate: moment
+     * @return events asObservable
+     */
+    public loadMicrosoftEvents(startDate, endDate) {
+
+        if (this.doReload(startDate, endDate, "microsoft")) {
+            this.isLoading = true;
+            this.cdRef.detectChanges();
+            let responseSubject = new Subject<any[]>();
+            let format = "YYYY-MM-DD HH:mm:ss";
+            let params = {startdate: startDate.format(format), enddate: endDate.format(format), searchTerm: this.searchTerm};
+            this.calendars.microsoft = [];
+            this.currentEnd.microsoft = endDate;
+            this.currentStart.microsoft = startDate;
+
+            this.backend.getRequest("channels/groupware/microsoft/calendar/events", params)
+                .subscribe(res => {
+                    if (res.events && res.events.length > 0) {
+                        for (let event of res.events) {
+                            if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
+
+                            event.start = moment(moment(event.start.dateTime ?? event.start.date)
+                                .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
+                            event.end = moment(moment(event.end.dateTime ?? event.end.date)
+                                .format(!event.end.dateTime && !!event.end.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
+
+                            event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                            event.color = this.groupwareColor;
+                            event.type = 'microsoft';
+
+                            this.calendars.microsoft.push(event);
+                        }
+                    }
+                    this.isLoading = false;
+                    this.cdRef.detectChanges();
+                    responseSubject.next(this.calendars.microsoft);
+                    responseSubject.complete();
+                });
+            return responseSubject.asObservable();
+        } else {
+            let filteredEntries = [];
+            for (let event of this.calendars.microsoft) {
                 if (event.start < endDate && event.end > startDate) {
                     filteredEntries.push(event);
                 }
@@ -797,6 +864,20 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * remove the microsoft event from calendar if it's been deleted
+     * @param id: string
+     */
+    public removeMicrosoftEvent(id: string) {
+        this.calendars.microsoft.some((event, index) => {
+            if (event.id == id) {
+                this.calendars.microsoft.splice(index, 1);
+                this.cdRef.detectChanges();
+                return true;
+            }
+        });
+    }
+
+    /**
      * set is mobile view boolean and set the multi event height
      * @param bool
      */
@@ -968,8 +1049,13 @@ export class calendar implements OnDestroy {
                 this.userPreferencesLoaded = true;
                 this.cdRef.detectChanges();
             });
+
         if (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess)) {
-            this.loggedByGoogle = true;
+            this.activeGroupware = 'google';
+        }
+
+        if (this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
+            this.activeGroupware = 'microsoft';
         }
     }
 
