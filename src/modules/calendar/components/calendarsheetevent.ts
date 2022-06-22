@@ -197,7 +197,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.model.startEdit(true, true);
         this.event.saving = true;
         this.model.setData({...this.event.data}, false, true);
-        this.model.initializeFieldsStati();
         this.model.save(false).subscribe(() => {
             this.event.saving = false;
             this.cdRef.detectChanges();
@@ -298,7 +297,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.model.module = this.event.module;
         this.model.id = this.event.data.id;
         this.model.setData({...this.event.data}, false);
-        this.model.initializeFieldsStati();
     }
 
     /**
