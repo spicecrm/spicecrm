@@ -196,7 +196,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
 
         this.model.startEdit(true, true);
         this.model.setData({...this.event.data}, false);
-
+        this.model.initializeFieldsStati();
         this.model.save(false);
 
         this.eventChange.emit();
