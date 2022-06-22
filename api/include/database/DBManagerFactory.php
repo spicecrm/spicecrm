@@ -251,7 +251,7 @@ class DBManagerFactory
             // require_once("$dir/$name");
             $classname = '\\SpiceCRM\\includes\\database\\' . substr($name, 0, -4);
             if (!class_exists($classname)) continue;
-            $driver = new $classname;
+            $driver = new $classname([]);
             if (!$validate || $driver->valid()) {
                 if (empty($drivers[$driver->dbType])) {
                     $drivers[$driver->dbType] = [];
