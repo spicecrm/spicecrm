@@ -9,7 +9,6 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Relationships\Relationship;
 
 class DictionaryController
 {
@@ -132,43 +131,13 @@ class DictionaryController
 
 
     /**
-     * load all vardefs defined in files
-     * then load all vardefs defined in dictionary tables
+     * load all vardefs
+     * legacy & cache table
      */
-    public function repairVardefs($req, $res, $args){
+    public function repairVardefs(Request $req, Response $res, array $args): Response {
 
-        $returnArray = [];
-        $db = DBManagerFactory::getInstance();
-
-        //load Vardefs
-        $vardefs = SpiceDictionaryVardefs::loadVardefs();
-
-        // start db transaction
-        $db->transactionStart();
-
-        // truncate cache table sysdictionaryfields
-        $db->truncateQuery('sysdictionaryfields', true);
-
-        // reorganise
-        foreach($vardefs as $dictName => $dict){
-
-            $returnArray[$dictName] = $dict;
-
-            // remove deprecated properties
-            SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
-
-            // save to db
-            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
-        }
-
-        // confirm save into db
-        $db->transactionCommit();
-
-        // repair relationships
-        $rel = new Relationship();
-        $rel->build_relationship_cache();
+        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries();
 
         return $res->withJson($returnArray);
     }
-
 }

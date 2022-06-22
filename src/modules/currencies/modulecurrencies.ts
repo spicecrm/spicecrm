@@ -12,10 +12,10 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 import {FormsModule} from "@angular/forms";
 
-import /*embed*/ {CurrencyManager} from "./components/currencymanager";
-import /*embed*/ {AddCurrencyItem} from "./components/addcurrencyitem";
-import /*embed*/ {SystemCurrency} from "./components/systemcurrency";
-import /*embed*/ {CurrencyList} from "./components/currencylist";
+import {CurrencyManager} from "./components/currencymanager";
+import {AddCurrencyItem} from "./components/addcurrencyitem";
+import {SystemCurrency} from "./components/systemcurrency";
+import {CurrencyList} from "./components/currencylist";
 
 
 

@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -19,8 +20,6 @@ use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\UploadStream;
-use SpiceCRM\modules\ACLActions\ACLAction;
-use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -201,12 +200,14 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
+
         $db = DBManagerFactory::getInstance();
         $execute = false;
         VardefManager::clearVardef();
+
         if (SpiceDictionaryVardefs::isDbManaged()) {
             $vardefs = SpiceDictionaryVardefs::loadVardefs();
-
+//echo print_r($vardefs, true);die('as');
             $db->transactionStart();
             $db->truncateQuery('sysdictionaryfields', true);
 
@@ -219,6 +220,7 @@ class AdminController
 
         $repairedTables = [];
         $sql = '';
+
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
@@ -279,6 +281,8 @@ class AdminController
         $sql = '';
 
         foreach (SpiceModules::getInstance()->getModuleList() as $module) {
+            SpiceDictionaryHandler::loadModuleFiles($module);
+
             $focus = BeanFactory::getBean($module);
             if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
                 $sql .= $db->repairTable($focus, $execute);
@@ -450,9 +454,9 @@ class AdminController
     public function rebuildDictionaryRelationships()
     {
         unset($_SESSION['relationships']);
+
         // rebuild relationship cache
-        $rel = new Relationship();
-        $rel->build_relationship_cache();
+        Relationship::build_relationship_cache();
     }
 
     /**
@@ -653,10 +657,6 @@ class AdminController
             foreach ($extensions as $extDir => $extFile) {
                 $this->merge_files("Ext/Vardefs", 'vardefs.ext.php');
             }
-        }
-
-        if (is_dir('custom/Extension/modules/Jobs/Ext/ScheduledTasks')) {
-            $this->merge_files("Ext/ScheduledTasks", 'scheduledtasks.ext.php');
         }
     }
 

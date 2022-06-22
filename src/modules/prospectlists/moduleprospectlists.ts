@@ -11,8 +11,8 @@ import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
-import /*embed*/ {ProspectListsCreateTargetListFromModuleModal} from './components/prospectlistscreatetargetlistfrommodulemodal';
-import /*embed*/ {ProspectListsCreateTargetListFromModuleButton} from './components/prospectlistscreatetargetlistfrommodulebutton';
+import {ProspectListsCreateTargetListFromModuleModal} from './components/prospectlistscreatetargetlistfrommodulemodal';
+import {ProspectListsCreateTargetListFromModuleButton} from './components/prospectlistscreatetargetlistfrommodulebutton';
 
 @NgModule({
     imports: [
