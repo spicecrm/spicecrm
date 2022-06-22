@@ -561,10 +561,8 @@ export class calendar implements OnDestroy {
                         for (let event of res.events) {
                             if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
 
-                            event.start = moment(moment(event.start.dateTime ?? event.start.date)
-                                .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
-                            event.end = moment(moment(event.end.dateTime ?? event.end.date)
-                                .format(!event.end.dateTime && !!event.end.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
+                            event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:ss'));
+                            event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:ss'));
 
                             event.isMulti = +event.end.diff(event.start, 'days') > 0;
                             event.color = this.groupwareColor;
@@ -871,7 +869,7 @@ export class calendar implements OnDestroy {
         this.calendars.microsoft.some((event, index) => {
             if (event.id == id) {
                 this.calendars.microsoft.splice(index, 1);
-                this.cdRef.detectChanges();
+                this.refresh();
                 return true;
             }
         });
@@ -1047,7 +1045,6 @@ export class calendar implements OnDestroy {
                 this.setUserCalendars(calendars.Users, false);
                 this.setOtherCalendars(calendars.Other, false);
                 this.userPreferencesLoaded = true;
-                this.cdRef.detectChanges();
             });
 
         if (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess)) {
