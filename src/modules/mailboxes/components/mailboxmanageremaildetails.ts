@@ -240,6 +240,18 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     }
 
     /**
+     * reply to all recipients of the email
+     * inject mode as true to set it to replyall
+     *
+     * @private
+     */
+    public replyToAll() {
+        this.modal.openModal('EmailReplyModal', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.mode = 'replyall';
+        });
+    }
+
+    /**
      * reply to the email
      *
      * @private

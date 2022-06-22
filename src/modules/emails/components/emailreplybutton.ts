@@ -46,8 +46,10 @@ export class EmailReplyButton {
      * the method invoed when selecting the action. This triggers opening a modal window for the email composition
      */
     public execute() {
-        this.modal.openModal('EmailReplyModal', true, this.injector);
+        this.modal.openModal('EmailReplyModal', true, this.injector).subscribe(modalRef => {
+            if(this.actionconfig.replymode != null) {
+                modalRef.instance.mode = this.actionconfig.replymode;
+            }
+        });
     }
-
-
 }
