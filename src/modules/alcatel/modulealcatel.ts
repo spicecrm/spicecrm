@@ -13,8 +13,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {AlcatelToolbarIndicator} from "./components/alcateltoolbarindicator";
-import /*embed*/ {AlcatelPreferences} from "./components/alcatelpreferences";
+import {AlcatelToolbarIndicator} from "./components/alcateltoolbarindicator";
+import {AlcatelPreferences} from "./components/alcatelpreferences";
 
 
 @NgModule({

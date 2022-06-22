@@ -5,6 +5,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -18,9 +19,7 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * load the files containing metadata related vardefs
      * this is the old way od defining vardefs for metadata tables
      */
-    public static function loadMetaDataFiles() {
-        $directories = ['metadata', 'extensions/metadata', 'custom/metadata', 'custom/extensions/metadata'];
-
+    public static function loadMetaDataFiles($directories = ['metadata', 'extensions/metadata', 'custom/metadata', 'custom/extensions/metadata', 'custom/Extension/modules']) {
         foreach ($directories as $directory) {
             self::loadMetaDataFilesFromDir($directory);
         }
@@ -46,22 +45,22 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * loads the dictionary Definitions of type metadata from the database
      */
     public static function loadMetaDataDefinitions() {
+        SpiceDictionaryHandler::loadMetaDataFiles();
+
         if(SpiceDictionaryVardefs::isDbManaged()){
-            SpiceDictionaryVardefs::loadDictionaries(SpiceDictionaryHandler::getInstance()->dictionary, 'metadata');
+            SpiceDictionaryVardefs::loadDictionaries();
         }
     }
 
     /**
-     * load vardefs cached in sysdictionaryfields
+     * load vardefs cached in sysdictionaryfields & relationships
      * @return void
      */
-    public static function loadCachedVardefs(){
-        // load the metadata files if system for BWC
-        if(!SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
-            SpiceDictionaryHandler::loadMetaDataFiles();
-        }
-        SpiceDictionaryVardefs::loadDictionariesCacheFromDb();
+    public static function loadCachedVardefs($forceReload = false){
+        SpiceDictionaryVardefs::loadDictionariesCacheFromDb($forceReload);
+        // SpiceDictionaryVardefs::loadRelationshipsCacheFromDb($forceReload);
     }
+
 
 
     /**
@@ -731,5 +730,13 @@ LEFT JOIN
         }
 
         return $tables;
+    }
+
+    /**
+     * @param string $objectName
+     * @return array|mixed
+     */
+    public function loadDictionaryIndicesFromSession(string $objectName){
+        return $_SESSION['dictionaries'][$objectName]['indices'] ?: [];
     }
 }

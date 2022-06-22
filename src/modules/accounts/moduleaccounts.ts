@@ -12,22 +12,22 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {ACManagerService} from "./services/acmanager.service";
-import /*embed*/ { accountHierarchy } from "./services/accounthierarchy.service";
+import {ACManagerService} from "./services/acmanager.service";
+import { accountHierarchy } from "./services/accounthierarchy.service";
 
-import /*embed*/ {AccountsKPIsOverview} from "./components/accountskpisoverview";
-import /*embed*/ {AccountCCDetails} from "./components/accountccdetails";
-import /*embed*/ {AccountCCDetailsTab} from "./components/accountccdetailstab";
-import /*embed*/ {AccountTerritoryDetailsTab} from "./components/accountterritorydetailstab";
-import /*embed*/ {AccountTerritoryDetails} from "./components/accountterritorydetails";
-import /*embed*/ {ContactCCDetails} from "./components/contactccdetails";
-import /*embed*/ {ContactCCDetailsTab} from "./components/contactccdetailstab";
-import /*embed*/ {AccountsContactsManager} from "./components/accountscontactsmanager";
-import /*embed*/ {AccountsContactsManagerDetails} from "./components/accountscontactsmanagerdetails";
-import /*embed*/ {AccountsContactsManagerList} from "./components/accountscontactsmanagerlist";
-import /*embed*/ {AccountHierarchy} from "./components/accounthierarchy";
-import /*embed*/ {AccountHierarchyNode} from "./components/accounthierarchynode";
-import /*embed*/ {AccountVATIDField} from "./components/accountvatidfield";
+import {AccountsKPIsOverview} from "./components/accountskpisoverview";
+import {AccountCCDetails} from "./components/accountccdetails";
+import {AccountCCDetailsTab} from "./components/accountccdetailstab";
+import {AccountTerritoryDetailsTab} from "./components/accountterritorydetailstab";
+import {AccountTerritoryDetails} from "./components/accountterritorydetails";
+import {ContactCCDetails} from "./components/contactccdetails";
+import {ContactCCDetailsTab} from "./components/contactccdetailstab";
+import {AccountsContactsManager} from "./components/accountscontactsmanager";
+import {AccountsContactsManagerDetails} from "./components/accountscontactsmanagerdetails";
+import {AccountsContactsManagerList} from "./components/accountscontactsmanagerlist";
+import {AccountHierarchy} from "./components/accounthierarchy";
+import {AccountHierarchyNode} from "./components/accounthierarchynode";
+import {AccountVATIDField} from "./components/accountvatidfield";
 
 @NgModule({
     imports: [

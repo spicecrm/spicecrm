@@ -12,8 +12,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {FieldDunsNumber} from "./components/fielddunsnumber";
-import /*embed*/ {DunsNumberModal} from "./components/dunsnumbermodal";
+import {FieldDunsNumber} from "./components/fielddunsnumber";
+import {DunsNumberModal} from "./components/dunsnumbermodal";
 
 @NgModule({
     imports: [

@@ -11,27 +11,27 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {sapIDOCSegmentI, sapIDOCSegmentRelationI} from "./interfaces/moudesapidocs.interfaces";
+import {sapIDOCSegmentI, sapIDOCSegmentRelationI} from "./interfaces/moudesapidocs.interfaces";
 
-import /*embed*/ {sapIdocsManager} from "./services/sapidocsmanager.service";
+import {sapIdocsManager} from "./services/sapidocsmanager.service";
 
-import /*embed*/ {SAPIDOCsManager} from "./components/sapidocsmanager";
-import /*embed*/ {SAPIDOCsManagerSegmentsTree} from "./components/sapidocsmanagersegmentstree";
-import /*embed*/ {SAPIDOCsManagerSegmentsTreeIdocType} from "./components/sapidocsmanagersegmentstreeidoctype";
-import /*embed*/ {SAPIDOCsManagerSegmentsTreeNode} from "./components/sapidocsmanagersegmentstreenode";
-import /*embed*/ {SAPIDOCsManagerSegmentDetails} from "./components/sapidocsmanagersegmentdetails";
-import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegment} from "./components/sapidocsmanagersegmentdetailssegment";
-import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegmentrelation} from "./components/sapidocsmanagersegmentdetailssegmentrelation";
-import /*embed*/ {SAPIDOCsManagerSegmentDetailsFields} from "./components/sapidocsmanagersegmentdetailsfields";
-import /*embed*/ {SAPIDOCsManagerSegmentDetailsField} from "./components/sapidocsmanagersegmentdetailsfield";
-import /*embed*/ {SAPIDOCsManagerIDOCTypeAddModal} from "./components/sapidocsmanageridoctypeaddmodal";
-import /*embed*/ {SAPIDOCsManagerSegmentAddModal} from "./components/sapidocsmanagersegmentaddmodal";
-import /*embed*/ {SAPIDOCsManagerFieldAddModal} from "./components/sapidocsmanagerfieldaddmodal";
-import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
-import /*embed*/ {SAPIDOCsViewer} from "./components/sapidocsviewer";
-import /*embed*/ {SAPIDOCsViewerButton} from "./components/sapidocsviewerbutton";
-import /*embed*/ {SAPIDOCsListHeaderActionsProcessButton} from "./components/sapidocslistheaderactionsprocessbutton";
-import /*embed*/ {SAPIDOCsListHeaderActionsProcessModal} from "./components/sapidocslistheaderactionsprocessmodal";
+import {SAPIDOCsManager} from "./components/sapidocsmanager";
+import {SAPIDOCsManagerSegmentsTree} from "./components/sapidocsmanagersegmentstree";
+import {SAPIDOCsManagerSegmentsTreeIdocType} from "./components/sapidocsmanagersegmentstreeidoctype";
+import {SAPIDOCsManagerSegmentsTreeNode} from "./components/sapidocsmanagersegmentstreenode";
+import {SAPIDOCsManagerSegmentDetails} from "./components/sapidocsmanagersegmentdetails";
+import {SAPIDOCsManagerSegmentDetailsSegment} from "./components/sapidocsmanagersegmentdetailssegment";
+import {SAPIDOCsManagerSegmentDetailsSegmentrelation} from "./components/sapidocsmanagersegmentdetailssegmentrelation";
+import {SAPIDOCsManagerSegmentDetailsFields} from "./components/sapidocsmanagersegmentdetailsfields";
+import {SAPIDOCsManagerSegmentDetailsField} from "./components/sapidocsmanagersegmentdetailsfield";
+import {SAPIDOCsManagerIDOCTypeAddModal} from "./components/sapidocsmanageridoctypeaddmodal";
+import {SAPIDOCsManagerSegmentAddModal} from "./components/sapidocsmanagersegmentaddmodal";
+import {SAPIDOCsManagerFieldAddModal} from "./components/sapidocsmanagerfieldaddmodal";
+import {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
+import {SAPIDOCsViewer} from "./components/sapidocsviewer";
+import {SAPIDOCsViewerButton} from "./components/sapidocsviewerbutton";
+import {SAPIDOCsListHeaderActionsProcessButton} from "./components/sapidocslistheaderactionsprocessbutton";
+import {SAPIDOCsListHeaderActionsProcessModal} from "./components/sapidocslistheaderactionsprocessmodal";
 
 @NgModule({
     imports: [

@@ -11,7 +11,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
 // import embedding components
-import /*embed*/ {ExchangeUserSettings} from "./components/exchangeusersettings";
+import {ExchangeUserSettings} from "./components/exchangeusersettings";
 
 @NgModule({
     imports: [

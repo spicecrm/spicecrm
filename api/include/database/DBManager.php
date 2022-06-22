@@ -259,15 +259,21 @@ abstract class DBManager
      * @var
      */
     public $log;
+    /**
+     * holds the current db config
+     * @var array
+     */
+    public $dbConfig = [];
 
     /**
      * Create DB Driver
      */
-	public function __construct()
+	public function __construct(array $config)
 	{
 
 		$this->helper = $this; // compatibility
         $this->log = LoggerManager::getLogger();
+        $this->dbConfig = $config;
 	}
 
     /**

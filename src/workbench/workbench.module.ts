@@ -265,29 +265,6 @@ import {APIlogConfig} from "./components/apilogconfig";
         DashletGeneratorDashletDetails,
         ConfigTransfer
     ],
-    /* no further modules needed */
-    entryComponents: [
-        DomainManager,
-        DictionaryManager,
-        FieldsetManager,
-        ComponentsetManager,
-        WorkbenchConfigLabel,
-        WorkbenchConfigOptionDefault,
-        WorkbenchConfigOptionFieldset,
-        WorkbenchConfigOptionModulefilter,
-        WorkbenchConfigOptionComponentset,
-        WorkbenchConfigOptionActionset,
-        ModuleConfigManager,
-        WorkbenchConfig,
-        ObjectRepositoryManager,
-        CRMLogViewer,
-        CRMLogViewerList,
-        CRMLogViewerModal,
-        CRMLogViewerListModal,
-        APIlogViewer,
-        APIlogViewerModal,
-        ConfigTransfer
-    ],
     exports: [
         SortPipe
     ]
