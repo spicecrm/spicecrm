@@ -34,7 +34,7 @@ class SystemTenant extends SpiceBean
      */
     public function switchToTenant()
     {
-        DBManagerFactory::switchDatabase($this->id);
+        DBManagerFactory::switchAllInstanceDatabases($this->id);
 
         // reloads the config
         SpiceConfig::getInstance()->reloadConfig();
