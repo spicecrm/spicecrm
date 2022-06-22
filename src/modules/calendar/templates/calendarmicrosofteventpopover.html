@@ -4,20 +4,20 @@
     </button>
     <div #popoverContainer>
         <div class="slds-popover__header" style="padding: .5rem">
-            <header [system-title]="event.summary" class="slds-text-heading--small slds-m-bottom--x-small slds-truncate slds-has-divider--bottom-space">
-                {{event.summary}}
+            <header [system-title]="event.subject" class="slds-text-heading--small slds-m-bottom--x-small slds-truncate slds-has-divider--bottom-space">
+                {{event.subject}}
             </header>
             <div class="slds-scrollable--y" style="height: 120px">
                 <dl class="slds-list_horizontal slds-wrap slds-text-body_small">
                     <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
                         <system-label label="LBL_DESCRIPTION"></system-label>
                     </dt>
-                    <dd [innerHTML]="event.description" class="slds-item_detail slds-m-bottom--x-small"></dd>
+                    <dd [innerHTML]="event.body?.content" class="slds-item_detail slds-m-bottom--x-small"></dd>
                     <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
                         <system-label label="LBL_LOCATION"></system-label>
                     </dt>
-                    <dd [system-title]="event.location" class="slds-item_detail slds-m-bottom--x-small">
-                        {{event.location}}
+                    <dd [system-title]="event.location?.displayName" class="slds-item_detail slds-m-bottom--x-small">
+                        {{event.location?.displayName}}
                     </dd>
                 </dl>
             </div>
