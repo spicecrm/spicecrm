@@ -1045,7 +1045,6 @@ export class calendar implements OnDestroy {
                 this.setUserCalendars(calendars.Users, false);
                 this.setOtherCalendars(calendars.Other, false);
                 this.userPreferencesLoaded = true;
-                this.cdRef.detectChanges();
             });
 
         if (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess)) {
