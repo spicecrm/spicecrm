@@ -8,6 +8,7 @@
             <div class="slds-scrollable--y" style="height: 120px">
                 <ng-container *ngFor="let event of events; trackBy: trackByFn" [ngSwitch]="event.type">
                     <calendar-sheet-google-event *ngSwitchCase="'google'" [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-more-event"></calendar-sheet-google-event>
+                    <calendar-sheet-microsoft-event *ngSwitchCase="'microsoft'" [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-more-event"></calendar-sheet-microsoft-event>
                     <calendar-sheet-event *ngSwitchDefault [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-more-event"></calendar-sheet-event>
                 </ng-container>
             </div>

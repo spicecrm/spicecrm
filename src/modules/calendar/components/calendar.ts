@@ -43,7 +43,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
     /**
      * holds the google visible boolean
      */
-    public googleIsVisible: boolean = true;
+    public groupwareVisible: boolean = true;
     /**
      * dom reference to the calendar main container div
      */
@@ -179,7 +179,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
      * @param value
      */
     public handleGoogleIsVisible(value) {
-        this.googleIsVisible = value;
+        this.groupwareVisible = value;
     }
 
     /**
