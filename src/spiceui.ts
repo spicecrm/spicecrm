@@ -192,7 +192,10 @@ export class SpiceUIModule {
 /**
  * sets the prod mode. THis is enabled in the build workflow for production build
  */
-// enableProdMode();
+if (environment.production) {
+    enableProdMode();
+    console.log('production mode enabled');
+}
 
 /**
  * browser detection .. IE is not supported
