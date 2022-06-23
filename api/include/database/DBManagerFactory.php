@@ -194,6 +194,20 @@ class DBManagerFactory
     }
 
     /**
+     * switch database for all existing instances
+     * @param string $dbName
+     * @throws Exception
+     */
+    public static function switchAllInstanceDatabases(string $dbName)
+    {
+        $dbInstances = array_keys(self::$instances);
+
+        foreach ($dbInstances as $instanceName) {
+            self::switchDatabase($dbName, $instanceName);
+        }
+    }
+
+    /**
      * switch back to the master db connection
      * @param string $instanceName
      * @return MysqliManager|object|SqlsrvManager|null
@@ -251,7 +265,7 @@ class DBManagerFactory
             // require_once("$dir/$name");
             $classname = '\\SpiceCRM\\includes\\database\\' . substr($name, 0, -4);
             if (!class_exists($classname)) continue;
-            $driver = new $classname;
+            $driver = new $classname([]);
             if (!$validate || $driver->valid()) {
                 if (empty($drivers[$driver->dbType])) {
                     $drivers[$driver->dbType] = [];
