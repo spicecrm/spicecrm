@@ -559,7 +559,7 @@ export class calendar implements OnDestroy {
             this.currentEnd.microsoft = endDate;
             this.currentStart.microsoft = startDate;
 
-            this.backend.getRequest("channels/groupware/microsoft/calendar/events", params)
+            this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params)
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
