@@ -190,7 +190,7 @@ export class SpiceUIModule {
 }
 
 /**
- * sets the prod mode. THis is enabled in the build workflow for production build
+ * sets the prod mode. this reduces angular unnecessary checks in prod mode
  */
 if (environment.production) {
     enableProdMode();
