@@ -143,6 +143,10 @@ export class calendar implements OnDestroy {
      */
     public isDashlet: boolean = false;
     /**
+     * id of the user to be user as owner of the calendar. Used in dashlet
+     */
+    public customOwner: string;
+    /**
      * true while loading the events from backend
      */
     public isLoading: boolean = false;
@@ -253,7 +257,7 @@ export class calendar implements OnDestroy {
      * @return owner id
      */
     get owner(): string {
-        return this.session.authData.userId;
+        return this.customOwner ?? this.session.authData.userId;
     }
 
     /**

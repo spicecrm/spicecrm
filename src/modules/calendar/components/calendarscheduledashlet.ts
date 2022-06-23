@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
@@ -20,7 +20,12 @@ declare var moment: any;
     providers: [calendar]
 })
 
-export class CalendarScheduleDashlet {
+export class CalendarScheduleDashlet implements OnInit {
+    /**
+     * the dashlet config passed from the parent component
+     * @private
+     */
+    public dashletconfig: any = null;
     /**
      * holds the schedule until date
      */
@@ -62,5 +67,9 @@ export class CalendarScheduleDashlet {
      */
     get title() {
         return new moment(this.calendarDate).format("MMM D, YYYY") + ' - ' + this.scheduleUntilDate.format("MMM D, YYYY");
+    }
+
+    public ngOnInit() {
+        this.calendar.customOwner = this.dashletconfig.userId;
     }
 }
