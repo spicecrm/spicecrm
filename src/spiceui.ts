@@ -190,9 +190,12 @@ export class SpiceUIModule {
 }
 
 /**
- * sets the prod mode. THis is enabled in the build workflow for production build
+ * sets the prod mode. this reduces angular unnecessary checks in prod mode
  */
-// enableProdMode();
+if (environment.production) {
+    enableProdMode();
+    console.log('production mode enabled');
+}
 
 /**
  * browser detection .. IE is not supported
