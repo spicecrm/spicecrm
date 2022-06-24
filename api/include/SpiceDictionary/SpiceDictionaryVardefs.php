@@ -122,9 +122,16 @@ class SpiceDictionaryVardefs  {
      * @return string
      */
     public static function getDictionaryDefinitionsQuery($dictionaryType = 'all'){
-        $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype FROM sysdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? "  AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
+//        $q = "SELECT dictionaryid, dictionaryname, dictionarytype, scope, deleted, status  FROM (
+//    SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, 'g' scope, deleted, STATUS FROM sysdictionarydefinitions sysd
+//     UNION
+//    SELECT sysdc.id dictionaryid, sysdc.name dictionaryname, sysdc.sysdictionary_type dictionarytype, 'c' scope, deleted, status FROM syscustomdictionarydefinitions sysdc
+// )  defs WHERE defs.deleted = 0 AND status='a'".($dictionaryType != 'all' ? "  AND sysdictionary_type='".$dictionaryType."'" : "");
+
+
+        $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, 'g' scope, deleted, status  FROM sysdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? "  AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
         $q.= " UNION ";
-        $q.= "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype FROM syscustomdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? " AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
+        $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, 'c' scope, deleted, status FROM syscustomdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? " AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
 
         return $q;
     }
@@ -154,6 +161,7 @@ class SpiceDictionaryVardefs  {
      */
     public static function loadVardefs(){
         $vardefs = [];
+        $storeDictionaries = [];
 
         // load legacy definitions contained in files
         self::loadLegacyFiles();
@@ -170,7 +178,12 @@ class SpiceDictionaryVardefs  {
         // override in/add to $vardefs (only fields defined in dictionary itself)
         if(count($dictionaryDefinitions) > 0){
             foreach($dictionaryDefinitions as $row) {
-                $dbDict = SpiceDictionaryVardefs::loadRawDictionary($row['id']);
+                if(!in_array($row['id'], array_keys($storeDictionaries))) {
+                    $dbDict = SpiceDictionaryVardefs::loadRawDictionary($row['id']);
+                    $storeDictionaries[$row['id']] = $dbDict;
+                } else{
+                    $dbDict = $storeDictionaries[$row['id']];
+                }
 
                 if(isset($vardefs[$dbDict['name']])){
                     if(is_array($vardefs[$dbDict['name']]['fields'])){
@@ -1347,7 +1360,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         return [];
     }
     /**
-     * save entry to cache table sysdictionaryfields
      * save entry to cache table sysdictionaryindices
      * @param array $dict
      * @return void
@@ -1366,28 +1378,28 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         $dictDefinition = self::getDictionaryByName($dictName);
         $dictId = $dictDefinition['id'];
 
-        if( empty($dictId) ){
-            $dictId = SpiceUtils::createGuid();
-            $insertParams = [
-                'id' => "'".$dictId."'",
-                'name' => "'".$dictName."'",
-                'tablename' => "'".$dict['table']."'",
-                'sysdictionary_type' => "'".($dictName === $dict['table'] ? 'metadata' : 'module')."'",
-                'audited' => isset($dict['audited']) ? intval($dict['audited']) : 0,
-                'status' => "'a'",
-                'deleted' => 0
-            ];
-
-            // insert manually
-            $skipEntry = false;
-            if(empty($dict['name']) && empty($dict['table']) && empty($dict['dictionaryname'])){
-                $skipEntry = true;
-            }
-            if(!$skipEntry){
-                $sqls[] = "INSERT INTO sysdictionarydefinitions (".implode(', ', array_keys($insertParams)).") VALUES(".implode(",", $insertParams).")";
-            }
-
-        }
+//        if( empty($dictId) ){
+//            $dictId = SpiceUtils::createGuid();
+//            $insertParams = [
+//                'id' => "'".$dictId."'",
+//                'name' => "'".$dictName."'",
+//                'tablename' => "'".$dict['table']."'",
+//                'sysdictionary_type' => "'".($dictName === $dict['table'] ? 'metadata' : 'module')."'",
+//                'audited' => isset($dict['audited']) ? intval($dict['audited']) : 0,
+//                'status' => "'a'",
+//                'deleted' => 0
+//            ];
+//
+//            // insert manually
+//            $skipEntry = false;
+//            if(empty($dict['name']) && empty($dict['table']) && empty($dict['dictionaryname'])){
+//                $skipEntry = true;
+//            }
+//            if(!$skipEntry){
+//                $sqls[] = "INSERT INTO sysdictionarydefinitions (".implode(', ', array_keys($insertParams)).") VALUES(".implode(",", $insertParams).")";
+//            }
+//
+//        }
 
 
         foreach($dict['fields'] as $fieldDef){
@@ -1440,7 +1452,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                     $skipEntry = true;
                 }
                 if(!$skipEntry) {
-                    //$db->insertQuery('sysdictionaryfields', $insertParams, true);
+                    //$db->insertQuery('sysdictionaryindices', $insertParams, true);
                     $sqls[] = "INSERT INTO sysdictionaryindices (" . implode(', ', array_keys($insertParams)) . ") VALUES(" . implode(",", $insertParams) . ")";
                 }
             }
