@@ -117,19 +117,12 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @return array
      */
     public static function getDictionaryDefinitions(){
-        $db = DBManagerFactory::getInstance();
-        $defArray = [];
-        $dictionarydefinitions = $db->query("SELECT * FROM sysdictionarydefinitions WHERE deleted = 0");
-        while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
-            $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
-            $defArray[] = array_merge($dictionarydefinition, ['scope' => 'g']);
+        $q = SpiceDictionaryVardefs::getDictionaryDefinitionsQuery();
+        if($rows = DBManagerFactory::getInstance()->query($q)){
+            while($row = DBManagerFactory::getInstance()->fetchByAssoc($rows)){
+                $defArray[] = $row;
+            }
         }
-        $dictionarydefinitions = $db->query("SELECT * FROM syscustomdictionarydefinitions WHERE deleted = 0");
-        while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
-            $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
-            $defArray[] = array_merge($dictionarydefinition, ['scope' => 'c']);;
-        }
-
         return $defArray;
     }
 
