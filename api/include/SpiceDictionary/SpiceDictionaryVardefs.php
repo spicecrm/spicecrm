@@ -354,7 +354,7 @@ class SpiceDictionaryVardefs  {
     public static function loadDictionaries(array $dictionaryTypes = ['module', 'metadata']){
 
         //load templates first
-        $dictionaryTemplates = self::getDictionaryDefinitions(['templates']);
+        $dictionaryTemplates = self::loadTemplateDictionaries(['templates']);
 
         // get definitions
         $dictionaryDefinitions = self::getDictionaryDefinitions($dictionaryTypes);
