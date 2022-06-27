@@ -33,8 +33,8 @@ class CampaignTask extends SpiceBean
     }
 
     /**
-     * remove entries from campign log for passed status
-     * created entries in campign log with passed status
+     * remove entries from campaign log for passed status
+     * created entries in campaign log with passed status
      * set campaign task to activated
      * set camapign task status to Active
      * @todo find another way to bild query so that sql_mode workaround may be removed
@@ -60,9 +60,9 @@ class CampaignTask extends SpiceBean
         $current_date = $this->db->now();
         $guidSQL = $this->db->getGuidSQL();
 
-        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified";
+        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id";
         $insert_query .= ') ';
-        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0, $current_date";
+        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
         $insert_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
         $insert_query .= " INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id";
         $insert_query .= " WHERE plc.campaigntask_id='$thisId'";
@@ -80,8 +80,8 @@ class CampaignTask extends SpiceBean
         while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
             $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
             $seed = BeanFactory::getBean($row['module']);
-            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified)";
-            $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date";
+            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
+            $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date, {'$this->assigned_user_id'}";
             $insert_query .= " FROM {$seed->_tablename}";
             $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->_tablename}.id) AND $where";
             $this->db->query($insert_query);

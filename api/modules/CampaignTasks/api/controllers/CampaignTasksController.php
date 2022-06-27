@@ -60,7 +60,8 @@ class CampaignTasksController
     }
 
     /**
-     * activates the campaiugn tasks and writes the campaign log entries
+     * activates the campaign tasks and writes the campaign log entries
+     * prospect lists of type test will be ignored
      *
      * @param Request $req
      * @param Response $res
