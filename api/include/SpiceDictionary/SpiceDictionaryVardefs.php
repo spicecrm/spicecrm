@@ -523,7 +523,7 @@ class SpiceDictionaryVardefs  {
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname, 
         sysdi.name itemname, sysdi.label itemlabel, sysdi.required,  sysdi.sysdictionary_ref_id,
-        sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationame
+        sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
         LEFT JOIN (SELECT * from sysdictionaryitems UNION SELECT * from syscustomdictionaryitems) sysdi ON sysdi.sysdictionarydefinition_id = sysd.id
@@ -1210,7 +1210,7 @@ where sysditems.sysdictionary_ref_id = '{$sysdictionarydefinitionId}'  AND sysd.
         $q = "select sysd.id sysdictionary_id, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type,
          sysdo.name domainname, sysdof.name technicalname, 
         sysdi.name itemname, sysdi.label itemlabel, sysdi.required,  sysdi.sysdictionary_ref_id,
-        sysdof.*, sysdov.name validationame,
+        sysdof.*, sysdov.name validationname,
         relfields.map_to_fieldname
         FROM (select * from sysdictionaryrelationshipfields UNION select * from syscustomdictionaryrelationshipfields) relfields
 INNER JOIN (select * from sysdictionarydefinitions UNION select * from syscustomdictionarydefinitions) sysd ON sysd.id = relfields.sysdictionarydefinition_id AND sysd.status='a'
@@ -1721,7 +1721,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         $retArray = [];
         // core values
-        $coreEnums = $db->query("SELECT id, name FROM sysdomainfieldvalidations WHERE validation_type = 'options' AND status='a' AND deleted = 0");
+        $coreEnums = $db->query("SELECT id, name FROM sysdomainfieldvalidations WHERE (validation_type = 'enum' OR validation_type = 'options') AND status='a' AND deleted = 0");
 
         while($coreEnum = $db->fetchByAssoc($coreEnums)){
             $retArray[$coreEnum['name']]['name'] = $coreEnum['name'];
