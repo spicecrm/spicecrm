@@ -83,6 +83,7 @@ import {AdministrationLoginRestrictionIpAddressesRow} from './components/adminis
 import {AdministrationPasswordConfig} from './components/administrationpasswordconfig';
 import {AdministrationBlockedUsers} from './components/administrationblockedusers';
 import {AdministrationLoginManagement} from './components/administrationloginmanagement';
+import {AdministrationLoginMethods} from './components/administrationloginmethods';
 
 import {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
@@ -166,7 +167,8 @@ import {AdministrationMigrateLegacyDoms} from "./components/administrationmigrat
         AdministrationPasswordConfig,
         AdministrationBlockedUsers,
         AdministrationLoginManagement,
-        AdministrationAssetManager
+        AdministrationAssetManager,
+        AdministrationLoginMethods
     ]
 
 })
