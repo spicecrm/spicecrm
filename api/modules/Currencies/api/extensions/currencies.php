@@ -62,6 +62,12 @@ $routes = [
                 'description' => 'Symbol',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'required'    => true
+            ],
+            'conversion_rate'           => [
+                'in'          => 'body',
+                'description' => 'Conversion Rate',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => true
             ]
         ]
     ]
