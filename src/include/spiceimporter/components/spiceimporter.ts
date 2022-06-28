@@ -283,7 +283,7 @@ export class SpiceImporter implements OnInit {
         this.spiceImporter.result = {};
         this.processing = true;
 
-        this.backend.postRequest('module/SpiceImports/import', {
+        this.backend.postRequest('module/SpiceImports/import', null,{
             objectimport: preparedObjectImport,
         }).subscribe(res => {
 
