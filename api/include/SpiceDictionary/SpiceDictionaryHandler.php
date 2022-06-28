@@ -110,26 +110,35 @@ class SpiceDictionaryHandler extends SpiceSingleton
     }
 
 
-
     /**
-     * retrieves the dictionary definitions from table sysdictionarydefinitions
-     * @param null $module the module name
+     * retrieves the dictionary definitions from tables sysdictionarydefinitions, syscustomdictionarydefinitions
+     * for the dictionary manager in frontend
+     * @param null $status the status of the definitions
      * @return array
+     * @throws Exception
      */
-    public static function getDictionaryDefinitions(){
-        $db = DBManagerFactory::getInstance();
+    public static function getDictionaryDefinitions(string $status = null){
         $defArray = [];
-        $dictionarydefinitions = $db->query("SELECT * FROM sysdictionarydefinitions WHERE deleted = 0");
-        while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
-            $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
-            $defArray[] = array_merge($dictionarydefinition, ['scope' => 'g']);
-        }
-        $dictionarydefinitions = $db->query("SELECT * FROM syscustomdictionarydefinitions WHERE deleted = 0");
-        while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
-            $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
-            $defArray[] = array_merge($dictionarydefinition, ['scope' => 'c']);;
+        $defTables = [
+            ['name' => 'sysdictionarydefinitions', 'scope' => 'g'],
+            ['name' => 'syscustomdictionarydefinitions', 'scope' => 'c']
+        ];
+        $db = DBManagerFactory::getInstance();
+        $whereClause = '';
+
+        //check on where clause
+        if(!empty($status)){
+            $whereClause =" AND status='{$status}'";
         }
 
+        foreach($defTables as $defTable){
+            $dictionarydefinitions = $db->query("SELECT * FROM {$defTable['name']} WHERE deleted = 0".$whereClause);
+            while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
+                $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
+                $dictionarydefinition['scope'] = $defTable['scope'];
+                $defArray[] = $dictionarydefinition;
+            }
+        }
         return $defArray;
     }
 
