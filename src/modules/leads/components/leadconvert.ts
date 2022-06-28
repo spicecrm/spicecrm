@@ -145,7 +145,7 @@ export class LeadConvert {
             case 2:
                 if (this.opportunity && this.opportunity.isNew && this.opportunity.validate()) {
                     this.convert();
-                } else {
+                } else if (!this.opportunity) {
                     this.convert();
                 }
                 break;
