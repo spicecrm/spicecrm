@@ -133,6 +133,13 @@ class AuthenticateController
         $db = DBManagerFactory::getInstance();
         $timeDate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        if ( !$current_user ) {
+            $body = $req->getParsedBody();
+            if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
+                $userAuthenticateObj = new UserAuthenticate();
+                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+            }
+        }
         $auth = new TOTPAuthentication();
         $secret = $auth->generateSecret();
 
@@ -162,7 +169,16 @@ class AuthenticateController
         $db = DBManagerFactory::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $record = $db->fetchOne("SELECT * FROM users_totp WHERE user_id = '{$current_user->id}' AND auth_status = 'C' AND deleted = 0");
+        if ( !$current_user ) {
+            $body = $req->getParsedBody();
+            if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
+                $userAuthenticateObj = new UserAuthenticate();
+                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+            }
+        }
+
+        $record = $db->fetchOne($x="SELECT * FROM users_totp WHERE user_id = '{$current_user->id}' AND auth_status = 'C' AND deleted = 0");
+
         if(!$record){
             throw new NotFoundException('no record to validate');
         }

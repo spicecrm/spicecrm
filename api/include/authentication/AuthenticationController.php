@@ -14,6 +14,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
@@ -250,7 +251,7 @@ class AuthenticationController
             $this->errorReason = $e->getMessage();
             $this->errorCode = $e->getErrorCode();
 
-            throw new UnauthorizedException($e->getMessage(), $e->getErrorCode());
+            throw ( new UnauthorizedException($e->getMessage(), $e->getErrorCode()))->setDetails( $e->getDetails() );
         }
 
         return [ //todo find a solution to specify return format
@@ -324,6 +325,7 @@ class AuthenticationController
     /**
      * Handles the authentication with username/password credentials.
      * @return User | false
+     * @throws UnauthorizedException
      */
     private function handleUserPassAuth($authUser, $authPass, $impersonationUser = null )
     {
@@ -358,11 +360,25 @@ class AuthenticationController
 
             // check if password is expired
             if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() ) and !$userObj->is_api_user ) {
-                throw new UnauthorizedException('Password expired.', 2 );
+                $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+                    'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
+                    'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
+                    'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
+                ]);
+                throw ( new UnauthorizedException('Password expired.', 2 ))->setDetails(['labels' => $necessaryLabels]);
+            }
+
+            if ( SpiceConfig::getInstance()->config['login_methods']['totp_authentication_required'] and !TOTPAuthentication::checkTOTPActive( $userObj->id )) {
+                $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+                    'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
+                ]);
+                throw ( new UnauthorizedException('TOTP.', 12 ))->setDetails(['labels' => $necessaryLabels]);
             }
 
         } catch (UnauthorizedException $e) {
-            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))->setUserBlocked( $e->isUserBlocked() );
+            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))
+                ->setUserBlocked( $e->isUserBlocked() )
+                ->setDetails( $e->getDetails() );
         }
         return $userObj;
     }

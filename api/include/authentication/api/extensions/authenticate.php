@@ -166,12 +166,12 @@ $routes = [
         'options' => ['noAuth' => false, 'adminOnly' => false]
     ],
     [
-        'method' => 'get',
+        'method' => 'post',
         'route' => '/authentication/totp/generate',
         'class' => AuthenticateController::class,
         'function' => 'generateTOTPSecret',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false]
+        'options' => ['noAuth' => true, 'adminOnly' => false]
     ],
     [
         'method' => 'put',
@@ -179,7 +179,7 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'validateTOTPCode',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['noAuth' => true, 'adminOnly' => false],
         'parameters' => [
             'code' => [
                 'in' => 'path',

@@ -3,11 +3,11 @@
  */
 import {Component, OnInit} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
-import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
+import {take} from 'rxjs/operators';
 
 @Component({
     selector: "totp-authentication-generate-modal",
@@ -44,14 +44,16 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
      */
     public code: string = '';
 
-    constructor(public language: language, public metadata: metadata, public modal: modal, public model: model, public backend: backend, public toast: toast) {
+    constructor(public language: language, public metadata: metadata, public modal: modal, public backend: backend, public toast: toast) {
 
     }
 
     public ngOnInit() {
         let loading = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
-        this.backend.getRequest(`authentication/totp/generate`).subscribe(
-            res => {
+        this.backend.getRequest(`authentication/totp/generate`)
+            .pipe(take(1))
+            .subscribe({
+            next: res => {
                 loading.emit(true);
                 if (res.secret) {
                     this.QRCode = 'data:image/png;base64,' + res.qrcode;
@@ -62,11 +64,11 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
                     this.close();
                 }
             },
-            () => {
+            error: () => {
                 this.toast.sendToast('Error generating Code', 'error');
                 this.close();
                 loading.emit(true);
-            });
+            }});
     }
 
     /**
@@ -79,20 +81,22 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
     }
 
     public save() {
-        this.backend.putRequest(`authentication/totp/validate/${this.code}`).subscribe(
-            res => {
-                if (res.validated) {
-                    this.close();
-                } else {
-                    this.toast.sendToast('Error validating your code', 'warning', 'the code you entered is not valid, please try again', true);
+        this.backend.putRequest(`authentication/totp/validate/${this.code}`)
+            .pipe(take(1))
+            .subscribe( {
+                next: res => {
+                    if( res.validated ) {
+                        this.close();
+                    } else {
+                        this.toast.sendToast( 'Error validating your code', 'warning', 'the code you entered is not valid, please try again', true );
+                    }
+                    this.code = '';
+                },
+                error: () => {
+                    this.toast.sendToast( 'Error validating your code', 'error', 'there as an internal error validating your request', true );
+                    this.code = '';
                 }
-                this.code = '';
-            },
-            () => {
-                this.toast.sendToast('Error validating your code', 'error', 'there as an internal error validating your request', true);
-                this.code = '';
-            }
-        );
+            });
     }
 
 }
