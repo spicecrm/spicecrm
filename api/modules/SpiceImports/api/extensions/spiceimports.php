@@ -75,7 +75,8 @@ $routes = [
         'class'       => SpiceImportsController::class,
         'function'    => 'saveFromImport',
         'description' => 'saves data from an imports',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+        /*
         'parameters'  => [
             'objectimport' => [
                 'in'          => 'query',
@@ -84,6 +85,7 @@ $routes = [
                 'description' => '',
             ],
         ],
+        */
     ],
     [
         'method'      => 'get',
