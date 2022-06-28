@@ -72,22 +72,28 @@ export class language {
      * @param language the language to set the srvice to
      */
     set currentlanguage(language) {
-        if (typeof language !== 'string' || language === null) {
-            language = this.getDefaultLanguage();
-        }
 
-        // set it to the configuration service
-        this.configurationService.setData('currentlanguage', language);
-        sessionStorage.language = language;
+        if (!language) language = this.getDefaultLanguage();
 
         this._currentlanguage = language;
+
+        this.readStoreAll('languages').subscribe({
+            next: languages => {
+
+                languages.forEach(l => {
+                    l.isCurrent = language == l.language_code;
+                    this.updateStore('languages', l);
+                });
+            },
+            error: () => false
+        });
     }
 
     /**
      * a getter for the current language
      */
     get currentlanguage() {
-        return !!this._currentlanguage ? this._currentlanguage : (!!this.configurationService.getData('currentlanguage') ? this.configurationService.getData('currentlanguage') : sessionStorage.language);
+        return this._currentlanguage;
     }
 
     /**
@@ -133,7 +139,7 @@ export class language {
 
     /**
      * writes a data set record to the db
-     * @param id
+     * @param store
      * @param data
      */
     public writeStore(store, data) {
@@ -144,7 +150,20 @@ export class language {
     }
 
     /**
+     * update a data set record in the db
+     * @param store
+     * @param data
+     */
+    public updateStore(store: string, data) {
+        // check that we have a db
+        if (!this.db) return;
+
+        this.db.transaction([store], "readwrite").objectStore(store).put(data);
+    }
+
+    /**
      * reads a data set record from the DB
+     * @param store
      * @param id
      */
     public readStore(store, id?): Observable<any> {
@@ -165,7 +184,7 @@ export class language {
                     retSubject.next(event.target.result.data);
                     retSubject.complete();
                 } else {
-                    retSubject.error(false);
+                    retSubject.error(`Table ${store} with id ${id} has no data`);
                 }
             };
         } catch(e){
@@ -178,7 +197,7 @@ export class language {
     /**
      * reads all records from the DB in form of an array with the data attribute
      *
-     * @param id
+     * @param store
      */
     public readStoreAll(store): Observable<any> {
         // if we do not have a db return an empty array
@@ -226,19 +245,21 @@ export class language {
      * @param loadhandler the loadhandler from the loader service
      */
     public getLanguage(loadhandler: Subject<string>) {
+
         this.readStoreAll('languages').subscribe({
             next: (languages) => {
+
                 this.languagedata.languages = {available: languages};
 
+                this._currentlanguage = languages.find(l => l.isCurrent)?.language_code;
+
                 this.readStore('applang', this.currentlanguage).subscribe({
-                    next: (applang) => {
-                        this.languagedata.applang = applang;
-                    }
+                    next: applang => this.languagedata.applang = applang,
+                    error: () => false
                 });
                 this.readStore('applist', this.currentlanguage).subscribe({
-                    next: (applist) => {
-                        this.languagedata.applist = applist;
-                    }
+                    next: applist => this.languagedata.applist = applist,
+                    error: () => false
                 });
 
                 loadhandler.next('getLanguage');
@@ -247,9 +268,10 @@ export class language {
                 this.loadLanguage().subscribe(() => {
 
                     // write to the database
-                    for (let language of this.languagedata.languages.available) {
+                    this.languagedata.languages.available.forEach(language => {
+                        language.isCurrent = language.language_code == this.currentlanguage;
                         this.writeStore('languages', language);
-                    }
+                    });
 
                     loadhandler.next('getLanguage');
                 });
@@ -276,6 +298,11 @@ export class language {
                         // emit that the language has changed
                         this.currentlanguage$.emit(this.currentlanguage);
 
+                        retSubject.next(true);
+                        retSubject.complete();
+                    },
+                    error: () => {
+                        this.currentlanguage$.emit(this.currentlanguage);
                         retSubject.next(true);
                         retSubject.complete();
                     }
@@ -698,7 +725,10 @@ export class language {
             }
         });
 
-        if (!langfound) this.languagedata.languages.available.push(languagedata);
+        if (!langfound) {
+            this.languagedata.languages.available.push(languagedata);
+            this.writeStore('languages', languagedata);
+        }
     }
 
     /**
