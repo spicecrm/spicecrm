@@ -77,11 +77,12 @@ export class GlobalLogin {
    public messageId: string;
 
     /**
-     * indicator to show the new password dialog
+     * indicators to show the dialog for the new password or the TOTP generation
      *
      * @private
      */
-   public renewpassword: boolean = false;
+   public renewPassword = false;
+   public generateTOTP = false;
 
     /**
      * inidcates that we are in the login process
@@ -89,6 +90,11 @@ export class GlobalLogin {
      * @private
      */
    public loggingIn: boolean = false;
+
+    /**
+     * Specific labels got from the backend.
+     */
+   public labels: any;
 
     constructor(public loginService: loginService,
                public http: HttpClient,
@@ -177,7 +183,15 @@ export class GlobalLogin {
                             break;
                         // password expired
                         case 2:
-                            this.renewpassword = true;
+                            this.labels = error.details?.labels;
+                            this.renewPassword = true;
+                            this.generateTOTP = false;
+                            break;
+                        // TOTP authentication required
+                        case 12:
+                            this.labels = error.details?.labels;
+                            this.renewPassword = false;
+                            this.generateTOTP = true;
                             break;
                         default:
                             this.messageId = this.toast.sendToast('error logging on', 'error', error.message);
@@ -251,7 +265,7 @@ export class GlobalLogin {
     }
 
     public handleRenewDialogClose(password?: string) {
-        this.renewpassword = false;
+        this.renewPassword = this.generateTOTP = false;
         if (!!password) {
             this.password = password;
             this.login();
