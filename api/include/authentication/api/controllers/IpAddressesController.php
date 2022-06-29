@@ -4,8 +4,6 @@
 namespace SpiceCRM\includes\authentication\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TwoFactorAuthenticate;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;

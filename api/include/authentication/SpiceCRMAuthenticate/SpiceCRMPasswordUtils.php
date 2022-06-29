@@ -1,12 +1,12 @@
 <?php
 
-namespace SpiceCRM\includes\authentication\UserAuthenticate;
+namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use DateTime;
-use DateInterval;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -14,86 +14,40 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
-use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\modules\UserPreferences\UserPreference;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
+use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\Users\User;
-use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 
 /**
- * This file is used to control the authentication process.
- * It will call on the user authenticate and controll redirection
- * based on the users validation
- *
+ * user password management
  */
-class UserAuthenticate
+class SpiceCRMPasswordUtils
 {
-
     /**
-     * @param $authUser
-     * @param $password
-     * @return User
-     * @throws UnauthorizedException
+     * @param string $username
+     * @param string $newPwd
+     * @param false $sendByEmail
+     * @return bool
+     * @throws Exception | ForbiddenException | NotFoundException
      */
-    function authenticate($authUser, $password, $impersonatingUserName = null )
+    public function changePassword(string $username, string $newPwd, bool $sendByEmail = false): bool
     {
-        if ( !IpAddresses::checkIpAddress(SpiceUtils::getClientIP()) ) {
-            if ( !User::isAdmin_byName( empty( $impersonatingUserName ) ? $authUser : $impersonatingUserName )) {
-                throw new UnauthorizedException('No access from this IP address. Contact the admin.', 11);
-            }
+        if (AuthenticationController::getInstance()->getCanChangePassword() === false) {
+            throw new ForbiddenException("Password Change not allowed");
         }
 
-        $db = DBManagerFactory::getInstance();
-        $impersonatingUser = null;
-        $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND deleted = 0 and external_auth_only = 0";
-        # In case impersonation is used,
-        # then the user name of the admin is given as impersonationuser
-        # and the password in $password is the password of the impersonating admin.
-        if ( !empty( $impersonatingUserName )) {
-            # First check the password of the impersonating admin:
-            if ( $impersonatingUser = User::findUserPassword($impersonatingUserName, $password, $sqlWhere)) {
-                # Now fetch the user the admin wants to impersonate:
-                $row = $db->fetchOne( sprintf("SELECT * from users where user_name='%s' AND " . $sqlWhere, $db->quote($authUser)));
-            }
-        } else {
-            # Usual case, no impersonation:
-            $row = User::findUserPassword($authUser, $password, $sqlWhere);
-        }
+        $userObj = AuthenticationController::getInstance()->getUserByUsername($username);
 
-        if ($row) {
-            /** @var User $userObj */
-            $userObj = BeanFactory::getBean("Users", $row['id']);
-            if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
+        $passwordUtils = AuthenticationController::getInstance()->getPasswordUtilsHandler();
 
-            if ($userObj) {
-                $userObj->call_custom_logic('after_login');
-            }
-
-            return $userObj;
-        } else {
-            throw new UnauthorizedException("Invalid Username/Password combination", 1);
-        }
+        return $passwordUtils->setNewPassword($userObj, $newPwd, $sendByEmail, false);
     }
 
     /**
-     * Encodes a users password. This is a static function and can be called at any time.
-     *
-     * @param STRING $password
-     * @return STRING $encoded_password
-     */
-    function encodePassword($password)
-    { //todo AS SOON AS POSSIBLE SWITCH TO SALTED PASSWORDS; SECURITY ISSUE!!!
-        return strtolower(md5($password));
-    }
-
-
-
-
-    /**
+     * set new password
      * @param User $userObj
      * @param string $newPassword
      * @param bool $sendByEmail
@@ -101,112 +55,33 @@ class UserAuthenticate
      * @return bool
      * @throws Exception
      */
-    public function setNewPassword(User $userObj, string $newPassword, bool $sendByEmail, bool $systemGeneratedPassword)
+    public function setNewPassword(User $userObj, string $newPassword, bool $sendByEmail, bool $systemGeneratedPassword): bool
     {
-        //todo $newPassword should be checked for password complexity
         $userObj->setNewPassword($newPassword, $systemGeneratedPassword ? '1' : '0');
         if ($sendByEmail) {
             $emailTempl = $this->getProperEmailTemplate($userObj, 'sendCredentials');
-            $res = $userObj->sendPasswordToUser($emailTempl, ['password' => $newPassword]);
+            $userObj->sendPasswordToUser($emailTempl, ['password' => $newPassword]);
         }
         return true;
     }
 
     /**
-     * @param $lang
-     * @return string
-     */
-    public static function getPwdGuideline($lang)
-    {
-        global $app_strings;
-        $app_strings = SpiceUtils::returnApplicationLanguage($lang);
-
-        $guideline = '';
-
-        if (SpiceConfig::getInstance()->config['passwordsetting']['oneupper']) {
-            $guideline .= $app_strings['MSG_PASSWORD_ONEUPPER'] . ', ';
-        }
-        if (SpiceConfig::getInstance()->config['passwordsetting']['onelower']) {
-            $guideline .= $app_strings['MSG_PASSWORD_ONELOWER'] . ', ';
-        }
-        if (SpiceConfig::getInstance()->config['passwordsetting']['onenumber']) {
-            $guideline .= $app_strings['MSG_PASSWORD_ONENUMBER'] . ', ';
-        }
-        if (SpiceConfig::getInstance()->config['passwordsetting']['onespecial']) {
-            $guideline .= $app_strings['MSG_PASSWORD_ONESPECIAL'] . ', ';
-        }
-        if (SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength']) {
-            $guideline .= SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'];
-            $guideline .= ' ' . $app_strings['LBL_CHARACTERS'] . ', ';
-        }
-        $guideline = substr($guideline, 0, -2);
-        $guideline = ucfirst($guideline);
-
-        $guideline = $app_strings['LBL_AT_LEAST'] . ': ' . $guideline . '.';
-
-        return $guideline;
-    }
-
-
-    /**
-     * @param $email
-     * @param $token
+     * @param string $token
      * @return bool
      * @throws \Exception
      */
-    public function checkToken($token): bool
+    public function checkToken(string $token): bool
     {
         $db = DBManagerFactory::getInstance();
-        $token_valid = false;
-        $res = $db->query(sprintf('SELECT * FROM users_password_tokens WHERE id = "%s" AND date_generated >= CURRENT_TIMESTAMP - INTERVAL ' . (@SpiceConfig::getInstance()->config['passwordsetting']['linkexpirationtime'] * 1) . ' MINUTE', $db->quote($token)));
-        while ($row = $db->fetchByAssoc($res)) $token_valid = true;
-        return $token_valid;
+        $token = $db->getOne(sprintf('SELECT id FROM users_password_tokens WHERE id = "%s" AND date_generated >= CURRENT_TIMESTAMP - INTERVAL ' . (@SpiceConfig::getInstance()->config['passwordsetting']['linkexpirationtime'] * 1) . ' MINUTE', $db->quote($token)));
+        return (bool)$token;
     }
 
     /**
-     * tood clarify, this method should not be here?
-     * @return array
-     */
-    public function get_modules_acl()
-    {
-        $globalModuleList = SpiceModules::getInstance()->getModuleList();
-
-        $actions = ['list', 'view', 'edit'];
-
-        $retModules = [];
-
-        foreach (SpiceACL::getInstance()->disabledModuleList($globalModuleList) as $disabledModule) {
-            SpiceModules::getInstance()->unsetModule($disabledModule);
-        }
-
-        foreach ($globalModuleList as $module) {
-            $retModules[$module]['acl']['enabled'] = SpiceACL::getInstance()->moduleSupportsACL($module);
-            if ($retModules[$module]['acl']['enabled']) {
-                foreach ($actions as $action)
-                    $retModules[$module]['acl'][$action] = SpiceACL::getInstance()->checkAccess($module, $action);
-            }
-        }
-
-        return $retModules;
-    }
-
-
-    /**
-     * @param $email
-     * @return mixed|string
-     * @throws \Exception
-     */
-    public function getUserIdByEmail($email)
-    {
-        $db = DBManagerFactory::getInstance();
-        $user_id = "";
-        $query = sprintf('SELECT u.id FROM users u INNER JOIN email_addr_bean_rel rel ON rel.bean_id = u.id AND rel.bean_module = "Users" AND rel.primary_address = 1 INNER JOIN email_addresses ea ON ea.id = rel.email_address_id AND ea.email_address_caps = "%s" WHERE u.deleted = 0 AND rel.deleted = 0 AND ea.deleted = 0', $db->quote(strtoupper($email)));
-        return $db->fetchOne($query);
-    }
-
-    /**
+     * get user by token
      * @param $token
      * @return false|User
+     * @throws \Exception
      */
     private function getUserByToken($token)
     {
@@ -221,7 +96,7 @@ class UserAuthenticate
 
         $now = new DateTime();
         $now->setTimestamp(time() - ($expirationTime * 60));
-        $userId = $db->fetchOne(sprintf("SELECT user_id FROM users_password_tokens WHERE id = '%s' AND date_generated >= '".$now->format($timedate->get_db_date_time_format())."'", $db->quote($token)));
+        $userId = $db->fetchOne(sprintf("SELECT user_id FROM users_password_tokens WHERE id = '%s' AND date_generated >= '" . $now->format($timedate->get_db_date_time_format()) . "'", $db->quote($token)));
         if ($userId) {
             /** @var User $userObj */
             $userObj = BeanFactory::getBean("Users", $userId['user_id']);
@@ -231,12 +106,13 @@ class UserAuthenticate
     }
 
     /**
-     * @param string $email
+     * reset password by token
      * @param string $token
      * @param string $password
      * @return bool
+     * @throws ForbiddenException | \Exception
      */
-    public function resetPasswordByToken(string $token, string $password)
+    public function resetPasswordByToken(string $token, string $password): bool
     {
         $userObj = $this->getUserByToken($token);
         if (!$userObj) {
@@ -244,24 +120,27 @@ class UserAuthenticate
         }
 
         $userObj->setNewPassword($password);
+        /** @var UserAccessLog $accessLog */
         $accessLog = BeanFactory::getBean('UserAccessLogs');
         $accessLog->addRecord('pwdreset');
+
         return true;
 
     }
 
     /**
-     * @param $user User | string
+     * get proper token email template
+     * @param $userIdOrBean
      * @param $type string
-     * @return false|\SpiceCRM\data\SpiceBean
+     * @return ?EmailTemplate
      * @throws Exception
      */
-    public function getProperEmailTemplate( $userIdOrBean, $type )
+    public function getProperEmailTemplate($userIdOrBean, $type): ?EmailTemplate
     {
 
-        if ( !is_object( $userIdOrBean )) {
-            $user = BeanFactory::getBean('Users', $userIdOrBean );
-            if ( empty( $user->id )) throw ( new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
+        if (!is_object($userIdOrBean)) {
+            $user = BeanFactory::getBean('Users', $userIdOrBean);
+            if (empty($user->id)) throw (new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
         } else $user = $userIdOrBean;
 
         $destUserPrefs = BeanFactory::getBean('UserPreferences')->setUser($user);
@@ -270,6 +149,7 @@ class UserAuthenticate
         if (!isset($destLang[0])) $destLang = SpiceConfig::getInstance()->config['default_language'];
         if (!isset($destLang[0])) $destLang = 'en_us';
 
+        /** @var EmailTemplate $emailTempl */
         $emailTempl = BeanFactory::getBean('EmailTemplates');
         if ($emailTempl === false) {
             throw new \Exception("Unable to instanciate EmailTemplates. Email Package loaded?");
@@ -288,17 +168,17 @@ class UserAuthenticate
     }
 
     /**
+     * send token to user
      * @param string $usernameOrEmail
      * @return bool
-     * @throws Exception
+     * @throws Exception | \Exception
      */
-    public function sendTokenToUser(string $usernameOrEmail)
+    public function sendTokenToUser(string $usernameOrEmail): bool
     {
         $db = DBManagerFactory::getInstance();
 
         /** @var User $userClass */
         $userClass = BeanFactory::getBean("Users");
-        $user_id = null;
         $userObj = $userClass->findByUserName($usernameOrEmail);
 
         if ($userObj) {
@@ -369,9 +249,10 @@ class UserAuthenticate
     }
 
     /**
+     * get password check regex
      * @return string
      */
-    public static function getPwdCheckRegex()
+    public static function getPwdCheckRegex(): string
     {
         $pwdCheck = '';
         if (@SpiceConfig::getInstance()->config['passwordsetting']['oneupper'])
