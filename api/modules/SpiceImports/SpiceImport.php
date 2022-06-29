@@ -72,9 +72,9 @@ class SpiceImport extends SpiceBean
     public function deleteImportFile($filemd5)
     {
         if (!unlink("upload://" . $filemd5)) {
-            return json_encode(['status' => 'File cant be deleted']);
+            return ['status' => 'File cant be deleted'];
         } else {
-            return json_encode(['status' => 'succeed']);
+            return ['status' => 'succeed'];
         }
     }
 
@@ -116,11 +116,12 @@ class SpiceImport extends SpiceBean
         return $imports;
     }
 
-    function saveFromImport($data)
+    function saveFromImport( $data )
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $this->objectimport = json_decode($data['objectimport']);
-        $this->data = $data['objectimport'];
+
+        $this->data = json_encode( $data );
+        $this->objectimport = (object)$data;
         $this->module = $this->objectimport->module;
         $this->name = $this->objectimport->module . "_" . gmdate('Y-m-d H:i:s');
         $this->assigned_user_id = $current_user->id;
@@ -131,7 +132,7 @@ class SpiceImport extends SpiceBean
         if ($this->objectimport->fileTooBig) {
             $this->status = 'q';
             parent::save();
-            return json_encode(['status' => 'scheduled', 'msg' => 'Import has been scheduled']);
+            return ['status' => 'scheduled', 'msg' => 'Import has been scheduled'];
         } else {
             $this->status = 'i';
             parent::save();
@@ -141,8 +142,6 @@ class SpiceImport extends SpiceBean
 
     public function process()
     {
-        $decodedData = json_decode($this->data);
-        $this->objectimport = $decodedData;
         $error = false;
         $list = [];
         $delimiter = ($this->objectimport->separator == 'comma') ? ',' : ';';
@@ -204,10 +203,10 @@ class SpiceImport extends SpiceBean
             $this->db->query($sql);
             $this->status = 'e';
             $this->save();
-            return json_encode(['status' => 'error', 'list' => $list, 'import_id' => $this->id, 'msg' => 'Cant open file ' . $this->objectimport->fileName]);
+            return ['status' => 'error', 'list' => $list, 'import_id' => $this->id, 'msg' => 'Cant open file ' . $this->objectimport->fileName];
         }
 
-        return json_encode(['status' => 'imported', 'list' => $list, 'import_id' => $this->id]);
+        return ['status' => 'imported', 'list' => $list, 'import_id' => $this->id];
     }
 
 

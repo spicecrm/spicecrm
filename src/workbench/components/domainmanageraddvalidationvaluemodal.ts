@@ -24,7 +24,7 @@ export class DomainManagerAddValidationValueModal {
      *  an empty validation record
      */
     public fieldvalidationvalue: any = {
-        scope: 'g',
+        scope: 'c',
         sysdomainfieldvalidation_id: null,
         sequence: 0,
         deleted: 0,
