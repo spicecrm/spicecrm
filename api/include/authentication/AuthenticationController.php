@@ -259,9 +259,10 @@ class AuthenticationController
         }
 
         // retrieve impersonation user
-        $impersonatingUser = $this->getUserByUsername($authData->impersonationUser);
-
-        $userObj->impersonating_user_id = $impersonatingUser->id;
+        if (!empty($authData->impersonationUser)) {
+            $impersonatingUser = $this->getUserByUsername($authData->impersonationUser);
+            $userObj->impersonating_user_id = $impersonatingUser->id;
+        }
 
         $this->setCurrentUser($userObj);
 
