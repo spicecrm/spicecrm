@@ -203,6 +203,7 @@ class DBManagerFactory
         $dbInstances = array_keys(self::$instances);
 
         foreach ($dbInstances as $instanceName) {
+            if ($instanceName == 'master') continue;
             self::switchDatabase($dbName, $instanceName);
         }
     }
