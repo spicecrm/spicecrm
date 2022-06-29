@@ -62,7 +62,7 @@ try {
     // load the core dictionary files
 //    SpiceDictionaryHandler::loadMetaDataFiles();
 
-    $RESTManager->authenticate();
+    AuthenticationController::getInstance()->authenticate();
 
     // register the upload stream handler
     UploadStream::register();
