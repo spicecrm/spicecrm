@@ -237,7 +237,7 @@ class AuthenticationController
 
         $this->handleTenants();
 
-        $userObj = $this->getUserByUsername($authData->username);
+        $userObj = $this->getAuthUser($authData, $authType);
 
         $this->checkUserStatus($userObj);
 
@@ -275,6 +275,22 @@ class AuthenticationController
         // login was via user/pass therefore create session and log login
         if ($authType == 'credentials' || $authData->tokenIssuer !== 'SpiceCRM') {
             $this->token = SpiceCRMAuthenticate::createSession($this->currentUser);
+        }
+    }
+
+    /**
+     * get the auth user object
+     * @throws NotFoundException
+     */
+    public function getAuthUser(object $authData, string $authType): User
+    {
+        switch ($authType) {
+            case 'token':
+                /** @var User $user */
+                $user = BeanFactory::getBean('Users', $_SESSION['authenticated_user_id']);
+                return $user;
+            case 'credentials':
+                return $this->getUserByUsername($authData->username);
         }
     }
 
