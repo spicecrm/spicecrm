@@ -110,11 +110,11 @@ class LDAPAuthenticate implements AuthenticatorI
      * authenticate the user by LDAP server
      * @param object $authData
      * @param string $authType
-     * @return bool
+     * @return string
      * @throws Exception
      * @throws UnauthorizedException
      */
-    public function authenticate(object $authData, string $authType): bool
+    public function authenticate(object $authData, string $authType): string
     {
         //merge to config... maybe find a better solution?
         $this->config = array_merge($this->config, ['servers' => $this->getLdapConfig()]);
@@ -152,7 +152,7 @@ class LDAPAuthenticate implements AuthenticatorI
                 }
 
                 if ($userObj = $this->ldapAuthenticate($authData->username, $authData->password)) {
-                    return !empty($userObj->id);
+                    return $userObj->user_name;
                 }
 
             }

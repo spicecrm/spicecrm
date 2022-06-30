@@ -23,10 +23,10 @@ class GoogleAuthenticate implements AuthenticatorI
      * Authenticates the user in Spice
      * @param object $authData
      * @param string $authType
-     * @return bool
+     * @return string
      * @throws UnauthorizedException | Exception | NotFoundException
      */
-    public function authenticate(object $authData, string $authType): bool
+    public function authenticate(object $authData, string $authType): string
     {
         $payload = $this->verifyIdToken($authData->token);
 
@@ -42,7 +42,7 @@ class GoogleAuthenticate implements AuthenticatorI
             throw new UnauthorizedException('User not found');
         }
 
-        return true;
+        return $userObj->user_name;
     }
 
     /**
