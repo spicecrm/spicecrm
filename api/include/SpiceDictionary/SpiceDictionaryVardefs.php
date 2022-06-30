@@ -1956,6 +1956,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // truncate cache table sysdictionaryfields
         $db->truncateQuery('sysdictionaryfields', true);
+        unset($_SESSION['dictionaries']);
 
         // reorganise
         foreach($vardefs as $dictName => $dict){
