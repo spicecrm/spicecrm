@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    buildNumber: "2022.02.001.1655819424744",
+    buildNumber: "2022.02.001.1656413354190",
     copyright: "© 2015 -  2022 aac services k.s. All rights reserved."
 };
 //# sourceMappingURL=environment.prod.js.map

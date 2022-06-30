@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 
@@ -19,7 +19,12 @@ declare var moment: any;
     providers: [calendar]
 })
 
-export class CalendarThreeDaysDashlet {
+export class CalendarThreeDaysDashlet implements OnInit {
+    /**
+     * the dashlet config passed from the parent component
+     * @private
+     */
+    public dashletconfig: any = null;
     /**
      * reference of calendar content div
      */
@@ -49,6 +54,10 @@ export class CalendarThreeDaysDashlet {
         return {
             height: (this.calendarContent ? this.elementRef.nativeElement.getBoundingClientRect().height - this.calendarContent.element.nativeElement.offsetTop : 100) + 'px',
         };
+    }
+
+    public ngOnInit() {
+        this.calendar.customOwner = this.dashletconfig?.userId;
     }
 
     /**
