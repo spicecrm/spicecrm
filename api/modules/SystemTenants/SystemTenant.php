@@ -15,6 +15,8 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSRESTManager;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Users\User;
 
 class SystemTenant extends SpiceBean
 {
@@ -34,16 +36,36 @@ class SystemTenant extends SpiceBean
      */
     public function switchToTenant()
     {
+        self::switchDB($this->id);
+    }
+
+    /**
+     * switches to master db
+     * @throws Exception
+     */
+    public static function switchToMaster()
+    {
+        $masterDBName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        self::switchDB($masterDBName);
+    }
+
+    /**
+     * switch between master and tenant db
+     * @param string $dbName
+     * @return void
+     */
+    private static function switchDB(string $dbName)
+    {
         DBManagerFactory::disconnectAll();
-        DBManagerFactory::changeDBName($this->id);
+        DBManagerFactory::changeDBName($dbName);
+
+        BeanFactory::clearLoadedBeans();
 
         // reloads the config
         SpiceConfig::getInstance()->reloadConfig();
 
         // unset the fts settings
         unset($_SESSION['SpiceFTS']);
-
-        AuthenticationController::getInstance()->getCurrentUser()->reloadPreferences();
     }
 
     /**
@@ -61,8 +83,7 @@ class SystemTenant extends SpiceBean
         $db->createDatabase($this->id);
 
         // switch to tenant database
-        DBManagerFactory::disconnectAll();
-        DBManagerFactory::changeDBName($this->id);
+        $this->switchToTenant();
 
         $db = DBManagerFactory::getInstance();
 
@@ -99,9 +120,7 @@ class SystemTenant extends SpiceBean
 
         $db->transactionCommit();
 
-        // switch back to the master database
-        DBManagerFactory::disconnectAll();
-        DBManagerFactory::changeDBName(SpiceConfig::getInstance()->config['dbconfig']['db_name']);
+        self::switchToMaster();
 
         $this->initialized = true;
         $this->save();
@@ -125,15 +144,15 @@ class SystemTenant extends SpiceBean
 
             $bean = BeanFactory::getBean($moduleName);
 
-            if (($bean instanceof SugarBean) && !$repairedTables[$bean->table_name]) {
+            if (($bean instanceof SugarBean) && !$repairedTables[$bean->_tablename]) {
                 $db->repairTable($bean);
-                $repairedTables[$bean->table_name] = true;
+                $repairedTables[$bean->_tablename] = true;
             }
 
             // check on audit tables
-            if (($bean instanceof SugarBean) && $bean->is_AuditEnabled() && !isset($repairedTables[$bean->table_name . '_audit'])) {
+            if (($bean instanceof SugarBean) && $bean->is_AuditEnabled() && !isset($repairedTables[$bean->_tablename . '_audit'])) {
                 $sql .= $bean->update_audit_table();
-                $repairedTables[$bean->table_name . '_audit'] = true;
+                $repairedTables[$bean->_tablename . '_audit'] = true;
             }
         }
 
