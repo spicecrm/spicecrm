@@ -64,7 +64,7 @@ $routes = [
     ],
     [
         'method' => 'post',
-        'route' => '/module/SystemTenants/authenticationuser/{user_id}',
+        'route' => '/module/SystemTenants/authenticationuser',
         'class' => SystemTenantsController::class,
         'function' => 'createAuthUser',
         'description' => 'loads demo data for a tenant',
