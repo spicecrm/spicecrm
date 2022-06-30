@@ -69,12 +69,11 @@ try {
 
     // load the modules first
     SpiceModules::getInstance()->loadModules();
-   
+
     // load the metadata from the database
 //    SpiceDictionaryHandler::loadMetaDataDefinitions();
     // load
     SpiceDictionaryHandler::loadCachedVardefs();
-
 
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);
@@ -85,9 +84,6 @@ try {
 
     // run the request
     $RESTManager->app->run();
-
-    // cleanup
-    AuthenticationController::getInstance()->cleanup();
 
 } catch (Exception $e) {
     $RESTManager->outputError($e);

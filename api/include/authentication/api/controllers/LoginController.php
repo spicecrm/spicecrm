@@ -3,20 +3,37 @@
 
 namespace SpiceCRM\includes\authentication\api\controllers;
 
-use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class LoginController
 {
-    public function getCurrentUserData(Request $req, Response $res, array $args): Response {
-        $authController = AuthenticationController::getInstance();
-        $payload        = $authController->getLoginData();
+    /**
+     * get the current user data
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws UnauthorizedException
+     */
+    public function getCurrentUserData(Request $req, Response $res, array $args): Response
+    {
+        $payload = AuthenticationController::getInstance()->getLoginData();
         return $res->withJson($payload);
     }
 
-    public function loginDelete(Request $req, Response $res, array $args): Response {
-        session_destroy();
+    /**
+     * logout the user
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function loginDelete(Request $req, Response $res, array $args): Response
+    {
+        AuthenticationController::getInstance()->logout();
         return $res->withJson(true);
     }
 }

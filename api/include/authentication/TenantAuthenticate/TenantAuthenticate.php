@@ -8,14 +8,32 @@ use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\SessionExpiredException;
+use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\modules\Users\User;
 
 class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
 {
-
-    public function __construct()
+    /**
+     * @param object $authData
+     * @param string $authType
+     * @return string
+     * @throws UnauthorizedException| SessionExpiredException | Exception
+     */
+    public function authenticate(object $authData, string $authType): string
     {
-        DBManagerFactory::switchDatabase($this->tenantId);
+        switch ($authType) {
+            case 'token':
+                $userId = $this->handleToken($authData->token);
+                break;
+            case 'credentials':
+                $userId = $this->handleCredentials($authData->username, $authData->password, $authData->impersonationUser);
+                break;
+            default:
+                throw new UnauthorizedException("Invalid authentication method", 6);
+        }
+
+        return DBManagerFactory::getInstance()->getOne("SELECT username from tenant_auth_users WHERE id ='$userId'");
     }
 
     /**
@@ -28,7 +46,7 @@ class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
     {
         $db = DBManagerFactory::getInstance();
 
-        return $db->fetchOne(sprintf("SELECT * from tenant_auth_users where username='%s'", $db->quote($username)));
+        return $db->fetchOne(sprintf("SELECT * from tenant_auth_users WHERE username='%s'", $db->quote($username)));
     }
 
     /** find the user password
@@ -41,7 +59,7 @@ class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
     public function findUserPassword(string $name, string $password, string $where = ''): ?array
     {
         $db = DBManagerFactory::getInstance();
-        $query = "SELECT * from tenant_auth_users where username='" . $db->quote($name) . "'";
+        $query = "SELECT * from tenant_auth_users WHERE username='" . $db->quote($name) . "'";
 
         $row = $db->fetchOne($query);
 
