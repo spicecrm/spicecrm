@@ -7,6 +7,7 @@ require_once 'vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
 use DI\Container;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
 use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -40,6 +41,8 @@ try {
     if(!SpiceConfig::getInstance()->configExists()){
         throw new \SpiceCRM\includes\ErrorHandlers\SystemNotInstalledException();
     }
+
+    DBManagerFactory::setDBConfig();
 
     $slimContainer = new Container();
     AppFactory::setContainer($slimContainer);
