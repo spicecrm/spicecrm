@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\authentication\OAuth2Authenticate;
 use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
@@ -163,10 +164,10 @@ class OAuth2Authenticate implements AuthenticatorI
      * The username has to be equal to the email address used for the OAuth authentication.
      * @param object $authData
      * @param string $authType
-     * @return bool
+     * @return string
      * @throws NotFoundException | UnauthorizedException | Exception
      */
-    public function authenticate(object $authData, string $authType): bool
+    public function authenticate(object $authData, string $authType): string
     {
         /** @var $user User */
         $user = BeanFactory::getBean('Users');
@@ -177,6 +178,6 @@ class OAuth2Authenticate implements AuthenticatorI
             throw new UnauthorizedException('User not found');
         }
 
-        return true;
+        return $user->user_name;
     }
 }
