@@ -375,13 +375,20 @@ class AuthenticationController
 
     /**
      * get user by username
-     * @throws NotFoundException
+     * @param string $username
+     * @return User
+     * @throws UnauthorizedException | NotFoundException
      */
     public function getUserByUsername(string $username): User
     {
         /** @var User $userObj */
         $userObj = BeanFactory::newBean('Users');
-        return $userObj->findByUserName($username);
+
+        if (!$userObj->findByUserName($username)) {
+            throw new UnauthorizedException('User not found', 404);
+        }
+
+        return $userObj;
     }
 
     /**
