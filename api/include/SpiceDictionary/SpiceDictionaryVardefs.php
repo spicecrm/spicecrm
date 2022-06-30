@@ -193,33 +193,41 @@ class SpiceDictionaryVardefs  {
     }
 
 
+    /**
+     * load the dictionary templates from database
+     * @return array
+     */
     public static function loadTemplateDictionaries(){
         $vardefs = self::loadTemplateVardefs();
         return self::switchKeyNameToId($vardefs);
     }
 
-    public static function switchKeyNameToId($vardefs){
+    /**
+     * switch the dictionary key from name to id
+     * @param array $vardefs
+     * @return array
+     */
+    public static function switchKeyNameToId(array $vardefs){
         $dictDefs = [];
         foreach($vardefs as $dictName => $dictDef){
             $dictDefs[$dictDef['id']] = $dictDef;
         }
-
         return $dictDefs;
     }
 
-        /**
+    /**
      * get all vardefs definitions from legacy files & from db
      * @return array
      */
     public static function loadVardefs(){
         $vardefs = [];
- #       $storeDictionaries = [];
 
         // load legacy definitions contained in files
         self::loadLegacyFiles();
 
         // store all legacy vardefs in an array
         foreach(SpiceDictionaryHandler::getInstance()->dictionary as $dictName => $dict){
+            self::cleanLegacyDictionary($dict);
             $vardefs[$dictName] = $dict;
             $vardefs[$dictName]['dictionaryname'] = $dictName;
         }
@@ -230,17 +238,10 @@ class SpiceDictionaryVardefs  {
         // get active definitions from database
         $dictionaryDefinitions = SpiceDictionaryVardefs::getDictionaryDefinitions(['module','metadata']);
 
-//        die(print_r($dictionaryDefinitions, true));
-
-        // override in/add to $vardefs (only fields defined in dictionary itself)
+        // override in/add to $vardefs (only fields defined in sysdictionary tables)
         if(count($dictionaryDefinitions) > 0){
             foreach($dictionaryDefinitions as $row) {
-#                if(!in_array($row['id'], array_keys($storeDictionaries))) {
-                    $dbDict = SpiceDictionaryVardefs::loadRawDictionary($row['dictionaryid'], $templateDictionaries);
-#                    $storeDictionaries[$row['id']] = $dbDict;
-#                } else{
-#                    $dbDict = $storeDictionaries[$row['id']];
-#                }
+                $dbDict = SpiceDictionaryVardefs::loadRawDictionary($row['dictionaryid'], $templateDictionaries);
 
                 if(isset($vardefs[$dbDict['name']])){
                     if(is_array($vardefs[$dbDict['name']]['fields'])){
@@ -250,10 +251,11 @@ class SpiceDictionaryVardefs  {
                     $vardefs[$dbDict['name']] = $dbDict;
                 }
                 $vardefs[$dbDict['name']]['dictionaryname'] = $dbDict['name'];
+                $vardefs[$dbDict['name']]['type'] = $dbDict['type'];
 
                 // load indices
                 if(!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
-                if(is_array($dbDict['indices'])){
+                if(is_array($dbDict['indices']) && !empty($dbDict['indices'])){
                     $vardefs[$dbDict['name']]['indices'] = array_merge($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
                 }
 
@@ -306,6 +308,7 @@ class SpiceDictionaryVardefs  {
             $vardefs[$object] = $dbDict;
         }
         $vardefs[$object]['dictionaryname'] = $object;
+        $vardefs[$object]['type'] = 'module';
 
         // set to session
         $_SESSION['dictionaries'][$object] = $vardefs[$object];
@@ -347,42 +350,22 @@ class SpiceDictionaryVardefs  {
 
 
     /**
-     * get load all dictionary definitions and populate global $dictionary
+     * get load all dictionary definitions and populate global SpiceDictionaryHandler::dictionary
      *
-     * @param string $dictionaryType all | $dictionaryType | template
+     * @param array $dictionaryType
      */
     public static function loadDictionaries(array $dictionaryTypes = ['module', 'metadata']){
 
         //load templates first
-        $dictionaryTemplates = self::loadTemplateDictionaries(['templates']);
+        $dictionaryTemplates = self::loadTemplateDictionaries();
 
         // get definitions
         $dictionaryDefinitions = self::getDictionaryDefinitions($dictionaryTypes);
 
         // loop and build raw dictionaries (only fields defined in dictionary itself)
-        foreach($dictionaryDefinitions as $dictionaryId => $row){
-            SpiceDictionaryHandler::getInstance()->dictionary[$row['dictionaryname']] = self::loadRawDictionary($row['dictionaryid'], $dictionaryTemplates);
+        foreach($dictionaryDefinitions as $dictionaryId => $dictionaryDef){
+            SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryDef['dictionaryname']] = self::loadRawDictionary($dictionaryDef['dictionaryid'], $dictionaryTemplates);
         }
-
-        // add fields from templates to each dictionary
-        foreach(SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $definition){
-            if(in_array($definition['type'], ['module', 'metadata'])){
-                foreach($definition['fields'] as $fieldId => $fieldDef){
-                    if(isset($fieldDef['sysdictionary_ref_id']) && isset($dictionaryDefinitions[$fieldDef['sysdictionary_ref_id']])){
-                        SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'], SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryDefinitions[$fieldDef['sysdictionary_ref_id']]['dictionaryname']]['fields']);
-                        unset(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['fields'][$fieldDef['sysdictionary_ref_id']]);
-                    }
-                }
-            }
-        }
-
-
-        // remove non module and non metadata dictionaries
-//        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $definition) {
-//            if(!in_array($definition['type'], ['module', 'metadata'])){
-//                unset(SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]);
-//            }
-//        }
 
         // load relationships
         $relationships = self::loadRelationships();
@@ -1402,6 +1385,17 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     }
 
     /**
+     * clean dictionary structure
+     * @param $dict
+     * @return void
+     */
+    public static function cleanLegacyDictionary(&$dict){
+        self::unsetDeprecatedDictionaryProperties($dict);
+        self::reindexDictionaryProperties($dict);
+    }
+
+    /**
+     * remove deprecated properties from field definition
      * @param $dict
      * @return void
      */
@@ -1409,6 +1403,21 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         foreach($dict as $property => $dictDef){
             if(in_array($property, self::$deprecatedProperties)){
                 unset($dictDef);
+            }
+        }
+    }
+
+    /**
+     * metadata vardefs might have a numeric fields array
+     * Make it associative
+     * @param $dict
+     * @return void
+     */
+    public static  function reindexDictionaryProperties(&$dict){
+        foreach($dict['fields'] as $key => $fieldDef){
+            if(is_integer($key)){
+                $dict['fields'][$fieldDef['name']] = $fieldDef;
+                unset($dict['fields'][$key]);
             }
         }
     }
@@ -1428,10 +1437,10 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     /**
      * check if there is a sysdictionarydefinition for that dictionary
      * create one if not
-     * @param $dictName
+     * @param string $dictName
      * @return void
      */
-    public static function getDictionaryByName($dictName){
+    public static function getDictionaryByName(string $dictName){
         $q = "SELECT * FROM sysdictionarydefinitions WHERE name='{$dictName}'";
         if($row = DBManagerFactory::getInstance()->fetchOne($q)){
             return $row;
@@ -1443,7 +1452,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @param array $dict
      * @return void
      */
-    public static function saveDictionaryCacheToDb($dict){
+    public static function saveDictionaryCacheToDb(array $dict){
         $sqls = [];
         $db = DBManagerFactory::getInstance();
 
@@ -1453,33 +1462,10 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         // remove exiting entry
         self::deleteDictionaryCacheFromDb($dictName);
 
-        // check if we have a dictionary definition for that dictionary
+        // We should have a dictionary definition for that dictionary
+        // todo: what shall happen if not? It Will be the case hwne updating a SpiceCRM having custom modules
         $dictDefinition = self::getDictionaryByName($dictName);
         $dictId = $dictDefinition['id'];
-
-//        if( empty($dictId) ){
-//            $dictId = SpiceUtils::createGuid();
-//            $insertParams = [
-//                'id' => "'".$dictId."'",
-//                'name' => "'".$dictName."'",
-//                'tablename' => "'".$dict['table']."'",
-//                'sysdictionary_type' => "'".($dictName === $dict['table'] ? 'metadata' : 'module')."'",
-//                'audited' => isset($dict['audited']) ? intval($dict['audited']) : 0,
-//                'status' => "'a'",
-//                'deleted' => 0
-//            ];
-//
-//            // insert manually
-//            $skipEntry = false;
-//            if(empty($dict['name']) && empty($dict['table']) && empty($dict['dictionaryname'])){
-//                $skipEntry = true;
-//            }
-//            if(!$skipEntry){
-//                $sqls[] = "INSERT INTO sysdictionarydefinitions (".implode(', ', array_keys($insertParams)).") VALUES(".implode(",", $insertParams).")";
-//            }
-//
-//        }
-
 
         foreach($dict['fields'] as $fieldDef){
             if(empty($fieldDef['name'])) continue;
@@ -1543,6 +1529,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                 //@todo: see if anything shall be logged somewhere
             }
         }
+
+        // update the session record
+       $_SESSION['dictionaries'][$dict['name']] = $dict;
     }
 
     /**
@@ -1551,7 +1540,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @param string $dictName dictionary name
      * @return bool
      */
-    public static function deleteDictionaryCacheFromDb($dictName){
+    public static function deleteDictionaryCacheFromDb(string $dictName){
         $db = DBManagerFactory::getInstance();
         // remove from table
         $delWhere = ['sysdictionaryname' => $dictName];
@@ -1569,7 +1558,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     /**
      * get dictionary from cache table
      *
-     * @param array $dictionaryId
+     * @param string $dictionaryId
      * @return array
      */
     public static function getDictionaryCacheFromDb($dictionaryId){
@@ -1677,7 +1666,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @throws \Exception
      */
     public static function getDictionariesCacheFromDb($forceReload = false){
-        if(!$forceReload && isset($_SESSION['dictionaries'])){
+        if(!$forceReload && isset($_SESSION['dictionaries']) && !empty($_SESSION['dictionaries'])){
             //die('getDictionariesCacheFromDb'.print_r($_SESSION['dictionaries'], true));
             SpiceDictionaryHandler::getInstance()->dictionary = $_SESSION['dictionaries'];
             return;
@@ -1927,8 +1916,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     }
 
     /**
-     * Save the relationship definitions to the cache table
-     * table used is former relationships table
+     * Save the relationship definitions to the cache table 'relationships'
      *
      * @param array $relationships
      */
@@ -1940,7 +1928,8 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     }
 
     /**
-     * repair vardefs and relationships
+     * truncate and refill 'sysdictionaryfields' table
+     * truncate and refill 'relationships' table
      * @return array
      * @throws \Exception
      */
@@ -1948,7 +1937,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         $returnArray = [];
         $db = DBManagerFactory::getInstance();
 
-        //load Vardefs
+        // load Vardefs
         $vardefs = SpiceDictionaryVardefs::loadVardefs();
 
         // start db transaction
@@ -1957,13 +1946,13 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         // truncate cache table sysdictionaryfields
         $db->truncateQuery('sysdictionaryfields', true);
 
-        // reorganise
+        // save to db
         foreach($vardefs as $dictName => $dict){
 
             $returnArray[$dictName] = $dict;
 
             // remove deprecated properties
-            SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
+//            SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
 
             // save to db
             SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
@@ -1972,10 +1961,73 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         // confirm save into db
         $db->transactionCommit();
 
-        // repair relationships
+        // repair relationships and reset the session variable 'relationships'
         Relationship::build_relationship_cache();
+
+        // load dictionaries to reset the session variable 'dictionaries'
+        //self::loadDictionariesCacheFromDb(true);
 
         return $returnArray;
     }
 
+    /**
+     * prepare the query for the table
+     * @param array $dict
+     * @param bool $execute
+     * @return string
+     * @throws \Exception
+     */
+    public static function repairTable(array $dict, bool $execute = false){
+        $indices   = $dict['indices'];
+        $fieldDefs = $dict['fields'];
+        $tableName = $dict['table'];
+
+        //Clean the indexes to prevent duplicate definitions
+        $newIndex = [];
+        foreach($indices as $indexDef){
+            $newIndex[$indexDef['name']] = $indexDef;
+        }
+        return DBManagerFactory::getInstance()->repairTableParams($tableName, $fieldDefs,$newIndex, $execute);
+    }
+
+    /**
+     * prepare the query for the audit table
+     * @param array $dict
+     * @param bool $execute
+     * @return string
+     * @throws \Exception
+     */
+    public static function repairAuditTable(array $dict, bool $execute = false){
+        $tableName = self::getAuditTableName($dict['table']);
+
+        if (file_exists('metadata/audit_templateMetaData.php')) {
+            require('metadata/audit_templateMetaData.php');
+        }
+
+        // Bug: 52583 Need ability to customize template for audit tables
+        $custom = 'custom/metadata/audit_templateMetaData_' . $tableName . '.php';
+        if (file_exists($custom)) {
+            require($custom);
+        }
+
+        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
+
+        // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
+        foreach ($indices as $nr => $properties) {
+            $indices[$nr]['name'] = 'idx_' . strtolower($dict['table'] . '_audit_' . $properties['name']);
+        }
+
+        return DBManagerFactory::getInstance()->repairTableParams($tableName, $fieldDefs, $indices, $execute);
+    }
+
+
+    /**
+     * generates the table name for the audit counterpart
+     * @param string $tableName
+     * @return string
+     */
+    public static function getAuditTableName(string $tableName){
+        return $tableName.'_audit';
+    }
 }
