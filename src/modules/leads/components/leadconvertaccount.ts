@@ -79,11 +79,11 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
         this.view.isEditable = true;
         this.view.setEditMode();
 
-        if (this.lead.getField('account_name')) {
+        // if (this.lead.getField('account_name')) {
             this.model.id = null;
             this.model.initialize(this.lead);
             this._linktoaccount = true;
-        }
+        // }
 
         if (this._linktoaccount) {
             this.account.emit(this.model);

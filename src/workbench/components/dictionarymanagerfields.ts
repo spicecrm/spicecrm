@@ -48,10 +48,10 @@ export class DictionaryManagerFields {
     /**
      * returns the fields for the domain
      *
-     * @param domaindefinitionid
+     * @param domaindefinitionid might be null when a dictionary template is used as dictionary item
      * @private
      */
-    public getDomainFields(domaindefinitionid: string, first: boolean = true): DomainField[] {
+    public getDomainFields(domaindefinitionid: string|null, first: boolean = true): DomainField[] {
         let fields = this.dictionarymanager.domainfields.filter(df => df.sysdomaindefinition_id == domaindefinitionid && df.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
         if (fields) {
             return first ? fields.slice(0, 1) : fields.slice(1);
