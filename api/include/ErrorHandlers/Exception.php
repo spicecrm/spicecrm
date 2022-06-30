@@ -70,6 +70,10 @@ class Exception extends \Exception {
         return $this;
     }
 
+    public function getDetails() {
+        return $this->details;
+    }
+
     public function setLogMessage( $message ) {
         $this->logMessage = $message;
         return $this;

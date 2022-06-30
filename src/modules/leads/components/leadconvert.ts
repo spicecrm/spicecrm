@@ -131,21 +131,17 @@ export class LeadConvert {
             case 0:
                 if (this.account && this.account.isNew && this.account.validate()) {
                     this.currentConvertStep++;
-                } else {
-                    this.currentConvertStep++;
                 }
                 break;
             case 1:
                 if (this.contact.isNew && this.contact.validate()) {
-                    this.currentConvertStep++;
-                } else {
                     this.currentConvertStep++;
                 }
                 break;
             case 2:
                 if (this.opportunity && this.opportunity.isNew && this.opportunity.validate()) {
                     this.convert();
-                } else {
+                } else if (!this.opportunity) {
                     this.convert();
                 }
                 break;
