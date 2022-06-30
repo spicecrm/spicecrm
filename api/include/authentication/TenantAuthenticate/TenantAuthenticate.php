@@ -4,6 +4,7 @@
 namespace SpiceCRM\includes\authentication\TenantAuthenticate;
 
 use Exception;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
@@ -33,7 +34,11 @@ class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
                 throw new UnauthorizedException("Invalid authentication method", 6);
         }
 
-        return DBManagerFactory::getInstance()->getOne("SELECT username from tenant_auth_users WHERE id ='$userId'");
+        $authUser = DBManagerFactory::getInstance()->fetchOne("SELECT tenant_id, username from tenant_auth_users WHERE id ='$userId'");
+
+        AuthenticationController::getInstance()->systemtenantid = $authUser['tenant_id'];
+
+        return $authUser['username'];
     }
 
     /**

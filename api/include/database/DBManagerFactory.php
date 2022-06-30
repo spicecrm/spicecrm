@@ -141,6 +141,8 @@ class DBManagerFactory
      */
     public static function getInstance(string $instanceName = 'initial')
     {
+        if (empty(self::$config['dbconfig'])) return null;
+
         self::$instanceName = $instanceName;
         static $count = 0, $old_count = 0;
 

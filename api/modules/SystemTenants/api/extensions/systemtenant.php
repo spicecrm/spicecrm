@@ -62,6 +62,40 @@ $routes = [
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => []
     ],
+    [
+        'method' => 'post',
+        'route' => '/module/SystemTenants/authenticationuser/{user_id}',
+        'class' => SystemTenantsController::class,
+        'function' => 'createAuthUser',
+        'description' => 'loads demo data for a tenant',
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'id' => [
+                'in' => 'body',
+                'description' => 'the id of the user to create auth entry for',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696'
+            ],
+            'tenantId' => [
+                'in' => 'body',
+                'description' => 'the id of the tenant',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696'
+            ],
+            'username' => [
+                'in' => 'body',
+                'description' => 'the username',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'spice.user'
+            ],
+            'password' => [
+                'in' => 'body',
+                'description' => 'the password of the user',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '324534534634'
+            ]
+        ]
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);

@@ -4,6 +4,7 @@
 
 namespace SpiceCRM\modules\SystemTenants\api\controllers;
 
+use Exception;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -50,12 +51,11 @@ class SystemTenantsController
             throw new UnauthorizedException('only admin access');
         }
 
+        /** @var SystemTenant $tenant */
         $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
         if ($tenant) {
 
-            // switch to tenant database
-            DBManagerFactory::disconnectAll();
-            DBManagerFactory::changeDBName($tenant->id);
+            $tenant->switchToTenant();
 
             $demoGenerator = new SpiceDemoDataGenerator();
             $demoGenerator->generateAccounts();
@@ -71,8 +71,7 @@ class SystemTenantsController
                 $populatedTables[] = "leads";
             }
 
-            DBManagerFactory::disconnectAll();
-            DBManagerFactory::changeDBName(SpiceConfig::getInstance()->config['dbconfig']['db_name']);
+            $tenant::switchToMaster();
         }
 
         return $res->withJson(["populatedTables" => $populatedTables]);
@@ -96,8 +95,7 @@ class SystemTenantsController
             throw new BadRequestException('Only allowed when logged in to a tenant.');
         }
 
-        DBManagerFactory::disconnectAll();
-        DBManagerFactory::changeDBName(SpiceConfig::getInstance()->config['dbconfig']['db_name']);
+        SystemTenant::switchToMaster();
 
         /* @var SystemTenant */
         $tenant = BeanFactory::getBean('SystemTenants', $authController->systemtenantid);
@@ -110,6 +108,29 @@ class SystemTenantsController
         $tenant->save();
 
         return $res->withJson(['success' => true]);
+    }
 
+    /**
+     * create an authentication user entry
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function createAuthUser(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getParsedBody();
+
+        $db = DBManagerFactory::getInstance();
+
+        $db->insertQuery('tenant_auth_users', [
+            'id' => $params['id'],
+            'tenant_id' => $params['tenantId'],
+            'username' => $params['username'],
+            'user_hash' => $params['password'],
+        ]);
+
+        return $res->withJson(['success' => true]);
     }
 }

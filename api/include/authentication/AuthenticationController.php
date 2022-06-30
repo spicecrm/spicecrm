@@ -174,15 +174,39 @@ class AuthenticationController
      */
     public function getPasswordUtilsHandler()
     {
-        $tokenIssuer = RESTManager::getInstance()->parseAuthParams()->authData->tokenIssuer;
+        $type = $this->getAuthenticatorType();
 
-        $namespace = "SpiceCRM\includes\authentication\\{$tokenIssuer}Authenticate\\{$tokenIssuer}PasswordUtils";
+        $namespace = "SpiceCRM\includes\authentication\\{$type}Authenticate\\{$type}PasswordUtils";
 
         if (!class_exists($namespace, true)) {
             $namespace = "SpiceCRM\includes\authentication\\SpiceCRMAuthenticate\\SpiceCRMPasswordUtils";
         }
 
         return new $namespace();
+    }
+
+    /**
+     * determine the authenticator type based on the token issuer or the default system authenticator
+     * default type is SpiceCRM
+     * @return string
+     */
+    private function getAuthenticatorType(): string
+    {
+        $type = 'SpiceCRM';
+
+        if (LDAPAuthenticate::isLdapEnabled()) $type = 'LDAP';
+
+        $tokenIssuer = RESTManager::getInstance()->parseAuthParams()->authData->tokenIssuer;
+
+        if (!empty($tokenIssuer)) $type = $tokenIssuer;
+
+        $config = SpiceConfig::getInstance()->config;
+
+        if ($type == 'SpiceCRM' && !empty($config['system']['defaultAuthenticator'])) {
+            $type = $config['system']['defaultAuthenticator'];
+        }
+
+        return $type;
     }
 
     /**
@@ -258,7 +282,7 @@ class AuthenticationController
     {
         $this->checkUserBlocked($authData);
 
-        if (!empty($this->getCurrentUser()->systemtenant_id)) {
+        if (!empty($this->systemtenantid)) {
             $this->connectToTenant();
         }
 
@@ -277,6 +301,10 @@ class AuthenticationController
         }
 
         $this->setCurrentUser($userObj);
+
+        if (!empty($this->systemtenantid)) {
+            $userObj->reloadPreferences();
+        }
 
         if (LDAPAuthenticate::isLdapEnabled()) {
             $userObj->call_custom_logic('after_ldap_login', $this);
@@ -363,38 +391,28 @@ class AuthenticationController
      */
     public function getAuthenticator()
     {
-        $issuer = RESTManager::getInstance()->parseAuthParams()->authData->tokenIssuer;
+        $type = $this->getAuthenticatorType();
 
-        $config = SpiceConfig::getInstance()->config;
-
-        if (LDAPAuthenticate::isLdapEnabled()) {
-            $issuer = 'LDAP';
-        }
-
-        if (empty($issuer)) {
-            $issuer = $config['system']['defaultAuthenticator'] ?? 'SpiceCRM';
-        }
-
-        return $this->getAuthenticatorObject($issuer);
+        return $this->getAuthenticatorObject($type);
     }
 
     /**
      * get authenticator class instance
-     * @param string $tokenIssuer
+     * @param string $type
      * @return mixed
      * @throws \Exception
      */
-    public static function getAuthenticatorObject(string $tokenIssuer)
+    public static function getAuthenticatorObject(string $type)
     {
         $db = DBManagerFactory::getInstance('master');
-        $service = $db->fetchOne("SELECT class_name FROM authentication_services WHERE issuer = '$tokenIssuer'");
+        $service = $db->fetchOne("SELECT class_name FROM authentication_services WHERE issuer = '$type'");
 
-        $authenticationClass = "SpiceCRM\includes\authentication\\{$tokenIssuer}Authenticate\\{$tokenIssuer}Authenticate";
+        $authenticationClass = "SpiceCRM\includes\authentication\\{$type}Authenticate\\{$type}Authenticate";
 
         if (!empty($service)) $authenticationClass = $service['class_name'];
 
         if (class_exists($authenticationClass, true)) {
-            return new $authenticationClass($tokenIssuer);
+            return new $authenticationClass($type);
         } else {
             throw new \Exception("Authentication Class {$authenticationClass} not found");
         }
@@ -441,7 +459,7 @@ class AuthenticationController
     private function connectToTenant()
     {
         /** @var SystemTenant $tenant */
-        $tenant = BeanFactory::getBean('SystemTenants', $this->getCurrentUser()->systemtenant_id);
+        $tenant = BeanFactory::getBean('SystemTenants', $this->systemtenantid);
 
         if ($tenant->valid_until < TimeDate::getInstance()->nowDbDate() && $tenant->valid_until =! null) {
             throw new UnauthorizedException('Tenant expired', 401);
@@ -449,7 +467,6 @@ class AuthenticationController
 
         $tenant->switchToTenant();
 
-        $this->systemtenantid = $tenant->id;
         $this->systemtenantname = $tenant->name;
         $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
         $this->systemTenantWizardCompleted = boolval($tenant->wizard_completed);
