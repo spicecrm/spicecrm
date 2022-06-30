@@ -52,7 +52,11 @@ class SystemTenantsController
 
         $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
         if ($tenant) {
-            $tenant->switchToTenant();
+
+            // switch to tenant database
+            DBManagerFactory::disconnectAll();
+            DBManagerFactory::changeDBName($tenant->id);
+
             $demoGenerator = new SpiceDemoDataGenerator();
             $demoGenerator->generateAccounts();
             $populatedTables[] = "accounts";
@@ -67,7 +71,8 @@ class SystemTenantsController
                 $populatedTables[] = "leads";
             }
 
-            DBManagerFactory::switchInstance(SpiceConfig::getInstance()->config['dbconfig']['db_name'], SpiceConfig::getInstance()->config);
+            DBManagerFactory::disconnectAll();
+            DBManagerFactory::changeDBName(SpiceConfig::getInstance()->config['dbconfig']['db_name']);
         }
 
         return $res->withJson(["populatedTables" => $populatedTables]);
@@ -91,8 +96,8 @@ class SystemTenantsController
             throw new BadRequestException('Only allowed when logged in to a tenant.');
         }
 
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
-        DBManagerFactory::switchToMasterDatabase();
+        DBManagerFactory::disconnectAll();
+        DBManagerFactory::changeDBName(SpiceConfig::getInstance()->config['dbconfig']['db_name']);
 
         /* @var SystemTenant */
         $tenant = BeanFactory::getBean('SystemTenants', $authController->systemtenantid);
