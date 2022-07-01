@@ -16,7 +16,7 @@ class AuthResponse
      * id of the tenant
      * @var string|null
      */
-    public string $tenantId;
+    public ?string $tenantId;
 
     /**
      * @param string $username required parameter in the response to retrieve the current user later
