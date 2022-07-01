@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\SessionExpiredException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
@@ -18,11 +19,11 @@ class SpiceCRMAuthenticate implements AuthenticatorI
     /**
      * @param object $authData
      * @param string $authType
-     * @return string
+     * @return AuthResponse
      * @throws SessionExpiredException
      * @throws UnauthorizedException
      */
-    public function authenticate(object $authData, string $authType): string
+    public function authenticate(object $authData, string $authType): AuthResponse
     {
         switch ($authType) {
             case 'token':
@@ -35,7 +36,9 @@ class SpiceCRMAuthenticate implements AuthenticatorI
                 throw new UnauthorizedException("Invalid authentication method", 6);
         }
 
-        return BeanFactory::getBean('Users', $userId)->user_name;
+        $username = BeanFactory::getBean('Users', $userId)->user_name;
+
+        return new AuthResponse($username);
     }
 
     /**

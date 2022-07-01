@@ -6,11 +6,14 @@ namespace SpiceCRM\includes\authentication;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\GoogleAuthenticate\GoogleAuthenticate;
+use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 use SpiceCRM\includes\authentication\LDAPAuthenticate\LDAPAuthenticate;
 use SpiceCRM\includes\authentication\OAuth2Authenticate\OAuth2Authenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
+use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAuthenticate;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantPasswordUtils;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -159,9 +162,8 @@ class AuthenticationController
         try {
             $authenticator = $this->getAuthenticator();
 
-            $authenticatedUsername = $authenticator->authenticate($authParams->authData, $authParams->authType);
-
-            $this->handleSuccessfulAuthentication($authParams->authData, $authenticatedUsername);
+            $authResponse = $authenticator->authenticate($authParams->authData, $authParams->authType);
+            $this->handleSuccessfulAuthentication($authParams->authData, $authResponse);
 
         } catch (UnauthorizedException $e) {
             $this->handleFailedAuthentication($e, $authParams->authData);
@@ -275,18 +277,18 @@ class AuthenticationController
     /**
      * handle successful authentication
      * @param object $authData
-     * @param string $authenticatedUsername
+     * @param AuthResponse $authResponse
      * @throws NotFoundException | UnauthorizedException
      */
-    private function handleSuccessfulAuthentication(object $authData, string $authenticatedUsername)
+    private function handleSuccessfulAuthentication(object $authData, AuthResponse $authResponse)
     {
         $this->checkUserBlocked($authData);
 
-        if (!empty($this->systemtenantid)) {
-            $this->connectToTenant();
+        if (!empty($authResponse->tenantId)) {
+            $this->connectToTenant($authResponse->tenantId);
         }
 
-        $userObj = $this->getUserByUsername($authenticatedUsername);
+        $userObj = $this->getUserByUsername($authResponse->username);
 
         $this->checkUserStatus($userObj);
 
@@ -302,7 +304,7 @@ class AuthenticationController
 
         $this->setCurrentUser($userObj);
 
-        if (!empty($this->systemtenantid)) {
+        if (!empty($authResponse->tenantId)) {
             $userObj->reloadPreferences();
         }
 
@@ -393,7 +395,7 @@ class AuthenticationController
 
     /**
      * get authenticator class
-     * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate
+     * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate | TenantAuthenticate
      * @throws \Exception
      */
     public function getAuthenticator()
@@ -419,7 +421,14 @@ class AuthenticationController
         if (!empty($service)) $authenticationClass = $service['class_name'];
 
         if (class_exists($authenticationClass, true)) {
-            return new $authenticationClass($type);
+
+            $classInstance = new $authenticationClass($type);
+
+            if (!($classInstance instanceof AuthenticatorI)) {
+                throw new \Exception("Authentication Class {$authenticationClass} must implement AuthenticatorI");
+            }
+
+            return $classInstance;
         } else {
             throw new \Exception("Authentication Class {$authenticationClass} not found");
         }
@@ -460,13 +469,14 @@ class AuthenticationController
 
     /**
      * connect to the tenant database
+     * @param string $tenantId
      * @return void
-     * @throws UnauthorizedException | \Exception
+     * @throws UnauthorizedException
      */
-    private function connectToTenant()
+    private function connectToTenant(string $tenantId)
     {
         /** @var SystemTenant $tenant */
-        $tenant = BeanFactory::getBean('SystemTenants', $this->systemtenantid);
+        $tenant = BeanFactory::getBean('SystemTenants', $tenantId);
 
         if ($tenant->valid_until < TimeDate::getInstance()->nowDbDate() && $tenant->valid_until =! null) {
             throw new UnauthorizedException('Tenant expired', 401);
@@ -474,6 +484,7 @@ class AuthenticationController
 
         $tenant->switchToTenant();
 
+        $this->systemtenantid = $tenant->id;
         $this->systemtenantname = $tenant->name;
         $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
         $this->systemTenantWizardCompleted = boolval($tenant->wizard_completed);

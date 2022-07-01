@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\authentication\GoogleAuthenticate;
 use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -23,10 +24,10 @@ class GoogleAuthenticate implements AuthenticatorI
      * Authenticates the user in Spice
      * @param object $authData
      * @param string $authType
-     * @return string
+     * @return AuthResponse
      * @throws UnauthorizedException | Exception | NotFoundException
      */
-    public function authenticate(object $authData, string $authType): string
+    public function authenticate(object $authData, string $authType): AuthResponse
     {
         $payload = $this->verifyIdToken($authData->token);
 
@@ -42,7 +43,7 @@ class GoogleAuthenticate implements AuthenticatorI
             throw new UnauthorizedException('User not found');
         }
 
-        return $userObj->user_name;
+        return new AuthResponse($userObj->user_name);
     }
 
     /**

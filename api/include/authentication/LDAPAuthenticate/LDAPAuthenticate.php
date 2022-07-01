@@ -38,6 +38,7 @@ namespace SpiceCRM\includes\authentication\LDAPAuthenticate;
 
 
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -110,11 +111,11 @@ class LDAPAuthenticate implements AuthenticatorI
      * authenticate the user by LDAP server
      * @param object $authData
      * @param string $authType
-     * @return string
+     * @return AuthResponse
      * @throws Exception
      * @throws UnauthorizedException
      */
-    public function authenticate(object $authData, string $authType): string
+    public function authenticate(object $authData, string $authType): AuthResponse
     {
         //merge to config... maybe find a better solution?
         $this->config = array_merge($this->config, ['servers' => $this->getLdapConfig()]);
@@ -152,7 +153,7 @@ class LDAPAuthenticate implements AuthenticatorI
                 }
 
                 if ($userObj = $this->ldapAuthenticate($authData->username, $authData->password)) {
-                    return $userObj->user_name;
+                    return new AuthResponse($userObj->user_name);
                 }
 
             }
