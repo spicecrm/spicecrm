@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\authentication\TenantAuthenticate;
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -18,10 +19,10 @@ class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
     /**
      * @param object $authData
      * @param string $authType
-     * @return string
+     * @return AuthResponse
      * @throws UnauthorizedException| SessionExpiredException | Exception
      */
-    public function authenticate(object $authData, string $authType): string
+    public function authenticate(object $authData, string $authType): AuthResponse
     {
         switch ($authType) {
             case 'token':
@@ -36,9 +37,7 @@ class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
 
         $authUser = DBManagerFactory::getInstance()->fetchOne("SELECT tenant_id, username from tenant_auth_users WHERE id ='$userId'");
 
-        AuthenticationController::getInstance()->systemtenantid = $authUser['tenant_id'];
-
-        return $authUser['username'];
+        return new AuthResponse($authUser['username'], ['tenantId' => $authUser['tenant_id']]);
     }
 
     /**
