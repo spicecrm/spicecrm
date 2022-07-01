@@ -803,59 +803,6 @@ class User extends Person
     }
 
     /**
-     * blockUserByName
-     *
-     * Blocks a user (prevent from login) permanent or for a specific time.
-     *
-     * @param $username The name of the user.
-     * @param $blockingDuration The time in minutes that the user should be blocked from logging in. From now on.
-     * @return The user bean.
-     */
-    public static function blockUserByName( $username, $blockingDuration = null ) {
-        $user = BeanFactory::getBean('Users');
-        // if we do not find the user return .. causes empty users to be created
-        if(!$user->findByUserName( $username )){
-            return;
-        }
-
-        // set a block end date
-        if ( $blockingDuration ) {
-            $user->login_blocked_until = date_create()->add(new DateInterval("PT{$blockingDuration}S"))->format(TimeDate::DB_DATETIME_FORMAT);
-        } else {
-            $user->login_blocked = true;
-        }
-
-        $user->save();
-        return $user;
-    }
-
-    /**
-     * isBlocked
-     *
-     * Checks if a user is blocked permanent or for a specific time.
-     *
-     * @param string $username The name of the user.
-     * @return True if permanent or the amount of minutes in case the blocking is for a specific time.
-     */
-    public static function isBlocked( $username )
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $row = $db->fetchOne( sprintf("SELECT login_blocked, login_blocked_until FROM users WHERE user_name = '%s'", $db->quote( $username )));
-
-        if ( $row['login_blocked'] ) return true; # The user is blocked permanently.
-        if ( $row['login_blocked_until'] === null ) return false; # The user (is not blocked permanently and) is not blocked temporarily.
-
-        # The user is blocked temporarily, so calculate the remaining blocking time:
-        $remainingBlockingSeconds =
-            ( new \DateTime( $row['login_blocked_until'], new \DateTimeZone('UTC')))->getTimestamp()
-            - ( new \DateTime( 'NOW', new \DateTimeZone('UTC')))->getTimestamp();
-        if ( $remainingBlockingSeconds > 0 ) return ceil( $remainingBlockingSeconds/60 ); # return the remaining blocking time (in minutes)
-
-        return false; # The user is not blocked any more (login_blocked_until is in the past).
-    }
-
-    /**
      * hasExpiredPassword
      *
      * Checks if the password of the user is expired (returns true) or will expire soon (returns the number of days of remaining validity).

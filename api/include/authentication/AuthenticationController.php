@@ -6,13 +6,15 @@ namespace SpiceCRM\includes\authentication;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\GoogleAuthenticate\GoogleAuthenticate;
+use SpiceCRM\includes\authentication\interfaces\AccessUtilsI;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
-use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 use SpiceCRM\includes\authentication\LDAPAuthenticate\LDAPAuthenticate;
 use SpiceCRM\includes\authentication\OAuth2Authenticate\OAuth2Authenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
+use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAccessUtils;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAuthenticate;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantPasswordUtils;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
@@ -163,7 +165,7 @@ class AuthenticationController
             $authenticator = $this->getAuthenticator();
 
             $authResponse = $authenticator->authenticate($authParams->authData, $authParams->authType);
-            $this->handleSuccessfulAuthentication($authParams->authData, $authResponse);
+            $this->handleSuccessfulAuthentication($authParams->authData, $authResponse, $authParams->authType);
 
         } catch (UnauthorizedException $e) {
             $this->handleFailedAuthentication($e, $authParams->authData);
@@ -174,7 +176,7 @@ class AuthenticationController
      * get password utils handler
      * @return SpiceCRMPasswordUtils | TenantPasswordUtils
      */
-    public function getPasswordUtilsHandler()
+    public function getPasswordUtilsInstance()
     {
         $type = $this->getAuthenticatorType();
 
@@ -234,16 +236,16 @@ class AuthenticationController
      * block user ip if the max login attempts exceeded
      * @param UnauthorizedException $e
      * @return void
-     * @throws BadRequestException
-     * @throws Exception
+     * @throws BadRequestException | \Exception | Exception
      */
     private function blockUserIp(UnauthorizedException $e) {
 
+        $accessUtils = $this->getAccessUtilsInstance();
         $config = SpiceConfig::getInstance()->config;
         $maxAttemptsExceeded = UserAccessLog::getNumberLoginAttemptsByIp() >= (int)$config['login_attempt_restriction']['ip_number_attempts'];
 
-        if ( $config['login_attempt_restriction']['ip_enabled'] and $maxAttemptsExceeded and !IpAddresses::ipAddressIsWhite() and !$e->isIPblocked()) {
-            IpAddresses::addIpAddress('b');
+        if ( $config['login_attempt_restriction']['ip_enabled'] and $maxAttemptsExceeded and !$accessUtils::ipAddressIsWhite() and !$e->isIPblocked()) {
+            $accessUtils::addIpAddress('b');
             $e->setIPblocked( true );
         };
     }
@@ -257,6 +259,7 @@ class AuthenticationController
     private function blockUserByUsername(object $authData)
     {
         $config = SpiceConfig::getInstance()->config;
+        $accessUtils = $this->getAccessUtilsInstance();
 
         /** @var UserAccessLog $userAccessLogObj */
         $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
@@ -270,19 +273,47 @@ class AuthenticationController
         $amountFailedLogins = UserAccessLog::getAmountFailedLoginsWithinByUsername($authData->username, $config['login_attempt_restriction']['user_monitored_period']);
 
         if ($amountFailedLogins >= $config['login_attempt_restriction']['user_number_attempts']) {
-            User::blockUserByName($authData->username, $config['login_attempt_restriction']['user_blocking_duration']);
+            $accessUtils->blockUserByName($authData->username, $config['login_attempt_restriction']['user_blocking_duration']);
         }
+    }
+
+    /**
+     * get access utils instance
+     * @return SpiceCRMAccessUtils | TenantAccessUtils
+     * @throws \Exception
+     */
+    public function getAccessUtilsInstance()
+    {
+        $type = $this->getAuthenticatorType();
+
+        $namespace = "SpiceCRM\includes\authentication\\{$type}Authenticate\\{$type}AccessUtils";
+
+        if (!class_exists($namespace, true)) {
+            $namespace = "SpiceCRM\includes\authentication\\SpiceCRMAuthenticate\\SpiceCRMAccessUtils";
+        }
+
+        /** @var SpiceCRMAccessUtils | TenantAccessUtils $accessUtilsInstance */
+        $accessUtilsInstance = new $namespace();
+
+        if (!($accessUtilsInstance instanceof AccessUtilsI)) {
+            throw new \Exception("Authentication Class {$namespace} must implement AuthenticatorI");
+        }
+
+        return $accessUtilsInstance;
     }
 
     /**
      * handle successful authentication
      * @param object $authData
      * @param AuthResponse $authResponse
+     * @param string $authType 'token' | 'credentials'
      * @throws NotFoundException | UnauthorizedException
      */
-    private function handleSuccessfulAuthentication(object $authData, AuthResponse $authResponse)
+    private function handleSuccessfulAuthentication(object $authData, AuthResponse $authResponse, string $authType)
     {
-        $this->checkUserBlocked($authData);
+        if ($authType == 'credentials') {
+            $this->checkUserBlocked($authData);
+        }
 
         if (!empty($authResponse->tenantId)) {
             $this->connectToTenant($authResponse->tenantId);
@@ -324,11 +355,12 @@ class AuthenticationController
      * check if the user was blocked by login attempts policy or by ip
      * @param object $authData
      * @return void
-     * @throws UnauthorizedException
+     * @throws UnauthorizedException | \Exception
      */
     private function checkUserBlocked(object $authData)
     {
-        $isBlocked = User::isBlocked($authData->impersonationUser ?? $authData->username);
+        $accessUtils = $this->getAccessUtilsInstance();
+        $isBlocked = $accessUtils->isBlocked($authData->impersonationUser ?? $authData->username);
 
         if ($isBlocked === true) {
             throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 3))->setUserBlocked(true);
@@ -336,7 +368,7 @@ class AuthenticationController
             throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 3))->setUserBlocked(true);
         }
 
-        if (!IpAddresses::checkIpAddress() && !User::isAdmin_byName($authData->username)) {
+        if (!$accessUtils::checkIpAddress() && !User::isAdmin_byName($authData->username)) {
             throw (new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked(true);
         }
     }
@@ -408,7 +440,7 @@ class AuthenticationController
     /**
      * get authenticator class instance
      * @param string $type
-     * @return mixed
+     * @return SpiceCRMAuthenticate | OAuth2Authenticate | TenantAuthenticate | LDAPAuthenticate | GoogleAuthenticate
      * @throws \Exception
      */
     public static function getAuthenticatorObject(string $type)
@@ -422,6 +454,7 @@ class AuthenticationController
 
         if (class_exists($authenticationClass, true)) {
 
+            /** @var SpiceCRMAuthenticate | OAuth2Authenticate | TenantAuthenticate | LDAPAuthenticate | GoogleAuthenticate $classInstance */
             $classInstance = new $authenticationClass($type);
 
             if (!($classInstance instanceof AuthenticatorI)) {
