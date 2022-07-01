@@ -41,7 +41,7 @@ class SpiceCRMPasswordUtils
 
         $userObj = AuthenticationController::getInstance()->getUserByUsername($username);
 
-        $passwordUtils = AuthenticationController::getInstance()->getPasswordUtilsHandler();
+        $passwordUtils = AuthenticationController::getInstance()->getPasswordUtilsInstance();
 
         return $passwordUtils->setNewPassword($userObj, $newPwd, $sendByEmail, false);
     }

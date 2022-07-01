@@ -89,7 +89,7 @@ class AuthenticateController
             throw new UnauthorizedException("Current Password is not correct");
         }
 
-        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsHandler();
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
         $sugarAuthenticationObj->changePassword($parsedBody['username'], $parsedBody['newPassword']);
 
         return $res->withJson($res);
@@ -135,7 +135,7 @@ class AuthenticateController
             throw new UnauthorizedException("Password Reset due to external_auth_only unavailable");
         }
 
-        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsHandler();
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
         $sugarAuthenticationObj->setNewPassword($userObj, $parsedBody['newPassword'], $parsedBody['sendEmail'], $parsedBody['forceReset']);
 
         return $res->withJson(['success' => true]);
