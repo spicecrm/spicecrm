@@ -256,7 +256,7 @@ class RESTManager
 
     /**
      * parse the auth params from the server data
-     * @return array
+     * @return object {authType: 'credentials' | 'token', authData: {token?: string, username?: string, password?: string, tokenIssuer?: string, impersonationUser?: string}
      */
     public function parseAuthParams(): object
     {
