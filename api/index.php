@@ -44,6 +44,8 @@ try {
 
     DBManagerFactory::setDBConfig();
 
+    SpiceConfig::getInstance()->reloadConfig();
+
     $slimContainer = new Container();
     AppFactory::setContainer($slimContainer);
     $app = AppFactory::create(new SpiceResponseFactory());
