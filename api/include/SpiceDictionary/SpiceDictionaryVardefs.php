@@ -245,7 +245,9 @@ class SpiceDictionaryVardefs  {
 
                 if(isset($vardefs[$dbDict['name']])){
                     if(is_array($vardefs[$dbDict['name']]['fields'])){
-                        $vardefs[$dbDict['name']]['fields'] = array_merge($vardefs[$dbDict['name']]['fields'], $dbDict['fields']);
+                        if(is_array($dbDict['fields']) && count($dbDict['fields']) > 0){
+                            $vardefs[$dbDict['name']]['fields'] = array_merge($vardefs[$dbDict['name']]['fields'], $dbDict['fields']);
+                        }
                     }
                 } else{
                     $vardefs[$dbDict['name']] = $dbDict;
@@ -504,7 +506,7 @@ class SpiceDictionaryVardefs  {
     {
         return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
-         sysdo.name domainname, sysdof.name technicalname, 
+         sysdo.name domainname, sysdof.name technicalname,
         sysdi.name itemname, sysdi.label itemlabel, sysdi.required,  sysdi.sysdictionary_ref_id,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
@@ -637,7 +639,7 @@ class SpiceDictionaryVardefs  {
 
                 $dict['audited'] = (bool)$row['tableaudited'];
 
-                if(empty($row['sysdictionary_ref_id'])){
+                if(empty($row['sysdictionary_ref_id']) && !empty($row['itemname'])){
                     $fieldname = SpiceDictionaryVardefsParser::parseFieldName($row);
                     $dict['fields'][$fieldname] = SpiceDictionaryVardefsParser::parseFieldDefinition($row);
                 }
@@ -1191,7 +1193,7 @@ where sysditems.sysdictionary_ref_id = '{$sysdictionarydefinitionId}'  AND sysd.
         $rel_fields = [];
         $fields[] = [];
         $q = "select sysd.id sysdictionary_id, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type,
-         sysdo.name domainname, sysdof.name technicalname, 
+         sysdo.name domainname, sysdof.name technicalname,
         sysdi.name itemname, sysdi.label itemlabel, sysdi.required,  sysdi.sysdictionary_ref_id,
         sysdof.*, sysdov.name validationname,
         relfields.map_to_fieldname
@@ -1966,7 +1968,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // load dictionaries to reset the session variable 'dictionaries'
         //self::loadDictionariesCacheFromDb(true);
-
         return $returnArray;
     }
 
