@@ -447,7 +447,7 @@ class VardefManager{
         // load dictionary from database cache table when turned on
         if (SpiceDictionaryVardefs::isDbManaged()) {
             // LoggerManager::getLogger()->debug("Try Loading $object $module from DB cache table");
-            $cachedDict = SpiceDictionaryVardefs::getInstance()->getDictionaryCacheFromDbByObject($object);
+            $cachedDict = SpiceDictionaryVardefs::getInstance()->getDictionaryCacheFromDbByObject($object, $refresh);
             if(!empty($cachedDict)) {
                 SpiceDictionaryHandler::getInstance()->dictionary[$object] = $cachedDict;
                 // LoggerManager::getLogger()->debug("Loaded $object from DB cache table ");
