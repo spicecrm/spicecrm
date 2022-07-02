@@ -56,8 +56,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
         'document_id' => [
             'name' => 'document_id',
             'vname' => 'LBL_DOCUMENT',
-            'type' => 'varchar',
-            'len' => '36',
+            'type' => 'id',
             'required' => false,
             'reportable' => false,
         ],

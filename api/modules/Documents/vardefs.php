@@ -120,8 +120,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
         'document_revision_id' => [
             'name' => 'document_revision_id',
             'vname' => 'LBL_LATEST_REVISION_ID',
-            'type' => 'varchar',
-            'len' => '36',
+            'type' => 'id',
             'reportable' => false,
         ],
         'revisions' => [
