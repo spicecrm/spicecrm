@@ -3,57 +3,47 @@
 
 namespace SpiceCRM\includes\authentication\GoogleAuthenticate;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\Logger\SpiceLogger;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Users\User;
 
-class GoogleAuthenticate
+class GoogleAuthenticate implements AuthenticatorI
 {
 
     /**
      * saveToken
-     *
      * Verifies the token
      * Starts the user session
      * Saves Google OAuth data in session
      * Authenticates the user in Spice
-     *
-     * @param array $params
-     * @return array|bool|false
+     * @param object $authData
+     * @param string $authType
+     * @return AuthResponse
+     * @throws UnauthorizedException | Exception | NotFoundException
      */
-    public function authenticate($oauthToken)
+    public function authenticate(object $authData, string $authType): AuthResponse
     {
-        $payload = $this->verifyIdToken($oauthToken);
+        $payload = $this->verifyIdToken($authData->token);
 
         if (session_id() == '') {
             @session_start();
         }
 
-        //todo clarify should we leave this here?
-        // $_SESSION['google_oauth']['id_token'] = $oauthToken;
-        // $_SESSION['google_oauth']['access_token'] = $accesToken; //do we need accessToken?
-
-        //populate session with google return values
-        /*
-        foreach ($payload as $key => $value) {
-            if (in_array($key, $this->session_params)) {
-                $_SESSION['google_oauth'][$key] = $value;
-            }
-        }
-        */
-
         //try to find user via email
         /** @var User $userObj */
         $userObj=BeanFactory::getBean("Users");
-        if($userObj->findByUserName($payload->email)){
-            return $userObj;
-        } else {
+
+        if(!$userObj->findByUserName($payload->email)){
             throw new UnauthorizedException('User not found');
         }
+
+        return new AuthResponse($userObj->user_name);
     }
 
     /**
@@ -88,7 +78,7 @@ class GoogleAuthenticate
      * }
      * @param $params
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     private function verifyIdToken($oauthToken)
     {
@@ -162,9 +152,9 @@ class GoogleAuthenticate
         curl_close($curl);
         if (isset($response->error)) {
             if ($response->error && $response->error_description) {
-                throw new \Exception($response->error . ': ' . $response->error_description);
+                throw new Exception($response->error . ': ' . $response->error_description);
             }
-            throw new \Exception("unable to get token");
+            throw new Exception("unable to get token");
         }
 
         return $response;

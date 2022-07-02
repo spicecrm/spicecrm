@@ -72,7 +72,7 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
     private reloadContainer() {
 
         if (this.dashboardcontainercomponent) {
-            this.dashboardcontainercomponent.instance.destroy();
+            this.dashboardcontainercomponent.destroy();
             this.dashboardcontainercomponent = undefined;
         }
 

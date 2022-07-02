@@ -3,7 +3,7 @@
 namespace SpiceCRM\modules\Contacts\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -198,7 +198,7 @@ class ContactsPortalController {
         #    throw ( new BadRequestException('Missing Password of New User'))->setErrorCode('missingPassword');
 
         if ( isset( $this->bodyParams['password'][0])) {
-            if ( !preg_match( '/' . UserAuthenticate::getPwdCheckRegex() . '/', $user->user_hash = User::getPasswordHash( $this->bodyParams['password'] ) ) )
+            if ( !preg_match( '/' . SpiceCRMPasswordUtils::getPwdCheckRegex() . '/', $user->user_hash = User::getPasswordHash( $this->bodyParams['password'] ) ) )
                 throw ( new BadRequestException('Password does not match the Guideline.'))->setErrorCode('invalidPassword');
             $user->user_hash = User::getPasswordHash( $this->bodyParams['password'] );
             $user->pwd_last_changed = TimeDate::getInstance()->nowDb();

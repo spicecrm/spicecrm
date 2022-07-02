@@ -255,11 +255,11 @@ class RESTManager
     }
 
     /**
-     * Authenticates the user based on the headers or post parameters.
-     *
-     * @throws UnauthorizedException
+     * parse the auth params from the server data
+     * @return object {authType: 'credentials' | 'token', authData: {token?: string, username?: string, password?: string, tokenIssuer?: string, impersonationUser?: string}
      */
-    public function authenticate() {
+    public function parseAuthParams(): object
+    {
         // set SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1 in .htaccessfile
 
         // get the headers
@@ -287,16 +287,23 @@ class RESTManager
             list($user, $pass) = explode(':', base64_decode(substr($_SERVER['REDIRECT_HTTP_AUTHORIZATION'], 6)));
         }
 
-        /*
-         * if we have a user or a token try to authenticate
-         * otherwise we continue unauthenticated
-         */
-        if($user || $token) {
-            $authController = AuthenticationController::getInstance();
-            $impersonationUser = @SpiceConfig::getInstance()->config['system']['impersonation_enabled'] == true ? $_GET['impersonationuser'] : null;
-            return $authController->authenticate($user, $pass, $token, $tokenIssuer, $impersonationUser);
+        $authType = !empty($token) ? 'token' : ($user && $pass ? 'credentials' : 'none');
+
+        $authData = [
+            'impersonationUser' => SpiceConfig::getInstance()->config['system']['impersonation_enabled'] ? $_GET['impersonationuser'] : null,
+            'tokenIssuer' => $tokenIssuer
+        ];
+
+        if ($authType == 'token') {
+            $authData['token'] = $token;
+        } elseif ($user && $pass) {
+            $authData['username'] = $user;
+            $authData['password'] = $pass;
         }
+
+        return (object) ['authData' => (object) $authData, 'authType' => $authType];
     }
+
 
     /**
      * Initialize Error Handling
