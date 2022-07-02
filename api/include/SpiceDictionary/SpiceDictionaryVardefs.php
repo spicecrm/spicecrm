@@ -534,9 +534,9 @@ class SpiceDictionaryVardefs  {
         $dictionaryId = self::getDictionaryIdByModule($module);
         return self::getDictionaryCacheFromDb($dictionaryId);
     }
-    public static function loadDictionaryCacheFromDb($object) {
+    public static function loadDictionaryCacheFromDb($object, $forceReload = false) {
         LoggerManager::getLogger()->debug('loadDictionaryModuleCacheFromDb '.$object);
-        return self::getDictionaryCacheFromDbByObject($object);
+        return self::getDictionaryCacheFromDbByObject($object, $forceReload);
     }
     public static function loadDictionariesCacheFromDb($forceReload = false) {
         LoggerManager::getLogger()->debug('loadDictionariesCacheFromDb ');
@@ -1629,9 +1629,15 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @param array $dictionaryId
      * @return array
      */
-    public function getDictionaryCacheFromDbByObject($object){
+    public function getDictionaryCacheFromDbByObject($object, $forceReload = false){
         if(empty($object)){
             return [];
+        }
+
+        // check if dictionary is present in session and return right away
+        if(!$forceReload && isset($_SESSION['dictionaries'][$object])){
+            file_put_contents('vardefs.log', __LINE__. "\n", FILE_APPEND);
+            return $_SESSION['dictionaries'][$object];
         }
 
         $db = DBManagerFactory::getInstance();
