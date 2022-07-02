@@ -14,6 +14,7 @@ import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
 import {modelutilities} from "./modelutilities.service";
+import {backend} from "./backend.service";
 
 interface loginAuthDataIf {
     userName: string;
@@ -59,7 +60,8 @@ export class loginService {
         public broadcast: broadcast,
         public modelutilities: modelutilities,
         public modal: modal,
-        public metadata: metadata
+        public metadata: metadata,
+        public backend: backend
     ) {
         this.broadcast.message$.subscribe((message: any) => {
             if (message.messagetype === 'loader.completed' && message.messagedata === 'loadUserData') {
@@ -288,9 +290,7 @@ export class loginService {
     public logout(localonly: boolean = false) {
         // check if we shoudl also logout on the server
         if(!localonly) {
-            this.http.delete(
-                this.configurationService.getBackendUrl() + '/authentication/login?session_id=' + this.session.authData.sessionId
-            );
+            this.backend.deleteRequest('authentication/login', {session_id: this.session.authData.sessionId});
         }
         this.session.endSession();
         this.loader.reset();

@@ -1,13 +1,11 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 
 $RESTManager = RESTManager::getInstance();
 
@@ -88,16 +86,6 @@ $routes = [
                 'required' => true
             ]
         ],
-    ],
-    [
-        'method' => 'get',
-        'oldroute' => '/acl',
-        'route' => '/authentication/acl',
-        'class' => AuthenticateController::class,
-        'function' => 'authGetModuleACL',
-        'description' => 'GET ACL for each Module',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
-        'params' => []
     ],
     [
         'method' => 'post',
@@ -198,7 +186,7 @@ $RESTManager->registerExtension('userpassword', '2.0', [
     'onenumber' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onenumber'],
     'onespecial' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onespecial'],
     'minpwdlength' => SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'],
-    'regex' => '^' . UserAuthenticate::getPwdCheckRegex() . '$'
+    'regex' => '^' . SpiceCRMPasswordUtils::getPwdCheckRegex() . '$'
 ],
     $routes
 );

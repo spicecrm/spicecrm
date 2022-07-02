@@ -5,13 +5,16 @@ namespace SpiceCRM\includes\authentication\OAuth2Authenticate;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\modules\Users\User;
 
-class OAuth2Authenticate
+class OAuth2Authenticate implements AuthenticatorI
 {
     private $ssl_verifyhost = false;
     private $ssl_verifypeer = false;
@@ -159,27 +162,23 @@ class OAuth2Authenticate
 
     /**
      * Authenticates the OAuth user with SpiceCRM.
-     * The user name has to be equal to the email address used for the OAuth authentication.
-     *
-     * @param string $accessToken
-     * @return User
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     * @throws Exception
+     * The username has to be equal to the email address used for the OAuth authentication.
+     * @param object $authData
+     * @param string $authType
+     * @return AuthResponse
+     * @throws NotFoundException | UnauthorizedException | Exception
      */
-    public function authenticate(string $accessToken): User
+    public function authenticate(object $authData, string $authType): AuthResponse
     {
-        /**
-         * @var $user User
-         */
+        /** @var $user User */
         $user = BeanFactory::getBean('Users');
-        $userProfile = $this->fetchUserProfile($accessToken);
+        $userProfile = $this->fetchUserProfile($authData->token);
         $user->findByUserName($userProfile->email);
 
-        if (!$user || !$user->id) {
+        if (empty($user->id)) {
             throw new UnauthorizedException('User not found');
         }
 
-        return $user;
+        return new AuthResponse($user->user_name);
     }
 }
