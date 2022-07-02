@@ -2333,7 +2333,7 @@ protected function checkQuery($sql, $object_name = false)
 			else
 				$fieldDef['dbType'] = $fieldDef['type'];
 		}
-		$type = $this->getColumnType($fieldDef['dbType'],$fieldDef['name'],$tablename);
+		$type = $this->getColumnType($fieldDef['dbType']);
 		$matches = [];
         // len can be a number or a string like 'max', for example, nvarchar(max)
         preg_match_all('/(\w+)(?:\(([0-9]+,?[0-9]*|\w+)\)|)/i', $type, $matches);
