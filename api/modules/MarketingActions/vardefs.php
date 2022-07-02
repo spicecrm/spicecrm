@@ -40,7 +40,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['MarketingAction'] = [
             ],
     ],
     'relationships' => [],
-    'indices' => [],
+    'indices' => [
+        ['name' => 'marketingactionspk', 'type' => 'primary', 'fields' => ['id']]
+    ],
 
 ];
 
