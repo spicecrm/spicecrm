@@ -1,4 +1,32 @@
 <?php
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
+
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\data\BeanFactory;
@@ -1569,7 +1597,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             }
         }
 
-        if(count($sqlInserts) > 0){
+        if(is_array($sqlInserts) && count($sqlInserts) > 0){
             $sqls[] = "INSERT INTO sysdictionaryfields (" . implode(', ', $insertColumns) . ") VALUES ".implode(', ', $sqlInserts).";";
         }
 
@@ -1577,6 +1605,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         $sqlInserts = [];
         unset($insertColumns);
 
+        // relationships
 //        if(isset($dict['relationships'])){
 //            foreach($dict['relationships'] as $relationship_name => $relationship){
 //                $relationship['relationship_name'] = $relationship_name;
@@ -1584,6 +1613,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 //            }
 //        }
 
+        // indices
         if(is_array($dict['indices']) && !empty($dict['indices'])) {
             foreach($dict['indices'] as $indexDef){
 
@@ -1762,32 +1792,49 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @throws \Exception
      */
     public static function getDictionariesCacheFromDb($forceReload = false){
+        // already loaded & in session
         if(!$forceReload && isset($_SESSION['dictionaries']) && !empty($_SESSION['dictionaries'])){
             //die('getDictionariesCacheFromDb'.print_r($_SESSION['dictionaries'], true));
             SpiceDictionaryHandler::getInstance()->dictionary = $_SESSION['dictionaries'];
             return;
         }
 
+        // reset session variable
         $_SESSION['dictionaries'] = [];
-        $db = DBManagerFactory::getInstance();
 
+        // first load full array from sysdictionarycache
+        // trying to improve performance
+//        if(self::loadDictionariesCache()){
+//            return;
+//        }
+
+        // else first load from sysdictionaryfields
+        $db = DBManagerFactory::getInstance();
         $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, 
         sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition
             FROM sysdictionaryfields sysfields ORDER BY sysdictionarytablename ASC";
 
-        if($res = $db->query($q)){
-            while($row = $db->fetchByAssoc($res)){
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['id'] = $row['sysdictionaryid'];
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['dictionaryname'] = $row['sysdictionaryname'];
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
+        if($result = $db->query($q)){
+            while($row = $db->fetchByAssoc($result)){
+//                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['id'] = $row['sysdictionaryid'];
+//                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['dictionaryname'] = $row['sysdictionaryname'];
+//                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
+//                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
+//                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
+//                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
+//                $_SESSION['dictionaries'][$row['sysdictionaryname']] = SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']];
 
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
-                $_SESSION['dictionaries'][$row['sysdictionaryname']] = SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']];
+                $_SESSION['dictionaries'][$row['sysdictionaryname']]['id'] = $row['sysdictionaryid'];
+                $_SESSION['dictionaries'][$row['sysdictionaryname']]['dictionaryname'] = $row['sysdictionaryname'];
+                $_SESSION['dictionaries'][$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
+                $_SESSION['dictionaries'][$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
+                $_SESSION['dictionaries'][$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
+                $_SESSION['dictionaries'][$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
 
-                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['indices'] = self::getDictionaryIndexCacheFromDb(SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['id']);
-                $_SESSION['dictionaries'][$row['sysdictionaryname']]['indices'] = SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['indices'];
+// indices are not necessary. Forget them for performance gain.
+//                SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['indices'] = self::getDictionaryIndexCacheFromDb(SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['id']);
+//                $_SESSION['dictionaries'][$row['sysdictionaryname']]['indices'] = SpiceDictionaryHandler::getInstance()->dictionary[$row['sysdictionaryname']]['indices'];
+
             }
         }
     }
@@ -1800,10 +1847,12 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     public static function loadDictionaryValidations(){
         $db = DBManagerFactory::getInstance();
 
+        // already loaded
         if($_SESSION['systemvardefs']['domains']){
             return $_SESSION['systemvardefs']['domains'];
         }
 
+        // load first time
         $retArray = [];
         // core values
         $coreEnums = $db->query("SELECT id, name FROM sysdomainfieldvalidations WHERE (validation_type = 'enum' OR validation_type = 'options') AND status='a' AND deleted = 0");
@@ -1886,16 +1935,10 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         $sys_app_list_strings = [];
         $validations = self::loadDictionaryValidations();
         $syslanguagelabels[$language] = LanguageManager::loadDatabaseLanguage($language);
-//        die('createDictionaryValidationDoms '.$language.' '.print_r($syslanguagelabels, true));
-
-//        die(print_r($validations['industry_dom'], true));
 
         foreach($validations as $dom => $definition){
             // re-organize and add translation
             foreach($definition['values'] as $enumvalue => $def){
-//                if($dom == 'industry_dom'){
-//                    die(print_r(['def' => $def, 'default' => $syslanguagelabels[$language][$def['label']]['default']], true));
-//                }
                 $translation = (!empty($syslanguagelabels[$language][$def['label']]['default']) ? $syslanguagelabels[$language][$def['label']]['default'] : $enumvalue);
                 $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['enumvalue'] = $enumvalue;
                 $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['translation'] = $translation;
@@ -2048,7 +2091,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             if($dict['type'] == 'template'|| empty($dictName)) continue;
             $returnArray[] = $dictName;
             // save to db
-            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict, false);
+            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
         }
 
         // confirm save into db
@@ -2057,9 +2100,48 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         // repair relationships and reset the session variable 'relationships'
         Relationship::build_relationship_cache();
 
+        // save full cached vardefs
+//        $cachedVardefs = SpiceDictionaryHandler::getInstance()->dictionary;
+//        self::saveDictionariesCache($cachedVardefs);
+
         // load dictionaries to reset the session variable 'dictionaries'
         //self::loadDictionariesCacheFromDb(true);
         return $returnArray;
+    }
+
+    /**
+     * trying to improve performance
+     * save the full dictionary array into sysdictionarycache table
+     * @param $dictionaries
+     * @return void
+     * @throws \Exception
+     */
+    public static function saveDictionariesCache($dictionaries){
+        $db = DBManagerFactory::getInstance();
+        $db->truncateQuery('sysdictionarycache');
+        if($data = base64_encode(gzdeflate(serialize($dictionaries), 9))){
+            if(!$db->query("INSERT INTO sysdictionarycache (id, dictionaryfields) VALUES(uuid(), '".$db->quote($data)."')")){
+                LoggerManager::getLogger()->fatal('saveDictionariesCache '.$db->lastDbError());
+            }
+        }
+    }
+
+    /**
+     * trying to improve performance
+     * table definition in system_vardefs
+     * load the full dictionary array from sysdictionarycache table
+     * @param $dictionaries
+     * @return void
+     * @throws \Exception
+     */
+    public static function loadDictionariesCache(){
+        $db = DBManagerFactory::getInstance();
+        $q = "SELECT dictionaryfields from sysdictionarycache";
+        if($row = $db->fetchOne($q)) {
+            $_SESSION['dictionaries'] = unserialize(gzinflate(base64_decode($row['dictionaryfields'])));
+            return true;
+        }
+        return false;
     }
 
     /**
