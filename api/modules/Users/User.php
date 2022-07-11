@@ -411,7 +411,7 @@ class User extends Person
     {
         if (empty($user_hash))
             return false;
-        if ($user_hash[0] != '$' && strlen($user_hash) == 32) {
+        if (substr($user_hash, 0, 1) != '$' && strlen($user_hash) == 32) {
             // Old way - just md5 password
             return strtolower($password_md5) == $user_hash;
         }
