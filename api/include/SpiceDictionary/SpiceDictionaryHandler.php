@@ -320,7 +320,7 @@ LEFT JOIN
 
         // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
         // todo: see if we can get rid of them
-        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module'];
+        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module', 'join_table', 'join_key_lhs', 'join_key_rhs'];
 
         foreach($relationships as $relationship){
             // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
