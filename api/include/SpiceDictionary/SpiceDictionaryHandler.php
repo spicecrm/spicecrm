@@ -292,9 +292,14 @@ LEFT JOIN
         AND rels.`status` ='a'";
 
             $dictionaryrelationships = $db->query($q);
+            // store Ids to get unique entries
+            $storeRelIds = [];
             while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-                $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
-                $relArray[] = array_merge($dictionaryrelationship, ['scope' => $scope]);
+                if(!in_array($dictionaryrelationship['id'], $storeRelIds)){
+                    $storeRelIds[] = $dictionaryrelationship['id'];
+                    $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
+                    $relArray[] = array_merge($dictionaryrelationship, ['scope' => $scope]);
+                }
             }
         }
 
