@@ -1772,15 +1772,14 @@ class SpiceFTSHandler
                     $beanCounter++;
                     $counterIndexed++;
                 } else {
-                    $seed->retrieve($indexBean['id'], true, false, false);
                     $bulkItems[] = json_encode([
                         'delete' => [
                             '_index' => $this->elasticHandler->indexPrefix . strtolower($bean['module']),
-                            '_id' => $seed->id
+                            '_id' => $indexBean['id']
                         ]
                     ]);
 
-                    $bulkUpdates['deleted'][] = $seed->id;
+                    $bulkUpdates['deleted'][] = $indexBean['id'];
 
                     $beanCounter++;
                     $counterDeleted++;
