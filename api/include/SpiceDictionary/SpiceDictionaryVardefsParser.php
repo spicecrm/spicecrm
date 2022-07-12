@@ -81,14 +81,14 @@ class SpiceDictionaryVardefsParser
 //        }
 
         // @todo: check on validation for options, ranges...
-        if (!empty($row['sysdomainfieldvalidation_id'])) {
-            switch ($row['validation_type']) {
-                case 'options':
-                    break;
-                case 'range':
-                    break;
-            }
-        }
+//        if (!empty($row['sysdomainfieldvalidation_id'])) {
+//            switch ($row['validation_type']) {
+//                case 'options':
+//                    break;
+//                case 'range':
+//                    break;
+//            }
+//        }
 
         $field['comment'] = ($row['itemcomment'] ?: $row['description']);
 
