@@ -1455,7 +1455,6 @@ class SpiceBean
             SugarRelationship::resaveRelatedBeans();
         }
 
-        $this->call_custom_logic('after_save', '');
         // call fts manager to index the bean
         if ($fts_index_bean) {
 
@@ -1467,6 +1466,9 @@ class SpiceBean
         $this->in_save = false;
         //unset current bean_action
         $this->set_bean_action(null);
+
+        $this->call_custom_logic('after_save', '');
+
         return $this->id;
     }
 
