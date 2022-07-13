@@ -21,6 +21,7 @@ class LoginController
     public function getCurrentUserData(Request $req, Response $res, array $args): Response
     {
         $payload = AuthenticationController::getInstance()->getLoginData();
+        AuthenticationController::getInstance()->getCurrentUser()->call_custom_logic('after_login');
         return $res->withJson($payload);
     }
 
