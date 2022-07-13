@@ -343,8 +343,6 @@ class AuthenticationController
             $userObj->call_custom_logic('after_ldap_login', $this);
         }
 
-        $userObj->call_custom_logic('after_login');
-
         // if there was no session started create a new one
         if (empty($_SESSION['authenticated_user_id'])) {
             SpiceCRMAuthenticate::createSession($this->currentUser);
