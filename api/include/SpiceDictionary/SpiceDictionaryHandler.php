@@ -325,7 +325,9 @@ LEFT JOIN
         foreach($relationships as $relationship){
             // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
             foreach($unsetKeys as $unsetKey){
-                if(isset($relationship[$unsetKey])) unset($relationship[$unsetKey]);
+                if(array_key_exists($unsetKey, $relationship)) {
+                    unset($relationship[$unsetKey]);
+                }
             }
 
             // save to proper dictionaryrelationships table
