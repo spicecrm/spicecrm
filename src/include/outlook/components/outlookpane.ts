@@ -9,6 +9,7 @@ import {session} from "../../../services/session.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
+import {OutlookGroupware} from "../services/outlookgroupware.service";
 
 declare var Office: any;
 
@@ -19,7 +20,11 @@ declare var Office: any;
  */
 @Component({
     selector: 'outlook-pane',
-    templateUrl: '../templates/outlookpane.html'
+    templateUrl: '../templates/outlookpane.html',
+    providers: [
+        {provide: GroupwareService, useClass: OutlookGroupware},
+        OutlookConfiguration,
+        model]
 })
 export class OutlookPane implements OnInit {
 
