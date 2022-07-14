@@ -92,10 +92,13 @@ export class EmailReplyModal implements OnInit {
                 toaddress.address_type = "to";
                 toaddress.id = '';
                 recipient_addresses.push(toaddress);
-            } else if (address.address_type != "from" && address.address_type != "to") {
-                let addaddress = {...address};
-                addaddress.id = '';
-                recipient_addresses.push(addaddress);
+            } else if (this.mode == 'replyall') {
+                if(address.address_type == "cc" || address.address_type == "to") {
+                    let addaddress = {...address};
+                    addaddress.address_type = "cc";
+                    addaddress.id = '';
+                    recipient_addresses.push(addaddress);
+                }
             }
         }
 
