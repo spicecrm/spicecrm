@@ -103,6 +103,7 @@ class ConfServerController
         $tables = [
             'sysdictionarydefinitions',
             'sysdictionaryitems',
+            'sysdictionaryrelationships',
             'sysdomaindefinitions',
             'sysdomainfields',
             'sysdomainfieldvalidations',
