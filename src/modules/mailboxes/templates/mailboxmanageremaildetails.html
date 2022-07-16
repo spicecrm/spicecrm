@@ -29,6 +29,9 @@
                     </div>
                     <object-action-container [actionset]="actionSet" (actionemitter)="handleAction($event)"></object-action-container>
                     <div class="slds-p-left--small slds-button-group">
+                        <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="replyToAll()" [title]="language.getLabel('LBL_REPLY_ALL')">
+                            <system-button-icon icon="reply_all"></system-button-icon>
+                        </button>
                         <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="reply()" [title]="language.getLabel('LBL_REPLY')">
                             <system-button-icon icon="reply"></system-button-icon>
                         </button>
