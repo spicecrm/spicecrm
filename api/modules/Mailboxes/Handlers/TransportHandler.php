@@ -110,11 +110,18 @@ abstract class TransportHandler
             'missing' => [],
         ];
 
+        // set the setting values
+        if($mailboxSettings = json_decode($this->mailbox->settings, true)){
+            foreach($mailboxSettings as $settingKey => $settingValue){
+                $this->mailbox->$settingKey = $settingValue;
+            }
+        }
+
+        // check required parameters
         foreach ($settings as $setting) {
-            if (!isset($this->mailbox->$setting) || $this->mailbox->$setting == '') {
+            if (!isset($this->mailbox->$setting) || empty($this->mailbox->$setting)) {
                 $response['result'] = false;
                 array_push($response['missing'], $setting);
-                continue;
             }
         }
 
