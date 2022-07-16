@@ -1,11 +1,12 @@
 /**
  * @module ModuleGoogleAPI
  */
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
+import {toast} from "../../../services/toast.service";
 
 /**
  * renders a dialog to manage the settings for the Google API
@@ -36,6 +37,7 @@ export class GoogleAPISettings implements OnInit {
         public language: language,
         public metadata: metadata,
         public backend: backend,
+        public toast: toast,
         public modal: modal
     ) {
 
@@ -59,7 +61,10 @@ export class GoogleAPISettings implements OnInit {
      * @private
      */
     public save() {
-        this.backend.postRequest('configuration/configurator/editor/googleapi', [], { config: this.configvalues });
+        this.backend.postRequest('configuration/configurator/editor/googleapi', [], {config: this.configvalues}).subscribe({
+            next: () => this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success'),
+            error: () => this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error')
+        });
     }
 
     /**
