@@ -1484,6 +1484,9 @@ export class model implements OnDestroy {
 
         // handle links
         switch (fieldDef.type) {
+            case 'json':
+                this.setField(toField, JSON.parse(JSON.stringify(value)));
+                break;
             case 'link':
                 if (_.isObject(value) && value.beans) {
                     const newLink = {beans: {}};
