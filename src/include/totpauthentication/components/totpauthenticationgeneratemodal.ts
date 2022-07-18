@@ -50,7 +50,7 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
 
     public ngOnInit() {
         let loading = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
-        this.backend.getRequest(`authentication/totp/generate`)
+        this.backend.postRequest(`authentication/totp/generate`)
             .pipe(take(1))
             .subscribe({
             next: res => {
