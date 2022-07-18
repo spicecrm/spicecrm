@@ -292,9 +292,14 @@ LEFT JOIN
         AND rels.`status` ='a'";
 
             $dictionaryrelationships = $db->query($q);
+            // store Ids to get unique entries
+            $storeRelIds = [];
             while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-                $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
-                $relArray[] = array_merge($dictionaryrelationship, ['scope' => $scope]);
+                if(!in_array($dictionaryrelationship['id'], $storeRelIds)){
+                    $storeRelIds[] = $dictionaryrelationship['id'];
+                    $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
+                    $relArray[] = array_merge($dictionaryrelationship, ['scope' => $scope]);
+                }
             }
         }
 
@@ -315,12 +320,14 @@ LEFT JOIN
 
         // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
         // todo: see if we can get rid of them
-        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module'];
+        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module', 'join_table', 'join_key_lhs', 'join_key_rhs'];
 
         foreach($relationships as $relationship){
             // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
             foreach($unsetKeys as $unsetKey){
-                if(isset($relationship[$unsetKey])) unset($relationship[$unsetKey]);
+                if(array_key_exists($unsetKey, $relationship)) {
+                    unset($relationship[$unsetKey]);
+                }
             }
 
             // save to proper dictionaryrelationships table

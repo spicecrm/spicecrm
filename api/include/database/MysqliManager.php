@@ -184,7 +184,7 @@ class MysqliManager extends DBManager
 
             static $queryMD5 = [];
 
-            parent::countQuery($sql);
+            parent::countQuery();
             LoggerManager::getLogger()->info('Query:' . $sql);
             $this->checkConnection();
             $this->query_time = microtime(true);
@@ -1013,8 +1013,13 @@ class MysqliManager extends DBManager
                         $fieldDef['dbType'] = 'mediumtext';
                     elseif ($fieldDef['len'] > 16777215 && $fieldDef['len'] <= 4294967295)
                         $fieldDef['dbType'] = 'longtext';
-                    break;
                 }
+                break;
+            case 'id':
+                $fieldDef['dbType'] = 'char';
+                $fieldDef['len'] = 36;
+                break;
+
         }
 
     }
@@ -1533,12 +1538,18 @@ class MysqliManager extends DBManager
     public function checkOnVarDefinition($fielddef1, $fielddef2)
     {
         $dbtype = $fielddef1['type'];
+        $fieldtype = $this->getFieldType($fielddef2);
         switch($dbtype){
+            case 'varchar':
+                if($fielddef2['name'] == 'id' && $fielddef2['len'] == 36){
+                    $fieldtype = 'char';
+                }
+                break;
             case 'longtext':
             case 'mediumtext':
             case 'text':
             case 'tinytext':
-                $fieldtype = $this->getFieldType($fielddef2);
+                #$fieldtype = $this->getFieldType($fielddef2);
                 if(isset($fielddef2['len'])) {
                     switch ($fieldtype) {
                         case 'text':
@@ -1560,7 +1571,7 @@ class MysqliManager extends DBManager
             case 'mediumint':
             case 'smallint':
             case 'tinyint':
-                $fieldtype = $this->getFieldType($fielddef2);
+                #$fieldtype = $this->getFieldType($fielddef2);
                 switch ($fieldtype) {
                     case 'int':
                         if($fielddef2['len'] > 0 && $fielddef2['len'] <= 4)
@@ -1574,12 +1585,14 @@ class MysqliManager extends DBManager
                         elseif($fielddef2['len'] >  19){
                             $fieldtype =  'bigint';
                         }
-
                         break;
                 }
                 break;
         }
-
+//file_put_contents('vardefs.log', strtolower($dbtype) .'=='. strtolower($fieldtype)."\n", FILE_APPEND);
+//if(!(strtolower($dbtype) == strtolower($fieldtype))){
+//    file_put_contents('vardefs.log', print_r([$fielddef1, $fielddef2], true)."\n", FILE_APPEND);
+//}
         return (strtolower($dbtype) == strtolower($fieldtype));
 
     }

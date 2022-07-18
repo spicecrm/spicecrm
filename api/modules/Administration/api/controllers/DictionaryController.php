@@ -131,10 +131,10 @@ class DictionaryController
 
 
     /**
-     * load all vardefs
+     *
      * legacy & cache table
      */
-    public function repairVardefs(Request $req, Response $res, array $args): Response {
+    public function repairCacheDb(Request $req, Response $res, array $args): Response {
 
         $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries();
 

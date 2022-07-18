@@ -200,59 +200,93 @@ class AdminController
      */
     public function buildSQLforRepair()
     {
+        $sql = self::buildSQLQueries();
 
-        $db = DBManagerFactory::getInstance();
-        $execute = false;
-        VardefManager::clearVardef();
-
-        if (SpiceDictionaryVardefs::isDbManaged()) {
-            $vardefs = SpiceDictionaryVardefs::loadVardefs();
-//echo print_r($vardefs, true);die('as');
-            $db->transactionStart();
-            $db->truncateQuery('sysdictionaryfields', true);
-
-            // save cache to DB
-            foreach ($vardefs as $dictName => $dict) {
-                SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
-            }
-            $db->transactionCommit();
-        }
-
-        $repairedTables = [];
-        $sql = '';
-
-        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
-            $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
-                $sql .= $db->repairTable($focus, $execute);
-                $repairedTables[$focus->_tablename] = true;
-            }
-            // check on audit tables
-            if (($focus instanceof SpiceBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
-                $sql .= $focus->update_audit_table(false);
-                $repairedTables[$focus->_tablename . '_audit'] = true;
-            }
-        }
-
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
-            if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
-                continue;
-            $tablename = $meta['table'];
-            $fielddefs = $meta['fields'];
-            $indices = $meta['indices'];
-            $engine = isset($meta['engine']) ? $meta['engine'] : null;
-            $sql .= $db->repairTableParams($tablename, $fielddefs, $indices, $execute, $engine);
-            $repairedTables[$tablename] = true;
-        }
+//        $db = DBManagerFactory::getInstance();
+//        $execute = false;
+//        VardefManager::clearVardef();
+//
+//        if (SpiceDictionaryVardefs::isDbManaged()) {
+//            $vardefs = SpiceDictionaryVardefs::loadVardefs();
+////echo print_r($vardefs, true);die('as');
+//            $db->transactionStart();
+//            $db->truncateQuery('sysdictionaryfields', true);
+//
+//            // save cache to DB
+//            foreach ($vardefs as $dictName => $dict) {
+//                SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
+//            }
+//            $db->transactionCommit();
+//        }
+//
+//        $repairedTables = [];
+//        $sql = '';
+//
+//        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
+//            $focus = BeanFactory::getBean($module);
+//            if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
+//                $sql .= $db->repairTable($focus, $execute);
+//                $repairedTables[$focus->_tablename] = true;
+//            }
+//            // check on audit tables
+//            if (($focus instanceof SpiceBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
+//                $sql .= $focus->update_audit_table(false);
+//                $repairedTables[$focus->_tablename . '_audit'] = true;
+//            }
+//        }
+//
+//        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
+//            if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
+//                continue;
+//            $tablename = $meta['table'];
+//            $fielddefs = $meta['fields'];
+//            $indices = $meta['indices'];
+//            $engine = isset($meta['engine']) ? $meta['engine'] : null;
+//            $sql .= $db->repairTableParams($tablename, $fielddefs, $indices, $execute, $engine);
+//            $repairedTables[$tablename] = true;
+//        }
 
         // rebuild relationships
-        $this->rebuildRelationships();
+//        $this->rebuildRelationships();
         return $sql;
 
     }
 
     /**
-     * compares vardefs and columns, indexes in database,  for each difference found: delivers an array with a commentary, an sql statement and the hash of the sql statement
+     * Go through the vardefs and prepare SQL Queries
+     * @return string
+     * @throws \Exception
+     */
+    public static function buildSQLQueries(){
+        VardefManager::clearVardef();
+        $sql = '';
+        $vardefs = SpiceDictionaryVardefs::loadVardefs();
+//        file_put_contents('vardefs.log', print_r($vardefs, true)."\n", FILE_APPEND);
+        foreach($vardefs as $dictName => $dict){
+            // remove deprecated properties
+//            SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
+
+            // Classic scenario will be: creating a new dictionary item, going to repair database and expecting the variable to be available right away
+            // We therefore save the dictionary field definitions to the proper cache table
+            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
+
+            // repair table if tehre is any
+            if(!empty($dict['table'])) {
+                $sql .= SpiceDictionaryVardefs::repairTable($dict);
+                $repairedTables[$dict['table']] = true;
+                if (isset($dict['audited']) && $dict['audited'] == true) {
+                    $sql .= SpiceDictionaryVardefs::repairAuditTable($dict);
+                    $repairedTables[$dict['table'] . '_audit'] = true;
+                }
+            }
+        }
+        return $sql;
+    }
+
+
+    /**
+     * compares vardefs and columns, indexes in database,  for each difference found:
+     * delivers an array with a commentary, an sql statement and the hash of the sql statement
      *
      * @param Request $req
      * @param Response $res
@@ -261,52 +295,10 @@ class AdminController
      * @throws \Exception
      */
     public function buildSQLArray(Request $req, Response $res, array $args): Response {
-        $db = DBManagerFactory::getInstance();
-        $execute = false;
-        VardefManager::clearVardef();
-        if (SpiceDictionaryVardefs::isDbManaged()) {
-            $vardefs = SpiceDictionaryVardefs::loadVardefs();
-            foreach($vardefs as $dictName => $dict){
-                $returnArray[$dictName] = $dict;
+//        VardefManager::clearVardef();
+        $sql = self::buildSQLQueries();
 
-                // remove deprecated properties
-                SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);
-
-                // save to db
-                SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
-            }
-        }
-
-        $repairedTables = [];
-        $sql = '';
-
-        foreach (SpiceModules::getInstance()->getModuleList() as $module) {
-            SpiceDictionaryHandler::loadModuleFiles($module);
-
-            $focus = BeanFactory::getBean($module);
-            if (($focus instanceof SpiceBean) && !isset($repairedTables[$focus->_tablename])) {
-                $sql .= $db->repairTable($focus, $execute);
-                $repairedTables[$focus->_tablename] = true;
-            }
-            // check on audit tables
-            if (($focus instanceof SpiceBean) && $focus->is_AuditEnabled() && !isset($repairedTables[$focus->_tablename . '_audit'])) {
-                $sql .= $focus->update_audit_table(false);
-                $repairedTables[$focus->_tablename . '_audit'] = true;
-            }
-        }
-
-        SpiceDictionaryHandler::loadMetaDataFiles();
-
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
-            if (!isset($meta['table']) || isset($repairedTables[$meta['table']]))
-                continue;
-            $tablename = $meta['table'];
-            $fielddefs = $meta['fields'];
-            $indices = $meta['indices'];
-            $engine = isset($meta['engine']) ? $meta['engine'] : null;
-            $sql .= $db->repairTableParams($tablename, $fielddefs, $indices, $execute, $engine);
-            $repairedTables[$tablename] = true;
-        }
+        // make an array from the whole sql string
         foreach (explode("\n", $sql) as $line) {
             // not completely right, cant think of something better right now
             if (strpos($line, "Table")) {
@@ -315,10 +307,10 @@ class AdminController
             if (strpos($line, ';')) {
                 $sqlArray[] = ["comment" => $comment, "statement" => $line, "md5" => md5($line), "selected" => false];
             }
-
         }
+
         // rebuild relationships
-        $this->rebuildRelationships();
+//        $this->rebuildRelationships();
 
         // send an empty string for sql if $sqlArray is null
         return $res->withJson(["sql" => (empty($sqlArray) ? "" : $sqlArray), "wholeSQL" => $sql]);

@@ -248,7 +248,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
         'parent_id' => [
             'name' => 'parent_id',
             'type' => 'id',
-            'len' => '36',
             'reportable' => false,
             'comment' => 'ID of Sugar object referenced by parent_type (deprecated as of 4.2)',
         ],

@@ -18,7 +18,12 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'gsuite-pane',
-    templateUrl: '../templates/gsuitepane.html'
+    templateUrl: '../templates/gsuitepane.html',
+    providers: [
+        {provide: GroupwareService, useClass: GSuiteGroupware},
+        GSuiteBrokerService,
+        model
+    ]
 })
 export class GSuitePane implements OnInit {
 

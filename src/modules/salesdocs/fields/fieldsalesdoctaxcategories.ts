@@ -13,7 +13,7 @@ import {salesdocrecord} from "../services/salesdocrecord";
 import {Router} from '@angular/router';
 
 @Component({
-    selector: 'field-salesdoc-types',
+    selector: 'field-salesdoc-taxcategories',
     templateUrl: '../templates/fieldsalesdoctaxcategories.html'
 })
 export class fieldSalesdocTaxCategories extends fieldGeneric {
