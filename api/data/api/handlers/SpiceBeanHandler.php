@@ -1653,8 +1653,8 @@ class SpiceBeanHandler
         // fill in mapping for additional relationship fields
         $additional_rel_fields = [];
         $additional_rel_fields_mapped = [];
-        if (isset($bean->field_name_map[$linkName]['rel_fields'])) {
-            foreach ($bean->field_name_map[$linkName]['rel_fields'] as $join_table_field => $joinDetails) {
+        if (isset($bean->field_defs[$linkName]['rel_fields'])) {
+            foreach ($bean->field_defs[$linkName]['rel_fields'] as $join_table_field => $joinDetails) {
                 $additional_rel_fields_mapped[] = $joinDetails['map'];
                 $additional_rel_fields[$joinDetails['map']] = $join_table_field;
             }
