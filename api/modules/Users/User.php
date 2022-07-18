@@ -254,7 +254,7 @@ class User extends Person
 
         if (!SpiceConfig::getInstance()->installing && $current_user !== null) {
             if ($current_user->isAdmin()) {
-                if (isset($this->UserType[0])) {
+                if (!empty($this->UserType)) {
                     switch ($this->UserType) {
                         case 'Administrator':
                             $this->is_admin = 1;
