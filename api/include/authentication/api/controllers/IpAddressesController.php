@@ -4,11 +4,9 @@
 namespace SpiceCRM\includes\authentication\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TwoFactorAuthenticate;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 
 class IpAddressesController
 {
@@ -24,7 +22,7 @@ class IpAddressesController
 
     public function deleteIpAddress( $req, $res, array $args ): Response
     {
-        IpAddresses::deleteIpAddress( $args['ipAddress'] );
+        SpiceCRMAccessUtils::deleteIpAddress( $args['ipAddress'] );
         return $res->withJson([
             'success' => true
         ]);
@@ -33,7 +31,14 @@ class IpAddressesController
     public function addIpAddress( $req, $res, array $args )
     {
         $parsedBody = $req->getParsedBody();
-        $ipAddress = IpAddresses::addIpAddress( $parsedBody['color'], $parsedBody['description'], $args['ipAddress'], AuthenticationController::getInstance()->getCurrentUser()->id );
+        $db = DBManagerFactory::getInstance();
+
+        $ipAddress = SpiceCRMAccessUtils::addIpAddress( $parsedBody['color'], $parsedBody['description'], $args['ipAddress'], AuthenticationController::getInstance()->getCurrentUser()->id );
+
+        if (!empty($ipAddress['created_by'])) {
+            $ipAddress['created_by_name'] = $db->getOne("SELECT user_name FROM users WHERE id ='{$ipAddress['created_by']}'");
+        }
+
         return $res->withJson([
             'success' => true,
             'data' => $ipAddress
@@ -42,7 +47,13 @@ class IpAddressesController
 
     public function alterIpAddress( $req, $res, array $args )
     {
-        $ipAddress = IpAddresses::alterIpAddress( $req->getParsedBody()['description'], $args['ipAddress'] );
+        $ipAddress = SpiceCRMAccessUtils::alterIpAddress( $req->getParsedBody()['description'], $args['ipAddress'] );
+        $db = DBManagerFactory::getInstance();
+
+        if (!empty($ipAddress['created_by'])) {
+            $ipAddress['created_by_name'] = $db->getOne("SELECT user_name FROM users WHERE id ='{$ipAddress['created_by']}'");
+        }
+
         return $res->withJson([
             'success' => true,
             'data' => $ipAddress
@@ -53,7 +64,7 @@ class IpAddressesController
     {
         return $res->withJson([
             'success' => true,
-            'data' => IpAddresses::moveIpAddress( $args['color'][0], $args['ipAddress'], AuthenticationController::getInstance()->getCurrentUser()->id )
+            'data' => SpiceCRMAccessUtils::moveIpAddress( $args['color'][0], $args['ipAddress'], AuthenticationController::getInstance()->getCurrentUser()->id )
         ]);
     }
 
