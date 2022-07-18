@@ -3,7 +3,6 @@
 
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
 use SpiceCRM\includes\authentication\api\controllers\IpAddressesController;
 
 $RESTManager = RESTManager::getInstance();

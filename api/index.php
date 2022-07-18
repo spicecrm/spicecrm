@@ -7,6 +7,7 @@ require_once 'vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
 use DI\Container;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
 use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -41,6 +42,10 @@ try {
         throw new \SpiceCRM\includes\ErrorHandlers\SystemNotInstalledException();
     }
 
+    DBManagerFactory::setDBConfig();
+
+    SpiceConfig::getInstance()->reloadConfig();
+
     $slimContainer = new Container();
     AppFactory::setContainer($slimContainer);
     $app = AppFactory::create(new SpiceResponseFactory());
@@ -62,19 +67,18 @@ try {
     // load the core dictionary files
 //    SpiceDictionaryHandler::loadMetaDataFiles();
 
-    $RESTManager->authenticate();
+    AuthenticationController::getInstance()->authenticate();
 
     // register the upload stream handler
     UploadStream::register();
 
     // load the modules first
     SpiceModules::getInstance()->loadModules();
-   
+
     // load the metadata from the database
 //    SpiceDictionaryHandler::loadMetaDataDefinitions();
     // load
     SpiceDictionaryHandler::loadCachedVardefs();
-
 
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);
@@ -85,9 +89,6 @@ try {
 
     // run the request
     $RESTManager->app->run();
-
-    // cleanup
-    AuthenticationController::getInstance()->cleanup();
 
 } catch (Exception $e) {
     $RESTManager->outputError($e);

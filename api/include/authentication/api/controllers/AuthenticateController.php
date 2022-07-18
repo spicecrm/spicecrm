@@ -4,9 +4,9 @@
 namespace SpiceCRM\includes\authentication\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TwoFactorAuthenticate;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -24,18 +24,34 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class AuthenticateController
 {
+    /**
+     * reset password by token
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
     public function authResetPasswordByToken(Request $req, Response $res, array $args): Response
     {
         $parsedBody = $req->getParsedBody();
-        $userAuthenticationController = new UserAuthenticate();
+        $userAuthenticationController = new SpiceCRMPasswordUtils();
         $userAuthenticationController->resetPasswordByToken($args['token'], $parsedBody['newPassword']);
         return $res->withJson($res);
 
     }
 
+    /**
+     * send password token to user
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
     public function authSendTokenToUser(Request $req, Response $res, array $args): Response
     {
-        $sugarAuthenticationObj = new UserAuthenticate();
+        $sugarAuthenticationObj = new SpiceCRMPasswordUtils();
         try {
             $sugarAuthenticationObj->sendTokenToUser($args['emailAddress']);
         } catch (Exception $exception) {
@@ -55,22 +71,41 @@ class AuthenticateController
         return $res->withJson($twoFactorAuthentication->checkCode("12345", "56789"));
     }
 
-    public function authChangePassword(Request $req, Response $res, array $args)
+    /**
+     * change user password
+     * @throws Exception
+     * @throws UnauthorizedException | \Exception | ForbiddenException
+     */
+    public function authChangePassword(Request $req, Response $res, array $args): Response
     {
         $parsedBody = $req->getParsedBody();
-        AuthenticationController::getInstance()->changePassword($parsedBody['username'], $parsedBody['password'], $parsedBody['newPassword'], false);
+
+        $authenticator = AuthenticationController::getInstance()->getAuthenticator();
+        $authData = (object) ['username' => $parsedBody['username'], 'password' => $parsedBody['password']];
+
+        $oldPasswordMatch = $authenticator->authenticate($authData, 'credentials');
+
+        if (!$oldPasswordMatch) {
+            throw new UnauthorizedException("Current Password is not correct");
+        }
+
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
+        $sugarAuthenticationObj->changePassword($parsedBody['username'], $parsedBody['newPassword']);
 
         return $res->withJson($res);
 
     }
 
-    public function authGetModuleACL(Request $req, Response $res, array $args): Response
-    {
-        $sugarAuthenticateObj = new UserAuthenticate();
-
-        return $res->withJson($sugarAuthenticateObj->get_modules_acl());
-    }
-
+    /**
+     * set new user password
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws ForbiddenException
+     * @throws UnauthorizedException
+     */
     public function authSetNewPassword(Request $req, Response $res, array $args): Response
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -100,7 +135,7 @@ class AuthenticateController
             throw new UnauthorizedException("Password Reset due to external_auth_only unavailable");
         }
 
-        $sugarAuthenticationObj = new UserAuthenticate();
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
         $sugarAuthenticationObj->setNewPassword($userObj, $parsedBody['newPassword'], $parsedBody['sendEmail'], $parsedBody['forceReset']);
 
         return $res->withJson(['success' => true]);
