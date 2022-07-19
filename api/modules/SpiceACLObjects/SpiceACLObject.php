@@ -387,16 +387,14 @@ class SpiceACLObject extends SpiceBean
             // matches for the owner or coOwner
             if ($this->spiceaclowner) {
                 $ownermatches[] = [
-                        [
-                            'terms' => [
-                                'assigned_user_id' => $userIds
-                            ]
-                        ],
-                        [
-                            'terms' => [
-                                'assigned_user_ids' => $userIds
-                            ]
-                        ]
+                    'terms' => [
+                        'assigned_user_id' => $userIds
+                    ]
+                ];
+                $ownermatches[] = [
+                    'terms' => [
+                        'assigned_user_ids' => $userIds
+                    ]
                 ];
             }
             // matches for the creator
