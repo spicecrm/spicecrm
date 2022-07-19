@@ -129,9 +129,9 @@ class SpiceCRMAuthenticate implements AuthenticatorI
      * @param string $name
      * @param string $password
      * @param string $where
-     * @return ?array
+     * @return array|false
      */
-    public function findUserPassword(string $name, string $password, string $where = ''): ?array
+    public function findUserPassword(string $name, string $password, string $where = '') # : array|boolean
     {
         return User::findUserPassword($name, $password, $where);
     }
