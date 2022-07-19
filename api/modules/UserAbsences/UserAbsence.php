@@ -60,7 +60,7 @@ class UserAbsence extends SpiceBean
         $userIDs = [];
         $today = new DateTime();
         $today = $today->format($timeDate->get_date_format());
-        $substituteids = $db->query("SELECT distinct orgunit_id FROM users, userabsences WHERE users.id = userabsences.assigned_user_id AND representative_id='{$current_user->id}' AND date_start <= '$today' AND date_end >= '$today' AND deleted = 0");
+        $substituteids = $db->query("SELECT distinct orgunit_id FROM users, userabsences WHERE users.id = userabsences.assigned_user_id AND representative_id='{$current_user->id}' AND date_start <= '$today' AND date_end >= '$today' AND userabsences.deleted = 0");
         while ($substitute = $db->fetchByAssoc($substituteids)) {
             $userIDs[] = $substitute['orgunit_id'];
         }
