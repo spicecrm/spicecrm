@@ -225,17 +225,17 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             ...this.workflowManagerService.deletedTasks.map(task => this.utils.spiceModel2backend('WorkflowTaskDefinitions', {...task, deleted: 1}))
         ];
 
-        this.backend.postRequest(`module/WorkflowDefinitions/${this.currentModule}/${this.currentWorkflowId}`, {}, data).subscribe(
-            () => {
+        this.backend.postRequest(`module/WorkflowDefinitions/${this.currentModule}/${this.currentWorkflowId}`, {}, data).subscribe({
+            next: () => {
                 this.model.data.isNew = false;
                 this.currentWorkflow.data.isNew = false;
 
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             },
-            () => {
+            error: () => {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
             }
-        );
+        });
     }
 
     /**
@@ -258,8 +258,8 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                 return;
             }
 
-            this.backend.deleteRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}`).subscribe(
-                (res: { success: boolean, message: string }) => {
+            this.backend.deleteRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}`).subscribe({
+                next: (res: { success: boolean, message: string }) => {
 
                     if (res.success) {
                         this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_DELETED'), 'success');
@@ -269,10 +269,10 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                         this.toast.sendToast(res.message, 'error');
                     }
                 },
-                () => {
+                error: () => {
                     this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                 }
-            );
+            });
         });
     }
 
@@ -315,11 +315,13 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      */
     public getWorkflowDefinitions() {
         let loadingModal = this.modal.await('LBL_LOADING');
-        this.backend.getRequest('module/WorkflowDefinitions/' + this.currentModule).subscribe(wfd => {
-            loadingModal.emit(true);
-            this.workflowManagerService.currentModule.workflowDefinitions = wfd;
-        }, () => {
-            loadingModal.emit(true);
+        this.backend.getRequest('module/WorkflowDefinitions/' + this.currentModule).subscribe({
+            next: wfd => {
+                loadingModal.emit(true);
+                this.workflowManagerService.currentModule.workflowDefinitions = wfd;
+            }, error: () => {
+                loadingModal.emit(true);
+            }
         });
     }
 
@@ -393,15 +395,14 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             return;
         }
 
-        this.backend.postRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}/setIsActive/${this.model.data.is_active ? 1 : 0}`).subscribe(
-            () => {
+        this.backend.postRequest(`module/WorkflowDefinitions/${this.currentWorkflowId}/setIsActive/${this.model.data.is_active ? 1 : 0}`).subscribe({
+            next: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             },
-            () => {
+            error: () => {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
             }
-        );
-
+        });
     }
 
     /**
