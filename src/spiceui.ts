@@ -75,7 +75,7 @@ declare global {
 
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
-const bootstrap = ((document.querySelector('meta[name="bootstrap"]') as HTMLMetaElement) ?? {}).content;
+const bootstrap = (document.querySelector('meta[name="bootstrap"]') as HTMLMetaElement)?.content;
 
 /**
  * the main component that gets bootstrapped withthe main module
