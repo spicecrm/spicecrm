@@ -139,8 +139,8 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     public subscribeToModelChanges() {
         this.subscription.add(
-            this.model.observeFieldChanges('editor_type').subscribe(data => {
-                this.setActiveEditor(data?.editor_type)
+            this.model.observeFieldChanges('editor_type').subscribe(value => {
+                this.setActiveEditor(value)
             })
         );
         this.subscription.add(
