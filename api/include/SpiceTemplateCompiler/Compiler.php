@@ -351,7 +351,7 @@ class Compiler
             $deepLinkedBeans = [];
             foreach ($linkedBeans as $linkedBean) {
                 array_shift($parts);
-                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode(".", $parts),$linkedBean) );
+                $deepLinkedBeans = array_merge($deepLinkedBeans, $this->getLinkedBeans(implode(".", $parts),$linkedBean, $beans, $params));
             }
             return $deepLinkedBeans;
         } else {
