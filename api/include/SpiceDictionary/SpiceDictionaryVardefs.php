@@ -1643,7 +1643,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // process slqs
         foreach($sqls as $sql){
-            if(!$db->query($sql)){
+            if(!$db->query($sql, true)){
                 //@todo: see if anything shall be logged somewhere
 //                file_put_contents('vardefs.log', print_r($sql, true)."\n", FILE_APPEND);
             }
@@ -1985,7 +1985,8 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 //            $tableName = 'sysdictionaryrelationships';
 //        }
         $db = DBManagerFactory::getInstance();
-        if(!$db->truncateQuery($tableName)){
+        // use deleteAll to ensure rollback functionality. It would not work with a truncate table
+        if(!$db->deleteAll($tableName, true)){
             LoggerManager::getLogger()->fatal('error truncating '.$tableName.' table '.$db->lastError());
             return false;
         }
@@ -2067,23 +2068,28 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     }
 
     /**
-     * truncate and refill 'sysdictionaryfields' table
+     * delete content and refill 'sysdictionaryfields' table
      * truncate and refill 'relationships' table
      * @return array
      * @throws \Exception
      */
     public function repairDictionaries(){
         $returnArray = [];
-        $db = DBManagerFactory::getInstance();
 
         // load Vardefs
         $vardefs = SpiceDictionaryVardefs::loadVardefs();
 
-        // start db transaction
-        $db->transactionStart();
+        $db = DBManagerFactory::getInstance();
+        $db->transactionCommit(); // end any other transaction
+        $db->transactionStart(); // start here
+        // declare the function for the scope so that rollback can be triggered
+        // might not be necessary BUT doing so we ensure a rollback after any kind of error
+        register_shutdown_function(function(){
+            DBManagerFactory::getInstance()->transactionRollback();
+        });
 
-        // truncate cache table sysdictionaryfields
-        $db->truncateQuery('sysdictionaryfields', true);
+        // truncate cache table sysdictionaryfields. Use deleteAll to enable a rollback!
+        $db->deleteAll('sysdictionaryfields', true);
         unset($_SESSION['dictionaries']);
 
         // save to db
@@ -2093,9 +2099,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             // save to db
             SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
         }
+        $db->transactionCommit(); // stop here
 
-        // confirm save into db
-        $db->transactionCommit();
+        $db->transactionStart(); // start to continue
 
         // repair relationships and reset the session variable 'relationships'
         Relationship::build_relationship_cache();
@@ -2106,6 +2112,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // load dictionaries to reset the session variable 'dictionaries'
         //self::loadDictionariesCacheFromDb(true);
+
+        // start for middleware
+        $db->transactionStart();
         return $returnArray;
     }
 
