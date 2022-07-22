@@ -37,7 +37,7 @@ export class AdministrationGeneralSettings implements OnInit {
                 name: 'spicecrm',
                 ext: '',
                 maxLogs: 10,
-                maxSize: 10,
+                maxSize: '10MB',
                 suffix: ''
             }
         }
@@ -75,6 +75,10 @@ export class AdministrationGeneralSettings implements OnInit {
     public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.getRequest('configuration/settings').subscribe(data => {
+                if (!data.logger.file) {
+                    data.logger.file = {};
+                }
+
                 this.settings = data;
 
                 // switch developer mode
@@ -124,8 +128,8 @@ export class AdministrationGeneralSettings implements OnInit {
     /**
      * getter to strip the MB from the max size
      */
-    get maxSize(){
-        return this.settings.logger.file.maxSize?.replace('MB', '');
+    get loggerMaxSize(){
+        return (this.settings.logger.file.maxSize ?? '').replace('MB', '');
     }
 
     /**
@@ -133,7 +137,7 @@ export class AdministrationGeneralSettings implements OnInit {
      *
      * @param maxSize
      */
-    set maxSize(maxSize){
+    set loggerMaxSize(maxSize){
         this.settings.logger.file.maxSize = maxSize + 'MB';
     }
 }
