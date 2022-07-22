@@ -1,20 +1,22 @@
 /**
  * @module WorkbenchModule
  */
-import {EventEmitter, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
 import {
     DictionaryDefinition,
-    DictionaryIndex, DictionaryIndexItem,
+    DictionaryIndex,
+    DictionaryIndexItem,
     DictionaryItem,
     Relationship,
     RelationshipRelateField
 } from "../interfaces/dictionarymanager.interfaces";
 import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
 import {configurationService} from "../../services/configuration.service";
+import {toast} from "../../services/toast.service";
 
 @Injectable()
 export class dictionarymanager {
@@ -118,7 +120,12 @@ export class dictionarymanager {
      */
     public loaded: string;
 
-    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public configurationService: configurationService) {
+    constructor(public backend: backend,
+                public metadata: metadata,
+                public language: language,
+                public modelutilities: modelutilities,
+                public toast: toast,
+                public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
         this.loadWords();
     }
@@ -259,7 +266,14 @@ export class dictionarymanager {
      */
     public save() {
         let changes = this.determineChangedRecords();
-        this.backend.postRequest('dictionary/definitions', {}, changes);
+        this.backend.postRequest('dictionary/definitions', {}, changes).subscribe({
+            next: () => {
+                this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+            }
+        });
     }
 
     /**
