@@ -42,9 +42,6 @@
 .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused){
     border: none !important;
 }
-.ck-reset_all{
-    display: none;
-}
 .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused{
     border: none !important;
 }
