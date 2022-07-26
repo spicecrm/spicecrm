@@ -1,10 +1,10 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDragEnter, CdkDragExit} from "@angular/cdk/drag-drop";
-import {ColumnI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
+import {ColumnI, CustomElement, SectionI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * render a set of tools and configurations to be used for building pages
@@ -21,18 +21,31 @@ export class SpicePageBuilderPanel {
      */
     @Input() public self: any;
     /**
+     * user predefined sections
+     */
+    @Input() public customSections: CustomElement[] = [];
+    /**
+     * user predefined items
+     */
+    @Input() public customItems: CustomElement[] = [];
+    /**
      * available sections
      */
     public sections: SectionI[] = [];
 
-    constructor(public spicePageBuilderService: SpicePageBuilderService) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService, private cdRef: ChangeDetectorRef) {
     }
 
     /**
      * call to generate sections
      */
     public ngOnInit() {
+        this.spicePageBuilderService.loadCustomElements();
         this.generateSections();
+    }
+
+    public ngAfterViewInit(){
+        this.cdRef.detectChanges();
     }
 
     /**

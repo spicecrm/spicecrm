@@ -1,23 +1,12 @@
 /**
  * @module Outlook
  */
-import {
-    Component,
-    Injectable,
-    Input,
-    OnInit,
-    ChangeDetectorRef,
-    enableProdMode,
-} from '@angular/core';
+import {NgModule,} from '@angular/core';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {NgModule} from '@angular/core';
-import {LocationStrategy, HashLocationStrategy} from "@angular/common";
-import {BrowserModule, Title} from '@angular/platform-browser';
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {HttpClientModule, HttpHeaders, HttpClient} from "@angular/common/http";
+import {BrowserModule} from '@angular/platform-browser';
+import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from '@angular/forms';
-import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
-import {Subject, Observable} from 'rxjs';
+import {RouterModule} from '@angular/router';
 
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
@@ -26,15 +15,8 @@ import {DirectivesModule} from "../../directives/directives";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 
 // various services we need on global app level
-import {loginCheck} from "../../services/login.service";
-
-import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
 import {ModuleGroupware} from "../groupware/groupware";
-import {GroupwareService} from '../groupware/services/groupware.service';
-
-import {OutlookConfiguration} from './services/outlookconfiguration.service';
-import {OutlookGroupware} from "./services/outlookgroupware.service";
 
 import {OutlookPane} from './components/outlookpane';
 import {OutlookPaneFooter} from './components/outlookpanefooter';
@@ -45,7 +27,6 @@ import {OutlookCalendarItemReadPane} from "./components/outlookcalendaritemreadp
 import {OutlookCalendarItemAddContainer} from "./components/outlookcalendaritemaddcontainer";
 import {OutlookCalendarItemViewContainer} from "./components/outlookcalendaritemviewcontainer";
 import {OutlookCalendarItemEditContainer} from "./components/outlookcalendaritemeditcontainer";
-import {model} from "../../services/model.service";
 
 @NgModule({
     imports: [
@@ -58,11 +39,7 @@ import {model} from "../../services/model.service";
         DirectivesModule,
         GlobalComponents,
         ModuleGroupware,
-        RouterModule.forRoot([
-            {path: 'login', component: OutlookLoginPane},
-            {path: "", component: SystemDynamicRouteInterceptor, pathMatch: "full", canActivate: [loginCheck]},
-            {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
-        ])
+        RouterModule,
     ],
     declarations: [
         OutlookPane,
