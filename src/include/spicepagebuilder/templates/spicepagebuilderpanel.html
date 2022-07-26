@@ -1,4 +1,4 @@
-<div class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
+<div [system-overlay-loading-spinner]="spicePageBuilderService.isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
     <div style="height: 50%">
         <system-section titlelabel="LBL_SECTIONS" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate"
