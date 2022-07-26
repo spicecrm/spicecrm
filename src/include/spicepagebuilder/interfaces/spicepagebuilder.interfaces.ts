@@ -41,6 +41,15 @@ export interface SectionI extends TagElementI {
     };
 }
 /**
+ * custom element predefined by user
+ */
+export interface CustomElement {
+    id?: string,
+    name: string,
+    type: 'section' | 'item',
+    content: SectionI | ContentElementI
+}
+/**
  * column element to be rendered in the view
  * More details: https://mjml.io/documentation/#mj-column
  */
