@@ -19,6 +19,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
     public expanded: boolean = true;
     public hasFieldAssignedUser = false;
     public hasFieldAssignedOrgunit = false;
+    public linkOrgunitToAssignedUser = true;
 
     public fields: any = {
         spiceacl_primary_territory: {
@@ -60,12 +61,16 @@ export class ObjectRecordAdministrationTab implements OnInit {
             this.expanded = false;
         }
 
+        if (this.componentconfig.unlinkorgunit) {
+            this.linkOrgunitToAssignedUser = !this.componentconfig.unlinkorgunit;
+        }
+
         // get what we have in terms of assignment
         this.hasFieldAssignedUser = this.metadata.hasField(this.model.module, 'assigned_user_id');
         this.hasFieldAssignedOrgunit = this.metadata.hasField(this.model.module, 'assigned_orgunit_id');
 
         // if we have an orgunit subscribe to the changes of the assigned user
-        if(this.hasFieldAssignedOrgunit) {
+        if(this.hasFieldAssignedOrgunit && this.linkOrgunitToAssignedUser) {
             this.model.data$.subscribe({
                 next: (modeldata) => {
                     if (!!this.model.getField('assigned_user_id')) {
