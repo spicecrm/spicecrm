@@ -1,10 +1,16 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 import { userpreferences } from '../../../services/userpreferences.service';
+import { take } from 'rxjs/operators';
+
+/**
+ * @ignore
+ */
+declare var moment: any;
 
 @Component({
     selector: 'questionnaire-entire-evaluation',
@@ -33,38 +39,121 @@ export class QuestionnaireEntireEvaluation implements OnInit {
 
     public relativeTo = 'questionnaires'; // questionnaires fill out | questions fill out
 
+    /**
+     * Data for the export (base64 url).
+     */
+    public loadUrl: any = undefined;
+
+    /**
+     * File name for the export.
+     */
+    public downloadFilename: string = 'QuestionnaireEvaluation.pdf';
+
+    /**
+     * Indicator for exporting process.
+     */
+    public isExporting = false;
+
+    /**
+     * The start date of the evaluation period (input field).
+     */
+    public startdate;
+
+    /**
+     * The end date of the evaluation period (input field).
+     */
+    public enddate;
+
+    /**
+     * The start date of the evaluation period shown on the screen.
+     */
+    public startdateOfShownEvaluation;
+
+    /**
+     * The end date of the evaluation period shown on the screen.
+     */
+    public enddateOfShownEvaluation;
+
+    /**
+     * Is the start date valid?
+     */
+    public isStartdateValid: boolean;
+
+    /**
+     * Is the end date valid?
+     */
+    public isEnddateValid: boolean;
+
+    /**
+     * The part of the html page which has to get exported.
+     */
+    @ViewChild('forExport', {read: ElementRef, static: false}) public htmlForExport: ElementRef;
+
+    /**
+     * A reference to the export download link.
+     */
+    @ViewChild('downloadlink', {read: ViewContainerRef, static: true }) public downloadlink: ViewContainerRef;
+
+    /**
+     * Has an evaluation already got loaded?
+     */
+    public hasInitialLoadingStarted = false;
+
+    /**
+     * Is an export possible, can it be provided by the backend?
+     */
+    public isExportPossible = false;
+
     constructor( public backend: backend, public model: model, public userPreferences: userpreferences ) { }
 
     public ngOnInit(): void {
         this.questionnaireId = this.inputQuestionnaireId !== undefined ? this.inputQuestionnaireId : this.model.id;
-
         this.loadQuestionnaire();
         this.loadQuestionsets();
-        this.loadAnwers();
-
     }
 
-    public loadQuestionnaire() {
+    public initialLoad(): void {
+        if ( !this.datesValid ) return;
+        this.hasInitialLoadingStarted = true;
+        this.loadAnwers();
+    }
+
+    public loadQuestionnaire()
+    {
         if ( this.isLoadingQuestionnaire ) return;
         this.isLoadingQuestionnaire = true;
+
         if ( this.questionnaireId ) {
-            this.backend.getRequest( 'module/Questionnaires/' + this.questionnaireId ).subscribe( ( response: any ) => {
-                this.questionnaire = response;
-                this.isLoadingQuestionnaire = false;
-            } );
+            this.backend.getRequest( 'module/Questionnaires/' + this.questionnaireId ).subscribe({
+                next: ( response: any ) => {
+                    this.questionnaire = response;
+                    this.isLoadingQuestionnaire = false;
+                },
+                error: () => {
+                    this.isLoadingQuestionnaire = false;
+                }});
         } else {
             this.questionnaire = this.model.data;
             this.isLoadingQuestionnaire = false;
         }
     }
 
-    public loadAnwers(): void {
+    public loadAnwers(): void
+    {
         if ( this.isLoadingAnswers ) return;
         this.isLoadingAnswers = true;
-        this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/answers/allParticipations' ).subscribe( data => {
+
+        let startdateAsString: string, enddateAsString: string;
+        if ( this.startdate instanceof moment ) startdateAsString = moment( this.startdate ).utc().format('YYYY-MM-DD');
+        if ( this.enddate instanceof moment ) enddateAsString = moment( this.enddate ).utc().format('YYYY-MM-DD');
+        this.enddateOfShownEvaluation = this.enddate;
+        this.startdateOfShownEvaluation = this.startdate;
+
+        this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/answers/allParticipations', { startdate: startdateAsString, enddate: enddateAsString } ).subscribe( data => {
             this.answers = data.answers;
             this.countQuestionnaireParticipations = data.countQuestionnaireParticipations;
             this.isLoadingAnswers = false;
+            this.isExportPossible = !!data.isExportPossible;
         } );
     }
 
@@ -164,7 +253,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
     }
 
     public reload(): void {
-        if ( !this.isLoading ) {
+        if ( !this.isLoading && this.datesValid ) {
             this.loadQuestionnaire();
             this.loadQuestionsets();
             this.loadAnwers();
@@ -223,6 +312,69 @@ export class QuestionnaireEntireEvaluation implements OnInit {
             if ( /^ratinggroup|rating|nps|single|multi|binary$/.test( questionset.questions.beans[id].questiontype )) return true;
         }
         return false;
+    }
+
+    /**
+     * Export evaluation by submitting the html code (of the ui-rendered evaluation) to the backend, which will return it as pdf file.
+     */
+    public export() {
+        if ( this.isLoading || !this.isExportPossible ) return;
+        let html = this.htmlForExport.nativeElement.innerHTML;
+        this.isExporting = true;
+        this.backend.getDownloadPostRequestFile('module/Questionnaires/'+this.questionnaireId+'/entireEvaluationExport', null, {
+            html: html,
+            startdate: this.startdateOfShownEvaluation ? this.userPreferences.formatDate( this.startdateOfShownEvaluation ) : undefined,
+            enddate: this.enddateOfShownEvaluation ? this.userPreferences.formatDate( this.enddateOfShownEvaluation ) : undefined,
+            questionnaireName: this.questionnaire.name
+        })
+            .pipe(take(1))
+            .subscribe({
+                next: url => {
+                    this.isExporting = false;
+                    this.downloadlink.element.nativeElement.href = url;
+                    this.downloadlink.element.nativeElement.click();
+                },
+                error: () => {
+                    this.isExporting = false;
+                }
+            });
+    }
+
+    /**
+     * Set time of the start date to start of the day
+     */
+    public startdateChanged() {
+        if ( this.startdate && this.startdate instanceof moment ) {
+            this.startdate.set( {
+                hour: 0,
+                minute: 0,
+                second: 0,
+                millisecond: 0
+            } );
+        }
+    }
+
+    /**
+     * Set time of end date to end of the day
+     */
+    public enddateChanged() {
+        if ( this.enddate && this.startdate instanceof moment ) {
+            this.enddate.set( {
+                hour: 23,
+                minute: 59,
+                second: 59,
+                millisecond: 999
+            } );
+        }
+    }
+
+    /**
+     * Are the start and the end date valid (in case they are provided)?
+     */
+    public get datesValid(): boolean {
+        if ( !this.isStartdateValid || !this.isEnddateValid ) return false;
+        if ( this.startdate && this.enddate && this.enddate < this.startdate ) return false;
+        return true;
     }
 
 }
