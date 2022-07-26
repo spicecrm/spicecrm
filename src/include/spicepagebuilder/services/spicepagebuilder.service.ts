@@ -21,6 +21,10 @@ declare var _;
 @Injectable()
 export class SpicePageBuilderService {
     /**
+     * loading flag for data retrieve
+     */
+    public isLoading: boolean = false;
+    /**
      * user predefined sections
      */
     public customSections: CustomElement[] = [];
@@ -250,7 +254,12 @@ export class SpicePageBuilderService {
      * load user predefined elements
      */
     public loadCustomElements() {
+
+        this.isLoading = true;
+
         this.backend.getRequest('common/PageBuilder/customElements').subscribe(res => {
+
+            this.isLoading = false;
 
             res.sections.forEach(s => s.content = JSON.parse(s.content));
             this.customSections = res.sections;
