@@ -184,7 +184,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
     public getAnswerBarWidth( questionId, optionId ) {
         try {
             return {
-                width: ( this.answers[questionId].optionCounts[optionId] === undefined ? 0 : this.answers[questionId].optionCounts[optionId] ) / ( this.relativeTo === 'questionnaires' ? this.countQuestionnaireParticipations : this.answers[questionId].countParticipations ) * 100 + '%'
+                width: ( !this.answers[questionId] || this.answers[questionId].optionCounts[optionId] === undefined ? 0 : this.answers[questionId].optionCounts[optionId] ) / ( this.relativeTo === 'questionnaires' ? this.countQuestionnaireParticipations : this.answers[questionId].countParticipations ) * 100 + '%'
             };
         } catch (e) {
             return 0;
