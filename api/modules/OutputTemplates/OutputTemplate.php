@@ -38,7 +38,7 @@ class OutputTemplate extends SpiceBean
     private $additonalValues = [];
 
     /**
-     * an be calleed to set an array or object with different values to be
+     * an be called to set an array or object with different values to be
      *
      * @param $additonalValues an stdclass object
      */
@@ -51,6 +51,8 @@ class OutputTemplate extends SpiceBean
      * @var
      */
     public $idsOfParentTemplates = [];
+
+    public $useFrontendStylesheet = false;
 
     public function translateBody($bean = null, $bodyOnly = false)
     {
@@ -69,7 +71,7 @@ class OutputTemplate extends SpiceBean
         if ($bodyOnly) {
             $html = $templateCompiler->compile(html_entity_decode( $this->body), $bean, $this->language, $this->additonalValues);
         } else {
-            $html = '<style>' . $this->getStyle() . '</style>' . $templateCompiler->compile('<body><header>'
+            $html =  $templateCompiler->compile('<body><header>'
                     .html_entity_decode( $this->header ).'</header><footer>'.html_entity_decode( $this->footer ).'</footer><main>'.html_entity_decode( $this->body ).'</main></body>', $bean, $this->language, $this->additonalValues);
         }
 
@@ -82,6 +84,7 @@ class OutputTemplate extends SpiceBean
     }
 
     private function setPDFHandler(){
+        if ( $this->pdf_handler ) return; // PDF handler already set, nothing to do
         $class = @SpiceConfig::getInstance()->config['outputtemplates']['pdf_handler_class'];
         if(!$class) $class = '\SpiceCRM\modules\OutputTemplates\handlers\pdf\DomPdfHandler';
         $this->pdf_handler = new $class($this);
@@ -110,6 +113,11 @@ class OutputTemplate extends SpiceBean
         return $this->pdf_handler->__toString();
     }
 
+    public function setOutputHtml( $html ) {
+        $this->setPDFHandler();
+        $this->pdf_handler->html_content = $html;
+    }
+
     public function convertToSpiceAttatchment()
     {
         $file = $this->saveAsTmpFile();
@@ -125,8 +133,9 @@ class OutputTemplate extends SpiceBean
         return $this->bean;
     }
 
-    public function getStyle()
+    public function getStyle(): string
     {
+        if ( $this->useFrontendStylesheet ) return $this->getFrontendStylesheet();
         $style = '';
         if (!empty($this->stylesheet_id)) {
             $styleRecord = $this->db->fetchByAssoc($this->db->query("SELECT csscode FROM sysuihtmlstylesheets WHERE id='{$this->stylesheet_id}'"));
@@ -135,5 +144,13 @@ class OutputTemplate extends SpiceBean
         return str_replace(["\n", "\t"], "", $style);
     }
 
-}
+    /**
+     * Gets the stylesheet of the SpiceCRM frontend
+     */
+    public static function getFrontendStylesheet(): string {
+        $filepath = '../app/styles.css';
+        if ( !is_readable( $filepath )) return '';
+        return file_get_contents( $filepath );
+    }
 
+}
