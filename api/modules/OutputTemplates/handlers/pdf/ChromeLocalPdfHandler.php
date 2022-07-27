@@ -43,7 +43,7 @@ class ChromeLocalPdfHandler extends PdfHandler
         file_put_contents($tmpHtmlFilename, $htmlOutput );
         $tmpPdfFilename = tempnam( sys_get_temp_dir(), '' );
 
-        $chromePath = SpiceConfig::getInstance()->config['system']['chromePath'];
+        $chromePath = SpiceConfig::getInstance()->config['outputtemplates']['chrome_path'];
         # --run-all-compositor-stages-before-draw
         # --enable-logging
         exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename) ),$output,$resultCode );
