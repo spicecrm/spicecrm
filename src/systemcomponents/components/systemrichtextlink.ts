@@ -65,7 +65,7 @@ export class SystemRichTextLink implements OnInit {
         this.toTrack = !!this.trackingId;
         if ( this.url ) this.url = this.url.trim();
         if ( this.marketingAction ) this.linkType = 'mark';
-        if ( this.parent._module === 'CampaignTasks' ) this.loadMarketingActions();
+        this.loadMarketingActions();
     }
 
     /**
@@ -167,7 +167,7 @@ export class SystemRichTextLink implements OnInit {
         });
         this.model.save();
     }
-    
+
     private loadMarketingActions() {
         this.editorService.loadMarketingActions();
     }
