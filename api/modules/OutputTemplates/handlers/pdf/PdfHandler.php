@@ -46,7 +46,7 @@ abstract class PdfHandler
     public static function getTemplateOptions(OutputTemplate $template)
     {
         $arr = [];
-        foreach($template->PDF_FIELD_OPTIONS as $option)
+        foreach($template::$PDF_OPTION_FIELDS as $option)
         {
             $arr[$option] = $template->$option;
         }
