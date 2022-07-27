@@ -196,6 +196,7 @@ export class SystemInputDate implements ControlValueAccessor {
         this._date.moment = null;
         this._date.display = '';
         this._date.valid = true;
+        this.valid.emit(true);
 
         // emit the value to the ngModel directive
         if (typeof this.onChange === 'function' && notify) {
@@ -219,6 +220,7 @@ export class SystemInputDate implements ControlValueAccessor {
             }
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
             this._date.valid = true;
+            this.valid.emit(true);
 
             // emit the value to the ngModel directive
             if (typeof this.onChange === 'function') {
