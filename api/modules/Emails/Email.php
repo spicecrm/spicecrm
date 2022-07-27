@@ -733,7 +733,7 @@ class Email extends SpiceBean
         $dom->loadHTML($this->body);
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
-            if (!empty($trackingId)) {
+            if (!empty($marketingaction)) {
                 $key = '2fs5uhnjcnpxcpg9';
                 $method = 'blowfish';
                 $data = 'Emails:'.$this->id.':MarketingActions:'.$marketingaction;

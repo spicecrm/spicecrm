@@ -38,6 +38,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['MarketingAction'] = [
                 'vname' => 'LBL_DATE_MODIFIED',
                 'type' => 'datetime',
             ],
+        'deleted' =>
+            [
+                'name' => 'deleted',
+                'vname' => 'LBL_DELETED',
+                'type' => 'bool',
+            ],
     ],
     'relationships' => [],
     'indices' => [
