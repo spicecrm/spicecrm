@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\marketing\api\controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
@@ -58,6 +59,11 @@ class MarketingAutomationController
         return $res->withJson(true);
     }
 
+    /**
+     * handle marketing action
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
     public function handleMarketingAction(Request $req, Response $res, array $args): Response
     {
         $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
@@ -69,9 +75,12 @@ class MarketingAutomationController
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
 
         if(array_key_exists('MarketingActions', $data) && !empty($data['MarketingActions'])) {
-            $marketingAction = BeanFactory::getBean('MarketingActions', $data['MarketingActions']);
+            /** @var Email $email */
             $email = BeanFactory::getBean('Emails', $data['Emails']);
-            $email->handleEvent($marketingAction->name);
+            if (!$email) {
+                throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $data['Emails'], 'module' => 'Emails']);
+            }
+            $email->handleEvent($data['MarketingActions']);
         }
         return $res->withJson(true);
     }
