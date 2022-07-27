@@ -466,7 +466,7 @@ $routes = [
                 'description' => 'GUID of the bean',
             ],
             'grouped'     => [
-                'in'          => 'grouped',
+                'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_BOOL,
                 'required'    => false,
                 'description' => 'if the result shoudl be returned as an array grouped by the transaction id',
