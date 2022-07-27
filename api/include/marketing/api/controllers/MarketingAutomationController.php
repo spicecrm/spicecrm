@@ -5,9 +5,11 @@ namespace SpiceCRM\includes\marketing\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 
@@ -74,15 +76,41 @@ class MarketingAutomationController
         $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
 
-        if(array_key_exists('MarketingActions', $data) && !empty($data['MarketingActions'])) {
-            /** @var Email $email */
-            $email = BeanFactory::getBean('Emails', $data['Emails']);
-            if (!$email) {
-                throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $data['Emails'], 'module' => 'Emails']);
-            }
-            $email->handleEvent($data['MarketingActions']);
+        if(!array_key_exists('MarketingActions', $data) || empty($data['MarketingActions'])) {
+            throw new BadRequestException('Missing url params');
         }
-        return $res->withJson(true);
+
+        /** @var Email $email */
+        $email = BeanFactory::getBean('Emails', $data['Emails']);
+        /** @var SpiceBean $marketingAction */
+        $marketingAction = BeanFactory::getBean('MarketingActions', $data['MarketingActions']);
+
+        if (!$email) {
+            throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $data['Emails'], 'module' => 'Emails']);
+        }
+
+        $email->handleEvent($data['MarketingActions']);
+
+        return $res->withJson(['redirectUrl' => $this->getRedirectUrl($marketingAction, $email->id)]);
+    }
+
+    /**
+     * generate redirect url from the marketing action
+     * @param SpiceBean $marketingAction
+     * @param string $emailId
+     * @return string
+     */
+    private function getRedirectUrl(SpiceBean $marketingAction, string $emailId): string
+    {
+        switch ($marketingAction->redirect_type) {
+            case 'landing_page':
+                $landingPageId = $marketingAction->redirect_url;
+                $url = SpiceConfig::getInstance()->config['landingpage']['base_url'];
+                return "$url/#/0/$landingPageId/$emailId";
+            case 'url':
+            default:
+            return $marketingAction->redirect_url;
+        }
     }
 
     /**

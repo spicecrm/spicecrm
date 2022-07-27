@@ -357,7 +357,7 @@ export class systemrichtextservice {
         return this.dummyHtmlElement.innerHTML;
     }
 
-    public marketingActions: string[] = null;
+    public marketingActions: {id: string, name: string}[] = null;
 
     public loadMarketingActions( force = false ) {
         if ( force || !_.isArray( this.marketingActions )) {
