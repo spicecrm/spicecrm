@@ -38,6 +38,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['MarketingAction'] = [
                 'vname' => 'LBL_DATE_MODIFIED',
                 'type' => 'datetime',
             ],
+        'redirect_url' =>
+            [
+                'name' => 'redirect_url',
+                'vname' => 'LBL_REDIRECT_URL',
+                'type' => 'varchar',
+            ],
+        'redirect_type' =>
+            [
+                'name' => 'redirect_type',
+                'vname' => 'LBL_REDIRECT_TYPE',
+                'type' => 'varchar',
+                'len' => 16,
+                'default' => 'url',
+            ],
         'deleted' =>
             [
                 'name' => 'deleted',
