@@ -197,6 +197,17 @@ class LanguageManager
             }
         }
 
+        // In case labels does not exist in the DB
+        foreach ( $labels as $label ) {
+            if ( !isset( $retArray[$label] )) {
+                $retArray[$label] = [
+                    'default' => $label,
+                    'short' => $label,
+                    'long' => $label
+                ];
+            }
+        }
+
         return $retArray;
     }
 
