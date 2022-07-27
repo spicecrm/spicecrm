@@ -75,11 +75,11 @@ class ConfiguratorController{
             SpiceConfig::getInstance()->config[$args['category']][$name] = $value;
 
             // write to database
-            $entry = $db->fetchByAssoc($db->query("SELECT * FROM config WHERE category='{$args['category']}' AND name='{$name}'"));
+            $entry = $db->fetchByAssoc($db->query("SELECT * FROM config WHERE category='{$db->quote($args['category'])}' AND name='{$db->quote($name)}'"));
             if($entry){
-                $db->query("UPDATE config SET value='{$value}' WHERE category='{$args['category']}' AND name='{$name}'");
+                $db->query("UPDATE config SET value='{$db->quote($value)}' WHERE category='{$db->quote($args['category'])}' AND name='{$db->quote($name)}'");
             } else {
-                $db->query("INSERT INTO config (category, name, value) VALUES('{$args['category']}', '{$name}', '{$value}')");
+                $db->query("INSERT INTO config (category, name, value) VALUES('{$db->quote($args['category'])}', '{$db->quote($name)}', '{$db->quote($value)}')");
             }
         }
 
@@ -105,7 +105,7 @@ class ConfiguratorController{
 
         $retArray = [];
 
-        $entries = $db->query("SELECT * FROM {$args['table']}");
+        $entries = $db->query("SELECT * FROM `{$db->quote($args['table'])}`");
         while ($entry = $db->fetchByAssoc($entries)) {
             $retArrayEntry = [];
             foreach ($entry as $key => $value) {
@@ -142,7 +142,7 @@ class ConfiguratorController{
                     $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
                 if($cr){
-                    $record = $db->fetchByAssoc($db->query("SELECT * FROM {$args['table']} WHERE id = '{$args['id']}'"));
+                    $record = $db->fetchByAssoc($db->query("SELECT * FROM `{$db->quote($args['table'])}` WHERE id = '{$db->quote($args['id'])}'"));
                     if(is_array($meta['changerequests']['name'])){
                         $nameArray = [];
                         foreach($meta['changerequests']['name'] as $item){
@@ -155,7 +155,7 @@ class ConfiguratorController{
                 }
             }
         }
-        $db->query("DELETE FROM {$args['table']} WHERE id = '{$args['id']}'");
+        $db->query("DELETE FROM `{$db->quote($args['table'])}` WHERE id = '{$db->quote($args['id'])}'");
         return $res->withJson(['status' => 'success']);
     }
 
