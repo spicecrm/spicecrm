@@ -22,7 +22,7 @@ class TcpdfHandler extends LibPdfHandler
     {
         parent::process($html, $options);
 
-        $this->createTcpdf($this->html_content, $this->options);
+        $this->createTcpdf('<style>'.$this->template->getStyle().'</style>'.$this->html_content, $this->options);
         return true;
     }
 
