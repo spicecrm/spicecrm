@@ -26,7 +26,7 @@ class RocketPdfHandler extends ApiPdfHandler
                 CURLOPT_POSTFIELDS => http_build_query(
                     [
                         'apikey' => $this->access_data['key'],
-                        'value' => $this->html_content, // a url starting with http or an HTML string.  see example #5 if you have a long HTML string
+                        'value' => '<style>'.$this->template->getStyle().'</style>'.$this->html_content, // a url starting with http or an HTML string.  see example #5 if you have a long HTML string
                         'MarginTop' => $this->options['margin_top'] ?: 10,
                         'MarginBottom' => $this->options['margin_bottom'] ?: 10,
                         'MarginLeft' => $this->options['margin_left'] ?: 10,
