@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SpiceSubscriptions\KREST\controllers\SpiceSubscriptionsController;
+use SpiceCRM\includes\SpiceSubscriptions\api\controllers\SpiceSubscriptionsController;
 
 /**
  * get a Rest Manager Instance
