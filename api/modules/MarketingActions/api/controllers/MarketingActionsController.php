@@ -18,7 +18,7 @@ class MarketingActionsController
 
         $records = $db->query("SELECT * FROM marketingactions"); #  ORDER BY ... ASC
         while ($record = $db->fetchByAssoc($records))
-            $retArray['actions'][] = $record['name'];
+            $retArray['actions'][] = ['id' => $record['id'], 'name' => $record['name']];
 
         return $res->withJson( $retArray );
     }

@@ -20,7 +20,7 @@ class PdfCrowdHandler extends ApiPdfHandler
 
         $client = new HtmlToPdfClient($this->access_data['user_name'], $this->access_data['api_key']);
         $client->setUseHttp(true);
-        $this->content = $client->convertString($html);
+        $this->content = $client->convertString('<style>'.$this->template->getStyle().'</style>'.$html);
         return true;
     }
 
