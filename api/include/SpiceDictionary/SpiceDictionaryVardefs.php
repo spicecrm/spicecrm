@@ -179,7 +179,7 @@ class SpiceDictionaryVardefs  {
                 // load indices
                 if (!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
                 if (is_array($dbDict['indices'])) {
-                    $vardefs[$dbDict['name']]['indices'] = array_merge($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
+                    $vardefs[$dbDict['name']]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
                 }
 
                 // load relationships
@@ -260,7 +260,7 @@ class SpiceDictionaryVardefs  {
                 // load indices
                 if(!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
                 if(is_array($dbDict['indices']) && !empty($dbDict['indices'])){
-                    $vardefs[$dbDict['name']]['indices'] = array_merge($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
+                    $vardefs[$dbDict['name']]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
                 }
 
                 // load relationships
@@ -274,6 +274,36 @@ class SpiceDictionaryVardefs  {
         unset($dictionaryDefinitions);
 
         return $vardefs;
+    }
+
+    /**
+     * merge legacy indices with db indices
+     * @param array $leftIndices
+     * @param array $rightIndices
+     * @return array
+     */
+    public static function mergeIndices(array $leftIndices, array $rightIndices): array
+    {
+        if (count($leftIndices) == 0) return $rightIndices;
+
+        if (count($rightIndices) == 0) return $leftIndices;
+
+        $resultIndices = $leftIndices;
+
+        foreach ($rightIndices as $rightIndex) {
+
+            $exists = false;
+
+            foreach ($resultIndices as $resultIndex) {
+                if ($resultIndex['fields'] != $rightIndex['fields'] || $resultIndex['type'] != $rightIndex['type']) continue;
+                $exists = true;
+                break;
+            }
+
+            if (!$exists) $resultIndices[$rightIndex['name']] = $rightIndex;
+        }
+
+        return $resultIndices;
     }
 
 
@@ -307,7 +337,7 @@ class SpiceDictionaryVardefs  {
 
             if(!is_array($dbDict['indices'])) $dbDict['indices'] = [];
             if(!is_array($vardefs[$object]['indices'])) $vardefs[$object]['indices'] = [];
-            $vardefs[$object]['indices'] = array_merge($vardefs[$object]['indices'], $dbDict['indices']);
+            $vardefs[$object]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$object]['indices'], $dbDict['indices']);
         } else{
             $vardefs[$object] = $dbDict;
         }
@@ -2090,7 +2120,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // truncate cache table sysdictionaryfields. Use deleteAll to enable a rollback!
         $db->deleteAll('sysdictionaryfields', true);
-        unset($_SESSION['dictionaries']);
 
         // save to db
         foreach($vardefs as $dictName => $dict){
