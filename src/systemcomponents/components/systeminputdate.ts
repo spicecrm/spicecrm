@@ -59,6 +59,13 @@ export class SystemInputDate implements ControlValueAccessor {
     public isDisabled: boolean = false;
 
     /**
+     * holds if the value is edited (the input field is "dirty")
+     *
+     * @public
+     */
+    @Input() public isDirty = false;
+
+    /**
      * emits if the date is valid or not
      */
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
