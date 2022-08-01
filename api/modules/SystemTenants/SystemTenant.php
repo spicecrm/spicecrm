@@ -15,8 +15,6 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSRESTManager;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Users\User;
 
 class SystemTenant extends SpiceBean
 {
@@ -144,13 +142,13 @@ class SystemTenant extends SpiceBean
 
             $bean = BeanFactory::getBean($moduleName);
 
-            if (($bean instanceof SugarBean) && !$repairedTables[$bean->_tablename]) {
+            if (($bean instanceof SpiceBean) && !$repairedTables[$bean->_tablename]) {
                 $db->repairTable($bean);
                 $repairedTables[$bean->_tablename] = true;
             }
 
             // check on audit tables
-            if (($bean instanceof SugarBean) && $bean->is_AuditEnabled() && !isset($repairedTables[$bean->_tablename . '_audit'])) {
+            if (($bean instanceof SpiceBean) && $bean->is_AuditEnabled() && !isset($repairedTables[$bean->_tablename . '_audit'])) {
                 $sql .= $bean->update_audit_table();
                 $repairedTables[$bean->_tablename . '_audit'] = true;
             }
