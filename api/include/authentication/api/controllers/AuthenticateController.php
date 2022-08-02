@@ -162,32 +162,38 @@ class AuthenticateController
      * @throws \Com\Tecnick\Color\Exception
      * @throws \SpiceCRM\includes\ErrorHandlers\BadRequestException
      */
-    public function generateTOTPSecret($req, $res, array $args)
+    public function generateTOTPSecret( Request $req, Response $res, array $args)
     {
         $spice_config = SpiceConfig::getInstance()->config;
         $db = DBManagerFactory::getInstance();
         $timeDate = TimeDate::getInstance();
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if ( !$current_user ) {
+        $queryParams = $req->getQueryParams();
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else {
+            $forUser = $currentUser;
+        }
+        if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
                 $userAuthenticateObj = new UserAuthenticate();
-                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $forUser = $userAuthenticateObj->authenticate($body['username'], $body['password']);
             }
         }
         $auth = new TOTPAuthentication();
         $secret = $auth->generateSecret();
 
         // delete all old not confirmed records
-        $db->query("UPDATE users_totp SET deleted = 1 WHERE user_id='{$current_user->id}'AND auth_status='C' AND deleted = 0");
+        $db->query("UPDATE users_totp SET deleted = 1 WHERE user_id='{$forUser->id}'AND auth_status='C' AND deleted = 0");
 
         // generate a new pending record
         $id = SpiceUtils::createGuid();
-        $db->query("INSERT INTO users_totp (id, user_id, user_secret, date_generated,auth_status, deleted) VALUES('{$id}', '{$current_user->id}', '{$secret}', '{$timeDate->nowDb()}', 'C', 0)");
+        $db->query("INSERT INTO users_totp (id, user_id, user_secret, date_generated,auth_status, deleted) VALUES('{$id}', '{$forUser->id}', '{$secret}', '{$timeDate->nowDb()}', 'C', 0)");
 
         $hostname = str_replace(' ', '_', $spice_config['system']['name']);
 
-        return $res->withJson(['secret' => $secret, 'name' => "{$current_user->user_name}@{$hostname}"  , 'qrcode' => $auth->getQRCode($current_user->user_name, $hostname, $secret)]);
+        return $res->withJson(['secret' => $secret, 'name' => "{$forUser->user_name}@{$hostname}"  , 'qrcode' => $auth->getQRCode($forUser->user_name, $hostname, $secret)]);
     }
 
     /**
@@ -199,20 +205,26 @@ class AuthenticateController
      * @return mixed
      * @throws NotFoundException
      */
-    public function validateTOTPCode($req, $res, array $args)
+    public function validateTOTPCode( Request $req, Response $res, array $args)
     {
         $db = DBManagerFactory::getInstance();
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $queryParams = $req->getQueryParams();
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else {
+            $forUser = $currentUser;
+        }
 
-        if ( !$current_user ) {
+        if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
                 $userAuthenticateObj = new UserAuthenticate();
-                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $forUser = $userAuthenticateObj->authenticate($body['username'], $body['password']);
             }
         }
 
-        $record = $db->fetchOne($x="SELECT * FROM users_totp WHERE user_id = '{$current_user->id}' AND auth_status = 'C' AND deleted = 0");
+        $record = $db->fetchOne("SELECT * FROM users_totp WHERE user_id = '{$forUser->id}' AND auth_status = 'C' AND deleted = 0");
 
         if(!$record){
             throw new NotFoundException('no record to validate');
@@ -238,9 +250,15 @@ class AuthenticateController
      * @return mixed
      * @throws NotFoundException
      */
-    public function checkTOTPActive($req, $res, array $args)
+    public function checkTOTPActive( Request $req, Response $res, array $args)
     {
-        return $res->withJson(['active' => TOTPAuthentication::checkTOTPActive()]);
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $queryParams = $req->getQueryParams();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else $forUser = null;
+
+        return $res->withJson(['active' => TOTPAuthentication::checkTOTPActive( $forUser->id )]);
     }
     /**
      * vdeletes an active TOTP Code
@@ -251,8 +269,14 @@ class AuthenticateController
      * @return mixed
      * @throws NotFoundException
      */
-    public function deleteTOTPActive($req, $res, array $args)
+    public function deleteTOTPActive( Request $req, Response $res, array $args)
     {
-        return $res->withJson(['success' => TOTPAuthentication::deleteTOTP()]);
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $queryParams = $req->getQueryParams();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else $forUser = null;
+
+        return $res->withJson(['success' => TOTPAuthentication::deleteTOTP( $forUser->id )]);
     }
 }
