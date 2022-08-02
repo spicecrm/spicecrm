@@ -34,6 +34,7 @@ use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -226,6 +227,9 @@ class SpiceDictionaryVardefs  {
         // load legacy definitions contained in files
         self::loadLegacyFiles();
 
+        self::addACLFields();
+        self::addACLTerritoryFields();
+
         // store all legacy vardefs in an array
         foreach(SpiceDictionaryHandler::getInstance()->dictionary as $dictName => $dict){
             self::cleanLegacyDictionary($dict);
@@ -274,6 +278,45 @@ class SpiceDictionaryVardefs  {
         unset($dictionaryDefinitions);
 
         return $vardefs;
+    }
+
+    /**
+     * add acl fields to the loaded dictionary items
+     * @return void
+     */
+    public static function addACLFields()
+    {
+        $loader = new SpiceUIModulesController();
+        $modules = $loader->geUnfilteredModules();
+
+        foreach ($modules as $module) {
+
+            if ($module['acl_multipleusers'] == 1) continue;
+
+            $bean = BeanFactory::newBean($module['module']);
+
+            VardefManager::addTemplate($bean->_module, $bean->_objectname, 'spiceaclusers');
+        }
+    }
+
+    /**
+     * add acl territory fields to the loaded dictionary items
+     * @return void
+     * @throws \Exception
+     */
+    public static function addACLTerritoryFields()
+    {
+        $db = DBManagerFactory::getInstance();
+        $query = $db->query("SELECT * FROM spiceaclterritories_modules");
+
+        while($row = $db->fetchByAssoc($query)) {
+
+            if (!empty($row['relatefrom'])) continue;
+
+            $bean = BeanFactory::newBean($row['module']);
+
+            VardefManager::addTemplate($bean->_module, $bean->_objectname, 'spiceaclterritories');
+        }
     }
 
     /**
