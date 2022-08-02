@@ -68,7 +68,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * holds the google multi events
      */
-    public googleMultiEvents: any[] = [];
+    public groupwareMultiEvents: any[] = [];
     /**
      * the change date comes from the parent
      */
@@ -76,7 +76,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * holds a boolean of google events visibility
      */
-    @Input() public googleIsVisible: boolean = true;
+    @Input() public groupwareVisible: boolean = true;
     /**
      * holds the owner events
      */
@@ -92,7 +92,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * holds the google events
      */
-    public googleEvents: any[] = [];
+    public groupwareEvents: any[] = [];
     /**
      * holds the resize listener
      */
@@ -134,10 +134,10 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     }
 
     /**
-     * @return allEvents: [ownerEvents, userEvents, googleEvents]
+     * @return allEvents: [ownerEvents, userEvents, groupwareEvents]
      */
     get allEvents() {
-        return this.calendar.arrangeEvents(this.ownerEvents.concat(this.userEvents, this.googleEvents));
+        return this.calendar.arrangeEvents(this.ownerEvents.concat(this.userEvents, this.groupwareEvents));
     }
 
     /**
@@ -188,8 +188,8 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
             this.getOwnerEvents();
             this.getUsersEvents();
         }
-        if (changes.googleIsVisible || changes.setdate) {
-            this.getGoogleEvents();
+        if (changes.groupwareVisible || changes.setdate) {
+            this.getGroupwareEvents();
         }
     }
 
@@ -281,20 +281,20 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * load google events from service and rearrange the multi events
      */
-    public getGoogleEvents() {
-        this.googleEvents = [];
-        this.googleMultiEvents = [];
-        if (!this.googleIsVisible || this.calendar.isMobileView) {
+    public getGroupwareEvents() {
+        this.groupwareEvents = [];
+        this.groupwareMultiEvents = [];
+        if (!this.groupwareVisible || this.calendar.isMobileView) {
             return this.setEventsStyle();
         }
 
-        this.calendar.loadGoogleEvents(this.startDate, this.endDate)
+        this.calendar.loadGroupwareEvents(this.startDate, this.endDate)
             .subscribe(events => {
                 if (events.length > 0) {
                     events = this.correctHours(events);
                     events = this.filterEvents(events);
-                    this.googleEvents = events.filter(event => !event.isMulti);
-                    this.googleMultiEvents = events.filter(event => event.isMulti);
+                    this.groupwareEvents = events.filter(event => !event.isMulti);
+                    this.groupwareMultiEvents = events.filter(event => event.isMulti);
                     this.setEventsStyle();
                 }
             });
