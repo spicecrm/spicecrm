@@ -1,0 +1,26 @@
+<div class="slds-popover slds-popover--panel slds-is-fixed" [ngStyle]="popoverStyle" [ngClass]="nubbinClass" role="dialog" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave($event)">
+    <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="closePopover(true)">
+        <system-button-icon icon="close"></system-button-icon>
+    </button>
+    <div #popoverContainer>
+        <div class="slds-popover__header" style="padding: .5rem">
+            <header [system-title]="event.subject" class="slds-text-heading--small slds-m-bottom--x-small slds-truncate slds-has-divider--bottom-space">
+                {{event.subject}}
+            </header>
+            <div class="slds-scrollable--y" style="height: 120px">
+                <dl class="slds-list_horizontal slds-wrap slds-text-body_small">
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
+                        <system-label label="LBL_DESCRIPTION"></system-label>
+                    </dt>
+                    <dd [innerHTML]="event.body?.content" class="slds-item_detail slds-m-bottom--x-small"></dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
+                        <system-label label="LBL_LOCATION"></system-label>
+                    </dt>
+                    <dd [system-title]="event.location?.displayName" class="slds-item_detail slds-m-bottom--x-small">
+                        {{event.location?.displayName}}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

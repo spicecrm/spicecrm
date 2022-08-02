@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 
@@ -15,7 +15,12 @@ import {calendar} from '../services/calendar.service';
     providers: [calendar]
 })
 
-export class CalendarDayDashlet {
+export class CalendarDayDashlet implements OnInit {
+    /**
+     * the dashlet config passed from the parent component
+     * @private
+     */
+    public dashletconfig: any = null;
     /**
      * reference of calendar content div
      */
@@ -47,5 +52,9 @@ export class CalendarDayDashlet {
         return {
             height: (this.calendarContent ? this.elementRef.nativeElement.getBoundingClientRect().height - this.calendarContent.element.nativeElement.offsetTop : 100) + 'px',
         };
+    }
+
+    public ngOnInit() {
+        this.calendar.customOwner = this.dashletconfig.userId;
     }
 }
