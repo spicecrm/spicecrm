@@ -291,11 +291,9 @@ class SpiceDictionaryVardefs  {
 
         foreach ($modules as $module) {
 
-            if ($module['acl_multipleusers'] == 1) continue;
+            if ($module['acl_multipleusers'] == 1 || empty($module['bean'])) continue;
 
-            $bean = BeanFactory::newBean($module['module']);
-
-            VardefManager::addTemplate($bean->_module, $bean->_objectname, 'spiceaclusers');
+            VardefManager::addTemplate($module['module'], $module['bean'], 'spiceaclusers');
         }
     }
 
@@ -311,11 +309,9 @@ class SpiceDictionaryVardefs  {
 
         while($row = $db->fetchByAssoc($query)) {
 
-            if (!empty($row['relatefrom'])) continue;
+            if (!empty($row['relatefrom']) || empty($module['bean'])) continue;
 
-            $bean = BeanFactory::newBean($row['module']);
-
-            VardefManager::addTemplate($bean->_module, $bean->_objectname, 'spiceaclterritories');
+            VardefManager::addTemplate($row['module'], $row['bean'], 'spiceaclterritories');
         }
     }
 
