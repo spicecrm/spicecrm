@@ -1,5 +1,5 @@
 <?php
-namespace SpiceCRM\includes\SpiceSubscriptions\KREST\controllers;
+namespace SpiceCRM\includes\SpiceSubscriptions\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;

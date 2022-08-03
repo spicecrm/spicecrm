@@ -25,6 +25,7 @@ import {MailboxEmailToLeadModal} from "./components/mailboxemailtoleadmodal";
 import {MailboxEmailToLeadEmailText} from "./components/mailboxemailtoleademailtext";
 import { MailboxesDashlet } from "./components/mailboxesdashlet";
 import {MailboxManagerTextMessages} from "./components/mailboxmanagertextmessages";
+import {MailboxSetDefaultButton} from "./components/mailboxsetdefaultbutton";
 import /*embed*/  {MailboxManagerTextMessage} from "./components/mailboxmanagertextmessage";
 import /*embed*/  {fieldMailboxes} from "./fields/fieldmailboxes";
 
@@ -41,6 +42,7 @@ import /*embed*/  {fieldMailboxes} from "./fields/fieldmailboxes";
         MailboxEmailToLeadModal,
         MailboxEmailToLeadEmailText,
         MailboxesDashlet,
+        MailboxSetDefaultButton,
         fieldMailboxes
     ],
     imports: [

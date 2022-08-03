@@ -1,11 +1,21 @@
-<system-spinner *ngIf="isLoading" class="slds-m-top--large" style="display:block"></system-spinner>
+<div *ngIf="isLoading && hasInitialLoadingStarted" class="slds-m-top--large">
+    <system-spinner></system-spinner>
+</div>
 
-<div *ngIf="!isLoading" class="slds-m-bottom--medium slds-m-horizontal_x-small">
+<div *ngIf="!hasInitialLoadingStarted" class="slds-text-align--center slds-m-top--large">
+    <div class="slds-text-align--right" style="display:inline-block">
+        <div class="slds-text-align--left slds-m-bottom--small" style="max-width:380px"><system-label label="MSG_QUESTIONAIRE_ENTIRE_EVAL_PROVIDE_DATES"></system-label></div>
+        <ng-container *ngTemplateOutlet="dateform"></ng-container>
+        <button class="slds-button slds-button--neutral slds-m-top--medium" (click)="initialLoad()" [disabled]="!datesValid"><system-label label="LBL_LOAD"></system-label></button>
+    </div>
+</div>
 
-    <div class="slds-grid slds-grid--align-spread slds-p-horizontal_medium slds-grid--vertical-align-center slds-m-bottom_medium">
+<div *ngIf="!isLoading && hasInitialLoadingStarted" class="slds-m-horizontal_x-small">
 
-        <fieldset class="slds-form-element slds-grid slds-grid--vertical-align-center">
-            <legend class="slds-form-element__legend slds-form-element__label slds-p-top_none"><system-label label="LBL_BASED_ON"></system-label>:</legend>
+    <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-end slds-m-bottom_medium">
+
+        <fieldset class="slds-form-element">
+            <legend class="slds-form-element__legend slds-form-element__label slds-p-top_none" style="font-weight:normal"><system-label label="LBL_BASED_ON"></system-label></legend>
             <div class="slds-form-element__control">
                 <div class="slds-radio_button-group">
                     <span class="slds-button slds-radio_button">
@@ -24,13 +34,20 @@
             </div>
         </fieldset>
 
-        <button class="slds-button slds-button_icon" (click)="reload()"><system-utility-icon icon="refresh" size="small"></system-utility-icon></button>
+        <div class="slds-grid slds-grid--vertical-align-end">
+            <ng-container *ngTemplateOutlet="dateform"></ng-container>
+            <button class="slds-button slds-button--icon-border slds-button_neutral slds-m-left_small" (click)="reload()" [disabled]="!datesValid"><system-button-icon icon="refresh" size="medium"></system-button-icon></button>
+        </div>
+
+        <div *ngIf="isExportPossible">
+            <button class="slds-button slds-button--neutral" (click)="export()" [disabled]="isLoading || isExporting"><system-spinner *ngIf="isExporting" size="12" class="slds-p-right--small"></system-spinner><system-label label="LBL_EXPORT"></system-label></button>
+        </div>
 
     </div>
 
-    <div *ngIf="questionsets.length; else noQuestionsetsTemplate">
+    <div *ngIf="questionsets.length; else noQuestionsetsTemplate" #forExport>
         <div *ngFor="let questionset of questionsets; last as isLast">
-            <div *ngIf="questionsetIsToShow( questionset )" class="slds-box slds-theme_shade x-slds-m-top--x-small" [ngClass]="{'slds-m-bottom_medium': !isLast}" style="padding:0.5rem">
+            <div *ngIf="questionsetIsToShow( questionset )" class="slds-box slds-theme_shade" [ngClass]="{'slds-m-bottom_medium': !isLast}" style="padding:0.5rem">
                 <h3 class="slds-text-heading--medium slds-p-horizontal--xx-small">{{questionset.name}}</h3>
                 <div class="slds-m-top--x-small">
 
@@ -46,8 +63,8 @@
                                         <div class="slds-p-bottom_xxx-small slds-text-align_center">
                                             {{getQuestionParticipationsInPercent( question.id )}} % <system-label label="LBL_ANSWERED"></system-label> ({{countQuestionParticipations( question.id )}}/{{countQuestionnaireParticipations}})
                                         </div>
-                                        <div class="slds-progress-bar x-slds-theme--error slds-progress-bar--circular slds-progress-bar--small">
-                                            <span class="slds-progress-bar__value x-slds-progress-bar__value_success" [ngStyle]="getQuestionParticipationBarWidth( question.id )">
+                                        <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--small">
+                                            <span class="slds-progress-bar__value" [ngStyle]="getQuestionParticipationBarWidth( question.id )">
                                                 <span class="slds-assistive-text">{{countQuestionParticipations( question.id )}}</span>
                                             </span>
                                         </div>
@@ -108,7 +125,7 @@
                                     </tbody>
                                 </table>
 
-                                <div *ngIf="question.questiontype === 'nps' || (( question.questiontype === 'ratinggroup' || question.questiontype === 'rating' ) && allOptionsNumeric( question.id ))" class="slds-text-align_right slds-text-heading_small x-slds-border--top slds-p-top--xx-small slds-p-right--x-small">
+                                <div *ngIf="question.questiontype === 'nps' || (( question.questiontype === 'ratinggroup' || question.questiontype === 'rating' ) && allOptionsNumeric( question.id ))" class="slds-text-align_right slds-text-heading_small slds-p-top--xx-small slds-p-right--x-small">
                                     <b>&Oslash;&nbsp; {{averageOfAnswers( question.id )}}</b>
                                 </div>
 
@@ -130,3 +147,19 @@
     </ng-template>
 
 </div>
+
+<a #downloadlink style="display:none" [href]="loadUrl" [download]="downloadFilename"></a>
+
+<ng-template #dateform>
+    <div class="slds-grid slds-text-align--left">
+        <div>
+            <label class="slds-form-element__label"><system-label label="LBL_DATE_START"></system-label></label>
+            <system-input-date [(ngModel)]="startdate" (ngModelChange)="startdateChanged()" (valid)="isStartdateValid=$event" [isDirty]="startdateEdited && hasInitialLoadingStarted"></system-input-date>
+        </div>
+        <span class="slds-m-horizontal_small" style="margin-top:30px">&mdash;</span>
+        <div>
+            <label class="slds-form-element__label"><system-label label="LBL_DATE_END"></system-label></label>
+            <system-input-date [(ngModel)]="enddate" (ngModelChange)="enddateChanged()" (valid)="isEnddateValid=$event" [isDirty]="enddateEdited && hasInitialLoadingStarted"></system-input-date>
+        </div>
+    </div>
+</ng-template>

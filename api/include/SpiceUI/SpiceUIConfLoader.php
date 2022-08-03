@@ -345,7 +345,7 @@ class SpiceUIConfLoader
             $success = false;
         }
 
-        return ["success" => $success, "queries" => count($inserts), "errors" => $errors, "tables" => $tables];
+        return ["success" => $success, "queries" => count($inserts), "errors" => array_unique($errors), "tables" => $tables];
     }
 
 

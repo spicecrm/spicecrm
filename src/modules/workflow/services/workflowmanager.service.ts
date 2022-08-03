@@ -202,8 +202,8 @@ export class WorkflowManagerService {
         this.modal.openModal('WorkflowManagerTaskEditModal', true, this.injector).subscribe(ref => {
             ref.instance.task = this.tasks.find(t => t.id == taskId);
             ref.instance.response.subscribe(taskData => {
-                resSubject.next();
                 this.tasks = [...this.tasks.filter(t => t.id != taskData.id), taskData];
+                resSubject.next();
             });
         });
 

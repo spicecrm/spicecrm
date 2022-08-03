@@ -142,12 +142,23 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public editor: {execute: (command: string, params?: any) => void, setData: (data: string) => void, getData: () => string, model: any, ui: any, editing: any, enableReadOnlyMode: (val: string) => void};
 
+    public customStyleDefinitions: {value: string, display: string, classes: string[], element: string}[] = [];
+
     public ngOnInit() {
+
+        this.loadCustomStyleDefinitions();
 
         this.libLoader.loadLib('ckeditor').subscribe(res => {
             this.zone.runOutsideAngular(() => {
 
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
+                    style: {
+                        definitions: this.customStyleDefinitions.map(s => ({
+                            name: s.value,
+                            element: s.element,
+                            classes: s.classes
+                        }))
+                    },
                     toolbar: [],
                     htmlSupport: {
                         allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
@@ -172,6 +183,15 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
         });
         this.handleKeyboardShortcuts();
+    }
+
+    /**
+     * load custom style definitions
+     * @private
+     */
+    private loadCustomStyleDefinitions() {
+        // todo load custom styles
+        this.customStyleDefinitions = [];
     }
 
     /**
@@ -287,6 +307,14 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public heading(command: string){
         this.editor.execute('heading', {value: command});
+    }
+
+    /**
+     *
+     * execute custom style
+     */
+    public customStyle(name: string){
+        this.editor.execute('style', name);
     }
     /**
      *
