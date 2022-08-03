@@ -7,6 +7,7 @@ import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {BpmnElementI, BpmnEventI, WorkflowTaskDefI} from "../interfaces/workflow.interfaces";
 import {WorkflowManagerService} from "./workflowmanager.service";
+import {asapScheduler} from "rxjs";
 
 /** @ignore */
 declare var BpmnJS, SpiceBpmnModules;
@@ -131,6 +132,17 @@ export class WorkflowDiagramService implements OnDestroy {
             modeling.updateLabel(e, task.name);
         });
 
+        this.updateConnectionsLabels();
+    }
+
+    /**
+     * update all connections labels
+     * @private
+     */
+    private updateConnectionsLabels() {
+
+        const modeling = this.bpmnJS.get('modeling');
+
         const connections = this.getAllConnections();
 
         this.tasks.filter(t => ['gateway_decision', 'email_event_handle'].indexOf(this.wfm.getType(t.tasktype).type) > -1).forEach(t => {
@@ -222,9 +234,13 @@ export class WorkflowDiagramService implements OnDestroy {
 
         if (!this.bpmnJS) return;
 
+        this.removeAllListeners();
+
         this.updateElements();
         this.updateConnections();
         this.updateElementsLabel();
+
+        this.listenToShapeChange();
     }
 
     /**
@@ -510,6 +526,8 @@ export class WorkflowDiagramService implements OnDestroy {
             taskType: typeObject.type
         });
 
+        asapScheduler.schedule(() => this.updateConnectionsLabels());
+
         this.bpmnJS.get('canvas').zoom('fit-viewport');
     }
 
@@ -525,7 +543,7 @@ export class WorkflowDiagramService implements OnDestroy {
 
         if (!task) return;
 
-        window.setTimeout(() => modeling.updateLabel(element, task.name));
+        asapScheduler.schedule(() => modeling.updateLabel(element, task.name));
     }
 
     /**
