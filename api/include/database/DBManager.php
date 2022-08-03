@@ -525,7 +525,7 @@ protected function checkQuery($sql, $object_name = false)
      * @param string $table the table name
      * @param array $data key/value pairs
      * @param bool $execute boolean execute the query on true, return the query on false
-     * @return mixed string | query result
+     * @return mixed query result | false
      */
 	public function insertQuery($table, array $data, $execute = true)
     {
@@ -535,7 +535,9 @@ protected function checkQuery($sql, $object_name = false)
                 return $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
             }
         }
-        return $data['id'];
+
+        $this->last_error = "Dictionary was not found for table $table";
+        return false;
     }
 
     /**

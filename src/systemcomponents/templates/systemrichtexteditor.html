@@ -54,6 +54,19 @@
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="block" (change)="customStyle(block)" >
+                                <option *ngFor="let customStyle of customStyleDefinitions" [ngValue]="customStyle.value">
+                                    <div>{{customStyle.display}}</div>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-rich-text-editor__select">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
                             <select class="slds-select" [(ngModel)]="block" (change)="heading(block)" >
                                 <option value="heading1"><h1>Heading 1</h1></option>
                                 <option value="heading2"><h2>Heading 2</h2></option>

@@ -433,6 +433,8 @@ class SpiceInstaller
 
         }
 
+        $this->dbManagerFactory::$config = ['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']];
+
         $db = $this->dbManagerFactory->getInstance();
 
         if (!empty($db) && isset($postData['databaseuser']) && in_array('db_user_name', $postData['databaseuser'])) {

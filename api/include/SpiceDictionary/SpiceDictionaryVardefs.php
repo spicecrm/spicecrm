@@ -34,6 +34,7 @@ use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -179,7 +180,7 @@ class SpiceDictionaryVardefs  {
                 // load indices
                 if (!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
                 if (is_array($dbDict['indices'])) {
-                    $vardefs[$dbDict['name']]['indices'] = array_merge($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
+                    $vardefs[$dbDict['name']]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
                 }
 
                 // load relationships
@@ -226,6 +227,9 @@ class SpiceDictionaryVardefs  {
         // load legacy definitions contained in files
         self::loadLegacyFiles();
 
+        self::addACLFields();
+        self::addACLTerritoryFields();
+
         // store all legacy vardefs in an array
         foreach(SpiceDictionaryHandler::getInstance()->dictionary as $dictName => $dict){
             self::cleanLegacyDictionary($dict);
@@ -260,7 +264,7 @@ class SpiceDictionaryVardefs  {
                 // load indices
                 if(!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
                 if(is_array($dbDict['indices']) && !empty($dbDict['indices'])){
-                    $vardefs[$dbDict['name']]['indices'] = array_merge($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
+                    $vardefs[$dbDict['name']]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
                 }
 
                 // load relationships
@@ -274,6 +278,75 @@ class SpiceDictionaryVardefs  {
         unset($dictionaryDefinitions);
 
         return $vardefs;
+    }
+
+    /**
+     * add acl fields to the loaded dictionary items
+     * @return void
+     */
+    public static function addACLFields()
+    {
+        $loader = new SpiceUIModulesController();
+        $modules = $loader->geUnfilteredModules();
+
+        foreach ($modules as $module) {
+
+            if ($module['acl_multipleusers'] == 1) continue;
+
+            $bean = BeanFactory::newBean($module['module']);
+
+            VardefManager::addTemplate($bean->_module, $bean->_objectname, 'spiceaclusers');
+        }
+    }
+
+    /**
+     * add acl territory fields to the loaded dictionary items
+     * @return void
+     * @throws \Exception
+     */
+    public static function addACLTerritoryFields()
+    {
+        $db = DBManagerFactory::getInstance();
+        $query = $db->query("SELECT * FROM spiceaclterritories_modules");
+
+        while($row = $db->fetchByAssoc($query)) {
+
+            if (!empty($row['relatefrom'])) continue;
+
+            $bean = BeanFactory::newBean($row['module']);
+
+            VardefManager::addTemplate($bean->_module, $bean->_objectname, 'spiceaclterritories');
+        }
+    }
+
+    /**
+     * merge legacy indices with db indices
+     * @param array $leftIndices
+     * @param array $rightIndices
+     * @return array
+     */
+    public static function mergeIndices(array $leftIndices, array $rightIndices): array
+    {
+        if (count($leftIndices) == 0) return $rightIndices;
+
+        if (count($rightIndices) == 0) return $leftIndices;
+
+        $resultIndices = $leftIndices;
+
+        foreach ($rightIndices as $rightIndex) {
+
+            $exists = false;
+
+            foreach ($resultIndices as $resultIndex) {
+                if ($resultIndex['fields'] != $rightIndex['fields'] || $resultIndex['type'] != $rightIndex['type']) continue;
+                $exists = true;
+                break;
+            }
+
+            if (!$exists) $resultIndices[$rightIndex['name']] = $rightIndex;
+        }
+
+        return $resultIndices;
     }
 
 
@@ -307,7 +380,7 @@ class SpiceDictionaryVardefs  {
 
             if(!is_array($dbDict['indices'])) $dbDict['indices'] = [];
             if(!is_array($vardefs[$object]['indices'])) $vardefs[$object]['indices'] = [];
-            $vardefs[$object]['indices'] = array_merge($vardefs[$object]['indices'], $dbDict['indices']);
+            $vardefs[$object]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$object]['indices'], $dbDict['indices']);
         } else{
             $vardefs[$object] = $dbDict;
         }
@@ -1643,7 +1716,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // process slqs
         foreach($sqls as $sql){
-            if(!$db->query($sql)){
+            if(!$db->query($sql, true)){
                 //@todo: see if anything shall be logged somewhere
 //                file_put_contents('vardefs.log', print_r($sql, true)."\n", FILE_APPEND);
             }
@@ -1985,7 +2058,8 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 //            $tableName = 'sysdictionaryrelationships';
 //        }
         $db = DBManagerFactory::getInstance();
-        if(!$db->truncateQuery($tableName)){
+        // use deleteAll to ensure rollback functionality. It would not work with a truncate table
+        if(!$db->deleteAll($tableName, true)){
             LoggerManager::getLogger()->fatal('error truncating '.$tableName.' table '.$db->lastError());
             return false;
         }
@@ -2067,24 +2141,28 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     }
 
     /**
-     * truncate and refill 'sysdictionaryfields' table
+     * delete content and refill 'sysdictionaryfields' table
      * truncate and refill 'relationships' table
      * @return array
      * @throws \Exception
      */
     public function repairDictionaries(){
         $returnArray = [];
-        $db = DBManagerFactory::getInstance();
 
         // load Vardefs
         $vardefs = SpiceDictionaryVardefs::loadVardefs();
 
-        // start db transaction
-        $db->transactionStart();
+        $db = DBManagerFactory::getInstance();
+        $db->transactionCommit(); // end any other transaction
+        $db->transactionStart(); // start here
+        // declare the function for the scope so that rollback can be triggered
+        // might not be necessary BUT doing so we ensure a rollback after any kind of error
+        register_shutdown_function(function(){
+            DBManagerFactory::getInstance()->transactionRollback();
+        });
 
-        // truncate cache table sysdictionaryfields
-        $db->truncateQuery('sysdictionaryfields', true);
-        unset($_SESSION['dictionaries']);
+        // truncate cache table sysdictionaryfields. Use deleteAll to enable a rollback!
+        $db->deleteAll('sysdictionaryfields', true);
 
         // save to db
         foreach($vardefs as $dictName => $dict){
@@ -2093,9 +2171,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             // save to db
             SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
         }
+        $db->transactionCommit(); // stop here
 
-        // confirm save into db
-        $db->transactionCommit();
+        $db->transactionStart(); // start to continue
 
         // repair relationships and reset the session variable 'relationships'
         Relationship::build_relationship_cache();
@@ -2106,6 +2184,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // load dictionaries to reset the session variable 'dictionaries'
         //self::loadDictionariesCacheFromDb(true);
+
+        // start for middleware
+        $db->transactionStart();
         return $returnArray;
     }
 
