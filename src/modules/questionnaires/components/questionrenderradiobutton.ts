@@ -33,7 +33,7 @@ export class QuestionRenderRadioButton implements OnInit {
     }
 
     public isDisabled(): boolean {
-        return this.questionMeta.readonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
+        return this.questionMeta.tempReadonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
     }
 
     /**
