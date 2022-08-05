@@ -13,6 +13,8 @@ declare var _;
 })
 export class QuestionRenderRadioButton implements OnInit {
 
+    public _ = _; // Workaround to use _ (underscore.js) inside the html template.
+
     /**
      * The question option for which to render the radio button.
      */
