@@ -1,11 +1,16 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -23,6 +28,79 @@ class DictionaryController
 
     public function getNodes(Request $req, Response $res, array $args): Response {
         return $res->withJson($this->buildNodeArray($args['module']));
+    }
+
+    /**
+     * repair custom enum
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return mixed
+     * @throws Exception
+     */
+
+    public function repairCustomEnum(Request $req, Response $res, array $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $languages = LanguageManager::getLanguages()['available'];
+
+        $db->deleteAll("syscustomdomainfieldvalidations");
+        $db->deleteAll("syscustomdomainfieldvalidationvalues");
+
+        foreach ($languages as $language) {
+
+            $sysLanguageLabels = [];
+
+            $appStrings = $this->returnApplicationLanguage($language['language_code']);
+
+            // retrieve all custom labels
+            $query = $db->query("SELECT lbl.name FROM syslanguagecustomlabels lbl ORDER BY name ASC");
+            while ($row = $db->fetchByAssoc($query)) $sysLanguageLabels[$row['name']] = 1;
+
+            foreach ($appStrings as $name => $values) {
+
+                $valId = SpiceUtils::createGuid();
+                $query = "INSERT INTO syscustomdomainfieldvalidations (id, name, validation_type, order_by, sort_flag, status, deleted) VALUES ('$valId', '$name', 'enum', 'sequence', 'asc', 'a', 0)";
+                $db->query($query);
+
+                $counter = 0;
+
+                foreach ($values as $valKey => $valDisplay) {
+
+                    $label = empty($valDisplay) ? '' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+
+                    $valItemId = SpiceUtils::createGuid();
+                    $query = "INSERT INTO syscustomdomainfieldvalidationvalues (id, sysdomainfieldvalidation_id, enumvalue, sequence, label, valuetype, status, deleted) VALUES ('$valItemId', '$valId', '$valKey', $counter, '$label', 'string', 'a', 0)";
+                    $db->query($query);
+
+                    if (isset($sysLanguageLabels[$label]) || empty($valDisplay)) continue;
+
+                    $labelId = SpiceUtils::createGuid();
+                    $query = "INSERT INTO syslanguagecustomlabels (id, name) VALUES ('$labelId', '$label')";
+                    $db->query($query);
+
+                    $transId = SpiceUtils::createGuid();
+                    $query = "INSERT INTO syslanguagecustomtranslations (id, syslanguagelabel_id, syslanguage, translation_default) VALUES ('$transId', '$labelId', '{$language['language_code']}', '$valDisplay')";
+                    $db->query($query);
+
+                    $counter++;
+                }
+            }
+        }
+
+        return $res->withJson(true);
+    }
+
+    public static function returnApplicationLanguage($language): ?array
+    {
+        $app_list_strings = [];
+
+        foreach (scandir('custom/Extension/application/Ext/Language') as $item) {
+            if (!str_starts_with($item, $language) || !str_ends_with($item, '.php')) continue;
+            include("custom/Extension/application/Ext/Language/$item");
+        }
+
+        return $app_list_strings;
     }
 
     /*
@@ -96,6 +174,19 @@ class DictionaryController
      * @return mixed
      */
     public function getFields(Request $req, Response $res, array $args): Response {
+        return $res->withJson($this->buildFieldArray($args['module']));
+    }
+
+    /**
+     * get module relationship definitions
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return mixed
+     * @throws Exception
+     */
+    public function getModuleRelationships(Request $req, Response $res, array $args): Response {
+        $relationships = SpiceDictionaryVardefs::loadRelationships($args['module']);
         return $res->withJson($this->buildFieldArray($args['module']));
     }
 
