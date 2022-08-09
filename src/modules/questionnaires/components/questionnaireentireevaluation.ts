@@ -84,6 +84,9 @@ export class QuestionnaireEntireEvaluation implements OnInit {
      */
     public isEnddateValid: boolean;
 
+    public startdateEdited = false;
+    public enddateEdited = false;
+
     /**
      * The part of the html page which has to get exported.
      */
@@ -148,6 +151,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         if ( this.enddate instanceof moment ) enddateAsString = moment( this.enddate ).utc().format('YYYY-MM-DD');
         this.enddateOfShownEvaluation = this.enddate;
         this.startdateOfShownEvaluation = this.startdate;
+        this.startdateEdited = this.enddateEdited = false;
 
         this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/answers/allParticipations', { startdate: startdateAsString, enddate: enddateAsString } ).subscribe( data => {
             this.answers = data.answers;
@@ -350,7 +354,8 @@ export class QuestionnaireEntireEvaluation implements OnInit {
                 minute: 0,
                 second: 0,
                 millisecond: 0
-            } );
+            });
+            this.startdateEdited = !moment( this.startdateOfShownEvaluation ).isSame( this.startdate );
         }
     }
 
@@ -364,7 +369,8 @@ export class QuestionnaireEntireEvaluation implements OnInit {
                 minute: 59,
                 second: 59,
                 millisecond: 999
-            } );
+            });
+            this.enddateEdited = !moment( this.enddateOfShownEvaluation ).isSame( this.enddate );
         }
     }
 

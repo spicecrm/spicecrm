@@ -89,7 +89,7 @@ class MarketingAutomationController
             throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $data['Emails'], 'module' => 'Emails']);
         }
 
-        $email->handleEvent($data['MarketingActions']);
+        $email->handleEvent($marketingAction->name);
 
         return $res->withJson(['redirectUrl' => $this->getRedirectUrl($marketingAction, $email->id)]);
     }

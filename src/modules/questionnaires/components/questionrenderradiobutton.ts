@@ -13,6 +13,8 @@ declare var _;
 })
 export class QuestionRenderRadioButton implements OnInit {
 
+    public _ = _; // Workaround to use _ (underscore.js) inside the html template.
+
     /**
      * The question option for which to render the radio button.
      */
@@ -33,7 +35,7 @@ export class QuestionRenderRadioButton implements OnInit {
     }
 
     public isDisabled(): boolean {
-        return this.questionMeta.readonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
+        return this.questionMeta.tempReadonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
     }
 
     /**

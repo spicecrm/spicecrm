@@ -154,12 +154,12 @@
     <div class="slds-grid slds-text-align--left">
         <div>
             <label class="slds-form-element__label"><system-label label="LBL_DATE_START"></system-label></label>
-            <system-input-date [(ngModel)]="startdate" (ngModelChange)="startdateChanged()" (valid)="isStartdateValid=$event"></system-input-date>
+            <system-input-date [(ngModel)]="startdate" (ngModelChange)="startdateChanged()" (valid)="isStartdateValid=$event" [isDirty]="startdateEdited && hasInitialLoadingStarted"></system-input-date>
         </div>
         <span class="slds-m-horizontal_small" style="margin-top:30px">&mdash;</span>
         <div>
             <label class="slds-form-element__label"><system-label label="LBL_DATE_END"></system-label></label>
-            <system-input-date [(ngModel)]="enddate" (ngModelChange)="enddateChanged()" (valid)="isEnddateValid=$event"></system-input-date>
+            <system-input-date [(ngModel)]="enddate" (ngModelChange)="enddateChanged()" (valid)="isEnddateValid=$event" [isDirty]="enddateEdited && hasInitialLoadingStarted"></system-input-date>
         </div>
     </div>
 </ng-template>
