@@ -143,7 +143,15 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'checkTOTPActive',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false]
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -151,7 +159,15 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'deleteTOTPActive',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false]
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -159,7 +175,15 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'generateTOTPSecret',
         'description' => '',
-        'options' => ['noAuth' => true, 'adminOnly' => false]
+        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
+            ]
+        ]
     ],
     [
         'method' => 'put',
@@ -175,6 +199,12 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => true,
                 'example' => 'iie94894hjf'
+            ],
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
             ]
         ]
     ]
