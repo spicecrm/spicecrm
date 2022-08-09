@@ -291,7 +291,7 @@ class SpiceDictionaryVardefs  {
 
         foreach ($modules as $module) {
 
-            if ($module['acl_multipleusers'] == 1 || empty($module['bean'])) continue;
+            if ($module['acl_multipleusers'] != 1 || empty($module['bean'])) continue;
 
             VardefManager::addTemplate($module['module'], $module['bean'], 'spiceaclusers');
         }
