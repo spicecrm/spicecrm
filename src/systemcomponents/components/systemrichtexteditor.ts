@@ -166,6 +166,35 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                             classes: s.classes
                         }))
                     },
+                    image: {
+                        styles: [
+                            'alignCenter',
+                            'alignLeft',
+                            'alignRight'
+                        ],
+                        resizeOptions: [
+                            {
+                                name: 'resizeImage:original',
+                                label: 'Original size',
+                                value: null
+                            },
+                            {
+                                name: 'resizeImage:50',
+                                label: '50%',
+                                value: '50'
+                            },
+                            {
+                                name: 'resizeImage:75',
+                                label: '75%',
+                                value: '75'
+                            }
+                        ],
+                        toolbar: [ // 'toggleImageCaption'
+                            'imageTextAlternative', '|',
+                            'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+                            'resizeImage'
+                        ],
+                    },
                     toolbar: [],
                     htmlSupport: {
                         allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
