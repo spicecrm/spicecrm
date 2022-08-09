@@ -1492,7 +1492,7 @@ export class metadata {
     }
 
     public getHtmlStylesheetCode(stylesheetId: string): string {
-        return _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
+        return stylesheetId && this.htmlStyleData && this.htmlStyleData.stylesheets && _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
     }
 
     public getHtmlFormats(stylesheetId: string): any[] {
