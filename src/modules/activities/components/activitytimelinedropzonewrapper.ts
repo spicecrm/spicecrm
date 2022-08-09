@@ -73,7 +73,7 @@ export class ActivityTimelineDropZoneWrapper {
                     // push the files to the appropriate arrays
                     if (files[file].name.substring(files[file].name.length - 4).toLowerCase() == '.msg') {
                         msgFiles.push(files[file]);
-                    }if (files[file].name.substring(files[file].name.length - 4).toLowerCase() == '.eml') {
+                    } else if (files[file].name.substring(files[file].name.length - 4).toLowerCase() == '.eml') {
                         emlFiles.push(files[file]);
                     } else {
                         noteFiles.push(files[file]);

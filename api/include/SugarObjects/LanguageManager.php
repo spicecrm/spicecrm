@@ -161,7 +161,7 @@ class LanguageManager
      * @param $labels
      * @return array Labels
      */
-    function getSpecificLabels( $syslang, $labels ) {
+    static function getSpecificLabels( $syslang, $labels ) {
         $retArray = [];
         $db = DBManagerFactory::getInstance();
 
