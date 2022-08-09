@@ -34,6 +34,7 @@ use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -179,7 +180,7 @@ class SpiceDictionaryVardefs  {
                 // load indices
                 if (!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
                 if (is_array($dbDict['indices'])) {
-                    $vardefs[$dbDict['name']]['indices'] = array_merge($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
+                    $vardefs[$dbDict['name']]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
                 }
 
                 // load relationships
@@ -226,6 +227,9 @@ class SpiceDictionaryVardefs  {
         // load legacy definitions contained in files
         self::loadLegacyFiles();
 
+        self::addACLFields();
+        self::addACLTerritoryFields();
+
         // store all legacy vardefs in an array
         foreach(SpiceDictionaryHandler::getInstance()->dictionary as $dictName => $dict){
             self::cleanLegacyDictionary($dict);
@@ -260,7 +264,7 @@ class SpiceDictionaryVardefs  {
                 // load indices
                 if(!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
                 if(is_array($dbDict['indices']) && !empty($dbDict['indices'])){
-                    $vardefs[$dbDict['name']]['indices'] = array_merge($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
+                    $vardefs[$dbDict['name']]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$dbDict['name']]['indices'], $dbDict['indices']);
                 }
 
                 // load relationships
@@ -274,6 +278,71 @@ class SpiceDictionaryVardefs  {
         unset($dictionaryDefinitions);
 
         return $vardefs;
+    }
+
+    /**
+     * add acl fields to the loaded dictionary items
+     * @return void
+     */
+    public static function addACLFields()
+    {
+        $loader = new SpiceUIModulesController();
+        $modules = $loader->geUnfilteredModules();
+
+        foreach ($modules as $module) {
+
+            if ($module['acl_multipleusers'] == 1 || empty($module['bean'])) continue;
+
+            VardefManager::addTemplate($module['module'], $module['bean'], 'spiceaclusers');
+        }
+    }
+
+    /**
+     * add acl territory fields to the loaded dictionary items
+     * @return void
+     * @throws \Exception
+     */
+    public static function addACLTerritoryFields()
+    {
+        $db = DBManagerFactory::getInstance();
+        $query = $db->query("SELECT * FROM spiceaclterritories_modules");
+
+        while($row = $db->fetchByAssoc($query)) {
+
+            if (!empty($row['relatefrom']) || empty($module['bean'])) continue;
+
+            VardefManager::addTemplate($row['module'], $row['bean'], 'spiceaclterritories');
+        }
+    }
+
+    /**
+     * merge legacy indices with db indices
+     * @param array $leftIndices
+     * @param array $rightIndices
+     * @return array
+     */
+    public static function mergeIndices(array $leftIndices, array $rightIndices): array
+    {
+        if (count($leftIndices) == 0) return $rightIndices;
+
+        if (count($rightIndices) == 0) return $leftIndices;
+
+        $resultIndices = $leftIndices;
+
+        foreach ($rightIndices as $rightIndex) {
+
+            $exists = false;
+
+            foreach ($resultIndices as $resultIndex) {
+                if ($resultIndex['fields'] != $rightIndex['fields'] || $resultIndex['type'] != $rightIndex['type']) continue;
+                $exists = true;
+                break;
+            }
+
+            if (!$exists) $resultIndices[$rightIndex['name']] = $rightIndex;
+        }
+
+        return $resultIndices;
     }
 
 
@@ -307,7 +376,7 @@ class SpiceDictionaryVardefs  {
 
             if(!is_array($dbDict['indices'])) $dbDict['indices'] = [];
             if(!is_array($vardefs[$object]['indices'])) $vardefs[$object]['indices'] = [];
-            $vardefs[$object]['indices'] = array_merge($vardefs[$object]['indices'], $dbDict['indices']);
+            $vardefs[$object]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs[$object]['indices'], $dbDict['indices']);
         } else{
             $vardefs[$object] = $dbDict;
         }
@@ -2090,7 +2159,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // truncate cache table sysdictionaryfields. Use deleteAll to enable a rollback!
         $db->deleteAll('sysdictionaryfields', true);
-        unset($_SESSION['dictionaries']);
 
         // save to db
         foreach($vardefs as $dictName => $dict){

@@ -1,13 +1,15 @@
 /**
  * @module ModuleTOTPAuthentication
  */
-import {Component, OnInit} from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
 import {take} from 'rxjs/operators';
+import { model } from '../../../services/model.service';
+import { session } from '../../../services/session.service';
 
 @Component({
     selector: "totp-authentication-generate-modal",
@@ -44,13 +46,15 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
      */
     public code: string = '';
 
-    constructor(public language: language, public metadata: metadata, public modal: modal, public backend: backend, public toast: toast) {
+    @Input() public onBehalfUserId: string;
+
+    constructor(public language: language, public metadata: metadata, public modal: modal, public backend: backend, public toast: toast, public model: model, public session: session ) {
 
     }
 
     public ngOnInit() {
         let loading = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
-        this.backend.postRequest(`authentication/totp/generate`)
+        this.backend.postRequest(`authentication/totp/generate`, { onBehalfUserId: this.onBehalfUserId })
             .pipe(take(1))
             .subscribe({
             next: res => {
@@ -81,7 +85,7 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
     }
 
     public save() {
-        this.backend.putRequest(`authentication/totp/validate/${this.code}`)
+        this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId })
             .pipe(take(1))
             .subscribe( {
                 next: res => {

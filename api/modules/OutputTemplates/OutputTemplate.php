@@ -8,6 +8,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
+use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class OutputTemplate extends SpiceBean
@@ -147,10 +148,29 @@ class OutputTemplate extends SpiceBean
     /**
      * Gets the stylesheet of the SpiceCRM frontend
      */
-    public static function getFrontendStylesheet(): string {
+    public static function getFrontendStylesheet(): string
+    {
+        $css = '';
+
+        // first the stylesheet of the core
         $filepath = '../app/styles.css';
-        if ( !is_readable( $filepath )) return '';
-        return file_get_contents( $filepath );
+        if ( is_readable( $filepath )) $css .= file_get_contents( $filepath )."\n";
+
+        // second the custom stylesheet, if available
+        $filepath = '../config/assets/css/spicecrm.css';
+        if ( is_readable( $filepath )) $css .= file_get_contents( $filepath )."\n";
+
+        // at last last the CI colors/styles from the assets table
+        $assets = ( new SpiceUIRESTHandler() )->getAssets();
+        foreach ( $assets as $asset ) {
+            if ( $asset['assetkey'] === 'colors' ) {
+                $dummy = json_decode( $asset['assetvalue'] );
+                foreach ( $dummy as $k => $v ) {
+                    $css .= '--'.$k.':'.$v.';';
+                }
+            }
+        }
+        return $css;
     }
 
 }

@@ -1333,6 +1333,9 @@ class SpiceFTSHandler
 
                 }
 
+                // reset array keys in case we removed one
+                $searchresults[$module]['hits'] = array_values($searchresults[$module]['hits']);
+
                 // add the aggregations
                 $searchresults[$module]['aggregations'] = $searchresultsraw['aggregations'];
             }

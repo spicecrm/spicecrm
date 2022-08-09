@@ -31,8 +31,9 @@ class ChromeLocalPdfHandler extends PdfHandler
     public function createChromeLocalPdf()
     {
         $stylesheet = $this->template->getStyle();
-        $stylesheet = preg_replace('/(background:#(.+?))(;|})/s', '\1!important\3', $stylesheet );
-        $stylesheet = preg_replace('/(background-color:#(.+?))(;|})/s', '\1!important\3', $stylesheet );
+
+        $stylesheet = preg_replace('/(background:(.+?))(;|})/s', '\1!important\3', $stylesheet );
+        $stylesheet = preg_replace('/(background-color:(.+?))(;|})/s', '\1!important\3', $stylesheet );
 
         $htmlOutput = '<!DOCTYPE html><html><head><meta charset="utf-8" /><style>'.$this->getPageStyle().'</style>';
         $htmlOutput .= '<style>'.$stylesheet.'</style><style>html { font-size: '.$this->basicFontSize.'; }</style></head>'.$this->html_content.'</html>';
@@ -44,6 +45,7 @@ class ChromeLocalPdfHandler extends PdfHandler
         $tmpPdfFilename = tempnam( sys_get_temp_dir(), '' );
 
         $chromePath = SpiceConfig::getInstance()->config['outputtemplates']['chrome_path'];
+        # also available command line parameters of chrome, but not used:
         # --run-all-compositor-stages-before-draw
         # --enable-logging
         exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename) ),$output,$resultCode );
