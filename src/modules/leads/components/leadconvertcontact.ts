@@ -84,11 +84,17 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
          * subscribe to lead changes to update the account link if set
          */
         this.lead.data$.subscribe(data => {
-            if (!this.selectedContact && data.account_id != this.model.getField('account_id') || data.account_linked_name != this.model.getField('account_linked_name')) {
+            if (!this.selectedContact && (data.account_id != this.model.getField('account_id') || data.account_linked_name != this.model.getField('account_linked_name'))) {
                 this.model.setFields({
                     account_id: data.account_id,
                     account_name: data.account_linked_name
                 });
+                this.model.initializeField(
+                    'accounts',
+                    {"beans": [{
+                            id: this.model.getField('account_id')
+                        }]}
+                );
             }
         });
 
