@@ -76,6 +76,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() public useMedialFile: boolean = false;
 
+    /**
+     * the id of the stylesheet to apply
+     * @private
+     */
+    @Input() private stylesheetId: string;
+
     public get useTemplateVariableHelper() {
         return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
     }
@@ -142,7 +148,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public editor: {execute: (command: string, params?: any) => void, setData: (data: string) => void, getData: () => string, model: any, ui: any, editing: any, enableReadOnlyMode: (val: string) => void};
 
-    public customStyleDefinitions: {value: string, display: string, classes: string[], element: string}[] = [];
+    public customStyleDefinitions: { id: string, display: string, classes: string[], element: string }[] = [];
 
     public ngOnInit() {
 
@@ -152,9 +158,10 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.zone.runOutsideAngular(() => {
 
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
+                    removePlugins: ['Markdown'],
                     style: {
                         definitions: this.customStyleDefinitions.map(s => ({
-                            name: s.value,
+                            name: s.id,
                             element: s.element,
                             classes: s.classes
                         }))
@@ -190,8 +197,14 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     private loadCustomStyleDefinitions() {
-        // todo load custom styles
-        this.customStyleDefinitions = [];
+        this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
+            this.customStyleDefinitions.push({
+                display: format.name,
+                id: format.id,
+                classes: format.classes,
+                element: format.block ? format.block : ( format.inline ? format.inline : '' )
+            })
+        });
     }
 
     /**

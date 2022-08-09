@@ -54,10 +54,14 @@
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="block" (change)="customStyle(block)" >
-                                <option *ngFor="let customStyle of customStyleDefinitions" [ngValue]="customStyle.value">
-                                    <div>{{customStyle.display}}</div>
-                                </option>
+                            <select class="slds-select" [(ngModel)]="block" (change)="heading(block)" >
+                                <option value="heading1"><h1>Heading 1</h1></option>
+                                <option value="heading2"><h2>Heading 2</h2></option>
+                                <option value="heading3"><h3>Heading 3</h3></option>
+                    <!--            <option value="heading4"><h4>Heading 4</h4></option>
+                                <option value="heading5"><h5>Heading 5</h5></option>
+                                <option value="heading6"><h6>Heading 6</h6></option>-->
+                                <option value="paragraph">Paragraph</option>
                             </select>
                         </div>
                     </div>
@@ -67,14 +71,9 @@
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="block" (change)="heading(block)" >
-                                <option value="heading1"><h1>Heading 1</h1></option>
-                                <option value="heading2"><h2>Heading 2</h2></option>
-                                <option value="heading3"><h3>Heading 3</h3></option>
-                    <!--            <option value="heading4"><h4>Heading 4</h4></option>
-                                <option value="heading5"><h5>Heading 5</h5></option>
-                                <option value="heading6"><h6>Heading 6</h6></option>-->
-                                <option value="paragraph">Paragraph</option>
+                            <select class="slds-select" (change)="customStyle($event.target.value)" >
+                                <option value="">&mdash;</option>
+                                <option *ngFor="let customStyle of customStyleDefinitions" value="{{customStyle.id}}">{{customStyle.display}}</option>
                             </select>
                         </div>
                     </div>
