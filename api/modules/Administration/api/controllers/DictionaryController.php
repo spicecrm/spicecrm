@@ -44,8 +44,8 @@ class DictionaryController
         $db = DBManagerFactory::getInstance();
         $languages = LanguageManager::getLanguages()['available'];
 
-        $db->deleteAll("syscustomdomainfieldvalidations");
-        $db->deleteAll("syscustomdomainfieldvalidationvalues");
+        $db->query("DELETE FROM syscustomdomainfieldvalidations WHERE package = 'legacy'");
+        $db->query("DELETE FROM syscustomdomainfieldvalidationvalues WHERE package = 'legacy'");
 
         foreach ($languages as $language) {
 
@@ -60,7 +60,7 @@ class DictionaryController
             foreach ($appStrings as $name => $values) {
 
                 $valId = SpiceUtils::createGuid();
-                $query = "INSERT INTO syscustomdomainfieldvalidations (id, name, validation_type, order_by, sort_flag, status, deleted) VALUES ('$valId', '$name', 'enum', 'sequence', 'asc', 'a', 0)";
+                $query = "INSERT INTO syscustomdomainfieldvalidations (id, name, validation_type, order_by, sort_flag, status, package,deleted) VALUES ('$valId', '$name', 'enum', 'sequence', 'asc', 'a', 'legacy', 0)";
                 $db->query($query);
 
                 $counter = 0;
@@ -70,7 +70,7 @@ class DictionaryController
                     $label = empty($valDisplay) ? '' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
 
                     $valItemId = SpiceUtils::createGuid();
-                    $query = "INSERT INTO syscustomdomainfieldvalidationvalues (id, sysdomainfieldvalidation_id, enumvalue, sequence, label, valuetype, status, deleted) VALUES ('$valItemId', '$valId', '$valKey', $counter, '$label', 'string', 'a', 0)";
+                    $query = "INSERT INTO syscustomdomainfieldvalidationvalues (id, sysdomainfieldvalidation_id, enumvalue, sequence, label, valuetype, status, package, deleted) VALUES ('$valItemId', '$valId', '$valKey', $counter, '$label', 'string', 'a', 'legacy' , 0)";
                     $db->query($query);
 
                     if (isset($sysLanguageLabels[$label]) || empty($valDisplay)) continue;
