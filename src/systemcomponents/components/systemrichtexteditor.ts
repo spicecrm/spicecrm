@@ -158,7 +158,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.zone.runOutsideAngular(() => {
 
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
-                    removePlugins: ['Markdown'],
+                    removePlugins: ['Markdown','Title'],
                     style: {
                         definitions: this.customStyleDefinitions.map(s => ({
                             name: s.id,
