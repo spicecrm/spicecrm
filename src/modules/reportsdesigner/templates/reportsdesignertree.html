@@ -25,7 +25,10 @@
         </div>
         <div class="slds-grow" style="height: 0" *ngIf="!!activeModule.unionid">
             <div *ngFor="let module of allModules; trackBy: trackByFn" [class.slds-hide]="activeModule.unionid != module.unionid" class="slds-scrollable--y" style="height: 100%">
-                <system-module-tree [module]="module.module" (itemSelected)="onItemSelection($event, module.module)"></system-module-tree>
+                <system-module-tree [module]="module.module" (itemSelected)="onItemSelection($event, module.module, 'module')"></system-module-tree>
+                <ng-container *ngIf="moduleRelationships[module.module]">
+                    <system-tree [sourceList]="moduleRelationships[module.module]" (selectedItemChange)="onItemSelection($event, module.module, 'relationship')" class="spice-display-block" style="margin-left: -8px;"></system-tree>
+                </ng-container>
             </div>
         </div>
     </div>

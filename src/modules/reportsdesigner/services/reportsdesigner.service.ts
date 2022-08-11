@@ -20,6 +20,7 @@ export class ReportsDesignerService {
     public operatorCount: any = {};
     public operatorTypes: any = {};
     public operatorAssignments: any = {};
+    public moduleRelationships: {[key: symbol]: {id: string, parent_id: string, name: string,path: string, fields: any[]}[]} = {};
 
     /**
      * sets the reporter into expert mode. set tor true bx default
@@ -52,6 +53,24 @@ export class ReportsDesignerService {
      */
     set listFields(value) {
         this.model.setField('listfields', value);
+    }
+
+    /**
+     * get relationship fields
+     * @private
+     * @param module
+     */
+    public getModuleRelationships(module: string) {
+        this.backend.getRequest(`dictionary/browser/relationship/${module}`).subscribe(relationships => {
+            this.moduleRelationships[module] = relationships.map((relationship,idx) => ({
+                name: relationship.relationship_name,
+                id: idx + '',
+                parent_id: '00',
+                fields: relationship.fields,
+                path: relationship.path
+            }));
+            this.moduleRelationships[module].push({id: '00', name: this.language.getLabel('LBL_RELATIONSHIPS'), clickable: false});
+        });
     }
 
     /**
