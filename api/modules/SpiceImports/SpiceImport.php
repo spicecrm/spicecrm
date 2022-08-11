@@ -174,7 +174,7 @@ class SpiceImport extends SpiceBean
                     $retrieve = [];
 
                     foreach ($this->objectimport->checkFields as $check_field)
-                        $retrieve[$check_field->moduleField] = $row[array_search($check_field->mappedField, $fileHeader)];
+                        $retrieve[$check_field['moduleField']] = $row[array_search($check_field['mappedField'], $fileHeader)];
 
                     $newBean = BeanFactory::getBean($this->objectimport->module);
 
@@ -223,11 +223,11 @@ class SpiceImport extends SpiceBean
 
             foreach ($row as $idx => $col) {
 
-                if (isset($this->objectimport->fileMapping->{$fileHeader[$idx]})) {
-                    $newBean->{$this->objectimport->fileMapping->{$fileHeader[$idx]}} = $col;
+                if (isset($this->objectimport->fileMapping[$fileHeader[$idx]])) {
+                    $newBean->{$this->objectimport->fileMapping[$fileHeader[$idx]]} = $col;
 
                     if ($this->objectimport->idFieldAction == 'have' &&
-                        $this->objectimport->idField == $this->objectimport->fileMapping->{$fileHeader[$idx]}) {
+                        $this->objectimport->idField == $this->objectimport->fileMapping[$fileHeader[$idx]]) {
 
                         $newBean->new_with_id = true;
                         $newBean->id = $col;
@@ -236,7 +236,7 @@ class SpiceImport extends SpiceBean
             }
 
             foreach ($this->objectimport->fixedFields as $field)
-                $newBean->{$field->field} = $this->objectimport->fixedFieldsValues->{$field->field};
+                $newBean->{$field['field']} = $this->objectimport->fixedFieldsValues[$field['field']];
 
             $newBeanId = $newBean->save();
             $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
@@ -270,12 +270,12 @@ class SpiceImport extends SpiceBean
 
         if (!empty($newBean->id)) {
             foreach ($row as $idx => $col) {
-                if (!empty($this->objectimport->fileMapping->{$fileHeader[$idx]}))
-                    $newBean->{$this->objectimport->fileMapping->{$fileHeader[$idx]}} = $col;
+                if (!empty($this->objectimport->fileMapping[$fileHeader[$idx]]))
+                    $newBean->{$this->objectimport->fileMapping[$fileHeader[$idx]]} = $col;
             }
 
             foreach ($this->objectimport->fixedFields as $field)
-                $newBean->{$field->field} = $this->objectimport->fixedFieldsValues->{$field->field};
+                $newBean->{$field['field']} = $this->objectimport->fixedFieldsValues[$field['field']];
 
             $newBeanId = $newBean->save();
             $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
