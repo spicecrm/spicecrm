@@ -46,6 +46,8 @@ class DictionaryController
 
         $db->query("DELETE FROM syscustomdomainfieldvalidations WHERE package = 'legacy'");
         $db->query("DELETE FROM syscustomdomainfieldvalidationvalues WHERE package = 'legacy'");
+        $db->query("DELETE FROM syscustomdomainfields WHERE package = 'legacy'");
+        $db->query("DELETE FROM syscustomdomaindefinitions WHERE package = 'legacy'");
 
         foreach ($languages as $language) {
 
@@ -61,6 +63,15 @@ class DictionaryController
 
                 $valId = SpiceUtils::createGuid();
                 $query = "INSERT INTO syscustomdomainfieldvalidations (id, name, validation_type, order_by, sort_flag, status, package,deleted) VALUES ('$valId', '$name', 'enum', 'sequence', 'asc', 'a', 'legacy', 0)";
+                $db->query($query);
+
+                // customise the domaindefinitions & domainfields to make sure that the validation values are overwritten (custom)
+                $domainId = SpiceUtils::createGuid();
+                $query = "INSERT INTO syscustomdomaindefinitions (id, name, fieldtype, package, status, deleted) VALUES ('$domainId', '$name' ,'char', 'legacy', 'a', 0)";
+                $db->query($query);
+
+                $domainFieldId = SpiceUtils::createGuid();
+                $query = "INSERT INTO syscustomdomainfields (id, name, dbtype, fieldtype, sysdomaindefinition_id, sysdomainfieldvalidation_id, package, status, deleted) VALUES ('$domainFieldId', '{sysdictionaryitems.name}' ,'char', 'enum', '$domainId', '$valId', 'legacy', 'a', '0')";
                 $db->query($query);
 
                 $counter = 0;
@@ -186,8 +197,31 @@ class DictionaryController
      * @throws Exception
      */
     public function getModuleRelationships(Request $req, Response $res, array $args): Response {
-        $relationships = SpiceDictionaryVardefs::loadRelationships($args['module']);
-        return $res->withJson($this->buildFieldArray($args['module']));
+
+        $bean = BeanFactory::newBean($args['module']);
+        $links = $bean->get_linked_fields();
+        $links = array_combine(array_column($links, 'relationship'), array_keys($links));
+
+        $relationships = array_filter(SpiceDictionaryVardefs::loadRelationships($args['module']), function ($relationship) use ($links) {
+            return $relationship['relationship_type'] == 'many-to-many';
+        });
+
+        $relationships = array_map(function ($relationship) use($args, $links) {
+
+            // root:Contacts::link:Contacts:opportunities::relationship:Contacts:opportunities::field:contact_role
+            $relationship['path'] = "root:{$args['module']}::link:{$args['module']}:{$links[$relationship['relationship_name']]}::relationship:{$args['module']}:{$links[$relationship['relationship_name']]}";
+            $relationship['fields'] = array_values(
+                array_map(function ($field) use ($args, $relationship) {
+                    $field['id'] = "field:{$field['name']}";
+                    return $field;
+                }, $relationship['fields'])
+            );
+
+            return $relationship;
+
+        }, $relationships);
+
+        return $res->withJson(array_values($relationships));
     }
 
     private function buildFieldArray($module)
