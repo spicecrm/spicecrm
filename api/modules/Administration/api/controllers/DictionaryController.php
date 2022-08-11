@@ -46,6 +46,8 @@ class DictionaryController
 
         $db->query("DELETE FROM syscustomdomainfieldvalidations WHERE package = 'legacy'");
         $db->query("DELETE FROM syscustomdomainfieldvalidationvalues WHERE package = 'legacy'");
+        $db->query("DELETE FROM syscustomdomainfields WHERE package = 'legacy'");
+        $db->query("DELETE FROM syscustomdomaindefinitions WHERE package = 'legacy'");
 
         foreach ($languages as $language) {
 
@@ -61,6 +63,15 @@ class DictionaryController
 
                 $valId = SpiceUtils::createGuid();
                 $query = "INSERT INTO syscustomdomainfieldvalidations (id, name, validation_type, order_by, sort_flag, status, package,deleted) VALUES ('$valId', '$name', 'enum', 'sequence', 'asc', 'a', 'legacy', 0)";
+                $db->query($query);
+
+                // customise the domaindefinitions & domainfields to make sure that the validation values are overwritten (custom)
+                $domainId = SpiceUtils::createGuid();
+                $query = "INSERT INTO syscustomdomaindefinitions (id, name, fieldtype, package, status, deleted) VALUES ('$domainId', '$name' ,'char', 'legacy', 'a', 0)";
+                $db->query($query);
+
+                $domainFieldId = SpiceUtils::createGuid();
+                $query = "INSERT INTO syscustomdomainfields (id, name, dbtype, fieldtype, sysdomaindefinition_id, sysdomainfieldvalidation_id, package, status, deleted) VALUES ('$domainFieldId', '{sysdictionaryitems.name}' ,'char', 'enum', '$domainId', '$valId', 'legacy', 'a', '0')";
                 $db->query($query);
 
                 $counter = 0;
