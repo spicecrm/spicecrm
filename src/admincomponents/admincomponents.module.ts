@@ -89,6 +89,7 @@ import {AdministrationGDPRRetentionManager} from "./components/administrationgdp
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationDictRepairResetCache} from "./components/administrationdictrepairresetcache";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
+import {AdministrationDictRepairCustomEnum} from "./components/administrationdictrepaircustomenum";
 
 @NgModule({
     imports: [
@@ -168,7 +169,8 @@ import {AdministrationMigrateLegacyDoms} from "./components/administrationmigrat
         AdministrationBlockedUsers,
         AdministrationLoginManagement,
         AdministrationAssetManager,
-        AdministrationLoginMethods
+        AdministrationLoginMethods,
+        AdministrationDictRepairCustomEnum
     ]
 
 })
