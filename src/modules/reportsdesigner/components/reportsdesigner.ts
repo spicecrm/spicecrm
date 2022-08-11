@@ -113,7 +113,6 @@ export class ReportsDesigner implements OnDestroy {
                                 const module = this.model.getField('report_module');
                                 this.reportsDesignerService.setCurrentPath(module, module);
                                 this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
-                                this.reportsDesignerService.getModuleRelationships(res.report_module);
                             }
                             if (!res.listfields) this.model.setField('listfields', []);
                             if (!res.whereconditions) this.model.setField('whereconditions', []);
@@ -198,7 +197,6 @@ export class ReportsDesigner implements OnDestroy {
                         this.setInitialValues(response);
                         this.reportsDesignerService.setCurrentPath(response.module, response.module);
                         this.reportsDesignerService.activeModule = {unionid: 'root', module: response.module};
-                        this.reportsDesignerService.getModuleRelationships(response.module);
                         this.navigationtab.setTabInfo({displayname: this.model.getField('name'), displaymodule: this.model.module});
                     } else {
                         this.navigationtab.closeTab();

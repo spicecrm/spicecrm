@@ -130,13 +130,18 @@ class DictionaryController
                 if ($field_defs['type'] == 'link') {
                     if($nodeModule->load_relationship($field_name)) {
                         //BUGFIX 2010/07/13 to display alternative module name if vname is not maintained
-                        $returnArray[] = [
-                            'path' => 'link:' . $module . ':' . $field_name,
+                        $entry = [
+                            'path' => "link:$module:$field_name",
                             'module' => $nodeModule->$field_name->getRelatedModuleName(),
+                            'parentModule' => $module,
                             'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false,
-                            'label' => $field_defs['vname']
+                            'label' => $field_defs['vname'],
+                            'link' => $field_name,
+                            'hasRelationshipFields' => $nodeModule->$field_name->relationship->type == 'many-to-many'
                         ];
+
+                        $returnArray[] = $entry;
                     }
                 }
             }
@@ -196,32 +201,23 @@ class DictionaryController
      * @return mixed
      * @throws Exception
      */
-    public function getModuleRelationships(Request $req, Response $res, array $args): Response {
-
+    public function getModuleRelationshipFields(Request $req, Response $res, array $args): Response
+    {
+        // root:Contacts::link:Contacts:opportunities::relationship:Contacts:opportunities::field:contact_role
         $bean = BeanFactory::newBean($args['module']);
-        $links = $bean->get_linked_fields();
-        $links = array_combine(array_column($links, 'relationship'), array_keys($links));
 
-        $relationships = array_filter(SpiceDictionaryVardefs::loadRelationships($args['module']), function ($relationship) use ($links) {
-            return $relationship['relationship_type'] == 'many-to-many';
-        });
+        if (!$bean->load_relationship($args['link'])) {
+            return $res->withJson([]);
+        }
 
-        $relationships = array_map(function ($relationship) use($args, $links) {
+        $fields = array_values(
+            array_map(function ($field) {
+                $field['id'] = "field:{$field['name']}";
+                return $field;
+            }, $bean->{$args['link']}->relationship->def['fields'])
+        );
 
-            // root:Contacts::link:Contacts:opportunities::relationship:Contacts:opportunities::field:contact_role
-            $relationship['path'] = "root:{$args['module']}::link:{$args['module']}:{$links[$relationship['relationship_name']]}::relationship:{$args['module']}:{$links[$relationship['relationship_name']]}";
-            $relationship['fields'] = array_values(
-                array_map(function ($field) use ($args, $relationship) {
-                    $field['id'] = "field:{$field['name']}";
-                    return $field;
-                }, $relationship['fields'])
-            );
-
-            return $relationship;
-
-        }, $relationships);
-
-        return $res->withJson(array_values($relationships));
+        return $res->withJson(array_values($fields));
     }
 
     private function buildFieldArray($module)

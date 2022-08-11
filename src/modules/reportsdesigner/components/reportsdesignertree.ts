@@ -70,33 +70,38 @@ export class ReportsDesignerTree {
     }
 
     /**
-     * array to render in system tree
-     * @return {[key: symbol]: {id: string, parent_id: string, name: string, fields: any[]}[]}
-     */
-    get moduleRelationships(): {[key: symbol]: {id: string, parent_id: string, name: string,path: string, fields: any[]}[]} {
-        return this.reportsDesignerService.moduleRelationships;
-    }
-
-    /**
      * @param data: object
      * @param rootModule: string
-     * @param type
      * @set currentPath
      * @getModuleFields
      */
-    public onItemSelection(data, rootModule, type: 'audit' | 'relationship' | 'module') {
-        switch (type) {
-            case "relationship":
-                const relationship = this.moduleRelationships[rootModule].find(r => r.id == data);
-                this.reportModuleFields[rootModule] = relationship.fields;
-                this.reportsDesignerService.setCurrentPath(rootModule, relationship.path);
-                break;
-            case "module":
-                this.reportsDesignerService.setCurrentPath(rootModule, data.path);
-                this.getModuleFields(data.module, rootModule);
-                break;
-            case "audit":
+    public onItemSelection(data, rootModule) {
+
+        this.reportsDesignerService.setCurrentPath(rootModule, data.path);
+
+        if (data.relationshipNode) {
+            this.getRelationshipFields(data.parentModule, data.link);
+
+        } else {
+            this.getModuleFields(data.module, rootModule);
         }
+    }
+
+    /**
+     * get relationship fields
+     * @param module
+     * @param link
+     * @private
+     */
+    private getRelationshipFields(module: string, link: string) {
+        this.reportModuleFields[module] = [];
+        this.isLoadingModuleFields = true;
+        this.cdr.detectChanges();
+
+        this.backend.getRequest(`dictionary/browser/relationshipFields/${module}/${link}`).subscribe(items => {
+            this.reportModuleFields[module] = items.filter(item => item.type != 'relate' && item.source != 'non-db');
+            this.isLoadingModuleFields = false;
+        });
     }
 
     /**
@@ -235,7 +240,6 @@ export class ReportsDesignerTree {
      */
     public setActiveModule(selectedModule) {
         this.reportsDesignerService.activeModule = selectedModule;
-        this.reportsDesignerService.getModuleRelationships(selectedModule);
         if (!this.reportsDesignerService.getCurrentPath(selectedModule.module)) {
             this.reportsDesignerService.setCurrentPath(selectedModule.module, selectedModule.module);
         }
