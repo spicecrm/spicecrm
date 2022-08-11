@@ -230,7 +230,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.customStyleDefinitions.push({
                 display: format.name,
                 id: format.id,
-                classes: format.classes ? JSON.parse(format.classes) : [],
+                classes: format.classes ? format.classes.trim().split(/\s+/) : [],
                 element: format.block ? format.block : ( format.inline ? format.inline : '' )
             })
         });
