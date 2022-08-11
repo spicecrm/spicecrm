@@ -18,6 +18,11 @@ declare var _: any;
 export class SystemModuleTree implements AfterViewInit {
 
     /**
+     * enable displaying the relationship fields
+     */
+    @Input() public displayRelationshipFields: boolean = false;
+
+    /**
      * the module to start from
      */
     @Input() public module: string;

@@ -20,6 +20,11 @@ declare var _: any;
 export class SystemModuleTreeItem {
 
     /**
+     * enable displaying the relationship fields
+     */
+    @Input() public displayRelationshipFields: boolean = false;
+
+    /**
      * @input selectedItemPath: string
      */
     @Input() public selectedNodeId: string = '';
@@ -105,6 +110,19 @@ export class SystemModuleTreeItem {
                         return item;
                     })
                     .sort((a, b) => !!a.displayname && !!b.displayname ? a.displayname > b.displayname ? 1 : -1 : 0);
+
+                if (this.displayRelationshipFields && this.nodedata.hasRelationshipFields) {
+                    this.nodeitems = [{
+                        displayname: this.language.getLabel('LBL_RELATIONSHIP_FIELDS'),
+                        leaf: true,
+                        relationshipNode: true,
+                        module: this.module,
+                        parentModule: this.nodedata.parentModule,
+                        link: this.nodedata.link,
+                        nodeId: !this.nodedata ? 'root' : this.nodedata.nodeId,
+                        path: `relationship:${this.nodedata.parentModule}:${this.nodedata.link}`
+                    }, ...this.nodeitems];
+                }
             }
 
             this.isLoading = false;
@@ -139,7 +157,10 @@ export class SystemModuleTreeItem {
         this.itemSelected.emit({
             path: this.path,
             module: this.module,
-            nodeId: !this.nodedata ? 'root' : this.nodedata.nodeId
+            parentModule: this.nodedata.parentModule,
+            link: this.nodedata.link,
+            nodeId: !this.nodedata ? 'root' : this.nodedata.nodeId,
+            relationshipNode: this.nodedata.relationshipNode
         });
     }
 
