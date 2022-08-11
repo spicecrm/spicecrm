@@ -64,16 +64,23 @@ $routes = [
     ],
     [
         'method' => 'get',
-        'route' => '/dictionary/browser/relationship/{module}',
+        'route' => '/dictionary/browser/relationshipFields/{module}/{link}',
         'class' => DictionaryController::class,
-        'function' => 'getModuleRelationships',
-        'description' => 'get module relationship definitions',
+        'function' => 'getModuleRelationshipFields',
+        'description' => 'get module relationship fields',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
                 'description' => 'the name of the module',
                 'type' => ValidationMiddleware::TYPE_MODULE,
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'link' => [
+                'in' => 'path',
+                'description' => 'the name of the link',
+                'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => 'accounts_contacts',
                 'required' => true
             ]
