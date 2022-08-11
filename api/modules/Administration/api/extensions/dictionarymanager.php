@@ -64,6 +64,24 @@ $routes = [
     ],
     [
         'method' => 'get',
+        'route' => '/dictionary/browser/relationship/{module}',
+        'class' => DictionaryController::class,
+        'function' => 'getModuleRelationships',
+        'description' => 'get module relationship definitions',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'module' => [
+                'in' => 'path',
+                'description' => 'the name of the module',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'example' => 'accounts_contacts',
+                'required' => true
+            ]
+        ]
+
+    ],
+    [
+        'method' => 'get',
         'route' => '/dictionary/browser/{module}/dbcolumns',
         'class' => AdminController::class,
         'function' => 'getDBColumns',

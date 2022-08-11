@@ -186,8 +186,31 @@ class DictionaryController
      * @throws Exception
      */
     public function getModuleRelationships(Request $req, Response $res, array $args): Response {
-        $relationships = SpiceDictionaryVardefs::loadRelationships($args['module']);
-        return $res->withJson($this->buildFieldArray($args['module']));
+
+        $bean = BeanFactory::newBean($args['module']);
+        $links = $bean->get_linked_fields();
+        $links = array_combine(array_column($links, 'relationship'), array_keys($links));
+
+        $relationships = array_filter(SpiceDictionaryVardefs::loadRelationships($args['module']), function ($relationship) use ($links) {
+            return $relationship['relationship_type'] == 'many-to-many';
+        });
+
+        $relationships = array_map(function ($relationship) use($args, $links) {
+
+            // root:Contacts::link:Contacts:opportunities::relationship:Contacts:opportunities::field:contact_role
+            $relationship['path'] = "root:{$args['module']}::link:{$args['module']}:{$links[$relationship['relationship_name']]}::relationship:{$args['module']}:{$links[$relationship['relationship_name']]}";
+            $relationship['fields'] = array_values(
+                array_map(function ($field) use ($args, $relationship) {
+                    $field['id'] = "field:{$field['name']}";
+                    return $field;
+                }, $relationship['fields'])
+            );
+
+            return $relationship;
+
+        }, $relationships);
+
+        return $res->withJson(array_values($relationships));
     }
 
     private function buildFieldArray($module)

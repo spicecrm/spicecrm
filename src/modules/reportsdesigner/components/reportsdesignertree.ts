@@ -70,14 +70,33 @@ export class ReportsDesignerTree {
     }
 
     /**
-    * @param data: object
-    * @param rootModule: string
+     * array to render in system tree
+     * @return {[key: symbol]: {id: string, parent_id: string, name: string, fields: any[]}[]}
+     */
+    get moduleRelationships(): {[key: symbol]: {id: string, parent_id: string, name: string,path: string, fields: any[]}[]} {
+        return this.reportsDesignerService.moduleRelationships;
+    }
+
+    /**
+     * @param data: object
+     * @param rootModule: string
+     * @param type
      * @set currentPath
      * @getModuleFields
      */
-    public onItemSelection(data, rootModule) {
-        this.reportsDesignerService.setCurrentPath(rootModule, data.path);
-        this.getModuleFields(data.module, rootModule);
+    public onItemSelection(data, rootModule, type: 'audit' | 'relationship' | 'module') {
+        switch (type) {
+            case "relationship":
+                const relationship = this.moduleRelationships[rootModule].find(r => r.id == data);
+                this.reportModuleFields[rootModule] = relationship.fields;
+                this.reportsDesignerService.setCurrentPath(rootModule, relationship.path);
+                break;
+            case "module":
+                this.reportsDesignerService.setCurrentPath(rootModule, data.path);
+                this.getModuleFields(data.module, rootModule);
+                break;
+            case "audit":
+        }
     }
 
     /**
@@ -216,6 +235,7 @@ export class ReportsDesignerTree {
      */
     public setActiveModule(selectedModule) {
         this.reportsDesignerService.activeModule = selectedModule;
+        this.reportsDesignerService.getModuleRelationships(selectedModule);
         if (!this.reportsDesignerService.getCurrentPath(selectedModule.module)) {
             this.reportsDesignerService.setCurrentPath(selectedModule.module, selectedModule.module);
         }
