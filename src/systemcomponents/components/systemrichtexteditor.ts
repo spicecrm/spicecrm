@@ -158,7 +158,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.zone.runOutsideAngular(() => {
 
                 CKSource.Editor.create(this.ckEditor.element.nativeElement, {
-                    removePlugins: ['Markdown'],
+                    removePlugins: ['Markdown','Title'],
                     style: {
                         definitions: this.customStyleDefinitions.map(s => ({
                             name: s.id,
@@ -230,7 +230,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.customStyleDefinitions.push({
                 display: format.name,
                 id: format.id,
-                classes: format.classes,
+                classes: format.classes ? JSON.parse(format.classes) : [],
                 element: format.block ? format.block : ( format.inline ? format.inline : '' )
             })
         });
@@ -356,7 +356,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * execute custom style
      */
     public customStyle(name: string){
-        this.editor.execute('style', name);
+        if ( name ) this.editor.execute('style', name);
     }
     /**
      *
